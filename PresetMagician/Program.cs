@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using GSF.Media;
 using NKSF;
 using System.Diagnostics;
+using PresetMagician.VST;
 
 namespace TestRIFF
 {
@@ -25,6 +26,9 @@ namespace TestRIFF
 
 
             Debug.Listeners.Add(new ConsoleTraceListener());
+
+            VstPathScanner vstPathScanner = new VstPathScanner();
+            return;
 
             try { 
             using (var fileStream = new FileStream(@"C:\Users\Felicia Hummel\Documents\Native Instruments\User Content\VStation\VStation Factory\100 Bass1.nksf", FileMode.Open))
