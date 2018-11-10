@@ -2,7 +2,7 @@
 using Jacobi.Vst.Core.Host;
 using Jacobi.Vst.Core;
 
-namespace CommonUtils.VSTPlugin
+namespace PresetMagician.VST
 {
     class HostCommandStub : IVstHostCommandStub
     {
@@ -114,6 +114,7 @@ namespace CommonUtils.VSTPlugin
 
         public bool IoChanged()
         {
+            return false;
             throw new NotImplementedException();
         }
 

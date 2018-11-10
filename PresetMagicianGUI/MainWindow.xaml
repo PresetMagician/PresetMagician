@@ -6,55 +6,64 @@
                    xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Icon="presetmagician2.ico"
+    ShowIconOnTitleBar="True"
                      xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-    
+
         xmlns:local="clr-namespace:PresetMagicianGUI"
         xmlns:System="clr-namespace:System;assembly=mscorlib" x:Class="PresetMagicianGUI.MainWindow"
                      x:Name="window"
-                   BorderThickness="0" 
+                   BorderThickness="0"
                       GlowBrush="Black"
                       ResizeMode="CanResizeWithGrip"
-        Title="MainWindow" Height="450" Width="800" BorderBrush="Black">
+        Title="PresetMagician" Height="450" Width="800" BorderBrush="Black" WindowStyle="ThreeDBorderWindow">
     <Controls:MetroWindow.Resources>
         <System:String x:Key="SettingsGroup">Settings</System:String>
     </Controls:MetroWindow.Resources>
     <Grid Background="{DynamicResource BaseBackgroundBrush}">
-        
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="435*"/>
-            <ColumnDefinition Width="359*"/>
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Fluent:Ribbon Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,-0.4,0">
+        <Fluent:Ribbon Grid.Row="0" Margin="0,0,-0.4,0" VerticalAlignment="Stretch">
             <!--Backstage-->
             <Fluent:Ribbon.Menu>
-                <Fluent:Backstage/>
+                <Fluent:Backstage />
             </Fluent:Ribbon.Menu>
 
             <!--Tabs-->
             <Fluent:RibbonTabItem Header="Home">
                 <Fluent:RibbonGroupBox Width="215" Header="{DynamicResource SettingsGroup}">
-                    <Fluent:Button Header="VST Paths"
-                                
-                                LargeIcon="{iconPacks:FontAwesome Kind=_500pxBrands}" Click="Button_Click" Content="" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" UseLayoutRounding="False" RenderTransformOrigin="0.5,0">
+                    <Fluent:Button Header="VST Paths" Click="Button_Click" Content="" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" UseLayoutRounding="False" RenderTransformOrigin="0.5,0">
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
 
-        <Grid Grid.ColumnSpan="2" Margin="0,118,-0.4,0" Grid.RowSpan="2">
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="24" />
+            </Grid.RowDefinitions>
+            <TabControl Name="MainTabs" Controls:ControlsHelper.HeaderFontSize="12" BorderBrush="White" Controls:TabControlHelper.Underlined="TabItems" Background="White" Controls:TabControlHelper.UnderlineMouseOverBrush="{DynamicResource {x:Static SystemColors.InfoBrushKey}}" Foreground="White" SelectedIndex="1">
 
-            <TabControl Controls:ControlsHelper.HeaderFontSize="12" BorderBrush="White" Controls:TabControlHelper.Underlined="TabItems" Background="White" Controls:TabControlHelper.UnderlineMouseOverBrush="{DynamicResource {x:Static SystemColors.InfoBrushKey}}" Foreground="White">
-
-                <TabItem Header="General">
-                    <local:VSTFolderListControl/>
+                <TabItem Header="VST Paths">
+                    <local:VSTFolderListControl />
                 </TabItem>
-                <TabItem Header="Security" />
-                <TabItem Header="Details" Controls:TabControlHelper.CloseButtonEnabled="True" />
+                <TabItem Header="VST Plugins">
+                    <local:VSTPluginListControl Loaded="VSTPluginListControl_Loaded" />
+                </TabItem>
+                <TabItem Header="Preset Export">
+                    <local:VSTPresetListControl />
+                </TabItem>
+                <ListBox Height="100" Width="100" />
             </TabControl>
+
+            <StatusBar Name="StatusBar" Grid.Row="1" Background="{DynamicResource BaseBackgroundBrush}">
+                <StatusBarItem>
+                    <TextBlock Name="statusMessage" />
+                </StatusBarItem>
+            </StatusBar>
         </Grid>
     </Grid>
 </Controls:MetroWindow>

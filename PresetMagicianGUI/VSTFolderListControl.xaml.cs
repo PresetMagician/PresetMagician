@@ -14,13 +14,11 @@ namespace PresetMagicianGUI
     /// </summary>
     public partial class VSTFolderListControl : System.Windows.Controls.UserControl
     {
-        private VSTPathViewModel pathViewModel;
-
         public VSTFolderListControl()
         {
             InitializeComponent();
-            pathViewModel = new VSTPathViewModel();
-            this.DataContext = pathViewModel;
+            
+            this.DataContext = App.vstPaths;
         }
 
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -39,9 +37,9 @@ namespace PresetMagicianGUI
         {
             foreach (DirectoryInfo i in VstPathScanner.getCommonVSTPluginDirectories())
             {
-                if ((from path in this.pathViewModel.SimpleItems where path.FullName == i.FullName select path.FullName).Count() == 0)
+                if ((from path in App.vstPaths.VstPaths where path.FullName == i.FullName select path.FullName).Count() == 0)
                 {
-                    this.pathViewModel.SimpleItems.Add(i);
+                    App.vstPaths.VstPaths.Add(i);
                 }
             }
         }
@@ -62,7 +60,7 @@ namespace PresetMagicianGUI
 
             foreach (DirectoryInfo i in toRemove)
             {
-                this.pathViewModel.SimpleItems.Remove(i);
+                App.vstPaths.VstPaths.Remove(i);
             }
         }
 
@@ -76,7 +74,7 @@ namespace PresetMagicianGUI
                 if (result == DialogResult.OK)
                 {
                     DirectoryInfo path = new DirectoryInfo(dialog.SelectedPath);
-                    this.pathViewModel.SimpleItems.Add(path);
+                    App.vstPaths.VstPaths.Add(path);
                 }
             }
         }

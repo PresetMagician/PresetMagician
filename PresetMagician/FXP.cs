@@ -2,7 +2,7 @@
 using System.Xml;
 using System.IO;
 
-namespace CommonUtils
+namespace PresetMagician
 {
     /// <summary>
     /// Class for reading and writing Steinberg Preset files and Bank files (fxp and fxb files).

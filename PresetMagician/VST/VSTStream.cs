@@ -7,7 +7,7 @@ using Jacobi.Vst.Core;
 // https://github.com/microDRUM
 // I think it is created by massimo.bernava@gmail.com
 // Modified by perivar@nerseth.com to support processing audio files
-namespace CommonUtils.VSTPlugin
+namespace PresetMagician.VST
 {
 	public class VSTStreamEventArgs : EventArgs
 	{
@@ -120,7 +120,7 @@ namespace CommonUtils.VSTPlugin
 			lock (this) {
 				if (blockSize != BlockSize) UpdateBlockSize(blockSize);
 				
-				// check if we are processing a wavestream (VST) or if this is audio outputting only (VSTi)
+				// check if we are processing a wavestream (VSTPlugin) or if this is audio outputting only (VSTi)
 				if (wavStream != null) {
 					if (wavStream.Position == 0) {
 						RaisePlayingStarted();
@@ -212,7 +212,7 @@ namespace CommonUtils.VSTPlugin
 		{
 			if (!DoProcess) return 0;
 			
-			// CALL VST PROCESS HERE WITH BLOCK SIZE OF sampleCount
+			// CALL VSTPlugin PROCESS HERE WITH BLOCK SIZE OF sampleCount
 			float[] tempBuffer = ProcessReplace(sampleCount / 2);
 
 			// Copying Vst buffer inside Audio buffer, no conversion needed for WaveProvider32

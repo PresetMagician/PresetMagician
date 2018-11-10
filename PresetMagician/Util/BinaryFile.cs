@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace CommonUtils
+namespace PresetMagician
 {
     /// <summary>
     /// Class for reading and writing binary files.

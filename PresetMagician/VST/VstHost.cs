@@ -1,31 +1,31 @@
-﻿using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using NAudio.Wave;
-using System.Threading.Tasks;
-using CommonUtils.VSTPlugin;
-using Jacobi.Vst.Core;
+﻿using Jacobi.Vst.Core;
 using Jacobi.Vst.Interop.Host;
 using MidiVstTest;
-using System.Threading;
-using System.Timers;
-using NVorbis.Ogg;
+using NAudio.Wave;
+using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
-using OggVorbisEncoder;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 
-namespace TestRIFF
+namespace PresetMagician.VST
 {
-    class VstHost
+    public class NoOfflineSupportException : Exception
     {
+    }
 
+    public class EffectsNotSupportedException : Exception
+    {
+    }
+
+    public class VstHost
+    {
         private const int SampleSize = 1024;
         private bool stoppedPlaying = false;
         private bool audioBufferEmpty = false;
 
-        private VST vst = null;
+        private VSTPlugin vst = null;
         private VSTStream vstStream = null;
 
         private string _pluginPath = null;
@@ -35,212 +35,154 @@ namespace TestRIFF
         private static System.Timers.Timer aTimer;
         private static System.Timers.Timer aTimer2;
 
-        public VstHost ()
+        public VstHost()
         {
-            Process myProcess;
-            String pluginPath = @"C:\Program Files\Native Instruments\VSTPlugins 64 bit\V-Station x64.dll";
+        }
 
+        public ObservableCollection<String> EnumeratePlugins(DirectoryInfo pluginDirectory)
+        {
+            ObservableCollection<String> vstPlugins = new ObservableCollection<String>();
+            foreach (string file in Directory.EnumerateFiles(
+    pluginDirectory.FullName, "*.dll", SearchOption.AllDirectories))
+            {
+                vstPlugins.Add(file);
+            }
+
+            return vstPlugins;
+        }
+
+        public VSTPlugin LoadVST(VSTPlugin vst)
+        {
             var hcs = new HostCommandStub();
-            
+            try
+            {
+                VstPluginContext ctx = VstPluginContext.Create(vst.PluginDLLPath, hcs);
 
-            VstPluginContext ctx = VstPluginContext.Create(pluginPath, hcs);
-            vst = new VST();
+                vst.PluginContext = ctx;
+                vst.PluginContext.Set("PluginPath", vst.PluginDLLPath);
+                vst.PluginContext.Set("HostCmdStub", hcs);
 
-            vst.PluginContext = ctx;
-            vst.PluginContext.Set("PluginPath", pluginPath);
-            vst.PluginContext.Set("HostCmdStub", hcs);
+                // add custom data to the context
+                ctx.Set("PluginPath", vst.PluginDLLPath);
+                vst.LoadError = "Loaded.";
+            }
+            catch (Exception e)
+            {
+                vst.LoadError = "Could not load plugin. " + e.ToString();
+            }
+            return vst;
+        }
+
+        public void ExportPreset(VSTPreset preset)
+        {
+            Debug.WriteLine("PresetExport: new run");
+            VSTPlugin vst = preset.VstPlugin;
             vst.PluginContext.PluginCommandStub.Open();
 
-            // add custom data to the context
-            ctx.Set("PluginPath", pluginPath);
-
-            // actually open the plugin itself
-            
-
-            Console.Write("PluginId: ");
-            Console.WriteLine(ctx.PluginInfo.PluginID);
-            Console.WriteLine(ctx.PluginCommandStub.GetVendorString());
-
-            Console.Write("Programs found: ");
-            Console.WriteLine(ctx.PluginInfo.ProgramCount);
+            VstPluginContext ctx = vst.PluginContext;
 
             if ((ctx.PluginCommandStub.PluginContext.PluginInfo.Flags & VstPluginFlags.IsSynth) == 0)
             {
-                Console.WriteLine("Plugin is an effect, returning");
-                return;
+                throw new EffectsNotSupportedException();
             }
 
             if (ctx.PluginCommandStub.PluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.Offline)) == VstCanDoResult.No)
             {
-                Console.WriteLine("This plugin does not support offline processing.");
-                Console.WriteLine("Try use realtime (-play) instead!");
-                return;
+                throw new NoOfflineSupportException();
             }
 
-            for (int i = 1; i < ctx.PluginInfo.ProgramCount; i++)
+            ctx.PluginCommandStub.SetChunk(StringToByteArray(preset.PresetData), false);
+
+            vstStream = new VSTStream();
+            vstStream.DoProcess = false;
+            vstStream.pluginContext = ctx;
+            vstStream.SetWaveFormat(44100, 2);
+
+            var buffer2 = new byte[512 * 4];
+
+            Debug.WriteLine("PresetExport: Emptying buffer");
+            vstStream.DoProcess = true;
+            int qread;
+
+            // Force the buffer to be empty
+            for (int q = 0; q < 1024; q++)
             {
-                ctx.PluginCommandStub.SetProgram(i);
-                Console.Write("Processing program: ");
-                Console.Write(ctx.PluginCommandStub.GetProgramName());
-
-                //Console.WriteLine(ByteArrayToString(ctx.PluginCommandStub.GetChunk(false)));
-                //Console.WriteLine(ByteArrayToString(ctx.PluginCommandStub.GetChunk(true)));
-                //Console.WriteLine(ctx.PluginCommandStub.GetChunk(false).Length);
-
-                SHA1 sha = new SHA1CryptoServiceProvider();
-                byte[] result = sha.ComputeHash(ctx.PluginCommandStub.GetChunk(true));
-
-                Console.WriteLine(ByteArrayToString(result));
-
-
-                vstStream = new VSTStream();
-                vstStream.DoProcess = false;
-                   vstStream.pluginContext = ctx;
-                vstStream.SetWaveFormat(44100, 2);
-                
-                
-
-                var buffer2 = new byte[512 * 4];
-
-
-
-                vstStream.DoProcess = true;
-                int qread;
-                int ziV;
-                for ( ziV=0;ziV<1024;ziV++) { 
-                
                 qread = vstStream.Read(buffer2, 0, buffer2.Length);
-                }
-                vst.MIDI_NoteOn(60, 127);
-
-                
-                using (var ms = new MemoryStream())
-                {
-                    
-
-                    // keep on reading until it stops playing.
-                    while (!stoppedPlaying)
-                    {
-                      
-                        
-
-                        int read = vstStream.Read(buffer2, 0, buffer2.Length);
-                        if (read <= 0)
-                        {
-                            break;
-                        }
-                        ms.Write(buffer2, 0, read);
-
-                        if (ms.Length > 352800)
-                        {
-                            vst.MIDI_NoteOff(60, 127);
-                        }
-
-                        if (ms.Length > 352800*6)
-                        {
-                            stoppedPlaying = true;
-                        }
-                    }
-
-                    // save
-                    using (WaveStream ws = new RawSourceWaveStream(ms, vstStream.WaveFormat))
-                    {
-                        ws.Position = 0;
-                        //var stdout = new FileStream(@"C:\Users\Felicia Hummel\Documents\Native Instruments\User Content\VStation\VStation Factory\.previews\"+(99+i).ToString()+ ctx.PluginCommandStub.GetProgramName()+".nksf.ogg", FileMode.Create, FileAccess.Write);
-                       
-                        WaveFileWriter.CreateWaveFile(@"C:\Users\Felicia Hummel\Documents\Native Instruments\User Content\VStation\VStation Factory\.previews\temp.wav", ws);
-
-                        myProcess = Process.Start(@"C:\Users\Felicia Hummel\Downloads\ffmpeg.exe","-i \"C:\\Users\\Felicia Hummel\\Documents\\Native Instruments\\User Content\\VStation\\VStation Factory\\.previews\\temp.wav\" -acodec libvorbis \"C:\\Users\\Felicia Hummel\\Documents\\Native Instruments\\User Content\\VStation\\VStation Factory\\.previews\\"+(100+i).ToString()+" "+ ctx.PluginCommandStub.GetProgramName()+".nksf.ogg\" -y");
-                        myProcess.WaitForExit();
-
-                        //var stdin = new FileStream(@"C:\Users\Felicia Hummel\Documents\Native Instruments\User Content\VStation\VStation Factory\.previews\temp.wav", FileMode.Open, FileAccess.Read);
-                        /*
-                        var info = VorbisInfo.InitVariableBitRate(2, 44100, 0.1f);
-                        // set up our packet->stream encoder
-                        var serial = new Random().Next();
-                        var oggStream = new OggStream(serial);
-                        var headerBuilder = new HeaderPacketBuilder();
-
-                        var comments = new Comments();
-                        comments.AddTag("ARTIST", "TEST");
-
-                        var infoPacket = headerBuilder.BuildInfoPacket(info);
-                        var commentsPacket = headerBuilder.BuildCommentsPacket(comments);
-                        var booksPacket = headerBuilder.BuildBooksPacket(info);
-
-                        oggStream.PacketIn(infoPacket);
-                        oggStream.PacketIn(commentsPacket);
-                        oggStream.PacketIn(booksPacket);
-
-                        // Flush to force audio data onto its own page per the spec
-                        OggPage page;
-                        while (oggStream.PageOut(out page, true))
-                        {
-                            stdout.Write(page.Header, 0, page.Header.Length);
-                            stdout.Write(page.Body, 0, page.Body.Length);
-                        }
-                        var processingState = ProcessingState.Create(info);
-
-            var buffer = new float[info.Channels][];
-            buffer[0] = new float[SampleSize];
-            buffer[1] = new float[SampleSize];
-
-            var readbuffer = new byte[SampleSize*4];
-            while (!oggStream.Finished)
-            {
-                var bytes = stdin.Read(readbuffer, 0, readbuffer.Length);
-
-                if (bytes == 0)
-                {
-                    processingState.WriteEndOfStream();
-                }
-                else
-                {
-                    var samples = bytes/4;
-
-                    for (var j = 0; j < samples; j++)
-                    {
-                        // uninterleave samples
-                        buffer[0][j] = (short) ((readbuffer[j*4 + 1] << 8) | (0x00ff & readbuffer[j*4]))/32768f;
-                        buffer[1][j] = (short) ((readbuffer[j*4 + 3] << 8) | (0x00ff & readbuffer[j*4 + 2]))/32768f;
-                    }
-
-                    processingState.WriteData(buffer, samples);
-                }
-
-                OggPacket packet;
-                while (!oggStream.Finished
-                       && processingState.PacketOut(out packet))
-                {
-                    oggStream.PacketIn(packet);
-
-                    while (!oggStream.Finished
-                           && oggStream.PageOut(out page, false))
-                    {
-                        stdout.Write(page.Header, 0, page.Header.Length);
-                        stdout.Write(page.Body, 0, page.Body.Length);
-                    }
-                }
             }
+            vst.MIDI_NoteOn((byte)preset.PreviewNote.NoteNumber, 127);
 
-            stdout.Close();
-                        stdin.Close();
-
-                        
-                        */
-
+            using (var ms = new MemoryStream())
+            {
+                // keep on reading until it stops playing.
+                while (!stoppedPlaying)
+                {
+                    int read = vstStream.Read(buffer2, 0, buffer2.Length);
+                    if (read <= 0)
+                    {
+                        break;
                     }
+                    ms.Write(buffer2, 0, read);
+
+                    if (ms.Length > 352800)
+                    {
+                        vst.MIDI_NoteOff(60, 127);
+                    }
+
+                    if (ms.Length > 352800 * 6)
+                    {
+                        stoppedPlaying = true;
+                    }
+                }
+
+                Debug.WriteLine("PresetExport: Completed exporting, trying to save as wave");
+
+                // save
+                using (WaveStream ws = new RawSourceWaveStream(ms, vstStream.WaveFormat))
+                {
+                    ws.Position = 0;
+
+                    String tempFileName = Path.GetTempFileName();
+
+                    WaveFileWriter.CreateWaveFile(tempFileName, ws);
+
+                    string path = Path.Combine(Path.GetTempPath(), "ffmpeg.exe");
+                    File.WriteAllBytes(path, PresetMagician.Properties.Resources.ffmpeg);
+
+                    String userContentDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"Native Instruments\User Content");
+
+                    String bankDirectory = Path.Combine(userContentDirectory, preset.NKSFPluginName, preset.NKSFBankName);
+                    String previewDirectory = Path.Combine(bankDirectory, ".previews");
+
+                    Directory.CreateDirectory(bankDirectory);
+                    Directory.CreateDirectory(previewDirectory);
+
+                    String previewOutputFilename = Path.Combine(previewDirectory, preset.NKSFPresetName + ".nksf.ogg");
+
+                    Debug.WriteLine("Preview output filename: " + previewOutputFilename);
+                    Debug.WriteLine("Building ffmpeg process info");
+                    var process = new Process
+                    {
+                        StartInfo =
+                          {
+                              FileName = path,
+                              Arguments = "-i " + tempFileName + " -acodec libvorbis -y \""+previewOutputFilename+"\"",
+                              CreateNoWindow = true
+                          }
+                    };
+
+                    Debug.WriteLine("ffmpeg path: " + process.StartInfo.FileName);
+                    Debug.WriteLine("ffmpeg arguments: " + process.StartInfo.Arguments);
+
+                    process.Start();
+                    process.WaitForExit();
+                    Debug.WriteLine("ffmpeg done");
                 }
 
                 // reset the input wave file
                 vstStream.DoProcess = false;
                 stoppedPlaying = false;
-
             }
-
-            ctx.PluginCommandStub.Close();
         }
-
 
         /// <summary>
         ///     We cheat on the WAV header; we just bypass the header and never
@@ -281,8 +223,6 @@ namespace TestRIFF
             stoppedPlaying = true;
         }
 
-
-
         private void vst_ProcessCalled(object sender, VSTStreamEventArgs e)
         {
             if (e.MaxL == 0 && e.MaxR == 0)
@@ -303,5 +243,10 @@ namespace TestRIFF
             return hex.ToString();
         }
 
+        private byte[] StringToByteArray(string str)
+        {
+            System.Text.ASCIIEncoding enc = new System.Text.ASCIIEncoding();
+            return enc.GetBytes(str);
+        }
     }
 }

@@ -9,7 +9,7 @@ using NKSF;
 using System.Diagnostics;
 using PresetMagician.VST;
 
-namespace TestRIFF
+namespace PresetMagician
 {
     class Program
     {

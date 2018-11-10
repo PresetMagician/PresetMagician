@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using NAudio.Wave;
 using Jacobi.Vst.Interop.Host;
 
-using CommonUtils.VSTPlugin;
-using TestRIFF;
+using PresetMagician.VST;
+using PresetMagician;
 
 // Copied from the microDRUM project
 // https://github.com/microDRUM
@@ -21,7 +21,7 @@ namespace MidiVstTest
     public static class UtilityAudio
     {
         private static AudioLibrary UsedLibrary = AudioLibrary.Null;
-        private static VST GeneralVST = null;
+        private static VSTPlugin GeneralVST = null;
 
         // NAUDIO
         private static List<WaveStream> Samples = new List<WaveStream>();
@@ -176,11 +176,11 @@ namespace MidiVstTest
             if (GeneralVST != null) GeneralVST.MIDI_CC(Number, Value);
         }
 
-        public static VST LoadVST(string VSTPath, IntPtr hWnd)
+        public static VSTPlugin LoadVST(string VSTPath, IntPtr hWnd)
         {
             DisposeVST();
 
-            GeneralVST = new VST();
+            GeneralVST = new VSTPlugin(VSTPath);
 
             var hcs = new HostCommandStub();
             hcs.Directory = System.IO.Path.GetDirectoryName(VSTPath);
@@ -242,7 +242,7 @@ namespace MidiVstTest
 
         public static string GetVSTDirectory()
         {
-            Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SOFTWARE").OpenSubKey("VST");
+            Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SOFTWARE").OpenSubKey("VSTPlugin");
             if (key != null) return key.GetValue("VstPluginsPath").ToString();
             else
             {

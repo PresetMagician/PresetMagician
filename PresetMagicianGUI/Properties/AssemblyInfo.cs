@@ -8,11 +8,11 @@ using System.Windows;
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die einer Assembly zugeordnet sind.
 [assembly: AssemblyTitle("PresetMagicianGUI")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Converts VSTPlugin Presets to NKSF")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Drachenkatze")]
 [assembly: AssemblyProduct("PresetMagicianGUI")]
-[assembly: AssemblyCopyright("Copyright ©  2018")]
+[assembly: AssemblyCopyright("Copyright © 2018 Felicia Hummel")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
