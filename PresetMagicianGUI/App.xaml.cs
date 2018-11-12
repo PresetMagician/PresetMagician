@@ -8,6 +8,12 @@ using System.Windows;
 using System.Windows.Controls;
 using PresetMagicianGUI.ViewModels;
 using PresetMagician.VST;
+using Portable.Licensing;
+using Portable.Licensing.Validation;
+using System.Diagnostics;
+using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Asn1.X9;
+using System.Management;
 
 namespace PresetMagicianGUI
 {
@@ -31,6 +37,27 @@ namespace PresetMagicianGUI
 
         public void App_start(object sender, StartupEventArgs e)
         {
+            /*FileStream stream = new FileStream(@"C:\Users\Drachenkatze\Desktop\test.xml", FileMode.Open);
+            var license = License.Load(stream);
+            var validationFailures = license.Validate()
+                                .ExpirationDate()
+                                    .When(lic => lic.Type == LicenseType.Trial)
+                                .And()
+                                .Signature(PresetMagicianGUI.Properties.Resources.PublicKey)
+                                .AssertValidLicense();
+            foreach (var failure in validationFailures)
+                Debug.WriteLine(failure.GetType().Name + ": " + failure.Message + " - " + failure.HowToResolve);
+
+            Debug.WriteLine("FOO");
+
+            var signer = SignerUtilities.GetSigner(X9ObjectIdentifiers.ECDsaWithSha512.Id);
+            Debug.WriteLine(signer.ToString());
+
+            ManagementObject os = new ManagementObject("Win32_OperatingSystem=@");
+            string serial = (string)os["SerialNumber"];
+            Debug.WriteLine(serial);
+            return;*/
+
             App.vstPaths = new VSTPathViewModel();
             App.vstPlugins = new VSTPluginViewModel();
             App.vstPresets = new VSTPresetViewModel();

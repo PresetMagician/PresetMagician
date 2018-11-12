@@ -15,7 +15,7 @@ namespace Drachenkatze.PresetMagician.NKSF
         public void test()
         {
             var fileStream2 = new FileStream(@"C:\Users\Drachenkatze\Desktop\PunchBox2.nksf", FileMode.Create);
-            using (var fileStream = new FileStream(@"C:\Users\Drachenkatze\Desktop\foo.nksf", FileMode.Open))
+            using (var fileStream = new FileStream(@"C:\Users\Drachenkatze\Desktop\foo2.nksf", FileMode.Open))
             {
                 NKSFRiff n = new NKSFRiff();
                 n.Read(fileStream);
