@@ -23,6 +23,11 @@ namespace PresetMagician.VST
             get; set;
         }
 
+        public int ProgramNumber
+        {
+            get; set;
+        }
+
         public VSTPlugin VstPlugin
         {
             get; set;

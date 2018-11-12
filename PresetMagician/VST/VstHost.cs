@@ -1,5 +1,6 @@
 ﻿using Jacobi.Vst.Core;
 using Jacobi.Vst.Interop.Host;
+using Jacobi.Vst.Samples.Host;
 using MidiVstTest;
 using NAudio.Wave;
 using System;
@@ -8,6 +9,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 
 namespace PresetMagician.VST
 {
@@ -53,24 +55,63 @@ namespace PresetMagician.VST
 
         public VSTPlugin LoadVST(VSTPlugin vst)
         {
-            var hcs = new HostCommandStub();
+            HostCommandStub hostCommandStub = new HostCommandStub();
+            hostCommandStub.PluginCalled += new EventHandler<PluginCalledEventArgs>(HostCmdStub_PluginCalled);
+
             try
             {
-                VstPluginContext ctx = VstPluginContext.Create(vst.PluginDLLPath, hcs);
+                VstPluginContext ctx = VstPluginContext.Create(vst.PluginDLLPath, hostCommandStub);
 
-                vst.PluginContext = ctx;
-                vst.PluginContext.Set("PluginPath", vst.PluginDLLPath);
-                vst.PluginContext.Set("HostCmdStub", hcs);
-
-                // add custom data to the context
+                //vst.PluginContext = ctx;
                 ctx.Set("PluginPath", vst.PluginDLLPath);
+                ctx.Set("HostCmdStub", hostCommandStub);
+                ctx.PluginCommandStub.Open();
+                Thread.Sleep(2000);
+                // add custom data to the context
+                // ctx.Set("PluginPath", vst.PluginDLLPath);
+
+                /*if ((vst.PluginContext.PluginInfo.Flags & VstPluginFlags.ProgramChunks) != VstPluginFlags.ProgramChunks)
+                {
+                    Debug.WriteLine("Program Chunks not supported");
+                }*/
+
+                Debug.WriteLine("Trying to dispose plugin 2");
+                ctx.Dispose();
+
+                Debug.WriteLine("disposal ok");
+                //vst.doCache();
                 vst.LoadError = "Loaded.";
             }
             catch (Exception e)
             {
                 vst.LoadError = "Could not load plugin. " + e.ToString();
             }
+
             return vst;
+        }
+
+        private void HostCmdStub_PluginCalled(object sender, PluginCalledEventArgs e)
+        {
+            HostCommandStub hostCmdStub = (HostCommandStub)sender;
+
+            // can be null when called from inside the plugin main entry point.
+            if (hostCmdStub.PluginContext.PluginInfo != null)
+            {
+                Debug.WriteLine("Plugin " + hostCmdStub.PluginContext.PluginInfo.PluginID + " called:" + e.Message);
+            }
+            else
+            {
+                Debug.WriteLine("The loading Plugin called:" + e.Message);
+            }
+        }
+
+        public void UnloadVST(VSTPlugin vst)
+        {
+            //vst.PluginContext.PluginCommandStub.
+            //vst.PluginContext.PluginCommandStub.StopProcess();
+            //vst.PluginContext.PluginCommandStub.Close();
+            Debug.WriteLine("Trying to dispose plugin");
+            vst.PluginContext.Dispose();
         }
 
         public void ExportPreset(VSTPreset preset)
@@ -93,6 +134,15 @@ namespace PresetMagician.VST
 
             ctx.PluginCommandStub.SetChunk(StringToByteArray(preset.PresetData), false);
 
+            SHA1 sha = new SHA1CryptoServiceProvider();
+            byte[] result = sha.ComputeHash(ctx.PluginCommandStub.GetChunk(false));
+
+            Debug.WriteLine("A: " + ByteArrayToString(result));
+            result = sha.ComputeHash(StringToByteArray(preset.PresetData.ToString()));
+
+            Debug.WriteLine("B: " + ByteArrayToString(result));
+
+            ctx.PluginCommandStub.SetProgram(preset.ProgramNumber);
             vstStream = new VSTStream();
             vstStream.DoProcess = false;
             vstStream.pluginContext = ctx;
@@ -166,8 +216,9 @@ namespace PresetMagician.VST
                           {
                               FileName = path,
                               Arguments = "-i " + tempFileName + " -acodec libvorbis -y \""+previewOutputFilename+"\"",
-                              CreateNoWindow = true
-                          }
+                              CreateNoWindow = true,
+                              WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden
+                }
                     };
 
                     Debug.WriteLine("ffmpeg path: " + process.StartInfo.FileName);
@@ -175,10 +226,11 @@ namespace PresetMagician.VST
 
                     process.Start();
                     process.WaitForExit();
+                    process.Close();
+
                     Debug.WriteLine("ffmpeg done");
                 }
 
-                // reset the input wave file
                 vstStream.DoProcess = false;
                 stoppedPlaying = false;
             }

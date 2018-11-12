@@ -14,10 +14,8 @@ namespace PresetMagician.VST
     /// <summary>
     /// Contains a VSTPlugin Plugin and utility functions like MIDI calling etc.
     /// </summary>
-    public class VSTPlugin : INotifyPropertyChanged
+    public class VSTPlugin
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public VstPluginContext PluginContext = null;
 
         public event EventHandler<VSTStreamEventArgs> StreamCall = null;
@@ -326,34 +324,31 @@ namespace PresetMagician.VST
             if (StreamCall != null) StreamCall(sender, e);
         }
 
+        public void doCache()
+        {
+            this.PluginName = PluginContext.PluginCommandStub.GetEffectName();
+            this.NumPresets = PluginContext.PluginInfo.ProgramCount;
+
+            if (PluginContext.PluginInfo.Flags.HasFlag(VstPluginFlags.IsSynth))
+            {
+                this.PluginType = "Instrument";
+            }
+            else
+            {
+                this.PluginType = "Effect";
+            }
+
+            this.PluginVendor = PluginContext.PluginCommandStub.GetVendorString();
+        }
+
         public String PluginName
         {
-            get
-            {
-                if (PluginContext != null)
-                {
-                    return PluginContext.PluginCommandStub.GetEffectName();
-                }
-                else
-                {
-                    return "?";
-                }
-            }
+            get; set;
         }
 
         public int NumPresets
         {
-            get
-            {
-                if (PluginContext != null)
-                {
-                    return PluginContext.PluginInfo.ProgramCount;
-                }
-                else
-                {
-                    return 0;
-                }
-            }
+            get; set;
         }
 
         public String PluginDLLPath { get; set; }
@@ -364,11 +359,13 @@ namespace PresetMagician.VST
             VSTPreset vstPreset;
 
             this.PluginContext.PluginCommandStub.SetProgram(index);
+
             vstPreset = new VSTPreset();
             vstPreset.VstPlugin = this;
             vstPreset.PresetName = this.PluginContext.PluginCommandStub.GetProgramName();
-            vstPreset.PresetData = VstHost.ByteArrayToString(this.PluginContext.PluginCommandStub.GetChunk(true));
+            vstPreset.PresetData = VstHost.ByteArrayToString(this.PluginContext.PluginCommandStub.GetChunk(false));
             vstPreset.PreviewNote = new CannedBytes.Midi.Message.MidiNoteName("C3");
+            vstPreset.ProgramNumber = this.PluginContext.PluginCommandStub.GetProgram();
             vstPreset.BankName = PluginName + " Factory";
             vstPreset.Export = true;
             return vstPreset;
@@ -391,39 +388,12 @@ namespace PresetMagician.VST
 
         public String PluginType
         {
-            get
-            {
-                if (PluginContext != null)
-                {
-                    if (PluginContext.PluginInfo.Flags.HasFlag(VstPluginFlags.IsSynth))
-                    {
-                        return "Instrument";
-                    }
-                    else
-                    {
-                        return "Effect";
-                    }
-                }
-                else
-                {
-                    return "?";
-                }
-            }
+            get; set;
         }
 
         public String PluginVendor
         {
-            get
-            {
-                if (PluginContext != null)
-                {
-                    return PluginContext.PluginCommandStub.GetVendorString();
-                }
-                else
-                {
-                    return "?";
-                }
-            }
+            get; set;
         }
     }
 }

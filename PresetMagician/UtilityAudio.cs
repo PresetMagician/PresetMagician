@@ -5,6 +5,7 @@ using Jacobi.Vst.Interop.Host;
 
 using PresetMagician.VST;
 using PresetMagician;
+using Jacobi.Vst.Samples.Host;
 
 // Copied from the microDRUM project
 // https://github.com/microDRUM
@@ -25,6 +26,7 @@ namespace MidiVstTest
 
         // NAUDIO
         private static List<WaveStream> Samples = new List<WaveStream>();
+
         private static IWavePlayer playbackDevice = null;
         private static RecordableMixerStream32 Mixer32 = null;
 
@@ -43,7 +45,7 @@ namespace MidiVstTest
             if (UsedLibrary == AudioLibrary.NAudio)
             {
                 // NAUDIO
-                Mixer32 = new RecordableMixerStream32(44100,2);
+                Mixer32 = new RecordableMixerStream32(44100, 2);
                 Mixer32.AutoStop = false;
 
                 // try asio
@@ -123,7 +125,6 @@ namespace MidiVstTest
                 //MessageBox.Show(ex.Message);
             }
             return 0;
-
         }
 
         public static void PlaySample(int ID, byte Volume)
@@ -183,7 +184,7 @@ namespace MidiVstTest
             GeneralVST = new VSTPlugin(VSTPath);
 
             var hcs = new HostCommandStub();
-            hcs.Directory = System.IO.Path.GetDirectoryName(VSTPath);
+            //hcs.Directory = System.IO.Path.GetDirectoryName(VSTPath);
 
             try
             {
@@ -209,8 +210,6 @@ namespace MidiVstTest
             return null;
         }
 
-      
-
         public static void PlayMP3()
         {
             if (mp3Channel == null || Mixer32.ContainsInputStream(mp3Channel)) return;
@@ -218,22 +217,26 @@ namespace MidiVstTest
             Mixer32.AddInputStream(mp3Channel);
             mp3Channel.Position = mp3Position;
         }
+
         public static void PauseMP3()
         {
             mp3Position = mp3Channel.Position;
             Mixer32.RemoveInputStream(mp3Channel);
         }
+
         public static void StopMp3()
         {
             mp3Position = 0;
             mp3Channel.CurrentTime = TimeSpan.Zero;
             Mixer32.RemoveInputStream(mp3Channel);
         }
+
         public static TimeSpan GetMp3TotalTime()
         {
             if (mp3Channel != null) return mp3Channel.TotalTime;
             return TimeSpan.Zero;
         }
+
         public static TimeSpan GetMp3CurrentTime()
         {
             if (mp3Channel != null) return mp3Channel.CurrentTime;
@@ -262,7 +265,6 @@ namespace MidiVstTest
             if (GeneralVST != null) GeneralVST.Dispose();
             GeneralVST = null;
         }
-
 
         public static bool IsMP3Played()
         {

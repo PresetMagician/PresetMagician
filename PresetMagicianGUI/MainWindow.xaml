@@ -20,16 +20,13 @@
     <Controls:MetroWindow.Resources>
         <System:String x:Key="SettingsGroup">Settings</System:String>
     </Controls:MetroWindow.Resources>
-    <Grid Background="{DynamicResource BaseBackgroundBrush}">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Fluent:Ribbon Grid.Row="0" Margin="0,0,-0.4,0" VerticalAlignment="Stretch">
+        <Fluent:Ribbon Grid.Row="0" VerticalAlignment="Stretch">
             <!--Backstage-->
-            <Fluent:Ribbon.Menu>
-                <Fluent:Backstage />
-            </Fluent:Ribbon.Menu>
 
             <!--Tabs-->
             <Fluent:RibbonTabItem Header="Home">
@@ -40,12 +37,12 @@
             </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
 
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" Margin="0,5,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="24" />
             </Grid.RowDefinitions>
-            <TabControl Name="MainTabs" Controls:ControlsHelper.HeaderFontSize="12" BorderBrush="White" Controls:TabControlHelper.Underlined="TabItems" Background="White" Controls:TabControlHelper.UnderlineMouseOverBrush="{DynamicResource {x:Static SystemColors.InfoBrushKey}}" Foreground="White" SelectedIndex="1">
+            <TabControl Name="MainTabs" Controls:ControlsHelper.HeaderFontSize="12" Controls:TabControlHelper.Underlined="TabItems" Controls:TabControlHelper.UnderlineMouseOverBrush="{DynamicResource {x:Static SystemColors.InfoBrushKey}}" SelectedIndex="1">
 
                 <TabItem Header="VST Paths">
                     <local:VSTFolderListControl />
@@ -56,7 +53,6 @@
                 <TabItem Header="Preset Export">
                     <local:VSTPresetListControl />
                 </TabItem>
-                <ListBox Height="100" Width="100" />
             </TabControl>
 
             <StatusBar Name="StatusBar" Grid.Row="1" Background="{DynamicResource BaseBackgroundBrush}">

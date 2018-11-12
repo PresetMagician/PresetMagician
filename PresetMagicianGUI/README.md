@@ -23,12 +23,17 @@ specified VST plugins. It also automatically creates audio previews if the VST p
 
 ## Known Issues
 
+* Loading preset from chunk doesn't seem to work (BLOCKER)
+* Huge memory usage (BLOCKER)
+* 
+
 * Preset names are sorted alphabetically, not naturally. This means that, for example, the order would be **Bass1, Bass10, Bass2** instead of **Bass1, Bass2, Bass10**
 * Plugins with no offline rendering are not supported; I think only a few plugins, if any, have this problem
 * NI doesn't allow certain characters for their user content directories; right now we strip everything except for A-Z and whitespaces. Please let me know if it gives any problems.
 * It is currently not possible to cancel one of these actions:
   * Reading presets (could take a while if you have a plugin with a huge number of presets)
   * Creating previews
+
 * The UI looks like crap. This is because we're using alpha components, and there are quite some bugs so I didn't spent any effort for styling so far.
 * Yes, I love purple
 
@@ -46,3 +51,4 @@ specified VST plugins. It also automatically creates audio previews if the VST p
 - Allow mass selection/deselection of the export flag
 - Add button to remove all unusable plugins
 - Research if NKSF audio previews are allowed for effects
+- Different bank support (MIDI/FXP?)

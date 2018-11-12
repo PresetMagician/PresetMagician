@@ -53,14 +53,9 @@ namespace PresetMagicianGUI
                 App.vstPlugins.VstPlugins.Add(new VSTPlugin(i));
             }
 
-            vstPluginScanner.DoWork += new DoWorkEventHandler(this.vstScanner_Worker);
-
-            vstPluginScanner.RunWorkerCompleted += new RunWorkerCompletedEventHandler(
-                vstScanner_Completed);
-
-            vstPluginScanner.ProgressChanged +=
-                new ProgressChangedEventHandler(
-            vstScanner_ProgressChanged);
+            vstPluginScanner.DoWork += vstScanner_Worker;
+            vstPluginScanner.RunWorkerCompleted += vstScanner_Completed;
+            vstPluginScanner.ProgressChanged += vstScanner_ProgressChanged;
 
             ObservableCollection<VSTPlugin> newList = new ObservableCollection<VSTPlugin>();
 
@@ -69,7 +64,15 @@ namespace PresetMagicianGUI
                 newList.Add(vst);
             };
 
-            vstPluginScanner.RunWorkerAsync(argument: newList);
+            //vstPluginScanner.RunWorkerAsync(argument: newList);
+
+            foreach (VSTPlugin vst in newList)
+            {
+                //worker.ReportProgress((int)((100f * vsts.IndexOf(vst)) / vsts.Count), vst.PluginDLLPath);
+
+                App.vstHost.LoadVST(vst);
+                App.vstHost.UnloadVST(vst);
+            }
         }
 
         private void vstScanner_Worker(object sender, DoWorkEventArgs e)
@@ -83,6 +86,7 @@ namespace PresetMagicianGUI
                 worker.ReportProgress((int)((100f * vsts.IndexOf(vst)) / vsts.Count), vst.PluginDLLPath);
 
                 VSTHost.LoadVST(vst);
+                VSTHost.UnloadVST(vst);
             }
         }
 
@@ -90,6 +94,11 @@ namespace PresetMagicianGUI
             object sender, RunWorkerCompletedEventArgs e)
         {
             App.setStatusBar("VSTPlugin scan completed.");
+
+            vstPluginScanner.DoWork -= vstScanner_Worker;
+            vstPluginScanner.RunWorkerCompleted -= vstScanner_Completed;
+            vstPluginScanner.ProgressChanged -= vstScanner_ProgressChanged;
+
             VSTPluginList.IsEnabled = true;
         }
 
@@ -129,14 +138,11 @@ namespace PresetMagicianGUI
 
             App.setStatusBar("Preparing presets...");
 
-            vstPresetScanner.DoWork += new DoWorkEventHandler(this.presetScanner_Worker);
+            vstPresetScanner.DoWork += this.presetScanner_Worker;
 
-            vstPresetScanner.RunWorkerCompleted += new RunWorkerCompletedEventHandler(
-                presetScanner_Completed);
+            vstPresetScanner.RunWorkerCompleted += presetScanner_Completed;
 
-            vstPresetScanner.ProgressChanged +=
-                new ProgressChangedEventHandler(
-            presetScanner_ProgressChanged);
+            vstPresetScanner.ProgressChanged += presetScanner_ProgressChanged;
 
             ObservableCollection<VSTPlugin> vsts = new ObservableCollection<VSTPlugin>();
 
@@ -184,6 +190,11 @@ namespace PresetMagicianGUI
                 App.vstPresets.VstPresets.Add(p);
             }
 
+            vstPresetScanner.DoWork -= this.presetScanner_Worker;
+
+            vstPresetScanner.RunWorkerCompleted -= presetScanner_Completed;
+
+            vstPresetScanner.ProgressChanged -= presetScanner_ProgressChanged;
             App.setStatusBar("Presets prepared.");
         }
 
