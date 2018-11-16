@@ -281,10 +281,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Portable.Licensing\src\Portable.Licensing\Portable.Licensing.csproj">
-      <Project>{6d2b800c-c252-4a33-ba05-904ae5b79417}</Project>
-      <Name>Portable.Licensing</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Drachenkatze.PresetMagician.NKSF\Drachenkatze.PresetMagician.NKSF.csproj">
       <Project>{2126df46-7f24-4c2c-b236-514a70b7a3a5}</Project>
       <Name>Drachenkatze.PresetMagician.NKSF</Name>
@@ -292,6 +288,10 @@
     <ProjectReference Include="..\Drachenkatze.PresetMagician.VSTHost\Drachenkatze.PresetMagician.VSTHost.csproj">
       <Project>{bb9702b3-2826-411a-b7c5-ef64348a7a5c}</Project>
       <Name>Drachenkatze.PresetMagician.VSTHost</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Portable.Licensing\src\Portable.Licensing\Portable.Licensing.csproj">
+      <Project>{6d2b800c-c252-4a33-ba05-904ae5b79417}</Project>
+      <Name>Portable.Licensing</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
