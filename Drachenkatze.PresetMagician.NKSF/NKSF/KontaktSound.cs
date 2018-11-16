@@ -1,4 +1,8 @@
-﻿using System.IO;
+﻿using GSF;
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Text;
 
 namespace Drachenkatze.PresetMagician.NKSF.NKSF
 {
@@ -20,12 +24,35 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
             pluginChunk.Read(source);
         }
 
+        public override void WriteChunk()
+        {
+            summaryInformation.WriteChunk();
+            controllerAssignments.WriteChunk();
+            pluginId.WriteChunk();
+            pluginChunk.WriteChunk();
+
+            MemoryStream memoryStream = new MemoryStream();
+            summaryInformation.getData().WriteTo(memoryStream);
+            controllerAssignments.getData().WriteTo(memoryStream);
+            pluginId.getData().WriteTo(memoryStream);
+            pluginChunk.getData().WriteTo(memoryStream);
+
+            Chunk = memoryStream.ToArray();
+
+
+        }
+
         public override void Write(Stream target)
         {
-            summaryInformation.Write(target);
-            controllerAssignments.Write(target);
-            pluginId.Write(target);
-            pluginChunk.Write(target);
+            byte[] buffer = new byte[1];
+            target.Write(Chunk, 0, Chunk.Length);
+            buffer[0] = 0x0;
+
+            if (ChunkSize % 2 != 0)
+            {
+                target.Write(buffer, 0, 1);
+            }
+
         }
 
         public SummaryInformationChunk summaryInformation { get; set; }

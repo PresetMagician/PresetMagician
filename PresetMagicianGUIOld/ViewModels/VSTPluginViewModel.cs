@@ -1,7 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Drachenkatze.PresetMagician.VSTHost.VST;
+using JetBrains.Annotations;
 
 namespace Drachenkatze.PresetMagician.GUI.ViewModels
 {
@@ -29,7 +31,7 @@ namespace Drachenkatze.PresetMagician.GUI.ViewModels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        //[NotifyPropertyChangedInvocator]
+        [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

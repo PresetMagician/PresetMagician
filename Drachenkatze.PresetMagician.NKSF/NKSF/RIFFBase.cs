@@ -10,9 +10,16 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
     {
         private const int m_length = 8;
 
+        public RIFFBase ()
+        {
+            Chunk = new byte[0];
+        }
+
         abstract public void Read(Stream source);
 
         abstract public void Write(Stream target);
+
+        abstract public void WriteChunk();
 
         public virtual void ReadData(Stream source)
         {
@@ -64,6 +71,27 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
             {
                 throw new ArgumentException("Problem in file detected: Expected " + ExpectedTypeId + " got " + TypeID);
             }
+        }
+
+        public MemoryStream getData ()
+        {
+            MemoryStream target = new MemoryStream();
+
+            byte[] buffer = new byte[8];
+
+            Buffer.BlockCopy(Encoding.ASCII.GetBytes(TypeID), 0, buffer, 0, 4);
+            Buffer.BlockCopy(LittleEndian.GetBytes(ChunkSize), 0, buffer, 4, 4);
+            target.Write(buffer, 0, 8);
+
+            target.Write(Chunk, 0, Chunk.Length);
+            buffer[0] = 0x0;
+
+            if (ChunkSize % 2 != 0)
+            {
+                target.Write(buffer, 0, 1);
+            }
+
+            return target;
         }
 
         public byte[] Chunk { get; set; }

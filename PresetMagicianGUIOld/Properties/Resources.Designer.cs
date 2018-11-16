@@ -61,7 +61,7 @@ namespace Drachenkatze.PresetMagician.GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to +s7tBVeKXfLLrozWdB/uxH1+LuuJ6dwKLJHaK7wVQBZbuKoqBtRUIeSv.
+        ///   Looks up a localized string similar to MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAEv+X4rWDFuNQu4zUGu9B1gP8ZQRzxvxE76Est3LAI0iQ1OJVgFjI+s7tBVeKXfLLrozWdB/uxH1+LuuJ6dwKLJHaK7wVQBZbuKoqBtRUIeSv+MPz8dSvrPv6oytbdmgPM.
         /// </summary>
         internal static string PublicKey {
             get {

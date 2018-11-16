@@ -8,8 +8,10 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using Drachenkatze.PresetMagician.GUI.GUI;
 using Drachenkatze.PresetMagician.GUI.Properties;
 using Drachenkatze.PresetMagician.GUI.ViewModels;
+using Drachenkatze.PresetMagician.NKSF.NKSF;
 using Drachenkatze.PresetMagician.VSTHost.VST;
 using Newtonsoft.Json;
 using Platform.Text;
@@ -71,9 +73,7 @@ namespace Drachenkatze.PresetMagician.GUI
         }
     }
 
-    /// <summary>
-    /// Interaktionslogik für "App.xaml"
-    /// </summary>
+
     public partial class App : Application
     {
         public void App_start(object sender, StartupEventArgs e)
@@ -84,6 +84,56 @@ namespace Drachenkatze.PresetMagician.GUI
             App.vstHost = new VstHost();
 
             readVSTPathsFromConfig();
+
+            try
+            {
+                var validationFailures = CheckLicense();
+
+                if (!validationFailures.Any())
+                {
+                    var mw = new MainWindow();
+                    mw.Show();
+                }
+            } catch (FileNotFoundException)
+            {
+                var regWindow = new RegistrationWindow();
+                regWindow.Show();
+            }
+        }
+
+        public static string getLicenseFile ()
+        {
+            var appDataDir = getAppDataDir();
+            return Path.Combine(appDataDir.FullName, "license.lic");
+        }
+
+        public static License license;
+
+        public static IEnumerable<IValidationFailure> CheckLicense ()
+        {
+            var licenseFile = getLicenseFile();
+
+            FileStream stream = new FileStream(licenseFile, FileMode.Open);
+            license = License.Load(stream);
+
+            var validationFailures = license.Validate()
+                                .ExpirationDate()
+                                    .When(lic => lic.Type == LicenseType.Trial)
+                                .And()
+                                .Signature(Drachenkatze.PresetMagician.GUI.Properties.Resources.PublicKey)
+                                .AssertValidLicense();
+
+            return validationFailures;
+        }
+
+        public static DirectoryInfo getAppDataDir ()
+        {
+            DirectoryInfo appData = new DirectoryInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Drachenkatze\PresetMagician"));
+            if (!appData.Exists)
+            {
+                appData.Create();
+            }
+            return appData;
         }
 
         private void readVSTPathsFromConfig()
@@ -117,6 +167,14 @@ namespace Drachenkatze.PresetMagician.GUI
             set.Save();
         }
 
+        public static String getSystemInfo ()
+        {
+            SystemCodeInfo systemInfo = new SystemCodeInfo();
+
+            string output = JsonConvert.SerializeObject(systemInfo);
+            return TextConversion.ToBase64String(Encoding.ASCII.GetBytes(output));
+        }
+
         public void App_start2(object sender, StartupEventArgs e)
         {
             FileStream stream = new FileStream(@"C:\Users\Drachenkatze\Desktop\test.xml", FileMode.Open);
@@ -125,7 +183,7 @@ namespace Drachenkatze.PresetMagician.GUI
                                 .ExpirationDate()
                                     .When(lic => lic.Type == LicenseType.Trial)
                                 .And()
-                                .Signature(GUI.Properties.Resources.PublicKey)
+                                .Signature(Drachenkatze.PresetMagician.GUI.Properties.Resources.PublicKey)
                                 .AssertValidLicense();
 
             foreach (var failure in validationFailures)
@@ -139,10 +197,7 @@ namespace Drachenkatze.PresetMagician.GUI
             }
             stream.Close();
 
-            SystemCodeInfo systemInfo = new SystemCodeInfo();
-
-            string output = JsonConvert.SerializeObject(systemInfo);
-            Debug.WriteLine(TextConversion.ToBase64String(Encoding.ASCII.GetBytes(output)));
+            
 
             /*var signer = SignerUtilities.GetSigner(X9ObjectIdentifiers.ECDsaWithSha512.Id);
             Debug.WriteLine(signer.ToString());

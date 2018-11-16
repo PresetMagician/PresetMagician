@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using GSF;
@@ -12,6 +13,9 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
         public NKSFRiff()
         {
             kontaktSound = new KontaktSound();
+            TypeID = "RIFF";
+            Chunk = Encoding.ASCII.GetBytes(TypeID);
+            m_FileFormat = "NIKS";
         }
 
         public override void Read(Stream source)
@@ -27,11 +31,16 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
 
             TypeID = Encoding.ASCII.GetString(buffer, 0, 4);
             ChunkSize = LittleEndian.ToInt32(buffer, 4);
-
+            Debug.WriteLine("Chunk size is " + ChunkSize.ToString());
             Chunk = new byte[4];
             Chunk = buffer.BlockCopy(8, 4);
 
             kontaktSound.Read(source);
+        }
+
+        public override void WriteChunk()
+        {
+            
         }
 
         public override void Write(Stream target)
@@ -42,11 +51,15 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
 
         public override void WriteData(Stream target)
         {
+            Debug.WriteLine("Writing NKSFRIFF");
             byte[] buffer = new byte[m_headerLength];
 
             Buffer.BlockCopy(Encoding.ASCII.GetBytes(TypeID), 0, buffer, 0, 4);
-            Buffer.BlockCopy(LittleEndian.GetBytes(ChunkSize), 0, buffer, 4, 4);
-            Buffer.BlockCopy(Chunk, 0, buffer, 8, 4);
+            
+            kontaktSound.WriteChunk();
+
+            Buffer.BlockCopy(LittleEndian.GetBytes(kontaktSound.Chunk.Length+4), 0, buffer, 4, 4);
+            Buffer.BlockCopy(Encoding.ASCII.GetBytes(FileFormat), 0, buffer, 8, 4);
             target.Write(buffer, 0, 12);
         }
 

@@ -1,19 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using Drachenkatze.PresetMagician.Controls.Controls.VSTHost;
 using Jacobi.Vst.Core;
 using Jacobi.Vst.Interop.Host;
+using JetBrains.Annotations;
 
 namespace Drachenkatze.PresetMagician.VSTHost.VST
 {
     /// <summary>
     /// Contains a VSTPlugin Plugin and utility functions like MIDI calling etc.
     /// </summary>
-    public class VSTPlugin
+    public class VSTPlugin : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public VstPluginContext PluginContext = null;
 
         public event EventHandler<VSTStreamEventArgs> StreamCall = null;
+
+        public Boolean IsOpened;
 
         public VSTPlugin(String dllPath)
         {
@@ -358,7 +365,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             vstPreset = new VSTPreset();
             vstPreset.VstPlugin = this;
             vstPreset.PresetName = this.PluginContext.PluginCommandStub.GetProgramName();
-            vstPreset.PresetData = VstHost.ByteArrayToString(this.PluginContext.PluginCommandStub.GetChunk(false));
+            vstPreset.PresetData = this.PluginContext.PluginCommandStub.GetChunk(true);
             vstPreset.PreviewNote = new CannedBytes.Midi.Message.MidiNoteName("C3");
             vstPreset.ProgramNumber = this.PluginContext.PluginCommandStub.GetProgram();
             vstPreset.BankName = PluginName + " Factory";
@@ -389,6 +396,12 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
         public String PluginVendor
         {
             get; set;
+        }
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

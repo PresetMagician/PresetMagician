@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
       xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
 
              mc:Ignorable="d"
@@ -22,9 +21,9 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
-            <RowDefinition Height="48" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <DataGrid x:Name="VSTPresetList" ItemsSource="{Binding Source={StaticResource src2}}" AutoGenerateColumns="False" GridLinesVisibility="All" ScrollViewer.CanContentScroll="True" SelectionChanged="VSTPresetList_SelectionChanged" CanUserAddRows="False" CellEditEnding="VSTPresetList_CellEditEnding">
+        <DataGrid x:Name="VSTPresetList" ItemsSource="{Binding Source={StaticResource src2},NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" GridLinesVisibility="All" ScrollViewer.CanContentScroll="True" SelectionChanged="VSTPresetList_SelectionChanged" CanUserAddRows="False" CellEditEnding="VSTPresetList_CellEditEnding">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Preset" Width="150"
                                     Binding="{Binding PresetName}" IsReadOnly="True" SortDirection="Ascending" />
@@ -47,43 +46,31 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <ToolBar Grid.Row="1" VerticalAlignment="Bottom" Grid.ColumnSpan="2" Margin="0,0,0,-0.4">
-            <Button x:Name="ExportButton" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="12,0,0,0" IsEnabled="True" Click="ExportButton_Click">
+        <DockPanel Grid.Row="1" VerticalAlignment="Bottom">
+            <Button x:Name="ExportButton" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="6,2,2,2" IsEnabled="True" Click="ExportButton_Click">
                 <StackPanel Orientation="Horizontal">
-                    <iconPacks:PackIconMaterial Kind="Export"
-                                    Margin="4 4 2 4"
-                                    Width="24"
-                                    Height="24"
-                                    VerticalAlignment="Center" />
+                    
                     <TextBlock Text="Export Presets"
                     Margin="2 4 4 4"
                     VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
-            <Button x:Name="MarkSelectedForExport" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="12,0,0,0" IsEnabled="False" Click="MarkSelectedForExport_Click">
+            <Button x:Name="MarkSelectedForExport" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="6,2,2,2" IsEnabled="False" Click="MarkSelectedForExport_Click">
                 <StackPanel Orientation="Horizontal">
-                    <iconPacks:PackIconMaterial Kind="PlusBox"
-                                    Margin="4 4 2 4"
-                                    Width="24"
-                                    Height="24"
-                                    VerticalAlignment="Center" />
+                    
                     <TextBlock Text="Mark Selected for Export"
                     Margin="2 4 4 4"
                     VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
-            <Button x:Name="UnmarkSelectedForExport" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="12,0,0,0" IsEnabled="False" Click="UnmarkSelectedForExport_Click">
+            <Button x:Name="UnmarkSelectedForExport" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="6,2,2,2" IsEnabled="False" Click="UnmarkSelectedForExport_Click">
                 <StackPanel Orientation="Horizontal">
-                    <iconPacks:PackIconMaterial Kind="MinusBox"
-                                    Margin="4 4 2 4"
-                                    Width="24"
-                                    Height="24"
-                                    VerticalAlignment="Center" />
+                    
                     <TextBlock Text="Unmark Selected for Export"
                     Margin="2 4 4 4"
                     VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
-        </ToolBar>
+        </DockPanel>
     </Grid>
 </UserControl>

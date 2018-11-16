@@ -43,7 +43,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             get; set;
         }
 
-        public String PresetData
+        public byte[] PresetData
         {
             get; set;
         }
