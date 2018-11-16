@@ -10,6 +10,8 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
 
         public PluginIdChunk()
         {
+            TypeID = RiffTypeID;
+            Version = 1;
             pluginId = new PluginId();
         }
 
@@ -25,11 +27,17 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
 
         public override void DeserializeMessagePack(byte[] buffer)
         {
-            Debug.WriteLine(MessagePackSerializer.ToJson(buffer));
-
             pluginId = MessagePackSerializer.Deserialize<PluginId>(buffer);
 
             Debug.WriteLine(pluginId.VSTMagic);
+        }
+
+        public override byte[] SerializeMessagePack()
+        {
+            byte[] b = MessagePackSerializer.Serialize(pluginId);
+
+            Debug.WriteLine(MessagePackSerializer.ToJson(b));
+            return b;
         }
 
         public PluginId pluginId;

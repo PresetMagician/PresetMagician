@@ -29,6 +29,7 @@ namespace Drachenkatze.PresetMagician.GUI.Controls
 
         private void ExportButton_Click(object sender, RoutedEventArgs e)
         {
+            ExportButton.IsEnabled = false;
             Debug.WriteLine("ExportButton.click");
             vstPresetExporter.DoWork += new DoWorkEventHandler(this.presetExporter_Worker);
 
@@ -117,7 +118,6 @@ namespace Drachenkatze.PresetMagician.GUI.Controls
 
         private void presetExporter_Worker(object sender, DoWorkEventArgs e)
         {
-            Debug.WriteLine("BLA");
             var vstHost = new VstHost();
             VSTPlugin vstPlugin;
             BackgroundWorker worker = sender as BackgroundWorker;
@@ -127,14 +127,14 @@ namespace Drachenkatze.PresetMagician.GUI.Controls
 
             foreach (VSTPreset preset in presets)
             {
-                Debug.WriteLine("FOO");
                 currentPreset++;
 
                 // Because we run in another thread, force-reload the plugin here
                 vstPlugin = new VSTPlugin(preset.VstPlugin.PluginDLLPath);
                 vstHost.LoadVST(vstPlugin);
                 preset.VstPlugin = vstPlugin;
-                vstHost.ExportPreset(preset);
+                vstHost.ExportPresetAudioPreview(preset);
+                vstHost.ExportPresetNKSF(preset);
                 worker.ReportProgress((int)((100f * currentPreset) / presets.Count), preset.VstPlugin.PluginName + " " + preset.PresetName);
             }
         }
@@ -143,6 +143,7 @@ namespace Drachenkatze.PresetMagician.GUI.Controls
             object sender, RunWorkerCompletedEventArgs e)
         {
             App.setStatusBar("Presets exported.");
+            ExportButton.IsEnabled = true;
         }
 
         private void presetExporter_ProgressChanged(object sender,

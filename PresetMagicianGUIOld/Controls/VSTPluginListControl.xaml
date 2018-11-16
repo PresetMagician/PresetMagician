@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
       xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -21,9 +20,9 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
-            <RowDefinition Height="48" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <DataGrid x:Name="VSTPluginList" ItemsSource="{Binding Source={StaticResource src}}" AutoGenerateColumns="False" GridLinesVisibility="All" ScrollViewer.CanContentScroll="True" SelectionChanged="VSTPluginList_SelectionChanged">
+        <DataGrid x:Name="VSTPluginList" ItemsSource="{Binding VstPlugins,NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" GridLinesVisibility="All" ScrollViewer.CanContentScroll="True" SelectionChanged="VSTPluginList_SelectionChanged">
             <DataGrid.Columns>
 
                 <DataGridTextColumn Header="Name" Width="150"
@@ -41,32 +40,24 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <ToolBar Grid.Row="1" VerticalAlignment="Bottom" Grid.ColumnSpan="2" Margin="0,0,0,-0.4">
+        <DockPanel Grid.Row="1" VerticalAlignment="Bottom" Grid.ColumnSpan="2">
 
-            <Button x:Name="ScanPluginButton" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="12,0,0,0" IsEnabled="True" Click="ScanPluginButton_Click">
+            <Button x:Name="ScanPluginButton" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="6,2,2,2" IsEnabled="True" Click="ScanPluginButton_Click">
                 <StackPanel Orientation="Horizontal">
-                    <iconPacks:PackIconMaterial Kind="SearchWeb"
-                                    Margin="4 4 2 4"
-                                    Width="24"
-                                    Height="24"
-                                    VerticalAlignment="Center" IsEnabled="False" />
+                   
                     <TextBlock Text="Scan Plugins"
                     Margin="2 4 4 4"
                     VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
-            <Button x:Name="CreatePresetsButton" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="12,0,0,0" IsEnabled="False" Click="ExportButton_Click">
+            <Button x:Name="CreatePresetsButton" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="6,2,2,2" IsEnabled="False" Click="ExportButton_Click">
                 <StackPanel Orientation="Horizontal">
-                    <iconPacks:PackIconMaterial Kind="Export"
-                                    Margin="4 4 2 4"
-                                    Width="24"
-                                    Height="24"
-                                    VerticalAlignment="Center" />
+                    
                     <TextBlock Text="Scan Presets"
                     Margin="2 4 4 4"
                     VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
-        </ToolBar>
+        </DockPanel>
     </Grid>
 </UserControl>

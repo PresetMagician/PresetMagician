@@ -28,11 +28,18 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
         }
 
         public abstract void DeserializeMessagePack(byte[] buffer);
+        public abstract byte[] SerializeMessagePack();
 
-        public override void WriteData(Stream target)
+        public override void WriteChunk()
         {
-            // Process mesgpack here
-            base.WriteData(target);
+            MemoryStream ms = new MemoryStream();
+            byte[] tmpChunk = SerializeMessagePack();
+
+            Chunk = new byte[tmpChunk.Length + 4];
+            ms.Write(LittleEndian.GetBytes(Version),0,4);
+            ms.Write(tmpChunk, 0, tmpChunk.Length);
+            Chunk = ms.ToArray();
+            ChunkSize = Chunk.Length;
         }
     }
 }

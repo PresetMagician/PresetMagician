@@ -37,6 +37,9 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
         public SummaryInformation()
         {
             bankChain = new ObservableCollection<string>();
+            uuid = Guid.NewGuid();
+            author = "";
+            comment = "";
         }
     }
 }

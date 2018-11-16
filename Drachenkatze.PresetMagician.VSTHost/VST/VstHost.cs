@@ -11,6 +11,7 @@ using Jacobi.Vst.Interop.Host;
 using NAudio.Wave;
 using Drachenkatze.PresetMagician.VSTHost;
 using Drachenkatze.PresetMagician.VSTHost.Properties;
+using Drachenkatze.PresetMagician.NKSF.NKSF;
 
 namespace Drachenkatze.PresetMagician.VSTHost.VST
 {
@@ -109,13 +110,42 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                 //vst.PluginContext.Dispose();
             }
         }
-
-        public void ExportPreset(VSTPreset preset)
+           
+        public void ExportPresetNKSF(VSTPreset preset)
         {
-            Debug.WriteLine("PresetExport: new run");
-            VSTPlugin vst = preset.VstPlugin;
-            vst.PluginContext.PluginCommandStub.Open();
+            NKSFRiff nksf = new NKSFRiff();
+            Guid guid = Guid.NewGuid();
 
+            preset.VstPlugin.PluginContext.PluginCommandStub.SetProgram(preset.ProgramNumber);
+            nksf.kontaktSound.summaryInformation.summaryInformation.vendor = preset.VstPlugin.PluginVendor;
+            nksf.kontaktSound.summaryInformation.summaryInformation.uuid = guid;
+            nksf.kontaktSound.summaryInformation.summaryInformation.name = preset.PresetName;
+            nksf.kontaktSound.summaryInformation.summaryInformation.deviceType = "INST";
+            nksf.kontaktSound.summaryInformation.summaryInformation.bankChain.Add(preset.VstPlugin.PluginName);
+            nksf.kontaktSound.pluginId.pluginId.VSTMagic = preset.VstPlugin.PluginContext.PluginInfo.PluginID;
+            nksf.kontaktSound.pluginChunk.PresetData = preset.PresetData;
+            Debug.WriteLine("chunk size " + preset.PresetData.Length);
+
+            String outputFilename = Path.Combine(getUserContentDirectory(preset), preset.NKSFPresetName + ".nksf");
+            var fileStream2 = new FileStream(outputFilename, FileMode.Create);
+            nksf.Write(fileStream2);
+            fileStream2.Close();
+        }
+
+        public String getUserContentDirectory (VSTPreset preset)
+        {
+            String userContentDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"Native Instruments\User Content");
+            String bankDirectory = Path.Combine(userContentDirectory, preset.NKSFPluginName, preset.NKSFBankName);
+            Directory.CreateDirectory(bankDirectory);
+            return bankDirectory;
+        }
+        public void ExportPresetAudioPreview(VSTPreset preset)
+        {
+            VSTPlugin vst = preset.VstPlugin;
+            if (!vst.IsOpened) { 
+            vst.PluginContext.PluginCommandStub.Open();
+            }
+            vst.IsOpened = true;
             VstPluginContext ctx = vst.PluginContext;
 
             if ((ctx.PluginCommandStub.PluginContext.PluginInfo.Flags & VstPluginFlags.IsSynth) == 0)
@@ -128,15 +158,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                 throw new NoOfflineSupportException();
             }
 
-            ctx.PluginCommandStub.SetChunk(StringToByteArray(preset.PresetData), false);
-
-            SHA1 sha = new SHA1CryptoServiceProvider();
-            byte[] result = sha.ComputeHash(ctx.PluginCommandStub.GetChunk(false));
-
-            Debug.WriteLine("A: " + ByteArrayToString(result));
-            result = sha.ComputeHash(StringToByteArray(preset.PresetData.ToString()));
-
-            Debug.WriteLine("B: " + ByteArrayToString(result));
+            ctx.PluginCommandStub.SetChunk(preset.PresetData, false);
 
             ctx.PluginCommandStub.SetProgram(preset.ProgramNumber);
             vstStream = new VSTStream();
@@ -180,8 +202,6 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                     }
                 }
 
-                Debug.WriteLine("PresetExport: Completed exporting, trying to save as wave");
-
                 // save
                 using (WaveStream ws = new RawSourceWaveStream(ms, vstStream.WaveFormat))
                 {
@@ -194,18 +214,14 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                     string path = Path.Combine(Path.GetTempPath(), "ffmpeg.exe");
                     File.WriteAllBytes(path, Resources.ffmpeg);
 
-                    String userContentDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"Native Instruments\User Content");
+                    String bankDirectory = getUserContentDirectory(preset);
 
-                    String bankDirectory = Path.Combine(userContentDirectory, preset.NKSFPluginName, preset.NKSFBankName);
                     String previewDirectory = Path.Combine(bankDirectory, ".previews");
 
-                    Directory.CreateDirectory(bankDirectory);
                     Directory.CreateDirectory(previewDirectory);
 
                     String previewOutputFilename = Path.Combine(previewDirectory, preset.NKSFPresetName + ".nksf.ogg");
 
-                    Debug.WriteLine("Preview output filename: " + previewOutputFilename);
-                    Debug.WriteLine("Building ffmpeg process info");
                     var process = new Process
                     {
                         StartInfo =
@@ -220,16 +236,17 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                     Debug.WriteLine("ffmpeg path: " + process.StartInfo.FileName);
                     Debug.WriteLine("ffmpeg arguments: " + process.StartInfo.Arguments);
 
-                    process.Start();
+                    /*process.Start();
                     process.WaitForExit();
                     process.Close();
-
-                    Debug.WriteLine("ffmpeg done");
+                    process.Dispose();*/
                 }
 
                 vstStream.DoProcess = false;
                 stoppedPlaying = false;
             }
+
+            //vst.PluginContext.PluginCommandStub.Close();
         }
 
         /// <summary>

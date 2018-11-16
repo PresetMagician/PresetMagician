@@ -72,6 +72,7 @@
     <Compile Include="Class1.cs" />
     <Compile Include="NKSF\AbstractMessagePack.cs" />
     <Compile Include="NKSF\ControllerAssigment.cs" />
+    <Compile Include="NKSF\ControllerAssignmentGroup.cs" />
     <Compile Include="NKSF\ControllerAssignments.cs" />
     <Compile Include="NKSF\ControllerAssignmentsChunk.cs" />
     <Compile Include="NKSF\KontaktSound.cs" />

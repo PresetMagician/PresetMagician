@@ -5,12 +5,11 @@
 
         xmlns:fluent="urn:fluent-ribbon"
         xmlns:controls="clr-namespace:Drachenkatze.PresetMagician.GUI.Controls"
-        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         x:Class="Drachenkatze.PresetMagician.GUI.MainWindow"
                      x:Name="window"
                    BorderThickness="0"
                       ResizeMode="CanResizeWithGrip"
-        Title="PresetMagician" Height="450" Width="800" BorderBrush="Black" WindowStyle="ThreeDBorderWindow">
+        Title="PresetMagician" Height="450" Width="800" BorderBrush="Black" WindowStyle="ThreeDBorderWindow" Initialized="Window_Initialized">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -22,7 +21,7 @@
             <!--Tabs-->
             <fluent:RibbonTabItem Header="Home">
                 <fluent:RibbonGroupBox Width="215" Header="">
-                    <fluent:Button Icon="{iconPacks:FontAwesome StarRegular}" LargeIcon="{iconPacks:FontAwesome SpinnerSolid, Width=32, Height=32, Spin=True}" Header="VST Paths" Click="Button_Click" Content="" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" UseLayoutRounding="False" RenderTransformOrigin="0.5,0">
+                    <fluent:Button Header="About" Click="Button_Click" Content="" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" UseLayoutRounding="False" RenderTransformOrigin="0.5,0">
                         
                     </fluent:Button>
                 </fluent:RibbonGroupBox>

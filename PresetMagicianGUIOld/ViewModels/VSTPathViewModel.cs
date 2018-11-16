@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using JetBrains.Annotations;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -35,7 +36,7 @@ namespace Drachenkatze.PresetMagician.GUI.ViewModels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        //[NotifyPropertyChangedInvocator]
+        [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

@@ -3,7 +3,6 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
       xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
       mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="154.88">
 
@@ -20,7 +19,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <DataGrid x:Name="VstFolderList" ItemsSource="{Binding Source={StaticResource src}}" AutoGenerateColumns="False" GridLinesVisibility="All" ScrollViewer.CanContentScroll="True" Grid.Row="0" SelectionChanged="DataGrid_SelectionChanged">
+        <DataGrid x:Name="VstFolderList" ItemsSource="{Binding Source={StaticResource src},NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" GridLinesVisibility="All" ScrollViewer.CanContentScroll="True" Grid.Row="0" SelectionChanged="DataGrid_SelectionChanged">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Path" Width="*"
                                     Binding="{Binding FullName}" IsReadOnly="True" />
@@ -35,11 +34,7 @@
                                   Grid.Column="0" VerticalContentAlignment="Center" Click="DefaultVSTPath_Click" Margin="6,2,2,2">
 
                 <StackPanel Orientation="Horizontal">
-                    <iconPacks:PackIconMaterial Kind="FolderMultiple"
-                                    Margin="4 4 2 4"
-                                    Width="16"
-                                    Height="16"
-                                    VerticalAlignment="Center" />
+                   
                     <TextBlock Text="Add Default VST Paths"
                     Margin="2 4 4 4"
                     VerticalAlignment="Center" />
@@ -47,11 +42,7 @@
             </Button>
             <Button HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="6,2,2,2" Click="Button_Click">
                 <StackPanel Orientation="Horizontal">
-                    <iconPacks:PackIconMaterial Kind="FolderPlus"
-                                    Margin="4 4 2 4"
-                                    Width="16"
-                                    Height="16"
-                                    VerticalAlignment="Center" />
+                    
                     <TextBlock Text="Add Folder…"
                     Margin="2 4 4 4"
                     VerticalAlignment="Center" />
@@ -59,11 +50,6 @@
             </Button>
             <Button x:Name="RemoveFolderButton" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="6,2,2,2" IsEnabled="False" Click="RemoveFolderButton_Click">
                 <StackPanel Orientation="Horizontal">
-                    <iconPacks:PackIconMaterial Kind="FolderRemove"
-                                    Margin="4 4 2 4"
-                                    Width="16"
-                                    Height="16"
-                                    VerticalAlignment="Center" IsEnabled="False" />
                     <TextBlock Text="Remove Folder"
                     Margin="2 4 4 4"
                     VerticalAlignment="Center" />
