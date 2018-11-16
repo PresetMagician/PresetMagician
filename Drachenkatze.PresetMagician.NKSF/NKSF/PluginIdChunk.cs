@@ -1,10 +1,6 @@
-﻿using GSF;
-using GSF.Media;
-using GSF.Parsing;
-using System;
+﻿using System.Diagnostics;
 using System.IO;
 using MessagePack;
-using System.Diagnostics;
 
 namespace Drachenkatze.PresetMagician.NKSF.NKSF
 {
