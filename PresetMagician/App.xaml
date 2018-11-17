@@ -1,14 +1,21 @@
-<Application x:Class="Drachenkatze.PresetMagician.GUI.App"
+﻿<Application
+             x:Class="Drachenkatze.PresetMagician.GUI.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:PresetMagician"
-    Startup="App_start"
-             StartupUri="MainWindow.xaml">
+            Exit="App_Exit"
+    Startup="App_start">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="PresetMagician.xaml" />
+                <!-- Attach default Theme -->
+                <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Generic.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Themes/Light.Indigo.xaml" />
+                <ResourceDictionary Source="Themes/Colors/LightColors.xaml" />
+                <ResourceDictionary Source="Themes/Brushes/ThemeBrushes.xaml" />
+                <ResourceDictionary Source="Themes/Styles/Styles.xaml" />
+
             </ResourceDictionary.MergedDictionaries>
+            <SolidColorBrush x:Key="BaseBackgroundBrush" Color="#FF2F022F" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

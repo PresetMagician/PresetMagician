@@ -1,83 +1,35 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Syncfusion.SfSkinManager;
+﻿using System.Windows;
+using Drachenkatze.PresetMagician.GUI.GUI;
+using Drachenkatze.PresetMagician.GUI.ViewModels;
 
 namespace Drachenkatze.PresetMagician.GUI
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaktionslogik für MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Fluent.RibbonWindow
     {
-        #region Fields
-
-        private string currentVisualStyle;
-
-        #endregion Fields
-
-        #region Properties
-
-        /// <summary>
-        /// Gets or sets the current visual style.
-        /// </summary>
-        /// <value></value>
-        /// <remarks></remarks>
-        public string CurrentVisualStyle
-        {
-            get
-            {
-                return currentVisualStyle;
-            }
-            set
-            {
-                currentVisualStyle = value;
-                OnVisualStyleChanged();
-            }
-        }
-
-        #endregion Properties
-
         public MainWindow()
         {
-            InitializeComponent();
-            this.Loaded += OnLoaded;
+            this.InitializeComponent();
         }
 
-        /// <summary>
-        /// Called when [loaded].
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void OnLoaded(object sender, RoutedEventArgs e)
+        private void About_Click(object sender, RoutedEventArgs e)
         {
-            CurrentVisualStyle = "Office2016White";
+            var ab = new AboutDialog();
+            ab.Show();
         }
 
-        /// <summary>
-        /// On Visual Style Changed.
-        /// </summary>
-        /// <remarks></remarks>
-        private void OnVisualStyleChanged()
+        private void Window_Initialized(object sender, System.EventArgs e)
         {
-            VisualStyles visualStyle = VisualStyles.Default;
-            Enum.TryParse(CurrentVisualStyle, out visualStyle);
-            if (visualStyle != VisualStyles.Default)
-            {
-                SfSkinManager.ApplyStylesOnApplication = true;
-                SfSkinManager.SetVisualStyle(this, visualStyle);
-                SfSkinManager.ApplyStylesOnApplication = false;
-            }
+            App.setStatusBar("Registered to " + App.license.Customer.Name + " - 1.21 Gigawatts ready to engage.");
+            MessageBox.Show("Welcome to the first alpha of PresetMagician! Expect many bugs, many crashes, but apart from that - enjoy :)");
+        }
+
+        private void NKSFInspector_Click(object sender, RoutedEventArgs e)
+        {
+            var win = new NKSFViewer();
+            win.Show();
         }
     }
 }
