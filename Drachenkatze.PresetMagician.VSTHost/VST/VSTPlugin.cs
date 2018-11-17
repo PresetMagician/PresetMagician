@@ -1,95 +1,111 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using Drachenkatze.PresetMagician.Controls.Controls.VSTHost;
+﻿using Drachenkatze.PresetMagician.Controls.Controls.VSTHost;
 using Jacobi.Vst.Core;
 using Jacobi.Vst.Interop.Host;
 using JetBrains.Annotations;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Drachenkatze.PresetMagician.VSTHost.VST
 {
     /// <summary>
     /// Contains a VSTPlugin Plugin and utility functions like MIDI calling etc.
     /// </summary>
-    public class VSTPlugin : INotifyPropertyChanged
+    public class VSTPlugin : INotifyPropertyChanged, IDisposable
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        public const bool PresetChunk_UseCurrentProgram = false;
+
+        public Boolean IsOpened;
 
         public VstPluginContext PluginContext = null;
 
-        public event EventHandler<VSTStreamEventArgs> StreamCall = null;
-
-        public Boolean IsOpened;
+        public VstPluginFlags PluginFlags;
 
         public VSTPlugin(String dllPath)
         {
             PluginDLLPath = dllPath;
         }
 
-        internal void Dispose()
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public bool ChunkSupport { get; set; }
+
+        public bool IsLoaded
         {
-            if (PluginContext != null) PluginContext.Dispose();
-        }
-
-        public void MIDI_NoteOn(byte Note, byte Velocity)
-        {
-            byte Cmd = 0x90;
-            MIDI(Cmd, Note, Velocity);
-        }
-
-        public void MIDI_NoteOff(byte Note, byte Velocity)
-        {
-            byte Cmd = 0x80;
-            MIDI(Cmd, Note, Velocity);
-        }
-
-        public void MIDI_CC(byte Number, byte Value)
-        {
-            byte Cmd = 0xB0;
-            MIDI(Cmd, Number, Value);
-        }
-
-        private void MIDI(byte Cmd, byte Val1, byte Val2)
-        {
-            /*
-			 * Just a small note on the code for setting up a midi event:
-			 * You can use the VstEventCollection class (Framework) to setup one or more events
-			 * and then call the ToArray() method on the collection when passing it to
-			 * ProcessEvents. This will save you the hassle of dealing with arrays explicitly.
-			 * http://computermusicresource.com/MIDI.Commands.html
-			 *
-			 * Freq to Midi notes etc:
-			 * http://www.sengpielaudio.com/calculator-notenames.htm
-			 *
-			 * Example to use NAudio Midi support
-			 * http://stackoverflow.com/questions/6474388/naudio-and-midi-file-reading
-			 */
-
-            var midiData = new byte[4];
-            midiData[0] = Cmd;
-            midiData[1] = Val1;
-            midiData[2] = Val2;
-            midiData[3] = 0;    // Reserved, unused
-
-            var vse = new VstMidiEvent(/*DeltaFrames*/ 0,
-                                                /*NoteLength*/ 0,
-                                                /*NoteOffset*/  0,
-                                                midiData,
-                                                /*Detune*/        0,
-                                                /*NoteOffVelocity*/ 127);
-
-            var ve = new VstEvent[1];
-            ve[0] = vse;
-
-            PluginContext.PluginCommandStub.ProcessEvents(ve);
-        }
-
-        public void SetProgram(int programNumber)
-        {
-            if (programNumber < PluginContext.PluginInfo.ProgramCount && programNumber >= 0)
+            get
             {
-                PluginContext.PluginCommandStub.SetProgram(programNumber);
+                if (PluginContext != null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        public String LoadError { get; set; }
+
+        public int NumPresets
+        {
+            get; set;
+        }
+
+        public String PluginDLLPath { get; set; }
+
+        public String PluginName
+        {
+            get; set;
+        }
+
+        public String PluginType
+        {
+            get; set;
+        }
+
+        public String PluginVendor
+        {
+            get; set;
+        }
+
+        public void Dispose()
+        {
+            if (PluginContext != null)
+            {
+                PluginContext.Dispose();
+            }
+        }
+
+        public void doCache()
+        {
+            this.PluginName = PluginContext.PluginCommandStub.GetEffectName();
+            this.NumPresets = PluginContext.PluginInfo.ProgramCount;
+
+            if (PluginContext.PluginInfo.Flags.HasFlag(VstPluginFlags.IsSynth))
+            {
+                this.PluginType = "Instrument";
+            }
+            else
+            {
+                this.PluginType = "Effect";
+            }
+
+            this.PluginVendor = PluginContext.PluginCommandStub.GetVendorString();
+
+            if ((PluginContext.PluginInfo.Flags & VstPluginFlags.ProgramChunks) == 0)
+            {
+                // Chunks not supported.
+                ChunkSupport = false;
+            }
+            else
+            {
+                // Chunks supported.
+                ChunkSupport = true;
             }
         }
 
@@ -162,6 +178,27 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                 return string.Join("\n", pluginInfo.ToArray());
             }
             return "Nothing";
+        }
+
+        public VSTPreset getPreset(int index)
+        {
+            VSTPreset vstPreset;
+            this.PluginContext.PluginCommandStub.SetProgram(index);
+
+            byte[] chunk = this.PluginContext.PluginCommandStub.GetChunk(PresetChunk_UseCurrentProgram);
+
+            vstPreset = new VSTPreset();
+            vstPreset.PresetName = this.PluginContext.PluginCommandStub.GetProgramName();
+            vstPreset.PresetData = new byte[chunk.Length];
+            Buffer.BlockCopy(chunk, 0, vstPreset.PresetData, 0, chunk.Length);
+            vstPreset.PreviewNote = new CannedBytes.Midi.Message.MidiNoteName("C5");
+            vstPreset.ProgramNumber = this.PluginContext.PluginCommandStub.GetProgram();
+            vstPreset.BankName = PluginName + " Factory";
+            vstPreset.Export = true;
+            vstPreset.PluginName = PluginName;
+            vstPreset.PluginDLLPath = PluginDLLPath;
+
+            return vstPreset;
         }
 
         public void LoadFXP(string filePath)
@@ -252,6 +289,24 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             }
         }
 
+        public void MIDI_CC(byte Number, byte Value)
+        {
+            byte Cmd = 0xB0;
+            MIDI(Cmd, Number, Value);
+        }
+
+        public void MIDI_NoteOff(byte Note, byte Velocity)
+        {
+            byte Cmd = 0x80;
+            MIDI(Cmd, Note, Velocity);
+        }
+
+        public void MIDI_NoteOn(byte Note, byte Velocity)
+        {
+            byte Cmd = 0x90;
+            MIDI(Cmd, Note, Velocity);
+        }
+
         public void SaveFXP(string filePath)
         {
             bool UseChunk = false;
@@ -305,6 +360,20 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             fxp.WriteFile(filePath);
         }
 
+        public void SetProgram(int programNumber)
+        {
+            if (programNumber < PluginContext.PluginInfo.ProgramCount && programNumber >= 0)
+            {
+                PluginContext.PluginCommandStub.SetProgram(programNumber);
+            }
+        }
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         private static string PluginIDNumberToIDString(int pluginUniqueID)
         {
             byte[] fxIdArray = BitConverter.GetBytes(pluginUniqueID);
@@ -321,87 +390,39 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             return pluginUniqueID;
         }
 
-        internal void Stream_ProcessCalled(object sender, VSTStreamEventArgs e)
+        private void MIDI(byte Cmd, byte Val1, byte Val2)
         {
-            if (StreamCall != null) StreamCall(sender, e);
-        }
+            /*
+			 * Just a small note on the code for setting up a midi event:
+			 * You can use the VstEventCollection class (Framework) to setup one or more events
+			 * and then call the ToArray() method on the collection when passing it to
+			 * ProcessEvents. This will save you the hassle of dealing with arrays explicitly.
+			 * http://computermusicresource.com/MIDI.Commands.html
+			 *
+			 * Freq to Midi notes etc:
+			 * http://www.sengpielaudio.com/calculator-notenames.htm
+			 *
+			 * Example to use NAudio Midi support
+			 * http://stackoverflow.com/questions/6474388/naudio-and-midi-file-reading
+			 */
 
-        public void doCache()
-        {
-            this.PluginName = PluginContext.PluginCommandStub.GetEffectName();
-            this.NumPresets = PluginContext.PluginInfo.ProgramCount;
+            var midiData = new byte[4];
+            midiData[0] = Cmd;
+            midiData[1] = Val1;
+            midiData[2] = Val2;
+            midiData[3] = 0;    // Reserved, unused
 
-            if (PluginContext.PluginInfo.Flags.HasFlag(VstPluginFlags.IsSynth))
-            {
-                this.PluginType = "Instrument";
-            }
-            else
-            {
-                this.PluginType = "Effect";
-            }
+            var vse = new VstMidiEvent(/*DeltaFrames*/ 0,
+                                                /*NoteLength*/ 0,
+                                                /*NoteOffset*/  0,
+                                                midiData,
+                                                /*Detune*/        0,
+                                                /*NoteOffVelocity*/ 127);
 
-            this.PluginVendor = PluginContext.PluginCommandStub.GetVendorString();
-        }
+            var ve = new VstEvent[1];
+            ve[0] = vse;
 
-        public String PluginName
-        {
-            get; set;
-        }
-
-        public int NumPresets
-        {
-            get; set;
-        }
-
-        public String PluginDLLPath { get; set; }
-        public String LoadError { get; set; }
-
-        public VSTPreset getPreset(int index)
-        {
-            VSTPreset vstPreset;
-
-            this.PluginContext.PluginCommandStub.SetProgram(index);
-
-            vstPreset = new VSTPreset();
-            vstPreset.VstPlugin = this;
-            vstPreset.PresetName = this.PluginContext.PluginCommandStub.GetProgramName();
-            vstPreset.PresetData = this.PluginContext.PluginCommandStub.GetChunk(true);
-            vstPreset.PreviewNote = new CannedBytes.Midi.Message.MidiNoteName("C3");
-            vstPreset.ProgramNumber = this.PluginContext.PluginCommandStub.GetProgram();
-            vstPreset.BankName = PluginName + " Factory";
-            vstPreset.Export = true;
-            return vstPreset;
-        }
-
-        public bool IsLoaded
-        {
-            get
-            {
-                if (PluginContext != null)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-        }
-
-        public String PluginType
-        {
-            get; set;
-        }
-
-        public String PluginVendor
-        {
-            get; set;
-        }
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PluginContext.PluginCommandStub.ProcessEvents(ve);
         }
     }
 }

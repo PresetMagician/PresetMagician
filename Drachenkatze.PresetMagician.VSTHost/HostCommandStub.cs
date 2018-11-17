@@ -1,6 +1,7 @@
 ﻿using System;
 using Jacobi.Vst.Core.Host;
 using Jacobi.Vst.Core;
+using System.Diagnostics;
 
 namespace Drachenkatze.PresetMagician.VSTHost
 {
@@ -8,21 +9,35 @@ namespace Drachenkatze.PresetMagician.VSTHost
     {
         public string Directory;
 
+        public event EventHandler<PluginCalledEventArgs> PluginCalled;
+
+        private void RaisePluginCalled(string message)
+        {
+            EventHandler<PluginCalledEventArgs> handler = PluginCalled;
+
+            if (handler != null)
+            {
+                handler(this, new PluginCalledEventArgs(message));
+            }
+        }
+
         #region IVstHostCommandStub Members
 
         public IVstPluginContext PluginContext { get; set; }
 
-        #endregion
+        #endregion IVstHostCommandStub Members
 
         #region IVstHostCommands20 Members
 
         public bool BeginEdit(int index)
         {
+            Debug.WriteLine("BeginEdit");
             return false;
         }
 
         public VstCanDoResult CanDo(VstHostCanDo cando)
         {
+            Debug.WriteLine("CanDo");
             return VstCanDoResult.Unknown;
         }
 
@@ -33,6 +48,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public bool EndEdit(int index)
         {
+            Debug.WriteLine("EndEdit");
             return false;
         }
 
@@ -43,6 +59,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public int GetBlockSize()
         {
+            Debug.WriteLine("FOO");
             return 512;
         }
 
@@ -68,6 +85,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public VstProcessLevels GetProcessLevel()
         {
+            Debug.WriteLine("ProcessLevel");
             return Jacobi.Vst.Core.VstProcessLevels.Unknown;
         }
 
@@ -81,7 +99,8 @@ namespace Drachenkatze.PresetMagician.VSTHost
             return 44100f;
         }
 
-        Jacobi.Vst.Core.VstTimeInfo vstTimeInfo = new Jacobi.Vst.Core.VstTimeInfo();
+        private Jacobi.Vst.Core.VstTimeInfo vstTimeInfo = new Jacobi.Vst.Core.VstTimeInfo();
+
         public VstTimeInfo GetTimeInfo(VstTimeInfoFlags filterFlags)
         {
             vstTimeInfo.SamplePosition = 0.0;
@@ -124,6 +143,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public bool ProcessEvents(VstEvent[] events)
         {
+            Debug.WriteLine("ProcessEvents");
             return false;
         }
 
@@ -134,10 +154,11 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public bool UpdateDisplay()
         {
+            Debug.WriteLine("UpdateDisplay");
             return true;
         }
 
-        #endregion
+        #endregion IVstHostCommands20 Members
 
         #region IVstHostCommands10 Members
 
@@ -158,20 +179,22 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public void SetParameterAutomated(int index, float value)
         {
+            Debug.WriteLine("SetParameterAutomated");
         }
 
         public VstCanDoResult CanDo(string cando)
         {
+            Debug.WriteLine("CanDo10");
             return VstCanDoResult.Unknown;
         }
 
-        #endregion
+        #endregion IVstHostCommands10 Members
     }
 
     /// <summary>
     /// Event arguments used when one of the mehtods is called.
     /// </summary>
-    class PluginCalledEventArgs : EventArgs
+    public class PluginCalledEventArgs : EventArgs
     {
         /// <summary>
         /// Constructs a new instance with a <paramref name="message"/>.
