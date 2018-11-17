@@ -189,7 +189,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                 StartInfo =
                           {
                               FileName = path,
-                              Arguments = "-i " + inputWave + " -acodec libvorbis -y \""+outputOGG+"\"",
+                              Arguments = "-i \"" + inputWave + "\" -acodec libvorbis -y \""+outputOGG+"\"",
                               CreateNoWindow = true,
                               WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden
                 }
