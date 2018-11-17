@@ -9,7 +9,7 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
     {
         public const string RiffTypeID = "NICA";
 
-        public ControllerAssignmentsChunk ()
+        public ControllerAssignmentsChunk()
         {
             TypeID = RiffTypeID;
             Version = 1;
@@ -20,10 +20,6 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
             cv.vflag = false;
             controllerAssignments = new ControllerAssignments();
             controllerAssignments.controllerAssignments.Add(new List<ControllerAssignment> { cv });
-
-
-                
-
         }
 
         public override void Read(Stream source)
@@ -37,6 +33,7 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
         }
 
         public ControllerAssignments controllerAssignments;
+
         public override void DeserializeMessagePack(byte[] buffer)
         {
             Debug.WriteLine(MessagePackSerializer.ToJson(buffer));
@@ -45,14 +42,15 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
 
         public override byte[] SerializeMessagePack()
         {
-            //var controllerAssignment = new ControllerAssignment();
-            //controllerAssignments = new ControllerAssignments();
-            //controllerAssignments[0][0].Add(controllerAssignment);
-
             byte[] b = MessagePackSerializer.Serialize(controllerAssignments);
 
             Debug.WriteLine(MessagePackSerializer.ToJson(b));
             return b;
+        }
+
+        public string getJSON()
+        {
+            return MessagePackSerializer.ToJson(MessagePackSerializer.Serialize(controllerAssignments));
         }
 
         public override string ChunkDescription

@@ -11,7 +11,7 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
     {
         public const string RiffTypeID = "NISI";
 
-        public SummaryInformationChunk ()
+        public SummaryInformationChunk()
         {
             summaryInformation = new SummaryInformation();
             TypeID = RiffTypeID;
@@ -41,6 +41,11 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
             Debug.WriteLine(summaryInformation.vendor);
             Debug.WriteLine(summaryInformation.bankChain.Count);
             Debug.WriteLine(summaryInformation.bankChain[0]);
+        }
+
+        public string getJSON()
+        {
+            return MessagePackSerializer.ToJson(MessagePackSerializer.Serialize(summaryInformation));
         }
 
         public override byte[] SerializeMessagePack()
