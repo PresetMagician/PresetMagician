@@ -23,11 +23,6 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             get; set;
         }
 
-        public VSTPlugin VstPlugin
-        {
-            get; set;
-        }
-
         public MidiNoteName PreviewNote
         {
             get; set;
@@ -43,6 +38,13 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             get; set;
         }
 
+        public String PluginName
+        {
+            get; set;
+        }
+
+        public String PluginDLLPath;
+
         public byte[] PresetData
         {
             get; set;
@@ -52,7 +54,19 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
         {
             get
             {
-                return BankName;
+                String bankName = BankName;
+
+                foreach (char c in System.IO.Path.GetInvalidPathChars())
+                {
+                    bankName = bankName.Replace(c, '_');
+                }
+
+                foreach (char c in System.IO.Path.GetInvalidFileNameChars())
+                {
+                    bankName = bankName.Replace(c, '_');
+                }
+
+                return bankName;
             }
         }
 
@@ -60,15 +74,40 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
         {
             get
             {
-                return VstPlugin.PluginName;
+                String pluginName = PluginName;
+
+                foreach (char c in System.IO.Path.GetInvalidPathChars())
+                {
+                    pluginName = pluginName.Replace(c, '_');
+                }
+
+                foreach (char c in System.IO.Path.GetInvalidFileNameChars())
+                {
+                    pluginName = pluginName.Replace(c, '_');
+                }
+
+                return pluginName;
             }
         }
 
         public String NKSFPresetName
         {
+            // Returns the sanitized preset name
             get
             {
-                return PresetName;
+                String presetName = PresetName;
+
+                foreach (char c in System.IO.Path.GetInvalidFileNameChars())
+                {
+                    presetName = presetName.Replace(c, '_');
+                }
+
+                foreach (char c in System.IO.Path.GetInvalidPathChars())
+                {
+                    presetName = presetName.Replace(c, '_');
+                }
+
+                return presetName;
             }
         }
     }
