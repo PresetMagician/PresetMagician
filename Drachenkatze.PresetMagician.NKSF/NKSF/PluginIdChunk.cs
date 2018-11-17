@@ -42,6 +42,11 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
 
         public PluginId pluginId;
 
+        public string getJSON()
+        {
+            return MessagePackSerializer.ToJson(MessagePackSerializer.Serialize(pluginId));
+        }
+
         public override string ChunkDescription
         {
             get
