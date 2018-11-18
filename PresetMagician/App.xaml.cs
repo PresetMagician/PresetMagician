@@ -24,6 +24,7 @@ using SplashScreen = Drachenkatze.PresetMagician.GUI.GUI.SplashScreen;
 using CommandLine;
 using CommandLine.Text;
 using Drachenkatze.PresetMagician.Utils;
+using System.Security.Permissions;
 
 namespace Drachenkatze.PresetMagician.GUI
 {
@@ -48,8 +49,6 @@ namespace Drachenkatze.PresetMagician.GUI
                 return getSystemHash();
             }
         }
-
-        
 
         public String getSystemHash()
         {
@@ -80,9 +79,7 @@ namespace Drachenkatze.PresetMagician.GUI
 
         public void processCommandLine(string[] args)
         {
-
             var parserResult = CommandLine.Parser.Default.ParseArguments<Options>(args);
-
 
             parserResult.WithParsed<Options>(options => this.options = options);
             parserResult.WithNotParsed<Options>(errs =>
@@ -93,20 +90,58 @@ namespace Drachenkatze.PresetMagician.GUI
                     return e;
                 });
                 Console.WriteLine(helpText);
-
             });
 
-            
             if (options.ForceRegistration)
             {
                 var regWindow = new RegistrationWindow();
                 regWindow.Show();
             }
         }
+
+        private static void DispatcherExceptionHandler(object sender, DispatcherUnhandledExceptionEventArgs args)
+        {
+            LogException(args.Exception, "Exception caught by DispatcherExceptionHandler\n");
+        }
+
+        private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args)
+        {
+            LogException((Exception)args.ExceptionObject, "Exception caught by UnhandledExceptionHandler\n");
+        }
+
+        private static void UnobservedTaskException()
+        {
+        }
+
+        private static void LogException(Exception e, string type)
+        {
+            var now = DateTime.Now;
+            var dateString = now.ToString("s").Replace(':', '_');
+
+            var outputFile = dateString + " ExceptionLog.txt";
+            var outputPath = Path.Combine(getAppDataDir().FullName, @"ExceptionDumps\");
+            var fullFileName = Path.Combine(outputPath, outputFile);
+
+            Directory.CreateDirectory(outputPath);
+            FileStream s = new FileStream(fullFileName, FileMode.Create);
+            byte[] typeMessage = Encoding.ASCII.GetBytes(type);
+            byte[] exceptionMessage = Encoding.ASCII.GetBytes(e.ToString());
+            byte[] stackTrace = Encoding.ASCII.GetBytes(e.StackTrace.ToString());
+            s.Write(typeMessage, 0, typeMessage.Length);
+            s.Write(exceptionMessage, 0, exceptionMessage.Length);
+            s.Write(stackTrace, 0, stackTrace.Length);
+
+            s.Close();
+
+            MessageBox.Show("An unhandled exception occured. The log has been written to " + fullFileName);
+        }
+
+        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.ControlAppDomain)]
         public void App_start(object sender, StartupEventArgs e)
         {
+            AppDomain currentDomain = AppDomain.CurrentDomain;
+            currentDomain.UnhandledException += new UnhandledExceptionEventHandler(UnhandledExceptionHandler);
             processCommandLine(e.Args);
-    
 
             /*splash = new SplashScreen();
             splash.Show();*/
@@ -220,7 +255,8 @@ namespace Drachenkatze.PresetMagician.GUI
         {
             TextBlock textBlock = (TextBlock)Application.Current.MainWindow.FindName("statusMessage");
 
-            if (textBlock != null) { 
+            if (textBlock != null)
+            {
                 textBlock.Text = status;
             }
         }
