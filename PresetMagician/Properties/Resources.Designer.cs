@@ -68,5 +68,15 @@ namespace Drachenkatze.PresetMagician.GUI.Properties {
                 return ResourceManager.GetString("PublicKey", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Splashscreen {
+            get {
+                object obj = ResourceManager.GetObject("Splashscreen", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

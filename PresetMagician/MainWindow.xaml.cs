@@ -4,9 +4,6 @@ using Drachenkatze.PresetMagician.GUI.ViewModels;
 
 namespace Drachenkatze.PresetMagician.GUI
 {
-    /// <summary>
-    /// Interaktionslogik für MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Fluent.RibbonWindow
     {
         public MainWindow()

@@ -9,11 +9,12 @@
             <ResourceDictionary.MergedDictionaries>
                 <!-- Attach default Theme -->
                 <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Generic.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Themes/Light.Indigo.xaml" />
+                <!--<ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Themes/Light.Indigo.xaml" />
                 <ResourceDictionary Source="Themes/Colors/LightColors.xaml" />
                 <ResourceDictionary Source="Themes/Brushes/ThemeBrushes.xaml" />
-                <ResourceDictionary Source="Themes/Styles/Styles.xaml" />
+                <ResourceDictionary Source="Themes/Styles/Styles.xaml" />-->
 
+                <ResourceDictionary Source="GUI/Icons.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <SolidColorBrush x:Key="BaseBackgroundBrush" Color="#FF2F022F" />
         </ResourceDictionary>
