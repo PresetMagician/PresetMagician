@@ -6,8 +6,11 @@ using System.Linq;
 using System.Management;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using Drachenkatze.PresetMagician.GUI.GUI;
 using Drachenkatze.PresetMagician.GUI.Properties;
 using Drachenkatze.PresetMagician.GUI.ViewModels;
@@ -17,6 +20,7 @@ using Newtonsoft.Json;
 using Platform.Text;
 using Portable.Licensing;
 using Portable.Licensing.Validation;
+using SplashScreen = Drachenkatze.PresetMagician.GUI.GUI.SplashScreen;
 
 namespace Drachenkatze.PresetMagician.GUI
 {
@@ -75,8 +79,26 @@ namespace Drachenkatze.PresetMagician.GUI
 
     public partial class App : Application
     {
+        private SplashScreen splash;
+
+        private delegate void StringParameterDelegate(string value);
+
+        private readonly object stateLock = new object();
+
+        private async Task DoSomeWork()
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                splash.setSplashMessage("Initializing Kittens..." + i);
+                Thread.Sleep(50);
+            }
+        }
+
         public void App_start(object sender, StartupEventArgs e)
         {
+            /*splash = new SplashScreen();
+            splash.Show();*/
+
             App.vstPaths = new VSTPathViewModel();
             App.vstPlugins = new VSTPluginViewModel();
             App.vstPresets = new VSTPresetViewModel();
@@ -93,24 +115,16 @@ namespace Drachenkatze.PresetMagician.GUI
                     var mw = new MainWindow();
                     mw.Show();
                 }
+                else
+                {
+                    var regWindow = new RegistrationWindow();
+                    regWindow.Show();
+                }
             }
             catch (FileNotFoundException)
             {
                 var regWindow = new RegistrationWindow();
                 regWindow.Show();
-            }
-        }
-
-        public static void foo()
-        {
-            var vstPlugin = new VSTPlugin(@"C:\Users\Drachenkatze\Documents\SafeVSTPlugins\TAL-Elek7ro-II.dll");
-            var vstHost = new VstHost();
-
-            for (int k = 0; k < 10000; k++)
-            {
-                vstHost.LoadVST(vstPlugin);
-                vstHost.UnloadVST(vstPlugin);
-                Debug.WriteLine(k);
             }
         }
 
@@ -223,7 +237,7 @@ namespace Drachenkatze.PresetMagician.GUI
         {
             TextBlock textBlock = (TextBlock)Application.Current.MainWindow.FindName("statusMessage");
 
-            textBlock.Text = status;
+            //textBlock.Text = status;
         }
 
         public static void activateTab(int index)
