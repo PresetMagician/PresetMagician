@@ -107,6 +107,12 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                 // Chunks supported.
                 ChunkSupport = true;
             }
+
+            if (PluginContext.PluginInfo.ProgramCount > 0)
+            {
+                PluginContext.PluginCommandStub.SetProgram(0);
+
+            }
         }
 
         public string getPluginInfo()

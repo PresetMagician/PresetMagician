@@ -31,13 +31,11 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public bool BeginEdit(int index)
         {
-            Debug.WriteLine("BeginEdit");
             return false;
         }
 
         public VstCanDoResult CanDo(VstHostCanDo cando)
         {
-            Debug.WriteLine("CanDo");
             return VstCanDoResult.Unknown;
         }
 
@@ -48,7 +46,6 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public bool EndEdit(int index)
         {
-            Debug.WriteLine("EndEdit");
             return false;
         }
 
@@ -59,7 +56,6 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public int GetBlockSize()
         {
-            Debug.WriteLine("FOO");
             return 512;
         }
 
@@ -85,7 +81,6 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public VstProcessLevels GetProcessLevel()
         {
-            Debug.WriteLine("ProcessLevel");
             return Jacobi.Vst.Core.VstProcessLevels.Unknown;
         }
 
@@ -143,7 +138,6 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public bool ProcessEvents(VstEvent[] events)
         {
-            Debug.WriteLine("ProcessEvents");
             return false;
         }
 
@@ -154,7 +148,6 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public bool UpdateDisplay()
         {
-            Debug.WriteLine("UpdateDisplay");
             return true;
         }
 
@@ -179,12 +172,10 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public void SetParameterAutomated(int index, float value)
         {
-            Debug.WriteLine("SetParameterAutomated");
         }
 
         public VstCanDoResult CanDo(string cando)
         {
-            Debug.WriteLine("CanDo10");
             return VstCanDoResult.Unknown;
         }
 
