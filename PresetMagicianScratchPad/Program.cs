@@ -1,4 +1,5 @@
 ﻿using Drachenkatze.PresetMagician.VSTHost.VST;
+using System.Diagnostics;
 
 namespace PresetMagicianScratchPad
 {
@@ -6,19 +7,11 @@ namespace PresetMagicianScratchPad
     {
         private static void Main(string[] args)
         {
-            var vstPlugin = new VSTPlugin(@"C:\Users\Drachenkatze\Documents\SafeVSTPlugins\TAL-Elek7ro-II.dll");
+            var vstPlugin = new VSTPlugin(@"C:\Users\Felicia Hummel\Documents\Vst64\V-Station x64.dll");
             var vstHost = new VstHost();
 
-            vstHost.LoadVST(vstPlugin);
-            int numPresets = vstPlugin.NumPresets;
-
-            for (int i = 0; i < vstPlugin.NumPresets; i++)
-            {
-                var preset = vstPlugin.getPreset(i);
-                vstHost.pluginExporter.ExportPresetAudioPreviewRealtime(vstPlugin, preset);
-            }
-
-            vstHost.UnloadVST(vstPlugin);
+            var plugin = vstHost.LoadVST(vstPlugin);
+            Debug.WriteLine(plugin.PresetSaveModeDescription);
         }
     }
 }

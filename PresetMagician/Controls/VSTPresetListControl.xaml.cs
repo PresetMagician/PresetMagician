@@ -150,7 +150,7 @@ namespace Drachenkatze.PresetMagician.GUI.Controls
             vstPresetExporter.ProgressChanged -=
                 new ProgressChangedEventHandler(
             presetExporter_ProgressChanged);
-            App.setStatusBar("Presets exported.");
+            App.setStatusBar("Presets exported.Remember to re-scan your user libraries in Maschine or Kontakt!");
             ExportButton.IsEnabled = true;
         }
 

@@ -56,11 +56,13 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                 ctx.PluginCommandStub.Open();
                 vst.PluginContext.PluginCommandStub.MainsChanged(true);
                 vst.doCache();
+                
+                
                 vst.LoadError = "Loaded.";
             }
             catch (Exception e)
             {
-                Debug.WriteLine("load error");
+                Debug.WriteLine("load error" + e.ToString());
                 vst.LoadError = "Could not load plugin. " + e.ToString();
             }
 
