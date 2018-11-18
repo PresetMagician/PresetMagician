@@ -141,14 +141,29 @@ namespace Drachenkatze.PresetMagician.GUI.Controls
             vsts.Clear();
             foreach (VSTPlugin v in VSTPluginList.SelectedItems)
             {
+                if (!v.IsSupported)
+                {
+                    if (v.PluginType == VSTPlugin.PluginTypes.Effect) { 
+                        MessageBox.Show("The plugin " + v.PluginName + " is an effect; this is currently not supported (but will be implemented)");
+                    } else
+                    {
+                        MessageBox.Show("The plugin " + v.PluginName + " only exposes "+v.NumPresets+" presets via the standard VST program interface. Most likely the plugin vendor uses their own preset management system; support for many plugins will (hopefully) come soon!");
+                    }
+                    continue;
+                }
+
+                if (v.PresetSaveMode == VSTPlugin.PresetSaveModes.Unknown)
+                {
+                    MessageBox.Show("Due to the way NI saves preset data in the NKSF files, the plugin " + v.PluginName + " might not be compatible with that mechanism. We'll try anyways; double check by loading different generated NKSF presets (don't rely on the audio previews!)");
+                }
                 if (!v.ChunkSupport)
                 {
                     MessageBox.Show("The plugin " + v.PluginName + " does not support program chunks; as such it's not possible to create .nksf files. Maschine and Kontakt need the .mxinst file format for those plugins; as such, this plugin will be skipped");
+                    continue;
                 }
-                else
-                {
-                    vsts.Add(v);
-                }
+
+                vsts.Add(v);
+                
             }
             vstPresetScanner.RunWorkerAsync(argument: vsts);
 

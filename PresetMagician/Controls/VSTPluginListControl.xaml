@@ -32,9 +32,11 @@
                 <DataGridTextColumn Header="Presets" Width="80"
                                     Binding="{Binding NumPresets}" IsReadOnly="True" />
                 <DataGridTextColumn Header="Type" Width="80"
-                                    Binding="{Binding PluginType}" IsReadOnly="True" />
+                                    Binding="{Binding PluginTypeDescription}" IsReadOnly="True" />
                 <DataGridCheckBoxColumn Header="Supported" Width="80"
-                                    Binding="{Binding ChunkSupport}" IsReadOnly="True" />
+                                    Binding="{Binding IsSupported}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Export Mode" Width="80"
+                                    Binding="{Binding PresetSaveModeDescription}" IsReadOnly="True" />
                 <DataGridTextColumn Header="DLL" Width="150"
                                     Binding="{Binding PluginDLLPath}" IsReadOnly="True" />
                 <DataGridTextColumn Header="Status" Width="400"

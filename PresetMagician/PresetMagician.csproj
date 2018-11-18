@@ -402,6 +402,10 @@
       <Project>{2126df46-7f24-4c2c-b236-514a70b7a3a5}</Project>
       <Name>Drachenkatze.PresetMagician.NKSF</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Drachenkatze.PresetMagician.Utils\Drachenkatze.PresetMagician.Utils.csproj">
+      <Project>{37abda8a-5ffa-41f9-b880-a272d8c21dff}</Project>
+      <Name>Drachenkatze.PresetMagician.Utils</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Drachenkatze.PresetMagician.VSTHost\Drachenkatze.PresetMagician.VSTHost.csproj">
       <Project>{bb9702b3-2826-411a-b7c5-ef64348a7a5c}</Project>
       <Name>Drachenkatze.PresetMagician.VSTHost</Name>

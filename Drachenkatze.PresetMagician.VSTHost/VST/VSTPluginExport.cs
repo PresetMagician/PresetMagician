@@ -71,7 +71,6 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             nksf.kontaktSound.summaryInformation.summaryInformation.bankChain.Add(plugin.PluginName);
             nksf.kontaktSound.pluginId.pluginId.VSTMagic = plugin.PluginContext.PluginInfo.PluginID;
             nksf.kontaktSound.pluginChunk.PresetData = preset.PresetData;
-            Debug.WriteLine("chunk size " + preset.PresetData.Length);
 
             String outputFilename = Path.Combine(getUserContentDirectory(preset), preset.NKSFPresetName + ".nksf");
             var fileStream2 = new FileStream(outputFilename, FileMode.Create);

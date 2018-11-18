@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using CannedBytes.Midi.Message;
 using Drachenkatze.PresetMagician.Controls.Controls.VSTHost;
+using Drachenkatze.PresetMagician.Utils;
 
 namespace Drachenkatze.PresetMagician.VSTHost.VST
 {
@@ -11,6 +12,11 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
 
         public VSTPreset()
         {
+        }
+
+        public string getPresetHash ()
+        {
+            return HashUtils.getFormattedSHA256Hash(this.PresetData);
         }
 
         public String PresetName
@@ -110,5 +116,6 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                 return presetName;
             }
         }
+
     }
 }
