@@ -20,7 +20,7 @@ namespace Drachenkatze.PresetMagician.GUI.GUI
     /// <summary>
     /// Interaction logic for RegistrationWindow.xaml
     /// </summary>
-    public partial class RegistrationWindow : Window
+    public partial class RegistrationWindow
     {
         public RegistrationWindow()
         {

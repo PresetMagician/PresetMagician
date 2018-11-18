@@ -23,7 +23,7 @@ namespace Drachenkatze.PresetMagician.GUI.GUI
     /// <summary>
     /// Interaction logic for NKSFViewer.xaml
     /// </summary>
-    public partial class NKSFViewer : Window
+    public partial class NKSFViewer
     {
         public NKSFViewer()
         {

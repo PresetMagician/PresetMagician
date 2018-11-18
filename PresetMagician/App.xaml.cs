@@ -21,6 +21,8 @@ using Platform.Text;
 using Portable.Licensing;
 using Portable.Licensing.Validation;
 using SplashScreen = Drachenkatze.PresetMagician.GUI.GUI.SplashScreen;
+using CommandLine;
+using CommandLine.Text;
 
 namespace Drachenkatze.PresetMagician.GUI
 {
@@ -84,6 +86,7 @@ namespace Drachenkatze.PresetMagician.GUI
         private delegate void StringParameterDelegate(string value);
 
         private readonly object stateLock = new object();
+        private Options options;
 
         private async Task DoSomeWork()
         {
@@ -94,8 +97,36 @@ namespace Drachenkatze.PresetMagician.GUI
             }
         }
 
+        public void processCommandLine(string[] args)
+        {
+
+            var parserResult = CommandLine.Parser.Default.ParseArguments<Options>(args);
+
+
+            parserResult.WithParsed<Options>(options => this.options = options);
+            parserResult.WithNotParsed<Options>(errs =>
+            {
+                var helpText = HelpText.AutoBuild(parserResult, h => h, e =>
+                {
+                    //Console.WriteLine(e.HelpText.)
+                    return e;
+                });
+                Console.WriteLine(helpText);
+
+            });
+
+            
+            if (options.ForceRegistration)
+            {
+                var regWindow = new RegistrationWindow();
+                regWindow.Show();
+            }
+        }
         public void App_start(object sender, StartupEventArgs e)
         {
+            processCommandLine(e.Args);
+    
+
             /*splash = new SplashScreen();
             splash.Show();*/
 
@@ -140,6 +171,7 @@ namespace Drachenkatze.PresetMagician.GUI
         {
             var licenseFile = getLicenseFile();
 
+            Debug.WriteLine(licenseFile);
             FileStream stream = new FileStream(licenseFile, FileMode.Open);
             license = License.Load(stream);
 
@@ -155,7 +187,8 @@ namespace Drachenkatze.PresetMagician.GUI
 
         public static DirectoryInfo getAppDataDir()
         {
-            DirectoryInfo appData = new DirectoryInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Drachenkatze\PresetMagician"));
+            DirectoryInfo appData = new DirectoryInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Drachenkatze\PresetMagician"));
+
             if (!appData.Exists)
             {
                 appData.Create();
@@ -202,42 +235,13 @@ namespace Drachenkatze.PresetMagician.GUI
             return TextConversion.ToBase64String(Encoding.ASCII.GetBytes(output));
         }
 
-        public void App_start2(object sender, StartupEventArgs e)
-        {
-            FileStream stream = new FileStream(@"C:\Users\Drachenkatze\Desktop\test.xml", FileMode.Open);
-            var license = License.Load(stream);
-            var validationFailures = license.Validate()
-                                .ExpirationDate()
-                                    .When(lic => lic.Type == LicenseType.Trial)
-                                .And()
-                                .Signature(Drachenkatze.PresetMagician.GUI.Properties.Resources.PublicKey)
-                                .AssertValidLicense();
-
-            foreach (var failure in validationFailures)
-            {
-                Debug.WriteLine(failure.GetType().Name + ": " + failure.Message + " - " + failure.HowToResolve);
-            }
-
-            if (!validationFailures.Any())
-            {
-                Debug.WriteLine("License OK!");
-            }
-            stream.Close();
-
-            /*var signer = SignerUtilities.GetSigner(X9ObjectIdentifiers.ECDsaWithSha512.Id);
-            Debug.WriteLine(signer.ToString());
-
-            ManagementObject os = new ManagementObject("Win32_OperatingSystem=@");
-            string serial = (string)os["SerialNumber"];
-            Debug.WriteLine(serial);*/
-            return;
-        }
-
         public static void setStatusBar(string status)
         {
             TextBlock textBlock = (TextBlock)Application.Current.MainWindow.FindName("statusMessage");
 
-            //textBlock.Text = status;
+            if (textBlock != null) { 
+                textBlock.Text = status;
+            }
         }
 
         public static void activateTab(int index)

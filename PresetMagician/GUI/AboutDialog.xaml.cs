@@ -17,7 +17,7 @@ namespace Drachenkatze.PresetMagician.GUI.GUI
     /// <summary>
     /// Interaction logic for AboutDialog.xaml
     /// </summary>
-    public partial class AboutDialog : Window
+    public partial class AboutDialog
     {
         public AboutDialog()
         {

@@ -288,18 +288,6 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
 
             ConvertToOGG(tempFileName, GetPreviewFilename(preset));
 
-            SHA256 sha256Hash = SHA256.Create();
-            byte[] data = sha256Hash.ComputeHash(preset.PresetData);
-
-            var sBuilder = new StringBuilder();
-
-            // Loop through each byte of the hashed data
-            // and format each one as a hexadecimal string.
-            for (int i = 0; i < data.Length; i++)
-            {
-                sBuilder.Append(data[i].ToString("x2"));
-            }
-            Debug.WriteLine(String.Format("The hash for program {0,32} is {1,32}", preset.PresetName, sBuilder));
             return true;
         }
     }

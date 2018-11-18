@@ -3,27 +3,25 @@
                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
             Icon="PresetMagician.ico"
         xmlns:Fluent="urn:fluent-ribbon"
+                     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+
         xmlns:controls="clr-namespace:Drachenkatze.PresetMagician.GUI.Controls"
                      x:Name="window"
                       ResizeMode="CanResizeWithGrip"
-        Title="PresetMagician" Height="450" Width="800" Initialized="Window_Initialized">
-    <Grid>
+        Title="PresetMagician" Height="600" Width="800" ContentRendered="Window_Initialized"  WindowStartupLocation="CenterScreen" TitleBarHeight="32">
+        <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Fluent:Ribbon Grid.Row="0">
-            <Fluent:Ribbon.Menu>
-                <Fluent:Backstage>
-                </Fluent:Backstage>
-            </Fluent:Ribbon.Menu>
+        <Fluent:Ribbon Grid.Row="0" IsQuickAccessToolBarMenuDropDownVisible="False" IsQuickAccessToolBarVisible="False" ShowQuickAccessToolBarAboveRibbon="False" IsAutomaticCollapseEnabled="False" CanCustomizeQuickAccessToolBarItems="False" CanMinimize="False">
             <!--Tabs-->
             <Fluent:RibbonTabItem Header="Home">
-                <Fluent:RibbonGroupBox Width="215" Header="">
-                    <Fluent:Button Header="About" Icon="{StaticResource test}" Click="About_Click" Content="" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" UseLayoutRounding="False" RenderTransformOrigin="0.5,0">
+                <Fluent:RibbonGroupBox Width="Auto" Header="General">
+                    <Fluent:Button Width="64" Header="About" LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconMaterialKind.Information}, Width=32, Height=32}" Click="About_Click">
                     </Fluent:Button>
-                    <Fluent:Button Header="NKSF Inspector" Click="NKSFInspector_Click" Content="" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" UseLayoutRounding="False" RenderTransformOrigin="0.5,0">
+                    <Fluent:Button Width="64" Header="NKSF Inspector" LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Telescope}, Width=32, Height=32}" Click="NKSFInspector_Click" Content="" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0">
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
