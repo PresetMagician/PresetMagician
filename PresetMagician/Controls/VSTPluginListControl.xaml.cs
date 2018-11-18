@@ -143,11 +143,13 @@ namespace Drachenkatze.PresetMagician.GUI.Controls
             {
                 if (!v.IsSupported)
                 {
-                    if (v.PluginType == VSTPlugin.PluginTypes.Effect) { 
-                        MessageBox.Show("The plugin " + v.PluginName + " is an effect; this is currently not supported (but will be implemented)");
-                    } else
+                    if (v.PluginType == VSTPlugin.PluginTypes.Effect)
                     {
-                        MessageBox.Show("The plugin " + v.PluginName + " only exposes "+v.NumPresets+" presets via the standard VST program interface. Most likely the plugin vendor uses their own preset management system; support for many plugins will (hopefully) come soon!");
+                        MessageBox.Show("The plugin " + v.PluginName + " is an effect; this is currently not supported (but will be implemented)");
+                    }
+                    else
+                    {
+                        MessageBox.Show("The plugin " + v.PluginName + " only exposes " + v.NumPresets + " presets via the standard VST program interface. Most likely the plugin vendor uses their own preset management system; support for many plugins will (hopefully) come soon!");
                     }
                     continue;
                 }
@@ -163,7 +165,6 @@ namespace Drachenkatze.PresetMagician.GUI.Controls
                 }
 
                 vsts.Add(v);
-                
             }
             vstPresetScanner.RunWorkerAsync(argument: vsts);
 
