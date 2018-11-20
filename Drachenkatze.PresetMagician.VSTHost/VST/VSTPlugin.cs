@@ -23,10 +23,13 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
         {
             // Default mode, just serialize the full bank. Active program is stored within the full bank
             Default = 0,
+
             // Unknown, use bank trickery
             Unknown = 1,
+
             // Trickery mode. Copies active program to slot 0
             BankTrickery = 2,
+
             // None, can't export
             None = 3
         }
@@ -37,7 +40,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             Instrument
         }
 
-        public PluginTypes PluginType {get;set;}
+        public PluginTypes PluginType { get; set; }
 
         public String PluginTypeDescription
         {
@@ -129,7 +132,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             else
             {
                 this.PluginType = PluginTypes.Effect;
-                
+
                 IsSupported = false;
                 PresetSaveMode = PresetSaveModes.None;
                 return;
@@ -147,15 +150,14 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                 ChunkSupport = true;
                 DeterminateVSTPresetSaveMode();
 
-                if (PresetSaveMode != PresetSaveModes.None) { 
-                IsSupported = true;
+                if (PresetSaveMode != PresetSaveModes.None)
+                {
+                    IsSupported = true;
                 }
             }
-
-            
         }
 
-        public void DeterminateVSTPresetSaveMode ()
+        public void DeterminateVSTPresetSaveMode()
         {
             if (PluginContext.PluginInfo.ProgramCount > 1)
             {
@@ -180,7 +182,8 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                         }
                     }
                 }
-            } else
+            }
+            else
             {
                 PresetSaveMode = PresetSaveModes.None;
             }
@@ -188,16 +191,17 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
 
         /**
          * Checks if the full bank presets are consistent. The full bank chunk should not change for the same program.
-         * 
+         *
          * We check it 10 times to see if the hashes are consistent. If they're not, the plugin most likely stores some
          * runtime data (like LFO state).
-         * 
+         *
          */
-        public Boolean areBankchunksConsistent ()
+
+        public Boolean areBankchunksConsistent()
         {
             string firstPresetHash = getPreset(0, false, true).getPresetHash();
 
-            for (int i=0;i<10;i++)
+            for (int i = 0; i < 10; i++)
             {
                 if (firstPresetHash != getPreset(0, false, true).getPresetHash())
                 {
@@ -210,11 +214,12 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
 
         /**
         * Checks if the full bank presets are consistent. The full bank chunk should not change for the same program.
-        * 
+        *
         * We check it 10 times to see if the hashes are consistent. If they're not, the plugin most likely stores some
         * runtime data (like LFO state).
-        * 
+        *
         */
+
         public Boolean arePresetChunksConsistent()
         {
             string firstPresetHash = getPreset(0, true, true).getPresetHash();
@@ -233,15 +238,17 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
         /**
          * Checks if the current program number is stored in the bank chunk. Some VSTs do it (like V-Station),
          * others don't (which should be the norm).
-         * 
+         *
          * Interpret the return value "true" as "uncertain"
          */
-        public Boolean isCurrentProgramStoredInBankChunk ()
+
+        public Boolean isCurrentProgramStoredInBankChunk()
         {
             if (getPreset(0, false, true).getPresetHash() != getPreset(1, false, true).getPresetHash())
             {
                 return true;
-            } else
+            }
+            else
             {
                 return false;
             }
@@ -326,11 +333,11 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
         public VSTPreset getPreset(int index, Boolean isPreset, Boolean skipSaveMode)
         {
             VSTPreset vstPreset;
-            
 
             vstPreset = new VSTPreset();
-            
-            if (!skipSaveMode) {
+
+            if (!skipSaveMode)
+            {
                 switch (PresetSaveMode)
                 {
                     case PresetSaveModes.Unknown:
@@ -346,6 +353,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                         vstPreset.PresetData = this.PluginContext.PluginCommandStub.GetChunk(false);
                         this.PluginContext.PluginCommandStub.SetChunk(programBackup, true);
                         break;
+
                     case PresetSaveModes.Default:
                     default:
                         this.PluginContext.PluginCommandStub.SetProgram(index);
@@ -353,11 +361,13 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                         vstPreset.PresetData = this.PluginContext.PluginCommandStub.GetChunk(false);
                         break;
                 }
-            } else {
+            }
+            else
+            {
                 this.PluginContext.PluginCommandStub.SetProgram(index);
                 vstPreset.PresetName = this.PluginContext.PluginCommandStub.GetProgramName();
-                    vstPreset.PresetData = this.PluginContext.PluginCommandStub.GetChunk(isPreset);
-                }
+                vstPreset.PresetData = this.PluginContext.PluginCommandStub.GetChunk(isPreset);
+            }
 
             vstPreset.PreviewNote = new CannedBytes.Midi.Message.MidiNoteName("C5");
             vstPreset.ProgramNumber = this.PluginContext.PluginCommandStub.GetProgram();
