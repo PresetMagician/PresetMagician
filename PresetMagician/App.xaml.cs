@@ -136,9 +136,15 @@ namespace Drachenkatze.PresetMagician.GUI
             MessageBox.Show("An unhandled exception occured. The log has been written to " + fullFileName);
         }
 
-        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.ControlAppDomain)]
         public void App_start(object sender, StartupEventArgs e)
         {
+            var vstPlugin = new VSTPlugin(@"C:\Users\Drachenkatze\Documents\deleteme\Plex64.dll");
+            var vstHost = new VstHost();
+
+            var plugin = vstHost.LoadVST(vstPlugin);
+            Debug.WriteLine(plugin.PresetSaveModeDescription);
+            vstHost.UnloadVST(plugin);
+
             AppDomain currentDomain = AppDomain.CurrentDomain;
             currentDomain.UnhandledException += new UnhandledExceptionEventHandler(UnhandledExceptionHandler);
             processCommandLine(e.Args);

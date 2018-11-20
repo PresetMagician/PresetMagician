@@ -52,6 +52,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="eula.rtf" />
+    <Content Include="prereqs\vc_redist.x64.exe" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="prereqs" />
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" Condition=" '$(WixTargetsPath)' != '' " />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets" Condition=" '$(WixTargetsPath)' == '' AND Exists('$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets') " />

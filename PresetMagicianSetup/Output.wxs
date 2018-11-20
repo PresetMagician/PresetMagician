@@ -2,6 +2,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Fragment>
         <DirectoryRef Id="INSTALLDIR">
+            <Directory Id="dirBBC4F37216D38B8B42FA692EA5C15ACD" Name="Documentation" />
             <Directory Id="dir2CBB433BA8C644B4FD625D8C33C94275" Name="en" />
             <Directory Id="dir577231E2EF642DDF4B09B65F4BEE3BE2" Name="es" />
             <Directory Id="dir0B7D401DE3233449E75F31A823BF5B99" Name="fr" />
@@ -22,6 +23,13 @@
                 <File Id="fil282863447CAC595E48B54539D86EBCB8" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\Antlr3.Runtime.dll" />
             </Component>
             
+            <Component Id="cmp68D767AEEE842A722AECA2C65D34BE2E" Directory="INSTALLDIR" Guid="*">
+                <File Id="filCC34B59260E76EC7532DD3E23A541355" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\BouncyCastle.Crypto.dll" />
+            </Component>
+            <Component Id="cmp08072DED40A2AE0F2F7264A3ECFD4107" Directory="INSTALLDIR" Guid="*">
+                <File Id="fil2D4373138064E87DA9D84948B330BDC1" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\CommandLine.dll" />
+            </Component>
+            
             <Component Id="cmp669D7BFE3F77F8D3E757F78FE36D1217" Directory="INSTALLDIR" Guid="*">
                 <File Id="fil01FD9A438453A336BFC7E1C098C52A86" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\ControlzEx.dll" />
             </Component>
@@ -32,6 +40,10 @@
             </Component>
             <Component Id="cmp4DC85842AB57A43999CA0031DBF6254A" Directory="INSTALLDIR" Guid="*">
                 <File Id="fil84616C8856030A32C3506D3DD43A09E9" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\Drachenkatze.PresetMagician.NKSF.dll.config" />
+            </Component>
+            
+            <Component Id="cmp2F4E525C99B0C03CD0D0D45B14570DD6" Directory="INSTALLDIR" Guid="*">
+                <File Id="fil22CC0E63ED1F37E02D04000DD357828D" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\Drachenkatze.PresetMagician.Utils.dll" />
             </Component>
             
             <Component Id="cmpA3F111A1DC19015579B6DA2BFD1FAE71" Directory="INSTALLDIR" Guid="*">
@@ -61,6 +73,16 @@
             <Component Id="cmpED26BC8A4DD9D629DCED5BB43B9A9D84" Directory="INSTALLDIR" Guid="*">
                 <File Id="fil1058036AD869A26E96104472412B14E5" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\Jacobi.Vst.Interop-x64.dll" />
             </Component>
+            
+            <Component Id="cmpAA3D78E9B3AE6821E2C081A41FD040FD" Directory="INSTALLDIR" Guid="*">
+                <File Id="fil41A7C42F7C04E764DDE088620AF23D8E" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\MahApps.Metro.IconPacks.Core.dll" />
+            </Component>
+            
+            
+            <Component Id="cmp286A3BDB1EC430B908FD322B1322D746" Directory="INSTALLDIR" Guid="*">
+                <File Id="fil3D712A15730F07F094E6844258950361" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\MahApps.Metro.IconPacks.dll" />
+            </Component>
+            
             
             <Component Id="cmpC2A18D0B20E16FDDE62466463A2B5954" Directory="INSTALLDIR" Guid="*">
                 <File Id="fil74A5CF48E6899B366B55577F681DBB28" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\MessagePack.dll" />
@@ -353,61 +375,9 @@
                 <File Id="fil613A0548F32ABD04313158AB9CCFAA11" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\Platform.dll" />
             </Component>
             <Component Id="cmp12468018B0376628404CF9106ED378F3" Directory="INSTALLDIR" Guid="*">
-                <Class Id="{16E49D8F-F35B-3DF2-AFCB-D77691F6C2CF}" Context="InprocServer32" Description="Portable.Licensing.Validation.LicenseExpiredValidationFailure" ThreadingModel="both" ForeignServer="mscoree.dll">
-                    <ProgId Id="Portable.Licensing.Validation.LicenseExpiredValidationFailure" Description="Portable.Licensing.Validation.LicenseExpiredValidationFailure" />
-                </Class>
-                <Class Id="{2B697F7E-9244-316C-95A5-C38B9F6A7FF1}" Context="InprocServer32" Description="Portable.Licensing.Security.Cryptography.KeyGenerator" ThreadingModel="both" ForeignServer="mscoree.dll">
-                    <ProgId Id="Portable.Licensing.Security.Cryptography.KeyGenerator" Description="Portable.Licensing.Security.Cryptography.KeyGenerator" />
-                </Class>
-                <Class Id="{764E0EC9-7E2A-3F11-801B-A8A9934636FB}" Context="InprocServer32" Description="Portable.Licensing.Validation.InvalidSignatureValidationFailure" ThreadingModel="both" ForeignServer="mscoree.dll">
-                    <ProgId Id="Portable.Licensing.Validation.InvalidSignatureValidationFailure" Description="Portable.Licensing.Validation.InvalidSignatureValidationFailure" />
-                </Class>
-                <Class Id="{FA3FD433-CDEC-3434-804F-49F743E14569}" Context="InprocServer32" Description="Portable.Licensing.Validation.GeneralValidationFailure" ThreadingModel="both" ForeignServer="mscoree.dll">
-                    <ProgId Id="Portable.Licensing.Validation.GeneralValidationFailure" Description="Portable.Licensing.Validation.GeneralValidationFailure" />
-                </Class>
                 <File Id="fil4668DEBD20B62BC9CB9F1F8EA5E1E826" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\Portable.Licensing.dll" />
-                <ProgId Id="Record" />
-                <RegistryValue Root="HKCR" Key="CLSID\{16E49D8F-F35B-3DF2-AFCB-D77691F6C2CF}\Implemented Categories\{62C8FE65-4EBB-45e7-B440-6E39B2CDBF29}" Value="" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{16E49D8F-F35B-3DF2-AFCB-D77691F6C2CF}\InprocServer32\1.0.0.0" Name="Class" Value="Portable.Licensing.Validation.LicenseExpiredValidationFailure" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{16E49D8F-F35B-3DF2-AFCB-D77691F6C2CF}\InprocServer32\1.0.0.0" Name="Assembly" Value="Portable.Licensing, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{16E49D8F-F35B-3DF2-AFCB-D77691F6C2CF}\InprocServer32\1.0.0.0" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{16E49D8F-F35B-3DF2-AFCB-D77691F6C2CF}\InprocServer32\1.0.0.0" Name="CodeBase" Value="file:///[#fil4668DEBD20B62BC9CB9F1F8EA5E1E826]" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{16E49D8F-F35B-3DF2-AFCB-D77691F6C2CF}\InprocServer32" Name="Class" Value="Portable.Licensing.Validation.LicenseExpiredValidationFailure" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{16E49D8F-F35B-3DF2-AFCB-D77691F6C2CF}\InprocServer32" Name="Assembly" Value="Portable.Licensing, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{16E49D8F-F35B-3DF2-AFCB-D77691F6C2CF}\InprocServer32" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{16E49D8F-F35B-3DF2-AFCB-D77691F6C2CF}\InprocServer32" Name="CodeBase" Value="file:///[#fil4668DEBD20B62BC9CB9F1F8EA5E1E826]" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{2B697F7E-9244-316C-95A5-C38B9F6A7FF1}\Implemented Categories\{62C8FE65-4EBB-45e7-B440-6E39B2CDBF29}" Value="" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{2B697F7E-9244-316C-95A5-C38B9F6A7FF1}\InprocServer32\1.0.0.0" Name="Class" Value="Portable.Licensing.Security.Cryptography.KeyGenerator" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{2B697F7E-9244-316C-95A5-C38B9F6A7FF1}\InprocServer32\1.0.0.0" Name="Assembly" Value="Portable.Licensing, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{2B697F7E-9244-316C-95A5-C38B9F6A7FF1}\InprocServer32\1.0.0.0" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{2B697F7E-9244-316C-95A5-C38B9F6A7FF1}\InprocServer32\1.0.0.0" Name="CodeBase" Value="file:///[#fil4668DEBD20B62BC9CB9F1F8EA5E1E826]" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{2B697F7E-9244-316C-95A5-C38B9F6A7FF1}\InprocServer32" Name="Class" Value="Portable.Licensing.Security.Cryptography.KeyGenerator" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{2B697F7E-9244-316C-95A5-C38B9F6A7FF1}\InprocServer32" Name="Assembly" Value="Portable.Licensing, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{2B697F7E-9244-316C-95A5-C38B9F6A7FF1}\InprocServer32" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{2B697F7E-9244-316C-95A5-C38B9F6A7FF1}\InprocServer32" Name="CodeBase" Value="file:///[#fil4668DEBD20B62BC9CB9F1F8EA5E1E826]" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{764E0EC9-7E2A-3F11-801B-A8A9934636FB}\Implemented Categories\{62C8FE65-4EBB-45e7-B440-6E39B2CDBF29}" Value="" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{764E0EC9-7E2A-3F11-801B-A8A9934636FB}\InprocServer32\1.0.0.0" Name="Class" Value="Portable.Licensing.Validation.InvalidSignatureValidationFailure" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{764E0EC9-7E2A-3F11-801B-A8A9934636FB}\InprocServer32\1.0.0.0" Name="Assembly" Value="Portable.Licensing, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{764E0EC9-7E2A-3F11-801B-A8A9934636FB}\InprocServer32\1.0.0.0" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{764E0EC9-7E2A-3F11-801B-A8A9934636FB}\InprocServer32\1.0.0.0" Name="CodeBase" Value="file:///[#fil4668DEBD20B62BC9CB9F1F8EA5E1E826]" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{764E0EC9-7E2A-3F11-801B-A8A9934636FB}\InprocServer32" Name="Class" Value="Portable.Licensing.Validation.InvalidSignatureValidationFailure" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{764E0EC9-7E2A-3F11-801B-A8A9934636FB}\InprocServer32" Name="Assembly" Value="Portable.Licensing, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{764E0EC9-7E2A-3F11-801B-A8A9934636FB}\InprocServer32" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{764E0EC9-7E2A-3F11-801B-A8A9934636FB}\InprocServer32" Name="CodeBase" Value="file:///[#fil4668DEBD20B62BC9CB9F1F8EA5E1E826]" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{FA3FD433-CDEC-3434-804F-49F743E14569}\Implemented Categories\{62C8FE65-4EBB-45e7-B440-6E39B2CDBF29}" Value="" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{FA3FD433-CDEC-3434-804F-49F743E14569}\InprocServer32\1.0.0.0" Name="Class" Value="Portable.Licensing.Validation.GeneralValidationFailure" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{FA3FD433-CDEC-3434-804F-49F743E14569}\InprocServer32\1.0.0.0" Name="Assembly" Value="Portable.Licensing, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{FA3FD433-CDEC-3434-804F-49F743E14569}\InprocServer32\1.0.0.0" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{FA3FD433-CDEC-3434-804F-49F743E14569}\InprocServer32\1.0.0.0" Name="CodeBase" Value="file:///[#fil4668DEBD20B62BC9CB9F1F8EA5E1E826]" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{FA3FD433-CDEC-3434-804F-49F743E14569}\InprocServer32" Name="Class" Value="Portable.Licensing.Validation.GeneralValidationFailure" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{FA3FD433-CDEC-3434-804F-49F743E14569}\InprocServer32" Name="Assembly" Value="Portable.Licensing, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{FA3FD433-CDEC-3434-804F-49F743E14569}\InprocServer32" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="CLSID\{FA3FD433-CDEC-3434-804F-49F743E14569}\InprocServer32" Name="CodeBase" Value="file:///[#fil4668DEBD20B62BC9CB9F1F8EA5E1E826]" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="Record\{98B095BF-47C9-3D76-82DF-F89E3A1434B9}\1.0.0.0" Name="Class" Value="Portable.Licensing.LicenseType" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="Record\{98B095BF-47C9-3D76-82DF-F89E3A1434B9}\1.0.0.0" Name="Assembly" Value="Portable.Licensing, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="Record\{98B095BF-47C9-3D76-82DF-F89E3A1434B9}\1.0.0.0" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
-                <RegistryValue Root="HKCR" Key="Record\{98B095BF-47C9-3D76-82DF-F89E3A1434B9}\1.0.0.0" Name="CodeBase" Value="file:///[#fil4668DEBD20B62BC9CB9F1F8EA5E1E826]" Type="string" Action="write" />
             </Component>
+            
             
             <Component Id="cmp5AB63D8BA1A0AEF42BDB67F8DF19E9FF" Directory="INSTALLDIR" Guid="*">
                 <File Id="fil108A253A9872F38C79C38D58B89F8D96" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\PresetMagician.exe" />
@@ -534,6 +504,11 @@
                 <RegistryValue Root="HKCR" Key="Record\{B3CBA6E6-0B75-3B33-82DF-C5C094BB1D92}\2.0.0.0" Name="Assembly" Value="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10" Type="string" Action="write" />
                 <RegistryValue Root="HKCR" Key="Record\{B3CBA6E6-0B75-3B33-82DF-C5C094BB1D92}\2.0.0.0" Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
                 <RegistryValue Root="HKCR" Key="Record\{B3CBA6E6-0B75-3B33-82DF-C5C094BB1D92}\2.0.0.0" Name="CodeBase" Value="file:///[#fil53A2D25ACF85F8FF0B7366F41890C01E]" Type="string" Action="write" />
+            </Component>
+            
+            
+            <Component Id="cmp7E6B87609FBD621CCE94F54D05D3A542" Directory="INSTALLDIR" Guid="*">
+                <File Id="fil31FF2600BDE31F8C701FD2F7821AAA20" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\Svg.dll" />
             </Component>
             
             
@@ -745,6 +720,9 @@
             <Component Id="cmpC2109B9173A8B91CBDD411618A20588C" Directory="INSTALLDIR" Guid="*">
                 <File Id="fil2A581D7BEB9E3BA198BA51891387E525" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\System.Reflection.Primitives.dll" />
             </Component>
+            <Component Id="cmp02CB84C817118FDC13CA3B122EC0950A" Directory="INSTALLDIR" Guid="*">
+                <File Id="fil1B9D0066C718C200D72A19AA47F72B65" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\System.Reflection.TypeExtensions.dll" />
+            </Component>
             <Component Id="cmp48A7934AD38EE63A44A9478E1C31E3BB" Directory="INSTALLDIR" Guid="*">
                 <File Id="fil3BB10164D9FC561AC346D63A8AB66A9E" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\System.Resources.Reader.dll" />
             </Component>
@@ -876,23 +854,47 @@
             <Component Id="cmpBD71D39D6B6AA3034EE2D899CE44E89C" Directory="INSTALLDIR" Guid="*">
                 <File Id="filAFE94BC7B721518C93DA92F4F796C7E8" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\WPFHexaEditor.dll" />
             </Component>
+            <Component Id="cmp824E59E172AC84186E1BB27D0E0019DD" Directory="dir207C941A515E6BD80C3177D3C9CEE8D3" Guid="*">
+                <File Id="fil598AACC39F7BA0F8A3DB62F536F61F9A" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\Documentation\Licenses\LICENSE-BouncyCastle.Crypto.md" />
+            </Component>
+            <Component Id="cmpB994FB89F4F88D4465E6D970635846A5" Directory="dir207C941A515E6BD80C3177D3C9CEE8D3" Guid="*">
+                <File Id="fil52C4AA056DF78EB5BBB9C3477CCBDFFB" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\Documentation\Licenses\LICENSE-Fody.md" />
+            </Component>
+            <Component Id="cmp96D4E22A0C787111C30CE57C63CF2857" Directory="dir207C941A515E6BD80C3177D3C9CEE8D3" Guid="*">
+                <File Id="fil002B1A234E00A5B1023169208B04647C" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\Documentation\Licenses\LICENSE-GSF.Core.md" />
+            </Component>
+            <Component Id="cmpF8CBFCA5971700480BCE359E82A1D4CF" Directory="dir207C941A515E6BD80C3177D3C9CEE8D3" Guid="*">
+                <File Id="fil1CF6B5F5555A14C0CDAC6A9DA63B0EA5" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\Documentation\Licenses\LICENSE-GSF.Media.md" />
+            </Component>
+            <Component Id="cmp8FE233DFCB270CF46E1033D08D99A95B" Directory="dir207C941A515E6BD80C3177D3C9CEE8D3" Guid="*">
+                <File Id="fil745E538071606DDF2B51A11C8FD5DC38" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\Documentation\Licenses\LICENSE-MessagePack.md" />
+            </Component>
+            <Component Id="cmp7335710BB109702C28C708D8B8235D7A" Directory="dir207C941A515E6BD80C3177D3C9CEE8D3" Guid="*">
+                <File Id="filA64D1ECA16EC7E0E0198757A44D38654" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\Documentation\Licenses\LICENSE-NAudio.md" />
+            </Component>
+            <Component Id="cmp70539953A850DDC869F583AA9CB667C2" Directory="dir207C941A515E6BD80C3177D3C9CEE8D3" Guid="*">
+                <File Id="filF641E5A6BABF97BD8CDDBBCA2F5D414B" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\Documentation\Licenses\LICENSE-Newtonsoft.Json.md" />
+            </Component>
+            <Component Id="cmpA8EC1EFDD3FD7782CE1963B608A20124" Directory="dir207C941A515E6BD80C3177D3C9CEE8D3" Guid="*">
+                <File Id="fil2409EFDF2AED2AC4C68657825A9E84AF" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\Documentation\Licenses\LICENSE-Platform.Net.md" />
+            </Component>
+            <Component Id="cmp30495E0A744F901F8DA5896979B8F311" Directory="dir207C941A515E6BD80C3177D3C9CEE8D3" Guid="*">
+                <File Id="fil8696EE6800AF734007E6840FFBDA91D4" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\Documentation\Licenses\LICENSE-Portable.Licensing.md" />
+            </Component>
+            <Component Id="cmp84BB1D8DECA5FD97D92D32671D2CA13C" Directory="dir207C941A515E6BD80C3177D3C9CEE8D3" Guid="*">
+                <File Id="fil74AA08B19FCB198EA65DDCEEE16E353E" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\Documentation\Licenses\LICENSE-Source.JetBrains.Annotations.md" />
+            </Component>
+            <Component Id="cmp2C68A9569949715A2769D1F9973792B3" Directory="dir207C941A515E6BD80C3177D3C9CEE8D3" Guid="*">
+                <File Id="filF4E1939AA65D214BEBC7AAD9BE7DE60F" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\Documentation\Licenses\LICENSE-VST.NET.md" />
+            </Component>
             <Component Id="cmp814B593010D502DB594532F7CB44C8E7" Directory="dir2CBB433BA8C644B4FD625D8C33C94275" Guid="*">
                 <File Id="fil1258412D336587732F9E77D36C7A3D68" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\en\Microsoft.Expression.Interactions.resources.dll" />
-            </Component>
-            <Component Id="cmpCD7F60DE44EF357433FC53401FF6305E" Directory="dir2CBB433BA8C644B4FD625D8C33C94275" Guid="*">
-                <File Id="fil30EF0EAB89DCF78543C35F7BE1F7B3E9" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\en\System.Windows.Interactivity.resources.dll" />
             </Component>
             <Component Id="cmpFEA2D1EAAD2EEA4132BE7E3F05AAC54B" Directory="dir577231E2EF642DDF4B09B65F4BEE3BE2" Guid="*">
                 <File Id="filCB9291ECAF52E2D3EA6EAAFECC03EFBD" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\es\Microsoft.Expression.Interactions.resources.dll" />
             </Component>
-            <Component Id="cmpB2B124F3543E5629E8C12BDF9BCF31D0" Directory="dir577231E2EF642DDF4B09B65F4BEE3BE2" Guid="*">
-                <File Id="fil03C66E5536DA4BAA7F3298D4B48ED65C" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\es\System.Windows.Interactivity.resources.dll" />
-            </Component>
             <Component Id="cmpE78461E7BDDFFFFEE95546A414A2C28C" Directory="dir0B7D401DE3233449E75F31A823BF5B99" Guid="*">
                 <File Id="fil86971DA8087F1A8CFAB8BF02F4E58F97" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\fr\Microsoft.Expression.Interactions.resources.dll" />
-            </Component>
-            <Component Id="cmp1BE175AF14951BF74EF3C5D8CD32B3D6" Directory="dir0B7D401DE3233449E75F31A823BF5B99" Guid="*">
-                <File Id="fil7691583B6E1F2D6D7C0FD669E2AA8F25" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\fr\System.Windows.Interactivity.resources.dll" />
             </Component>
             <Component Id="cmp0B97F0FF811BB72770019E962A2F01B0" Directory="dirA4A3B06BC5C7490FB1BF2DA792906386" Guid="*">
                 <File Id="filEF22448DF5468EA6AA916B40ED1AABFC" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\fr-CA\WPFHexaEditor.resources.dll" />
@@ -900,26 +902,14 @@
             <Component Id="cmp3DDCA4E973CC49402B54EAE3510FF83B" Directory="dirB5B71807E9474A6ED7A421DAF6D9317F" Guid="*">
                 <File Id="fil281870498D8C1915615D176EBDEB955D" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\it\Microsoft.Expression.Interactions.resources.dll" />
             </Component>
-            <Component Id="cmpD5F185FC7E1BAE9C20E96E118B4CEA4A" Directory="dirB5B71807E9474A6ED7A421DAF6D9317F" Guid="*">
-                <File Id="fil84FFF0E73ECDEDF315BA57BC498C874B" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\it\System.Windows.Interactivity.resources.dll" />
-            </Component>
             <Component Id="cmp0A957F150AC28F6B959351A2F2ECB49D" Directory="dir5315138C69BA7E69268AF83BB8AE9018" Guid="*">
                 <File Id="fil888960A36C5DF0DCB222F2646AEDAB00" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\ja\Microsoft.Expression.Interactions.resources.dll" />
-            </Component>
-            <Component Id="cmp03173EDF9EA6F6C7D11FBDA9BD64B7EE" Directory="dir5315138C69BA7E69268AF83BB8AE9018" Guid="*">
-                <File Id="fil90205C5CCACFF8259F166F1E9FC4B317" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\ja\System.Windows.Interactivity.resources.dll" />
             </Component>
             <Component Id="cmp49021EEF5EF4C84A0E8E497113E22886" Directory="dir6C3FEF1D6BC03982CA1FBA00284BF75D" Guid="*">
                 <File Id="fil27015E92B7E770D57BF37F3731B1DBD7" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\ko\Microsoft.Expression.Interactions.resources.dll" />
             </Component>
-            <Component Id="cmpDAB8277F1882DE9C9CFB08404D514F28" Directory="dir6C3FEF1D6BC03982CA1FBA00284BF75D" Guid="*">
-                <File Id="filDBAA46B861619512E873812BC542B177" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\ko\System.Windows.Interactivity.resources.dll" />
-            </Component>
             <Component Id="cmp9B30A3C761B72BC88D119E69331C9DF1" Directory="dirF7C0BEA86C276F53E8C9E8E6B2629A9B" Guid="*">
                 <File Id="fil31E6FA2019001DD6AE80FDB585814C59" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\ru\Microsoft.Expression.Interactions.resources.dll" />
-            </Component>
-            <Component Id="cmpE033CF060D1791FE7EDE63FBF4E50CD0" Directory="dirF7C0BEA86C276F53E8C9E8E6B2629A9B" Guid="*">
-                <File Id="filBDDE5179313C392E42338A4B5C36EB20" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\ru\System.Windows.Interactivity.resources.dll" />
             </Component>
             <Component Id="cmp9F32875B0C1FA24AEF8D74FCFB5A2276" Directory="dirE3F0F9B43ED464A39B7DF9FD78AAA9C5" Guid="*">
                 <File Id="fil4910C37A52B4CB236143C63C9876EC18" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\ru-RU\WPFHexaEditor.resources.dll" />
@@ -930,15 +920,14 @@
             <Component Id="cmp354D7E6097EAAA4449B1DEFF9F416611" Directory="dirD5682402C737D6B46ADCA4F0C55141DF" Guid="*">
                 <File Id="filF88DBF877367E565DB998CC3D5A1C872" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\zh-Hans\Microsoft.Expression.Interactions.resources.dll" />
             </Component>
-            <Component Id="cmpFC4BCEB806DA46CD14FCE699E5B0B35D" Directory="dirD5682402C737D6B46ADCA4F0C55141DF" Guid="*">
-                <File Id="filFCC32EDC4D1D8A1A2BF938AD235349E0" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\zh-Hans\System.Windows.Interactivity.resources.dll" />
-            </Component>
             <Component Id="cmp45BA3223ACF7B31AB8433442E3FAE792" Directory="dir161743E4D186A5C18DD78D84F6714734" Guid="*">
                 <File Id="fil59B755EA8A5B08696F73957199C9B71C" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\zh-Hant\Microsoft.Expression.Interactions.resources.dll" />
             </Component>
-            <Component Id="cmpF05130358D15B8BB95FE3B142B6DF7BF" Directory="dir161743E4D186A5C18DD78D84F6714734" Guid="*">
-                <File Id="fil7E49C4B4DCD86A063A15212753E216F6" KeyPath="yes" Source="$(var.PresetMagician.TargetDir)\zh-Hant\System.Windows.Interactivity.resources.dll" />
-            </Component>
         </ComponentGroup>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirBBC4F37216D38B8B42FA692EA5C15ACD">
+            <Directory Id="dir207C941A515E6BD80C3177D3C9CEE8D3" Name="Licenses" />
+        </DirectoryRef>
     </Fragment>
 </Wix>

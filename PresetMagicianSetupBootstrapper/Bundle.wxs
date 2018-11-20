@@ -12,6 +12,10 @@
     </BootstrapperApplicationRef>
 
     <Chain>
+      <ExePackage Cache="no" Compressed="yes" PerMachine="yes" Permanent="yes" Vital="yes"
+       SourceFile="prereqs\vc_redist.x64.exe" InstallCommand="/install /passive /norestart">
+      </ExePackage>
+
       <PackageGroupRef Id='NetFx462Redist' />
       <MsiPackage Id='PresetMagician' Vital='yes' SourceFile='$(var.PresetMagicianSetup.TargetPath)' />
     </Chain>
