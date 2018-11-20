@@ -59,8 +59,6 @@ Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "PresetMagicianSetupBootstra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drachenkatze.PresetMagician.Utils", "Drachenkatze.PresetMagician.Utils\Drachenkatze.PresetMagician.Utils.csproj", "{37ABDA8A-5FFA-41F9-B880-A272D8C21DFF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApp1", "WpfApp1\WpfApp1.csproj", "{CB527B1C-8315-48C4-8F2B-7419A62D9316}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
