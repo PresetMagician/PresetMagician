@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28306.52
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B3AB309F-1F87-49EE-A7A6-09F66AEB7CE0}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{573F54E5-BA0A-4C2A-974B-F054C00BB0B2}"
 	ProjectSection(SolutionItems) = preProject
 		..\vst.net\Source\Code\AssemblyInfo.Version.cpp = ..\vst.net\Source\Code\AssemblyInfo.Version.cpp
 		..\vst.net\Source\Code\AssemblyInfo.Version.cs = ..\vst.net\Source\Code\AssemblyInfo.Version.cs
@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PresetMagician", "PresetMagician\PresetMagician.csproj", "{0E183CA0-0CF2-4857-839E-E65BD6E9781D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B3AB309F-1F87-49EE-A7A6-09F66AEB7CE0}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{573F54E5-BA0A-4C2A-974B-F054C00BB0B2}"
 	ProjectSection(SolutionItems) = preProject
 		..\vst.net\Source\Code\AssemblyInfo.Version.cpp = ..\vst.net\Source\Code\AssemblyInfo.Version.cpp
 		..\vst.net\Source\Code\AssemblyInfo.Version.cs = ..\vst.net\Source\Code\AssemblyInfo.Version.cs
@@ -21,7 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		TestRIFF\SummaryInformation.cs = TestRIFF\SummaryInformation.cs
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B3AB309F-1F87-49EE-A7A6-09F66AEB7CE0}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{573F54E5-BA0A-4C2A-974B-F054C00BB0B2}"
 	ProjectSection(SolutionItems) = preProject
 		..\vst.net\Source\Code\AssemblyInfo.Version.cpp = ..\vst.net\Source\Code\AssemblyInfo.Version.cpp
 		..\vst.net\Source\Code\AssemblyInfo.Version.cs = ..\vst.net\Source\Code\AssemblyInfo.Version.cs
@@ -37,7 +37,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drachenkatze.PresetMagician
 		{E0CC0CCF-A40D-4A53-8FAC-B6AF7E76EB08} = {E0CC0CCF-A40D-4A53-8FAC-B6AF7E76EB08}
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B3AB309F-1F87-49EE-A7A6-09F66AEB7CE0}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{573F54E5-BA0A-4C2A-974B-F054C00BB0B2}"
 	ProjectSection(SolutionItems) = preProject
 		..\vst.net\Source\Code\AssemblyInfo.Version.cpp = ..\vst.net\Source\Code\AssemblyInfo.Version.cpp
 		..\vst.net\Source\Code\AssemblyInfo.Version.cs = ..\vst.net\Source\Code\AssemblyInfo.Version.cs
@@ -58,6 +58,8 @@ EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "PresetMagicianSetupBootstrapper", "PresetMagicianSetupBootstrapper\PresetMagicianSetupBootstrapper.wixproj", "{C5DD6A39-C463-4F5B-8574-7024FAD516F4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drachenkatze.PresetMagician.Utils", "Drachenkatze.PresetMagician.Utils\Drachenkatze.PresetMagician.Utils.csproj", "{37ABDA8A-5FFA-41F9-B880-A272D8C21DFF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApp1", "WpfApp1\WpfApp1.csproj", "{CB527B1C-8315-48C4-8F2B-7419A62D9316}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -200,8 +202,8 @@ Global
 		{C5DD6A39-C463-4F5B-8574-7024FAD516F4}.Debug|x86.Build.0 = Debug|x86
 		{C5DD6A39-C463-4F5B-8574-7024FAD516F4}.Publish|Any CPU.ActiveCfg = Release|x64
 		{C5DD6A39-C463-4F5B-8574-7024FAD516F4}.Publish|Any CPU.Build.0 = Release|x64
-		{C5DD6A39-C463-4F5B-8574-7024FAD516F4}.Publish|x64.ActiveCfg = Debug|x64
-		{C5DD6A39-C463-4F5B-8574-7024FAD516F4}.Publish|x64.Build.0 = Debug|x64
+		{C5DD6A39-C463-4F5B-8574-7024FAD516F4}.Publish|x64.ActiveCfg = Release|x64
+		{C5DD6A39-C463-4F5B-8574-7024FAD516F4}.Publish|x64.Build.0 = Release|x64
 		{C5DD6A39-C463-4F5B-8574-7024FAD516F4}.Publish|x86.ActiveCfg = Release|x86
 		{C5DD6A39-C463-4F5B-8574-7024FAD516F4}.Publish|x86.Build.0 = Release|x86
 		{C5DD6A39-C463-4F5B-8574-7024FAD516F4}.Release|Any CPU.ActiveCfg = Release|x86
@@ -226,6 +228,24 @@ Global
 		{37ABDA8A-5FFA-41F9-B880-A272D8C21DFF}.Release|x64.Build.0 = Release|Any CPU
 		{37ABDA8A-5FFA-41F9-B880-A272D8C21DFF}.Release|x86.ActiveCfg = Release|Any CPU
 		{37ABDA8A-5FFA-41F9-B880-A272D8C21DFF}.Release|x86.Build.0 = Release|Any CPU
+		{CB527B1C-8315-48C4-8F2B-7419A62D9316}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB527B1C-8315-48C4-8F2B-7419A62D9316}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB527B1C-8315-48C4-8F2B-7419A62D9316}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CB527B1C-8315-48C4-8F2B-7419A62D9316}.Debug|x64.Build.0 = Debug|Any CPU
+		{CB527B1C-8315-48C4-8F2B-7419A62D9316}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CB527B1C-8315-48C4-8F2B-7419A62D9316}.Debug|x86.Build.0 = Debug|Any CPU
+		{CB527B1C-8315-48C4-8F2B-7419A62D9316}.Publish|Any CPU.ActiveCfg = Release|Any CPU
+		{CB527B1C-8315-48C4-8F2B-7419A62D9316}.Publish|Any CPU.Build.0 = Release|Any CPU
+		{CB527B1C-8315-48C4-8F2B-7419A62D9316}.Publish|x64.ActiveCfg = Release|Any CPU
+		{CB527B1C-8315-48C4-8F2B-7419A62D9316}.Publish|x64.Build.0 = Release|Any CPU
+		{CB527B1C-8315-48C4-8F2B-7419A62D9316}.Publish|x86.ActiveCfg = Release|Any CPU
+		{CB527B1C-8315-48C4-8F2B-7419A62D9316}.Publish|x86.Build.0 = Release|Any CPU
+		{CB527B1C-8315-48C4-8F2B-7419A62D9316}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB527B1C-8315-48C4-8F2B-7419A62D9316}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB527B1C-8315-48C4-8F2B-7419A62D9316}.Release|x64.ActiveCfg = Release|Any CPU
+		{CB527B1C-8315-48C4-8F2B-7419A62D9316}.Release|x64.Build.0 = Release|Any CPU
+		{CB527B1C-8315-48C4-8F2B-7419A62D9316}.Release|x86.ActiveCfg = Release|Any CPU
+		{CB527B1C-8315-48C4-8F2B-7419A62D9316}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
