@@ -128,7 +128,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public bool IoChanged()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public bool OpenFileSelector(VstFileSelect fileSelect)
