@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
-
+using System.Runtime.ExceptionServices;
 using Jacobi.Vst.Interop.Host;
 
 namespace Drachenkatze.PresetMagician.VSTHost.VST
@@ -40,6 +40,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             return vstPlugins;
         }
 
+        [HandleProcessCorruptedStateExceptions]
         public VSTPlugin LoadVST(VSTPlugin vst)
         {
             HostCommandStub hostCommandStub = new HostCommandStub();
@@ -56,13 +57,12 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                 ctx.PluginCommandStub.Open();
                 vst.PluginContext.PluginCommandStub.MainsChanged(true);
                 vst.doCache();
-                
-                
+
                 vst.LoadError = "Loaded.";
             }
             catch (Exception e)
             {
-                Debug.WriteLine("load error" + e.ToString());
+                Debug.WriteLine("load error: " + e.ToString());
                 vst.LoadError = "Could not load plugin. " + e.ToString();
             }
 
