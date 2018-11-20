@@ -32,7 +32,7 @@ namespace Drachenkatze.PresetMagician.GUI.Controls
         private void ScanPluginButton_Click(object sender, RoutedEventArgs e)
         {
             App.setStatusBar("Scanning VSTPlugin paths...");
-            VSTPluginList.IsEnabled = false;
+            ScanPluginButton.IsEnabled = false;
 
             ObservableCollection<String> vstPluginDLLs = new ObservableCollection<String>();
             ObservableCollection<VSTPlugin> vstPlugins = new ObservableCollection<VSTPlugin>();
@@ -91,7 +91,7 @@ namespace Drachenkatze.PresetMagician.GUI.Controls
             vstPluginScanner.RunWorkerCompleted -= vstScanner_Completed;
             vstPluginScanner.ProgressChanged -= vstScanner_ProgressChanged;
 
-            VSTPluginList.IsEnabled = true;
+            ScanPluginButton.IsEnabled = true;
         }
 
         private void vstScanner_ProgressChanged(object sender,
