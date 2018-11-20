@@ -34,5 +34,16 @@ namespace Drachenkatze.PresetMagician.GUI.Properties {
                 this["VstPluginPaths"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection VstPluginBlacklist {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["VstPluginBlacklist"]));
+            }
+            set {
+                this["VstPluginBlacklist"] = value;
+            }
+        }
     }
 }
