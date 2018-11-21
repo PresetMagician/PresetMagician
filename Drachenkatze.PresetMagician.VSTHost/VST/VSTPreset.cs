@@ -10,8 +10,17 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
     {
         public String PluginDLLPath;
 
+        
+
+        public void SetPlugin (VSTPlugin vst)
+        {
+            PluginName = vst.PluginName;
+            PluginDLLPath = vst.PluginDLLPath;
+        }
+
         public VSTPreset()
         {
+            PreviewNote = new MidiNoteName("C5");
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

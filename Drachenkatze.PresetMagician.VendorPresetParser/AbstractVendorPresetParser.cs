@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser
 {
-    public interface IVendorPresetParser
+    public class AbstractVendorPresetParser
     {
-        List<int> SupportedPlugins { get; }
-        List<PresetBank> Banks { get; }
-        VSTPlugin VstPlugin { get; set; }
+        public VSTPlugin VstPlugin { get; set; }
     }
 }

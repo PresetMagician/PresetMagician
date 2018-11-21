@@ -33,6 +33,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,9 +43,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AbstractVendorPresetParser.cs" />
+    <Compile Include="PresetBank.cs" />
+    <Compile Include="D16 Group\D16Group.cs" />
     <Compile Include="D16 Group\PunchBox\D16PunchBox.cs" />
     <Compile Include="IVendorPresetParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Drachenkatze.PresetMagician.VSTHost\Drachenkatze.PresetMagician.VSTHost.csproj">
+      <Project>{bb9702b3-2826-411a-b7c5-ef64348a7a5c}</Project>
+      <Name>Drachenkatze.PresetMagician.VSTHost</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="GSF.Core">
+      <Version>2.1.468</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
