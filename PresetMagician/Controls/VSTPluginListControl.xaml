@@ -62,6 +62,14 @@
                     VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
+            <Button x:Name="ShowPluginInfo" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="6,2,2,2" IsEnabled="False" Click="ShowPluginInfo_OnClick">
+                <StackPanel Orientation="Horizontal">
+
+                    <TextBlock Text="Show Plugin Info"
+                               Margin="2 4 4 4"
+                               VerticalAlignment="Center" />
+                </StackPanel>
+            </Button>
         </DockPanel>
     </Grid>
 </UserControl>

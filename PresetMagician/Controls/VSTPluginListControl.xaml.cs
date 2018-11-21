@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using Drachenkatze.PresetMagician.GUI.GUI;
 using Drachenkatze.PresetMagician.VSTHost.VST;
 
 namespace Drachenkatze.PresetMagician.GUI.Controls
@@ -105,20 +106,25 @@ namespace Drachenkatze.PresetMagician.GUI.Controls
             if (VSTPluginList.SelectedItems.Count == 0)
             {
                 CreatePresetsButton.IsEnabled = false;
+                ShowPluginInfo.IsEnabled = false;
+                return;
             }
-            else
-            {
-                foreach (VSTPlugin i in VSTPluginList.SelectedItems)
-                {
-                    if (!i.IsLoaded)
-                    {
-                        CreatePresetsButton.IsEnabled = false;
-                        return;
-                    }
-                }
 
-                CreatePresetsButton.IsEnabled = true;
+            if (VSTPluginList.SelectedItems.Count == 1)
+            {
+                ShowPluginInfo.IsEnabled = true;
             }
+
+            foreach (VSTPlugin i in VSTPluginList.SelectedItems)
+            {
+                if (!i.IsLoaded)
+                {
+                    CreatePresetsButton.IsEnabled = false;
+                    return;
+                }
+            }
+
+            CreatePresetsButton.IsEnabled = true;
         }
 
         private void ExportButton_Click(object sender, RoutedEventArgs e)
@@ -227,6 +233,23 @@ namespace Drachenkatze.PresetMagician.GUI.Controls
 
         private void VSTPluginList_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
+        }
+
+        private void ShowPluginInfo_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (VSTPluginList.SelectedItems.Count != 1)
+            {
+                return;
+            }
+
+            VSTPlugin v = (VSTPlugin)VSTPluginList.SelectedItem;
+
+            App.vstHost.LoadVST(v);
+            var items = v.getPluginInfo();
+            var pluginInfoWindow = new PluginInfoWindow();
+            pluginInfoWindow.PluginProperties.ItemsSource = items;
+            pluginInfoWindow.ShowDialog();
+            App.vstHost.UnloadVST(v);
         }
     }
 }

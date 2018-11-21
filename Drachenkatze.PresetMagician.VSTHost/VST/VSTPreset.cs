@@ -8,53 +8,17 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
 {
     public class VSTPreset : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        public String PluginDLLPath;
 
         public VSTPreset()
         {
         }
 
-        public string getPresetHash ()
-        {
-            return HashUtils.getFormattedSHA256Hash(this.PresetData);
-        }
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        public String PresetName
-        {
-            get; set;
-        }
+        public String BankName { get; set; }
 
-        public int ProgramNumber
-        {
-            get; set;
-        }
-
-        public MidiNoteName PreviewNote
-        {
-            get; set;
-        }
-
-        public bool Export
-        {
-            get; set;
-        }
-
-        public String BankName
-        {
-            get; set;
-        }
-
-        public String PluginName
-        {
-            get; set;
-        }
-
-        public String PluginDLLPath;
-
-        public byte[] PresetData
-        {
-            get; set;
-        }
+        public bool Export { get; set; }
 
         public String NKSFBankName
         {
@@ -117,5 +81,19 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             }
         }
 
+        public String PluginName { get; set; }
+
+        public byte[] PresetData { get; set; }
+
+        public String PresetName { get; set; }
+
+        public MidiNoteName PreviewNote { get; set; }
+
+        public int ProgramNumber { get; set; }
+
+        public string getPresetHash()
+        {
+            return HashUtils.getFormattedSHA256Hash(this.PresetData);
+        }
     }
 }
