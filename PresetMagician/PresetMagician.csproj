@@ -343,6 +343,9 @@
     <Compile Include="GUI\NKSFViewer.xaml.cs">
       <DependentUpon>NKSFViewer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GUI\PluginInfoWindow.xaml.cs">
+      <DependentUpon>PluginInfoWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\RegistrationWindow.xaml.cs">
       <DependentUpon>RegistrationWindow.xaml</DependentUpon>
     </Compile>
@@ -375,6 +378,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="GUI\AboutDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\PluginInfoWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
