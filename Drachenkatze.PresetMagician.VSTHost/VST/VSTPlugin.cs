@@ -28,7 +28,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
     public class VSTPlugin : INotifyPropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler PropertyChanged;
-
+        public int PluginID { get; set; }
         public enum PresetSaveModes
         {
             // Default mode, just serialize the full bank. Active program is stored within the full bank
@@ -134,6 +134,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             this.PluginName = PluginContext.PluginCommandStub.GetEffectName();
             this.NumPresets = PluginContext.PluginInfo.ProgramCount;
             this.PluginVendor = PluginContext.PluginCommandStub.GetVendorString();
+            this.PluginID = PluginContext.PluginInfo.PluginID;
 
             if (PluginContext.PluginInfo.Flags.HasFlag(VstPluginFlags.IsSynth))
             {
@@ -179,6 +180,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                     {
                         Debug.WriteLine(PluginName + ": current program is stored in the bank chunk");
                         PresetSaveMode = PresetSaveModes.Default;
+                        
                         // Perfect, just put out the full bank chunk. Nothing to do here.
                     }
                     else
@@ -382,8 +384,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             vstPreset.ProgramNumber = this.PluginContext.PluginCommandStub.GetProgram();
             vstPreset.BankName = PluginName + " Factory";
             vstPreset.Export = true;
-            vstPreset.PluginName = PluginName;
-            vstPreset.PluginDLLPath = PluginDLLPath;
+            vstPreset.SetPlugin(this);
 
             return vstPreset;
         }

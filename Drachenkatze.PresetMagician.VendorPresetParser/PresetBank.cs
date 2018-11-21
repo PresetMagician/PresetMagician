@@ -7,10 +7,14 @@ using System.Threading.Tasks;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser
 {
-    public interface IVendorPresetParser
+    public class PresetBank
     {
-        List<int> SupportedPlugins { get; }
-        List<PresetBank> Banks { get; }
-        VSTPlugin VstPlugin { get; set; }
+        public List<VSTPreset> VSTPresets;
+        public String BankName;
+
+        public PresetBank ()
+        {
+            VSTPresets = new List<VSTPreset>();
+        }
     }
 }

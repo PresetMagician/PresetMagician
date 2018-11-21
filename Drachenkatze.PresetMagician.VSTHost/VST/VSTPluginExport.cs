@@ -220,10 +220,10 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                 throw new NoRealtimeProcessingException();
             }
 
-            ctx.PluginCommandStub.BeginSetProgram();
-            ctx.PluginCommandStub.SetChunk(preset.PresetData, VSTPlugin.PresetChunk_UseCurrentProgram);
-            ctx.PluginCommandStub.EndSetProgram();
-            ctx.PluginCommandStub.SetProgram(preset.ProgramNumber);
+            //ctx.PluginCommandStub.BeginSetProgram();
+            Debug.WriteLine(ctx.PluginCommandStub.SetChunk(preset.PresetData, VSTPlugin.PresetChunk_UseCurrentProgram));
+            //ctx.PluginCommandStub.EndSetProgram();
+            //ctx.PluginCommandStub.SetProgram(preset.ProgramNumber);
 
             int outputCount = ctx.PluginInfo.AudioOutputCount;
             int inputCount = ctx.PluginInfo.AudioInputCount;
