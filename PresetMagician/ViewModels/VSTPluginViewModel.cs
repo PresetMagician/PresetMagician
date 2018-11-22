@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using Drachenkatze.PresetMagician.GUI.Models;
 using Drachenkatze.PresetMagician.VSTHost.VST;
 using JetBrains.Annotations;
 
@@ -11,10 +12,10 @@ namespace Drachenkatze.PresetMagician.GUI.ViewModels
     {
         public VSTPluginViewModel()
         {
-            this.VstPlugins = new ObservableCollection<VSTPlugin>();
+            this.VstPlugins = new ObservableCollection<Plugin>();
         }
 
-        public ObservableCollection<VSTPlugin> VstPlugins { get; set; }
+        public ObservableCollection<Plugin> VstPlugins { get; set; }
 
         private ListViewMode _listViewMode;
 

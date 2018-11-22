@@ -6,13 +6,6 @@
       xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
-    <UserControl.Resources>
-        <CollectionViewSource x:Key='src' Source="{Binding VstPlugins}">
-            <CollectionViewSource.SortDescriptions>
-                <componentModel:SortDescription PropertyName="PluginVendor" />
-            </CollectionViewSource.SortDescriptions>
-        </CollectionViewSource>
-    </UserControl.Resources>
 
     <Grid ScrollViewer.CanContentScroll="True">
         <Grid.ColumnDefinitions>
@@ -22,25 +15,25 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <DataGrid x:Name="VSTPluginList" ItemsSource="{Binding VstPlugins,NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" GridLinesVisibility="All" ScrollViewer.CanContentScroll="True" SelectionChanged="VSTPluginList_SelectionChanged">
+        <DataGrid x:Name="VSTPluginList" ItemsSource="{Binding VstPlugins ,NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" GridLinesVisibility="All" ScrollViewer.CanContentScroll="True" SelectionChanged="VSTPluginList_SelectionChanged" CanUserAddRows="False">
             <DataGrid.Columns>
 
                 <DataGridTextColumn Header="Name" Width="150"
-                                    Binding="{Binding PluginName}" IsReadOnly="True" SortDirection="Ascending" />
+                                    Binding="{Binding VstPlugin.PluginName}" IsReadOnly="True" SortDirection="Ascending" />
                 <DataGridTextColumn Header="Vendor" Width="150"
-                                    Binding="{Binding PluginVendor}" IsReadOnly="True" SortDirection="Ascending" />
+                                    Binding="{Binding VstPlugin.PluginVendor}" IsReadOnly="True" SortDirection="Ascending" />
                 <DataGridTextColumn Header="Presets" Width="80"
-                                    Binding="{Binding NumPresets}" IsReadOnly="True" />
+                                    Binding="{Binding VstPresetParser.NumPresets}" IsReadOnly="True" />
                 <DataGridTextColumn Header="Type" Width="80"
-                                    Binding="{Binding PluginTypeDescription}" IsReadOnly="True" />
+                                    Binding="{Binding VstPlugin.PluginTypeDescription}" IsReadOnly="True" />
                 <DataGridCheckBoxColumn Header="Supported" Width="80"
-                                    Binding="{Binding IsSupported}" IsReadOnly="True" />
+                                    Binding="{Binding VstPlugin.IsSupported}" IsReadOnly="True" />
                 <DataGridTextColumn Header="Export Mode" Width="80"
-                                    Binding="{Binding PresetSaveModeDescription}" IsReadOnly="True" />
+                                    Binding="{Binding VstPresetParser.PresetParserType}" IsReadOnly="True" />
                 <DataGridTextColumn Header="DLL" Width="150"
-                                    Binding="{Binding PluginDLLPath}" IsReadOnly="True" />
+                                    Binding="{Binding VstPlugin.PluginDLLPath}" IsReadOnly="True" />
                 <DataGridTextColumn Header="Status" Width="400"
-                                    Binding="{Binding LoadError}" IsReadOnly="True" SortDirection="Ascending" CanUserSort="False" />
+                                    Binding="{Binding VstPlugin.LoadError}" IsReadOnly="True" SortDirection="Ascending" CanUserSort="False" />
             </DataGrid.Columns>
         </DataGrid>
 
