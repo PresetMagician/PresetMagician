@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using Drachenkatze.PresetMagician.GUI.GUI;
+using Drachenkatze.PresetMagician.GUI.Models;
+using Drachenkatze.PresetMagician.VendorPresetParser;
+using Drachenkatze.PresetMagician.VendorPresetParser.StandardVST;
 using Drachenkatze.PresetMagician.VSTHost.VST;
 
 namespace Drachenkatze.PresetMagician.GUI.Controls
@@ -51,16 +55,20 @@ namespace Drachenkatze.PresetMagician.GUI.Controls
 
             foreach (String i in vstPluginDLLs)
             {
-                App.vstPlugins.VstPlugins.Add(new VSTPlugin(i));
+                App.vstPlugins.VstPlugins.Add(new Plugin()
+                {
+                    VstPlugin = new VSTPlugin(i),
+                    VstPresetParser = new NullPresetParser()
+                });
             }
 
             vstPluginScanner.DoWork += vstScanner_Worker;
             vstPluginScanner.RunWorkerCompleted += vstScanner_Completed;
             vstPluginScanner.ProgressChanged += vstScanner_ProgressChanged;
 
-            ObservableCollection<VSTPlugin> newList = new ObservableCollection<VSTPlugin>();
+            ObservableCollection<Plugin> newList = new ObservableCollection<Plugin>();
 
-            foreach (VSTPlugin vst in App.vstPlugins.VstPlugins)
+            foreach (Plugin vst in App.vstPlugins.VstPlugins)
             {
                 newList.Add(vst);
             };
@@ -71,15 +79,17 @@ namespace Drachenkatze.PresetMagician.GUI.Controls
         private void vstScanner_Worker(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker worker = sender as BackgroundWorker;
-            ObservableCollection<VSTPlugin> vsts = (ObservableCollection<VSTPlugin>)e.Argument;
+            ObservableCollection<Plugin> vsts = (ObservableCollection<Plugin>)e.Argument;
             var VSTHost = App.vstHost;
 
-            foreach (VSTPlugin vst in vsts)
+            foreach (Plugin vst in vsts)
             {
-                worker.ReportProgress((int)((100f * vsts.IndexOf(vst)) / vsts.Count), vst.PluginDLLPath);
+                worker.ReportProgress((int)((100f * vsts.IndexOf(vst)) / vsts.Count), vst.VstPlugin.PluginDLLPath);
 
-                VSTHost.LoadVST(vst);
-                VSTHost.UnloadVST(vst);
+                VSTHost.LoadVST(vst.VstPlugin);
+                vst.VstPresetParser = VendorPresetParser.VendorPresetParser.GetPresetHandler(vst.VstPlugin);
+                vst.VstPresetParser.ScanBanks();
+                VSTHost.UnloadVST(vst.VstPlugin);
             }
         }
 
@@ -93,6 +103,7 @@ namespace Drachenkatze.PresetMagician.GUI.Controls
             vstPluginScanner.ProgressChanged -= vstScanner_ProgressChanged;
 
             ScanPluginButton.IsEnabled = true;
+            VSTPluginList.Items.Refresh();
         }
 
         private void vstScanner_ProgressChanged(object sender,
@@ -115,9 +126,9 @@ namespace Drachenkatze.PresetMagician.GUI.Controls
                 ShowPluginInfo.IsEnabled = true;
             }
 
-            foreach (VSTPlugin i in VSTPluginList.SelectedItems)
+            foreach (Plugin i in VSTPluginList.SelectedItems)
             {
-                if (!i.IsLoaded)
+                if (!i.VstPlugin.IsLoaded)
                 {
                     CreatePresetsButton.IsEnabled = false;
                     return;
@@ -142,34 +153,11 @@ namespace Drachenkatze.PresetMagician.GUI.Controls
 
             vstPresetScanner.ProgressChanged += presetScanner_ProgressChanged;
 
-            ObservableCollection<VSTPlugin> vsts = new ObservableCollection<VSTPlugin>();
+            ObservableCollection<Plugin> vsts = new ObservableCollection<Plugin>();
 
             vsts.Clear();
-            foreach (VSTPlugin v in VSTPluginList.SelectedItems)
+            foreach (Plugin v in VSTPluginList.SelectedItems)
             {
-                if (!v.IsSupported)
-                {
-                    if (v.PluginType == VSTPlugin.PluginTypes.Effect)
-                    {
-                        MessageBox.Show("The plugin " + v.PluginName + " is an effect; this is currently not supported (but will be implemented)");
-                    }
-                    else
-                    {
-                        MessageBox.Show("The plugin " + v.PluginName + " only exposes " + v.NumPresets + " presets via the standard VST program interface. Most likely the plugin vendor uses their own preset management system; support for many plugins will (hopefully) come soon!");
-                    }
-                    continue;
-                }
-
-                if (v.PresetSaveMode == VSTPlugin.PresetSaveModes.Unknown)
-                {
-                    MessageBox.Show("Due to the way NI saves preset data in the NKSF files, the plugin " + v.PluginName + " might not be compatible with that mechanism. We'll try anyways; double check by loading different generated NKSF presets (don't rely on the audio previews!)");
-                }
-                if (!v.ChunkSupport)
-                {
-                    MessageBox.Show("The plugin " + v.PluginName + " does not support program chunks; as such it's not possible to create .nksf files. Maschine and Kontakt need the .mxinst file format for those plugins; as such, this plugin will be skipped");
-                    continue;
-                }
-
                 vsts.Add(v);
             }
             vstPresetScanner.RunWorkerAsync(argument: vsts);
@@ -181,31 +169,21 @@ namespace Drachenkatze.PresetMagician.GUI.Controls
         {
             var VSTHost = App.vstHost;
             BackgroundWorker worker = sender as BackgroundWorker;
-            ObservableCollection<VSTPlugin> vsts = (ObservableCollection<VSTPlugin>)e.Argument;
+            ObservableCollection<Plugin> vsts = (ObservableCollection<Plugin>)e.Argument;
 
             scannedPresets = new ObservableCollection<VSTPreset>();
-            long totalPresets = 0;
-            long currentPreset = 0;
-            VSTPreset preset;
 
-            foreach (VSTPlugin plugin in vsts)
+            foreach (Plugin plugin in vsts)
             {
-                totalPresets += plugin.NumPresets;
-            }
-
-            foreach (VSTPlugin plugin in vsts)
-            {
-                VSTHost.LoadVST(plugin);
-
-                for (int i = 0; i < plugin.NumPresets; i++)
+                VSTHost.LoadVST(plugin.VstPlugin);
+                foreach (var bank in plugin.VstPresetParser.Banks)
                 {
-                    currentPreset++;
-                    preset = plugin.getPreset(i);
-                    worker.ReportProgress((int)((100f * currentPreset) / totalPresets), preset.PluginName + " " + preset.PresetName);
-                    scannedPresets.Add(preset);
+                    foreach (var preset in bank.VSTPresets)
+                    {
+                        scannedPresets.Add(preset);
+                    }
                 }
-
-                VSTHost.UnloadVST(plugin);
+                VSTHost.UnloadVST(plugin.VstPlugin);
             }
         }
 
@@ -242,14 +220,14 @@ namespace Drachenkatze.PresetMagician.GUI.Controls
                 return;
             }
 
-            VSTPlugin v = (VSTPlugin)VSTPluginList.SelectedItem;
+            Plugin v = (Plugin)VSTPluginList.SelectedItem;
 
-            App.vstHost.LoadVST(v);
-            var items = v.getPluginInfo();
+            App.vstHost.LoadVST(v.VstPlugin);
+            var items = v.VstPlugin.getPluginInfo();
             var pluginInfoWindow = new PluginInfoWindow();
             pluginInfoWindow.PluginProperties.ItemsSource = items;
             pluginInfoWindow.ShowDialog();
-            App.vstHost.UnloadVST(v);
+            App.vstHost.UnloadVST(v.VstPlugin);
         }
     }
 }

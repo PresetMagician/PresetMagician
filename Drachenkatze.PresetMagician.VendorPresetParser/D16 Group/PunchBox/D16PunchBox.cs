@@ -21,16 +21,17 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group.PunchBox
         private const String BankNameFactory = "Factory";
         private const String BankNameUser = "User";
 
-        public List<int> SupportedPlugins => new List<int> { 1347306072 };
+        public override List<int> SupportedPlugins => new List<int> { 1347306072 };
 
-        public List<PresetBank> Banks => GetBanks();
+        public override string Remarks { get; set; } =
+            "Due to a bug in PunchBox, the plugin needs to be reloaded after 60 exported presets. Export might pause for a few seconds.";
 
-        private List<PresetBank> GetBanks ()
+        public void ScanBanks()
         {
-            return new List<PresetBank> { GetFactoryPresets(), GetUserPresets() };
+            Banks = new List<PresetBank> { GetFactoryPresets(), GetUserPresets() };
         }
 
-        private PresetBank GetUserPresets ()
+        private PresetBank GetUserPresets()
         {
             PresetBank userBank = new PresetBank();
             userBank.BankName = BankNameUser;
@@ -38,10 +39,12 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group.PunchBox
             return userBank;
         }
 
-        private PresetBank GetFactoryPresets ()
+        private PresetBank GetFactoryPresets()
         {
-            PresetBank factoryBank = new PresetBank();
-            factoryBank.BankName = BankNameFactory;
+            PresetBank factoryBank = new PresetBank
+            {
+                BankName = BankNameFactory
+            };
 
             using (ZipArchive archive = ZipFile.OpenRead(GetFactoryBankPath()))
             {
@@ -61,18 +64,15 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group.PunchBox
                     MemoryStream ms = new MemoryStream();
                     presetEntry.Open().CopyTo(ms);
 
-
                     factoryBank.VSTPresets.Add(GetPreset(presetEntry.Name, ms, BankNameFactory));
                 }
-
             }
 
             return factoryBank;
         }
 
-        private VSTPreset GetPreset (String name, MemoryStream stream, String bankName)
+        private VSTPreset GetPreset(String name, MemoryStream stream, String bankName)
         {
-            
             stream.Seek(0, SeekOrigin.Begin);
 
             XElement pluginState = new XElement("PluginState");
@@ -81,12 +81,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group.PunchBox
             XElement midiControlMap = new XElement("MidiControlMap");
             midiControlMap.SetAttributeValue("name", "PunchBox");
 
-          
-
             pluginState.Add(parametersState);
-           
-            
-            
+
             XDocument xmlPreset = XDocument.Load(stream);
             var presetElement = xmlPreset.Element("Preset");
             presetElement.SetAttributeValue("name", name.Replace(".pbprs", ""));
@@ -105,12 +101,11 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group.PunchBox
             vstPreset.SetPlugin(VstPlugin);
             vstPreset.BankName = bankName;
 
-
             Debug.WriteLine(pluginState);
             //throw new InvalidCastException();
             using (MemoryStream ms = new MemoryStream())
             {
-                ms.Write(new byte[] { 0x56, 0x43, 0x32, 0x21 },0,4);
+                ms.Write(new byte[] { 0x56, 0x43, 0x32, 0x21 }, 0, 4);
                 byte[] data = Encoding.UTF8.GetBytes(pluginState.ToString());
                 ms.Write(LittleEndian.GetBytes(data.Length), 0, 4);
                 ms.Write(data, 0, data.Length);
@@ -119,10 +114,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group.PunchBox
                 vstPreset.PresetData = ms.ToArray();
             }
             return vstPreset;
-            
         }
 
-        private String GetFactoryBankPath ()
+        private String GetFactoryBankPath()
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), FactoryBankPath);
         }

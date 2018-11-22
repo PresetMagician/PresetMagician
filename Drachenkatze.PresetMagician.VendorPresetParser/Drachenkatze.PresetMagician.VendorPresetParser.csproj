@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GSF.Core">
+      <HintPath>..\packages\GSF.Core.2.1.468\lib\net46\GSF.Core.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression" />
@@ -44,22 +47,46 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractVendorPresetParser.cs" />
+    <Compile Include="NullPresetParser.cs" />
     <Compile Include="PresetBank.cs" />
     <Compile Include="D16 Group\D16Group.cs" />
     <Compile Include="D16 Group\PunchBox\D16PunchBox.cs" />
     <Compile Include="IVendorPresetParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StandardVst\AbstractStandardVSTPresetParser.cs" />
+    <Compile Include="StandardVst\BankTrickeryVSTPresetParser.cs" />
+    <Compile Include="StandardVst\FallbackVstPresetParser.cs" />
+    <Compile Include="StandardVst\FullBankVstPresetParser.cs" />
+    <Compile Include="VendorPresetParser.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Drachenkatze.PresetMagician.Utils\Drachenkatze.PresetMagician.Utils.csproj">
+      <Project>{37ABDA8A-5FFA-41F9-B880-A272D8C21DFF}</Project>
+      <Name>Drachenkatze.PresetMagician.Utils</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Drachenkatze.PresetMagician.VSTHost\Drachenkatze.PresetMagician.VSTHost.csproj">
       <Project>{bb9702b3-2826-411a-b7c5-ef64348a7a5c}</Project>
       <Name>Drachenkatze.PresetMagician.VSTHost</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jacobi.Vst.Core\Jacobi.Vst.Core.Clr4.csproj">
+      <Project>{5950f8a9-f413-4ace-b6e0-6f458b4c26f9}</Project>
+      <Name>Jacobi.Vst.Core.Clr4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Jacobi.Vst.Interop\Jacobi.Vst.Interop.Clr4.vcxproj">
+      <Project>{e0cc0ccf-a40d-4a53-8fac-b6af7e76eb08}</Project>
+      <Name>Jacobi.Vst.Interop.Clr4</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="GSF.Core">
       <Version>2.1.468</Version>
     </PackageReference>
+    <PackageReference Include="PropertyChanged.Fody">
+      <Version>2.5.14</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="FodyWeavers.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

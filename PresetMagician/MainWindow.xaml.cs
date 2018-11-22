@@ -25,14 +25,14 @@ namespace Drachenkatze.PresetMagician.GUI
             {
                 statusBarMessage = "Trial for " + App.license.Customer.Name;
                 statusBarMessage += " (Expires on " + App.license.Expiration.ToShortDateString() + ")";
-            } else
+            }
+            else
             {
                 statusBarMessage = "Registered to " + App.license.Customer.Name;
             }
 
             statusBarMessage += " - 1.21 Gigawatts ready to engage.";
             App.setStatusBar(statusBarMessage);
-            MessageBox.Show("Welcome to the first alpha of PresetMagician! Expect many bugs, many crashes, but apart from that - enjoy :)");
         }
 
         private void NKSFInspector_Click(object sender, RoutedEventArgs e)

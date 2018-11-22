@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
 {
-    public class D16Group: AbstractVendorPresetParser
+    public class D16Group : AbstractVendorPresetParser
     {
-        public const String VendorName = "D16 Group";
+        public String VendorName = "D16 Group";
     }
 }

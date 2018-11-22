@@ -9,8 +9,15 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 {
     public interface IVendorPresetParser
     {
-        List<int> SupportedPlugins { get; }
         List<PresetBank> Banks { get; }
         VSTPlugin VstPlugin { get; set; }
+        string Remarks { get; set; }
+        int NumPresets { get; }
+        string PresetParserType { get; }
+        bool IsNullParser { get; }
+
+        bool CanHandle();
+
+        void ScanBanks();
     }
 }

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -28,21 +29,8 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
     public class VSTPlugin : INotifyPropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler PropertyChanged;
+
         public int PluginID { get; set; }
-        public enum PresetSaveModes
-        {
-            // Default mode, just serialize the full bank. Active program is stored within the full bank
-            Default = 0,
-
-            // Unknown, use bank trickery
-            Unknown = 1,
-
-            // Trickery mode. Copies active program to slot 0
-            BankTrickery = 2,
-
-            // None, can't export
-            None = 3
-        }
 
         public enum PluginTypes
         {
@@ -60,16 +48,6 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             }
         }
 
-        public PresetSaveModes PresetSaveMode { get; set; }
-
-        public String PresetSaveModeDescription
-        {
-            get
-            {
-                return PresetSaveMode.ToString();
-            }
-        }
-
         public const bool PresetChunk_UseCurrentProgram = false;
 
         public Boolean IsOpened;
@@ -81,7 +59,6 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
         public VSTPlugin(String dllPath)
         {
             PluginDLLPath = dllPath;
-            PresetSaveMode = PresetSaveModes.None;
         }
 
         public bool ChunkSupport { get; set; }
@@ -143,127 +120,9 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             else
             {
                 this.PluginType = PluginTypes.Effect;
-
-                IsSupported = false;
-                PresetSaveMode = PresetSaveModes.None;
-                return;
             }
 
-            if ((PluginContext.PluginInfo.Flags & VstPluginFlags.ProgramChunks) == 0)
-            {
-                // Chunks not supported.
-                ChunkSupport = false;
-                IsSupported = false;
-            }
-            else
-            {
-                // Chunks supported.
-                ChunkSupport = true;
-                DeterminateVSTPresetSaveMode();
-
-                if (PresetSaveMode != PresetSaveModes.None)
-                {
-                    IsSupported = true;
-                }
-            }
-        }
-
-        public void DeterminateVSTPresetSaveMode()
-        {
-            if (PluginContext.PluginInfo.ProgramCount > 1)
-            {
-                PresetSaveMode = PresetSaveModes.Unknown;
-                if (areBankchunksConsistent())
-                {
-                    Debug.WriteLine(PluginName + ": bank chunks are consistent");
-                    if (isCurrentProgramStoredInBankChunk())
-                    {
-                        Debug.WriteLine(PluginName + ": current program is stored in the bank chunk");
-                        PresetSaveMode = PresetSaveModes.Default;
-                        
-                        // Perfect, just put out the full bank chunk. Nothing to do here.
-                    }
-                    else
-                    {
-                        // Trick Maschine by getting the program chunk, save it to program 0, get the bank chunk,
-                        // save the preset and restore the original program 0
-                        if (arePresetChunksConsistent())
-                        {
-                            Debug.WriteLine(PluginName + ": program chunks are consistent");
-                            PresetSaveMode = PresetSaveModes.BankTrickery;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                PresetSaveMode = PresetSaveModes.None;
-            }
-        }
-
-        /**
-         * Checks if the full bank presets are consistent. The full bank chunk should not change for the same program.
-         *
-         * We check it 10 times to see if the hashes are consistent. If they're not, the plugin most likely stores some
-         * runtime data (like LFO state).
-         *
-         */
-
-        public Boolean areBankchunksConsistent()
-        {
-            string firstPresetHash = getPreset(0, false, true).getPresetHash();
-
-            for (int i = 0; i < 10; i++)
-            {
-                if (firstPresetHash != getPreset(0, false, true).getPresetHash())
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        /**
-        * Checks if the full bank presets are consistent. The full bank chunk should not change for the same program.
-        *
-        * We check it 10 times to see if the hashes are consistent. If they're not, the plugin most likely stores some
-        * runtime data (like LFO state).
-        *
-        */
-
-        public Boolean arePresetChunksConsistent()
-        {
-            string firstPresetHash = getPreset(0, true, true).getPresetHash();
-
-            for (int i = 0; i < 10; i++)
-            {
-                if (firstPresetHash != getPreset(0, true, true).getPresetHash())
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        /**
-         * Checks if the current program number is stored in the bank chunk. Some VSTs do it (like V-Station),
-         * others don't (which should be the norm).
-         *
-         * Interpret the return value "true" as "uncertain"
-         */
-
-        public Boolean isCurrentProgramStoredInBankChunk()
-        {
-            if (getPreset(0, false, true).getPresetHash() != getPreset(1, false, true).getPresetHash())
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            // Scan for preset implementations here
         }
 
         public List<PluginInfoItem> getPluginInfo()
@@ -334,64 +193,6 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             }
 
             return pluginInfo;
-        }
-
-        public VSTPreset getPreset(int index, Boolean isPreset)
-        {
-            return getPreset(index, isPreset, false);
-        }
-
-        public VSTPreset getPreset(int index, Boolean isPreset, Boolean skipSaveMode)
-        {
-            VSTPreset vstPreset;
-
-            vstPreset = new VSTPreset();
-
-            if (!skipSaveMode)
-            {
-                switch (PresetSaveMode)
-                {
-                    case PresetSaveModes.Unknown:
-                    case PresetSaveModes.BankTrickery:
-                        this.PluginContext.PluginCommandStub.SetProgram(0);
-                        byte[] programBackup = this.PluginContext.PluginCommandStub.GetChunk(true);
-
-                        this.PluginContext.PluginCommandStub.SetProgram(index);
-                        vstPreset.PresetName = this.PluginContext.PluginCommandStub.GetProgramName();
-                        byte[] realProgram = this.PluginContext.PluginCommandStub.GetChunk(true);
-                        this.PluginContext.PluginCommandStub.SetProgram(0);
-                        this.PluginContext.PluginCommandStub.SetChunk(realProgram, true);
-                        vstPreset.PresetData = this.PluginContext.PluginCommandStub.GetChunk(false);
-                        this.PluginContext.PluginCommandStub.SetChunk(programBackup, true);
-                        break;
-
-                    case PresetSaveModes.Default:
-                    default:
-                        this.PluginContext.PluginCommandStub.SetProgram(index);
-                        vstPreset.PresetName = this.PluginContext.PluginCommandStub.GetProgramName();
-                        vstPreset.PresetData = this.PluginContext.PluginCommandStub.GetChunk(false);
-                        break;
-                }
-            }
-            else
-            {
-                this.PluginContext.PluginCommandStub.SetProgram(index);
-                vstPreset.PresetName = this.PluginContext.PluginCommandStub.GetProgramName();
-                vstPreset.PresetData = this.PluginContext.PluginCommandStub.GetChunk(isPreset);
-            }
-
-            vstPreset.PreviewNote = new CannedBytes.Midi.Message.MidiNoteName("C5");
-            vstPreset.ProgramNumber = this.PluginContext.PluginCommandStub.GetProgram();
-            vstPreset.BankName = PluginName + " Factory";
-            vstPreset.Export = true;
-            vstPreset.SetPlugin(this);
-
-            return vstPreset;
-        }
-
-        public VSTPreset getPreset(int index)
-        {
-            return getPreset(index, false);
         }
 
         public void LoadFXP(string filePath)
