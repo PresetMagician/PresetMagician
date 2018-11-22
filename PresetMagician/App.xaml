@@ -2,6 +2,7 @@
              x:Class="Drachenkatze.PresetMagician.GUI.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:Fluent="urn:fluent-ribbon"
             Exit="App_Exit"
     Startup="App_start">
     <Application.Resources>
