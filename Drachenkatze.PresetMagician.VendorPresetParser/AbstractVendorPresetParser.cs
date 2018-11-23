@@ -47,6 +47,11 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             return false;
         }
 
+        public virtual void OnAfterPresetExport(VstHost host, VSTPlugin plugin)
+        {
+
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

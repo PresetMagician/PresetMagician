@@ -156,6 +156,8 @@ namespace Drachenkatze.PresetMagician.GUI.Controls
             ObservableCollection<Plugin> vsts = new ObservableCollection<Plugin>();
 
             vsts.Clear();
+            App.vstPresets.VstPresets.Clear();
+
             foreach (Plugin v in VSTPluginList.SelectedItems)
             {
                 vsts.Add(v);

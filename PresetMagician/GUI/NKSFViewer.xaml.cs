@@ -93,6 +93,7 @@ namespace Drachenkatze.PresetMagician.GUI.GUI
                 {
                     using (var fileStream = new FileStream(filePath = saveFileDialog.FileName, FileMode.Create))
                     {
+                        PluginChunk.Stream.Seek(0, SeekOrigin.Begin);
                         PluginChunk.Stream.CopyTo(fileStream);
                     }
                 }

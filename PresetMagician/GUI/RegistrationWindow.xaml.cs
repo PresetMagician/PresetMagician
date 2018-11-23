@@ -40,15 +40,11 @@ namespace Drachenkatze.PresetMagician.GUI.GUI
 
         private void SelectLicense_Click(object sender, RoutedEventArgs e)
         {
-            var fileContent = string.Empty;
-            var filePath = string.Empty;
-
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 string downloadsPath = new KnownFolder(KnownFolderType.Downloads).Path;
 
                 openFileDialog.InitialDirectory = downloadsPath;
-                //openFileDialog.FileName = "PresetMagician License.lic";
                 openFileDialog.Filter = "License Files (*.lic)|*.lic";
                 openFileDialog.FilterIndex = 1;
                 openFileDialog.RestoreDirectory = true;
@@ -56,8 +52,12 @@ namespace Drachenkatze.PresetMagician.GUI.GUI
                 if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     //Get the path of specified file
-                    filePath = openFileDialog.FileName;
+                    var filePath = openFileDialog.FileName;
 
+                    if (File.Exists(App.getLicenseFile()))
+                    {
+                        File.Delete(App.getLicenseFile());
+                    }
                     File.Copy(filePath, App.getLicenseFile());
 
                     var validationErrors = App.CheckLicense();
@@ -69,7 +69,6 @@ namespace Drachenkatze.PresetMagician.GUI.GUI
                         mainWindow.Show();
                         Close();
                     }
-                  
                 }
             }
         }

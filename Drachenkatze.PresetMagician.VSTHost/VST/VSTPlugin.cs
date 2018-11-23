@@ -1,12 +1,10 @@
 ﻿using Drachenkatze.PresetMagician.Controls.Controls.VSTHost;
 using Jacobi.Vst.Core;
 using Jacobi.Vst.Interop.Host;
-using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -362,7 +360,6 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             }
         }
 
-        [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

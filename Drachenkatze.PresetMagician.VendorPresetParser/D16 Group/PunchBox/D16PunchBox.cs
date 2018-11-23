@@ -21,6 +21,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group.PunchBox
         private const String BankNameFactory = "Factory";
         private const String BankNameUser = "User";
 
+        private int PresetExportCount = 0;
+
         public override List<int> SupportedPlugins => new List<int> { 1347306072 };
 
         public override string Remarks { get; set; } =
@@ -101,8 +103,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group.PunchBox
             vstPreset.SetPlugin(VstPlugin);
             vstPreset.BankName = bankName;
 
-            Debug.WriteLine(pluginState);
-            //throw new InvalidCastException();
             using (MemoryStream ms = new MemoryStream())
             {
                 ms.Write(new byte[] { 0x56, 0x43, 0x32, 0x21 }, 0, 4);
@@ -114,6 +114,18 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group.PunchBox
                 vstPreset.PresetData = ms.ToArray();
             }
             return vstPreset;
+        }
+
+        public override void OnAfterPresetExport(VstHost host, VSTPlugin plugin)
+        {
+            PresetExportCount++;
+            Debug.WriteLine(PresetExportCount);
+            if (PresetExportCount > 60)
+            {
+                PresetExportCount = 0;
+                host.UnloadVST(plugin);
+                host.LoadVST(plugin);
+            }
         }
 
         private String GetFactoryBankPath()
