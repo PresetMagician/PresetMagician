@@ -19,5 +19,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         bool CanHandle();
 
         void ScanBanks();
+        void OnAfterPresetExport(VstHost host, VSTPlugin plugin);
     }
 }

@@ -27,7 +27,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
 
         public String BankName { get; set; }
 
-        public bool Export { get; set; }
+        public bool Export { get; set; } = true;
 
         public String NKSFBankName
         {

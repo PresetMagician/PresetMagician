@@ -29,6 +29,11 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         {
         }
 
+        public virtual void OnAfterPresetExport(VstHost host, VSTPlugin plugin)
+        {
+
+        }
+
         public bool CanHandle()
         {
             return true;

@@ -125,18 +125,36 @@ namespace Drachenkatze.PresetMagician.GUI.Controls
 
             long currentPreset = 0;
 
-            foreach (VSTPreset preset in presets)
-            {
-                currentPreset++;
+            var pluginPresets = from item in presets
+                        group item by item.PluginDLLPath into pluginGroup
+                        let first = pluginGroup.First()
+                        select new
+                        {
+                            Plugin = new { DLLPath = first.PluginDLLPath },
+                            Presets = pluginGroup.Select(gi => new { Preset = gi })
+                        };
 
-                using (VSTPlugin vstPlugin = new VSTPlugin(preset.PluginDLLPath))
+            foreach (var plugin in pluginPresets)
+            {
+                var query = from q in App.vstPlugins.VstPlugins
+                            where q.VstPlugin.PluginDLLPath == plugin.Plugin.DLLPath
+                            select q;
+
+                
+                using (VSTPlugin vstPlugin = new VSTPlugin(plugin.Plugin.DLLPath))
                 {
                     vstHost.LoadVST(vstPlugin);
-                    vstHost.pluginExporter.ExportPresetAudioPreviewRealtime(vstPlugin, preset);
-                    vstHost.pluginExporter.ExportPresetNKSF(vstPlugin, preset);
+
+                    foreach (var preset in plugin.Presets)
+                    {
+                        currentPreset++;
+                        vstHost.pluginExporter.ExportPresetAudioPreviewRealtime(vstPlugin, preset.Preset);
+                        vstHost.pluginExporter.ExportPresetNKSF(vstPlugin, preset.Preset);
+                        query.First().VstPresetParser.OnAfterPresetExport(vstHost, vstPlugin);
+                        worker.ReportProgress((int)((100f * currentPreset) / presets.Count), preset.Preset.PluginName + " " + preset.Preset.PresetName);
+                    }
                     vstHost.UnloadVST(vstPlugin);
                 }
-                worker.ReportProgress((int)((100f * currentPreset) / presets.Count), preset.PluginName + " " + preset.PresetName);
             }
         }
 
