@@ -1,0 +1,20 @@
+framework: net462
+source https://api.nuget.org/v3/index.json
+license_download: true
+
+nuget CommandLineParser 2.3.0 prerelease
+nuget Fluent.Ribbon 7.0.0-alpha0456 prerelease
+nuget Fody 3.3.1
+nuget GSF.Media 2.1.468
+nuget JetBrains.Annotations 2018.2.1
+nuget MahApps.Metro.IconPacks 3.0.0-alpha0088 prerelease
+nuget MessagePack 1.7.3.4
+nuget NAudio 1.8.5
+nuget Newtonsoft.Json 11.0.2
+nuget Platform.NET 1.2.5
+nuget Portable.Licensing 1.1.0
+nuget PropertyChanged.Fody 2.5.14 
+nuget Svg 2.3.0
+nuget Syroot.Windows.IO.KnownFolders 1.2.1
+nuget VST.NET.x64 1.1 
+nuget WPFHexaEditor 1.4.0
