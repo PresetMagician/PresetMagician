@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using NAudio.SoundFont;
 
 namespace Drachenkatze.PresetMagician.VSTHost.VST
 {
@@ -69,6 +70,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             nksf.kontaktSound.summaryInformation.summaryInformation.name = preset.PresetName;
             nksf.kontaktSound.summaryInformation.summaryInformation.deviceType = "INST";
             nksf.kontaktSound.summaryInformation.summaryInformation.bankChain.Add(plugin.PluginName);
+            nksf.kontaktSound.summaryInformation.summaryInformation.bankChain.Add(preset.BankName);
             nksf.kontaktSound.pluginId.pluginId.VSTMagic = plugin.PluginContext.PluginInfo.PluginID;
             nksf.kontaktSound.pluginChunk.PresetData = preset.PresetData;
 

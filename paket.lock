@@ -1,7 +1,7 @@
-LICENSE-DOWNLOAD: TRUE
 RESTRICTION: == net462
 NUGET
   remote: https://api.nuget.org/v3/index.json
+    AlphaFS (2.2.6)
     Antlr (3.5.0.2)
     CommandLineParser (2.3)
       System.Collections (>= 4.0.11-rc2-24027)

@@ -27,21 +27,13 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Preset" Width="150"
                                     Binding="{Binding PresetName}" IsReadOnly="True" SortDirection="Ascending" />
+                <DataGridTextColumn Header="Bank" Width="150"
+                                    Binding="{Binding BankName}" IsReadOnly="True" SortDirection="Ascending" />
                 <DataGridTextColumn Header="Plugin" Width="150"
                                     Binding="{Binding PluginName}" IsReadOnly="True" SortDirection="Ascending" />
                 <DataGridTextColumn Header="Key" Width="80"
                                     Binding="{Binding PreviewNote.FullNoteName}" IsReadOnly="False">
                 </DataGridTextColumn>
-                <!--<DataGridTemplateColumn Header="Export" Width="80"
-                                   IsReadOnly="False">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <ContentControl HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="Center">
-                                <CheckBox IsChecked="{Binding Export}" />
-                            </ContentControl>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>-->
                 <DataGridCheckBoxColumn Header="Export" Width="80" IsReadOnly="False" Binding="{Binding Export}" />
             </DataGrid.Columns>
         </DataGrid>

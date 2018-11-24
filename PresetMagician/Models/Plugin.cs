@@ -16,6 +16,25 @@ namespace Drachenkatze.PresetMagician.GUI.Models
         public VSTPlugin VstPlugin { get; set; }
         public IVendorPresetParser VstPresetParser { get; set; }
 
+        public bool IsSupported
+        {
+            get
+            {
+                if (VstPresetParser == null)
+                {
+                    return false;
+
+                }
+                return !VstPresetParser.IsNullParser;
+            }
+
+            set
+            {
+                
+            }
+
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]

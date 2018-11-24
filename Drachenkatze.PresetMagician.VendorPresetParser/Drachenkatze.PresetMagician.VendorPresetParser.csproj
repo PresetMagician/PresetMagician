@@ -57,8 +57,14 @@
     <Compile Include="StandardVst\BankTrickeryVSTPresetParser.cs" />
     <Compile Include="StandardVst\FallbackVstPresetParser.cs" />
     <Compile Include="StandardVst\FullBankVstPresetParser.cs" />
-    <Compile Include="u-he\u-he TyrellN6.cs" />
-    <Compile Include="u-he\u-he.cs" />
+    <Compile Include="u_he\u_he Bazille.cs" />
+    <Compile Include="u_he\u_he TripleCheese.cs" />
+    <Compile Include="u_he\u_he Podolski.cs" />
+    <Compile Include="u_he\u_he Zebra2.cs" />
+    <Compile Include="u_he\u_he ACE.cs" />
+    <Compile Include="u_he\u_he Zebralette.cs" />
+    <Compile Include="u_he\u_he TyrellN6.cs" />
+    <Compile Include="u_he\u_he.cs" />
     <Compile Include="VendorPresetParser.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -72,6 +78,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="FodyWeavers.xml" />
+  </ItemGroup>
+  <ItemGroup>
     <COMReference Include="Shell32">
       <Guid>{50A7E9B0-70EF-11D1-B75A-00A0C90564FE}</Guid>
       <VersionMajor>1</VersionMajor>
@@ -82,11 +91,22 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
-  <ItemGroup>
-    <Resource Include="FodyWeavers.xml" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\.paket\paket.targets" />
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="System.Transactions">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="AlphaFS">
+          <HintPath>..\packages\AlphaFS\lib\net452\AlphaFS.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
       <ItemGroup>

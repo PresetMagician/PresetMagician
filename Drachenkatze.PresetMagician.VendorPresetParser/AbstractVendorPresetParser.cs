@@ -19,7 +19,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
         public bool IsNullParser => false;
 
-        public string PresetParserType => ToString();
+        public string PresetParserType => GetType().Name.ToString();
 
         public int NumPresets
         {

@@ -16,10 +16,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
         public virtual string Remarks { get; set; }
 
-        public string PresetParserType
-        {
-            get { return ToString(); }
-        }
+        public string PresetParserType => GetType().Name.ToString();
 
         public bool IsNullParser => true;
 
