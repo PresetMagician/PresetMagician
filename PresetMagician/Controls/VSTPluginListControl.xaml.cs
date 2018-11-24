@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Drachenkatze.PresetMagician.GUI.GUI;
@@ -10,6 +12,7 @@ using Drachenkatze.PresetMagician.GUI.Models;
 using Drachenkatze.PresetMagician.VendorPresetParser;
 using Drachenkatze.PresetMagician.VendorPresetParser.StandardVST;
 using Drachenkatze.PresetMagician.VSTHost.VST;
+using Newtonsoft.Json.Linq;
 
 namespace Drachenkatze.PresetMagician.GUI.Controls
 {
@@ -38,6 +41,7 @@ namespace Drachenkatze.PresetMagician.GUI.Controls
         {
             App.setStatusBar("Scanning VSTPlugin paths...");
             ScanPluginButton.IsEnabled = false;
+            ReportUnsupportedPlugins.IsEnabled = false;
 
             ObservableCollection<String> vstPluginDLLs = new ObservableCollection<String>();
             ObservableCollection<VSTPlugin> vstPlugins = new ObservableCollection<VSTPlugin>();
@@ -103,6 +107,7 @@ namespace Drachenkatze.PresetMagician.GUI.Controls
             vstPluginScanner.ProgressChanged -= vstScanner_ProgressChanged;
 
             ScanPluginButton.IsEnabled = true;
+            ReportUnsupportedPlugins.IsEnabled = true;
             VSTPluginList.Items.Refresh();
         }
 
@@ -230,6 +235,26 @@ namespace Drachenkatze.PresetMagician.GUI.Controls
             pluginInfoWindow.PluginProperties.ItemsSource = items;
             pluginInfoWindow.ShowDialog();
             App.vstHost.UnloadVST(v.VstPlugin);
+        }
+
+        private async void ReportUnsupportedPlugins_OnClick(object sender, RoutedEventArgs e)
+        {
+            ReportUnsupportedPlugins.IsEnabled = false;
+            List<Plugin> pluginsToReport = new List<Plugin>();
+
+            foreach (Plugin p in App.vstPlugins.VstPlugins)
+            {
+                if (p.VstPlugin.IsLoaded && !p.IsSupported)
+                {
+                    pluginsToReport.Add(p);
+                }
+            }
+
+            var response = await App.submitPlugins(pluginsToReport);
+
+            MessageBox.Show(response);
+
+            ReportUnsupportedPlugins.IsEnabled = true;
         }
     }
 }

@@ -4,6 +4,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Management;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -25,6 +28,9 @@ using CommandLine;
 using CommandLine.Text;
 using Drachenkatze.PresetMagician.Utils;
 using System.Security.Permissions;
+using System.Windows.Documents;
+using Drachenkatze.PresetMagician.GUI.Models;
+using Newtonsoft.Json.Linq;
 
 namespace Drachenkatze.PresetMagician.GUI
 {
@@ -150,6 +156,13 @@ namespace Drachenkatze.PresetMagician.GUI
             App.vstPresets = new VSTPresetViewModel();
             App.vstHost = new VstHost();
 
+            if (Settings.Default.UpgradeRequired)
+            {
+                Settings.Default.Upgrade();
+                Settings.Default.UpgradeRequired = false;
+                Settings.Default.Save();
+            }
+
             readVSTPathsFromConfig();
 
             try
@@ -265,6 +278,52 @@ namespace Drachenkatze.PresetMagician.GUI
             TabControl tabControl = (TabControl)Application.Current.MainWindow.FindName("MainTabs");
 
             tabControl.SelectedIndex = index;
+        }
+
+        public static async Task<string> submitPlugins(List<Plugin> pluginsToReport)
+        {
+            JObject o = JObject.FromObject(new
+            {
+                pluginSubmission = new
+                {
+                    email = App.license.Customer.Email,
+                    plugins =
+                        from p in pluginsToReport
+                        orderby p.VstPlugin.PluginID
+                        select new
+                        {
+                            vendorName = p.VstPlugin.PluginVendor,
+                            pluginName = p.VstPlugin.PluginName,
+                            pluginId = p.VstPlugin.PluginID
+                        }
+                }
+            });
+
+            var submitUrl = Drachenkatze.PresetMagician.GUI.Properties.Resources.ReportPluginsURL;
+#if DEBUG
+            submitUrl = Drachenkatze.PresetMagician.GUI.Properties.Resources.ReportPluginsURLDebug;
+#endif
+
+            HttpContent content = new StringContent(o.ToString());
+
+            HttpClient client = new HttpClient();
+
+            // Add an Accept header for JSON format.
+            client.DefaultRequestHeaders.Accept.Add(
+                new MediaTypeWithQualityHeaderValue("application/json"));
+
+            // List data response.
+            var response = await client.PostAsync(submitUrl, content);
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                return "Submitted successfully";
+            }
+            else
+            {
+                var responseString = await response.Content.ReadAsStringAsync();
+                return "An error occured: " + responseString;
+            }
         }
 
         public static VSTPathViewModel vstPaths { get; set; }
