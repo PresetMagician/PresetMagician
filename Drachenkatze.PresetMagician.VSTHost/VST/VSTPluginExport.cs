@@ -160,6 +160,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                     WaveFileWriter.CreateWaveFile(tempFileName, ws);
 
                     ConvertToOGG(tempFileName, GetPreviewFilename(preset));
+                    File.Delete(tempFileName);
                 }
 
                 vstStream.DoProcess = false;
@@ -288,7 +289,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             stoppedPlaying = false;
 
             ConvertToOGG(tempFileName, GetPreviewFilename(preset));
-
+            File.Delete(tempFileName);
             return true;
         }
     }
