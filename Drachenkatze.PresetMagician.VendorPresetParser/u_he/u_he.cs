@@ -5,6 +5,7 @@ using Shell32;
 using System.IO;
 using System.Threading;
 using Drachenkatze.PresetMagician.VSTHost.VST;
+using IWshRuntimeLibrary;
 using File = System.IO.File;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
@@ -152,8 +153,21 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
                 return string.Empty;
             }
 
-            var link = (ShellLinkObject)folderItem.GetLink;
-            return link.Target.Path;
+            string targetPath;
+
+            try
+            {
+                var link = (ShellLinkObject)folderItem.GetLink;
+                targetPath = link.Target.Path;
+            }
+            catch (System.UnauthorizedAccessException)
+            {
+                WshShell wshShell = new WshShell();
+                IWshShortcut shortcut = (IWshShortcut)wshShell.CreateShortcut(path);
+                targetPath = shortcut.TargetPath;
+            }
+
+            return targetPath;
         }
     }
 }

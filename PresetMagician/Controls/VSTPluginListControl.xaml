@@ -57,6 +57,24 @@
                     VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
+            <Button x:Name="ReportUnsupportedPlugins" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="6,2,2,2" IsEnabled="False" Click="ReportUnsupportedPlugins_OnClick">
+                <Button.ToolTip>
+                    <ToolTip>
+                        <StackPanel>
+                            <TextBlock>
+                                Submits unsupported Plugins to the PresetMagician Website, so they can be prioritized.
+                            </TextBlock>
+                            <TextBlock FontWeight="Bold">Privacy Notice: We submit the Plugin Name, Vendor Name, Plugin ID and your email so we can make sure nobody pushes their favorite plugin on top of the priority list.</TextBlock>
+                        </StackPanel>
+                    </ToolTip>
+                </Button.ToolTip>
+                <StackPanel Orientation="Horizontal">
+
+                    <TextBlock Text="Submit unsupported Plugins"
+                               Margin="2 4 4 4"
+                               VerticalAlignment="Center" />
+                </StackPanel>
+            </Button>
             <Button x:Name="ShowPluginInfo" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="6,2,2,2" IsEnabled="False" Click="ShowPluginInfo_OnClick">
                 <StackPanel Orientation="Horizontal">
 

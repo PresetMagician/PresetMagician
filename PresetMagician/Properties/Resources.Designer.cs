@@ -70,6 +70,24 @@ namespace Drachenkatze.PresetMagician.GUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to https://presetmagician.drachenkatze.org/plugins/submit.
+        /// </summary>
+        internal static string ReportPluginsURL {
+            get {
+                return ResourceManager.GetString("ReportPluginsURL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to http://localhost:8000/plugins/submit.
+        /// </summary>
+        internal static string ReportPluginsURLDebug {
+            get {
+                return ResourceManager.GetString("ReportPluginsURLDebug", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         internal static byte[] Splashscreen {

@@ -14,8 +14,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                 @"\Steinberg\VSTPlugins",
                 @"\Common Files\VST2",
                 @"\Common Files\Steinberg\VST2",
-                @"\Native Instruments\VSTPlugins 64 bit",
-                @"\Native Instruments\VSTPlugins 32 bit"
+                @"\Native Instruments\VSTPlugins 64 bit"
         };
 
         public VstPathScanner()
@@ -55,13 +54,6 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
 
             foreach (String vstPath in VstPathScanner.vstPaths)
             {
-                vstLocation = Environment.GetEnvironmentVariable("ProgramFiles(x86)") + vstPath;
-                Debug.WriteLine(vstLocation);
-                if (Directory.Exists(vstLocation))
-                {
-                    vstLocations.Add(new DirectoryInfo(vstLocation));
-                }
-
                 vstLocation = Environment.GetEnvironmentVariable("ProgramFiles") + vstPath;
                 if (Directory.Exists(vstLocation))
                 {
