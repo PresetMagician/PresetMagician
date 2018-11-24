@@ -26,6 +26,12 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
             {
                 bankName = "User Bank";
             }
+
+            if (!directoryInfo.Exists)
+            {
+                return;
+            }
+
             Banks.Add(H2PScanBank(bankName, directoryInfo));
             foreach (var directory in directoryInfo.EnumerateDirectories())
             {
