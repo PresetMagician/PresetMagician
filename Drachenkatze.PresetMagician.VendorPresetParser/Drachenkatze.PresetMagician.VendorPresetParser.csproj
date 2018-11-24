@@ -57,6 +57,10 @@
     <Compile Include="StandardVst\BankTrickeryVSTPresetParser.cs" />
     <Compile Include="StandardVst\FallbackVstPresetParser.cs" />
     <Compile Include="StandardVst\FullBankVstPresetParser.cs" />
+    <Compile Include="u_he\u_he Repro5.cs" />
+    <Compile Include="u_he\u_he Repro1.cs" />
+    <Compile Include="u_he\u_he Hive.cs" />
+    <Compile Include="u_he\u_he Diva.cs" />
     <Compile Include="u_he\u_he Bazille.cs" />
     <Compile Include="u_he\u_he TripleCheese.cs" />
     <Compile Include="u_he\u_he Podolski.cs" />
