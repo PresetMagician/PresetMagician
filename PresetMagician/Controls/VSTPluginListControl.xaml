@@ -27,8 +27,8 @@
                 <DataGridTextColumn Header="Type" Width="80"
                                     Binding="{Binding VstPlugin.PluginTypeDescription}" IsReadOnly="True" />
                 <DataGridCheckBoxColumn Header="Supported" Width="80"
-                                    Binding="{Binding VstPlugin.IsSupported}" IsReadOnly="True" />
-                <DataGridTextColumn Header="Export Mode" Width="80"
+                                    Binding="{Binding IsSupported}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Export Module" Width="120"
                                     Binding="{Binding VstPresetParser.PresetParserType}" IsReadOnly="True" />
                 <DataGridTextColumn Header="Remarks" Width="80"
                                     Binding="{Binding VstPresetParser.Remarks}" IsReadOnly="True" />
