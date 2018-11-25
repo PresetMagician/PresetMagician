@@ -34,7 +34,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
             }
 
             Banks.Add(H2PScanBank(bankName, directoryInfo));
-            foreach (var directory in directoryInfo.EnumerateDirectories())
+            foreach (var directory in directoryInfo.EnumerateDirectories("*", SearchOption.AllDirectories))
             {
                 Banks.Add(H2PScanBank(directory.Name, directory));
             }
