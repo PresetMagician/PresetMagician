@@ -1,0 +1,52 @@
+﻿<UserControl x:Class="PresetMagicianShell.Views.StatusBarView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:local="clr-namespace:PresetMagicianShell.Views"
+             xmlns:catel="http://schemas.catelproject.com"
+             xmlns:orchestra="http://schemas.wildgums.com/orchestra"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <catel:BooleanToCollapsingVisibilityConverter x:Key="BooleanToCollapsingVisibilityConverter" />
+
+        <Style TargetType="{x:Type StackPanel}">
+            <Setter Property="Orientation" Value="Horizontal" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+        </Style>
+    </UserControl.Resources>
+
+    <Grid HorizontalAlignment="Right">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel x:Name="stackPanel">
+
+            <StackPanel Visibility="{Binding IsUpdatedInstalled, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
+                <iconPacks:PackIconMaterial Kind="Download" ToolTip="Update is installed, restart to enable new features" VerticalAlignment="Center" HorizontalAlignment="Center" />
+
+                <Separator  Margin="3,0,3,0" Width="{Binding ElementName=stackPanel, Path=ActualHeight}">
+                    <Separator.LayoutTransform>
+                        <RotateTransform Angle="90" />
+                    </Separator.LayoutTransform>
+                </Separator>
+            </StackPanel>
+
+            <StackPanel>
+                <TextBlock Text="{Binding ReceivingAutomaticUpdates}" />
+
+                <Separator Margin="3,0,3,0" Width="{Binding ElementName=stackPanel, Path=ActualHeight}">
+                    <Separator.LayoutTransform>
+                        <RotateTransform Angle="90" />
+                    </Separator.LayoutTransform>
+                </Separator>
+
+                <TextBlock Text="{Binding Version}" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>
