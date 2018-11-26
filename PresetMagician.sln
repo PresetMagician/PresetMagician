@@ -31,6 +31,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drachenkatze.PresetMagician.VendorPresetParserTests", "Drachenkatze.PresetMagician.VendorPresetParserTests\Drachenkatze.PresetMagician.VendorPresetParserTests.csproj", "{C798DD9B-2055-4774-9A83-673D833726F2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PresetMagicianShell", "PresetMagicianShell\PresetMagicianShell.csproj", "{AFF54505-FF0C-460D-8870-132E39C970E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -128,6 +130,18 @@ Global
 		{C798DD9B-2055-4774-9A83-673D833726F2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C798DD9B-2055-4774-9A83-673D833726F2}.Release|x64.ActiveCfg = Release|Any CPU
 		{C798DD9B-2055-4774-9A83-673D833726F2}.Release|x64.Build.0 = Release|Any CPU
+		{AFF54505-FF0C-460D-8870-132E39C970E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFF54505-FF0C-460D-8870-132E39C970E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFF54505-FF0C-460D-8870-132E39C970E8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{AFF54505-FF0C-460D-8870-132E39C970E8}.Debug|x64.Build.0 = Debug|Any CPU
+		{AFF54505-FF0C-460D-8870-132E39C970E8}.Publish|Any CPU.ActiveCfg = Release|Any CPU
+		{AFF54505-FF0C-460D-8870-132E39C970E8}.Publish|Any CPU.Build.0 = Release|Any CPU
+		{AFF54505-FF0C-460D-8870-132E39C970E8}.Publish|x64.ActiveCfg = Release|Any CPU
+		{AFF54505-FF0C-460D-8870-132E39C970E8}.Publish|x64.Build.0 = Release|Any CPU
+		{AFF54505-FF0C-460D-8870-132E39C970E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFF54505-FF0C-460D-8870-132E39C970E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFF54505-FF0C-460D-8870-132E39C970E8}.Release|x64.ActiveCfg = Release|Any CPU
+		{AFF54505-FF0C-460D-8870-132E39C970E8}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

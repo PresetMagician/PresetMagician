@@ -12,7 +12,7 @@ namespace PresetMagicianScratchPad
         [STAThread]
         private static void Main(string[] args)
         {
-            var vstPlugin = new VSTPlugin(@"C:\Users\Felicia Hummel\Documents\TestVSTs\Repro-5(x64).dll");
+            var vstPlugin = new VSTPlugin(@"C:\Users\Felicia Hummel\Documents\TestVSTs\ACE(x64).dll");
             var vstHost = new VstHost();
 
             var plugin = vstHost.LoadVST(vstPlugin);
