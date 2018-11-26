@@ -1,18 +1,12 @@
-﻿<Fluent:RibbonWindow x:Class="Drachenkatze.PresetMagician.GUI.GUI.NKSFViewer"
+﻿<UserControl x:Class="Drachenkatze.PresetMagician.GUI.GUI.NKSFViewer"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      Icon="/PresetMagician;component/PresetMagician.ico"
         xmlns:Fluent="urn:fluent-ribbon"
-       
-                     ResizeMode="CanResizeWithGrip"
-        WindowStartupLocation="CenterScreen" TitleBarHeight="32"
-     
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:hexa="clr-namespace:WpfHexaEditor;assembly=WPFHexaEditor"
-        xmlns:local="clr-namespace:Drachenkatze.PresetMagician.GUI.GUI"
         mc:Ignorable="d"
-        Title="NKSF Inspector" Height="450" Width="800">
+        Height="450" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
@@ -62,4 +56,4 @@
             </Button>
         </DockPanel>
     </Grid>
-</Fluent:RibbonWindow>
+</UserControl>

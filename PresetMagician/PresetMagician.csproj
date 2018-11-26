@@ -95,9 +95,6 @@
     <Compile Include="GUI\AboutDialog.xaml.cs">
       <DependentUpon>AboutDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\NKSFViewer.xaml.cs">
-      <DependentUpon>NKSFViewer.xaml</DependentUpon>
-    </Compile>
     <Compile Include="GUI\PluginInfoWindow.xaml.cs">
       <DependentUpon>PluginInfoWindow.xaml</DependentUpon>
     </Compile>
@@ -142,10 +139,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Themes\Icons.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\NKSFViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
