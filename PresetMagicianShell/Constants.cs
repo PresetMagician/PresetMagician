@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Catel.Windows.Input;
 
 namespace PresetMagicianShell
 {
@@ -10,7 +11,7 @@ namespace PresetMagicianShell
     {
         public static class Tools
         {
-            public const string NKSFViewer = "Tools.NKSFViewer";
+            public const string NksfView = "Tools.NksfView";
         }
     }
 }

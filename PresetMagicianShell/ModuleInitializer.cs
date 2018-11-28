@@ -13,7 +13,6 @@ public static class ModuleInitializer
     /// </summary>
     public static void Initialize()
     {
-        Debug.WriteLine("FOO");
         var serviceLocator = ServiceLocator.Default;
 
         serviceLocator.RegisterType<IRibbonService, RibbonService>();

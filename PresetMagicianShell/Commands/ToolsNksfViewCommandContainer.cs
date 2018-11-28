@@ -1,25 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Catel;
+﻿using Catel;
 using Catel.Logging;
 using Catel.MVVM;
 using Catel.Reflection;
 using Catel.Services;
+using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace PresetMagicianShell
 {
-    internal class ShowNKSFViewerCommand : CommandContainerBase
+    public class ToolsNksfViewCommandContainer : CommandContainerBase
     {
+        private const string ViewModelType = "NKSFViewModel";
+
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();
 
         private readonly IUIVisualizerService _uiVisualizerService;
         private readonly IViewModelFactory _viewModelFactory;
 
-        public ShowNKSFViewerCommand(ICommandManager commandManager, IUIVisualizerService uiVisualizerService, IViewModelFactory viewModelFactory)
-            : base(Commands.Tools.NKSFViewer, commandManager)
+        public ToolsNksfViewCommandContainer(ICommandManager commandManager, IUIVisualizerService uiVisualizerService, IViewModelFactory viewModelFactory)
+            : base(Commands.Tools.NksfView, commandManager)
         {
             Argument.IsNotNull(() => uiVisualizerService);
             Argument.IsNotNull(() => viewModelFactory);
@@ -30,6 +31,9 @@ namespace PresetMagicianShell
 
         protected override async Task ExecuteAsync(object parameter)
         {
+            base.Execute(parameter);
+            var j = TypeCache.GetTypes();
+
             var settingsViewModelType = TypeCache.GetTypes(x => string.Equals(x.Name, ViewModelType)).FirstOrDefault();
             if (settingsViewModelType == null)
             {
