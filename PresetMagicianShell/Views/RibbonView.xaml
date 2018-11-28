@@ -1,31 +1,38 @@
-﻿<UserControl x:Class="PresetMagicianShell.Views.RibbonView"
+﻿<catel:UserControl x:Class="PresetMagicianShell.Views.RibbonView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:fluent="urn:fluent-ribbon"
-             xmlns:local="clr-namespace:PresetMagicianShell.Views"
              xmlns:catel="http://schemas.catelproject.com"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:orchestra="http://schemas.wildgums.com/orchestra"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
-    <fluent:Ribbon x:Name="ribbon"
-                   IsQuickAccessToolBarVisible="False"
-                   CanCustomizeRibbon="False"
-                   AutomaticStateManagement="False">
-        <fluent:Ribbon.Menu>
-            <fluent:Backstage Header="File">
-                <fluent:BackstageTabControl>
-                    <fluent:BackstageTabItem Header="Open">
-                    </fluent:BackstageTabItem>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-                    <fluent:Button Header="Save"
-                                   Command="{catel:CommandManagerBinding File.Save}" />
+        <fluent:Ribbon Grid.Row="0" x:Name="ribbon"
+                       IsQuickAccessToolBarVisible="False"
+                       CanCustomizeRibbon="False"
+                       AutomaticStateManagement="False">
 
-                    <fluent:Button Header="Save As"
-                                   Command="{catel:CommandManagerBinding File.SaveAs}" />
-                </fluent:BackstageTabControl>
-            </fluent:Backstage>
-        </fluent:Ribbon.Menu>
-    </fluent:Ribbon>
-</UserControl>
+            <fluent:Ribbon.Tabs>
+                <fluent:RibbonTabItem Header="Tools">
+                    <fluent:RibbonGroupBox Header="NKSF Inspector">
+                        <fluent:Button Width="64" Header="NKSF Inspector"
+                                       Command="{catel:CommandManagerBinding Tools.NksfView}"
+                                       LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Telescope}, Width=32, Height=32}" Content="" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0">
+                        </fluent:Button>
+                        <fluent:SplitButton Header="Shortcuts"
+                                            Command="{Binding ShowKeyboardMappings}" Size="Large">
+                            <orchestra:KeyboardMappingsOverviewView />
+                        </fluent:SplitButton>
+                    </fluent:RibbonGroupBox>
+                </fluent:RibbonTabItem>
+            </fluent:Ribbon.Tabs>
+        </fluent:Ribbon>
+    </Grid>
+</catel:UserControl>

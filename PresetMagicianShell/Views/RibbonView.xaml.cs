@@ -12,17 +12,19 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Orchestra;
 
 namespace PresetMagicianShell.Views
 {
     /// <summary>
     /// Interaction logic for RibbonView.xaml
     /// </summary>
-    public partial class RibbonView : UserControl
+    public partial class RibbonView
     {
         public RibbonView()
         {
             InitializeComponent();
+            ribbon.AddAboutButton();
         }
     }
 }

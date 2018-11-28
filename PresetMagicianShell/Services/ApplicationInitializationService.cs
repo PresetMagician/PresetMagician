@@ -4,6 +4,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System.Diagnostics;
+
 namespace PresetMagicianShell.Services
 {
     using Catel;
@@ -56,6 +58,11 @@ namespace PresetMagicianShell.Services
         private void InitializeCommands()
         {
             Log.Info("Initializing commands");
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Tools), "NksfView");
+
+            var k = _commandManager.GetCommand("Tools.NksfView");
+
+            Debug.WriteLine(k.CanExecute(null).ToString());
         }
 
         private void RegisterTypes()
