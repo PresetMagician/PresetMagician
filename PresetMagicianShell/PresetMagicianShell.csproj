@@ -133,6 +133,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\ThirdPartyNotices\*.txt" />
     <Resource Include="Resources\Icons\PresetMagician.ico" />
   </ItemGroup>
   <ItemGroup>

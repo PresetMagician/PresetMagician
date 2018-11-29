@@ -5,6 +5,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System.Diagnostics;
+using System.Threading;
 
 namespace PresetMagicianShell.Services
 {
@@ -52,6 +53,7 @@ namespace PresetMagicianShell.Services
 
         public override async Task InitializeAfterCreatingShellAsync()
         {
+            Thread.Sleep(10000);
             await base.InitializeAfterCreatingShellAsync();
         }
 

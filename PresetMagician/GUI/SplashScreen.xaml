@@ -17,6 +17,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
+        <Image Source="../Resources/Splashscreen.svg" Width="100" Height="100" />
         <Image x:Name="splashImage" Grid.Column="1" Grid.Row="1" />
         <TextBlock x:Name="splashMessage" HorizontalAlignment="Left" Margin="3,281,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="613" Foreground="White" />
     </Grid>
