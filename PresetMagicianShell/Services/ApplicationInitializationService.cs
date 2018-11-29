@@ -4,8 +4,13 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System;
 using System.Diagnostics;
 using System.Threading;
+using Catel.Threading;
+using MethodTimer;
+using Orc.Squirrel;
+using PresetMagicianShell.ViewModels;
 
 namespace PresetMagicianShell.Services
 {
@@ -24,6 +29,7 @@ namespace PresetMagicianShell.Services
         private readonly IServiceLocator _serviceLocator;
         private readonly ICommandManager _commandManager;
         private readonly ITypeFactory _typeFactory;
+        private readonly SplashScreenService _splashScreenService;
 
         #endregion Fields
 
@@ -38,6 +44,8 @@ namespace PresetMagicianShell.Services
             _typeFactory = typeFactory;
             _serviceLocator = serviceLocator;
             _commandManager = commandManager;
+
+            _splashScreenService = serviceLocator.ResolveType<ISplashScreenService>() as SplashScreenService;
         }
 
         #endregion Constructors
@@ -49,11 +57,32 @@ namespace PresetMagicianShell.Services
             // Non-async first
             RegisterTypes();
             InitializeCommands();
+
+            await TaskHelper.RunAndWaitAsync(new Func<Task>[] {
+                CheckForUpdatesAsync
+            });
+
+            _splashScreenService.Action = "Initialization complete.";
+        }
+
+        [Time]
+        private async Task CheckForUpdatesAsync()
+        {
+            Log.Info("Checking for updates…");
+            _splashScreenService.Action = "Checking for updates…";
+
+            var updateService = _serviceLocator.ResolveType<IUpdateService>();
+            updateService.Initialize(Settings.Application.AutomaticUpdates.AvailableChannels, Settings.Application.AutomaticUpdates.DefaultChannel,
+                Settings.Application.AutomaticUpdates.CheckForUpdatesDefaultValue);
+
+#pragma warning disable 4014
+            // Not dot await, it's a background thread
+            updateService.InstallAvailableUpdatesAsync(new SquirrelContext());
+#pragma warning restore 4014
         }
 
         public override async Task InitializeAfterCreatingShellAsync()
         {
-            Thread.Sleep(10000);
             await base.InitializeAfterCreatingShellAsync();
         }
 
@@ -63,11 +92,9 @@ namespace PresetMagicianShell.Services
             _commandManager.CreateCommandWithGesture(typeof(Commands.Tools), "NksfView");
 
             var k = _commandManager.GetCommand("Tools.NksfView");
-
-            Debug.WriteLine(k.CanExecute(null).ToString());
         }
 
-        private void RegisterTypes()
+        private async void RegisterTypes()
         {
             var serviceLocator = ServiceLocator.Default;
         }
