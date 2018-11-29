@@ -11,5 +11,7 @@ WPFHexaEditor
 Newtonsoft.Json
 Syroot.Windows.IO.KnownFolders
 Orc.Squirrel
+Orc.Controls
 System.ValueTuple
 System.Threading.Tasks.Extensions
+SharpVectors.Reloaded
