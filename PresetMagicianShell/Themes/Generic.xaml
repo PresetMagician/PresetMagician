@@ -4,6 +4,7 @@
                     xmlns:Fluent="urn:fluent-ribbon">
 
     <SolidColorBrush x:Key="AccentColorBrush" Color="#FF593196" />
+    <SolidColorBrush x:Key="StatusBarColorBrush" Color="#FF391f5f" />
 
     <!-- Expander -->
     <Geometry x:Key="ExpanderCheckedArrow">M 1,4.5  L 4.5,1  L 8,4.5</Geometry>
@@ -20,6 +21,11 @@
 
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.WindowCommands.CloseButton.MouseOver.Background" Color="#E81123" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.WindowCommands.CloseButton.Pressed.Background" Color="#A92C38" />
+
+    <Style TargetType="{x:Type StatusBar}">
+        <Setter Property="Background" Value="{StaticResource StatusBarColorBrush}" />
+        <Setter Property="Foreground" Value="White" />
+    </Style>
 
     <Style x:Key="ExpanderRightHeaderStyle" TargetType="{x:Type ToggleButton}">
         <Setter Property="Template">

@@ -10,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyTitle("PresetMagicianShell")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Drachenkatze / Felicia Hummel")]
+[assembly: AssemblyCompany("Drachenkatze")]
 [assembly: AssemblyProduct("PresetMagicianShell")]
 [assembly: AssemblyCopyright("Copyright © 2018 Felicia Hummel")]
 [assembly: AssemblyTrademark("")]
@@ -49,5 +49,5 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.0.2")]
-[assembly: AssemblyFileVersion("0.0.*.0")]
+[assembly: AssemblyVersion("0.0.3")]
+[assembly: AssemblyFileVersion("0.0.3")]

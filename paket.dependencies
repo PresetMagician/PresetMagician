@@ -4,7 +4,7 @@ source https://api.nuget.org/v3/index.json
 nuget Fody 3.3.2
 nuget GSF.Media 2.1.468
 nuget JetBrains.Annotations 2018.2.1
-nuget MahApps.Metro.IconPacks 3.0.0-alpha0088 prerelease
+nuget MahApps.Metro.IconPacks 3.0.0-alpha0089 prerelease
 nuget MessagePack 1.7.3.4
 nuget NAudio 1.8.5
 nuget Newtonsoft.Json 11.0.2
@@ -27,3 +27,5 @@ nuget Orc.Controls 3.1.0
 nuget System.ValueTuple 4.5.0
 nuget System.Threading.Tasks.Extensions
 nuget SharpVectors.Reloaded
+nuget NuGet.CommandLine
+nuget Orc.Squirrel.Xaml 3.0.0

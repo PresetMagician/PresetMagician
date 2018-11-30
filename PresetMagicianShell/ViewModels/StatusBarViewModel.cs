@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Catel;
-using Catel.Configuration;
+﻿using Catel;
 using Catel.MVVM;
 using Orc.Squirrel;
 using Orchestra;
+using Orchestra.Services;
+using PresetMagicianShell.Services;
+using System;
+using System.Threading.Tasks;
 
 namespace PresetMagicianShell.ViewModels
 {
@@ -16,29 +14,29 @@ namespace PresetMagicianShell.ViewModels
     {
         #region Fields
 
-        private readonly IConfigurationService _configurationService;
         private readonly IUpdateService _updateService;
+        private readonly ApplicationInitializationService _applicationInitializationService;
 
         #endregion Fields
 
         #region Constructors
 
-        public StatusBarViewModel(IConfigurationService configurationService, IUpdateService updateService)
+        public StatusBarViewModel(IUpdateService updateService, IApplicationInitializationService applicationInitializationService)
         {
-            Argument.IsNotNull(() => configurationService);
             Argument.IsNotNull(() => updateService);
+            Argument.IsNotNull(() => applicationInitializationService);
 
-            _configurationService = configurationService;
             _updateService = updateService;
+            _applicationInitializationService = applicationInitializationService as ApplicationInitializationService;
         }
 
         #endregion Constructors
 
         #region Properties
 
-        public string ReceivingAutomaticUpdates { get; private set; }
-
+        public bool IsUpdateAvailable { get; private set; }
         public bool IsUpdatedInstalled { get; private set; }
+        public string UpdatedVersion { get; private set; }
 
         public string Version { get; private set; }
 
@@ -50,52 +48,23 @@ namespace PresetMagicianShell.ViewModels
         {
             await base.InitializeAsync();
 
-            _configurationService.ConfigurationChanged += OnConfigurationChanged;
             _updateService.UpdateInstalled += OnUpdateInstalled;
 
-            IsUpdatedInstalled = _updateService.IsUpdatedInstalled;
+            IsUpdateAvailable = _applicationInitializationService.getSquirrel().IsUpdateInstalledOrAvailable;
+            UpdatedVersion = _applicationInitializationService.getSquirrel().NewVersion;
             Version = VersionHelper.GetCurrentVersion();
-
-            UpdateAutoUpdateInfo();
         }
 
         protected override async Task CloseAsync()
         {
-            _configurationService.ConfigurationChanged -= OnConfigurationChanged;
             _updateService.UpdateInstalled -= OnUpdateInstalled;
 
             await base.CloseAsync();
         }
 
-        private void OnConfigurationChanged(object sender, ConfigurationChangedEventArgs e)
-        {
-            if (e.Key.Contains("Updates"))
-            {
-                UpdateAutoUpdateInfo();
-            }
-        }
-
         private void OnUpdateInstalled(object sender, EventArgs e)
         {
             IsUpdatedInstalled = _updateService.IsUpdatedInstalled;
-        }
-
-        private void UpdateAutoUpdateInfo()
-        {
-            string updateInfo = string.Empty;
-
-            var checkForUpdates = _updateService.CheckForUpdates;
-            if (!_updateService.IsUpdateSystemAvailable || !checkForUpdates)
-            {
-                updateInfo = "Automatic updates are disabled";
-            }
-            else
-            {
-                var channel = _updateService.CurrentChannel.Name;
-                updateInfo = string.Format("Automatic updates are enabled for {0} versions", channel.ToLower());
-            }
-
-            ReceivingAutomaticUpdates = updateInfo;
         }
 
         #endregion Methods
