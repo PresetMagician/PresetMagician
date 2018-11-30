@@ -4,19 +4,15 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System.Diagnostics;
 using Orchestra.Services;
-using PresetMagicianShell.Services.EventArgs;
 
 namespace PresetMagicianShell.ViewModels
 {
-    using System;
-    using System.Threading.Tasks;
     using Catel;
     using Catel.MVVM;
-    using Catel.Reflection;
     using Catel.Services;
-    using Services;
+    using System;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// The splash screen view model.

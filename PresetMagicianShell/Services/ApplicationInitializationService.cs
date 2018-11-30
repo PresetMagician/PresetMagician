@@ -30,6 +30,7 @@ namespace PresetMagicianShell.Services
         private readonly ICommandManager _commandManager;
         private readonly ITypeFactory _typeFactory;
         private readonly SplashScreenService _splashScreenService;
+        private SquirrelResult _squirrelResult;
 
         #endregion Fields
 
@@ -46,6 +47,7 @@ namespace PresetMagicianShell.Services
             _commandManager = commandManager;
 
             _splashScreenService = serviceLocator.ResolveType<ISplashScreenService>() as SplashScreenService;
+            _squirrelResult = new SquirrelResult();
         }
 
         #endregion Constructors
@@ -75,10 +77,24 @@ namespace PresetMagicianShell.Services
             updateService.Initialize(Settings.Application.AutomaticUpdates.AvailableChannels, Settings.Application.AutomaticUpdates.DefaultChannel,
                 Settings.Application.AutomaticUpdates.CheckForUpdatesDefaultValue);
 
+            var y = updateService.CurrentChannel;
+            Debug.WriteLine(y.DefaultUrl);
+
+            Debug.WriteLine("IsUpdateSystemAvailable:" + updateService.IsUpdateSystemAvailable);
+            Debug.WriteLine("CheckForUpdates:" + updateService.CheckForUpdates);
+
+            Debug.WriteLine(y.IsPrerelease);
+            _squirrelResult = await updateService.CheckForUpdatesAsync(new SquirrelContext());
+
 #pragma warning disable 4014
             // Not dot await, it's a background thread
-            updateService.InstallAvailableUpdatesAsync(new SquirrelContext());
+            //updateService.InstallAvailableUpdatesAsync(new SquirrelContext());
 #pragma warning restore 4014
+        }
+
+        public SquirrelResult getSquirrel()
+        {
+            return _squirrelResult;
         }
 
         public override async Task InitializeAfterCreatingShellAsync()
