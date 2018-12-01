@@ -48,6 +48,7 @@ namespace PresetMagicianShell.Services
 
             _splashScreenService = serviceLocator.ResolveType<ISplashScreenService>() as SplashScreenService;
             _squirrelResult = new SquirrelResult();
+            
         }
 
         #endregion Constructors
@@ -65,6 +66,7 @@ namespace PresetMagicianShell.Services
             });
 
             _splashScreenService.Action = "Initialization complete.";
+            
         }
 
         [Time]
@@ -110,9 +112,10 @@ namespace PresetMagicianShell.Services
             var k = _commandManager.GetCommand("Tools.NksfView");
         }
 
-        private async void RegisterTypes()
+        private void RegisterTypes()
         {
             var serviceLocator = ServiceLocator.Default;
+            serviceLocator.RegisterType<IAboutInfoService, AboutInfoService>();
         }
 
         #endregion Methods

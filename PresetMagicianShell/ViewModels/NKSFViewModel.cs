@@ -6,8 +6,10 @@ using Catel.Logging;
 using Catel.Services;
 using Orc.FileSystem;
 using System.Threading.Tasks;
+using Catel.IoC;
 using Drachenkatze.PresetMagician.NKSF.NKSF;
 using Newtonsoft.Json;
+using Orchestra.Services;
 
 namespace PresetMagicianShell.ViewModels
 {
@@ -27,7 +29,7 @@ namespace PresetMagicianShell.ViewModels
         public string ControllerAssignments { get; private set; }
         public string PluginId { get; private set; }
         public MemoryStream PluginChunk { get; set; }
-        public string filePath { get; set; }
+        private string filePath { get; set; }
 
         public NKSFViewModel(IOpenFileService openFileService, IFileService fileService, IPleaseWaitService pleaseWaitService)
         {
@@ -42,11 +44,12 @@ namespace PresetMagicianShell.ViewModels
             Title = "NKSF Viewer";
 
             OpenNKSFFile = new TaskCommand(OnOpenNKSFFileExecute);
+            
         }
 
         #region Commands
 
-        public TaskCommand OpenNKSFFile { get; private set; }
+        private TaskCommand OpenNKSFFile { get; set; }
 
         private async Task OnOpenNKSFFileExecute()
         {

@@ -8,5 +8,6 @@
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
+        <local:VstFolderList></local:VstFolderList>
     </Grid>
 </catel:UserControl>

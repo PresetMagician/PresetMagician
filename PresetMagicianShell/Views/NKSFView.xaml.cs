@@ -1,20 +1,21 @@
-﻿using System.Diagnostics;
-using Catel.Windows;
-using Drachenkatze.PresetMagician.NKSF.NKSF;
-using Newtonsoft.Json;
-using PresetMagicianShell.ViewModels;
-using Syroot.Windows.IO;
-using System.IO;
+﻿using System.ComponentModel;
 using System.Windows;
-using System.Windows.Forms;
+using Catel.Data;
+using Catel.IoC;
+using Catel.IO;
+using Catel.Windows;
+using Orchestra.Services;
+using PresetMagicianShell.ViewModels;
 
 namespace PresetMagicianShell.Views
 {
     /// <summary>
-    /// Interaction logic for NKSFViewer.xaml
+    ///     Interaction logic for NKSFViewer.xaml
     /// </summary>
-    public partial class NKSFView : DataWindow
+    public partial class NKSFView
     {
+        /// <summary>
+        /// </summary>
         public NKSFView() : this(null)
         {
         }
@@ -25,14 +26,16 @@ namespace PresetMagicianShell.Views
             AddCustomButton(new DataWindowButton("Open NKSF File", "OpenNKSFFile"));
             viewModel.PropertyChanged += ViewModel_PropertyChanged;
             InitializeComponent();
+            PluginChunkControl.SetBytes(new byte[0]);
         }
 
-        private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "PluginChunk")
             {
-                var s = (NKSFViewModel)sender;
-                PluginChunkControl.Stream = s.PluginChunk;
+                var s = (NKSFViewModel) sender;
+                
+                PluginChunkControl.SetBytes(s.PluginChunk.ToByteArray());
             }
         }
 

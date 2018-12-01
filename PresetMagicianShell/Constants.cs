@@ -26,6 +26,12 @@ namespace PresetMagicianShell
 
                 public static readonly UpdateChannel DefaultChannel = AvailableChannels[2];
             }
+
+            public static class Directories
+            {
+                public const string VstDirectories = "Directories.VstDirectories"; 
+            }
+            
         }
     }
 

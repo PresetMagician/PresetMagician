@@ -27,7 +27,7 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel x:Name="StackPanel">
-
+            <StatusBarItem Content="bla"></StatusBarItem>
             <StackPanel Visibility="{Binding IsUpdatedInstalled, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
                 <Separator  Margin="3,0,3,0" Width="{Binding ElementName=StackPanel, Path=ActualHeight}">
                     <Separator.LayoutTransform>
