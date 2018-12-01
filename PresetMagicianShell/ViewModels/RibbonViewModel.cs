@@ -5,9 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Catel;
 using Catel.Configuration;
+using Catel.IoC;
 using Catel.MVVM;
 using Catel.Reflection;
 using Catel.Services;
+using Orchestra.Services;
 using Orchestra.ViewModels;
 
 namespace PresetMagicianShell.ViewModels
@@ -30,8 +32,24 @@ namespace PresetMagicianShell.ViewModels
             _uiVisualizerService = uiVisualizerService;
             ShowKeyboardMappings = new TaskCommand(OnShowKeyboardMappingsExecuteAsync);
             Title = AssemblyHelper.GetEntryAssembly().Title();
+            ShowAboutDialog = new TaskCommand(OnShowAboutDialogExecuteAsync);
         }
 
+        /// <summary>
+        /// Gets the ShowKeyboardMappings command.
+        /// </summary>
+        public TaskCommand ShowAboutDialog { get; private set; }
+
+        /// <summary>
+        /// Method to invoke when the ShowKeyboardMappings command is executed.
+        /// </summary>
+        private async Task OnShowAboutDialogExecuteAsync()
+        {
+            var aboutService = ServiceLocator.Default.ResolveType<IAboutService>();
+            aboutService.ShowAboutAsync();
+        }
+
+        
         public TaskCommand ShowKeyboardMappings { get; private set; }
 
         private async Task OnShowKeyboardMappingsExecuteAsync()

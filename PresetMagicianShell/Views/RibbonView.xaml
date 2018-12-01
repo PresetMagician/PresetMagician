@@ -22,14 +22,14 @@
             <fluent:Ribbon.Tabs>
                 <fluent:RibbonTabItem Header="Tools">
                     <fluent:RibbonGroupBox Header="NKSF Inspector">
-                        <fluent:Button Width="64" Header="NKSF Inspector"
+                        <fluent:Button Header="NKSF Inspector"
                                        Command="{catel:CommandManagerBinding Tools.NksfView}"
                                        LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Telescope}, Width=32, Height=32}" Content="" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0">
                         </fluent:Button>
-                        <fluent:SplitButton Header="Shortcuts"
-                                            Command="{Binding ShowKeyboardMappings}" Size="Large">
-                            <orchestra:KeyboardMappingsOverviewView />
-                        </fluent:SplitButton>
+                        <fluent:Button Header="About"
+                                       Command="{Binding ShowAboutDialog}"
+                                       LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconEntypoKind.InfoWithCircle}, Width=32, Height=32}" Content="" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0">
+                        </fluent:Button>
                     </fluent:RibbonGroupBox>
                 </fluent:RibbonTabItem>
             </fluent:Ribbon.Tabs>

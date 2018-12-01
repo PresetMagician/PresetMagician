@@ -8,10 +8,19 @@
                   ResizeMode="CanResizeWithGrip"
                   SizeToContent="Manual"
                   mc:Ignorable="d"
+                  xmlns:wf="clr-namespace:System.ComponentModel.Design;assembly=System.Design"  
+
                   xmlns:ViewModels="clr-namespace:PresetMagicianShell.ViewModels"
                   d:DataContext="{d:DesignInstance ViewModels:NKSFViewModel}"
 
                   Height="450" Width="800">
+    <catel:DataWindow.Resources>
+        <Style TargetType="{x:Type StatusBar}">
+            <Setter Property="Background" Value="WhiteSmoke" />
+            <Setter Property="Foreground" Value="Black" />
+        </Style>
+    </catel:DataWindow.Resources>        
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
@@ -37,6 +46,9 @@
                  Text="{Binding ControllerAssignments}" />
         <TextBox Grid.Row="2" Grid.Column="1" x:Name="PluginIdControl" IsReadOnly="True" TextWrapping="Wrap"
                  VerticalScrollBarVisibility="Auto" IsReadOnlyCaretVisible="True" Text="{Binding PluginId}" />
-        <hexa:HexEditor Grid.Row="3" Grid.Column="1" x:Name="PluginChunkControl" ReadOnlyMode="True" />
+        <WindowsFormsHost Grid.Row="3" Grid.Column="1">
+            <wf:ByteViewer x:Name="PluginChunkControl"/>
+        </WindowsFormsHost>
+            
     </Grid>
 </catel:DataWindow>

@@ -13,7 +13,7 @@
         <Style x:Key="SplashTextBlockStyle" TargetType="TextBlock">
             <Setter Property="VerticalAlignment" Value="Top" />
             <Setter Property="FontWeight" Value="Light" />
-            <Setter Property="Padding" Value="5,3,5,0" />
+            <Setter Property="Padding" Value="5,2,5,0" />
             <Setter Property="Foreground" Value="White" />
         </Style>
     </Window.Resources>

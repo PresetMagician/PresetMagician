@@ -12,7 +12,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Catel.IoC;
+using Catel.MVVM;
 using Orchestra;
+using Orchestra.Services;
+using Orchestra.ViewModels;
 
 namespace PresetMagicianShell.Views
 {
@@ -25,6 +29,14 @@ namespace PresetMagicianShell.Views
         {
             InitializeComponent();
             ribbon.AddAboutButton();
+            
+           
+               
+                
+                
+           
         }
+        
+       
     }
 }
