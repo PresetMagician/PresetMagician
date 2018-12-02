@@ -16,3 +16,5 @@ System.ValueTuple
 System.Threading.Tasks.Extensions
 SharpVectors.Reloaded
 Orc.Squirrel.Xaml
+Extended.Wpf.Toolkit
+Dirkster.AvalonDock.Themes.VS2013

@@ -5,9 +5,96 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:PresetMagicianShell.Views"
              xmlns:catel="http://schemas.catelproject.com"
+             xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <local:VstFolderList></local:VstFolderList>
+       
+       <xcad:DockingManager x:Name="_dockingManager"
+                              AllowMixedOrientation="True"
+                              BorderBrush="Black"
+                              BorderThickness="1"
+                              >
+       
+             
+          <xcad:DockingManager.DocumentHeaderTemplate>
+               <DataTemplate>
+                  <StackPanel Orientation="Horizontal">
+                     <Image Source="{Binding IconSource}"
+                            Margin="0,0,4,0" />
+                     <TextBlock Text="{Binding Title}" />
+                  </StackPanel>
+               </DataTemplate>
+            </xcad:DockingManager.DocumentHeaderTemplate>
+            <xcad:LayoutRoot x:Name="_layoutRoot">
+               <xcad:LayoutPanel Orientation="Horizontal">
+            <xcad:LayoutDocumentPaneGroup>
+               <xcad:LayoutDocumentPane>
+                  
+                  <xcad:LayoutDocument ContentId="document1"
+                                             Title="Document 1"
+                                            >
+                           <local:VstFolderList></local:VstFolderList>
+                        </xcad:LayoutDocument>
+                        <xcad:LayoutDocument ContentId="document2"
+                                             Title="Document 2"
+                                             >
+                           <TextBox Text="Document 2 Content"
+                                    AcceptsReturn="True" />
+                        </xcad:LayoutDocument>
+                     </xcad:LayoutDocumentPane>
+                  </xcad:LayoutDocumentPaneGroup >
+                  <xcad:LayoutAnchorablePaneGroup DockWidth="125">
+                     <xcad:LayoutAnchorablePane>
+                        <xcad:LayoutAnchorable ContentId="alarms"
+                                               Title="Alarms"
+                                               >
+                           
+                        </xcad:LayoutAnchorable>
+                        <xcad:LayoutAnchorable ContentId="journal"
+                                               Title="Journal">
+                           <RichTextBox>
+                              <FlowDocument>
+                                 <Paragraph FontSize="14"
+                                            FontFamily="Segoe">
+                                    This is the content of the Journal Pane.
+                                    <LineBreak />
+                                    A
+                                    <Bold>RichTextBox</Bold> has been added here
+                                 </Paragraph>
+                              </FlowDocument>
+                           </RichTextBox>
+                        </xcad:LayoutAnchorable>
+                     </xcad:LayoutAnchorablePane>
+                  </xcad:LayoutAnchorablePaneGroup>
+               </xcad:LayoutPanel>
+
+               <xcad:LayoutRoot.LeftSide>
+                  <xcad:LayoutAnchorSide>
+                     <xcad:LayoutAnchorGroup>
+                        <xcad:LayoutAnchorable Title="Agenda"
+                                               ContentId="agenda"
+                                               >
+                           <TextBlock Text="Agenda Content"
+                                      Margin="10"
+                                      FontSize="18"
+                                      FontWeight="Black"
+                                      TextWrapping="Wrap" />
+                        </xcad:LayoutAnchorable>
+                        <xcad:LayoutAnchorable Title="Contacts"
+                                               ContentId="contacts"
+                                               >
+                           <TextBlock Text="Contacts Content"
+                                      Margin="10"
+                                      FontSize="18"
+                                      FontWeight="Black"
+                                      TextWrapping="Wrap" />
+                        </xcad:LayoutAnchorable>
+                     </xcad:LayoutAnchorGroup>
+                  </xcad:LayoutAnchorSide>
+               </xcad:LayoutRoot.LeftSide>
+            </xcad:LayoutRoot>
+         </xcad:DockingManager>
+        
     </Grid>
 </catel:UserControl>

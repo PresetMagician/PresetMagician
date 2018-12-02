@@ -30,6 +30,10 @@
                                        Command="{Binding ShowAboutDialog}"
                                        LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconEntypoKind.InfoWithCircle}, Width=32, Height=32}" Content="" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0">
                         </fluent:Button>
+                        <fluent:Button Header="ThemeTest"
+                                       Command="{Binding ShowThemeTest}"
+                                       LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconEntypoKind.InfoWithCircle}, Width=32, Height=32}" Content="" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0">
+                        </fluent:Button>
                     </fluent:RibbonGroupBox>
                 </fluent:RibbonTabItem>
             </fluent:Ribbon.Tabs>
