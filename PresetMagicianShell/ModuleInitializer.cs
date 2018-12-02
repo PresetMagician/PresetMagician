@@ -102,5 +102,12 @@ public static class ModuleInitializer
             "PresetMagicianShell",
             "Resources.ThirdPartyNotices.Catel.Fody.txt")
         );
+        
+        thirdPartyNoticesService.Add(new ResourceBasedThirdPartyNotice(
+            "Extended.Wpf.Toolkit",
+            "https://github.com/xceedsoftware/wpftoolkit",
+            "PresetMagicianShell",
+            "Resources.ThirdPartyNotices.Extended.Wpf.Toolkit.txt")
+        );
     }
 }

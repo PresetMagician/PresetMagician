@@ -11,6 +11,7 @@ using Catel.Reflection;
 using Catel.Services;
 using Orchestra.Services;
 using Orchestra.ViewModels;
+using PresetMagicianShell.Views;
 
 namespace PresetMagicianShell.ViewModels
 {
@@ -33,6 +34,7 @@ namespace PresetMagicianShell.ViewModels
             ShowKeyboardMappings = new TaskCommand(OnShowKeyboardMappingsExecuteAsync);
             Title = AssemblyHelper.GetEntryAssembly().Title();
             ShowAboutDialog = new TaskCommand(OnShowAboutDialogExecuteAsync);
+            ShowThemeTest = new TaskCommand(OnShowThemeTestExecuteAsync);
         }
 
         /// <summary>
@@ -47,6 +49,20 @@ namespace PresetMagicianShell.ViewModels
         {
             var aboutService = ServiceLocator.Default.ResolveType<IAboutService>();
             aboutService.ShowAboutAsync();
+        }
+        
+        /// <summary>
+        /// Gets the ShowKeyboardMappings command.
+        /// </summary>
+        public TaskCommand ShowThemeTest { get; private set; }
+
+        /// <summary>
+        /// Method to invoke when the ShowKeyboardMappings command is executed.
+        /// </summary>
+        private async Task OnShowThemeTestExecuteAsync()
+        {
+            var aboutService = new ThemeControlsWindow();
+            aboutService.Show();
         }
 
         

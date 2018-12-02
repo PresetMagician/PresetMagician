@@ -30,6 +30,8 @@ namespace PresetMagicianShell
 
         protected override async void OnStartup(StartupEventArgs e)
         {
+            
+            
 #if DEBUG
             LogManager.AddDebugListener(false);
 #endif
@@ -47,6 +49,16 @@ namespace PresetMagicianShell
             x.TitleBackground = (Brush)x.FindResource("AccentColorBrush");
             x.TitleForeground = (Brush)x.FindResource("WhiteBrush");
             x.TitleBarHeight = 24;
+            
+            Debug.WriteLine("foo123");
+            
+            
+            var ding = Application.Current.Resources;
+
+            foreach (var b in ding)
+            {
+                Debug.WriteLine(b);
+            }
             
         }
     }

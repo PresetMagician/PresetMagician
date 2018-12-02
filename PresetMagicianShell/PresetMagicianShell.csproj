@@ -109,6 +109,9 @@
     <Compile Include="Views\StatusBarView.xaml.cs">
       <DependentUpon>StatusBarView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ThemeControlsWindow.xaml.cs">
+      <DependentUpon>ThemeControlsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\VstFolderList.xaml.cs">
       <DependentUpon>VstFolderList.xaml</DependentUpon>
     </Compile>
@@ -158,6 +161,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\ThemeControlsWindow.xaml" />
     <Page Include="Views\VstFolderList.xaml" />
   </ItemGroup>
   <ItemGroup>
@@ -225,6 +229,10 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Themes\Colors\AvalonDockColors.xaml" />
+    <Page Include="Themes\Master.xaml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild" Condition=" '$(Configuration)' == 'Release'">
@@ -324,6 +332,38 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
       <ItemGroup>
+        <Reference Include="Xceed.Wpf.AvalonDock">
+          <HintPath>..\packages\Dirkster.AvalonDock.Themes.Expression\lib\net4\Xceed.Wpf.AvalonDock.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Xceed.Wpf.AvalonDock.Themes.Expression">
+          <HintPath>..\packages\Dirkster.AvalonDock.Themes.Expression\lib\net4\Xceed.Wpf.AvalonDock.Themes.Expression.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="Xceed.Wpf.AvalonDock">
+          <HintPath>..\packages\Dirkster.AvalonDock.Themes.VS2013\lib\net4\Xceed.Wpf.AvalonDock.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2013">
+          <HintPath>..\packages\Dirkster.AvalonDock.Themes.VS2013\lib\net4\Xceed.Wpf.AvalonDock.Themes.VS2013.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
         <Reference Include="Microsoft.Expression.Interactions">
           <HintPath>..\packages\Expression.Blend.Sdk.WPF\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
           <Private>True</Private>
@@ -331,6 +371,42 @@
         </Reference>
         <Reference Include="System.Windows.Interactivity">
           <HintPath>..\packages\Expression.Blend.Sdk.WPF\lib\net45\System.Windows.Interactivity.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="Xceed.Wpf.AvalonDock">
+          <HintPath>..\packages\Extended.Wpf.Toolkit\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero">
+          <HintPath>..\packages\Extended.Wpf.Toolkit\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro">
+          <HintPath>..\packages\Extended.Wpf.Toolkit\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010">
+          <HintPath>..\packages\Extended.Wpf.Toolkit\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Xceed.Wpf.DataGrid">
+          <HintPath>..\packages\Extended.Wpf.Toolkit\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Xceed.Wpf.Toolkit">
+          <HintPath>..\packages\Extended.Wpf.Toolkit\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
