@@ -333,22 +333,6 @@
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
       <ItemGroup>
         <Reference Include="Xceed.Wpf.AvalonDock">
-          <HintPath>..\packages\Dirkster.AvalonDock.Themes.Expression\lib\net4\Xceed.Wpf.AvalonDock.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-        <Reference Include="Xceed.Wpf.AvalonDock.Themes.Expression">
-          <HintPath>..\packages\Dirkster.AvalonDock.Themes.Expression\lib\net4\Xceed.Wpf.AvalonDock.Themes.Expression.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
-      <ItemGroup>
-        <Reference Include="Xceed.Wpf.AvalonDock">
           <HintPath>..\packages\Dirkster.AvalonDock.Themes.VS2013\lib\net4\Xceed.Wpf.AvalonDock.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>

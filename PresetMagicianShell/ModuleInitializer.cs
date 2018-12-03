@@ -109,5 +109,12 @@ public static class ModuleInitializer
             "PresetMagicianShell",
             "Resources.ThirdPartyNotices.Extended.Wpf.Toolkit.txt")
         );
+        
+        thirdPartyNoticesService.Add(new ResourceBasedThirdPartyNotice(
+            "Dirkster.AvalonDock.Themes.VS2013",
+            "https://github.com/Dirkster99/AvalonDock",
+            "PresetMagicianShell",
+            "Resources.ThirdPartyNotices.Dirkster.AvalonDock.Themes.VS2013.txt")
+        );
     }
 }
