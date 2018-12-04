@@ -34,8 +34,12 @@ namespace PresetMagicianShell
             
             
 #if DEBUG
-            LogManager.AddDebugListener(false);
+            LogManager.AddDebugListener(true);
 #endif
+
+            var fileLogListener = new FileLogListener {IgnoreCatelLogging = true, FilePath = @"{AppDataLocal}\{AutoLogFileName}"};
+
+            LogManager.AddListener(fileLogListener);
             var serviceLocator = ServiceLocator.Default;
 
             var languageService = ServiceLocator.Default.ResolveType<ILanguageService>();
