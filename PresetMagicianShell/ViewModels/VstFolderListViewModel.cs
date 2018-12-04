@@ -1,77 +1,87 @@
-using System.Collections.Generic;
+using System;
+using System.Collections;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO;
+using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using Catel;
-using Catel.Configuration;
 using Catel.MVVM;
+using Catel.Services;
 using Drachenkatze.PresetMagician.VSTHost.VST;
+using PresetMagicianShell.Services.Interfaces;
 using ApplicationSettings = PresetMagicianShell.Settings.Application;
 
 namespace PresetMagicianShell.ViewModels
 {
     public class VstFolderListViewModel : ViewModelBase
     {
-        private readonly IConfigurationService _configurationService;
-        
-        public VstFolderListViewModel(IConfigurationService configurationService)
+        private readonly IRuntimeConfigurationService _configurationService;
+        private readonly ISelectDirectoryService _selectDirectoryService;
+
+        public ListCollectionView _ListCollectionView { get; set; }
+
+
+        public VstFolderListViewModel(IRuntimeConfigurationService configurationService, ISelectDirectoryService selectDirectoryService)
         {
             Argument.IsNotNull(() => configurationService);
+            Argument.IsNotNull(() => selectDirectoryService);
        
             _configurationService = configurationService;
+            _selectDirectoryService = selectDirectoryService;
            
-            Title = "VST Directories";
-            
-            AddDefaultVstFolders = new TaskCommand(OnAddDefaultVstFoldersExecute);
+            AddDefaultVstFolders = new Command(OnAddDefaultVstFoldersExecute);
             AddFolder = new TaskCommand(OnAddFolderExecute);
-            RemoveFolder = new TaskCommand(OnRemoveFolderExecute);
+            RemoveFolder = new Command<object>(OnRemoveFolderExecute);
+            
+            VstDirectories = _configurationService.RuntimeConfiguration.VstDirectories;
+            
         }
 
-        public ObservableCollection<DirectoryInfo> VstDirectories { get; set; } = new ObservableCollection<DirectoryInfo>();
+
+        public override string Title { get; protected set; } = "VST Directories";
+        
+        public ObservableCollection<string> VstDirectories { get; set; }
 
         #region Commands
 
-        public TaskCommand AddDefaultVstFolders { get; private set; }
+        public Command AddDefaultVstFolders { get; }
 
-        private async Task OnAddDefaultVstFoldersExecute()
+        private void OnAddDefaultVstFoldersExecute()
         {
-            foreach (DirectoryInfo i in VstPathScanner.getCommonVSTPluginDirectories())
+            foreach (var i in VstPathScanner.getCommonVSTPluginDirectories())
             {
-                if (!(from path in VstDirectories where path.FullName == i.FullName select path.FullName).Any())
+                if (!(from path in VstDirectories where path == i select path).Any())
                 {
                     VstDirectories.Add(i);
                 }
             }
+            
+            _configurationService.SaveConfiguration();
         }
         
-        public TaskCommand AddFolder { get; private set; }
+        public TaskCommand AddFolder { get; }
 
         private async Task OnAddFolderExecute ()
         {
-           
+            if (await _selectDirectoryService.DetermineDirectoryAsync())
+            {
+                VstDirectories.Add(_selectDirectoryService.DirectoryName);
+            }
         }
         
-        public TaskCommand RemoveFolder { get; private set; }
+        public Command<object> RemoveFolder { get; }
 
-        private async Task OnRemoveFolderExecute ()
+        private void OnRemoveFolderExecute (object parameter)
         {
-           
-        }
-        
-        protected override async Task InitializeAsync()
-        {
-            await base.InitializeAsync();
 
-            VstDirectories = _configurationService.GetLocalValue(ApplicationSettings.Directories.VstDirectories, new ObservableCollection<DirectoryInfo>());
-        }
-        
-        protected override async Task<bool> SaveAsync()
-        {
-            _configurationService.SetRoamingValue(ApplicationSettings.Directories.VstDirectories, VstDirectories);
+            var folders = (parameter as IList).Cast<string>();
 
-            return await base.SaveAsync();
+            foreach (var folder in folders.ToList())
+            {
+                VstDirectories.Remove(folder);
+            }
         }
         
         #endregion

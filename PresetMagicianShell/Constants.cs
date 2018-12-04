@@ -42,4 +42,9 @@ namespace PresetMagicianShell
             public const string NksfView = "Tools.NksfView";
         }
     }
+    
+    public static class Workspaces
+    {
+        public const string DefaultWorkspaceName = "Default";
+    }
 }

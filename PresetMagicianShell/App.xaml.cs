@@ -13,6 +13,7 @@ using Catel.Logging;
 using Catel.Services;
 using Orchestra.Services;
 using Orchestra.Views;
+using PresetMagicianShell.Services.Interfaces;
 using PresetMagicianShell.Views;
 
 namespace PresetMagicianShell
@@ -49,17 +50,15 @@ namespace PresetMagicianShell
             x.TitleBackground = (Brush)x.FindResource("AccentColorBrush");
             x.TitleForeground = (Brush)x.FindResource("WhiteBrush");
             x.TitleBarHeight = 24;
-            
-            Debug.WriteLine("foo123");
-            
-            
-            var ding = Application.Current.Resources;
 
-            foreach (var b in ding)
-            {
-                Debug.WriteLine(b);
-            }
-            
+        }
+        
+        protected override void OnExit(ExitEventArgs e)
+        {
+
+            var serviceLocator = ServiceLocator.Default;
+            serviceLocator.ResolveType<IRuntimeConfigurationService>().SaveConfiguration();
+            base.OnExit(e);
         }
     }
 }

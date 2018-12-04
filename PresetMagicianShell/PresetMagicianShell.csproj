@@ -82,9 +82,12 @@
     </ApplicationDefinition>
     <Compile Include="Commands\ToolsNksfViewCommandContainer.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="Models\RuntimeConfiguration.cs" />
     <Compile Include="Services\AboutInfoService.cs" />
     <Compile Include="Services\ApplicationInitializationService.cs" />
+    <Compile Include="Services\RuntimeConfigurationService.cs" />
     <Compile Include="Services\EventArgs\StartupActionChangedEventArgs.cs" />
+    <Compile Include="Services\Interfaces\IRuntimeConfigurationService.cs" />
     <Compile Include="Services\Interfaces\IVstService.cs" />
     <Compile Include="Services\SplashScreenService.cs" />
     <Compile Include="Services\VstService.cs" />
@@ -275,6 +278,17 @@
         </Reference>
         <Reference Include="Catel.MVVM">
           <HintPath>..\packages\Catel.MVVM\lib\net46\Catel.MVVM.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="Catel.Serialization.Json">
+          <HintPath>..\packages\Catel.Serialization.Json\lib\net46\Catel.Serialization.Json.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -546,6 +560,17 @@
         </Reference>
         <Reference Include="Orc.SystemInfo">
           <HintPath>..\packages\Orc.SystemInfo\lib\net46\Orc.SystemInfo.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="Orc.WorkspaceManagement">
+          <HintPath>..\packages\Orc.WorkspaceManagement\lib\net46\Orc.WorkspaceManagement.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>

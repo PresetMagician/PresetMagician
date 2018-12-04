@@ -6,8 +6,6 @@
       xmlns:catel="http://schemas.catelproject.com"
       mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="154.88"
       xmlns:viewModels="clr-namespace:PresetMagicianShell.ViewModels"
-      xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-      
       d:DataContext="{d:DesignInstance viewModels:VstFolderListViewModel}">
 
     <Grid>
@@ -15,10 +13,10 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <DataGrid x:Name="VstDirectories" ItemsSource="{Binding VstDirectories}" AutoGenerateColumns="False" GridLinesVisibility="All" ScrollViewer.CanContentScroll="True" Grid.Row="0">
+        <DataGrid x:Name="VstDirectoryGrid" ItemsSource="{Binding VstDirectories}" GridLinesVisibility="All" Grid.Row="0" CanUserSortColumns="True">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Path" Width="*"
-                                    Binding="{Binding FullName}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Path" Width="*" CanUserSort="True"
+                                    Binding="{Binding}" IsReadOnly="True" />
             </DataGrid.Columns>
         </DataGrid>
 
@@ -43,12 +41,12 @@
                     VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
-            <Button Command="{Binding RemoveFolder}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="6,2,2,2">
+            <Button Command="{Binding RemoveFolder}" CommandParameter="{Binding Path=SelectedItems,ElementName=VstDirectoryGrid}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="6,2,2,2">
                 <Button.Style>
                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                         <Setter Property="IsEnabled" Value="True" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding SelectedItems.Count,ElementName=VstDirectories}"
+                            <DataTrigger Binding="{Binding SelectedItems.Count,ElementName=VstDirectoryGrid}"
                                          Value="0">
                                 <Setter Property="IsEnabled"
                                         Value="False" />

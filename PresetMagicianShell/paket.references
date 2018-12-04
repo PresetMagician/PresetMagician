@@ -16,5 +16,9 @@ System.ValueTuple
 System.Threading.Tasks.Extensions
 SharpVectors.Reloaded
 Orc.Squirrel.Xaml
+Orc.WorkspaceManagement
 Extended.Wpf.Toolkit
 Dirkster.AvalonDock.Themes.VS2013
+Catel.Serialization.Json
+Microsoft-WindowsAPICodePack-Core
+Microsoft-WindowsAPICodePack-Shell

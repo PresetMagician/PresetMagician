@@ -6,21 +6,20 @@
 
 using System;
 using System.Diagnostics;
-using System.Threading;
+using System.Threading.Tasks;
+using Catel;
+using Catel.IoC;
+using Catel.Logging;
+using Catel.MVVM;
+using Catel.Runtime.Serialization.Json;
 using Catel.Threading;
 using MethodTimer;
 using Orc.Squirrel;
-using PresetMagicianShell.ViewModels;
+using Orchestra.Services;
+using PresetMagicianShell.Services.Interfaces;
 
 namespace PresetMagicianShell.Services
 {
-    using Catel;
-    using Catel.IoC;
-    using Catel.Logging;
-    using Catel.MVVM;
-    using Orchestra.Services;
-    using System.Threading.Tasks;
-
     public class ApplicationInitializationService : ApplicationInitializationServiceBase
     {
         #region Fields
@@ -36,7 +35,8 @@ namespace PresetMagicianShell.Services
 
         #region Constructors
 
-        public ApplicationInitializationService(ITypeFactory typeFactory, IServiceLocator serviceLocator, ICommandManager commandManager)
+        public ApplicationInitializationService(ITypeFactory typeFactory, IServiceLocator serviceLocator,
+            ICommandManager commandManager)
         {
             Argument.IsNotNull(() => typeFactory);
             Argument.IsNotNull(() => serviceLocator);
@@ -48,7 +48,6 @@ namespace PresetMagicianShell.Services
 
             _splashScreenService = serviceLocator.ResolveType<ISplashScreenService>() as SplashScreenService;
             _squirrelResult = new SquirrelResult();
-            
         }
 
         #endregion Constructors
@@ -60,13 +59,15 @@ namespace PresetMagicianShell.Services
             // Non-async first
             RegisterTypes();
             InitializeCommands();
-
-            await TaskHelper.RunAndWaitAsync(new Func<Task>[] {
+            LoadConfiguration();
+            
+            await TaskHelper.RunAndWaitAsync(new Func<Task>[]
+            {
                 CheckForUpdatesAsync
+                
             });
 
             _splashScreenService.Action = "Initialization complete.";
-            
         }
 
         [Time]
@@ -76,7 +77,8 @@ namespace PresetMagicianShell.Services
             _splashScreenService.Action = "Checking for updates…";
 
             var updateService = _serviceLocator.ResolveType<IUpdateService>();
-            updateService.Initialize(Settings.Application.AutomaticUpdates.AvailableChannels, Settings.Application.AutomaticUpdates.DefaultChannel,
+            updateService.Initialize(Settings.Application.AutomaticUpdates.AvailableChannels,
+                Settings.Application.AutomaticUpdates.DefaultChannel,
                 Settings.Application.AutomaticUpdates.CheckForUpdatesDefaultValue);
 
             var y = updateService.CurrentChannel;
@@ -99,23 +101,23 @@ namespace PresetMagicianShell.Services
             return _squirrelResult;
         }
 
-        public override async Task InitializeAfterCreatingShellAsync()
-        {
-            await base.InitializeAfterCreatingShellAsync();
-        }
-
         private void InitializeCommands()
         {
             Log.Info("Initializing commands");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Tools), "NksfView");
-
-            var k = _commandManager.GetCommand("Tools.NksfView");
+        }
+        
+        private void LoadConfiguration()
+        {
+            var runtimeConfigurationService = _serviceLocator.ResolveType<IRuntimeConfigurationService>();
+            runtimeConfigurationService.LoadConfiguration();
         }
 
         private void RegisterTypes()
         {
             var serviceLocator = ServiceLocator.Default;
             serviceLocator.RegisterType<IAboutInfoService, AboutInfoService>();
+            serviceLocator.RegisterTypeAndInstantiate<IRuntimeConfigurationService, RuntimeConfigurationService>();
         }
 
         #endregion Methods
