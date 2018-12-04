@@ -11,9 +11,6 @@
     mc:Ignorable="d" x:Class="PresetMagicianShell.Views.ThemeControlsWindow"
     Title="Sample Controls" Height="750" Width="900">
     <Grid>
-        <Grid.Background>
-            <SolidColorBrush Color="{DynamicResource BaseM2Color}" />
-        </Grid.Background>
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />
             <RowDefinition Height="*" />

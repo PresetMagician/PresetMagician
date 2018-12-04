@@ -18,16 +18,16 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
         };
 
 
-        public static List<DirectoryInfo> getCommonVSTPluginDirectories()
+        public static List<string> getCommonVSTPluginDirectories()
         {
-            List<DirectoryInfo> vstLocations = new List<DirectoryInfo>();
+            List<string> vstLocations = new List<string>();
 
             foreach (String vstPath in vstPaths)
             {
                 var vstLocation = Environment.GetEnvironmentVariable("ProgramFiles") + vstPath;
                 if (Directory.Exists(vstLocation))
                 {
-                    vstLocations.Add(new DirectoryInfo(vstLocation));
+                    vstLocations.Add(vstLocation);
                 }
             }
 
