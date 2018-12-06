@@ -32,6 +32,7 @@ nuget Orc.Squirrel.Xaml 3.0.0
 nuget Extended.Wpf.Toolkit 3.4.0
 nuget Dirkster.AvalonDock.Themes.VS2013 3.4.0.8
 nuget Orc.WorkspaceManagement 3.1.0
+nuget Orc.LogViewer 3.1.0
 nuget Catel.Serialization.Json 5.8.0
 nuget Microsoft-WindowsAPICodePack-Core 1.1.3.3
 nuget Microsoft-WindowsAPICodePack-Shell 1.1.3.3

@@ -30,10 +30,15 @@
                                        Command="{Binding ShowAboutDialog}"
                                        LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconEntypoKind.InfoWithCircle}, Width=32, Height=32}" Content="" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0">
                         </fluent:Button>
-                        <fluent:Button Header="ThemeTest"
-                                       Command="{Binding ShowThemeTest}"
-                                       LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconEntypoKind.InfoWithCircle}, Width=32, Height=32}" Content="" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0">
-                        </fluent:Button>
+                        <fluent:DropDownButton Header="Developer Tools" LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Beaker}, Width=32, Height=32}">
+                            <fluent:MenuItem Header="Theme Test" 
+                                             Command="{Binding ShowThemeTest}"
+                                             Icon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Paintcan}, Width=32, Height=32}"/>
+                            <fluent:MenuItem Header="DoSomething" 
+                                             Command="{Binding DoSomething}"
+                                             Icon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Paintcan}, Width=32, Height=32}"/>
+                        </fluent:DropDownButton>
+                      
                     </fluent:RibbonGroupBox>
                 </fluent:RibbonTabItem>
             </fluent:Ribbon.Tabs>

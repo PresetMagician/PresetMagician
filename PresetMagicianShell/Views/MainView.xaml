@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:PresetMagicianShell.Views"
              xmlns:catel="http://schemas.catelproject.com"
              xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
+             xmlns:orclogviewer="http://schemas.wildgums.com/orc/logviewer"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -93,6 +94,16 @@
                      </xcad:LayoutAnchorGroup>
                   </xcad:LayoutAnchorSide>
                </xcad:LayoutRoot.LeftSide>
+               
+               <xcad:LayoutRoot.BottomSide>
+                  <xcad:LayoutAnchorSide>
+                     <xcad:LayoutAnchorGroup>
+                        <xcad:LayoutAnchorable Title="Event Log">
+                           <orclogviewer:AdvancedLogViewerControl IgnoreCatelLogging="True"/>
+                        </xcad:LayoutAnchorable>
+                     </xcad:LayoutAnchorGroup>
+                  </xcad:LayoutAnchorSide>
+               </xcad:LayoutRoot.BottomSide>
             </xcad:LayoutRoot>
          </xcad:DockingManager>
         

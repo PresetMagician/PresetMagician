@@ -35,6 +35,7 @@ namespace PresetMagicianShell.ViewModels
             Title = AssemblyHelper.GetEntryAssembly().Title();
             ShowAboutDialog = new TaskCommand(OnShowAboutDialogExecuteAsync);
             ShowThemeTest = new TaskCommand(OnShowThemeTestExecuteAsync);
+            DoSomething = new TaskCommand(OnDoSomethingExecuteAsync);
         }
 
         /// <summary>
@@ -63,6 +64,19 @@ namespace PresetMagicianShell.ViewModels
         {
             var aboutService = new ThemeControlsWindow();
             aboutService.Show();
+        }
+        
+        /// <summary>
+        /// Gets the ShowKeyboardMappings command.
+        /// </summary>
+        public TaskCommand DoSomething { get; private set; }
+
+        /// <summary>
+        /// Method to invoke when the ShowKeyboardMappings command is executed.
+        /// </summary>
+        private async Task OnDoSomethingExecuteAsync()
+        {
+            
         }
 
         

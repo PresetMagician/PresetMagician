@@ -9,8 +9,8 @@ namespace PresetMagicianShell.Models
     {
         public ObservableCollection<String> VstDirectories
         {
-            get { return GetValue<ObservableCollection<String>>(VstDirectoriesProperty); }
-            set { SetValue(VstDirectoriesProperty, value); }
+            get => GetValue<ObservableCollection<String>>(VstDirectoriesProperty);
+            set => SetValue(VstDirectoriesProperty, value);
         }
 
         public static readonly PropertyData VstDirectoriesProperty = RegisterProperty("VstDirectories", typeof(ObservableCollection<String>), () => new ObservableCollection<String>());
