@@ -34,7 +34,7 @@ namespace PresetMagicianShell
             
             
 #if DEBUG
-            LogManager.AddDebugListener(true);
+            //LogManager.AddDebugListener(true);
 #endif
 
             var fileLogListener = new FileLogListener {IgnoreCatelLogging = true, FilePath = @"{AppDataLocal}\{AutoLogFileName}"};
@@ -61,7 +61,7 @@ namespace PresetMagicianShell
         {
 
             var serviceLocator = ServiceLocator.Default;
-            serviceLocator.ResolveType<IRuntimeConfigurationService>().SaveConfiguration();
+            serviceLocator.ResolveType<IRuntimeConfigurationService>().Save();
             base.OnExit(e);
         }
     }

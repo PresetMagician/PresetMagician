@@ -67,7 +67,14 @@ namespace PresetMagicianShell.Services
                 
             });
 
-            _splashScreenService.Action = "Initialization complete.";
+            
+        }
+        
+        public override async Task InitializeBeforeShowingShellAsync()
+        {
+            _splashScreenService.Action = "Restoring application layout…";
+            var x = _serviceLocator.ResolveType<IRuntimeConfigurationService>();
+            x.LoadLayout();
         }
 
         [Time]
@@ -110,7 +117,7 @@ namespace PresetMagicianShell.Services
         private void LoadConfiguration()
         {
             var runtimeConfigurationService = _serviceLocator.ResolveType<IRuntimeConfigurationService>();
-            runtimeConfigurationService.LoadConfiguration();
+            runtimeConfigurationService.Load();
         }
 
         private void RegisterTypes()

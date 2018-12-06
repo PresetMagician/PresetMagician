@@ -11,7 +11,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
        
-       <xcad:DockingManager x:Name="_dockingManager"
+       <xcad:DockingManager x:Name="DockingManager"
                               AllowMixedOrientation="True"
                               BorderBrush="Black"
                               BorderThickness="1"
@@ -98,7 +98,7 @@
                <xcad:LayoutRoot.BottomSide>
                   <xcad:LayoutAnchorSide>
                      <xcad:LayoutAnchorGroup>
-                        <xcad:LayoutAnchorable Title="Event Log">
+                        <xcad:LayoutAnchorable Title="Event Log" AutoHideHeight="220">
                            <orclogviewer:AdvancedLogViewerControl IgnoreCatelLogging="True"/>
                         </xcad:LayoutAnchorable>
                      </xcad:LayoutAnchorGroup>
