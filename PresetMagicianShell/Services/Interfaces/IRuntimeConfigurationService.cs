@@ -6,8 +6,15 @@ namespace PresetMagicianShell.Services.Interfaces
     public interface IRuntimeConfigurationService
     {
         #region Methods
+        void Load();
+        void Save();
         void LoadConfiguration();
+        void LoadLayout();
+        
+        void ResetLayout();
+
         void SaveConfiguration();
+        void SaveLayout();
         #endregion
         
         #region Fields

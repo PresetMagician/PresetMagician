@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using Catel.Data;
+using Xceed.Wpf.AvalonDock.Layout;
 
 namespace PresetMagicianShell.Models
 {
@@ -14,6 +15,6 @@ namespace PresetMagicianShell.Models
         }
 
         public static readonly PropertyData VstDirectoriesProperty = RegisterProperty("VstDirectories", typeof(ObservableCollection<String>), () => new ObservableCollection<String>());
-
+        
     }
 }

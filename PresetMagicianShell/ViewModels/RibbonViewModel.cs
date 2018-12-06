@@ -1,17 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Catel;
 using Catel.Configuration;
 using Catel.IoC;
+using Catel.IO;
 using Catel.MVVM;
 using Catel.Reflection;
+using Catel.Runtime.Serialization;
 using Catel.Services;
 using Orchestra.Services;
 using Orchestra.ViewModels;
+using PresetMagicianShell.Services.Interfaces;
 using PresetMagicianShell.Views;
+using Xceed.Wpf.AvalonDock;
+using Xceed.Wpf.AvalonDock.Layout.Serialization;
 
 namespace PresetMagicianShell.ViewModels
 {
@@ -20,17 +26,22 @@ namespace PresetMagicianShell.ViewModels
         #region Fields
 
         private readonly IUIVisualizerService _uiVisualizerService;
-
+        private readonly IServiceLocator _serviceLocator;
         #endregion Fields
 
         #region Constructors
 
         public RibbonViewModel(
-            IUIVisualizerService uiVisualizerService
+            IUIVisualizerService uiVisualizerService,
+            IServiceLocator serviceLocator
            )
         {
             Argument.IsNotNull(() => uiVisualizerService);
+            Argument.IsNotNull(() => serviceLocator);
+            
             _uiVisualizerService = uiVisualizerService;
+            _serviceLocator = serviceLocator;
+            
             ShowKeyboardMappings = new TaskCommand(OnShowKeyboardMappingsExecuteAsync);
             Title = AssemblyHelper.GetEntryAssembly().Title();
             ShowAboutDialog = new TaskCommand(OnShowAboutDialogExecuteAsync);
@@ -76,7 +87,9 @@ namespace PresetMagicianShell.ViewModels
         /// </summary>
         private async Task OnDoSomethingExecuteAsync()
         {
-            
+            var serviceLocator = ServiceLocator.Default;
+            var x = serviceLocator.ResolveType<IRuntimeConfigurationService>();
+            x.ResetLayout();
         }
 
         

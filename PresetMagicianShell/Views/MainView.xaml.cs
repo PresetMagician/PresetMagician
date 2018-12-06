@@ -12,6 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Catel.IoC;
+using PresetMagicianShell.Services.Interfaces;
+using Xceed.Wpf.AvalonDock;
 
 namespace PresetMagicianShell.Views
 {
@@ -23,6 +26,10 @@ namespace PresetMagicianShell.Views
         public MainView()
         {
             InitializeComponent();
+            
+            var serviceLocator = ServiceLocator.Default;
+
+            serviceLocator.RegisterInstance<DockingManager>(DockingManager);
         }
     }
 }
