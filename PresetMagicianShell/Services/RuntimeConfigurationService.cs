@@ -60,11 +60,18 @@ namespace PresetMagicianShell.Services
                 return;
             }
 
-            var configurationFile = new FileStream(DefaultLocalConfigFilePath, FileMode.Open);
+            try
+            {
+                var configurationFile = new FileStream(DefaultLocalConfigFilePath, FileMode.Open);
 
-            _jsonSerializer.Deserialize(RuntimeConfiguration, configurationFile, _jsonSerializerConfiguration);
+                _jsonSerializer.Deserialize(RuntimeConfiguration, configurationFile, _jsonSerializerConfiguration);
 
-            configurationFile.Close();
+                configurationFile.Close();
+            }
+            catch (Exception e)
+            {
+                _logger.Info("Unable to load configuration file, probably corrupt. Error:" + e.Message);
+            }
         }
 
         public void LoadLayout()
