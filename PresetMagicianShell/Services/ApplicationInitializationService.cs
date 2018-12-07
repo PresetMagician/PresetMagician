@@ -85,7 +85,11 @@ namespace PresetMagicianShell.Services
 
         public override Task InitializeAfterShowingShellAsync()
         {
-            StartRegistration();
+            var serviceLocator = ServiceLocator.Default;
+            var licenseService = serviceLocator.ResolveType<ILicenseService>(); 
+            if (!licenseService.CheckLicense()) {
+                StartRegistration();
+            }
             return base.InitializeAfterShowingShellAsync();
         }
 
