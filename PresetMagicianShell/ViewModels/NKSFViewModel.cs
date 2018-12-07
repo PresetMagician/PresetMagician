@@ -49,7 +49,7 @@ namespace PresetMagicianShell.ViewModels
 
         #region Commands
 
-        private TaskCommand OpenNKSFFile { get; set; }
+        public TaskCommand OpenNKSFFile { get; set; }
 
         private async Task OnOpenNKSFFileExecute()
         {
