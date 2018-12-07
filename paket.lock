@@ -102,6 +102,7 @@ NUGET
       Fluent.Ribbon (>= 6.1.0.326)
       Orc.Controls (>= 3.1)
       Orchestra.Core (>= 5.1.4)
+    Portable.Licensing (1.1)
     PropertyChanged.Fody (2.5.14)
       Fody (>= 3.2.13)
     SharpCompress (0.22)
