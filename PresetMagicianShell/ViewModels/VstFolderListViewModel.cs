@@ -20,7 +20,7 @@ namespace PresetMagicianShell.ViewModels
         private readonly IRuntimeConfigurationService _configurationService;
         private readonly ISelectDirectoryService _selectDirectoryService;
 
-        public ListCollectionView _ListCollectionView { get; set; }
+        public ListCollectionView ListCollectionView { get; set; }
 
 
         public VstFolderListViewModel(IRuntimeConfigurationService configurationService, ISelectDirectoryService selectDirectoryService)
@@ -34,9 +34,6 @@ namespace PresetMagicianShell.ViewModels
             AddDefaultVstFolders = new Command(OnAddDefaultVstFoldersExecute);
             AddFolder = new TaskCommand(OnAddFolderExecute);
             RemoveFolder = new Command<object>(OnRemoveFolderExecute);
-            
-            VstDirectories = _configurationService.RuntimeConfiguration.VstDirectories;
-            
         }
 
 
