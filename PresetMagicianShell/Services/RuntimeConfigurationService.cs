@@ -29,7 +29,7 @@ namespace PresetMagicianShell.Services
         private readonly ILog _logger = LogManager.GetCurrentClassLogger();
 
         private LayoutRoot originalLayout;
-        
+
         public RuntimeConfiguration RuntimeConfiguration { get; }
 
         public RuntimeConfigurationService(IJsonSerializer jsonSerializer, IServiceLocator serviceLocator)
@@ -77,8 +77,9 @@ namespace PresetMagicianShell.Services
         public void LoadLayout()
         {
             originalLayout = getDockingManager().Layout;
-            
-            if (File.Exists(DefaultLocalLayoutFilePath)) {
+
+            if (File.Exists(DefaultLocalLayoutFilePath))
+            {
                 try
                 {
                     getLayoutSerializer().Deserialize(DefaultLocalLayoutFilePath);
@@ -114,12 +115,11 @@ namespace PresetMagicianShell.Services
 
         public void SaveLayout()
         {
-           getLayoutSerializer().Serialize(DefaultLocalLayoutFilePath);
+            getLayoutSerializer().Serialize(DefaultLocalLayoutFilePath);
         }
 
         private XmlLayoutSerializer getLayoutSerializer()
         {
-           
             return new XmlLayoutSerializer(getDockingManager());
         }
 

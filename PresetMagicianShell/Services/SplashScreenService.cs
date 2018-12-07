@@ -19,10 +19,6 @@ namespace PresetMagicianShell.Services
     {
         private Views.SplashScreen _splashScreen;
 
-        /// <summary>
-        /// Creates the splash screen.
-        /// </summary>
-        /// <returns>The window.</returns>
         public Window CreateSplashScreen()
         {
             _splashScreen = new Views.SplashScreen(this);
@@ -35,7 +31,7 @@ namespace PresetMagicianShell.Services
 
         public String Action
         {
-            get { return _action; }
+            get => _action;
             set
             {
                 _action = value;
