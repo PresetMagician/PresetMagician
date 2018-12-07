@@ -3,7 +3,6 @@
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                  xmlns:hexa="clr-namespace:WpfHexaEditor;assembly=WPFHexaEditor"
                   xmlns:catel="http://schemas.catelproject.com"
                   ResizeMode="CanResizeWithGrip"
                   SizeToContent="Manual"
@@ -38,13 +37,13 @@
         <Label Grid.Row="1" Grid.Column="0" Content="ControllerAssignments" />
         <Label Grid.Row="2" Grid.Column="0" Content="PluginId" />
         <Label Grid.Row="3" Grid.Column="0" Content="PluginChunk" />
-        <TextBox Grid.Row="0" Grid.Column="1" x:Name="SummaryInformationControl" IsReadOnly="True"
+        <TextBox Grid.Row="0" Grid.Column="1" IsReadOnly="True"
                  VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" IsReadOnlyCaretVisible="True"
                  Text="{Binding SummaryInformation}" />
-        <TextBox Grid.Row="1" Grid.Column="1" x:Name="ControllerAssignmentsControl" IsReadOnly="True"
+        <TextBox Grid.Row="1" Grid.Column="1" IsReadOnly="True"
                  VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" IsReadOnlyCaretVisible="True"
                  Text="{Binding ControllerAssignments}" />
-        <TextBox Grid.Row="2" Grid.Column="1" x:Name="PluginIdControl" IsReadOnly="True" TextWrapping="Wrap"
+        <TextBox Grid.Row="2" Grid.Column="1" IsReadOnly="True" TextWrapping="Wrap"
                  VerticalScrollBarVisibility="Auto" IsReadOnlyCaretVisible="True" Text="{Binding PluginId}" />
         <WindowsFormsHost Grid.Row="3" Grid.Column="1">
             <wf:ByteViewer x:Name="PluginChunkControl"/>

@@ -85,6 +85,8 @@
     <Compile Include="Models\RuntimeConfiguration.cs" />
     <Compile Include="Services\AboutInfoService.cs" />
     <Compile Include="Services\ApplicationInitializationService.cs" />
+      <Compile Include="Services\Interfaces\ILicenseService.cs"/>
+      <Compile Include="Services\LicenseService.cs"/>
     <Compile Include="Services\RuntimeConfigurationService.cs" />
     <Compile Include="Services\EventArgs\StartupActionChangedEventArgs.cs" />
     <Compile Include="Services\Interfaces\IRuntimeConfigurationService.cs" />
@@ -93,6 +95,7 @@
     <Compile Include="Services\VstService.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\NKSFViewModel.cs" />
+      <Compile Include="ViewModels\RegistrationViewModel.cs"/>
     <Compile Include="ViewModels\RibbonViewModel.cs" />
     <Compile Include="ViewModels\SplashScreenViewModel.cs" />
     <Compile Include="ViewModels\StatusBarViewModel.cs" />
@@ -103,6 +106,9 @@
     <Compile Include="Views\NKSFView.xaml.cs">
       <DependentUpon>NKSFView.xaml</DependentUpon>
     </Compile>
+      <Compile Include="Views\RegistrationWindow.xaml.cs">
+          <DependentUpon>RegistrationWindow.xaml</DependentUpon>
+      </Compile>
     <Compile Include="Views\RibbonView.xaml.cs">
       <DependentUpon>RibbonView.xaml</DependentUpon>
     </Compile>
@@ -152,6 +158,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+      <Page Include="Views\RegistrationWindow.xaml"/>
     <Page Include="Views\RibbonView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -208,6 +215,10 @@
       <Project>{2126df46-7f24-4c2c-b236-514a70b7a3a5}</Project>
       <Name>Drachenkatze.PresetMagician.NKSF</Name>
     </ProjectReference>
+      <ProjectReference Include="..\Drachenkatze.PresetMagician.Utils\Drachenkatze.PresetMagician.Utils.csproj">
+          <Project>{37abda8a-5ffa-41f9-b880-a272d8c21dff}</Project>
+          <Name>Drachenkatze.PresetMagician.Utils</Name>
+      </ProjectReference>
     <ProjectReference Include="..\Drachenkatze.PresetMagician.VSTHost\Drachenkatze.PresetMagician.VSTHost.csproj">
       <Project>{bb9702b3-2826-411a-b7c5-ef64348a7a5c}</Project>
       <Name>Drachenkatze.PresetMagician.VSTHost</Name>
@@ -626,12 +637,23 @@
       <ItemGroup>
         <Reference Include="Orchestra.Shell.Ribbon.Fluent">
           <HintPath>..\packages\Orchestra.Shell.Ribbon.Fluent\lib\net46\Orchestra.Shell.Ribbon.Fluent.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
+            <Private>True</Private>
+            <Paket>True</Paket>
         </Reference>
       </ItemGroup>
     </When>
   </Choose>
+    <Choose>
+        <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+            <ItemGroup>
+                <Reference Include="Portable.Licensing">
+                    <HintPath>..\packages\Portable.Licensing\lib\portable-net40+sl4+wp7+win8\Portable.Licensing.dll</HintPath>
+                    <Private>True</Private>
+                    <Paket>True</Paket>
+                </Reference>
+            </ItemGroup>
+        </When>
+    </Choose>
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
       <ItemGroup>

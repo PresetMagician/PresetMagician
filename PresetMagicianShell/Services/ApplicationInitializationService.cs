@@ -12,11 +12,13 @@ using Catel.IoC;
 using Catel.Logging;
 using Catel.MVVM;
 using Catel.Runtime.Serialization.Json;
+using Catel.Services;
 using Catel.Threading;
 using MethodTimer;
 using Orc.Squirrel;
 using Orchestra.Services;
 using PresetMagicianShell.Services.Interfaces;
+using PresetMagicianShell.ViewModels;
 
 namespace PresetMagicianShell.Services
 {
@@ -27,7 +29,8 @@ namespace PresetMagicianShell.Services
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();
         private readonly IServiceLocator _serviceLocator;
         private readonly ICommandManager _commandManager;
-        private readonly ITypeFactory _typeFactory;
+        private readonly IViewModelFactory _viewModelFactory;
+        private readonly IUIVisualizerService _uiVisualizerService;
         private readonly SplashScreenService _splashScreenService;
         private SquirrelResult _squirrelResult;
 
@@ -35,19 +38,22 @@ namespace PresetMagicianShell.Services
 
         #region Constructors
 
-        public ApplicationInitializationService(ITypeFactory typeFactory, IServiceLocator serviceLocator,
-            ICommandManager commandManager)
+        public ApplicationInitializationService(IServiceLocator serviceLocator,
+            ICommandManager commandManager, IUIVisualizerService uiVisualizerService, IViewModelFactory viewModelFactory)
         {
-            Argument.IsNotNull(() => typeFactory);
             Argument.IsNotNull(() => serviceLocator);
             Argument.IsNotNull(() => commandManager);
+            Argument.IsNotNull(() => uiVisualizerService);
+            Argument.IsNotNull(() => viewModelFactory);
 
-            _typeFactory = typeFactory;
             _serviceLocator = serviceLocator;
             _commandManager = commandManager;
+            _uiVisualizerService = uiVisualizerService;
+            _viewModelFactory = viewModelFactory;
 
             _splashScreenService = serviceLocator.ResolveType<ISplashScreenService>() as SplashScreenService;
             _squirrelResult = new SquirrelResult();
+
         }
 
         #endregion Constructors
@@ -75,6 +81,19 @@ namespace PresetMagicianShell.Services
             _splashScreenService.Action = "Restoring application layout…";
             var x = _serviceLocator.ResolveType<IRuntimeConfigurationService>();
             x.LoadLayout();
+        }
+
+        public override Task InitializeAfterShowingShellAsync()
+        {
+            StartRegistration();
+            return base.InitializeAfterShowingShellAsync();
+        }
+
+        private async void StartRegistration()
+        {
+            var viewModel = _viewModelFactory.CreateViewModel(typeof(RegistrationViewModel), null);
+
+            await _uiVisualizerService.ShowDialogAsync(viewModel);
         }
 
         [Time]
@@ -124,6 +143,7 @@ namespace PresetMagicianShell.Services
         {
             var serviceLocator = ServiceLocator.Default;
             serviceLocator.RegisterType<IAboutInfoService, AboutInfoService>();
+            serviceLocator.RegisterType<ILicenseService, LicenseService>();
             serviceLocator.RegisterTypeAndInstantiate<IRuntimeConfigurationService, RuntimeConfigurationService>();
         }
 
