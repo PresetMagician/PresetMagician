@@ -33,10 +33,10 @@
                         <fluent:DropDownButton Header="Developer Tools" LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Beaker}, Width=32, Height=32}">
                             <fluent:MenuItem Header="Theme Test" 
                                              Command="{Binding ShowThemeTest}"
-                                             Icon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Paintcan}, Width=32, Height=32}"/>
+                                             Icon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Paintcan}}"/>
                             <fluent:MenuItem Header="DoSomething" 
                                              Command="{Binding DoSomething}"
-                                             Icon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Paintcan}, Width=32, Height=32}"/>
+                                             Icon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Paintcan}}"/>
                         </fluent:DropDownButton>
                       
                     </fluent:RibbonGroupBox>

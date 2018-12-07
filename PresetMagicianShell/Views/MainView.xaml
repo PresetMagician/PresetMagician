@@ -27,15 +27,15 @@
                   </StackPanel>
                </DataTemplate>
             </xcad:DockingManager.DocumentHeaderTemplate>
-            <xcad:LayoutRoot x:Name="_layoutRoot">
+            <xcad:LayoutRoot>
                <xcad:LayoutPanel Orientation="Horizontal">
             <xcad:LayoutDocumentPaneGroup>
                <xcad:LayoutDocumentPane>
                   
                   <xcad:LayoutDocument ContentId="document1"
-                                             Title="Document 1"
+                                             Title="VST Folders"
                                             >
-                           <local:VstFolderList></local:VstFolderList>
+                           <local:VstFolderList Margin="10"></local:VstFolderList>
                         </xcad:LayoutDocument>
                         <xcad:LayoutDocument ContentId="document2"
                                              Title="Document 2"
@@ -45,52 +45,32 @@
                         </xcad:LayoutDocument>
                      </xcad:LayoutDocumentPane>
                   </xcad:LayoutDocumentPaneGroup >
-                  <xcad:LayoutAnchorablePaneGroup DockWidth="125">
-                     <xcad:LayoutAnchorablePane>
-                        <xcad:LayoutAnchorable ContentId="alarms"
-                                               Title="Alarms"
-                                               >
-                           
-                        </xcad:LayoutAnchorable>
-                        <xcad:LayoutAnchorable ContentId="journal"
-                                               Title="Journal">
-                           <RichTextBox>
-                              <FlowDocument>
-                                 <Paragraph FontSize="14"
-                                            FontFamily="Segoe">
-                                    This is the content of the Journal Pane.
-                                    <LineBreak />
-                                    A
-                                    <Bold>RichTextBox</Bold> has been added here
-                                 </Paragraph>
-                              </FlowDocument>
-                           </RichTextBox>
-                        </xcad:LayoutAnchorable>
-                     </xcad:LayoutAnchorablePane>
-                  </xcad:LayoutAnchorablePaneGroup>
+                  
                </xcad:LayoutPanel>
+               
 
                <xcad:LayoutRoot.LeftSide>
                   <xcad:LayoutAnchorSide>
                      <xcad:LayoutAnchorGroup>
-                        <xcad:LayoutAnchorable Title="Agenda"
-                                               ContentId="agenda"
-                                               >
-                           <TextBlock Text="Agenda Content"
-                                      Margin="10"
-                                      FontSize="18"
-                                      FontWeight="Black"
-                                      TextWrapping="Wrap" />
-                        </xcad:LayoutAnchorable>
-                        <xcad:LayoutAnchorable Title="Contacts"
-                                               ContentId="contacts"
-                                               >
-                           <TextBlock Text="Contacts Content"
-                                      Margin="10"
-                                      FontSize="18"
-                                      FontWeight="Black"
-                                      TextWrapping="Wrap" />
-                        </xcad:LayoutAnchorable>
+                           <xcad:LayoutAnchorable ContentId="alarms"
+                                                  Title="VST Plugin Properties"
+                           >
+                           
+                           </xcad:LayoutAnchorable>
+                           <xcad:LayoutAnchorable ContentId="journal"
+                                                  Title="Conversion Settings">
+                              <RichTextBox>
+                                 <FlowDocument>
+                                    <Paragraph FontSize="14"
+                                               FontFamily="Segoe">
+                                       This is the content of the Journal Pane.
+                                       <LineBreak />
+                                       A
+                                       <Bold>RichTextBox</Bold> has been added here
+                                    </Paragraph>
+                                 </FlowDocument>
+                              </RichTextBox>
+                           </xcad:LayoutAnchorable>
                      </xcad:LayoutAnchorGroup>
                   </xcad:LayoutAnchorSide>
                </xcad:LayoutRoot.LeftSide>
