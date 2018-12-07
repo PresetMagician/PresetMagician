@@ -1,0 +1,1 @@
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgitlab.com%2FDrachenkatze%2Fpresetmagician.svg?type=large)](https://app.fossa.io/projects/git%2Bgitlab.com%2FDrachenkatze%2Fpresetmagician?ref=badge_large)
