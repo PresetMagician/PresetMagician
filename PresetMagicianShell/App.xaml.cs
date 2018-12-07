@@ -51,6 +51,7 @@ namespace PresetMagicianShell
             var x = await shellService.CreateAsync<ShellWindow>();
 
             // Overrides
+            x.Title = "PresetMagician";
             x.TitleBackground = (Brush)x.FindResource("AccentColorBrush");
             x.TitleForeground = (Brush)x.FindResource("WhiteBrush");
             x.TitleBarHeight = 24;
