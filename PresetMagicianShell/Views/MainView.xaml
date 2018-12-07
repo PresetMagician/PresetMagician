@@ -33,9 +33,9 @@
                <xcad:LayoutDocumentPane>
                   
                   <xcad:LayoutDocument ContentId="document1"
-                                             Title="VST Folders"
+                                             Title="Settings"
                                             >
-                           <local:VstFolderList Margin="10"></local:VstFolderList>
+                           <local:SettingsView Margin="10"></local:SettingsView>
                         </xcad:LayoutDocument>
                         <xcad:LayoutDocument ContentId="document2"
                                              Title="Document 2"
@@ -44,7 +44,7 @@
                                     AcceptsReturn="True" />
                         </xcad:LayoutDocument>
                      </xcad:LayoutDocumentPane>
-                  </xcad:LayoutDocumentPaneGroup >
+                  </xcad:LayoutDocumentPaneGroup>
                   
                </xcad:LayoutPanel>
                

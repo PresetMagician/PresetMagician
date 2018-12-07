@@ -97,6 +97,7 @@
     <Compile Include="ViewModels\NKSFViewModel.cs" />
       <Compile Include="ViewModels\RegistrationViewModel.cs"/>
     <Compile Include="ViewModels\RibbonViewModel.cs" />
+      <Compile Include="ViewModels\SettingsViewModel.cs"/>
     <Compile Include="ViewModels\SplashScreenViewModel.cs" />
     <Compile Include="ViewModels\StatusBarViewModel.cs" />
     <Compile Include="ViewModels\VstFolderListViewModel.cs" />
@@ -112,6 +113,9 @@
     <Compile Include="Views\RibbonView.xaml.cs">
       <DependentUpon>RibbonView.xaml</DependentUpon>
     </Compile>
+      <Compile Include="Views\SettingsView.xaml.cs">
+          <DependentUpon>SettingsView.xaml</DependentUpon>
+      </Compile>
     <Compile Include="Views\SplashScreen.xaml.cs">
       <DependentUpon>SplashScreen.xaml</DependentUpon>
     </Compile>
@@ -163,6 +167,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+      <Page Include="Views\SettingsView.xaml"/>
     <Page Include="Views\SplashScreen.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
