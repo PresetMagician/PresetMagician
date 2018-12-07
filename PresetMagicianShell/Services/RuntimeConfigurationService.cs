@@ -1,9 +1,7 @@
-using System.Configuration;
-using System.Diagnostics;
+using System;
 using System.IO;
-using System.Threading.Tasks;
-using System.Windows.Forms.VisualStyles;
 using Catel.IoC;
+using Catel.IO;
 using Catel.Logging;
 using Catel.Runtime.Serialization.Json;
 using Newtonsoft.Json;
@@ -19,11 +17,11 @@ namespace PresetMagicianShell.Services
     public class RuntimeConfigurationService : IRuntimeConfigurationService
     {
         private static readonly string DefaultLocalConfigFilePath =
-            Path.Combine(Path.GetApplicationDataDirectory(Catel.IO.ApplicationDataTarget.UserLocal),
+            Path.Combine(Path.GetApplicationDataDirectory(ApplicationDataTarget.UserLocal),
                 "configuration.json");
 
         private static readonly string DefaultLocalLayoutFilePath =
-            Path.Combine(Path.GetApplicationDataDirectory(Catel.IO.ApplicationDataTarget.UserLocal), "layout.xml");
+            Path.Combine(Path.GetApplicationDataDirectory(ApplicationDataTarget.UserLocal), "layout.xml");
 
         private readonly JsonSerializationConfiguration _jsonSerializerConfiguration;
         private readonly IJsonSerializer _jsonSerializer;
@@ -71,10 +69,18 @@ namespace PresetMagicianShell.Services
 
         public void LoadLayout()
         {
-            Debug.WriteLine("LoadLayout");
             originalLayout = getDockingManager().Layout;
             
-            getLayoutSerializer().Deserialize(DefaultLocalLayoutFilePath);
+            if (File.Exists(DefaultLocalLayoutFilePath)) {
+                try
+                {
+                    getLayoutSerializer().Deserialize(DefaultLocalLayoutFilePath);
+                }
+                catch (Exception)
+                {
+                    // Probably something wrong with the file, ignore
+                }
+            }
         }
 
         public void ResetLayout()
