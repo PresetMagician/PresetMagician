@@ -38,6 +38,9 @@
                             <fluent:MenuItem Header="Theme Test" 
                                              Command="{Binding ShowThemeTest}"
                                              Icon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Paintcan}}"/>
+                            <fluent:MenuItem Header="Reset Dock" 
+                                             Command="{Binding ResetDock}"
+                                             Icon="{iconPacks:PackIcon {x:Static iconPacks:PackIconModernKind.Reset}}"/>
                             <fluent:MenuItem Header="DoSomething" 
                                              Command="{Binding DoSomething}"
                                              Icon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Paintcan}}"/>

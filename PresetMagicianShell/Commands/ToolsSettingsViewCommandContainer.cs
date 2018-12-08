@@ -41,21 +41,7 @@ namespace PresetMagicianShell
         {
             base.Execute(parameter);
 
-            object tag = null;
-            var sl = ServiceLocator.Default;
-            var viewModel = sl.ResolveType<SettingsViewModel>();
-            var viewLocator = sl.ResolveType<IViewLocator>();
-            var viewType = viewLocator.ResolveView(viewModel.GetType());
-
-            var document = AvalonDockHelper.FindDocument(viewType, tag);
-            if (document == null)
-            {
-                var view = ViewHelper.ConstructViewWithViewModel(viewType, viewModel);
-                document = AvalonDockHelper.CreateDocument(view, tag);
-            }
-
-            AvalonDockHelper.ActivateDocument(document);
-
+            AvalonDockHelper.CreateDocument<SettingsViewModel>();
         }
     }
 }

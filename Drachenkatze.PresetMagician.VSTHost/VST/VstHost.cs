@@ -28,11 +28,11 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
 
         public VSTPluginExport pluginExporter;
 
-        public ObservableCollection<String> EnumeratePlugins(DirectoryInfo pluginDirectory)
+        public ObservableCollection<String> EnumeratePlugins(string pluginDirectory)
         {
             ObservableCollection<String> vstPlugins = new ObservableCollection<String>();
             foreach (string file in Directory.EnumerateFiles(
-    pluginDirectory.FullName, "*.dll", SearchOption.AllDirectories))
+    pluginDirectory, "*.dll", SearchOption.AllDirectories))
             {
                 vstPlugins.Add(file);
             }

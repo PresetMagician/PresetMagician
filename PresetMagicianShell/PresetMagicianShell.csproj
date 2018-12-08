@@ -84,10 +84,12 @@
     <Compile Include="Commands\ToolsSettingsViewCommandContainer.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Helpers\AvalonDockHelper.cs" />
+    <Compile Include="Models\Plugin.cs" />
     <Compile Include="Models\RuntimeConfiguration.cs" />
     <Compile Include="Models\Settings\VstDirectory.cs" />
     <Compile Include="Services\AboutInfoService.cs" />
     <Compile Include="Services\ApplicationInitializationService.cs" />
+    <Compile Include="Services\CustomPleaseWaitService.cs" />
     <Compile Include="Services\Interfaces\ILicenseService.cs" />
     <Compile Include="Services\LicenseService.cs" />
     <Compile Include="Services\RuntimeConfigurationService.cs" />
@@ -105,6 +107,7 @@
     <Compile Include="ViewModels\SplashScreenViewModel.cs" />
     <Compile Include="ViewModels\StatusBarViewModel.cs" />
     <Compile Include="ViewModels\VstFolderListViewModel.cs" />
+    <Compile Include="ViewModels\VstPluginViewModel.cs" />
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
     </Compile>
@@ -131,6 +134,13 @@
     </Compile>
     <Compile Include="Views\VstFolderList.xaml.cs">
       <DependentUpon>VstFolderList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\VstPluginView.xaml.cs">
+      <DependentUpon>VstPluginView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Workers\ProgressUserState.cs" />
+    <Compile Include="Workers\VstPluginScannerWorker.cs">
+      <SubType>Component</SubType>
     </Compile>
     <None Include="paket.references" />
     <Compile Include="Services\RibbonService.cs" />
@@ -182,6 +192,10 @@
     </Page>
     <Page Include="Views\ThemeControlsWindow.xaml" />
     <Page Include="Views\VstFolderList.xaml" />
+    <Page Include="Views\VstPluginView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ModuleInitializer.cs" />
@@ -227,6 +241,10 @@
     <ProjectReference Include="..\Drachenkatze.PresetMagician.Utils\Drachenkatze.PresetMagician.Utils.csproj">
       <Project>{37abda8a-5ffa-41f9-b880-a272d8c21dff}</Project>
       <Name>Drachenkatze.PresetMagician.Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Drachenkatze.PresetMagician.VendorPresetParser\Drachenkatze.PresetMagician.VendorPresetParser.csproj">
+      <Project>{3f01003f-9e52-4f4d-a5fd-ecdd9017c048}</Project>
+      <Name>Drachenkatze.PresetMagician.VendorPresetParser</Name>
     </ProjectReference>
     <ProjectReference Include="..\Drachenkatze.PresetMagician.VSTHost\Drachenkatze.PresetMagician.VSTHost.csproj">
       <Project>{bb9702b3-2826-411a-b7c5-ef64348a7a5c}</Project>
