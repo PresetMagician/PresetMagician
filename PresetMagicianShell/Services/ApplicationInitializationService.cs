@@ -135,6 +135,7 @@ namespace PresetMagicianShell.Services
         {
             Log.Info("Initializing commands");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Tools), "NksfView");
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Tools), "SettingsView");
         }
         
         private void LoadConfiguration()

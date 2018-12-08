@@ -40,6 +40,7 @@ namespace PresetMagicianShell
         public static class Tools
         {
             public const string NksfView = "Tools.NksfView";
+            public const string SettingsView = "Tools.SettingsView";
         }
     }
     

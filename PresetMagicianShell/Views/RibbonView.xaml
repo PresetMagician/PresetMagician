@@ -26,6 +26,10 @@
                                        Command="{catel:CommandManagerBinding Tools.NksfView}"
                                        LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Telescope}, Width=32, Height=32}" Content="" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0">
                         </fluent:Button>
+                        <fluent:Button Header="Settings"
+                                       Command="{catel:CommandManagerBinding Tools.SettingsView}"
+                                       LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Settings}, Width=32, Height=32}" Content="" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0">
+                        </fluent:Button>
                         <fluent:Button Header="About"
                                        Command="{Binding ShowAboutDialog}"
                                        LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconEntypoKind.InfoWithCircle}, Width=32, Height=32}" Content="" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0">
