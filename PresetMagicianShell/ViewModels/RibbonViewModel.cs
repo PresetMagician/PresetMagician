@@ -42,10 +42,10 @@ namespace PresetMagicianShell.ViewModels
             _uiVisualizerService = uiVisualizerService;
             _serviceLocator = serviceLocator;
             
-            ShowKeyboardMappings = new TaskCommand(OnShowKeyboardMappingsExecuteAsync);
             Title = AssemblyHelper.GetEntryAssembly().Title();
             ShowAboutDialog = new TaskCommand(OnShowAboutDialogExecuteAsync);
             ShowThemeTest = new TaskCommand(OnShowThemeTestExecuteAsync);
+            ResetDock = new TaskCommand(OnResetDockExecuteAsync);
             DoSomething = new TaskCommand(OnDoSomethingExecuteAsync);
         }
 
@@ -60,7 +60,7 @@ namespace PresetMagicianShell.ViewModels
         private async Task OnShowAboutDialogExecuteAsync()
         {
             var aboutService = ServiceLocator.Default.ResolveType<IAboutService>();
-            aboutService.ShowAboutAsync();
+            await aboutService.ShowAboutAsync();
         }
         
         /// <summary>
@@ -76,7 +76,22 @@ namespace PresetMagicianShell.ViewModels
             var aboutService = new ThemeControlsWindow();
             aboutService.Show();
         }
-        
+
+        /// <summary>
+        /// Gets the ShowKeyboardMappings command.
+        /// </summary>
+        public TaskCommand ResetDock { get; private set; }
+
+        /// <summary>
+        /// Method to invoke when the ShowKeyboardMappings command is executed.
+        /// </summary>
+        private async Task OnResetDockExecuteAsync()
+        {
+            var serviceLocator = ServiceLocator.Default;
+            var x = serviceLocator.ResolveType<IRuntimeConfigurationService>();
+            x.ResetLayout();
+        }
+
         /// <summary>
         /// Gets the ShowKeyboardMappings command.
         /// </summary>
@@ -89,17 +104,14 @@ namespace PresetMagicianShell.ViewModels
         {
             var serviceLocator = ServiceLocator.Default;
             var x = serviceLocator.ResolveType<IRuntimeConfigurationService>();
-            x.ResetLayout();
+
+            var _statusService = serviceLocator.ResolveType<IStatusService>();
+
+            _statusService.UpdateStatus("blabla");
         }
 
         
-        public TaskCommand ShowKeyboardMappings { get; private set; }
-
-        private async Task OnShowKeyboardMappingsExecuteAsync()
-        {
-            await _uiVisualizerService.ShowDialogAsync<KeyboardMappingsCustomizationViewModel>();
-        }
-
+       
         #endregion Constructors
     }
 }

@@ -67,6 +67,32 @@ namespace PresetMagicianShell.Helpers
                     select document).Cast<LayoutDocument>().FirstOrDefault();
         }
 
+        public static LayoutDocument FindDocument<TService>(object tag=null)
+        {
+            var sl = ServiceLocator.Default;
+            var viewModel = sl.ResolveType<TService>();
+            var viewLocator = sl.ResolveType<IViewLocator>();
+            var viewType = viewLocator.ResolveView(viewModel.GetType());
+
+            return AvalonDockHelper.FindDocument(viewType, tag);
+        }
+
+        public static void CreateDocument<TService>(object tag = null)
+        {
+            var sl = ServiceLocator.Default;
+            var viewModel = sl.ResolveType<TService>();
+            var viewLocator = sl.ResolveType<IViewLocator>();
+            var viewType = viewLocator.ResolveView(viewModel.GetType());
+
+            var document = AvalonDockHelper.FindDocument(viewType, tag);
+            if (document == null)
+            {
+                var view = ViewHelper.ConstructViewWithViewModel(viewType, viewModel);
+                document = AvalonDockHelper.CreateDocument(view, tag);
+            }
+
+            AvalonDockHelper.ActivateDocument(document);
+        }
         /// <summary>
         /// Activates the document in the docking manager, which makes it the active document.
         /// </summary>

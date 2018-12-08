@@ -16,16 +16,9 @@ namespace PresetMagicianShell.ViewModels
     
     public class MainViewModel : ViewModelBase
     {
-        public ObservableCollection<IView> Documents { get; }
-
         public MainViewModel()
         {
-            
-
-            Documents = new ObservableCollection<IView>();
-
-           
-   
+            AvalonDockHelper.CreateDocument<VstPluginViewModel>();
         }
     }
 }

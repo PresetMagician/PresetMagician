@@ -149,7 +149,8 @@ namespace PresetMagicianShell.Services
             var serviceLocator = ServiceLocator.Default;
             serviceLocator.RegisterType<IAboutInfoService, AboutInfoService>();
             serviceLocator.RegisterType<ILicenseService, LicenseService>();
-            serviceLocator.RegisterTypeAndInstantiate<IRuntimeConfigurationService, RuntimeConfigurationService>();
+            serviceLocator.RegisterType<IRuntimeConfigurationService, RuntimeConfigurationService>();
+            serviceLocator.RegisterType<IVstService, VstService>();
         }
 
         #endregion Methods
