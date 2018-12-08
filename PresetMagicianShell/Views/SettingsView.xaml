@@ -23,7 +23,7 @@
                     </Grid.ColumnDefinitions>
 
                     <Label Content="VST Folders" Grid.Row="0" Grid.Column="0"></Label>
-                    <local:VstFolderList Margin="10" Grid.Column="1" Grid.Row="0" Height="300" DataContext="{Binding RuntimeConfiguration}"/>
+                    <local:VstFolderList Margin="10" Grid.Column="1" Grid.Row="0" Height="300"/>
                 </Grid>
                 
             </TabItem>

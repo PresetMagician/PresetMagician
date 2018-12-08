@@ -8,41 +8,29 @@
              xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
              xmlns:orclogviewer="http://schemas.wildgums.com/orc/logviewer"
              mc:Ignorable="d"
+             xmlns:ViewModels="clr-namespace:PresetMagicianShell.ViewModels"
+                   xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                   d:DataContext="{d:DesignInstance ViewModels:MainViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
        
        <xcad:DockingManager x:Name="DockingManager"
                               AllowMixedOrientation="True"
-                              BorderBrush="Black"
-                              BorderThickness="1"
                               >
        
              
           <xcad:DockingManager.DocumentHeaderTemplate>
                <DataTemplate>
                   <StackPanel Orientation="Horizontal">
-                     <Image Source="{Binding IconSource}"
-                            Margin="0,0,4,0" />
-                     <TextBlock Text="{Binding Title}" />
+                        <TextBlock Text="{Binding Title}" />
                   </StackPanel>
                </DataTemplate>
             </xcad:DockingManager.DocumentHeaderTemplate>
             <xcad:LayoutRoot>
                <xcad:LayoutPanel Orientation="Horizontal">
             <xcad:LayoutDocumentPaneGroup>
-               <xcad:LayoutDocumentPane>
-                  
-                  <xcad:LayoutDocument ContentId="document1"
-                                             Title="Settings"
-                                            >
-                           <local:SettingsView Margin="10"></local:SettingsView>
-                        </xcad:LayoutDocument>
-                        <xcad:LayoutDocument ContentId="document2"
-                                             Title="Document 2"
-                                             >
-                           <TextBox Text="Document 2 Content"
-                                    AcceptsReturn="True" />
-                        </xcad:LayoutDocument>
+                        <xcad:LayoutDocumentPane x:Name="LayoutDocumentPane">
+                 
                      </xcad:LayoutDocumentPane>
                   </xcad:LayoutDocumentPaneGroup>
                   

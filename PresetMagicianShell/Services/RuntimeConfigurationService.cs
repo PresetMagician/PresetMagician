@@ -76,6 +76,9 @@ namespace PresetMagicianShell.Services
 
         public void LoadLayout()
         {
+            return;
+            // Disabled because loading the layout causes no documents to be active
+
             originalLayout = getDockingManager().Layout;
 
             if (File.Exists(DefaultLocalLayoutFilePath))

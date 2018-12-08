@@ -7,7 +7,7 @@
     <!--Default Row Style-->
         <Style x:Key="DefaultRowStyle" TargetType="{x:Type DataGridRow}">
             <Setter Property="DetailsTemplate" Value="{StaticResource RowDetailsDataTemplate}" />
-            <Setter Property="DetailsVisibility" Value="Collapsed" />
+            <!--<Setter Property="DetailsVisibility" Value="Collapsed" />
             <Style.Triggers>
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
@@ -16,7 +16,7 @@
                     </MultiDataTrigger.Conditions>
                     <Setter Property="DetailsVisibility" Value="Visible" />
                 </MultiDataTrigger>
-            </Style.Triggers>
+            </Style.Triggers>-->
         </Style>
         
         <!--Default ColumnHeaderGripperStyle-->

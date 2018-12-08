@@ -29,7 +29,8 @@ namespace PresetMagicianShell.Views
             
             var serviceLocator = ServiceLocator.Default;
 
-            serviceLocator.RegisterInstance<DockingManager>(DockingManager);
+            serviceLocator.RegisterInstance(DockingManager);
+            serviceLocator.RegisterInstance(LayoutDocumentPane);
         }
     }
 }

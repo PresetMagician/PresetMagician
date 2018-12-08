@@ -10,6 +10,7 @@ using Catel;
 using Catel.MVVM;
 using Catel.Services;
 using Drachenkatze.PresetMagician.VSTHost.VST;
+using PresetMagicianShell.Models.Settings;
 using PresetMagicianShell.Services.Interfaces;
 using ApplicationSettings = PresetMagicianShell.Settings.Application;
 
@@ -23,23 +24,26 @@ namespace PresetMagicianShell.ViewModels
         public ListCollectionView ListCollectionView { get; set; }
 
 
-        public VstFolderListViewModel(IRuntimeConfigurationService configurationService, ISelectDirectoryService selectDirectoryService)
+        public VstFolderListViewModel(IRuntimeConfigurationService configurationService,
+            ISelectDirectoryService selectDirectoryService)
         {
             Argument.IsNotNull(() => configurationService);
             Argument.IsNotNull(() => selectDirectoryService);
-       
+
             _configurationService = configurationService;
             _selectDirectoryService = selectDirectoryService;
-           
+
             AddDefaultVstFolders = new Command(OnAddDefaultVstFoldersExecute);
             AddFolder = new TaskCommand(OnAddFolderExecute);
             RemoveFolder = new Command<object>(OnRemoveFolderExecute);
+
+            VstDirectories = configurationService.RuntimeConfiguration.VstDirectories;
         }
 
 
         public override string Title { get; protected set; } = "VST Directories";
-        
-        public ObservableCollection<string> VstDirectories { get; set; }
+
+        public ObservableCollection<VstDirectory> VstDirectories { get; set; }
 
         #region Commands
 
@@ -49,38 +53,37 @@ namespace PresetMagicianShell.ViewModels
         {
             foreach (var i in VstPathScanner.getCommonVSTPluginDirectories())
             {
-                if (!(from path in VstDirectories where path == i select path).Any())
+                if (!(from path in VstDirectories where path.Path == i select path).Any())
                 {
-                    VstDirectories.Add(i);
+                    VstDirectories.Add(new VstDirectory() { Path = i });
                 }
             }
-            
+
             _configurationService.SaveConfiguration();
         }
-        
+
         public TaskCommand AddFolder { get; }
 
-        private async Task OnAddFolderExecute ()
+        private async Task OnAddFolderExecute()
         {
             if (await _selectDirectoryService.DetermineDirectoryAsync())
             {
-                VstDirectories.Add(_selectDirectoryService.DirectoryName);
+                VstDirectories.Add(new VstDirectory() { Path = _selectDirectoryService.DirectoryName });
             }
         }
-        
+
         public Command<object> RemoveFolder { get; }
 
-        private void OnRemoveFolderExecute (object parameter)
+        private void OnRemoveFolderExecute(object parameter)
         {
-
-            var folders = (parameter as IList).Cast<string>();
+            var folders = (parameter as IList).Cast<VstDirectory>();
 
             foreach (var folder in folders.ToList())
             {
                 VstDirectories.Remove(folder);
             }
         }
-        
+
         #endregion
     }
 }

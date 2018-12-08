@@ -13,10 +13,11 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <DataGrid x:Name="VstDirectoryGrid" ItemsSource="{Binding VstDirectories}" GridLinesVisibility="All" Grid.Row="0" CanUserSortColumns="True">
+        <DataGrid x:Name="VstDirectoryGrid" AutoGenerateColumns="False" ItemsSource="{Binding VstDirectories}" GridLinesVisibility="All" Grid.Row="0" CanUserSortColumns="True">
             <DataGrid.Columns>
+                <DataGridCheckBoxColumn Header="Active" Binding="{Binding Active}"/>
                 <DataGridTextColumn Header="Path" Width="*" CanUserSort="True"
-                                    Binding="{Binding}" IsReadOnly="True" />
+                                    Binding="{Binding Path}" IsReadOnly="True" />
             </DataGrid.Columns>
         </DataGrid>
 

@@ -13,10 +13,6 @@
         </Style>
     </ResourceDictionary>
 
-    <ResourceDictionary x:Key="FlatControlStyles">
-        <Style TargetType="{x:Type DataGrid}" BasedOn="{StaticResource DataGridStyle}" />
-    </ResourceDictionary>
-
     <Style x:Key="FlatWindowStyle" TargetType="{x:Type Window}" BasedOn="{StaticResource WindowStyle}" Resources="{StaticResource FlatControlStyles}" />
     
     
