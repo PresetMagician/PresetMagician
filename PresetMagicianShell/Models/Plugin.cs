@@ -1,4 +1,5 @@
 ﻿using Catel.Data;
+using Catel.MVVM;
 using Drachenkatze.PresetMagician.VendorPresetParser;
 using Drachenkatze.PresetMagician.VSTHost.VST;
 
@@ -8,7 +9,7 @@ namespace PresetMagicianShell.Models
     {
         public VSTPlugin VstPlugin { get; set; }
         public IVendorPresetParser VstPresetParser { get; set; }
-
+        public bool Enabled { get; set; } = true;
         public bool IsSupported
         {
             get
@@ -20,12 +21,6 @@ namespace PresetMagicianShell.Models
                 }
                 return !VstPresetParser.IsNullParser;
             }
-
-            set
-            {
-
-            }
-
         }
 
        
