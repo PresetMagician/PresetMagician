@@ -12,9 +12,11 @@ using PresetMagicianShell.Models;
 using PresetMagicianShell.Services.Interfaces;
 using PresetMagicianShell.Workers;
 using System;
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -51,11 +53,35 @@ namespace PresetMagicianShell.ViewModels
 
             ScanPlugins = new TaskCommand(OnScanPluginsExecute);
             RefreshPluginList = new TaskCommand(OnRefreshPluginListExecute);
+            EnablePlugin = new Command<object>(OnEnablePluginExecute);
+            DisablePlugin = new Command<object>(OnDisablePluginExecute);
 
             RefreshPluginList.Execute();
         }
 
+        public Command<object> EnablePlugin { get; set; }
 
+        private void OnEnablePluginExecute(object parameter)
+        {
+            var plugins = (parameter as IList).Cast<Plugin>();
+            
+            foreach (var plugin in plugins)
+            {
+                plugin.Enabled = true;
+            }
+        }
+
+        public Command<object> DisablePlugin { get; set; }
+
+        private void OnDisablePluginExecute(object parameter)
+        {
+            var plugins = (parameter as IList).Cast<Plugin>();
+
+            foreach (var plugin in plugins)
+            {
+                plugin.Enabled = false;
+            }
+        }
 
         public TaskCommand RefreshPluginList { get; set; }
 
@@ -101,26 +127,22 @@ namespace PresetMagicianShell.ViewModels
             {
                 foreach (Plugin vst in newList)
                 {
-                    _logger.Info("Loading {0}", vst.VstPlugin.PluginDLLPath);
-                    _statusService.UpdateStatus("({1} / {2}) Processing VST Plugin {0}", vst.VstPlugin.PluginDLLPath,
-                        newList.IndexOf(vst),
-                        newList.Count
-                        );
-
                     try
                     {
+                        UpdateStatus(newList.IndexOf(vst), newList.Count, String.Format("Loading {0}", vst.VstPlugin.PluginDLLPath));
                         _vstHost.LoadVST(vst.VstPlugin);
                         vst.VstPresetParser = VendorPresetParser.GetPresetHandler(vst.VstPlugin);
-                        _logger.Info("Scanning banks for {0}", vst.VstPlugin.PluginDLLPath);
+
+                        UpdateStatus(newList.IndexOf(vst), newList.Count, String.Format("Scanning banks for {0}", vst.VstPlugin.PluginDLLPath));
                         vst.VstPresetParser.ScanBanks();
-                        _logger.Info("Unloading {0}", vst.VstPlugin.PluginDLLPath);
+
+                        UpdateStatus(newList.IndexOf(vst), newList.Count, String.Format("Unloading {0}", vst.VstPlugin.PluginDLLPath));
                         _vstHost.UnloadVST(vst.VstPlugin);
                     }
                     catch (ReflectionTypeLoadException e)
                     {
                         foreach (var i in e.LoaderExceptions)
                         {
-                            _logger.Info("UPSI");
                             _logger.Info(i.Message);
                         }
                     }
@@ -135,13 +157,11 @@ namespace PresetMagicianShell.ViewModels
             }, true);
         }
 
-        private void vstScanner_ProgressChanged(object sender,
-            ProgressChangedEventArgs e)
+        private void UpdateStatus (int currentItem, int totalItems, string statusText)
         {
-            var state = (ProgressUserState)e.UserState;
-            Debug.WriteLine("bla");
-            _pleaseWaitService.UpdateStatus(state.CurrentItem, state.TotalItems, "{0} {1} " + state.StatusText);
-            _statusService.UpdateStatus("({1} / {2}) Processing VST Plugin {0}", state.StatusText, state.CurrentItem, state.TotalItems);
+            _logger.Info(statusText);
+            _pleaseWaitService.UpdateStatus(currentItem, totalItems, "{0} {1} " + statusText);
+            _statusService.UpdateStatus("({1} / {2}) {0}", statusText, currentItem, totalItems);
         }
 
     }
