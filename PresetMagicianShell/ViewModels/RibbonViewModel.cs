@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using Catel;
 using Catel.Configuration;
 using Catel.IoC;
@@ -12,8 +13,10 @@ using Catel.MVVM;
 using Catel.Reflection;
 using Catel.Runtime.Serialization;
 using Catel.Services;
+using Drachenkatze.PresetMagician.VSTHost.VST;
 using Orchestra.Services;
 using Orchestra.ViewModels;
+using PresetMagicianShell.Models;
 using PresetMagicianShell.Services.Interfaces;
 using PresetMagicianShell.Views;
 using Xceed.Wpf.AvalonDock;
@@ -102,12 +105,17 @@ namespace PresetMagicianShell.ViewModels
         /// </summary>
         private async Task OnDoSomethingExecuteAsync()
         {
-            var serviceLocator = ServiceLocator.Default;
-            var x = serviceLocator.ResolveType<IRuntimeConfigurationService>();
+            var pluginPath = @"C:\Users\Drachenkatze\Documents\TestCrash\PolyGAS64.dll";
 
-            var _statusService = serviceLocator.ResolveType<IStatusService>();
+            var vsthost = new VstHost();
+            var plugin = new Plugin();
+            plugin.DllPath = pluginPath;
 
-            _statusService.UpdateStatus("blabla");
+            MessageBox.Show("yolo1", "yolo1");
+            vsthost.LoadVST(plugin);
+            
+            MessageBox.Show("yolo", "yolo");
+            
         }
 
         

@@ -116,7 +116,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group.PunchBox
             return vstPreset;
         }
 
-        public override void OnAfterPresetExport(VstHost host, VSTPlugin plugin)
+        public override void OnAfterPresetExport(VstHost host, IVstPlugin plugin)
         {
             PresetExportCount++;
             Debug.WriteLine(PresetExportCount);

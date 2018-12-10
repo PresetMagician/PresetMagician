@@ -12,7 +12,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
     {
         public List<PresetBank> Banks => new List<PresetBank>();
 
-        public VSTPlugin VstPlugin { get; set; }
+        public IVstPlugin VstPlugin { get; set; }
 
         public virtual string Remarks { get; set; }
 
@@ -26,7 +26,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         {
         }
 
-        public virtual void OnAfterPresetExport(VstHost host, VSTPlugin plugin)
+        public virtual void OnAfterPresetExport(VstHost host, IVstPlugin plugin)
         {
 
         }

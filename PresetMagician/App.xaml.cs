@@ -165,53 +165,14 @@ namespace Drachenkatze.PresetMagician.GUI
 
             readVSTPathsFromConfig();
 
-            try
-            {
-                var validationFailures = CheckLicense();
-
-                if (!validationFailures.Any())
-                {
-                    var mw = new MainWindow();
-                    mw.Show();
-                }
-                else
-                {
-                    var regWindow = new RegistrationWindow();
-                    regWindow.Show();
-                }
-            }
-            catch (FileNotFoundException)
-            {
-                var regWindow = new RegistrationWindow();
-                regWindow.Show();
-            }
+            
         }
 
-        public static string getLicenseFile()
-        {
-            var appDataDir = getAppDataDir();
-            return Path.Combine(appDataDir.FullName, "license.lic");
-        }
+        
 
-        public static License license;
+        
 
-        public static IEnumerable<IValidationFailure> CheckLicense()
-        {
-            var licenseFile = getLicenseFile();
-
-            Debug.WriteLine(licenseFile);
-            FileStream stream = new FileStream(licenseFile, FileMode.Open);
-            license = License.Load(stream);
-
-            var validationFailures = license.Validate()
-                                .ExpirationDate()
-                                    .When(lic => lic.Type == LicenseType.Trial)
-                                .And()
-                                .Signature(Drachenkatze.PresetMagician.GUI.Properties.Resources.PublicKey)
-                                .AssertValidLicense();
-
-            return validationFailures;
-        }
+        
 
         public static DirectoryInfo getAppDataDir()
         {
@@ -289,12 +250,12 @@ namespace Drachenkatze.PresetMagician.GUI
                     email = App.license.Customer.Email,
                     plugins =
                         from p in pluginsToReport
-                        orderby p.VstPlugin.PluginID
+                        orderby p.VstPlugin.PluginId
                         select new
                         {
                             vendorName = p.VstPlugin.PluginVendor,
                             pluginName = p.VstPlugin.PluginName,
-                            pluginId = p.VstPlugin.PluginID
+                            pluginId = p.VstPlugin.PluginId
                         }
                 }
             });

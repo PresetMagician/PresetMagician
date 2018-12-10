@@ -68,7 +68,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 
         public string getDataDirectory(string dataDirectoryName)
         {
-            var vstPluginsPath = Path.GetDirectoryName(VstPlugin.PluginDLLPath);
+            var vstPluginsPath = Path.GetDirectoryName(VstPlugin.DllPath);
 
             return Path.Combine(vstPluginsPath, dataDirectoryName);
         }
