@@ -34,8 +34,9 @@ namespace PresetMagicianShell
 
         protected override async void OnStartup(StartupEventArgs e)
         {
-            
-            
+            AppDomain.CurrentDomain.UnhandledException += NBug.Handler.UnhandledException;
+            Application.Current.DispatcherUnhandledException += NBug.Handler.DispatcherUnhandledException;
+
 #if DEBUG
             LogManager.AddDebugListener(true);
 #endif
