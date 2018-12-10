@@ -5,7 +5,7 @@ using NAudio.Wave;
 
 namespace Drachenkatze.PresetMagician.VSTHost.VST
 {
-    public class VSTStreamEventArgs : EventArgs
+    public class VSTStreamEventArgs : System.EventArgs
     {
         public float MaxL = float.MinValue;
         public float MaxR = float.MaxValue;
@@ -84,7 +84,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
         {
             if (PlayingStarted != null)
             {
-                PlayingStarted(this, EventArgs.Empty);
+                PlayingStarted(this, System.EventArgs.Empty);
             }
         }
 
@@ -92,7 +92,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
         {
             if (PlayingStopped != null)
             {
-                PlayingStopped(this, EventArgs.Empty);
+                PlayingStopped(this, System.EventArgs.Empty);
             }
         }
 

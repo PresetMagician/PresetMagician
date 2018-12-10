@@ -28,15 +28,16 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public int PluginID { get; set; }
+        public int PluginId { get; set; }
 
         public enum PluginTypes
         {
             Effect,
-            Instrument
+            Instrument,
+            Unknown
         }
 
-        public PluginTypes PluginType { get; set; }
+        public PluginTypes PluginType { get; set; } = PluginTypes.Unknown;
 
         public String PluginTypeDescription
         {
@@ -109,7 +110,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             this.PluginName = PluginContext.PluginCommandStub.GetEffectName();
             this.NumPresets = PluginContext.PluginInfo.ProgramCount;
             this.PluginVendor = PluginContext.PluginCommandStub.GetVendorString();
-            this.PluginID = PluginContext.PluginInfo.PluginID;
+            this.PluginId = PluginContext.PluginInfo.PluginID;
 
             if (PluginContext.PluginInfo.Flags.HasFlag(VstPluginFlags.IsSynth))
             {

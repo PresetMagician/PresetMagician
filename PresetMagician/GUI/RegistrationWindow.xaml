@@ -33,7 +33,7 @@
             <TextBox Grid.Row="1" x:Name="SystemCode" IsReadOnly="True" TextWrapping="Wrap" Text="TextBlock"  IsReadOnlyCaretVisible="True"/>
         </Grid>
         <DockPanel Grid.Row="3" VerticalAlignment="Bottom">
-            <Button x:Name="GetLicenseButton" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="6,2,2,2" IsEnabled="True" Click="GetEvalLicense_Click">
+            <Button HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="6,2,2,2" IsEnabled="True" Click="GetEvalLicense_Click">
                 <StackPanel Orientation="Horizontal">
 
                     <TextBlock Text="Get Evaluation License"
@@ -41,7 +41,7 @@
                     VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
-            <Button x:Name="SelectLicenseButton" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="6,2,2,2" IsEnabled="True" Click="SelectLicense_Click">
+            <Button HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="6,2,2,2" IsEnabled="True" Click="SelectLicense_Click">
                 <StackPanel Orientation="Horizontal">
 
                     <TextBlock Text="Select License File"
@@ -49,7 +49,7 @@
                     VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
-            <Button x:Name="ExitButton" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="6,2,2,2" IsEnabled="True" Click="AppExit_Click">
+            <Button HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="6,2,2,2" IsEnabled="True" Click="AppExit_Click">
                 <StackPanel Orientation="Horizontal">
 
                     <TextBlock Text="Exit PresetMagician"

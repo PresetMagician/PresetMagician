@@ -1,12 +1,14 @@
 ﻿using System;
-using Jacobi.Vst.Core.Host;
-using Jacobi.Vst.Core;
-using System.Diagnostics;
 
-namespace Drachenkatze.PresetMagician.VSTHost
+using Jacobi.Vst.Core.Host;
+using Jacobi.Vst.Interop.Host;
+
+namespace Jacobi.Vst.Samples.Host
 {
-    class HostCommandStub : IVstHostCommandStub
-  
+    /// <summary>
+    /// The HostCommandStub class represents the part of the host that a plugin can call.
+    /// </summary>
+    class HostCommandStub : IVstHostCommandStub 
     {
         /// <summary>
         /// Raised when one of the methods is called.

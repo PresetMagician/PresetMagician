@@ -26,7 +26,6 @@ namespace PresetMagicianShell.ViewModels
     {
         private IStatusService _statusService;
         private IPleaseWaitService _pleaseWaitService;
-        private VstPluginScannerWorker _vstPluginScannerWorker;
         private VstHost _vstHost;
         private readonly IRuntimeConfigurationService _runtimeConfigurationService;
         private readonly ILog _logger = LogManager.GetCurrentClassLogger();
@@ -45,7 +44,6 @@ namespace PresetMagicianShell.ViewModels
 
             _pleaseWaitService = pleaseWaitService;
             _vstHost = new VstHost();
-            _vstPluginScannerWorker = new VstPluginScannerWorker(_vstHost);
             _statusService = statusService;
             _runtimeConfigurationService = runtimeConfigurationService;
 
@@ -56,6 +54,7 @@ namespace PresetMagicianShell.ViewModels
             EnablePlugin = new Command<object>(OnEnablePluginExecute);
             DisablePlugin = new Command<object>(OnDisablePluginExecute);
 
+            VstPlugins = runtimeConfigurationService.RuntimeConfiguration.Plugins;
             RefreshPluginList.Execute();
         }
 
@@ -90,7 +89,6 @@ namespace PresetMagicianShell.ViewModels
             ObservableCollection<String> vstPluginDLLs = new ObservableCollection<String>();
             ObservableCollection<VSTPlugin> vstPlugins = new ObservableCollection<VSTPlugin>();
 
-            VstPlugins.Clear();
             await TaskHelper.Run(() =>
             {
                 foreach (var i in _runtimeConfigurationService.RuntimeConfiguration.VstDirectories)
@@ -102,13 +100,17 @@ namespace PresetMagicianShell.ViewModels
                 }
             }, true);
 
-            foreach (String j in vstPluginDLLs)
+            foreach (String dllPath in vstPluginDLLs)
             {
-                VstPlugins.Add(new Plugin()
+                var foundPlugin = (from plugin in VstPlugins where plugin.DllPath == dllPath select plugin).FirstOrDefault();
+
+                if (foundPlugin == null)
                 {
-                    VstPlugin = new VSTPlugin(j),
-                    VstPresetParser = new NullPresetParser()
-                });
+                    VstPlugins.Add(new Plugin()
+                    {
+                        DllPath = dllPath
+                    });
+                }
             }
         }
 
@@ -116,12 +118,9 @@ namespace PresetMagicianShell.ViewModels
 
         private async Task OnScanPluginsExecute()
         {
-            ObservableCollection<Plugin> newList = new ObservableCollection<Plugin>();
+            //ObservableCollection<Plugin> newList = new ObservableCollection<Plugin>();
 
-            foreach (Plugin vst in VstPlugins)
-            {
-                newList.Add(vst);
-            };
+            var newList = (from plugin in VstPlugins where plugin.Enabled == true select plugin).ToList();
 
             await TaskHelper.Run(() =>
             {
@@ -129,15 +128,16 @@ namespace PresetMagicianShell.ViewModels
                 {
                     try
                     {
-                        UpdateStatus(newList.IndexOf(vst), newList.Count, String.Format("Loading {0}", vst.VstPlugin.PluginDLLPath));
-                        _vstHost.LoadVST(vst.VstPlugin);
-                        vst.VstPresetParser = VendorPresetParser.GetPresetHandler(vst.VstPlugin);
+                        UpdateStatus(newList.IndexOf(vst), newList.Count, $"Loading {vst.DllPath}");
+                        _vstHost.LoadVST(vst);
+                        vst.DeterminatePresetParser();
 
-                        UpdateStatus(newList.IndexOf(vst), newList.Count, String.Format("Scanning banks for {0}", vst.VstPlugin.PluginDLLPath));
-                        vst.VstPresetParser.ScanBanks();
+                        UpdateStatus(newList.IndexOf(vst), newList.Count, $"Scanning banks for {vst.DllPath}");
+                        vst.PresetParser.ScanBanks();
+                        vst.NumPresets = vst.PresetParser.NumPresets;
 
-                        UpdateStatus(newList.IndexOf(vst), newList.Count, String.Format("Unloading {0}", vst.VstPlugin.PluginDLLPath));
-                        _vstHost.UnloadVST(vst.VstPlugin);
+                        UpdateStatus(newList.IndexOf(vst), newList.Count, $"Unloading {vst.DllPath}");
+                        _vstHost.UnloadVST(vst);
                     }
                     catch (ReflectionTypeLoadException e)
                     {
@@ -148,7 +148,7 @@ namespace PresetMagicianShell.ViewModels
                     }
                     catch (Exception e)
                     {
-                        _logger.Info("Unable to load {0}, exception occurred: {1}", vst.VstPlugin.PluginDLLPath, e.ToString());
+                        _logger.Info("Unable to load {0}, exception occurred: {1}", vst.DllPath, e.ToString());
                     }
 
 

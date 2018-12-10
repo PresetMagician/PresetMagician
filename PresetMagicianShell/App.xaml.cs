@@ -12,8 +12,10 @@ using Catel.IoC;
 using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
+using Drachenkatze.PresetMagician.VSTHost.VST;
 using Orchestra.Services;
 using Orchestra.Views;
+using PresetMagicianShell.Models;
 using PresetMagicianShell.Services;
 using PresetMagicianShell.Services.Interfaces;
 using PresetMagicianShell.ViewModels;
@@ -35,7 +37,6 @@ namespace PresetMagicianShell
         protected override async void OnStartup(StartupEventArgs e)
         {
             
-            
 #if DEBUG
             LogManager.AddDebugListener(true);
 #endif
@@ -50,10 +51,6 @@ namespace PresetMagicianShell
 
 
             StartShell();
-           
-
-
-
         }
 
        
@@ -64,12 +61,26 @@ namespace PresetMagicianShell
             var shellService = serviceLocator.ResolveType<IShellService>();
 
             var x = await shellService.CreateAsync<ShellWindow>();
+            
 
             // Overrides
             x.Title = "PresetMagician";
             x.TitleBackground = (Brush)x.FindResource("AccentColorBrush");
             x.TitleForeground = (Brush)x.FindResource("WhiteBrush");
             x.TitleBarHeight = 24;
+
+#if DEBUG
+            x.WindowState = WindowState.Normal;
+            var ScreenNumber = 2;
+            if (System.Windows.Forms.Screen.AllScreens.Length >= ScreenNumber)
+            {
+                System.Drawing.Rectangle screenBounds = System.Windows.Forms.Screen.AllScreens[ScreenNumber - 1].Bounds;
+                x.WindowStartupLocation = WindowStartupLocation.Manual;
+                x.Left = screenBounds.Left;
+                x.Top = screenBounds.Top;
+                x.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            }
+#endif
         }
         
         protected override void OnExit(ExitEventArgs e)

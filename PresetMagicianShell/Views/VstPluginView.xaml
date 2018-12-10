@@ -1,7 +1,13 @@
 ﻿<catel:UserControl
-    x:Class="PresetMagicianShell.Views.VstPluginView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:catel="http://schemas.catelproject.com" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid" d:DesignHeight="450"
+    x:Class="PresetMagicianShell.Views.VstPluginView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:catel="http://schemas.catelproject.com" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid"
+    xmlns:viewModels="clr-namespace:PresetMagicianShell.ViewModels"
+    d:DesignHeight="450"
+    d:DataContext="{d:DesignInstance viewModels:VstPluginViewModel}"
     d:DesignWidth="800" mc:Ignorable="d">
 
     <Grid ScrollViewer.CanContentScroll="True">
@@ -16,7 +22,8 @@
             x:Name="VSTPluginList" AutoGenerateColumns="False" CanUserAddRows="False"
             GridLinesVisibility="All"
             ItemsSource="{Binding VstPlugins}"
-            ScrollViewer.CanContentScroll="True" SelectionChanged="VSTPluginList_SelectionChanged" SelectionUnit="FullRow">
+            ScrollViewer.CanContentScroll="True" SelectionChanged="VSTPluginList_SelectionChanged"
+            SelectionUnit="FullRow">
             <DataGrid.Resources>
                 <xcdg:BindingProxy x:Key="proxy" Value="{Binding}" />
                 <xcdg:BindingProxy x:Key="proxy2" Value="{Binding ElementName=VSTPluginList}" />
@@ -42,19 +49,19 @@
 
                 <DataGridTextColumn
                     Width="150"
-                    Binding="{Binding VstPlugin.PluginName}"
+                    Binding="{Binding PluginName}"
                     Header="Name" IsReadOnly="True" SortDirection="Ascending" />
                 <DataGridTextColumn
                     Width="150"
-                    Binding="{Binding VstPlugin.PluginVendor}"
+                    Binding="{Binding PluginVendor}"
                     Header="Vendor" IsReadOnly="True" SortDirection="Ascending" />
                 <DataGridTextColumn
                     Width="80"
-                    Binding="{Binding VstPresetParser.NumPresets}"
+                    Binding="{Binding NumPresets}"
                     Header="Presets" IsReadOnly="True" />
                 <DataGridTextColumn
                     Width="80"
-                    Binding="{Binding VstPlugin.PluginTypeDescription}"
+                    Binding="{Binding PluginTypeDescription}"
                     Header="Type" IsReadOnly="True" />
                 <DataGridCheckBoxColumn
                     Width="80"
@@ -62,19 +69,23 @@
                     Header="Supported" IsReadOnly="True" />
                 <DataGridTextColumn
                     Width="120"
-                    Binding="{Binding VstPresetParser.PresetParserType}"
+                    Binding="{Binding PresetParser.PresetParserType}"
                     Header="Export Module" IsReadOnly="True" />
                 <DataGridTextColumn
                     Width="80"
-                    Binding="{Binding VstPresetParser.Remarks}"
+                    Binding="{Binding PresetParser.Remarks}"
                     Header="Remarks" IsReadOnly="True" />
                 <DataGridTextColumn
                     Width="150"
-                    Binding="{Binding VstPlugin.PluginDLLPath}"
-                    Header="DLL" IsReadOnly="True" />
+                    Binding="{Binding DllFilename}"
+                    Header="Plugin DLL" IsReadOnly="True" />
+                <DataGridTextColumn
+                    Width="150"
+                    Binding="{Binding DllDirectory}"
+                    Header="Directory" IsReadOnly="True" />
                 <DataGridTextColumn
                     Width="400"
-                    Binding="{Binding VstPlugin.LoadError}"
+                    Binding="{Binding LoadErrorMessage}"
                     CanUserSort="False" Header="Status" IsReadOnly="True"
                     SortDirection="Ascending" />
             </DataGrid.Columns>

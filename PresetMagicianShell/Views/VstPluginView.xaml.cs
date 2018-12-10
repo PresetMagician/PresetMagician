@@ -78,7 +78,7 @@ namespace PresetMagicianShell.Views
 
             foreach (Plugin i in VSTPluginList.SelectedItems)
             {
-                if (!i.VstPlugin.IsLoaded)
+                if (!i.IsLoaded)
                 {
                     CreatePresetsButton.IsEnabled = false;
                     return;

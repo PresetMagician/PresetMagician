@@ -12,10 +12,10 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
 
         
 
-        public void SetPlugin (VSTPlugin vst)
+        public void SetPlugin (IVstPlugin vst)
         {
             PluginName = vst.PluginName;
-            PluginDLLPath = vst.PluginDLLPath;
+            PluginDLLPath = vst.DllPath;
         }
 
         public VSTPreset()
