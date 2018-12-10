@@ -250,6 +250,10 @@
       <Project>{bb9702b3-2826-411a-b7c5-ef64348a7a5c}</Project>
       <Name>Drachenkatze.PresetMagician.VSTHost</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NBug\NBug\NBug.csproj">
+      <Project>{62ced1d5-f603-40de-8bf5-3e49d3a392f4}</Project>
+      <Name>NBug</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\Splashscreen.svg" />

@@ -145,3 +145,6 @@ NUGET
     System.Xml.XmlSerializer (4.3)
     VST.NET.x64 (1.1)
     WPFHexaEditor (1.3.6.2)
+GITHUB
+  remote: Drachenkaetzchen/NBug
+    FULLPROJECT (6aa5aa22dcd12b1c98c96cdd55e919af960cae97)
