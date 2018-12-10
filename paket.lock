@@ -107,6 +107,7 @@ NUGET
       Fody (>= 3.2.13)
     SharpCompress (0.22)
     SharpVectors.Reloaded (1.2)
+    Simple-MAPI.NET (1.1)
     Splat (5.1.4)
       System.Drawing.Primitives (>= 4.3)
     squirrel.windows (1.9)
@@ -145,6 +146,3 @@ NUGET
     System.Xml.XmlSerializer (4.3)
     VST.NET.x64 (1.1)
     WPFHexaEditor (1.3.6.2)
-GITHUB
-  remote: Drachenkaetzchen/NBug
-    FULLPROJECT (6aa5aa22dcd12b1c98c96cdd55e919af960cae97)
