@@ -1,37 +1,24 @@
-﻿using Drachenkatze.PresetMagician.VendorPresetParser;
-using Drachenkatze.PresetMagician.VSTHost.VST;
-using System;
+﻿using System;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
+using System.Net.Mime;
+using System.Runtime.ExceptionServices;
+using System.Security;
+using System.Windows;
+using Drachenkatze.PresetMagician.VSTHost.VST;
+using Jacobi.Vst.Interop.Host;
+using Jacobi.Vst.Samples.Host;
+using PresetMagicianShell.Models;
 
 namespace PresetMagicianScratchPad
 {
-    internal class Program
+    public class Program
     {
         [STAThread]
-        private static void Main(string[] args)
+        static void Main(string[] args)
         {
-            var vstPlugin = new VSTPlugin(@"C:\Users\Felicia Hummel\Documents\TestVSTs\ACE(x64).dll");
-            var vstHost = new VstHost();
+            Console.WriteLine("BLA");
 
-            var plugin = vstHost.LoadVST(vstPlugin);
-
-            var handler = VendorPresetParser.GetPresetHandler(vstPlugin);
-
-            handler.ScanBanks();
-
-            foreach (var bank in handler.Banks)
-            {
-                foreach (var preset in bank.VSTPresets)
-                {
-                    vstHost.pluginExporter.ExportPresetAudioPreviewRealtime(vstPlugin, preset);
-                    vstHost.pluginExporter.ExportPresetNKSF(vstPlugin, preset);
-                }
-            }
-            //
-
-            vstHost.UnloadVST(plugin);
+            
         }
     }
 }

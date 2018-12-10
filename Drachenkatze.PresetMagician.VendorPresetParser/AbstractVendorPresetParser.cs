@@ -12,7 +12,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 {
     public abstract class AbstractVendorPresetParser : INotifyPropertyChanged
     {
-        public VSTPlugin VstPlugin { get; set; }
+        public IVstPlugin VstPlugin { get; set; }
         public virtual List<int> SupportedPlugins => new List<int>();
 
         public virtual string Remarks { get; set; }
@@ -39,7 +39,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
         public virtual bool CanHandle()
         {
-            if (SupportedPlugins.Contains(VstPlugin.PluginID))
+            if (SupportedPlugins.Contains(VstPlugin.PluginId))
             {
                 return true;
             }
@@ -47,7 +47,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             return false;
         }
 
-        public virtual void OnAfterPresetExport(VstHost host, VSTPlugin plugin)
+        public virtual void OnAfterPresetExport(VstHost host, IVstPlugin plugin)
         {
 
         }
