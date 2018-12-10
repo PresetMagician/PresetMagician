@@ -24,6 +24,7 @@ using PresetMagicianShell.ViewModels;
 using PresetMagicianShell.Views;
 using NBug.Properties;
 using NBug;
+using NBug.Enums;
 
 namespace PresetMagicianShell
 {
@@ -40,11 +41,27 @@ namespace PresetMagicianShell
 
         public App ()
         {
+            SetupExceptionHandling();
             AppDomain.CurrentDomain.UnhandledException += NBug.Handler.UnhandledException;
             Current.DispatcherUnhandledException += NBug.Handler.DispatcherUnhandledException;
             TaskScheduler.UnobservedTaskException += NBug.Handler.UnobservedTaskException;
             
             NBug.Settings.CustomSubmissionEvent += Settings_CustomSubmissionEvent;
+        }
+
+        private void SetupExceptionHandling()
+        {
+  
+            #if DEBUG
+            NBug.Settings.ReleaseMode = false;
+            #else
+            NBug.Settings.ReleaseMode = true;
+            #endif
+
+
+            // Connection strings
+            //NBug.Settings.AddDestinationFromConnectionString("Type=Custom;");
+            
         }
 
         protected override async void OnStartup(StartupEventArgs e)
