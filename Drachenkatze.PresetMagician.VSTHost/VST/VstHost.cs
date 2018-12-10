@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.ExceptionServices;
+using System.Security;
 using Jacobi.Vst.Interop.Host;
 
 namespace Drachenkatze.PresetMagician.VSTHost.VST
@@ -21,18 +22,23 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
 
     public class VstHost
     {
+        //public VSTPluginExport pluginExporter;
+
         public VstHost()
         {
-            pluginExporter = new VSTPluginExport();
+            //pluginExporter = new VSTPluginExport();
         }
 
-        public VSTPluginExport pluginExporter;
-
-        public ObservableCollection<String> EnumeratePlugins(string pluginDirectory)
+        /// <summary>
+        ///     Returns all found DLLs for a specific directory
+        /// </summary>
+        /// <param name="pluginDirectory"></param>
+        /// <returns></returns>
+        public ObservableCollection<string> EnumeratePlugins(string pluginDirectory)
         {
-            ObservableCollection<String> vstPlugins = new ObservableCollection<String>();
-            foreach (string file in Directory.EnumerateFiles(
-    pluginDirectory, "*.dll", SearchOption.AllDirectories))
+            var vstPlugins = new ObservableCollection<string>();
+            foreach (var file in Directory.EnumerateFiles(
+                pluginDirectory, "*.dll", SearchOption.AllDirectories))
             {
                 vstPlugins.Add(file);
             }
@@ -40,38 +46,43 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             return vstPlugins;
         }
 
-        [HandleProcessCorruptedStateExceptions]
-        public VSTPlugin LoadVST(VSTPlugin vst)
+        public enum PluginTypes
         {
-            HostCommandStub hostCommandStub = new HostCommandStub();
+            Effect,
+            Instrument,
+            Unknown
+        }
 
-            hostCommandStub.Directory = Path.GetDirectoryName(vst.PluginDLLPath);
+      
+        public void LoadVST(IVstPlugin vst)
+        {
+            Debug.WriteLine("Attempting to load");
+            var hostCommandStub = new HostCommandStub();
+            hostCommandStub.PluginCalled += (sender, args) =>
+            {
+                Debug.WriteLine(args.Message);
+            };
 
             try
             {
-                VstPluginContext ctx = VstPluginContext.Create(vst.PluginDLLPath, hostCommandStub);
+                var ctx = VstPluginContext.Create(vst.DllPath, hostCommandStub);
 
                 vst.PluginContext = ctx;
-                ctx.Set("PluginPath", vst.PluginDLLPath);
+                ctx.Set("PluginPath", vst.DllPath);
                 ctx.Set("HostCmdStub", hostCommandStub);
                 ctx.PluginCommandStub.Open();
                 vst.PluginContext.PluginCommandStub.MainsChanged(true);
-                vst.doCache();
-
-                vst.LoadError = "Loaded.";
+                vst.OnLoaded();
             }
             catch (Exception e)
             {
-                Debug.WriteLine("load error: " + e.ToString());
-                vst.LoadError = "Could not load plugin. " + e.ToString();
+                vst.OnLoadError(e.ToString());
             }
-
-            return vst;
         }
 
         private void HostCmdStub_PluginCalled(object sender, PluginCalledEventArgs e)
         {
-            HostCommandStub hostCmdStub = (HostCommandStub)sender;
+            var hostCmdStub = (HostCommandStub) sender;
 
             // can be null when called from inside the plugin main entry point.
             if (hostCmdStub.PluginContext.PluginInfo != null)
@@ -84,12 +95,9 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             }
         }
 
-        public void UnloadVST(VSTPlugin vst)
+        public void UnloadVST(IVstPlugin vst)
         {
-            if (vst.PluginContext != null)
-            {
-                vst.PluginContext.Dispose();
-            }
+            vst.PluginContext?.Dispose();
         }
     }
 }

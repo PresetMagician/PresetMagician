@@ -38,7 +38,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             return foundAssemblyTypes;
         }
 
-        public static IVendorPresetParser GetPresetHandler(VSTPlugin vstPlugin)
+        public static IVendorPresetParser GetPresetHandler(IVstPlugin vstPlugin)
         {
             var type = typeof(IVendorPresetParser);
             IEnumerable<Type> types = null;

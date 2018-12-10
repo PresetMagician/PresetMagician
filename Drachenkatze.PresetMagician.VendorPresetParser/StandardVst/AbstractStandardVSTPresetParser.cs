@@ -25,7 +25,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
 
         public PresetSaveModes DeterminateVSTPresetSaveMode()
         {
-            if (VstPlugin.PluginType == VSTPlugin.PluginTypes.Effect)
+            if (VstPlugin.PluginType == VstHost.PluginTypes.Effect)
             {
                 return PresetSaveModes.None;
             }

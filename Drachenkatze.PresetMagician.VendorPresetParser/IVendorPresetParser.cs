@@ -10,7 +10,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
     public interface IVendorPresetParser
     {
         List<PresetBank> Banks { get; }
-        VSTPlugin VstPlugin { get; set; }
+        IVstPlugin VstPlugin { get; set; }
         string Remarks { get; set; }
         int NumPresets { get; }
         string PresetParserType { get; }
@@ -19,6 +19,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         bool CanHandle();
 
         void ScanBanks();
-        void OnAfterPresetExport(VstHost host, VSTPlugin plugin);
+        void OnAfterPresetExport(VstHost host, IVstPlugin plugin);
     }
 }

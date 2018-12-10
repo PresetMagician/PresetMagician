@@ -139,9 +139,6 @@
       <DependentUpon>VstPluginView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Workers\ProgressUserState.cs" />
-    <Compile Include="Workers\VstPluginScannerWorker.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <None Include="paket.references" />
     <Compile Include="Services\RibbonService.cs" />
     <Compile Include="App.xaml.cs">
@@ -906,6 +903,27 @@
       <ItemGroup>
         <Reference Include="System.ValueTuple">
           <HintPath>..\packages\System.ValueTuple\lib\net461\System.ValueTuple.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="Jacobi.Vst.Core">
+          <HintPath>..\packages\VST.NET.x64\lib\net40\Jacobi.Vst.Core.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Jacobi.Vst.Framework">
+          <HintPath>..\packages\VST.NET.x64\lib\net40\Jacobi.Vst.Framework.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Jacobi.Vst.Interop">
+          <HintPath>..\packages\VST.NET.x64\lib\net40\Jacobi.Vst.Interop.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>

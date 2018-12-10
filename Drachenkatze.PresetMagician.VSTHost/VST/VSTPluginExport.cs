@@ -47,12 +47,12 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                 }
         }
 
-        private void vst_PlayingStarted(object sender, EventArgs e)
+        private void vst_PlayingStarted(object sender, System.EventArgs e)
         {
             stoppedPlaying = false;
         }
 
-        private void vst_PlayingStopped(object sender, EventArgs e)
+        private void vst_PlayingStopped(object sender, System.EventArgs e)
         {
             stoppedPlaying = true;
         }
