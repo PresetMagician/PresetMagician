@@ -745,6 +745,17 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
       <ItemGroup>
+        <Reference Include="SimpleMapi">
+          <HintPath>..\packages\Simple-MAPI.NET\lib\net20\SimpleMapi.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
         <Reference Include="Splat">
           <HintPath>..\packages\Splat\lib\net461\Splat.dll</HintPath>
           <Private>True</Private>

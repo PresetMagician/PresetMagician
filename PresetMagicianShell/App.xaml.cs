@@ -1,4 +1,5 @@
 ﻿using System;
+using Win32Mapi;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -13,6 +14,7 @@ using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
 using Drachenkatze.PresetMagician.VSTHost.VST;
+using NBug.Events;
 using Orchestra.Services;
 using Orchestra.Views;
 using PresetMagicianShell.Models;
@@ -20,6 +22,8 @@ using PresetMagicianShell.Services;
 using PresetMagicianShell.Services.Interfaces;
 using PresetMagicianShell.ViewModels;
 using PresetMagicianShell.Views;
+using NBug.Properties;
+using NBug;
 
 namespace PresetMagicianShell
 {
@@ -34,11 +38,22 @@ namespace PresetMagicianShell
 
         #endregion Constants
 
-        protected override async void OnStartup(StartupEventArgs e)
+        public App ()
         {
             AppDomain.CurrentDomain.UnhandledException += NBug.Handler.UnhandledException;
-            Application.Current.DispatcherUnhandledException += NBug.Handler.DispatcherUnhandledException;
+            Current.DispatcherUnhandledException += NBug.Handler.DispatcherUnhandledException;
+            TaskScheduler.UnobservedTaskException += NBug.Handler.UnobservedTaskException;
+            
+            NBug.Settings.CustomSubmissionEvent += Settings_CustomSubmissionEvent;
+        }
 
+        protected override async void OnStartup(StartupEventArgs e)
+        {
+            
+            //NBug.Settings.AddDestinationFromConnectionString(ConfigurationManager.ConnectionStrings["NBug.Properties.Settings.Connection1"].ConnectionString);nbug
+            
+
+            
 #if DEBUG
             LogManager.AddDebugListener(true);
 #endif
@@ -92,5 +107,18 @@ namespace PresetMagicianShell
             serviceLocator.ResolveType<IRuntimeConfigurationService>().Save();
             base.OnExit(e);
         }
+
+        // Custom Submission Event handler
+        void Settings_CustomSubmissionEvent(object sender, CustomSubmissionEventArgs e)
+        {
+            Debug.WriteLine("yoba");
+            var mapi = new SimpleMapi();
+            mapi.AddRecipient(name: "felicia@drachenkatze.org", addr: null, cc: false);
+            //mapi.Attach(filepath: "c:\\bob.txt");
+            mapi.Send(subject: "a subject", noteText: "a body text");
+          
+            e.Result = true;
+        }
+
     }
 }

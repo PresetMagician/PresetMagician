@@ -21,6 +21,7 @@ using PresetMagicianShell.Services.Interfaces;
 using PresetMagicianShell.Views;
 using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout.Serialization;
+using Win32Mapi;
 
 namespace PresetMagicianShell.ViewModels
 {
@@ -51,7 +52,9 @@ namespace PresetMagicianShell.ViewModels
             ResetDock = new TaskCommand(OnResetDockExecuteAsync);
             DoSomething = new TaskCommand(OnDoSomethingExecuteAsync);
         }
+        #endregion
 
+        #region Commands
         /// <summary>
         /// Gets the ShowKeyboardMappings command.
         /// </summary>
@@ -105,16 +108,7 @@ namespace PresetMagicianShell.ViewModels
         /// </summary>
         private async Task OnDoSomethingExecuteAsync()
         {
-            var pluginPath = @"C:\Users\Drachenkatze\Documents\TestCrash\PolyGAS64.dll";
-
-            var vsthost = new VstHost();
-            var plugin = new Plugin();
-            plugin.DllPath = pluginPath;
-
-            MessageBox.Show("yolo1", "yolo1");
-            vsthost.LoadVST(plugin);
-            
-            MessageBox.Show("yolo", "yolo");
+            throw new InvalidCastException();
             
         }
 
