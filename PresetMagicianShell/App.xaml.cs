@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Win32Mapi;
 using System.Collections.Generic;
 using System.Configuration;
@@ -128,11 +129,19 @@ namespace PresetMagicianShell
         // Custom Submission Event handler
         void Settings_CustomSubmissionEvent(object sender, CustomSubmissionEventArgs e)
         {
-            Debug.WriteLine("yoba");
+            var tempZip = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".zip";
+            var fs = new FileStream(tempZip, FileMode.Create);
+            Debug.WriteLine(e.File.Position);
+            e.File.Seek(0, SeekOrigin.Begin);
+            e.File.CopyTo(fs);
+            fs.Close();
+
             var mapi = new SimpleMapi();
-            mapi.AddRecipient(name: "felicia@drachenkatze.org", addr: null, cc: false);
-            //mapi.Attach(filepath: "c:\\bob.txt");
-            mapi.Send(subject: "a subject", noteText: "a body text");
+            
+            mapi.AddRecipient(name: "PresetMagician Support", addr: "support@presetmagician.com", cc: false);
+
+            mapi.Attach(tempZip);
+            mapi.Send(subject: "PresetMagician Crash: "+ e.Exception.Message, noteText: e.Report.GeneralInfo.UserDescription);
           
             e.Result = true;
         }
