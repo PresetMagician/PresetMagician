@@ -281,10 +281,11 @@
     <Page Include="Themes\Master.xaml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Assets\" />
     <Folder Include="MarkupExtensions\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\msvcr110.dll">
+    <Content Include="msvcr110.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
