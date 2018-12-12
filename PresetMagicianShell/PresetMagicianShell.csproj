@@ -141,6 +141,7 @@
     <Compile Include="Workers\ProgressUserState.cs" />
     <None Include="NBug.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="paket.references" />
     <Compile Include="Services\RibbonService.cs" />
@@ -281,6 +282,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="MarkupExtensions\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Assets\msvcr110.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild" Condition=" '$(Configuration)' == 'Release'">
