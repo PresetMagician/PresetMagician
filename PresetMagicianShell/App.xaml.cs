@@ -141,7 +141,16 @@ namespace PresetMagicianShell
             mapi.AddRecipient(name: "PresetMagician Support", addr: "support@presetmagician.com", cc: false);
 
             mapi.Attach(tempZip);
-            mapi.Send(subject: "PresetMagician Crash: "+ e.Exception.Message, noteText: e.Report.GeneralInfo.UserDescription);
+
+            var myDict = new Dictionary<string, string>();
+            myDict["User Comments"] = e.Report.GeneralInfo.UserDescription;
+            myDict["Exception Type"] = e.Report.GeneralInfo.ExceptionType;
+            myDict["Exception Backtrace"] = e.Exception.StackTrace;
+            myDict["Application"] =
+                e.Report.GeneralInfo.HostApplication + " " + e.Report.GeneralInfo.HostApplicationVersion;
+
+            var noteText = string.Join("<br/><br/>", myDict.Select(x => "<b>"+x.Key + "</b><br/>" + x.Value).ToArray());
+            mapi.Send(subject: "PresetMagician Crash: "+ e.Exception.Message, noteText: noteText);
           
             e.Result = true;
         }
