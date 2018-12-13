@@ -17,7 +17,7 @@ namespace PresetMagicianShell.Views
     /// <summary>
     /// Interaction logic for VSTPluginListControl.xaml
     /// </summary>
-    public partial class VstPluginView 
+    public partial class VstPluginsView 
     {
         private System.ComponentModel.BackgroundWorker vstPluginScanner;
         private System.ComponentModel.BackgroundWorker vstPresetScanner;
@@ -25,7 +25,7 @@ namespace PresetMagicianShell.Views
 
         public VstHost VstHost { get; set; }
 
-        public VstPluginView()
+        public VstPluginsView()
         {
             InitializeComponent();
             this.vstPluginScanner = new System.ComponentModel.BackgroundWorker();

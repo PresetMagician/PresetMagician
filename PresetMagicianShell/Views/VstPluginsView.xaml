@@ -1,5 +1,5 @@
 ﻿<catel:UserControl
-    x:Class="PresetMagicianShell.Views.VstPluginView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    x:Class="PresetMagicianShell.Views.VstPluginsView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:catel="http://schemas.catelproject.com" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
@@ -7,7 +7,7 @@
     xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid"
     xmlns:viewModels="clr-namespace:PresetMagicianShell.ViewModels"
     d:DesignHeight="450"
-    d:DataContext="{d:DesignInstance viewModels:VstPluginViewModel}"
+    d:DataContext="{d:DesignInstance viewModels:VstPluginsViewModel}"
     d:DesignWidth="800" mc:Ignorable="d">
 
     <Grid ScrollViewer.CanContentScroll="True">
