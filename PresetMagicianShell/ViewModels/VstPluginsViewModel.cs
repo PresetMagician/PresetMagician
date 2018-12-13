@@ -19,6 +19,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Catel.Reflection;
+using NuGet;
 
 namespace PresetMagicianShell.ViewModels
 {
@@ -30,22 +32,47 @@ namespace PresetMagicianShell.ViewModels
         private readonly IRuntimeConfigurationService _runtimeConfigurationService;
         private readonly ILog _logger = LogManager.GetCurrentClassLogger();
 
-        public ObservableCollection<Plugin> VstPlugins { get; set; } = new ObservableCollection<Plugin>();
+       
+        #region VstPlugins property
+
+        /// <summary>
+        /// Gets or sets the VstPlugins value.
+        /// </summary>
+        public ObservableCollection<Plugin> VstPlugins
+        {
+            get { return GetValue<ObservableCollection<Plugin>>(VstPluginsProperty); }
+            set { SetValue(VstPluginsProperty, value); }
+        }
+
+        /// <summary>
+        /// VstPlugins property data.
+        /// </summary>
+        public static readonly PropertyData VstPluginsProperty = RegisterProperty("VstPlugins", typeof(ObservableCollection<Plugin>));
+
+        #endregion
 
 
         public override string Title { get; protected set; } = "VST Plugins";
 
+        private readonly IViewModelFactory _viewModelFactory;
+        private readonly IUIVisualizerService _uiVisualizerService;
+
         public VstPluginsViewModel(IStatusService statusService, IPleaseWaitService pleaseWaitService,
-            IRuntimeConfigurationService runtimeConfigurationService, IServiceLocator serviceLocator)
+            IRuntimeConfigurationService runtimeConfigurationService, IServiceLocator serviceLocator, IViewModelFactory viewModelFactory, IUIVisualizerService uiVisualizerService)
         {
             Argument.IsNotNull(() => statusService);
             Argument.IsNotNull(() => pleaseWaitService);
             Argument.IsNotNull(() => runtimeConfigurationService);
+            Argument.IsNotNull(() => serviceLocator);
+            Argument.IsNotNull(() => viewModelFactory);
+            Argument.IsNotNull(() => uiVisualizerService);
 
             _pleaseWaitService = pleaseWaitService;
             _vstHost = new VstHost();
             _statusService = statusService;
             _runtimeConfigurationService = runtimeConfigurationService;
+            _viewModelFactory = viewModelFactory;
+            _uiVisualizerService = uiVisualizerService;
 
             serviceLocator.RegisterInstance(this);
 
@@ -53,6 +80,7 @@ namespace PresetMagicianShell.ViewModels
             RefreshPluginList = new TaskCommand(OnRefreshPluginListExecute);
             EnablePlugin = new Command<object>(OnEnablePluginExecute);
             DisablePlugin = new Command<object>(OnDisablePluginExecute);
+            ShowPluginInfo = new Command<object>(OnShowPluginInfoExecute);
 
             VstPlugins = runtimeConfigurationService.RuntimeConfiguration.Plugins;
             RefreshPluginList.Execute();
@@ -82,6 +110,26 @@ namespace PresetMagicianShell.ViewModels
             }
         }
 
+        public Command<object> ShowPluginInfo { get; set; }
+
+        private void OnShowPluginInfoExecute(object parameter)
+        {
+            var plugin = (parameter as Plugin);
+
+            /*var j = TypeCache.GetTypes();
+
+            var settingsViewModelType = TypeCache.GetTypes(x => string.Equals(x.Name, "VstPluginInfoViewModel")).FirstOrDefault();
+            if (settingsViewModelType == null)
+            {
+                //throw Log.ErrorAndCreateException<InvalidOperationException>("Cannot find type '{0}'", "VstPluginInfoViewModel");
+            }
+
+            var viewModel = _viewModelFactory.CreateViewModel(settingsViewModelType, plugin.PluginInfoItems, null);*/
+
+            _uiVisualizerService.ShowDialogAsync<VstPluginInfoViewModel>(plugin);
+
+        }
+
         public TaskCommand RefreshPluginList { get; set; }
 
         private async Task OnRefreshPluginListExecute()
@@ -99,6 +147,8 @@ namespace PresetMagicianShell.ViewModels
                     }
                 }
             }, true);
+
+            VstPlugins.RemoveAll(item => !vstPluginDLLs.Contains(item.DllPath));
 
             foreach (String dllPath in vstPluginDLLs)
             {

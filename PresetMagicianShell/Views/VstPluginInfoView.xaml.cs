@@ -11,15 +11,16 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Catel.Windows;
 
 namespace PresetMagicianShell.Views
 {
     /// <summary>
     /// Interaction logic for VstPluginInfoView.xaml
     /// </summary>
-    public partial class VstPluginInfoView : Window
+    public partial class VstPluginInfoView 
     {
-        public VstPluginInfoView()
+        public VstPluginInfoView(): base(DataWindowMode.Close)
         {
             InitializeComponent();
         }
