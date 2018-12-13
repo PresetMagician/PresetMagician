@@ -18,7 +18,7 @@ namespace PresetMagicianShell.ViewModels
     {
         public MainViewModel()
         {
-            AvalonDockHelper.CreateDocument<VstPluginViewModel>();
+            AvalonDockHelper.CreateDocument<VstPluginsViewModel>();
         }
     }
 }

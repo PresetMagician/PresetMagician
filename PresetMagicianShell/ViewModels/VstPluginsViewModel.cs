@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace PresetMagicianShell.ViewModels
 {
-    public class VstPluginViewModel : ViewModelBase
+    public class VstPluginsViewModel : ViewModelBase
     {
         private IStatusService _statusService;
         private IPleaseWaitService _pleaseWaitService;
@@ -35,7 +35,7 @@ namespace PresetMagicianShell.ViewModels
 
         public override string Title { get; protected set; } = "VST Plugins";
 
-        public VstPluginViewModel(IStatusService statusService, IPleaseWaitService pleaseWaitService,
+        public VstPluginsViewModel(IStatusService statusService, IPleaseWaitService pleaseWaitService,
             IRuntimeConfigurationService runtimeConfigurationService, IServiceLocator serviceLocator)
         {
             Argument.IsNotNull(() => statusService);

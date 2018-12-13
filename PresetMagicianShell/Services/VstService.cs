@@ -15,7 +15,7 @@ namespace PresetMagicianShell.Services
 
         public void RefreshPluginList ()
         {
-            var vstPluginViewModel = _serviceLocator.ResolveType<VstPluginViewModel>();
+            var vstPluginViewModel = _serviceLocator.ResolveType<VstPluginsViewModel>();
             vstPluginViewModel.RefreshPluginList.Execute();
         }
     }

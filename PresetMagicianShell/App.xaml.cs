@@ -1,82 +1,59 @@
 ﻿using System;
-using System.IO;
-using Win32Mapi;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Media;
 using Catel.IoC;
 using Catel.Logging;
-using Catel.MVVM;
 using Catel.Services;
-using Drachenkatze.PresetMagician.VSTHost.VST;
+using NBug;
 using NBug.Events;
 using Orchestra.Services;
 using Orchestra.Views;
-using PresetMagicianShell.Models;
-using PresetMagicianShell.Services;
 using PresetMagicianShell.Services.Interfaces;
-using PresetMagicianShell.ViewModels;
-using PresetMagicianShell.Views;
-using NBug.Properties;
-using NBug;
-using NBug.Enums;
+using Win32Mapi;
 
 namespace PresetMagicianShell
 {
     /// <summary>
-    /// Interaction logic for App.xaml
+    ///     Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App
     {
-        #region Constants
-
-        private static readonly ILog Log = LogManager.GetCurrentClassLogger();
-
-        #endregion Constants
-
-        public App ()
+        public App()
         {
             SetupExceptionHandling();
-            AppDomain.CurrentDomain.UnhandledException += NBug.Handler.UnhandledException;
-            Current.DispatcherUnhandledException += NBug.Handler.DispatcherUnhandledException;
-            TaskScheduler.UnobservedTaskException += NBug.Handler.UnobservedTaskException;
-            
+            AppDomain.CurrentDomain.UnhandledException += Handler.UnhandledException;
+            Current.DispatcherUnhandledException += Handler.DispatcherUnhandledException;
+            TaskScheduler.UnobservedTaskException += Handler.UnobservedTaskException;
+
             NBug.Settings.CustomSubmissionEvent += Settings_CustomSubmissionEvent;
         }
 
         private void SetupExceptionHandling()
         {
-  
-            #if DEBUG
+#if DEBUG
             NBug.Settings.ReleaseMode = false;
-            #else
+#else
             NBug.Settings.ReleaseMode = true;
-            #endif
-
-
-            // Connection strings
-            //NBug.Settings.AddDestinationFromConnectionString("Type=Custom;");
-            
+#endif
         }
 
         protected override async void OnStartup(StartupEventArgs e)
         {
-            
-            //NBug.Settings.AddDestinationFromConnectionString(ConfigurationManager.ConnectionStrings["NBug.Properties.Settings.Connection1"].ConnectionString);nbug
-            
 
-            
 #if DEBUG
             LogManager.AddDebugListener(true);
 #endif
 
-            var fileLogListener = new FileLogListener {IgnoreCatelLogging = true, FilePath = @"{AppDataLocal}\{AutoLogFileName}"};
+            var fileLogListener = new FileLogListener
+                {IgnoreCatelLogging = true, FilePath = @"{AppDataLocal}\{AutoLogFileName}"};
 
             LogManager.AddListener(fileLogListener);
 
@@ -85,31 +62,30 @@ namespace PresetMagicianShell
             languageService.FallbackCulture = new CultureInfo("en-US");
 
 
-            StartShell();
+            await StartShell();
         }
 
-       
 
-        private async void StartShell()
+        private async Task StartShell()
         {
             var serviceLocator = ServiceLocator.Default;
             var shellService = serviceLocator.ResolveType<IShellService>();
 
             var x = await shellService.CreateAsync<ShellWindow>();
-            
+
 
             // Overrides
             x.Title = "PresetMagician";
-            x.TitleBackground = (Brush)x.FindResource("AccentColorBrush");
-            x.TitleForeground = (Brush)x.FindResource("WhiteBrush");
+            x.TitleBackground = (Brush) x.FindResource("AccentColorBrush");
+            x.TitleForeground = (Brush) x.FindResource("WhiteBrush");
             x.TitleBarHeight = 24;
 
 #if DEBUG
             x.WindowState = WindowState.Normal;
             var ScreenNumber = 2;
-            if (System.Windows.Forms.Screen.AllScreens.Length >= ScreenNumber)
+            if (Screen.AllScreens.Length >= ScreenNumber)
             {
-                System.Drawing.Rectangle screenBounds = System.Windows.Forms.Screen.AllScreens[ScreenNumber - 1].Bounds;
+                var screenBounds = Screen.AllScreens[ScreenNumber - 1].Bounds;
                 x.WindowStartupLocation = WindowStartupLocation.Manual;
                 x.Left = screenBounds.Left;
                 x.Top = screenBounds.Top;
@@ -117,43 +93,45 @@ namespace PresetMagicianShell
             }
 #endif
         }
-        
+
         protected override void OnExit(ExitEventArgs e)
         {
-
             var serviceLocator = ServiceLocator.Default;
             serviceLocator.ResolveType<IRuntimeConfigurationService>().Save();
             base.OnExit(e);
         }
 
         // Custom Submission Event handler
-        void Settings_CustomSubmissionEvent(object sender, CustomSubmissionEventArgs e)
+        private void Settings_CustomSubmissionEvent(object sender, CustomSubmissionEventArgs e)
         {
-            var tempZip = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".zip";
+            var tempZip = Path.GetTempPath() + Guid.NewGuid() + ".zip";
             var fs = new FileStream(tempZip, FileMode.Create);
-            Debug.WriteLine(e.File.Position);
             e.File.Seek(0, SeekOrigin.Begin);
             e.File.CopyTo(fs);
             fs.Close();
 
             var mapi = new SimpleMapi();
-            
-            mapi.AddRecipient(name: "PresetMagician Support", addr: "support@presetmagician.com", cc: false);
+
+            mapi.AddRecipient("PresetMagician Support", "support@presetmagician.com", false);
 
             mapi.Attach(tempZip);
 
-            var myDict = new Dictionary<string, string>();
-            myDict["User Comments"] = e.Report.GeneralInfo.UserDescription;
-            myDict["Exception Type"] = e.Report.GeneralInfo.ExceptionType;
-            myDict["Exception Backtrace"] = e.Exception.StackTrace;
-            myDict["Application"] =
-                e.Report.GeneralInfo.HostApplication + " " + e.Report.GeneralInfo.HostApplicationVersion;
+            var myDict = new Dictionary<string, string>
+            {
+                ["User Comments"] = e.Report.GeneralInfo.UserDescription,
+                ["Exception Type"] = e.Report.GeneralInfo.ExceptionType,
+                ["Exception Backtrace"] = e.Exception.StackTrace,
+                ["Application"] = e.Report.GeneralInfo.HostApplication + " " +
+                                  e.Report.GeneralInfo.HostApplicationVersion
+            };
 
-            var noteText = string.Join("<br/><br/>", myDict.Select(x => "<b>"+x.Key + "</b><br/>" + x.Value).ToArray());
-            mapi.Send(subject: "PresetMagician Crash: "+ e.Exception.Message, noteText: noteText);
-          
+            var noteText = string.Join("<br/>",
+                myDict.Select(x =>
+                    "<b>" + x.Key + "</b><br/><pre><code class=\"language-csharp\">" + HttpUtility.HtmlEncode(x.Value) +
+                    "</code></pre>").ToArray());
+            mapi.Send("PresetMagician Crash: " + e.Exception.Message, noteText);
+
             e.Result = true;
         }
-
     }
 }

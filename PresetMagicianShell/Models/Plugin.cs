@@ -51,10 +51,7 @@ namespace PresetMagicianShell.Models
 
         public void Dispose()
         {
-            if (PluginContext != null)
-            {
-                PluginContext.Dispose();
-            }
+            PluginContext?.Dispose();
         }
         
         public VstPluginContext PluginContext { get; set; } = null;
