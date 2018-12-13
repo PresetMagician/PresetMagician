@@ -85,7 +85,9 @@
     <Compile Include="Commands\ToolsSettingsViewCommandContainer.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Helpers\AvalonDockHelper.cs" />
+    <Compile Include="Helpers\BindingProxy.cs" />
     <Compile Include="Models\Plugin.cs" />
+    <Compile Include="Models\PluginInfoItem.cs" />
     <Compile Include="Models\RuntimeConfiguration.cs" />
     <Compile Include="Models\Settings\VstDirectory.cs" />
     <Compile Include="Services\AboutInfoService.cs" />
@@ -108,7 +110,9 @@
     <Compile Include="ViewModels\SplashScreenViewModel.cs" />
     <Compile Include="ViewModels\StatusBarViewModel.cs" />
     <Compile Include="ViewModels\VstFolderListViewModel.cs" />
+    <Compile Include="ViewModels\VstPluginInfoViewModel.cs" />
     <Compile Include="ViewModels\VstPluginsViewModel.cs" />
+    <Compile Include="ViewModels\VstPluginViewModel.cs" />
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
     </Compile>

@@ -6,6 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid"
     xmlns:viewModels="clr-namespace:PresetMagicianShell.ViewModels"
+    xmlns:helpers="clr-namespace:PresetMagicianShell.Helpers"
     d:DesignHeight="450"
     d:DataContext="{d:DesignInstance viewModels:VstPluginsViewModel}"
     d:DesignWidth="800" mc:Ignorable="d">
@@ -24,25 +25,42 @@
             ItemsSource="{Binding VstPlugins}"
             ScrollViewer.CanContentScroll="True" SelectionChanged="VSTPluginList_SelectionChanged"
             SelectionUnit="FullRow">
+
             <DataGrid.Resources>
-                <xcdg:BindingProxy x:Key="proxy" Value="{Binding}" />
-                <xcdg:BindingProxy x:Key="proxy2" Value="{Binding ElementName=VSTPluginList}" />
+                <helpers:BindingProxy x:Key="proxy" Data="{Binding}"></helpers:BindingProxy>
+                <helpers:BindingProxy x:Key="proxy2" Data="{Binding ElementName=VSTPluginList}" />
                 <ContextMenu x:Key="PluginContextMenu">
                     <MenuItem
-                        Command="{Binding Value.DisablePlugin, Source={StaticResource proxy}}"
-                        CommandParameter="{Binding Path=Value.SelectedItems, Source={StaticResource proxy2}}"
+                        Command="{Binding Data.DisablePlugin, Source={StaticResource proxy}}"
+                        CommandParameter="{Binding Path=Data.SelectedItems, Source={StaticResource proxy2}}"
                         Header="Disable Plugin"
                         Icon="{iconPacks:Octicons Kind=DiffRemoved}" />
                     <MenuItem
-                        Command="{Binding Value.EnablePlugin, Source={StaticResource proxy}}"
-                        CommandParameter="{Binding Path=Value.SelectedItems, Source={StaticResource proxy2}}"
+                        Command="{Binding Data.EnablePlugin, Source={StaticResource proxy}}"
+                        CommandParameter="{Binding Path=Data.SelectedItems, Source={StaticResource proxy2}}"
                         Header="Enable Plugin"
                         Icon="{iconPacks:Octicons Kind=DiffAdded}" />
+                    <MenuItem
+                        Command="{Binding Data.ShowPluginInfo, Source={StaticResource proxy}}"
+                        CommandParameter="{Binding Path=Data.SelectedItem, Source={StaticResource proxy2}}"
+                        Header="Show Plugin Capabilities"
+                        Icon="{iconPacks:FontAwesome Kind=EyeSolid}">
+                        <MenuItem.Style>
+                            <Style BasedOn="{StaticResource {x:Type MenuItem}}" TargetType="{x:Type MenuItem}">
+                                <Setter Property="IsEnabled" Value="False" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Data.SelectedItems.Count, Source={StaticResource proxy2}}" Value="1">
+                                        <Setter Property="IsEnabled" Value="True" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </MenuItem.Style>
+                    </MenuItem>
                 </ContextMenu>
             </DataGrid.Resources>
             <DataGrid.RowStyle>
                 <Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="DataGridRow">
-                    <Setter Property="ContextMenu" Value="{StaticResource PluginContextMenu}" />
+                    <Setter Property="ContextMenu" Value="{StaticResource PluginContextMenu}"/>
                 </Style>
             </DataGrid.RowStyle>
             <DataGrid.Columns>
