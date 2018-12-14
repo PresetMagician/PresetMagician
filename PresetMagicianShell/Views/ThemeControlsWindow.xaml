@@ -154,7 +154,9 @@
                             <Separator />
                             <ListBoxItem>Item 4</ListBoxItem>
                         </ListBox>
-
+                        <ScrollViewer Width="100" Height="100" CanContentScroll="True" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto">
+                            <TextBlock Text="dskjhgrkjd hgdkjhg kjdhglkdsjf hgkjfd hghg kjfdgh khg kjdhg ksjhg lksjd hgkjfd hgkjfd hgkdjf hglkfdsj hglkfds jdh"></TextBlock>
+                        </ScrollViewer>
 
                     </StackPanel>
 
@@ -229,6 +231,8 @@
 
                         <ProgressBar Margin="5" Value="50" />
 
+                        <ProgressBar Margin="5" Value="50" IsIndeterminate="True"/>
+
                         <ProgressBar Margin="5" Value="50" Orientation="Vertical" HorizontalAlignment="Center"
                                      Height="100" Width="20" />
                         <Expander x:Name="expander" Header="expander1" HorizontalAlignment="Left" Margin="5" ExpandDirection="Right"
@@ -290,7 +294,7 @@
                     <StackPanel>
                         <xtk:AutoSelectTextBox x:Name="autoSelectTextBox" Text="Auto Select Text Box" Margin="5" AutoMoveFocus="True"
                                                AutoWordSelection="True" AutoSelectBehavior="OnFocus" />
-                        <xtk:BusyIndicator Margin="5" IsBusy="True">
+                        <xtk:BusyIndicator Margin="5" IsBusy="True" >
                             BusyIndicator
                             <xtk:BusyIndicator.BusyContentTemplate>
                                 <DataTemplate>

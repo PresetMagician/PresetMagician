@@ -8,35 +8,78 @@
                    mc:Ignorable="d"
                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                    xmlns:catel="http://schemas.catelproject.com"
-                   MaxHeight="200"
+                   MaxHeight="250"
                    HorizontalAlignment="Left"
-                   Padding="2,2,20,2"
-                   xmlns:converters="clr-namespace:PresetMagicianShell.Converters">
+                   Padding="2,2,2,2"
+                   xmlns:converters="clr-namespace:PresetMagicianShell.Converters"
+                   xmlns:vendorPresetParser="clr-namespace:Drachenkatze.PresetMagician.VendorPresetParser;assembly=Drachenkatze.PresetMagician.VendorPresetParser">
 
     <catel:UserControl.Resources>
         <ResourceDictionary>
-            <converters:VisibilityToBooleanConverter x:Key="bla"/>    
-            </ResourceDictionary>
+
+            <HierarchicalDataTemplate x:Key="Contents" DataType="{x:Type vendorPresetParser:PresetBank}" ItemsSource="{Binding PresetBanks}">
+
+                    <TextBlock Text="{Binding BankName}"/>
+
+            </HierarchicalDataTemplate>
+        </ResourceDictionary>
         </catel:UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="200" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        
-        <ScrollViewer CanContentScroll="True">
-        <ItemsControl Grid.Row="0" ItemsSource="{Binding PresetBanks}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel>
-                        <views:PresetBankView DataContext="{Binding}" />
-                        <Line Height="2" />
-                    </StackPanel>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-        </ScrollViewer>
+       
+
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TreeView Margin="5" Grid.Column="0" ItemsSource="{Binding Plugin.RootBank.PresetBanks}" ItemTemplate="{StaticResource Contents}">
+            <TreeView.Resources>
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="IsExpanded" Value="True">
+                    </Setter>
+                </Style>
+            </TreeView.Resources>
+            <TreeView.Style>
+                <Style TargetType="{x:Type TreeView}">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsScanned, 
+                                                  Mode=OneWay}" Value="True">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TreeView.Style>
+        </TreeView>
+
+            <GridSplitter Grid.Column="1"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Stretch"
+                          ShowsPreview="True"
+                          Width="5"/>
+
+            <DataGrid x:Name="VSTPresetList" Grid.Column="2" ItemsSource="{Binding Presets}" Margin="5" EnableRowVirtualization="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Preset" Width="150"
+                                        Binding="{Binding PresetName}" IsReadOnly="True" SortDirection="Ascending" />
+                    <DataGridTextColumn Header="Bank" Width="150"
+                                        Binding="{Binding PresetBank.BankPath}" IsReadOnly="True" SortDirection="Ascending" />
+                    <DataGridTextColumn Header="Key" Width="80"
+                                        Binding="{Binding PreviewNote.FullNoteName}" IsReadOnly="False">
+                    </DataGridTextColumn>
+                    <DataGridCheckBoxColumn Header="Export" Width="80" IsReadOnly="False" Binding="{Binding Export}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+
         <Label Grid.Row="1" Content="Plugin was not scanned yet, no bank information available">
             <Label.Style>
                 <Style TargetType="{x:Type Label}">

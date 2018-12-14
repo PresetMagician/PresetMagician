@@ -1,11 +1,10 @@
 ﻿using System;
-using System.ComponentModel;
 using CannedBytes.Midi.Message;
 using Catel.Data;
-using Drachenkatze.PresetMagician.Controls.Controls.VSTHost;
 using Drachenkatze.PresetMagician.Utils;
+using Drachenkatze.PresetMagician.VSTHost.VST;
 
-namespace Drachenkatze.PresetMagician.VSTHost.VST
+namespace Drachenkatze.PresetMagician.VendorPresetParser
 {
     public class Preset : ModelBase
     {
@@ -22,13 +21,13 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             PreviewNote = new MidiNoteName("C5");
         }
 
-        public String BankName { get; set; }
+        public PresetBank PresetBank { get; set; }
 
         public bool Export { get; set; } = true;
 
         public String getNKSFBankName()
         {
-                String bankName = BankName;
+                String bankName = PresetBank.BankName;
 
                 foreach (char c in System.IO.Path.GetInvalidPathChars())
                 {

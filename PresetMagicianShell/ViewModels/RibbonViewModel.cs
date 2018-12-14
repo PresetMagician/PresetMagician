@@ -16,7 +16,9 @@ using Catel.Services;
 using Drachenkatze.PresetMagician.VSTHost.VST;
 using Orchestra.Services;
 using Orchestra.ViewModels;
+using Portable.Licensing;
 using PresetMagicianShell.Models;
+using PresetMagicianShell.Services;
 using PresetMagicianShell.Services.Interfaces;
 using PresetMagicianShell.Views;
 using Xceed.Wpf.AvalonDock;
@@ -108,8 +110,10 @@ namespace PresetMagicianShell.ViewModels
         /// </summary>
         private async Task OnDoSomethingExecuteAsync()
         {
-            throw new InvalidCastException();
-            
+            var licenseService = ServiceLocator.Default.ResolveType<ILicenseService>();
+
+            var x = licenseService.GetCurrentLicense().AdditionalAttributes.Get("PresetExportLimit");
+            Debug.WriteLine(x);
         }
 
         

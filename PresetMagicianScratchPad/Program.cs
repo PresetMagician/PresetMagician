@@ -5,8 +5,6 @@ using System.Runtime.ExceptionServices;
 using System.Security;
 using System.Windows;
 using Drachenkatze.PresetMagician.VSTHost.VST;
-using Jacobi.Vst.Interop.Host;
-using Jacobi.Vst.Samples.Host;
 using PresetMagicianShell.Models;
 
 namespace PresetMagicianScratchPad
@@ -16,9 +14,16 @@ namespace PresetMagicianScratchPad
         [STAThread]
         static void Main(string[] args)
         {
-            Console.WriteLine("BLA");
-
+            var vstHost = new VstHost();
+            var plugin = new Plugin();
+            plugin.DllPath = @"C:\Program Files\VSTPlugins\Bazille(x64).dll";
             
+            vstHost.LoadVST(plugin);
+            plugin.DeterminatePresetParser();
+            plugin.PresetParser.ScanBanks();
+
+            vstHost.UnloadVST(plugin);
+
         }
     }
 }

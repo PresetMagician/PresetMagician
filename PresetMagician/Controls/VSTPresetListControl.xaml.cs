@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using CannedBytes.Midi.Message;
 using Drachenkatze.PresetMagician.Controls.Controls.VSTHost;
+using Drachenkatze.PresetMagician.VendorPresetParser;
 using Drachenkatze.PresetMagician.VSTHost.VST;
 
 namespace Drachenkatze.PresetMagician.GUI.Controls

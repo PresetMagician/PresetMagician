@@ -14,13 +14,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
     {
         public void H2PScanBanks(string dataDirectoryName, string productName, bool userPresets)
         {
-            if (Banks == null)
-            {
-                Banks = new List<PresetBank>();
-            }
-
-            var presetDirectory = GetPresetDirectory(dataDirectoryName, productName, userPresets);
-            var directoryInfo = new DirectoryInfo(presetDirectory);
+            var rootDirectory = GetPresetDirectory(dataDirectoryName, productName, userPresets);
+            var directoryInfo = new DirectoryInfo(rootDirectory);
 
             string bankName = "Factory Bank";
             if (userPresets)
@@ -33,11 +28,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
                 return;
             }
 
-            Banks.Add(H2PScanBank(bankName, directoryInfo));
-            foreach (var directory in directoryInfo.EnumerateDirectories("*", SearchOption.AllDirectories))
-            {
-                Banks.Add(H2PScanBank(directory.Name, directory));
-            }
+            RootBank.PresetBanks.Add(H2PScanBank(bankName, directoryInfo));
+            
         }
 
         public PresetBank H2PScanBank(string name, DirectoryInfo directory)
@@ -52,7 +44,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
                 Preset preset = new Preset();
                 preset.PresetName = file.Name.Replace(".h2p", "");
                 preset.SetPlugin(VstPlugin);
-                preset.BankName = bank.BankName;
+                preset.PresetBank = bank;
 
                 var fs = file.OpenRead();
 
@@ -60,7 +52,13 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
                 fs.Read(preset.PresetData, 0, (int)fs.Length);
                 fs.Close();
 
-                bank.Presets.Add(preset);
+                Presets.Add(preset);
+
+            }
+
+            foreach (var subDirectory in directory.EnumerateDirectories("*", SearchOption.TopDirectoryOnly))
+            {
+                bank.PresetBanks.Add(H2PScanBank(subDirectory.Name, subDirectory));
             }
 
             return bank;

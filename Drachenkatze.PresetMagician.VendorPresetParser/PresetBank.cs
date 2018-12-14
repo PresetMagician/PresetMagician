@@ -13,30 +13,58 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 {
     public class PresetBank : ModelBase
     {
-        public String BankName { get; set; }
+        public string BankName { get; set; }
+        public PresetBank ParentBank { get; set; } = null;
 
-        public PresetBank()
+        public PresetBank(string bankName = "All Banks")
         {
-            Presets = new ObservableCollection<Preset>();
-            BankName = "unset";
+            PresetBanks = new ObservableCollection<PresetBank>();
+            
+            PresetBanks.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(
+                delegate(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)                    
+                {
+                    if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+                    {
+                        foreach (var i in e.NewItems)
+                        {
+                            ((PresetBank) i).ParentBank = this;
+                        }
+                    }
+                }
+            );
+            BankName = bankName;
         }
 
-        #region Presets property
+        public List<string> GetBankPath ()
+        {
+           
+                List<string> bankPaths = new List<string>();
+
+                if (ParentBank != null)
+                {
+                    bankPaths.AddRange(ParentBank.GetBankPath());
+                }
+
+                bankPaths.Add(BankName);
+
+                return bankPaths;
+        }
+
+        public string BankPath
+        {
+            get
+            {
+                return string.Join<string>(" / ", GetBankPath());
+            }
+        }
+
+        #region Properties
 
         /// <summary>
         /// Gets or sets the Presets value.
         /// </summary>
-        public ObservableCollection<Preset> Presets
-        {
-            get { return GetValue<ObservableCollection<Preset>>(PresetsProperty); }
-            set { SetValue(PresetsProperty, value); }
-        }
 
-        /// <summary>
-        /// Presets property data.
-        /// </summary>
-        public static readonly PropertyData PresetsProperty =
-            RegisterProperty("Presets", typeof(ObservableCollection<Preset>));
+        public ObservableCollection<PresetBank> PresetBanks { get; set; }
 
         #endregion
     }

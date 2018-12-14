@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Security.Policy;
 using System.Text;
@@ -10,8 +11,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 {
     public class NullPresetParser : IVendorPresetParser
     {
-        public List<PresetBank> Banks => new List<PresetBank>();
-
         public IVstPlugin VstPlugin { get; set; }
 
         public virtual string Remarks { get; set; }
@@ -20,7 +19,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
         public bool IsNullParser => true;
 
-        public int NumPresets => 0;
+        public PresetBank RootBank { get; set; } = new PresetBank();
+
+        public ObservableCollection<Preset> Presets { get; } = new ObservableCollection<Preset>();
 
         public void ScanBanks()
         {

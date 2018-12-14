@@ -11,7 +11,10 @@
     xmlns:views="clr-namespace:PresetMagicianShell.Views"
     xmlns:vst="clr-namespace:Drachenkatze.PresetMagician.VSTHost.VST;assembly=Drachenkatze.PresetMagician.VSTHost"
     xmlns:converters="clr-namespace:PresetMagicianShell.Converters"
+    xmlns:orchestra="http://schemas.wildgums.com/orchestra"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     d:DesignHeight="450"
+    Padding="1"
     d:DataContext="{d:DesignInstance viewModels:VstPluginsViewModel}"
     d:DesignWidth="800" mc:Ignorable="d">
 
@@ -51,17 +54,40 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <DataGrid
-            x:Name="VSTPluginList" AutoGenerateColumns="False" CanUserAddRows="False"
+
+        <xctk:BusyIndicator IsBusy="{Binding IsScanning}">
+            <xctk:BusyIndicator.BusyContentTemplate>
+                <DataTemplate>
+                    <StackPanel Margin="4">
+                        <TextBlock Text="Scanning Plugins" FontWeight="Bold" HorizontalAlignment="Center" />
+                        <StackPanel Margin="4">
+                            <TextBlock Text="Downloading message 4/10..." />
+                            <ProgressBar Value="40" Height="15" />
+                        </StackPanel>
+                        <Grid>
+                            
+                            <Button Content="Cancel" HorizontalAlignment="Center" Margin="2 0 0 0" />
+                        </Grid>
+                    </StackPanel>
+                </DataTemplate>
+                </xctk:BusyIndicator.BusyContentTemplate>
+            <xctk:BusyIndicator.ProgressBarStyle>
+                <Style TargetType="ProgressBar">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </Style>
+            </xctk:BusyIndicator.ProgressBarStyle>
+            <DataGrid
+            Grid.Row="0"
+            x:Name="VstPluginList" AutoGenerateColumns="False" CanUserAddRows="False"
             GridLinesVisibility="All"
             ItemsSource="{Binding VstPlugins}"
             RowDetailsVisibilityMode="Collapsed"
-            ScrollViewer.CanContentScroll="True" SelectionChanged="VSTPluginList_SelectionChanged"
+            ScrollViewer.CanContentScroll="True" SelectionChanged="VstPluginList_SelectionChanged"
             SelectionUnit="FullRow">
 
             <DataGrid.Resources>
                 <helpers:BindingProxy x:Key="proxy" Data="{Binding}"></helpers:BindingProxy>
-                <helpers:BindingProxy x:Key="proxy2" Data="{Binding ElementName=VSTPluginList}" />
+                <helpers:BindingProxy x:Key="proxy2" Data="{Binding ElementName=VstPluginList}" />
                 <ContextMenu x:Key="PluginContextMenu">
                     <MenuItem
                         Command="{Binding Data.DisablePlugin, Source={StaticResource proxy}}"
@@ -148,10 +174,13 @@
 
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
-                    <views:VstPluginView DataContext="{Binding}" Width="{Binding ElementName=VSTPluginList, Path=ActualWidth}"/>
+                    <views:VstPluginView DataContext="{Binding}" Width="{Binding Path=ViewportWidth, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ScrollViewer}}}">
+                       
+                    </views:VstPluginView>
                 </DataTemplate>
             </DataGrid.RowDetailsTemplate>
         </DataGrid>
+        </xctk:BusyIndicator>
 
         <DockPanel
             Grid.Row="1" Grid.ColumnSpan="2" VerticalAlignment="Bottom">
