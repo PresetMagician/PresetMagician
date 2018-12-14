@@ -84,6 +84,7 @@
     <Compile Include="Commands\ToolsNksfViewCommandContainer.cs" />
     <Compile Include="Commands\ToolsSettingsViewCommandContainer.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="Converters\VisibilityToBooleanConverter.cs" />
     <Compile Include="Helpers\AvalonDockHelper.cs" />
     <Compile Include="Helpers\BindingProxy.cs" />
     <Compile Include="Models\Plugin.cs" />
@@ -104,6 +105,7 @@
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\NKSFViewModel.cs" />
     <Compile Include="ViewModels\PaneViewModel.cs" />
+    <Compile Include="ViewModels\PresetBankViewModel.cs" />
     <Compile Include="ViewModels\RegistrationViewModel.cs" />
     <Compile Include="ViewModels\RibbonViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
@@ -118,6 +120,9 @@
     </Compile>
     <Compile Include="Views\NKSFView.xaml.cs">
       <DependentUpon>NKSFView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PresetBankView.xaml.cs">
+      <DependentUpon>PresetBankView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\RegistrationWindow.xaml.cs">
       <DependentUpon>RegistrationWindow.xaml</DependentUpon>
@@ -145,6 +150,9 @@
     </Compile>
     <Compile Include="Views\VstPluginsView.xaml.cs">
       <DependentUpon>VstPluginsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\VstPluginView.xaml.cs">
+      <DependentUpon>VstPluginView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Workers\ProgressUserState.cs" />
     <None Include="NBug.config">
@@ -185,6 +193,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\PresetBankView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\RegistrationWindow.xaml" />
     <Page Include="Views\RibbonView.xaml">
       <SubType>Designer</SubType>
@@ -206,6 +218,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\VstPluginsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\VstPluginView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -294,6 +310,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets\" />
+    <Folder Include="Controls\" />
     <Folder Include="MarkupExtensions\" />
   </ItemGroup>
   <ItemGroup>
@@ -540,28 +557,6 @@
       <ItemGroup>
         <Reference Include="Microsoft.WindowsAPICodePack.Shell">
           <HintPath>..\packages\Microsoft-WindowsAPICodePack-Shell\lib\net452\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
-      <ItemGroup>
-        <Reference Include="Microsoft.Data.Edm">
-          <HintPath>..\packages\Microsoft.Data.Edm\lib\net40\Microsoft.Data.Edm.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
-      <ItemGroup>
-        <Reference Include="Microsoft.Data.OData">
-          <HintPath>..\packages\Microsoft.Data.OData\lib\net40\Microsoft.Data.OData.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -940,17 +935,6 @@
       <ItemGroup>
         <Reference Include="System.Runtime.Serialization.Xml">
           <HintPath>..\packages\System.Runtime.Serialization.Xml\lib\net46\System.Runtime.Serialization.Xml.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
-      <ItemGroup>
-        <Reference Include="System.Spatial">
-          <HintPath>..\packages\System.Spatial\lib\net40\System.Spatial.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>

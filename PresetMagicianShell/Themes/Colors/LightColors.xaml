@@ -2,6 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!-- Colors -->
+    <!-- THIS MUST BECÓME THE MASTER STUFF SOMEHOW -->
     <Color x:Key="AccentColorLight">#ffdac9f5</Color>
     <Color x:Key="AccentColorMedium">#ffa783de</Color>
     <Color x:Key="AccentColorDark">#ff9873CE</Color>

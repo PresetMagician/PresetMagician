@@ -1,0 +1,55 @@
+﻿<catel:UserControl x:Class="PresetMagicianShell.Views.VstPluginView"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                   xmlns:viewModels="clr-namespace:PresetMagicianShell.ViewModels"
+                   xmlns:views="clr-namespace:PresetMagicianShell.Views"
+                   d:DataContext="{d:DesignInstance viewModels:VstPluginViewModel}"
+                   mc:Ignorable="d"
+                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                   xmlns:catel="http://schemas.catelproject.com"
+                   MaxHeight="200"
+                   HorizontalAlignment="Left"
+                   Padding="2,2,20,2"
+                   xmlns:converters="clr-namespace:PresetMagicianShell.Converters">
+
+    <catel:UserControl.Resources>
+        <ResourceDictionary>
+            <converters:VisibilityToBooleanConverter x:Key="bla"/>    
+            </ResourceDictionary>
+        </catel:UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        
+        <ScrollViewer CanContentScroll="True">
+        <ItemsControl Grid.Row="0" ItemsSource="{Binding PresetBanks}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <views:PresetBankView DataContext="{Binding}" />
+                        <Line Height="2" />
+                    </StackPanel>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        </ScrollViewer>
+        <Label Grid.Row="1" Content="Plugin was not scanned yet, no bank information available">
+            <Label.Style>
+                <Style TargetType="{x:Type Label}">
+                    <Setter Property="Visibility" Value="Visible" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsScanned, 
+                                                  Mode=OneWay}" Value="True">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Label.Style>
+        </Label>
+    </Grid>
+    
+</catel:UserControl>

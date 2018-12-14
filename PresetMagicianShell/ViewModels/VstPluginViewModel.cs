@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Catel.Data;
+using Catel.Fody;
 using Catel.MVVM;
 
 namespace PresetMagicianShell.ViewModels
@@ -14,11 +16,20 @@ namespace PresetMagicianShell.ViewModels
 
         public VstPluginViewModel(Models.Plugin plugin)
         {
-            // Store values
             Plugin = plugin;
+            DoSomething = new Command(OnDoSomethingExecute);
+        }
+
+        public Command DoSomething  { get; set; }
+
+        private void OnDoSomethingExecute ()
+        {
+            Debug.WriteLine("Direct: "+Plugin.PresetBanks.Count);
         }
 
         [Model]
+        [Expose("PresetBanks")]
+        [Expose("IsScanned")]
         public Models.Plugin Plugin
         {
             get { return GetValue<Models.Plugin>(PluginProperty); }

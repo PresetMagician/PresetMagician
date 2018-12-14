@@ -63,7 +63,7 @@
     <Compile Include="VST\IVstPlugin.cs" />
     <None Include="VST\VSTPluginExport.cs" />
     <None Include="VST\VSTStream.cs" />
-    <Compile Include="VST\VSTPreset.cs" />
+    <Compile Include="VST\Preset.cs" />
     <Compile Include="VST\VSTPlugin.cs" />
     <Compile Include="VST\VstPathScanner.cs" />
     <Compile Include="VST\VstHost.cs" />

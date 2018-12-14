@@ -49,18 +49,18 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 
             foreach (var file in directory.EnumerateFiles())
             {
-                VSTPreset vstPreset = new VSTPreset();
-                vstPreset.PresetName = file.Name.Replace(".h2p", "");
-                vstPreset.SetPlugin(VstPlugin);
-                vstPreset.BankName = bank.BankName;
+                Preset preset = new Preset();
+                preset.PresetName = file.Name.Replace(".h2p", "");
+                preset.SetPlugin(VstPlugin);
+                preset.BankName = bank.BankName;
 
                 var fs = file.OpenRead();
 
-                vstPreset.PresetData = new byte[fs.Length];
-                fs.Read(vstPreset.PresetData, 0, (int)fs.Length);
+                preset.PresetData = new byte[fs.Length];
+                fs.Read(preset.PresetData, 0, (int)fs.Length);
                 fs.Close();
 
-                bank.VSTPresets.Add(vstPreset);
+                bank.Presets.Add(preset);
             }
 
             return bank;

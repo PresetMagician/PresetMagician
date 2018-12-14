@@ -2,11 +2,16 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Input;
+using System.Windows.Media;
 using Catel.IoC;
+using Catel.Windows;
 using Drachenkatze.PresetMagician.VendorPresetParser;
 using Drachenkatze.PresetMagician.VSTHost.VST;
 using PresetMagicianShell.Models;
@@ -21,7 +26,7 @@ namespace PresetMagicianShell.Views
     {
         private System.ComponentModel.BackgroundWorker vstPluginScanner;
         private System.ComponentModel.BackgroundWorker vstPresetScanner;
-        private ObservableCollection<VSTPreset> scannedPresets;
+        private ObservableCollection<Preset> scannedPresets;
 
         public VstHost VstHost { get; set; }
 
@@ -58,8 +63,53 @@ namespace PresetMagicianShell.Views
 
        
 
-        
+        public static Visual FindAncestor( Visual child, Type typeAncestor )
 
+        {
+
+            DependencyObject parent = VisualTreeHelper.GetParent( child);
+
+            while( parent != null && !typeAncestor.IsInstanceOfType( parent ) )
+
+            {
+
+                parent = VisualTreeHelper.GetParent( parent );
+
+            }
+
+            return ( parent as Visual );
+
+        }
+
+        private void ContentControl_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            var row = (sender as DataGridRow);
+
+            if (row == null)
+            {
+                return;
+
+            }
+
+            var uiElement = (UIElement) e.OriginalSource;
+
+
+            if (uiElement.FindVisualAncestorByType<DataGridCellsPresenter>() == null)
+            {
+                return;
+            }
+
+            if (row.DetailsVisibility == Visibility.Collapsed)
+            {
+                row.DetailsVisibility = Visibility.Visible;
+            }
+            else
+            {
+                row.DetailsVisibility = Visibility.Collapsed;
+            }
+
+            //ClickedRowDetails = true;
+        }
        
 
         private void VSTPluginList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -121,14 +171,14 @@ namespace PresetMagicianShell.Views
             BackgroundWorker worker = sender as BackgroundWorker;
             ObservableCollection<Plugin> vsts = (ObservableCollection<Plugin>)e.Argument;
 
-            scannedPresets = new ObservableCollection<VSTPreset>();
+            scannedPresets = new ObservableCollection<Preset>();
 
             foreach (Plugin plugin in vsts)
             {
                 VSTHost.LoadVST(plugin.VstPlugin);
                 foreach (var bank in plugin.VstPresetParser.Banks)
                 {
-                    foreach (var preset in bank.VSTPresets)
+                    foreach (var preset in bank.Presets)
                     {
                         scannedPresets.Add(preset);
                     }
@@ -140,7 +190,7 @@ namespace PresetMagicianShell.Views
         private void presetScanner_Completed(
             object sender, RunWorkerCompletedEventArgs e)
         {
-            /*foreach (VSTPreset p in scannedPresets)
+            /*foreach (Preset p in scannedPresets)
             {
                 App.vstPresets.VstPresets.Add(p);
             }

@@ -35,13 +35,13 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
 
             for (int index = 0; index < VstPlugin.NumPresets; index++)
             {
-                var vstPreset = new VSTPreset();
+                var vstPreset = new Preset();
 
                 VstPlugin.PluginContext.PluginCommandStub.SetProgram(index);
                 vstPreset.PresetName = VstPlugin.PluginContext.PluginCommandStub.GetProgramName();
                 vstPreset.PresetData = VstPlugin.PluginContext.PluginCommandStub.GetChunk(false);
                 vstPreset.SetPlugin(VstPlugin);
-                factoryBank.VSTPresets.Add(vstPreset);
+                factoryBank.Presets.Add(vstPreset);
             }
 
             return factoryBank;

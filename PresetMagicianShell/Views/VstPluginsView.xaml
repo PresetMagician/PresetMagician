@@ -6,12 +6,44 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid"
     xmlns:viewModels="clr-namespace:PresetMagicianShell.ViewModels"
+    xmlns:models="clr-namespace:PresetMagicianShell.Models"
     xmlns:helpers="clr-namespace:PresetMagicianShell.Helpers"
+    xmlns:views="clr-namespace:PresetMagicianShell.Views"
+    xmlns:vst="clr-namespace:Drachenkatze.PresetMagician.VSTHost.VST;assembly=Drachenkatze.PresetMagician.VSTHost"
+    xmlns:converters="clr-namespace:PresetMagicianShell.Converters"
     d:DesignHeight="450"
     d:DataContext="{d:DesignInstance viewModels:VstPluginsViewModel}"
     d:DesignWidth="800" mc:Ignorable="d">
 
-    <Grid ScrollViewer.CanContentScroll="True">
+    <catel:UserControl.Resources>
+        <ResourceDictionary>
+            <converters:VisibilityToBooleanConverter x:Key="bla"/>         
+
+            <DataTemplate x:Key="ExpandDetails">
+                <StackPanel>
+                    <iconPacks:PackIconMaterial Width="16" Height="16">
+                        <iconPacks:PackIconMaterial.Style>
+                            <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                                <Setter Property="Kind" Value="Folder" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, 
+                                                  Path=DetailsVisibility, 
+                                                Converter={StaticResource bla},
+                                                  Mode=OneWay}" Value="True">
+                                        <Setter Property="Kind" Value="FolderOpen"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </iconPacks:PackIconMaterial.Style>
+                    </iconPacks:PackIconMaterial>
+                </StackPanel>
+               
+
+            </DataTemplate>
+        </ResourceDictionary>
+
+    </catel:UserControl.Resources>
+    <Grid ScrollViewer.CanContentScroll="False">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
@@ -23,6 +55,7 @@
             x:Name="VSTPluginList" AutoGenerateColumns="False" CanUserAddRows="False"
             GridLinesVisibility="All"
             ItemsSource="{Binding VstPlugins}"
+            RowDetailsVisibilityMode="Collapsed"
             ScrollViewer.CanContentScroll="True" SelectionChanged="VSTPluginList_SelectionChanged"
             SelectionUnit="FullRow">
 
@@ -61,10 +94,15 @@
             <DataGrid.RowStyle>
                 <Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="DataGridRow">
                     <Setter Property="ContextMenu" Value="{StaticResource PluginContextMenu}"/>
-                </Style>
-            </DataGrid.RowStyle>
-            <DataGrid.Columns>
 
+                    <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ContentControl_PreviewMouseDown" />
+                </Style>
+
+                
+            </DataGrid.RowStyle>
+
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="" CellTemplate="{StaticResource ExpandDetails}" Width="30" />
                 <DataGridTextColumn
                     Width="150"
                     Binding="{Binding PluginName}"
@@ -107,20 +145,27 @@
                     CanUserSort="False" Header="Status" IsReadOnly="True"
                     SortDirection="Ascending" />
             </DataGrid.Columns>
+
+            <DataGrid.RowDetailsTemplate>
+                <DataTemplate>
+                    <views:VstPluginView DataContext="{Binding}" Width="{Binding ElementName=VSTPluginList, Path=ActualWidth}"/>
+                </DataTemplate>
+            </DataGrid.RowDetailsTemplate>
         </DataGrid>
 
         <DockPanel
             Grid.Row="1" Grid.ColumnSpan="2" VerticalAlignment="Bottom">
 
             <Button
-                x:Name="ScanPluginButton" Margin="6,2,2,2" HorizontalAlignment="Left"
+                x:Name="ScanPluginButton" Margin="6,2,2,2" HorizontalAlignment="Center"
                 VerticalAlignment="Stretch"
+                Padding="2,2,2,2"
                 Command="{Binding ScanPlugins}"
                 IsEnabled="True">
                 <StackPanel Orientation="Horizontal">
 
-                    <TextBlock
-                        Margin="2,4,4,4" VerticalAlignment="Center" Text="Scan Plugins" />
+                    <TextBlock 
+                        HorizontalAlignment="Center" VerticalAlignment="Center" Text="Scan Plugins" />
                 </StackPanel>
             </Button>
             <Button
@@ -129,7 +174,7 @@
                 <StackPanel Orientation="Horizontal">
 
                     <TextBlock
-                        Margin="2,4,4,4" VerticalAlignment="Center" Text="Scan Presets" />
+                        HorizontalAlignment="Center" VerticalAlignment="Center" Text="Scan Presets" />
                 </StackPanel>
             </Button>
             <Button
@@ -148,7 +193,7 @@
                 <StackPanel Orientation="Horizontal">
 
                     <TextBlock
-                        Margin="2,4,4,4" VerticalAlignment="Center" Text="Submit unsupported Plugins" />
+                        HorizontalAlignment="Center" VerticalAlignment="Center" Text="Submit unsupported Plugins" />
                 </StackPanel>
             </Button>
             <Button
@@ -157,7 +202,7 @@
                 <StackPanel Orientation="Horizontal">
 
                     <TextBlock
-                        Margin="2,4,4,4" VerticalAlignment="Center" Text="Show Plugin Info" />
+                        HorizontalAlignment="Center" VerticalAlignment="Center" Text="Show Plugin Info" />
                 </StackPanel>
             </Button>
         </DockPanel>

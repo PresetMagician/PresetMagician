@@ -28,7 +28,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
                 int totalPresets = 0;
                 foreach (var bank in Banks)
                 {
-                    totalPresets += bank.VSTPresets.Count;
+                    totalPresets += bank.Presets.Count;
                 }
 
                 return totalPresets;
