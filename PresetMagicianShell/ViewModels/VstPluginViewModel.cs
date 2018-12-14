@@ -24,11 +24,12 @@ namespace PresetMagicianShell.ViewModels
 
         private void OnDoSomethingExecute ()
         {
-            Debug.WriteLine("Direct: "+Plugin.PresetBanks.Count);
+            Debug.WriteLine("Direct: "+Plugin.NumPresets);
         }
 
         [Model]
-        [Expose("PresetBanks")]
+        [Expose("RootBank")]
+        [Expose("Presets")]
         [Expose("IsScanned")]
         public Models.Plugin Plugin
         {

@@ -23,7 +23,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
 
         public void ScanBanks()
         {
-            Banks = new List<PresetBank> { GetFactoryPresets() };
+            RootBank.PresetBanks.Add(GetFactoryPresets());
         }
 
         private PresetBank GetFactoryPresets()
@@ -40,8 +40,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
                 VstPlugin.PluginContext.PluginCommandStub.SetProgram(index);
                 vstPreset.PresetName = VstPlugin.PluginContext.PluginCommandStub.GetProgramName();
                 vstPreset.PresetData = VstPlugin.PluginContext.PluginCommandStub.GetChunk(false);
+                vstPreset.PresetBank = factoryBank;
                 vstPreset.SetPlugin(VstPlugin);
-                factoryBank.Presets.Add(vstPreset);
+                Presets.Add(vstPreset);
             }
 
             return factoryBank;

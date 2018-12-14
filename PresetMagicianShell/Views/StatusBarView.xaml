@@ -8,6 +8,7 @@
              xmlns:catel="http://schemas.catelproject.com"
              xmlns:orchestra="http://schemas.wildgums.com/orchestra"
              xmlns:viewModels="clr-namespace:PresetMagicianShell.ViewModels"
+             xmlns:orccontrols="http://schemas.wildgums.com/orc/controls"
              d:DataContext="{d:DesignInstance viewModels:StatusBarViewModel}"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -27,6 +28,24 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel x:Name="StackPanel">
+            <StackPanel>
+                <Separator  Margin="3,0,3,0" Width="{Binding ElementName=StackPanel, Path=ActualHeight}">
+                    <Separator.LayoutTransform>
+                        <RotateTransform Angle="90" />
+                    </Separator.LayoutTransform>
+                </Separator>
+                <TextBlock Text="{Binding LicensedTo}" orccontrols:PinnableToolTipService.InitialShowDelay="0" orccontrols:PinnableToolTipService.Placement="Top">
+                <orccontrols:PinnableToolTipService.ToolTip>
+                    <orccontrols:PinnableToolTip AllowCloseByUser="True" ResizeMode="CanResize">
+                    <StackPanel>
+                        <Label Content="{Binding LicensedTo}" />
+                        <Border Margin="5" Width="50"
+                                Height="50"/>
+                    </StackPanel>
+                        </orccontrols:PinnableToolTip>
+                </orccontrols:PinnableToolTipService.ToolTip>
+                    </TextBlock>
+            </StackPanel>
             <StackPanel Visibility="{Binding IsUpdatedInstalled, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
                 <Separator  Margin="3,0,3,0" Width="{Binding ElementName=StackPanel, Path=ActualHeight}">
                     <Separator.LayoutTransform>

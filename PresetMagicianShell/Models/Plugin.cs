@@ -48,7 +48,9 @@ namespace PresetMagicianShell.Models
         /// Gets or sets the PresetBanks value.
         /// </summary>
         [ExcludeFromSerialization]
-        public ObservableCollection<PresetBank> PresetBanks { get; set; }
+        public PresetBank RootBank { get; set; } = new PresetBank();
+
+        public ObservableCollection<Preset> Presets { get; set; } = new ObservableCollection<Preset>();
 
         #endregion
 

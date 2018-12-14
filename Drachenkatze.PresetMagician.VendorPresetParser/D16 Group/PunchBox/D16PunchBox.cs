@@ -30,7 +30,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group.PunchBox
 
         public void ScanBanks()
         {
-            Banks = new List<PresetBank> { GetFactoryPresets(), GetUserPresets() };
+            RootBank.PresetBanks.Add(GetFactoryPresets());
+            RootBank.PresetBanks.Add(GetUserPresets());
         }
 
         private PresetBank GetUserPresets()
@@ -66,14 +67,14 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group.PunchBox
                     MemoryStream ms = new MemoryStream();
                     presetEntry.Open().CopyTo(ms);
 
-                    factoryBank.Presets.Add(GetPreset(presetEntry.Name, ms, BankNameFactory));
+                    Presets.Add(GetPreset(presetEntry.Name, ms, factoryBank));
                 }
             }
 
             return factoryBank;
         }
 
-        private Preset GetPreset(String name, MemoryStream stream, String bankName)
+        private Preset GetPreset(String name, MemoryStream stream, PresetBank presetBank)
         {
             stream.Seek(0, SeekOrigin.Begin);
 
@@ -101,7 +102,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group.PunchBox
             Preset preset = new Preset();
             preset.PresetName = name.Replace(".pbprs", "");
             preset.SetPlugin(VstPlugin);
-            preset.BankName = bankName;
+            preset.PresetBank = presetBank;
 
             using (MemoryStream ms = new MemoryStream())
             {

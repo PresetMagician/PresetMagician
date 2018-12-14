@@ -112,12 +112,7 @@ namespace PresetMagicianShell.Services
                 Settings.Application.AutomaticUpdates.CheckForUpdatesDefaultValue);
 
             var y = updateService.CurrentChannel;
-            Debug.WriteLine(y.DefaultUrl);
 
-            Debug.WriteLine("IsUpdateSystemAvailable:" + updateService.IsUpdateSystemAvailable);
-            Debug.WriteLine("CheckForUpdates:" + updateService.CheckForUpdates);
-
-            Debug.WriteLine(y.IsPrerelease);
             _squirrelResult = await updateService.CheckForUpdatesAsync(new SquirrelContext());
 
 #pragma warning disable 4014

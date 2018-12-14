@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="AbstractVendorPresetParser.cs" />
     <Compile Include="NullPresetParser.cs" />
+    <Compile Include="Preset.cs" />
     <Compile Include="PresetBank.cs" />
     <Compile Include="D16 Group\D16Group.cs" />
     <Compile Include="D16 Group\PunchBox\D16PunchBox.cs" />

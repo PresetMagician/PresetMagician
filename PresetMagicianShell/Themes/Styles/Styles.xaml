@@ -3,21 +3,10 @@
     <!-- from https://raw.githubusercontent.com/MarcusWichelmann/WpfPlus -->
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/Themes/Styles/DataGridStyle.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Themes/Styles/Scrollbar.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Themes/Styles/WindowStyle.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <ResourceDictionary x:Key="ContainedStyles">
-        <Style BasedOn="{StaticResource TabControlStyle}" TargetType="{x:Type TabControl}">
-            <Setter Property="Background" Value="{DynamicResource TabControlContainedBackgroundBrush}" />
-        </Style>
-        <Style BasedOn="{StaticResource GroupBoxStyle}" TargetType="{x:Type GroupBox}">
-            <Setter Property="Background" Value="{DynamicResource GroupBoxContainedBackgroundBrush}" />
-        </Style>
-    </ResourceDictionary>
-
-    <Style
-        x:Key="FlatWindowStyle"
-        BasedOn="{StaticResource WindowStyle}"
-        Resources="{StaticResource FlatControlStyles}"
-        TargetType="{x:Type Window}" />
+   
 
 </ResourceDictionary>

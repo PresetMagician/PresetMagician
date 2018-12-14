@@ -20,7 +20,7 @@ using PresetMagicianShell.Services.Interfaces;
 namespace PresetMagicianShell.Views
 {
     /// <summary>
-    /// Interaction logic for VSTPluginListControl.xaml
+    /// Interaction logic for VstPluginListControl.xaml
     /// </summary>
     public partial class VstPluginsView 
     {
@@ -93,8 +93,14 @@ namespace PresetMagicianShell.Views
 
             var uiElement = (UIElement) e.OriginalSource;
 
+            var ancestor = uiElement.FindVisualAncestorByType<DataGridCellsPresenter>();
+            if (ancestor == null)
+            {
+                return;
+            }
 
-            if (uiElement.FindVisualAncestorByType<DataGridCellsPresenter>() == null)
+            var grid = ancestor.FindVisualAncestorByType<DataGrid>();
+            if (grid == null || grid.Name != "VstPluginList")
             {
                 return;
             }
@@ -108,25 +114,24 @@ namespace PresetMagicianShell.Views
                 row.DetailsVisibility = Visibility.Collapsed;
             }
 
-            //ClickedRowDetails = true;
         }
        
 
-        private void VSTPluginList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void VstPluginList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (VSTPluginList.SelectedItems.Count == 0)
+            if (VstPluginList.SelectedItems.Count == 0)
             {
                 CreatePresetsButton.IsEnabled = false;
                 ShowPluginInfo.IsEnabled = false;
                 return;
             }
 
-            if (VSTPluginList.SelectedItems.Count == 1)
+            if (VstPluginList.SelectedItems.Count == 1)
             {
                 ShowPluginInfo.IsEnabled = true;
             }
 
-            foreach (Plugin i in VSTPluginList.SelectedItems)
+            foreach (Plugin i in VstPluginList.SelectedItems)
             {
                 if (!i.IsLoaded)
                 {
@@ -140,7 +145,7 @@ namespace PresetMagicianShell.Views
 
         private void ExportButton_Click(object sender, RoutedEventArgs e)
         {
-           /* if (VSTPluginList.SelectedItems.Count == 0)
+           /* if (VstPluginList.SelectedItems.Count == 0)
             {
                 return;
             }
@@ -155,7 +160,7 @@ namespace PresetMagicianShell.Views
 
             vsts.Clear();
 
-            foreach (Plugin v in VSTPluginList.SelectedItems)
+            foreach (Plugin v in VstPluginList.SelectedItems)
             {
                 vsts.Add(v);
             }
@@ -209,18 +214,18 @@ namespace PresetMagicianShell.Views
             //App.setStatusBar("(" + e.ProgressPercentage.ToString() + "%) Preparing Preset " + e.UserState);
         }
 
-        private void VSTPluginList_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        private void VstPluginList_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
         }
 
         private void ShowPluginInfo_OnClick(object sender, RoutedEventArgs e)
         {
-            if (VSTPluginList.SelectedItems.Count != 1)
+            if (VstPluginList.SelectedItems.Count != 1)
             {
                 return;
             }
 
-            Plugin v = (Plugin)VSTPluginList.SelectedItem;
+            Plugin v = (Plugin)VstPluginList.SelectedItem;
 
             /*App.vstHost.LoadVST(v.VstPlugin);
             var items = v.VstPlugin.getPluginInfo();

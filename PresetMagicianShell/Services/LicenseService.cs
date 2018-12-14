@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Management;
 using System.Text;
+using Catel;
 using Catel.IO;
 using Catel.Logging;
 using Drachenkatze.PresetMagician.Utils;
@@ -11,25 +12,61 @@ using Newtonsoft.Json;
 using Portable.Licensing;
 using Portable.Licensing.Validation;
 using PresetMagicianShell.Properties;
+using PresetMagicianShell.Services.EventArgs;
 using Path = Catel.IO.Path;
 
 namespace PresetMagicianShell.Services
 {
     public class LicenseService : ILicenseService
     {
+        private const int DefaultTrialPresetExportLimit = 50;
+
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();
 
         private static readonly string DefaultLocalLicenseFilePath =
             Path.Combine(Path.GetApplicationDataDirectory(ApplicationDataTarget.UserLocal), "license.lic");
 
-        private License license;
+        public License CurrentLicense { get; private set; }
+
+        public event EventHandler LicenseChanged;
+
+        public License GetCurrentLicense()
+        {
+            return CurrentLicense;
+        }
+
+        public int getPresetExportLimit()
+        {
+            if (CurrentLicense.Type == LicenseType.Standard)
+            {
+                return 0;
+            }
+
+            if (!CurrentLicense.AdditionalAttributes.Contains("PresetExportLimit"))
+            {
+                return DefaultTrialPresetExportLimit;
+            }
+            else
+            {
+                var presetExportLimit = 0;
+                if (!Int32.TryParse(CurrentLicense.AdditionalAttributes.Get("PresetExportLimit"),
+                    out presetExportLimit))
+                {
+                    return presetExportLimit;
+                }
+                
+                
+            }
+
+            return DefaultTrialPresetExportLimit;
+        }
 
         public List<IValidationFailure> ValidateLicense(string filePath)
         {
             FileStream stream = new FileStream(filePath, FileMode.Open);
-            license = License.Load(stream);
+            CurrentLicense = License.Load(stream);
 
-            var validationFailures = license.Validate()
+            var validationFailures = CurrentLicense.Validate()
                 .ExpirationDate()
                 .When(lic => lic.Type == LicenseType.Trial)
                 .And()
@@ -63,6 +100,7 @@ namespace PresetMagicianShell.Services
             }
 
             File.Copy(filePath, DefaultLocalLicenseFilePath);
+            LicenseChanged.SafeInvoke(this);
 
             return updateLicense;
         }
@@ -75,6 +113,7 @@ namespace PresetMagicianShell.Services
 
                 if (!validationFailures.Any())
                 {
+                    LicenseChanged.SafeInvoke(this);
                     return true;
                 }
             }

@@ -4,6 +4,7 @@
         <ResourceDictionary Source="pack://application:,,,/Xceed.Wpf.AvalonDock.Themes.VS2013;component/LightTheme.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/Themes/Colors/LightColors.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Themes/Colors/AvalonDockColors.xaml" />
+
         <ResourceDictionary Source="pack://application:,,,/Themes/Brushes/ThemeBrushes.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Themes/Generic.xaml" />
                 

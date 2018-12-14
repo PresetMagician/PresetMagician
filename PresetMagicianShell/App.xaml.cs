@@ -15,8 +15,8 @@ using Catel.Services;
 using NBug;
 using NBug.Events;
 using Orchestra.Services;
-using Orchestra.Views;
 using PresetMagicianShell.Services.Interfaces;
+using PresetMagicianShell.Views;
 using Win32Mapi;
 
 namespace PresetMagicianShell
@@ -70,12 +70,7 @@ namespace PresetMagicianShell
             var x = await shellService.CreateAsync<ShellWindow>();
 
 
-            // Overrides
-            x.Title = "PresetMagician";
-            x.TitleBackground = (Brush) x.FindResource("AccentColorBrush");
-            x.TitleForeground = (Brush) x.FindResource("WhiteBrush");
-            x.TitleBarHeight = 24;
-
+           
 #if DEBUG
             x.WindowState = WindowState.Normal;
             var ScreenNumber = 2;

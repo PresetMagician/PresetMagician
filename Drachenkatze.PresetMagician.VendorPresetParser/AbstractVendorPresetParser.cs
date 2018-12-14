@@ -1,6 +1,7 @@
 ﻿using Drachenkatze.PresetMagician.VSTHost.VST;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser
 {
-    public abstract class AbstractVendorPresetParser : INotifyPropertyChanged
+    public abstract class AbstractVendorPresetParser
     {
         public IVstPlugin VstPlugin { get; set; }
         public virtual List<int> SupportedPlugins => new List<int>();
@@ -21,21 +22,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
         public string PresetParserType => GetType().Name.ToString();
 
-        public int NumPresets
-        {
-            get
-            {
-                int totalPresets = 0;
-                foreach (var bank in Banks)
-                {
-                    totalPresets += bank.Presets.Count;
-                }
+        public PresetBank RootBank { get; set; } = new PresetBank();
 
-                return totalPresets;
-            }
-        }
-
-        public virtual List<PresetBank> Banks { get; set; } = new List<PresetBank>();
+        public ObservableCollection<Preset> Presets { get; } = new ObservableCollection<Preset>();
 
         public virtual bool CanHandle()
         {
@@ -52,11 +41,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+       
     }
 }
