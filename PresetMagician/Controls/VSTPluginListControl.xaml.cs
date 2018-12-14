@@ -23,7 +23,7 @@ namespace Drachenkatze.PresetMagician.GUI.Controls
     {
         private System.ComponentModel.BackgroundWorker vstPluginScanner;
         private System.ComponentModel.BackgroundWorker vstPresetScanner;
-        private ObservableCollection<VSTPreset> scannedPresets;
+        private ObservableCollection<Preset> scannedPresets;
 
         public VSTPluginListControl()
         {
@@ -178,14 +178,14 @@ namespace Drachenkatze.PresetMagician.GUI.Controls
             BackgroundWorker worker = sender as BackgroundWorker;
             ObservableCollection<Plugin> vsts = (ObservableCollection<Plugin>)e.Argument;
 
-            scannedPresets = new ObservableCollection<VSTPreset>();
+            scannedPresets = new ObservableCollection<Preset>();
 
             foreach (Plugin plugin in vsts)
             {
                 VSTHost.LoadVST(plugin.VstPlugin);
                 foreach (var bank in plugin.VstPresetParser.Banks)
                 {
-                    foreach (var preset in bank.VSTPresets)
+                    foreach (var preset in bank.Presets)
                     {
                         scannedPresets.Add(preset);
                     }
@@ -197,7 +197,7 @@ namespace Drachenkatze.PresetMagician.GUI.Controls
         private void presetScanner_Completed(
             object sender, RunWorkerCompletedEventArgs e)
         {
-            foreach (VSTPreset p in scannedPresets)
+            foreach (Preset p in scannedPresets)
             {
                 App.vstPresets.VstPresets.Add(p);
             }

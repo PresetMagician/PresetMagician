@@ -18,7 +18,7 @@
         <DataGrid x:Name="PluginProperties" ItemsSource="{Binding PluginInfoItems}" Grid.Row="0" AutoGenerateColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Title" Width="*"
-                                    Binding="{Binding Title}" IsReadOnly="True" SortDirection="Ascending" />
+                                    Binding="{Binding Title}" IsReadOnly="False" SortDirection="Ascending" />
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

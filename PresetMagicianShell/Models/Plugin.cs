@@ -17,6 +17,7 @@ namespace PresetMagicianShell.Models
         {
             PresetParser = new NullPresetParser();
         }
+
         public void OnLoadError(string errorMessage)
         {
             LoadError = true;
@@ -40,6 +41,16 @@ namespace PresetMagicianShell.Models
         /// Register the Tables property so it is known in the class.
         /// </summary>
         public static readonly PropertyData PluginInfoItemsProperty = RegisterProperty("PluginInfoItems", typeof(ObservableCollection<PluginInfoItem>));
+
+        #region PresetBanks property
+
+        /// <summary>
+        /// Gets or sets the PresetBanks value.
+        /// </summary>
+        [ExcludeFromSerialization]
+        public ObservableCollection<PresetBank> PresetBanks { get; set; }
+
+        #endregion
 
 
         [ExcludeFromSerialization]
@@ -115,6 +126,8 @@ namespace PresetMagicianShell.Models
 
         [ExcludeFromSerialization]
         public IVendorPresetParser PresetParser { get; private set; }
+
+        [ExcludeFromSerialization] public bool IsScanned { get; set; } = false;
 
         public bool IsLoaded
         {
@@ -202,6 +215,7 @@ namespace PresetMagicianShell.Models
             }
         }
 
+        
         public bool IsSupported
         {
             get

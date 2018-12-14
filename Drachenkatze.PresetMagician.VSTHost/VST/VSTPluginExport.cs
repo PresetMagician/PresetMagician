@@ -74,7 +74,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             nksf.kontaktSound.pluginId.pluginId.VSTMagic = plugin.PluginContext.PluginInfo.PluginID;
             nksf.kontaktSound.pluginChunk.PresetData = preset.PresetData;
 
-            String outputFilename = Path.Combine(getUserContentDirectory(preset), preset.NKSFPresetName + ".nksf");
+            String outputFilename = Path.Combine(getUserContentDirectory(preset), preset.getNKSFPresetName() + ".nksf");
             var fileStream2 = new FileStream(outputFilename, FileMode.Create);
             nksf.Write(fileStream2);
             fileStream2.Close();
@@ -83,7 +83,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
         public String getUserContentDirectory(VSTPreset preset)
         {
             String userContentDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"Native Instruments\User Content");
-            String bankDirectory = Path.Combine(userContentDirectory, preset.NKSFPluginName, preset.NKSFBankName);
+            String bankDirectory = Path.Combine(userContentDirectory, preset.getNKSFPluginName(), preset.getNKSFBankName());
             Directory.CreateDirectory(bankDirectory);
             return bankDirectory;
         }
@@ -178,7 +178,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
 
             Directory.CreateDirectory(previewDirectory);
 
-            return Path.Combine(previewDirectory, vstPreset.NKSFPresetName + ".nksf.ogg");
+            return Path.Combine(previewDirectory, vstPreset.getNKSFPresetName()) + ".nksf.ogg");
         }
 
         private void ConvertToOGG(String inputWave, String outputOGG)

@@ -50,7 +50,7 @@ namespace Drachenkatze.PresetMagician.GUI.Controls
             {
                 Debug.WriteLine(queryResult.PresetName);
             }
-            ObservableCollection<VSTPreset> presets = new ObservableCollection<VSTPreset>(queryResults);
+            ObservableCollection<Preset> presets = new ObservableCollection<Preset>(queryResults);
 
             vstPresetExporter.RunWorkerAsync(argument: presets);
         }
@@ -99,7 +99,7 @@ namespace Drachenkatze.PresetMagician.GUI.Controls
                 return;
             }
 
-            foreach (VSTPreset v in VSTPresetList.SelectedItems)
+            foreach (Preset v in VSTPresetList.SelectedItems)
             {
                 v.Export = true;
             }
@@ -112,7 +112,7 @@ namespace Drachenkatze.PresetMagician.GUI.Controls
                 return;
             }
 
-            foreach (VSTPreset v in VSTPresetList.SelectedItems)
+            foreach (Preset v in VSTPresetList.SelectedItems)
             {
                 v.Export = false;
             }
@@ -121,7 +121,7 @@ namespace Drachenkatze.PresetMagician.GUI.Controls
         private void presetExporter_Worker(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker worker = sender as BackgroundWorker;
-            ObservableCollection<VSTPreset> presets = (ObservableCollection<VSTPreset>)e.Argument;
+            ObservableCollection<Preset> presets = (ObservableCollection<Preset>)e.Argument;
 
             long currentPreset = 0;
 

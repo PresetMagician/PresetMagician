@@ -38,16 +38,7 @@ namespace PresetMagicianShell.ViewModels
         /// <summary>
         /// Gets or sets the VstPlugins value.
         /// </summary>
-        public ObservableCollection<Plugin> VstPlugins
-        {
-            get { return GetValue<ObservableCollection<Plugin>>(VstPluginsProperty); }
-            set { SetValue(VstPluginsProperty, value); }
-        }
-
-        /// <summary>
-        /// VstPlugins property data.
-        /// </summary>
-        public static readonly PropertyData VstPluginsProperty = RegisterProperty("VstPlugins", typeof(ObservableCollection<Plugin>));
+        public ObservableCollection<Plugin> VstPlugins { get; private set; }
 
         #endregion
 
@@ -168,8 +159,6 @@ namespace PresetMagicianShell.ViewModels
 
         private async Task OnScanPluginsExecute()
         {
-            //ObservableCollection<Plugin> newList = new ObservableCollection<Plugin>();
-
             var newList = (from plugin in VstPlugins where plugin.Enabled == true select plugin).ToList();
 
             await TaskHelper.Run(() =>
@@ -178,16 +167,20 @@ namespace PresetMagicianShell.ViewModels
                 {
                     try
                     {
-                        UpdateStatus(newList.IndexOf(vst), newList.Count, $"Loading {vst.DllPath}");
+                        UpdateStatus(newList.IndexOf(vst)+1, newList.Count, $"Loading {vst.DllPath}");
                         _vstHost.LoadVST(vst);
                         vst.DeterminatePresetParser();
 
-                        UpdateStatus(newList.IndexOf(vst), newList.Count, $"Scanning banks for {vst.DllPath}");
+                        UpdateStatus(newList.IndexOf(vst)+1, newList.Count, $"Scanning banks for {vst.DllPath}");
                         vst.PresetParser.ScanBanks();
+                        vst.PresetBanks = new ObservableCollection<PresetBank>(vst.PresetParser.Banks);
                         vst.NumPresets = vst.PresetParser.NumPresets;
+                        vst.IsScanned = true;
 
-                        UpdateStatus(newList.IndexOf(vst), newList.Count, $"Unloading {vst.DllPath}");
+                        UpdateStatus(newList.IndexOf(vst)+1, newList.Count, $"Unloading {vst.DllPath}");
                         _vstHost.UnloadVST(vst);
+
+                        UpdateStatus(newList.IndexOf(vst)+1, newList.Count, $"Done scanning {vst.DllPath}");
                     }
                     catch (ReflectionTypeLoadException e)
                     {

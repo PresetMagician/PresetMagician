@@ -29,20 +29,16 @@ namespace PresetMagicianShell
         public App()
         {
             SetupExceptionHandling();
+
+        }
+
+        private void SetupExceptionHandling()
+        {
             AppDomain.CurrentDomain.UnhandledException += Handler.UnhandledException;
             Current.DispatcherUnhandledException += Handler.DispatcherUnhandledException;
             TaskScheduler.UnobservedTaskException += Handler.UnobservedTaskException;
 
             NBug.Settings.CustomSubmissionEvent += Settings_CustomSubmissionEvent;
-        }
-
-        private void SetupExceptionHandling()
-        {
-#if DEBUG
-            NBug.Settings.ReleaseMode = false;
-#else
-            NBug.Settings.ReleaseMode = true;
-#endif
         }
 
         protected override async void OnStartup(StartupEventArgs e)

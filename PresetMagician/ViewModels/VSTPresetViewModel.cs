@@ -11,10 +11,10 @@ namespace Drachenkatze.PresetMagician.GUI.ViewModels
     {
         public VSTPresetViewModel()
         {
-            this.VstPresets = new ObservableCollection<VSTPreset>();
+            this.VstPresets = new ObservableCollection<Preset>();
         }
 
-        public ObservableCollection<VSTPreset> VstPresets { get; set; }
+        public ObservableCollection<Preset> VstPresets { get; set; }
 
         private ListViewMode _listViewMode;
 

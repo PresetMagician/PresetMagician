@@ -1,16 +1,15 @@
 ﻿using System;
 using System.ComponentModel;
 using CannedBytes.Midi.Message;
+using Catel.Data;
 using Drachenkatze.PresetMagician.Controls.Controls.VSTHost;
 using Drachenkatze.PresetMagician.Utils;
 
 namespace Drachenkatze.PresetMagician.VSTHost.VST
 {
-    public class VSTPreset : INotifyPropertyChanged
+    public class Preset : ModelBase
     {
         public String PluginDLLPath;
-
-        
 
         public void SetPlugin (IVstPlugin vst)
         {
@@ -18,21 +17,17 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             PluginDLLPath = vst.DllPath;
         }
 
-        public VSTPreset()
+        public Preset()
         {
             PreviewNote = new MidiNoteName("C5");
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public String BankName { get; set; }
 
         public bool Export { get; set; } = true;
 
-        public String NKSFBankName
+        public String getNKSFBankName()
         {
-            get
-            {
                 String bankName = BankName;
 
                 foreach (char c in System.IO.Path.GetInvalidPathChars())
@@ -46,13 +41,11 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                 }
 
                 return bankName;
-            }
+
         }
 
-        public String NKSFPluginName
+        public String getNKSFPluginName ()
         {
-            get
-            {
                 String pluginName = PluginName;
 
                 foreach (char c in System.IO.Path.GetInvalidPathChars())
@@ -66,14 +59,11 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                 }
 
                 return pluginName;
-            }
         }
 
-        public String NKSFPresetName
+        public String getNKSFPresetName () 
         {
             // Returns the sanitized preset name
-            get
-            {
                 String presetName = PresetName;
 
                 foreach (char c in System.IO.Path.GetInvalidFileNameChars())
@@ -87,7 +77,6 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                 }
 
                 return presetName;
-            }
         }
 
         public String PluginName { get; set; }

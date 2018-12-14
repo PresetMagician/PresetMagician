@@ -66,14 +66,14 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group.PunchBox
                     MemoryStream ms = new MemoryStream();
                     presetEntry.Open().CopyTo(ms);
 
-                    factoryBank.VSTPresets.Add(GetPreset(presetEntry.Name, ms, BankNameFactory));
+                    factoryBank.Presets.Add(GetPreset(presetEntry.Name, ms, BankNameFactory));
                 }
             }
 
             return factoryBank;
         }
 
-        private VSTPreset GetPreset(String name, MemoryStream stream, String bankName)
+        private Preset GetPreset(String name, MemoryStream stream, String bankName)
         {
             stream.Seek(0, SeekOrigin.Begin);
 
@@ -98,10 +98,10 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group.PunchBox
 
             parametersState.Add(presetElement);
 
-            VSTPreset vstPreset = new VSTPreset();
-            vstPreset.PresetName = name.Replace(".pbprs", "");
-            vstPreset.SetPlugin(VstPlugin);
-            vstPreset.BankName = bankName;
+            Preset preset = new Preset();
+            preset.PresetName = name.Replace(".pbprs", "");
+            preset.SetPlugin(VstPlugin);
+            preset.BankName = bankName;
 
             using (MemoryStream ms = new MemoryStream())
             {
@@ -111,9 +111,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group.PunchBox
                 ms.Write(data, 0, data.Length);
                 ms.WriteByte(0);
 
-                vstPreset.PresetData = ms.ToArray();
+                preset.PresetData = ms.ToArray();
             }
-            return vstPreset;
+            return preset;
         }
 
         public override void OnAfterPresetExport(VstHost host, IVstPlugin plugin)

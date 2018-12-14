@@ -1,29 +1,43 @@
 ﻿using Drachenkatze.PresetMagician.VSTHost.VST;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Catel.Data;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser
 {
-    public class PresetBank : INotifyPropertyChanged
+    public class PresetBank : ModelBase
     {
-        public List<VSTPreset> VSTPresets;
-        public String BankName;
+        public String BankName { get; set; }
 
         public PresetBank()
         {
-            VSTPresets = new List<VSTPreset>();
+            Presets = new ObservableCollection<Preset>();
+            BankName = "unset";
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        #region Presets property
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        /// <summary>
+        /// Gets or sets the Presets value.
+        /// </summary>
+        public ObservableCollection<Preset> Presets
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            get { return GetValue<ObservableCollection<Preset>>(PresetsProperty); }
+            set { SetValue(PresetsProperty, value); }
         }
+
+        /// <summary>
+        /// Presets property data.
+        /// </summary>
+        public static readonly PropertyData PresetsProperty =
+            RegisterProperty("Presets", typeof(ObservableCollection<Preset>));
+
+        #endregion
     }
 }
