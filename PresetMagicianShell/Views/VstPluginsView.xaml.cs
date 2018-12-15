@@ -8,14 +8,17 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using Catel;
 using Catel.IoC;
 using Catel.Windows;
 using Drachenkatze.PresetMagician.VendorPresetParser;
 using Drachenkatze.PresetMagician.VSTHost.VST;
 using PresetMagicianShell.Models;
 using PresetMagicianShell.Services.Interfaces;
+using PresetMagicianShell.ViewModels;
 
 namespace PresetMagicianShell.Views
 {
@@ -27,7 +30,7 @@ namespace PresetMagicianShell.Views
         private System.ComponentModel.BackgroundWorker vstPluginScanner;
         private System.ComponentModel.BackgroundWorker vstPresetScanner;
         private ObservableCollection<Preset> scannedPresets;
-
+        
         public VstHost VstHost { get; set; }
 
         public VstPluginsView()
@@ -38,9 +41,16 @@ namespace PresetMagicianShell.Views
 
             this.vstPresetScanner = new System.ComponentModel.BackgroundWorker();
             this.vstPresetScanner.WorkerReportsProgress = true;
+
+            Debug.WriteLine("foobar1: "+DataContext);
             VstHost = new VstHost();
+
+
         }
 
+
+
+     
         private void ScanPluginButton_Click(object sender, RoutedEventArgs e)
         {
             ScanPluginButton.IsEnabled = false;
@@ -81,41 +91,7 @@ namespace PresetMagicianShell.Views
 
         }
 
-        private void ContentControl_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            var row = (sender as DataGridRow);
-
-            if (row == null)
-            {
-                return;
-
-            }
-
-            var uiElement = (UIElement) e.OriginalSource;
-
-            var ancestor = uiElement.FindVisualAncestorByType<DataGridCellsPresenter>();
-            if (ancestor == null)
-            {
-                return;
-            }
-
-            var grid = ancestor.FindVisualAncestorByType<DataGrid>();
-            if (grid == null || grid.Name != "VstPluginList")
-            {
-                return;
-            }
-
-            if (row.DetailsVisibility == Visibility.Collapsed)
-            {
-                row.DetailsVisibility = Visibility.Visible;
-            }
-            else
-            {
-                row.DetailsVisibility = Visibility.Collapsed;
-            }
-
-        }
-       
+ 
 
         private void VstPluginList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

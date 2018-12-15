@@ -11,29 +11,35 @@
                    MaxHeight="250"
                    HorizontalAlignment="Left"
                    Padding="2,2,2,2"
-                   xmlns:converters="clr-namespace:PresetMagicianShell.Converters"
-                   xmlns:vendorPresetParser="clr-namespace:Drachenkatze.PresetMagician.VendorPresetParser;assembly=Drachenkatze.PresetMagician.VendorPresetParser">
+                   xmlns:vendorPresetParser="clr-namespace:Drachenkatze.PresetMagician.VendorPresetParser;assembly=Drachenkatze.PresetMagician.VendorPresetParser"
+                   xmlns:converters="clr-namespace:PresetMagicianShell.Converters">
 
     <catel:UserControl.Resources>
-        <ResourceDictionary>
+        
+            <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
 
             <HierarchicalDataTemplate x:Key="Contents" DataType="{x:Type vendorPresetParser:PresetBank}" ItemsSource="{Binding PresetBanks}">
 
                     <TextBlock Text="{Binding BankName}"/>
 
             </HierarchicalDataTemplate>
-        </ResourceDictionary>
+        
         </catel:UserControl.Resources>
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="200" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
        
-
-
         <Grid Grid.Row="0">
+            <Grid.Style>
+                <Style TargetType="{x:Type Grid}">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsScanned, 
+                                                  Mode=OneWay}" Value="True">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="250"/>
                 <ColumnDefinition Width="Auto" />
@@ -47,17 +53,6 @@
                     </Setter>
                 </Style>
             </TreeView.Resources>
-            <TreeView.Style>
-                <Style TargetType="{x:Type TreeView}">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsScanned, 
-                                                  Mode=OneWay}" Value="True">
-                            <Setter Property="Visibility" Value="Visible"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </TreeView.Style>
         </TreeView>
 
             <GridSplitter Grid.Column="1"
@@ -80,7 +75,7 @@
             </DataGrid>
         </Grid>
 
-        <Label Grid.Row="1" Content="Plugin was not scanned yet, no bank information available">
+        <Label Grid.Row="0" Content="Plugin was not scanned yet, no bank information available">
             <Label.Style>
                 <Style TargetType="{x:Type Label}">
                     <Setter Property="Visibility" Value="Visible" />

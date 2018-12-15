@@ -84,6 +84,7 @@
     <Compile Include="Commands\ToolsNksfViewCommandContainer.cs" />
     <Compile Include="Commands\ToolsSettingsViewCommandContainer.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Converters\VisibilityToBooleanConverter.cs" />
     <Compile Include="Helpers\AvalonDockHelper.cs" />
     <Compile Include="Helpers\BindingProxy.cs" />

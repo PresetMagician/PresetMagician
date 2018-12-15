@@ -81,6 +81,7 @@ namespace PresetMagicianShell
                 x.Left = screenBounds.Left;
                 x.Top = screenBounds.Top;
                 x.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+                x.WindowState = WindowState.Maximized;
             }
 #endif
         }

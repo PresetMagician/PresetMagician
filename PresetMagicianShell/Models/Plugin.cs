@@ -80,6 +80,14 @@ namespace PresetMagicianShell.Models
         public void DeterminatePresetParser()
         {
             PresetParser = VendorPresetParser.GetPresetHandler(this);
+
+                    if (PresetParser == null)
+                    {
+                        IsSupported = false;
+
+                    }
+                    IsSupported = !PresetParser.IsNullParser;
+                
         }
 
         public void Dispose()
@@ -217,18 +225,7 @@ namespace PresetMagicianShell.Models
             }
         }
 
-        
-        public bool IsSupported
-        {
-            get
-            {
-                if (PresetParser == null)
-                {
-                    return false;
-
-                }
-                return !PresetParser.IsNullParser;
-            }
-        }
+        [ExcludeFromSerialization]
+        public bool IsSupported { get; set; }
     }
 }

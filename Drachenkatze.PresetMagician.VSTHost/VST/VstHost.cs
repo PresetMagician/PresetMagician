@@ -56,7 +56,6 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
       
         public void LoadVST(IVstPlugin vst)
         {
-            Debug.WriteLine("Attempting to load");
             var hostCommandStub = new HostCommandStub();
             hostCommandStub.PluginCalled += (sender, args) =>
             {

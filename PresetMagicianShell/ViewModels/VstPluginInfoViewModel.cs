@@ -7,14 +7,15 @@ using System.Threading.Tasks;
 using Catel.Data;
 using Catel.MVVM;
 using PresetMagicianShell.Models;
+using PresetMagicianShell.Services.Interfaces;
 
 namespace PresetMagicianShell.ViewModels
 {
     class VstPluginInfoViewModel : VstPluginViewModel
     {
-        public VstPluginInfoViewModel(Models.Plugin plugin) : base(plugin)
+        public VstPluginInfoViewModel(Models.Plugin plugin, IVstService vstService) : base(vstService)
         {
-
+            Plugin = plugin;
         }
 
     }

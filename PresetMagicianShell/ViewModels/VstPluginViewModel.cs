@@ -5,19 +5,30 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Catel;
 using Catel.Data;
 using Catel.Fody;
 using Catel.MVVM;
+using PresetMagicianShell.Services.Interfaces;
 
 namespace PresetMagicianShell.ViewModels
 {
     public class VstPluginViewModel : ViewModelBase
     {
+        private readonly IVstService _vstService;
 
-        public VstPluginViewModel(Models.Plugin plugin)
+        public VstPluginViewModel(IVstService vstService)
         {
-            Plugin = plugin;
+            Argument.IsNotNull(() => vstService);
+            _vstService = vstService;
+            _vstService.SelectedPluginChanged += OnSelectedPluginChanged;
+            
             DoSomething = new Command(OnDoSomethingExecute);
+        }
+
+        private void OnSelectedPluginChanged(object o, EventArgs e)
+        {
+            Plugin = (o as IVstService).SelectedPlugin;
         }
 
         public Command DoSomething  { get; set; }
@@ -34,7 +45,7 @@ namespace PresetMagicianShell.ViewModels
         public Models.Plugin Plugin
         {
             get { return GetValue<Models.Plugin>(PluginProperty); }
-            private set { SetValue(PluginProperty, value); }
+            protected set { SetValue(PluginProperty, value); }
         }
 
         /// <summary>
