@@ -1,79 +1,52 @@
 ﻿<catel:UserControl x:Class="PresetMagicianShell.Views.MainView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:PresetMagicianShell.Views"
-             xmlns:catel="http://schemas.catelproject.com"
-             xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
-             xmlns:orclogviewer="http://schemas.wildgums.com/orc/logviewer"
-             mc:Ignorable="d"
-             xmlns:ViewModels="clr-namespace:PresetMagicianShell.ViewModels"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                   xmlns:local="clr-namespace:PresetMagicianShell.Views"
+                   xmlns:catel="http://schemas.catelproject.com"
+                   xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
+                   xmlns:orclogviewer="http://schemas.wildgums.com/orc/logviewer"
+                   mc:Ignorable="d"
+                   xmlns:ViewModels="clr-namespace:PresetMagicianShell.ViewModels"
                    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                    d:DataContext="{d:DesignInstance ViewModels:MainViewModel}"
-             d:DesignHeight="450" d:DesignWidth="800">
+                   d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-       
-       <xcad:DockingManager x:Name="DockingManager"
-                              AllowMixedOrientation="True"
-                              >
-       
-             
-          <xcad:DockingManager.DocumentHeaderTemplate>
-               <DataTemplate>
-                  <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Title}" />
-                  </StackPanel>
-               </DataTemplate>
-            </xcad:DockingManager.DocumentHeaderTemplate>
-            <xcad:LayoutRoot>
-               <xcad:LayoutPanel Orientation="Horizontal">
-            <xcad:LayoutDocumentPaneGroup>
-                        <xcad:LayoutDocumentPane x:Name="LayoutDocumentPane">
-                 
-                     </xcad:LayoutDocumentPane>
-                  </xcad:LayoutDocumentPaneGroup>
-                  
-               </xcad:LayoutPanel>
-               
 
-               <xcad:LayoutRoot.LeftSide>
-                  <xcad:LayoutAnchorSide>
-                     <xcad:LayoutAnchorGroup>
-                           <xcad:LayoutAnchorable ContentId="alarms"
-                                                  Title="VST Plugin Properties"
-                           >
-                           
-                           </xcad:LayoutAnchorable>
-                           <xcad:LayoutAnchorable ContentId="journal"
-                                                  Title="Conversion Settings">
-                              <RichTextBox>
-                                 <FlowDocument>
-                                    <Paragraph FontSize="14"
-                                               FontFamily="Segoe">
-                                       This is the content of the Journal Pane.
-                                       <LineBreak />
-                                       A
-                                       <Bold>RichTextBox</Bold> has been added here
-                                    </Paragraph>
-                                 </FlowDocument>
-                              </RichTextBox>
-                           </xcad:LayoutAnchorable>
-                     </xcad:LayoutAnchorGroup>
-                  </xcad:LayoutAnchorSide>
-               </xcad:LayoutRoot.LeftSide>
-               
-               <xcad:LayoutRoot.BottomSide>
-                  <xcad:LayoutAnchorSide>
-                     <xcad:LayoutAnchorGroup>
-                        <xcad:LayoutAnchorable Title="Event Log" AutoHideHeight="220">
-                           <orclogviewer:AdvancedLogViewerControl IgnoreCatelLogging="True"/>
+        <xcad:DockingManager x:Name="DockingManager"
+                             AllowMixedOrientation="True">
+
+
+            <xcad:DockingManager.DocumentHeaderTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Title}" />
+                    </StackPanel>
+                </DataTemplate>
+            </xcad:DockingManager.DocumentHeaderTemplate>
+
+
+            <xcad:LayoutRoot>
+                <xcad:LayoutPanel Orientation="Vertical">
+                    
+                    <xcad:LayoutDocumentPaneGroup>
+                        <xcad:LayoutDocumentPane x:Name="LayoutDocumentPane" />
+                    </xcad:LayoutDocumentPaneGroup>
+                    <xcad:LayoutAnchorablePane DockHeight="250" DockMinHeight="200">
+                        <xcad:LayoutAnchorable Title="Plugin Details" CanHide="False" CanFloat="False" CanClose="False">
+                            <local:VstPluginView />
                         </xcad:LayoutAnchorable>
-                     </xcad:LayoutAnchorGroup>
-                  </xcad:LayoutAnchorSide>
-               </xcad:LayoutRoot.BottomSide>
+                        <xcad:LayoutAnchorable Title="Event Log" CanHide="False" CanFloat="False" CanClose="False">
+                            <orclogviewer:AdvancedLogViewerControl IgnoreCatelLogging="True" />
+                        </xcad:LayoutAnchorable>
+                    </xcad:LayoutAnchorablePane>
+                </xcad:LayoutPanel>
+
             </xcad:LayoutRoot>
-         </xcad:DockingManager>
-        
+
+
+        </xcad:DockingManager>
+
     </Grid>
 </catel:UserControl>

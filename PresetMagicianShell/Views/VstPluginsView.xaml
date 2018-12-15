@@ -13,6 +13,8 @@
     xmlns:converters="clr-namespace:PresetMagicianShell.Converters"
     xmlns:orchestra="http://schemas.wildgums.com/orchestra"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     d:DesignHeight="450"
     Padding="1"
     d:DataContext="{d:DesignInstance viewModels:VstPluginsViewModel}"
@@ -58,11 +60,12 @@
         <xctk:BusyIndicator IsBusy="{Binding IsScanning}">
             <xctk:BusyIndicator.BusyContentTemplate>
                 <DataTemplate>
-                    <StackPanel Margin="4">
+                    
+                    <StackPanel Margin="2" Width="600">
                         <TextBlock Text="Scanning Plugins" FontWeight="Bold" HorizontalAlignment="Center" />
-                        <StackPanel Margin="4">
-                            <TextBlock Text="Downloading message 4/10..." />
-                            <ProgressBar Value="40" Height="15" />
+                        <StackPanel Margin="2">
+                            <ProgressBar Value="{Binding Path=DataContext.ScanProgressPercent,RelativeSource={RelativeSource AncestorType=UserControl}}" Height="15" Width="550"/>
+                            <TextBlock TextWrapping="Wrap" TextAlignment="Left" HorizontalAlignment="Center" Text="{Binding Path=DataContext.ScanProgressText,RelativeSource={RelativeSource AncestorType=UserControl}}" Height="30" Width="550" />
                         </StackPanel>
                         <Grid>
                             
@@ -76,15 +79,16 @@
                     <Setter Property="Visibility" Value="Collapsed" />
                 </Style>
             </xctk:BusyIndicator.ProgressBarStyle>
-            <DataGrid
-            Grid.Row="0"
+
+
+            <DataGrid SelectedItem="{Binding SelectedPlugin}"
             x:Name="VstPluginList" AutoGenerateColumns="False" CanUserAddRows="False"
             GridLinesVisibility="All"
+                CanUserSortColumns="False"
             ItemsSource="{Binding VstPlugins}"
             RowDetailsVisibilityMode="Collapsed"
             ScrollViewer.CanContentScroll="True" SelectionChanged="VstPluginList_SelectionChanged"
             SelectionUnit="FullRow">
-
             <DataGrid.Resources>
                 <helpers:BindingProxy x:Key="proxy" Data="{Binding}"></helpers:BindingProxy>
                 <helpers:BindingProxy x:Key="proxy2" Data="{Binding ElementName=VstPluginList}" />
@@ -120,8 +124,6 @@
             <DataGrid.RowStyle>
                 <Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="DataGridRow">
                     <Setter Property="ContextMenu" Value="{StaticResource PluginContextMenu}"/>
-
-                    <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ContentControl_PreviewMouseDown" />
                 </Style>
 
                 
@@ -132,23 +134,141 @@
                 <DataGridTextColumn
                     Width="150"
                     Binding="{Binding PluginName}"
-                    Header="Name" IsReadOnly="True" SortDirection="Ascending" />
+                    Header="Name" IsReadOnly="True" />
                 <DataGridTextColumn
                     Width="150"
                     Binding="{Binding PluginVendor}"
-                    Header="Vendor" IsReadOnly="True" SortDirection="Ascending" />
+                    Header="Vendor" IsReadOnly="True" />
                 <DataGridTextColumn
                     Width="80"
                     Binding="{Binding NumPresets}"
                     Header="Presets" IsReadOnly="True" />
-                <DataGridTextColumn
-                    Width="80"
-                    Binding="{Binding PluginTypeDescription}"
-                    Header="Type" IsReadOnly="True" />
-                <DataGridCheckBoxColumn
-                    Width="80"
-                    Binding="{Binding IsSupported, Mode=OneWay}"
-                    Header="Supported" IsReadOnly="True" />
+                <DataGridTemplateColumn Width="45" Header="Type" IsReadOnly="True" SortMemberPath="PluginTypeDescription">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+
+                                <TextBlock ToolTipService.InitialShowDelay="100" ToolTipService.BetweenShowDelay="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <iconPacks:PackIconMaterial VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <iconPacks:PackIconMaterial.Style>
+                                    <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                                    <Setter Property="Kind" Value="LockQuestion" />
+                                        <Setter Property="Foreground" Value="LightGray" />
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding PluginTypeDescription, 
+                                                  Mode=OneWay}" Value="Effect"/>
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="Kind" Value="AutoFix" />
+                                            <Setter Property="Foreground" Value="Black" />
+                                        </MultiDataTrigger>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding PluginTypeDescription, 
+                                                  Mode=OneWay}" Value="Instrument"/>
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="Kind" Value="Piano" />
+                                            <Setter Property="Foreground" Value="Black" />
+                                        </MultiDataTrigger>
+                                        
+                                       
+                                    </Style.Triggers>
+                                </Style>
+                                </iconPacks:PackIconMaterial.Style>
+                                        </iconPacks:PackIconMaterial>
+                                </TextBlock>
+
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Width="45" Header="Status" IsReadOnly="True" SortMemberPath="IsSupported">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+
+                                <TextBlock ToolTipService.InitialShowDelay="100" ToolTipService.BetweenShowDelay="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <iconPacks:PackIconFontAwesome VerticalAlignment="Center" HorizontalAlignment="Center">
+                                
+                                <iconPacks:PackIconFontAwesome.Style>
+                                    <Style TargetType="{x:Type iconPacks:PackIconFontAwesome}">
+                                    <Setter Property="Kind" Value="QuestionCircleRegular" />
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding IsScanned, 
+                                                  Mode=OneWay}" Value="False"/>
+                                                <Condition Binding="{Binding LoadError, 
+                                                  Mode=OneWay}" Value="True"/>
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="Kind" Value="ExclamationTriangleSolid" />
+                                            <Setter Property="Foreground" Value="Red"></Setter>
+                                        </MultiDataTrigger>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding IsScanned, 
+                                                  Mode=OneWay}" Value="True"/>
+                                                <Condition Binding="{Binding IsSupported, 
+                                                  Mode=OneWay}" Value="True"/>
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="Kind" Value="CheckSolid" />
+                                            <Setter Property="Foreground" Value="Green"></Setter>
+                                        </MultiDataTrigger>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding IsScanned, 
+                                                  Mode=OneWay}" Value="True"/>
+                                                <Condition Binding="{Binding IsSupported, 
+                                                  Mode=OneWay}" Value="False"/>
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="Kind" Value="TimesSolid" />
+                                        </MultiDataTrigger>
+                                       
+                                    </Style.Triggers>
+                                </Style>
+                                </iconPacks:PackIconFontAwesome.Style>
+                                </iconPacks:PackIconFontAwesome>
+                                
+                                <TextBlock.Style>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="ToolTip" Value="Plugin not scanned yet" />
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding IsScanned, 
+                                                  Mode=OneWay}" Value="False"/>
+                                                <Condition Binding="{Binding LoadError, 
+                                                  Mode=OneWay}" Value="True"/>
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="ToolTip" Value="Error loading plugin" />
+                                        </MultiDataTrigger>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding IsScanned, 
+                                                  Mode=OneWay}" Value="True"/>
+                                                <Condition Binding="{Binding IsSupported, 
+                                                  Mode=OneWay}" Value="True"/>
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="ToolTip" Value="This plugin is supported" />
+                                        </MultiDataTrigger>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding IsScanned, 
+                                                  Mode=OneWay}" Value="True"/>
+                                                <Condition Binding="{Binding IsSupported, 
+                                                  Mode=OneWay}" Value="False"/>
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="ToolTip" Value="This plugin is not supported" />
+                                        </MultiDataTrigger>
+                                       
+                                    </Style.Triggers>
+                                </Style>
+                                </TextBlock.Style>
+                                </TextBlock>
+
+                            
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn
                     Width="120"
                     Binding="{Binding PresetParser.PresetParserType}"
@@ -165,20 +285,7 @@
                     Width="150"
                     Binding="{Binding DllDirectory}"
                     Header="Directory" IsReadOnly="True" />
-                <DataGridTextColumn
-                    Width="400"
-                    Binding="{Binding LoadErrorMessage}"
-                    CanUserSort="False" Header="Status" IsReadOnly="True"
-                    SortDirection="Ascending" />
             </DataGrid.Columns>
-
-            <DataGrid.RowDetailsTemplate>
-                <DataTemplate>
-                    <views:VstPluginView DataContext="{Binding}" Width="{Binding Path=ViewportWidth, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ScrollViewer}}}">
-                       
-                    </views:VstPluginView>
-                </DataTemplate>
-            </DataGrid.RowDetailsTemplate>
         </DataGrid>
         </xctk:BusyIndicator>
 

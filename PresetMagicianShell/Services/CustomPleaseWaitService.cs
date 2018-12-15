@@ -28,8 +28,6 @@ namespace PresetMagicianShell.Services
         #region IPleaseWaitService Members
         public virtual void Show(string status = "")
         {
-            Log.Debug("Showing busy indicator");
-
             if (ShowCounter <= 0)
             {
                 ShowCounter = 1;
@@ -67,8 +65,6 @@ namespace PresetMagicianShell.Services
 
         public virtual void Hide()
         {
-            Log.Debug("Hiding busy indicator");
-
             ShowCounter = 0;
 
         }

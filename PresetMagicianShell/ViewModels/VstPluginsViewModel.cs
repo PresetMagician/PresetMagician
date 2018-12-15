@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using Catel;
 using Catel.IoC;
 using Catel.Logging;
@@ -28,10 +31,19 @@ namespace PresetMagicianShell.ViewModels
         private readonly IPleaseWaitService _pleaseWaitService;
         private readonly IStatusService _statusService;
         private readonly VstHost _vstHost;
+        private readonly IVstService _vstService;
+
+        public event EventHandler ScanComplete;
+
+        public Plugin SelectedPlugin
+        {
+            get { return _vstService.SelectedPlugin; }
+            set { _vstService.SelectedPlugin = value; }
+        }
 
         public VstPluginsViewModel(IStatusService statusService, IPleaseWaitService pleaseWaitService,
             IRuntimeConfigurationService runtimeConfigurationService, IServiceLocator serviceLocator,
-            IViewModelFactory viewModelFactory, IUIVisualizerService uiVisualizerService)
+            IViewModelFactory viewModelFactory, IUIVisualizerService uiVisualizerService,IVstService vstService)
         {
             Argument.IsNotNull(() => statusService);
             Argument.IsNotNull(() => pleaseWaitService);
@@ -39,6 +51,8 @@ namespace PresetMagicianShell.ViewModels
             Argument.IsNotNull(() => serviceLocator);
             Argument.IsNotNull(() => viewModelFactory);
             Argument.IsNotNull(() => uiVisualizerService);
+            Argument.IsNotNull(() => vstService);
+            _vstService = vstService;
 
             _pleaseWaitService = pleaseWaitService;
             _vstHost = new VstHost();
@@ -56,6 +70,16 @@ namespace PresetMagicianShell.ViewModels
             ShowPluginInfo = new Command<object>(OnShowPluginInfoExecute);
 
             VstPlugins = runtimeConfigurationService.RuntimeConfiguration.Plugins;
+
+            ICollectionView pView = CollectionViewSource.GetDefaultView(VstPlugins);   
+           
+            pView.SortDescriptions.Add(new SortDescription ("IsSupported", ListSortDirection.Descending));
+            pView.SortDescriptions.Add(new SortDescription ("PluginName", ListSortDirection.Ascending));
+            
+
+            var productview = (ICollectionViewLiveShaping)CollectionViewSource.GetDefaultView(pView);
+            productview.IsLiveSorting = true;
+
             RefreshPluginList.Execute();
         }
 
@@ -65,6 +89,7 @@ namespace PresetMagicianShell.ViewModels
         public bool IsScanning { get; private set; }
         public int ScanProgressPercent { get; private set; }
         public string ScanProgressText { get; private set; }
+        public CollectionViewSource VstPluginsViewSource { get; set; }
 
         public override string Title { get; protected set; } = "VST Plugins";
 
@@ -138,17 +163,25 @@ namespace PresetMagicianShell.ViewModels
                     {
                         UpdateStatus(newList.IndexOf(vst) + 1, newList.Count, $"Loading {vst.DllPath}");
                         _vstHost.LoadVST(vst);
-                        vst.DeterminatePresetParser();
 
-                        UpdateStatus(newList.IndexOf(vst) + 1, newList.Count, $"Scanning banks for {vst.DllPath}");
-                        vst.PresetParser.ScanBanks();
-                        vst.RootBank = vst.PresetParser.RootBank;
-                        vst.NumPresets = vst.PresetParser.Presets.Count;
-                        vst.Presets = vst.PresetParser.Presets;
-                        vst.IsScanned = true;
+                        if (vst.IsLoaded)
+                        {
+                            vst.DeterminatePresetParser();
 
-                        UpdateStatus(newList.IndexOf(vst) + 1, newList.Count, $"Unloading {vst.DllPath}");
-                        _vstHost.UnloadVST(vst);
+                            UpdateStatus(newList.IndexOf(vst) + 1, newList.Count, $"Scanning banks for {vst.DllPath}");
+                            vst.PresetParser.ScanBanks();
+                            vst.RootBank = vst.PresetParser.RootBank;
+                            vst.NumPresets = vst.PresetParser.Presets.Count;
+                            vst.Presets = vst.PresetParser.Presets;
+                            vst.IsScanned = true;
+
+                            UpdateStatus(newList.IndexOf(vst) + 1, newList.Count, $"Unloading {vst.DllPath}");
+                            _vstHost.UnloadVST(vst);
+                        }
+                        else
+                        {
+                            _logger.Info("Unable to load {0}", vst.DllPath, vst.LoadErrorMessage);
+                        }
 
                         UpdateStatus(newList.IndexOf(vst) + 1, newList.Count, $"Done scanning {vst.DllPath}");
                     }
@@ -159,16 +192,22 @@ namespace PresetMagicianShell.ViewModels
                     catch (Exception e)
                     {
                         _logger.Info("Unable to load {0}, exception occurred: {1}", vst.DllPath, e.ToString());
+                        _logger.Info("{0}", e.StackTrace);
                     }
             }, true);
 
             IsScanning = false;
+            ScanComplete.SafeInvoke(this, EventArgs.Empty);
+
+            //VstPluginsViewSource.GetDefaultView(VstPlugins).Refresh();
+
+            CollectionViewSource.GetDefaultView(VstPlugins).Refresh();
         }
 
         private void UpdateStatus(int currentItem, int totalItems, string statusText)
         {
-            var progressText = String.Format("{1} / {2}) {0}", statusText, currentItem, totalItems);
-            ScanProgressPercent = totalItems / currentItem * 100;
+            var progressText = String.Format("({1} / {2}) {0}", statusText, currentItem, totalItems);
+            ScanProgressPercent = (int)(((float)currentItem / (float)totalItems)  * 100);
             ScanProgressText = progressText;
             _pleaseWaitService.UpdateStatus(currentItem, totalItems, "{0} {1} " + statusText);
             _statusService.UpdateStatus(progressText);
