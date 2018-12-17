@@ -18,6 +18,7 @@ using Orchestra.Services;
 using PresetMagicianShell.Services.Interfaces;
 using PresetMagicianShell.Views;
 using Win32Mapi;
+using MessageBox = System.Windows.MessageBox;
 
 namespace PresetMagicianShell
 {
@@ -29,7 +30,6 @@ namespace PresetMagicianShell
         public App()
         {
             SetupExceptionHandling();
-
         }
 
         private void SetupExceptionHandling()
@@ -43,24 +43,76 @@ namespace PresetMagicianShell
 
         protected override async void OnStartup(StartupEventArgs e)
         {
+            var languageService = ServiceLocator.Default.ResolveType<ILanguageService>();
+            languageService.PreferredCulture = new CultureInfo("en-US");
+            languageService.FallbackCulture = new CultureInfo("en-US");
 
 #if DEBUG
             LogManager.AddDebugListener(true);
 #endif
 
             var fileLogListener = new FileLogListener
-                {IgnoreCatelLogging = true, FilePath = @"{AppDataLocal}\{AutoLogFileName}"};
+            {
+                IgnoreCatelLogging = true,
+                FilePath = @"{AppDataLocal}\Logs\PresetMagician.log",
+                TimeDisplay = TimeDisplay.DateTime
+            };
 
             LogManager.AddListener(fileLogListener);
+            LogManager.GetCurrentClassLogger().Debug("Startup");
 
-            var languageService = ServiceLocator.Default.ResolveType<ILanguageService>();
-            languageService.PreferredCulture = new CultureInfo("en-US");
-            languageService.FallbackCulture = new CultureInfo("en-US");
+            try
+            {
+                RotateLogFile(fileLogListener.FilePath);
+            }
+            catch (Exception exception)
+            {
+                LogManager.GetCurrentClassLogger().Error("Tried to rotate the log file, but it failed.");
+                LogManager.GetCurrentClassLogger().Error(exception);
+                  MessageBox.Show(
+                    $"Unable to rotate the log file {fileLogListener.FilePath}. Please verify that you have access to that file. " +
+                    $"We will continue, but no logging will be available. Additional information: {Environment.NewLine}{Environment.NewLine}{exception}",
+                    "Log File Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+
+            
+            NBug.Settings.AdditionalReportFiles.Add(fileLogListener.FilePath);
 
 
             await StartShell();
         }
 
+        private void RotateLogFile(string filePath)
+        {
+            if (!File.Exists(filePath))
+            {
+                return;
+            }
+
+            byte[] result;
+            const int readlength = 1024;
+
+            var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite);
+
+            result = new byte[readlength];
+            fileStream.Read(result, 0, readlength);
+
+            var firstLogEntries = System.Text.Encoding.UTF8.GetString(result);
+            var separatorPosition = firstLogEntries.IndexOf("=>", StringComparison.Ordinal);
+            var dateTimeEntry = firstLogEntries.Substring(0, separatorPosition - 1).Replace(":","-");
+
+            var trimmedFilePath = filePath.Replace(".log", " ");
+            trimmedFilePath += dateTimeEntry + ".log";
+
+            var newLogFile = new FileStream(trimmedFilePath, FileMode.Create);
+            fileStream.Seek(0, SeekOrigin.Begin);
+            fileStream.CopyTo(newLogFile);
+            fileStream.Flush();
+            fileStream.SetLength(0);
+            newLogFile.Close();
+        }
 
         private async Task StartShell()
         {
@@ -70,12 +122,12 @@ namespace PresetMagicianShell
             var x = await shellService.CreateAsync<ShellWindow>();
 
 
-           
 #if DEBUG
-            x.WindowState = WindowState.Normal;
+
             var ScreenNumber = 2;
             if (Screen.AllScreens.Length >= ScreenNumber)
             {
+                x.WindowState = WindowState.Normal;
                 var screenBounds = Screen.AllScreens[ScreenNumber - 1].Bounds;
                 x.WindowStartupLocation = WindowStartupLocation.Manual;
                 x.Left = screenBounds.Left;

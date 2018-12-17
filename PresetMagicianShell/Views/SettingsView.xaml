@@ -16,7 +16,9 @@
        
         <TabControl Grid.Column="0" TabStripPlacement="Bottom">
             <TabItem Header="General Settings">
+                <ScrollViewer>
                 <Grid VerticalAlignment="Top">
+                    
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
@@ -24,8 +26,9 @@
 
                     <Label Content="VST Folders" Grid.Row="0" Grid.Column="0"></Label>
                     <local:VstFolderList Margin="10" Grid.Column="1" Grid.Row="0" Height="300"/>
+                    
                 </Grid>
-                
+                </ScrollViewer>
             </TabItem>
         </TabControl>
     </Grid>

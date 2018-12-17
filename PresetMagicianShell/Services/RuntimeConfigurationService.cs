@@ -3,7 +3,6 @@ using System.IO;
 using Catel.IoC;
 using Catel.IO;
 using Catel.Logging;
-using Catel.Runtime.Serialization.Json;
 using Newtonsoft.Json;
 using PresetMagicianShell.Models;
 using PresetMagicianShell.Services.Interfaces;
@@ -23,29 +22,21 @@ namespace PresetMagicianShell.Services
         private static readonly string DefaultLocalLayoutFilePath =
             Path.Combine(Path.GetApplicationDataDirectory(ApplicationDataTarget.UserLocal), "layout.xml");
 
-        private readonly JsonSerializationConfiguration _jsonSerializerConfiguration;
-        private readonly IJsonSerializer _jsonSerializer;
-        private readonly IServiceLocator _serviceLocator;
+        private readonly JsonSerializer _jsonSerializer;
         private readonly ILog _logger = LogManager.GetCurrentClassLogger();
+        private readonly IServiceLocator _serviceLocator;
 
         private LayoutRoot originalLayout;
 
-        public RuntimeConfiguration RuntimeConfiguration { get; }
-
-        public RuntimeConfigurationService(IJsonSerializer jsonSerializer, IServiceLocator serviceLocator)
+        public RuntimeConfigurationService(IServiceLocator serviceLocator)
         {
             RuntimeConfiguration = new RuntimeConfiguration();
             _serviceLocator = serviceLocator;
-            _jsonSerializer = jsonSerializer;
-            _jsonSerializer.WriteTypeInfo = false;
-            _jsonSerializer.PreserveReferences = false;
-
-            _jsonSerializerConfiguration = new JsonSerializationConfiguration
-            {
-                Formatting = Formatting.Indented,
-                UseBson = false
-            };
+            _jsonSerializer = new JsonSerializer();
+            _jsonSerializer.Formatting = Formatting.Indented;
         }
+
+        public RuntimeConfiguration RuntimeConfiguration { get; private set; }
 
         public void Load()
         {
@@ -62,15 +53,15 @@ namespace PresetMagicianShell.Services
 
             try
             {
-                var configurationFile = new FileStream(DefaultLocalConfigFilePath, FileMode.Open);
-
-                _jsonSerializer.Deserialize(RuntimeConfiguration, configurationFile, _jsonSerializerConfiguration);
-
-                configurationFile.Close();
+                using (var rd = new StreamReader(DefaultLocalConfigFilePath))
+                using (JsonReader jsonReader = new JsonTextReader(rd))
+                {
+                    RuntimeConfiguration = _jsonSerializer.Deserialize<RuntimeConfiguration>(jsonReader);
+                }
             }
             catch (Exception e)
             {
-                _logger.Info("Unable to load configuration file, probably corrupt. Error:" + e.Message);
+                _logger.Error("Unable to load configuration file, probably corrupt. Error:" + e.Message);
             }
         }
 
@@ -82,7 +73,6 @@ namespace PresetMagicianShell.Services
             originalLayout = getDockingManager().Layout;
 
             if (File.Exists(DefaultLocalLayoutFilePath))
-            {
                 try
                 {
                     getLayoutSerializer().Deserialize(DefaultLocalLayoutFilePath);
@@ -91,7 +81,6 @@ namespace PresetMagicianShell.Services
                 {
                     // Probably something wrong with the file, ignore
                 }
-            }
         }
 
         public void ResetLayout()
@@ -109,11 +98,11 @@ namespace PresetMagicianShell.Services
 
         public void SaveConfiguration()
         {
-            var configurationFile = new FileStream(DefaultLocalConfigFilePath, FileMode.Create);
-
-            _jsonSerializer.Serialize(RuntimeConfiguration, configurationFile, _jsonSerializerConfiguration);
-
-            configurationFile.Close();
+            using (var sw = new StreamWriter(DefaultLocalConfigFilePath))
+            using (JsonWriter jsonWriter = new JsonTextWriter(sw))
+            {
+                _jsonSerializer.Serialize(jsonWriter, RuntimeConfiguration);
+            }
         }
 
         public void SaveLayout()

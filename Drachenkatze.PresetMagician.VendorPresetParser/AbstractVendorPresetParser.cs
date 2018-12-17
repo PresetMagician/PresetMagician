@@ -18,12 +18,14 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
         public virtual string Remarks { get; set; }
 
-        public bool IsNullParser => false;
+        public virtual bool IsNullParser => false;
 
         public string PresetParserType => GetType().Name.ToString();
 
-        public PresetBank RootBank { get; set; } = new PresetBank();
+        private readonly PresetBank _rootBank = new PresetBank();
 
+        public PresetBank RootBank { get; set; } = new PresetBank();
+       
         public ObservableCollection<Preset> Presets { get; } = new ObservableCollection<Preset>();
 
         public virtual bool CanHandle()

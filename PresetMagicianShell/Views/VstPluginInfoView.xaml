@@ -15,7 +15,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <DataGrid x:Name="PluginProperties" ItemsSource="{Binding PluginInfoItems}" Grid.Row="0" AutoGenerateColumns="False">
+        <DataGrid x:Name="PluginProperties" ItemsSource="{Binding Plugin.PluginInfoItems}" Grid.Row="0" AutoGenerateColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Title" Width="*"
                                     Binding="{Binding Title}" IsReadOnly="False" SortDirection="Ascending" />

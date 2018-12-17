@@ -11,7 +11,6 @@ using Catel;
 using Catel.IoC;
 using Catel.Logging;
 using Catel.MVVM;
-using Catel.Runtime.Serialization.Json;
 using Catel.Services;
 using Catel.Threading;
 using MethodTimer;
@@ -142,6 +141,9 @@ namespace PresetMagicianShell.Services
         {
             var serviceLocator = ServiceLocator.Default;
             serviceLocator.RegisterType<IAboutInfoService, AboutInfoService>();
+            serviceLocator.RegisterType<ICustomStatusService, CustomStatusService>();
+            
+            serviceLocator.RegisterType<IPleaseWaitService, CustomPleaseWaitService>();
             serviceLocator.RegisterType<ILicenseService, LicenseService>();
             serviceLocator.RegisterType<IRuntimeConfigurationService, RuntimeConfigurationService>();
             serviceLocator.RegisterType<IVstService, VstService>();

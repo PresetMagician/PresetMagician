@@ -5,10 +5,12 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
+using System.Diagnostics;
 using Orchestra;
 using Orchestra.Services;
 using Orchestra.Views;
 using PresetMagicianShell.Helpers;
+using PresetMagicianShell.Services.Interfaces;
 
 namespace PresetMagicianShell.Views
 {
@@ -32,9 +34,9 @@ namespace PresetMagicianShell.Views
 
             InitializeComponent();
 
-            serviceLocator.RegisterInstance(pleaseWaitProgressBar, "pleaseWaitService");
+            serviceLocator.RegisterInstance(FooProgressMar, "pleaseWaitService");
 
-            var statusService = serviceLocator.ResolveType<IStatusService>();
+            var statusService = serviceLocator.ResolveType<ICustomStatusService>();
             statusService.Initialize(statusTextBlock);
 
             var dependencyResolver = this.GetDependencyResolver();

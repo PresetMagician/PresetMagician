@@ -7,9 +7,10 @@
 
         <ResourceDictionary Source="pack://application:,,,/Themes/Brushes/ThemeBrushes.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Themes/Generic.xaml" />
-                
 
         <ResourceDictionary Source="pack://application:,,,/Themes/Styles/Styles.xaml" />    
+
+        <ResourceDictionary Source="pack://application:,,,/Orchestra.Core;component/themes/orchestra.generic.xaml"/>
                 
     </ResourceDictionary.MergedDictionaries>
 

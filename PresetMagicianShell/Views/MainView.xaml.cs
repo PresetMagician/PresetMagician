@@ -31,6 +31,8 @@ namespace PresetMagicianShell.Views
 
             serviceLocator.RegisterInstance(DockingManager);
             serviceLocator.RegisterInstance(LayoutDocumentPane);
+            serviceLocator.RegisterInstance(PresetSelection, "PresetSelection");
+
         }
     }
 }
