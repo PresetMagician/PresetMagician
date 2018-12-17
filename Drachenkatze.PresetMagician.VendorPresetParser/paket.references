@@ -1,5 +1,6 @@
 GSF.Core
-PropertyChanged.Fody
+PropertyChanged.Fody copy_local: false
+Anotar.Catel.Fody copy_local: false
 VST.NET.x64
 Catel.Core
 squirrel.windows

@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\PropertyChanged.Fody\build\PropertyChanged.Fody.props" Condition="Exists('..\packages\PropertyChanged.Fody\build\PropertyChanged.Fody.props')" Label="Paket" />
+  <Import Project="..\packages\Anotar.Catel.Fody\build\Anotar.Catel.Fody.props" Condition="Exists('..\packages\Anotar.Catel.Fody\build\Anotar.Catel.Fody.props')" Label="Paket" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Import Project="..\Packages.props" />
   <PropertyGroup>
@@ -37,9 +38,6 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Anotar.Catel">
-      <HintPath>..\packages\Anotar.Catel.Fody\lib\net452\Anotar.Catel.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression" />
@@ -110,11 +108,19 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="paket.references" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\.paket\paket.targets" />
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="Anotar.Catel">
+          <HintPath>..\packages\Anotar.Catel.Fody\lib\net452\Anotar.Catel.dll</HintPath>
+          <Private>False</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
       <ItemGroup>
@@ -214,7 +220,7 @@
       <ItemGroup>
         <Reference Include="PropertyChanged">
           <HintPath>..\packages\PropertyChanged.Fody\lib\net452\PropertyChanged.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -275,7 +281,7 @@
       <ItemGroup>
         <Reference Include="System.Collections.Immutable">
           <HintPath>..\packages\System.Collections.Immutable\lib\netstandard1.3\System.Collections.Immutable.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -292,7 +298,7 @@
         </Reference>
         <Reference Include="System.ComponentModel.Annotations">
           <HintPath>..\packages\System.ComponentModel.Annotations\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -317,7 +323,7 @@
       <ItemGroup>
         <Reference Include="System.Reflection">
           <HintPath>..\packages\System.Reflection\lib\net462\System.Reflection.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -328,7 +334,7 @@
       <ItemGroup>
         <Reference Include="System.Runtime.Serialization.Formatters">
           <HintPath>..\packages\System.Runtime.Serialization.Formatters\lib\net46\System.Runtime.Serialization.Formatters.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -342,7 +348,7 @@
         </Reference>
         <Reference Include="System.Runtime.Serialization.Primitives">
           <HintPath>..\packages\System.Runtime.Serialization.Primitives\lib\net46\System.Runtime.Serialization.Primitives.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -353,7 +359,7 @@
       <ItemGroup>
         <Reference Include="System.Runtime.Serialization.Xml">
           <HintPath>..\packages\System.Runtime.Serialization.Xml\lib\net46\System.Runtime.Serialization.Xml.dll</HintPath>
-          <Private>True</Private>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
