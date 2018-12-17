@@ -1,4 +1,5 @@
 NAudio
-PropertyChanged.Fody
+PropertyChanged.Fody copy_local: false
+Anotar.Catel.Fody copy_local: false
 Catel.Core
 VST.NET.x64
