@@ -1,24 +1,14 @@
-﻿using Syroot.Windows.IO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Diagnostics;
 using System.IO;
+using System.Windows;
+using System.Windows.Forms;
+
+using Application = System.Windows.Application;
 
 namespace Drachenkatze.PresetMagician.GUI.GUI
 {
     /// <summary>
-    /// Interaction logic for RegistrationWindow.xaml
+    ///     Interaction logic for RegistrationWindow.xaml
     /// </summary>
     public partial class RegistrationWindow
     {
@@ -30,19 +20,20 @@ namespace Drachenkatze.PresetMagician.GUI.GUI
 
         private void AppExit_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.Application.Current.Shutdown();
+            Application.Current.Shutdown();
         }
 
         private void GetEvalLicense_Click(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://presetmagician.drachenkatze.org/license/trial");
+            Process.Start("https://presetmagician.drachenkatze.org/license/trial");
         }
 
         private void SelectLicense_Click(object sender, RoutedEventArgs e)
         {
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            using (var openFileDialog = new OpenFileDialog())
             {
-                string downloadsPath = new KnownFolder(KnownFolderType.Downloads).Path;
+                KnownFolders
+                var downloadsPath = new KnownFolder(KnownFolderType.Downloads).Path;
 
                 openFileDialog.InitialDirectory = downloadsPath;
                 openFileDialog.Filter = "License Files (*.lic)|*.lic";
@@ -54,18 +45,15 @@ namespace Drachenkatze.PresetMagician.GUI.GUI
                     //Get the path of specified file
                     var filePath = openFileDialog.FileName;
 
-                    if (File.Exists(App.getLicenseFile()))
-                    {
-                        File.Delete(App.getLicenseFile());
-                    }
+                    if (File.Exists(App.getLicenseFile())) File.Delete(App.getLicenseFile());
                     File.Copy(filePath, App.getLicenseFile());
 
                     var validationErrors = App.CheckLicense();
 
                     if (!validationErrors.Any())
                     {
-                        MainWindow mainWindow = new MainWindow();
-                        System.Windows.Application.Current.MainWindow = mainWindow;
+                        var mainWindow = new MainWindow();
+                        Application.Current.MainWindow = mainWindow;
                         mainWindow.Show();
                         Close();
                     }

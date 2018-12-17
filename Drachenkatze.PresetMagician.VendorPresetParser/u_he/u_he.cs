@@ -4,8 +4,7 @@ using System.Diagnostics;
 using Shell32;
 using System.IO;
 using System.Threading;
-using Drachenkatze.PresetMagician.VSTHost.VST;
-using IWshRuntimeLibrary;
+using Squirrel.Shell;
 using File = System.IO.File;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
@@ -80,7 +79,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
             staThread.Start(args);
             staThread.Join();
 
-            Debug.WriteLine(args[0]);
             return (string)args[0];
         }
 
@@ -105,6 +103,10 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
                 dataDirectory = getDataDirectory(dataDirectoryName);
             }
 
+            if (dataDirectory == null)
+            {
+                #warning Implement error handler here plus logging
+            }
             Debug.WriteLine("Data directory is " + dataDirectory);
 
             if (userPresets)
@@ -126,7 +128,23 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 
             var directory = Path.GetDirectoryName(path);
             var file = Path.GetFileName(path);
+            ShellLink shellLink;
+            try
+            {
+                shellLink = new ShellLink(path);
 
+                if (shellLink.Target.Length > 0 && Directory.Exists(shellLink.Target))
+                {
+                    shellLink.Dispose();
+                    return true;
+                }
+                shellLink.Dispose();
+            }
+            catch (System.IO.IOException e)
+            {
+                // TODO: Implement catel logger
+            }
+            
             var shell = new Shell();
             var folder = shell.NameSpace(directory);
             var folderItem = folder.ParseName(file);
@@ -134,38 +152,77 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
             return folderItem.IsLink;
         }
 
-        public static string ResolveShortcut(string path)
+        public static string ResolveShortcutSquirrel(string path)
+        {
+            ShellLink shellLink;
+
+            try
+            {
+                shellLink = new ShellLink(path);
+
+                if (shellLink.Target.Length > 0 && Directory.Exists(shellLink.Target))
+                {
+                    return shellLink.Target;
+                }
+                shellLink.Dispose();
+            }
+            catch (System.IO.IOException e)
+            {
+                // TODO: Implement catel logger
+            }
+
+            return null;
+        }
+
+        public static string ResolveShortcutShell32(string path)
         {
             var directory = Path.GetDirectoryName(path);
             var file = Path.GetFileName(path);
-            if (!IsShortcut(path))
-            {
-                return string.Empty;
-            }
-
             var shell = new Shell();
             var folder = shell.NameSpace(directory);
             var folderItem = folder.ParseName(file);
             if (folderItem == null)
             {
-                return string.Empty;
+                return null;
             }
 
-            string targetPath;
 
             try
             {
-                var link = (ShellLinkObject)folderItem.GetLink;
-                targetPath = link.Target.Path;
+                var link = (ShellLinkObject) folderItem.GetLink;
+                return link.Target.Path;
             }
-            catch (System.UnauthorizedAccessException)
+            catch (Exception e)
             {
-                WshShell wshShell = new WshShell();
-                IWshShortcut shortcut = (IWshShortcut)wshShell.CreateShortcut(path);
-                targetPath = shortcut.TargetPath;
+                return null;
+            }
+        }
+
+        public static string ResolveShortcut(string path)
+        {
+            string targetPath;
+
+            
+            if (!IsShortcut(path))
+            {
+                return string.Empty;
             }
 
-            return targetPath;
+            targetPath = ResolveShortcutSquirrel(path);
+
+            if (targetPath != null)
+            {
+                return targetPath;
+            }
+            
+            /*targetPath = ResolveShortcutShell32(path);
+
+            if (targetPath != null)
+            {
+                return targetPath;
+            }*/
+
+            return null;
         }
     }
 }

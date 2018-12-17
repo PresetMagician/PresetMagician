@@ -1,8 +1,10 @@
 ﻿<ResourceDictionary
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:options="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:options="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
     xmlns:reskeys="clr-namespace:Xceed.Wpf.AvalonDock.Themes.VS2013.Themes;assembly=Xceed.Wpf.AvalonDock.Themes.VS2013">
 
-    <!-- From WPF-Plus -->
+    <!--  From WPF-Plus  -->
     <!--  Generic  -->
     <SolidColorBrush x:Key="BackgroundColor1Brush" Color="{DynamicResource BackgroundColor1}" />
     <SolidColorBrush x:Key="BackgroundColor2Brush" Color="{DynamicResource BackgroundColor2}" />
@@ -118,12 +120,13 @@
     <SolidColorBrush x:Key="DataGridBorderBrush" Color="{DynamicResource BackgroundColor6}" />
     <SolidColorBrush x:Key="DataGridLinesBrush" Color="{DynamicResource BackgroundColor3}" />
     <SolidColorBrush x:Key="DataGridSelectAllButtonBackgroundBrush" Color="{DynamicResource BackgroundColor5}" />
-    <SolidColorBrush x:Key="DataGridHeaderBackgroundBrush" Color="{DynamicResource BackgroundColor4}" />
+    <SolidColorBrush x:Key="DataGridHeaderBackgroundBrush" Color="{DynamicResource AccentColorLight}" />
     <SolidColorBrush x:Key="DataGridRowHeaderBackgroundBrush" Color="{DynamicResource BackgroundColor3}" />
-    <SolidColorBrush x:Key="DataGridRowFirstBackgroundBrush" Color="{DynamicResource BackgroundColor1}" />
-    <SolidColorBrush x:Key="DataGridRowSecondBackgroundBrush" Color="{DynamicResource BackgroundColor2}" />
-    <SolidColorBrush x:Key="DataGridRowSelectedBackgroundBrush" Color="{DynamicResource SelectionColor2}" />
-    <SolidColorBrush x:Key="DataGridRowSelectedFocusedBackgroundBrush" Color="{DynamicResource SelectionColor2}" />
+    <SolidColorBrush x:Key="DataGridRowSelectedBackgroundBrush" Color="{DynamicResource SelectionColor1}" />
+    <SolidColorBrush x:Key="DataGridRowSelectedFocusedBackgroundBrush" Color="{DynamicResource SelectionColor1}" />
+    <SolidColorBrush x:Key="DataGridHeaderGridlinesBrush" Color="{DynamicResource AccentColorMediumLight}" />
+
+    <SolidColorBrush x:Key="DataGridAlternatingRowBrush" Color="{DynamicResource BackgroundColor1}" />
 
 
     <SolidColorBrush x:Key="DataGridDisabledForegroundBrush" Color="{DynamicResource ForegroundColor3}" />

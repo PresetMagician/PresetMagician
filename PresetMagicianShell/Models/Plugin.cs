@@ -8,14 +8,28 @@ using Drachenkatze.PresetMagician.VendorPresetParser;
 using Drachenkatze.PresetMagician.VSTHost.VST;
 using Jacobi.Vst.Core;
 using Jacobi.Vst.Interop.Host;
+using Newtonsoft.Json;
 
 namespace PresetMagicianShell.Models
 {
+    [JsonObject(MemberSerialization.OptIn)]
     public class Plugin : ModelBase, IVstPlugin, IDisposable
     {
         public Plugin()
         {
             PresetParser = new NullPresetParser();
+        }
+
+        public override string ToString()
+        {
+            if (IsLoaded)
+            {
+                return $"{PluginVendor} {PluginName} ({PluginId})";
+            }
+            else
+            {
+                return $"{DllPath}";
+            }
         }
 
         public void OnLoadError(string errorMessage)
@@ -24,38 +38,25 @@ namespace PresetMagicianShell.Models
             LoadErrorMessage = errorMessage;
         }
 
-        [ExcludeFromSerialization]
         public string LoadErrorMessage { get; private set; }
 
         /// <summary>
         /// Gets or sets the table collection.
         /// </summary>
-        [ExcludeFromSerialization]
-        public ObservableCollection<PluginInfoItem> PluginInfoItems
-        {
-            get { return GetValue<ObservableCollection<PluginInfoItem>>(PluginInfoItemsProperty); }
-            set { SetValue(PluginInfoItemsProperty, value); }
-        }
-
-        /// <summary>
-        /// Register the Tables property so it is known in the class.
-        /// </summary>
-        public static readonly PropertyData PluginInfoItemsProperty = RegisterProperty("PluginInfoItems", typeof(ObservableCollection<PluginInfoItem>));
-
+        public ObservableCollection<PluginInfoItem> PluginInfoItems { get; private set; } = new ObservableCollection<PluginInfoItem>();
+      
         #region PresetBanks property
 
         /// <summary>
         /// Gets or sets the PresetBanks value.
         /// </summary>
-        [ExcludeFromSerialization]
-        public PresetBank RootBank { get; set; } = new PresetBank();
+        public PresetBank RootBank { get; } = new PresetBank();
 
         public ObservableCollection<Preset> Presets { get; set; } = new ObservableCollection<Preset>();
 
         #endregion
 
 
-        [ExcludeFromSerialization]
         public bool LoadError { get; private set; }
         public void OnLoaded()
         {
@@ -97,23 +98,22 @@ namespace PresetMagicianShell.Models
         
         public VstPluginContext PluginContext { get; set; } = null;
 
-        [IncludeInSerialization]
+        [JsonProperty]
         public bool Enabled { get; set; } = true;
 
-        [IncludeInSerialization]
+        [JsonProperty]
         public string DllPath { get; set; }
 
         public string DllDirectory => Path.GetDirectoryName(DllPath);
 
         public string DllFilename => Path.GetFileName(DllPath);
 
-        
+        [JsonProperty]
         public VstHost.PluginTypes PluginType { get; set; } = VstHost.PluginTypes.Unknown;
 
-        [IncludeInSerialization]
         public String PluginTypeDescription => PluginType.ToString();
 
-        [IncludeInSerialization]
+        [JsonProperty]
         public int PluginId { get; set; }
 
         public int NumPresets
@@ -121,23 +121,22 @@ namespace PresetMagicianShell.Models
             get; set;
         }
 
-        [IncludeInSerialization]
+        [JsonProperty]
         public string PluginName
         {
             get; set;
         }
 
-        [IncludeInSerialization]
+        [JsonProperty]
         public string PluginVendor
         {
             get; set;
         }
 
 
-        [ExcludeFromSerialization]
         public IVendorPresetParser PresetParser { get; private set; }
 
-        [ExcludeFromSerialization] public bool IsScanned { get; set; } = false;
+        public bool IsScanned { get; set; } = false;
 
         public bool IsLoaded
         {
@@ -225,7 +224,6 @@ namespace PresetMagicianShell.Models
             }
         }
 
-        [ExcludeFromSerialization]
         public bool IsSupported { get; set; }
     }
 }

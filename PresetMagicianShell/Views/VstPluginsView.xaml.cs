@@ -42,7 +42,6 @@ namespace PresetMagicianShell.Views
             this.vstPresetScanner = new System.ComponentModel.BackgroundWorker();
             this.vstPresetScanner.WorkerReportsProgress = true;
 
-            Debug.WriteLine("foobar1: "+DataContext);
             VstHost = new VstHost();
 
 

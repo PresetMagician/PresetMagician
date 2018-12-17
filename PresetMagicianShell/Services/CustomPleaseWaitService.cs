@@ -7,95 +7,106 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Threading;
+using Catel.IoC;
+using PresetMagicianShell.Services.Interfaces;
 
 namespace PresetMagicianShell.Services
 {
     class CustomPleaseWaitService: Orchestra.Services.PleaseWaitService
     {
-        #region Constants
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();
-        #endregion
 
-        #region Constructors
-        public CustomPleaseWaitService(IDispatcherService dispatcherService):base(dispatcherService)
+        private readonly IDependencyResolver _dependencyResolver;
+        private ProgressBar _progressBar;
+        private ICustomStatusService _statusService;
+
+        private readonly DispatcherTimer _hidingTimer;
+
+        public CustomPleaseWaitService(IDispatcherService dispatcherService, IDependencyResolver dependencyResolver, ICustomStatusService statusService)
+            : base(dispatcherService)
         {
-           
-        }
-        #endregion
+            Argument.IsNotNull(() => dependencyResolver);
+            Argument.IsNotNull(() => statusService);
 
-        public int ShowCounter { get; private set; }
+            _dependencyResolver = dependencyResolver;
+            _statusService = statusService;
 
-        #region IPleaseWaitService Members
-        public virtual void Show(string status = "")
-        {
-            if (ShowCounter <= 0)
+            _hidingTimer = new DispatcherTimer
             {
-                ShowCounter = 1;
+                Interval = TimeSpan.FromMilliseconds(10)
+            };
+
+            _hidingTimer.Tick += OnHideTimerTick;
+        }
+
+        public override void Hide()
+        {
+            base.Hide();
+            var progressBar = InitializeProgressBar();
+            _statusService.UpdateStatus("");
+            progressBar.Visibility = Visibility.Collapsed;
+
+        }        
+
+        public override void UpdateStatus(int currentItem, int totalItems, string statusFormat = "")
+        {
+            base.UpdateStatus(currentItem, totalItems, statusFormat);
+            _statusService.UpdateStatus(statusFormat);
+            var progressBar = InitializeProgressBar();
+            if (progressBar != null)
+            {
+                _dispatcherService.BeginInvoke(() =>
+                {
+                    progressBar.SetCurrentValue(System.Windows.Controls.Primitives.RangeBase.MinimumProperty, (double)0);
+                    progressBar.SetCurrentValue(System.Windows.Controls.Primitives.RangeBase.MaximumProperty, (double)totalItems);
+                    progressBar.SetCurrentValue(System.Windows.Controls.Primitives.RangeBase.ValueProperty, (double)currentItem);
+
+                    if (currentItem < 0 || currentItem >= totalItems)
+                    {
+                        Hide();
+                    }
+                    else if (progressBar.Visibility != Visibility.Visible)
+                    {
+                        Log.Debug("Showing progress bar");
+
+                        _hidingTimer.Stop();
+
+                        progressBar.Visibility = Visibility.Visible;
+                    }                    
+                }, true);
+            }
+        }
+
+        private void OnHideTimerTick(object sender, System.EventArgs eventArgs)
+        {
+            Log.Debug("Hiding progress bar");
+
+            _hidingTimer.Stop();
+
+            var progressBar = InitializeProgressBar();
+            if (progressBar == null)
+            {
+                return;
+            }
+        }
+
+        private ProgressBar InitializeProgressBar()
+        {
+            if (_progressBar == null)
+            {
+                _progressBar = _dependencyResolver.TryResolve<ProgressBar>("pleaseWaitService");
+
+                if (_progressBar != null)
+                {
+                    Log.Debug("Found progress bar that will represent progress inside the ProgressPleaseWaitService");
+                }
             }
 
-            UpdateStatus(status);
+            return _progressBar;
         }
 
-        public virtual void Show(PleaseWaitWorkDelegate workDelegate, string status = "")
-        {
-            Show(status);
-
-            try
-            {
-                workDelegate();
-            }
-            finally
-            {
-                Hide();
-            }
-        }
-
-        public virtual void UpdateStatus(string status)
-        {
-            if (!string.IsNullOrWhiteSpace(status))
-            {
-                Log.Info(status);
-            }
-        }
-
-        public virtual void UpdateStatus(int currentItem, int totalItems, string statusFormat = "")
-        {
-            // not required
-        }
-
-        public virtual void Hide()
-        {
-            ShowCounter = 0;
-
-        }
-
-        public virtual void Push(string status = "")
-        {
-            if (ShowCounter == 0)
-            {
-                Show(status);
-            }
-            else
-            {
-                ShowCounter++;
-            }
-
-            Log.Debug($"Pushed busy indicator, counter is '{ShowCounter}'");
-        }
-
-        public virtual void Pop()
-        {
-            ShowCounter--;
-
-            Log.Debug($"Popped busy indicator, counter is '{ShowCounter}'");
-
-            if (ShowCounter <= 0)
-            {
-                Hide();
-            }
-
-        }
-        #endregion
-    
-}
+ }
 }

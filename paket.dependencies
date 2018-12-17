@@ -1,13 +1,13 @@
 framework: net462
 source https://api.nuget.org/v3/index.json
 
-nuget Fody 3.3.2
+nuget Fody 3.3.3
 nuget GSF.Media 2.1.468
 nuget JetBrains.Annotations 2018.2.1
 nuget MahApps.Metro.IconPacks 3.0.0-alpha0089 prerelease
 nuget MessagePack 1.7.3.4
 nuget NAudio 1.8.5
-nuget Newtonsoft.Json 11.0.2
+nuget Newtonsoft.Json 12.0.1
 nuget Orchestra.Shell.Ribbon.Fluent
 nuget Orc.LicenseManager.Client 3.0.0
 nuget PropertyChanged.Fody 2.5.14 
@@ -38,3 +38,6 @@ nuget Microsoft-WindowsAPICodePack-Core 1.1.3.3
 nuget Microsoft-WindowsAPICodePack-Shell 1.1.3.3
 nuget Portable.Licensing 1.1.0
 nuget Simple-MAPI.NET 1.1.0
+nuget Microsoft.Xaml.Behaviors.Wpf
+nuget squirrel.windows 1.9.0
+nuget Anotar.Catel.Fody 4.6.7

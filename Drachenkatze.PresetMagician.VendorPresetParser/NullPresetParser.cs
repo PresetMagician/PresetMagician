@@ -9,27 +9,12 @@ using Drachenkatze.PresetMagician.VSTHost.VST;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser
 {
-    public class NullPresetParser : IVendorPresetParser
+    public class NullPresetParser : AbstractVendorPresetParser, IVendorPresetParser
     {
-        public IVstPlugin VstPlugin { get; set; }
-
-        public virtual string Remarks { get; set; }
-
-        public string PresetParserType => GetType().Name.ToString();
-
-        public bool IsNullParser => true;
-
-        public PresetBank RootBank { get; set; } = new PresetBank();
-
-        public ObservableCollection<Preset> Presets { get; } = new ObservableCollection<Preset>();
+        public override bool IsNullParser => true;
 
         public void ScanBanks()
         {
-        }
-
-        public virtual void OnAfterPresetExport(VstHost host, IVstPlugin plugin)
-        {
-
         }
 
         public bool CanHandle()

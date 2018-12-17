@@ -8,9 +8,9 @@ using Catel.MVVM;
 using Catel.Services;
 using Portable.Licensing;
 using PresetMagicianShell.Services;
-using Syroot.Windows.IO;
 using System.Linq;
 using System.Windows.Forms;
+using Syroot.Windows.IO;
 
 namespace PresetMagicianShell.ViewModels
 {

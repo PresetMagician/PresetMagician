@@ -13,6 +13,7 @@ using Catel.MVVM;
 using Catel.Reflection;
 using Catel.Runtime.Serialization;
 using Catel.Services;
+using Catel.Threading;
 using Drachenkatze.PresetMagician.VSTHost.VST;
 using Orchestra.Services;
 using Orchestra.ViewModels;
@@ -24,6 +25,7 @@ using PresetMagicianShell.Views;
 using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout.Serialization;
 using Win32Mapi;
+using Xceed.Wpf.AvalonDock.Layout;
 
 namespace PresetMagicianShell.ViewModels
 {
@@ -110,10 +112,24 @@ namespace PresetMagicianShell.ViewModels
         /// </summary>
         private async Task OnDoSomethingExecuteAsync()
         {
-            var licenseService = ServiceLocator.Default.ResolveType<ILicenseService>();
+            var mainView = ServiceLocator.Default.ResolveType<LayoutAnchorable>("PresetSelection");
+            mainView.ToggleAutoHide();
 
-            var x = licenseService.GetCurrentLicense().AdditionalAttributes.Get("PresetExportLimit");
-            Debug.WriteLine(x);
+            var _pleaseWaitService = ServiceLocator.Default.ResolveType<IPleaseWaitService>();
+
+            await Catel.Threading.TaskHelper.Run(async () =>
+            {
+                var TotalItems = 250;
+                var random = new Random();
+
+                for (var i = 0; i < TotalItems; i++)
+                {
+                    _pleaseWaitService.UpdateStatus(i + 1, TotalItems, "doing something");
+
+                    await TaskShim.Delay(random.Next(5, 30));
+                }
+            }, true);
+            _pleaseWaitService.Hide();
         }
 
         

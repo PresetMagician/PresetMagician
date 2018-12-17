@@ -13,16 +13,11 @@ Syroot.Windows.IO.KnownFolders
 Orc.Squirrel
 Orc.LogViewer
 Orc.Controls
-System.ValueTuple
-System.Threading.Tasks.Extensions
 SharpVectors.Reloaded
 Orc.Squirrel.Xaml
-Orc.WorkspaceManagement
 Extended.Wpf.Toolkit
 Dirkster.AvalonDock.Themes.VS2013
-Catel.Serialization.Json
-Microsoft-WindowsAPICodePack-Core
-Microsoft-WindowsAPICodePack-Shell
 Portable.Licensing
 VST.NET.x64
 Simple-MAPI.NET
+Anotar.Catel.Fody

@@ -8,86 +8,118 @@
                    mc:Ignorable="d"
                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                    xmlns:catel="http://schemas.catelproject.com"
-                   MaxHeight="250"
-                   HorizontalAlignment="Left"
                    Padding="2,2,2,2"
+                   xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors"
+                   xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
                    xmlns:vendorPresetParser="clr-namespace:Drachenkatze.PresetMagician.VendorPresetParser;assembly=Drachenkatze.PresetMagician.VendorPresetParser"
                    xmlns:converters="clr-namespace:PresetMagicianShell.Converters">
 
     <catel:UserControl.Resources>
         
-            <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+        <HierarchicalDataTemplate x:Key="Contents" DataType="{x:Type vendorPresetParser:PresetBank}"
+                                  ItemsSource="{Binding PresetBanks}">
+            <TextBlock Text="{Binding BankName}" />
+        </HierarchicalDataTemplate>
 
-            <HierarchicalDataTemplate x:Key="Contents" DataType="{x:Type vendorPresetParser:PresetBank}" ItemsSource="{Binding PresetBanks}">
+        <ControlTemplate x:Key="SelectPlugin">
+            <Grid>
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Select a plugin to view information"/>
+            </Grid>
+        </ControlTemplate>
 
-                    <TextBlock Text="{Binding BankName}"/>
+        <ControlTemplate x:Key="PluginNotScanned">
+            <Grid>
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Plugin not scanned, unable to display information"/>
+            </Grid>
+        </ControlTemplate>
 
-            </HierarchicalDataTemplate>
-        
-        </catel:UserControl.Resources>
-
-    <Grid>
-       
-        <Grid Grid.Row="0">
-            <Grid.Style>
-                <Style TargetType="{x:Type Grid}">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsScanned, 
-                                                  Mode=OneWay}" Value="True">
-                            <Setter Property="Visibility" Value="Visible"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Grid.Style>
+        <ControlTemplate x:Key="BankView">
+                <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="250" />
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <TreeView Margin="5" Grid.Column="0" ItemsSource="{Binding Plugin.RootBank.PresetBanks}" ItemTemplate="{StaticResource Contents}">
-            <TreeView.Resources>
-                <Style TargetType="{x:Type TreeViewItem}">
-                    <Setter Property="IsExpanded" Value="True">
-                    </Setter>
-                </Style>
-            </TreeView.Resources>
-        </TreeView>
+            <TreeView Margin="5" Grid.Column="0" ItemsSource="{Binding Plugin.RootBank.PresetBanks}"
+                      ItemTemplate="{StaticResource Contents}">
+                <TreeView.Resources>
+                    <Style TargetType="{x:Type TreeViewItem}">
+                        <Setter Property="IsExpanded" Value="True" />
+                    </Style>
+                </TreeView.Resources>
+            </TreeView>
 
             <GridSplitter Grid.Column="1"
                           HorizontalAlignment="Center"
                           VerticalAlignment="Stretch"
                           ShowsPreview="True"
-                          Width="5"/>
+                          Width="5" />
 
-            <DataGrid x:Name="VSTPresetList" Grid.Column="2" ItemsSource="{Binding Presets}" Margin="5" EnableRowVirtualization="True">
+            <DataGrid x:Name="VSTPresetList" Grid.Column="2" ItemsSource="{Binding Plugin.Presets}" Margin="5">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Preset" Width="150"
                                         Binding="{Binding PresetName}" IsReadOnly="True" SortDirection="Ascending" />
                     <DataGridTextColumn Header="Bank" Width="150"
-                                        Binding="{Binding PresetBank.BankPath}" IsReadOnly="True" SortDirection="Ascending" />
+                                        Binding="{Binding PresetBank.BankPath}" IsReadOnly="True"
+                                        SortDirection="Ascending" />
                     <DataGridTextColumn Header="Key" Width="80"
-                                        Binding="{Binding PreviewNote.FullNoteName}" IsReadOnly="False">
-                    </DataGridTextColumn>
+                                        Binding="{Binding PreviewNote.FullNoteName}" IsReadOnly="False" />
                     <DataGridCheckBoxColumn Header="Export" Width="80" IsReadOnly="False" Binding="{Binding Export}" />
                 </DataGrid.Columns>
             </DataGrid>
+            <Button Grid.Column="3" Content="bla" Command="{Binding DoSomething}"/>
         </Grid>
+        </ControlTemplate>
+    </catel:UserControl.Resources>
 
-        <Label Grid.Row="0" Content="Plugin was not scanned yet, no bank information available">
-            <Label.Style>
-                <Style TargetType="{x:Type Label}">
-                    <Setter Property="Visibility" Value="Visible" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsScanned, 
-                                                  Mode=OneWay}" Value="True">
-                            <Setter Property="Visibility" Value="Collapsed"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Label.Style>
-        </Label>
-    </Grid>
-    
+    <ContentControl>
+        <ContentControl.Style>
+            <Style TargetType="{x:Type ContentControl}">
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition
+                                Binding="{Binding IsPluginSet, 
+                                                  Mode=OneWay}"
+                                Value="True" />
+                            <Condition
+                                Binding="{Binding Plugin.IsScanned, 
+                                                  Mode=OneWay}"
+                                Value="True" />
+                        </MultiDataTrigger.Conditions>
+
+                        <Setter Property="Template" Value="{StaticResource BankView}" />
+                    </MultiDataTrigger>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition
+                                Binding="{Binding IsPluginSet, 
+                                                  Mode=OneWay}"
+                                Value="True" />
+                            <Condition
+                                Binding="{Binding Plugin.IsScanned, 
+                                                  Mode=OneWay}"
+                                Value="False" />
+                        </MultiDataTrigger.Conditions>
+
+                        <Setter Property="Template" Value="{StaticResource PluginNotScanned}" />
+                    </MultiDataTrigger>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition
+                                Binding="{Binding IsPluginSet, 
+                                                  Mode=OneWay}"
+                                Value="False" />
+                            
+                        </MultiDataTrigger.Conditions>
+
+                        <Setter Property="Template" Value="{StaticResource SelectPlugin}" />
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+        </ContentControl.Style>
+    </ContentControl>
+   
 </catel:UserControl>

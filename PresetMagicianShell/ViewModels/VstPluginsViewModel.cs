@@ -29,7 +29,7 @@ namespace PresetMagicianShell.ViewModels
 
         private readonly IViewModelFactory _viewModelFactory;
         private readonly IPleaseWaitService _pleaseWaitService;
-        private readonly IStatusService _statusService;
+        private readonly ICustomStatusService _statusService;
         private readonly VstHost _vstHost;
         private readonly IVstService _vstService;
 
@@ -41,7 +41,7 @@ namespace PresetMagicianShell.ViewModels
             set { _vstService.SelectedPlugin = value; }
         }
 
-        public VstPluginsViewModel(IStatusService statusService, IPleaseWaitService pleaseWaitService,
+        public VstPluginsViewModel(ICustomStatusService statusService, IPleaseWaitService pleaseWaitService,
             IRuntimeConfigurationService runtimeConfigurationService, IServiceLocator serviceLocator,
             IViewModelFactory viewModelFactory, IUIVisualizerService uiVisualizerService,IVstService vstService)
         {
@@ -61,6 +61,8 @@ namespace PresetMagicianShell.ViewModels
             _viewModelFactory = viewModelFactory;
             _uiVisualizerService = uiVisualizerService;
 
+            VstPlugins = runtimeConfigurationService.RuntimeConfiguration.Plugins;
+
             serviceLocator.RegisterInstance(this);
 
             ScanPlugins = new TaskCommand(OnScanPluginsExecute);
@@ -69,10 +71,9 @@ namespace PresetMagicianShell.ViewModels
             DisablePlugin = new Command<object>(OnDisablePluginExecute);
             ShowPluginInfo = new Command<object>(OnShowPluginInfoExecute);
 
-            VstPlugins = runtimeConfigurationService.RuntimeConfiguration.Plugins;
-
             ICollectionView pView = CollectionViewSource.GetDefaultView(VstPlugins);   
            
+            pView.SortDescriptions.Add(new SortDescription ("Enabled", ListSortDirection.Descending));
             pView.SortDescriptions.Add(new SortDescription ("IsSupported", ListSortDirection.Descending));
             pView.SortDescriptions.Add(new SortDescription ("PluginName", ListSortDirection.Ascending));
             
@@ -103,6 +104,7 @@ namespace PresetMagicianShell.ViewModels
 
         public TaskCommand ScanPlugins { get; set; }
 
+
         private void OnEnablePluginExecute(object parameter)
         {
             var plugins = (parameter as IList).Cast<Plugin>();
@@ -127,7 +129,6 @@ namespace PresetMagicianShell.ViewModels
         private async Task OnRefreshPluginListExecute()
         {
             var vstPluginDLLs = new ObservableCollection<string>();
-            var vstPlugins = new ObservableCollection<VSTPlugin>();
 
             await TaskHelper.Run(() =>
             {
@@ -170,7 +171,8 @@ namespace PresetMagicianShell.ViewModels
 
                             UpdateStatus(newList.IndexOf(vst) + 1, newList.Count, $"Scanning banks for {vst.DllPath}");
                             vst.PresetParser.ScanBanks();
-                            vst.RootBank = vst.PresetParser.RootBank;
+                            vst.RootBank.PresetBanks.Clear();
+                            vst.RootBank.PresetBanks.Add(vst.PresetParser.RootBank);
                             vst.NumPresets = vst.PresetParser.Presets.Count;
                             vst.Presets = vst.PresetParser.Presets;
                             vst.IsScanned = true;
@@ -198,9 +200,7 @@ namespace PresetMagicianShell.ViewModels
 
             IsScanning = false;
             ScanComplete.SafeInvoke(this, EventArgs.Empty);
-
-            //VstPluginsViewSource.GetDefaultView(VstPlugins).Refresh();
-
+            _pleaseWaitService.Hide();
             CollectionViewSource.GetDefaultView(VstPlugins).Refresh();
         }
 

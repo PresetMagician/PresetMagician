@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using Anotar.Catel;
 using Drachenkatze.PresetMagician.VSTHost.VST;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser
@@ -20,10 +21,12 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             catch (ReflectionTypeLoadException typeLoadException)
             {
                 foundAssemblyTypes = (from type in typeLoadException.Types
-                                      where type != null
-                                      select type).ToArray();
+                    where type != null
+                    select type).ToArray();
 
-                Debug.WriteLine("A ReflectionTypeLoadException occured, adding all {0} types that were loaded correctly", foundAssemblyTypes.Length);
+                Debug.WriteLine(
+                    "A ReflectionTypeLoadException occured, adding all {0} types that were loaded correctly",
+                    foundAssemblyTypes.Length);
 
                 if (logLoaderExceptions)
                 {
@@ -40,18 +43,20 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
         public static IVendorPresetParser GetPresetHandler(IVstPlugin vstPlugin)
         {
+            LogTo.Debug("Resolving PresetHandler for plugin {0}", vstPlugin);
+
             var type = typeof(IVendorPresetParser);
             IEnumerable<Type> types = null;
 
-            Assembly currentAssem = Assembly.GetExecutingAssembly();
+            Assembly currentAssembly = Assembly.GetExecutingAssembly();
 
-                types = currentAssem.GetTypes()
+            types = currentAssembly.GetTypes()
                 .Where(p => p.GetInterfaces().Contains(type));
-          
+
 
             foreach (var parser in types)
             {
-                IVendorPresetParser instance = (IVendorPresetParser)Activator.CreateInstance(parser);
+                IVendorPresetParser instance = (IVendorPresetParser) Activator.CreateInstance(parser);
 
                 if (instance.IsNullParser)
                 {
@@ -61,11 +66,13 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
                 instance.VstPlugin = vstPlugin;
                 if (instance.CanHandle())
                 {
+                    LogTo.Debug("Using PresetHandler {0} for plugin {1}", instance, vstPlugin);
                     return instance;
                 }
             }
 
-            return new NullPresetParser(); 
+            LogTo.Debug("No PresetHandler found for plugin {0}, using NullPresetParser", vstPlugin);
+            return new NullPresetParser();
         }
     }
 }
