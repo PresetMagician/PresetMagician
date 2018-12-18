@@ -22,7 +22,7 @@
     <SolidColorBrush x:Key="RedColorBrush" Color="{DynamicResource RedColor}" />
 
     <!--  Window  -->
-    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="{DynamicResource BackgroundColor3}" />
+    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#eeeef2" />
     <SolidColorBrush x:Key="WindowForegroundBrush" Color="{DynamicResource ForegroundColor1}" />
 
     <!--  TabControl  -->
@@ -120,11 +120,11 @@
     <SolidColorBrush x:Key="DataGridBorderBrush" Color="{DynamicResource BackgroundColor6}" />
     <SolidColorBrush x:Key="DataGridLinesBrush" Color="{DynamicResource BackgroundColor3}" />
     <SolidColorBrush x:Key="DataGridSelectAllButtonBackgroundBrush" Color="{DynamicResource BackgroundColor5}" />
-    <SolidColorBrush x:Key="DataGridHeaderBackgroundBrush" Color="{DynamicResource AccentColorLight}" />
+    <SolidColorBrush x:Key="DataGridHeaderBackgroundBrush" Color="#ede2fc" />
     <SolidColorBrush x:Key="DataGridRowHeaderBackgroundBrush" Color="{DynamicResource BackgroundColor3}" />
     <SolidColorBrush x:Key="DataGridRowSelectedBackgroundBrush" Color="{DynamicResource SelectionColor1}" />
     <SolidColorBrush x:Key="DataGridRowSelectedFocusedBackgroundBrush" Color="{DynamicResource SelectionColor1}" />
-    <SolidColorBrush x:Key="DataGridHeaderGridlinesBrush" Color="{DynamicResource AccentColorMediumLight}" />
+    <SolidColorBrush x:Key="DataGridHeaderGridlinesBrush" Color="{DynamicResource BackgroundColor5}" />
 
     <SolidColorBrush x:Key="DataGridAlternatingRowBrush" Color="{DynamicResource BackgroundColor1}" />
 

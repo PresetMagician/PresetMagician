@@ -5,6 +5,25 @@
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:options="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options">
 
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Xceed.Wpf.AvalonDock.Themes.VS2013;component/LightTheme.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Themes/Colors/LightColors.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Themes/Colors/AvalonDockColors.xaml" />
+
+        <ResourceDictionary Source="pack://application:,,,/Themes/Brushes/ThemeBrushes.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Themes/Styles/Styles.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <Style
+        x:Key="DataWindowButtonStyle"
+        BasedOn="{StaticResource {x:Type Button}}"
+        TargetType="Button">
+        <Setter Property="Margin" Value="6,6,0,0" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="MinWidth" Value="100" />
+        <Setter Property="MinHeight" Value="23" />
+    </Style>
+
     <SolidColorBrush x:Key="AccentColorBrush" Color="#FF593196" />
     <SolidColorBrush x:Key="StatusBarColorBrush" Color="#FF391f5f" />
 

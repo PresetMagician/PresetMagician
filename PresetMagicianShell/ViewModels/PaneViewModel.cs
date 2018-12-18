@@ -1,48 +1,42 @@
-using System.Windows.Controls;
-using System.Windows.Media;
 using Catel.MVVM;
 
 namespace PresetMagicianShell.ViewModels
 {
     public class PaneViewModel : ViewModelBase
     {
-       
         #region Title
 
         private string _title;
 
         public override string Title
         {
-            get { return _title; }
+            get => _title;
             protected set
             {
                 if (_title != value)
                 {
                     _title = value;
-                    RaisePropertyChanged("Title");
+                    RaisePropertyChanged(nameof(Title));
                 }
             }
         }
 
-        public string MyTitle { get; set; } = "yoooo";
-
         #endregion
 
-        
 
         #region ContentId
 
-        private string _contentId = null;
+        private string _contentId;
 
         public string ContentId
         {
-            get { return _contentId; }
+            get => _contentId;
             set
             {
                 if (_contentId != value)
                 {
                     _contentId = value;
-                    RaisePropertyChanged("ContentId");
+                    RaisePropertyChanged(nameof(ContentId));
                 }
             }
         }
@@ -51,11 +45,11 @@ namespace PresetMagicianShell.ViewModels
 
         #region IsSelected
 
-        private bool _isSelected = false;
+        private bool _isSelected;
 
         public bool IsSelected
         {
-            get { return _isSelected; }
+            get => _isSelected;
             set
             {
                 if (_isSelected != value)
@@ -70,11 +64,11 @@ namespace PresetMagicianShell.ViewModels
 
         #region IsActive
 
-        private bool _isActive = false;
+        private bool _isActive;
 
         public bool IsActive
         {
-            get { return _isActive; }
+            get => _isActive;
             set
             {
                 if (_isActive != value)

@@ -15,29 +15,29 @@ namespace PresetMagicianShell.Services
 {
     public class RuntimeConfigurationService : IRuntimeConfigurationService
     {
-        private static readonly string DefaultLocalConfigFilePath =
+        private static readonly string _defaultLocalConfigFilePath =
             Path.Combine(Path.GetApplicationDataDirectory(ApplicationDataTarget.UserRoaming),
                 "configuration.json");
 
-        private static readonly string DefaultLocalLayoutFilePath =
+        private static readonly string _defaultLocalLayoutFilePath =
             Path.Combine(Path.GetApplicationDataDirectory(ApplicationDataTarget.UserRoaming), "layout.xml");
 
         private readonly JsonSerializer _jsonSerializer;
         private readonly ILog _logger = LogManager.GetCurrentClassLogger();
         private readonly IServiceLocator _serviceLocator;
 
-        private LayoutRoot originalLayout;
+        private LayoutRoot _originalLayout;
 
         public RuntimeConfigurationService(IServiceLocator serviceLocator)
         {
-            _logger.Info("INIT");
             RuntimeConfiguration = new RuntimeConfiguration();
+            ApplicationState = new ApplicationState();
             _serviceLocator = serviceLocator;
-            _jsonSerializer = new JsonSerializer();
-            _jsonSerializer.Formatting = Formatting.Indented;
+            _jsonSerializer = new JsonSerializer {Formatting = Formatting.Indented};
         }
 
         public RuntimeConfiguration RuntimeConfiguration { get; private set; }
+        public ApplicationState ApplicationState { get; private set; }
 
         public void Load()
         {
@@ -46,7 +46,7 @@ namespace PresetMagicianShell.Services
 
         public void LoadConfiguration()
         {
-            if (!File.Exists(DefaultLocalConfigFilePath))
+            if (!File.Exists(_defaultLocalConfigFilePath))
             {
                 _logger.Info("No configuration found.");
                 return;
@@ -54,7 +54,7 @@ namespace PresetMagicianShell.Services
 
             try
             {
-                using (var rd = new StreamReader(DefaultLocalConfigFilePath))
+                using (var rd = new StreamReader(_defaultLocalConfigFilePath))
                 using (JsonReader jsonReader = new JsonTextReader(rd))
                 {
                     RuntimeConfiguration = _jsonSerializer.Deserialize<RuntimeConfiguration>(jsonReader);
@@ -71,12 +71,12 @@ namespace PresetMagicianShell.Services
             return;
             // Disabled because loading the layout causes no documents to be active
 
-            originalLayout = getDockingManager().Layout;
+            _originalLayout = GetDockingManager().Layout;
 
-            if (File.Exists(DefaultLocalLayoutFilePath))
+            if (File.Exists(_defaultLocalLayoutFilePath))
                 try
                 {
-                    getLayoutSerializer().Deserialize(DefaultLocalLayoutFilePath);
+                    GetLayoutSerializer().Deserialize(_defaultLocalLayoutFilePath);
                 }
                 catch (Exception)
                 {
@@ -86,9 +86,9 @@ namespace PresetMagicianShell.Services
 
         public void ResetLayout()
         {
-            var dockingManager = getDockingManager();
+            var dockingManager = GetDockingManager();
 
-            dockingManager.Layout = originalLayout;
+            dockingManager.Layout = _originalLayout;
         }
 
         public void Save()
@@ -99,7 +99,7 @@ namespace PresetMagicianShell.Services
 
         public void SaveConfiguration()
         {
-            using (var sw = new StreamWriter(DefaultLocalConfigFilePath))
+            using (var sw = new StreamWriter(_defaultLocalConfigFilePath))
             using (JsonWriter jsonWriter = new JsonTextWriter(sw))
             {
                 _jsonSerializer.Serialize(jsonWriter, RuntimeConfiguration);
@@ -108,15 +108,15 @@ namespace PresetMagicianShell.Services
 
         public void SaveLayout()
         {
-            getLayoutSerializer().Serialize(DefaultLocalLayoutFilePath);
+            GetLayoutSerializer().Serialize(_defaultLocalLayoutFilePath);
         }
 
-        private XmlLayoutSerializer getLayoutSerializer()
+        private XmlLayoutSerializer GetLayoutSerializer()
         {
-            return new XmlLayoutSerializer(getDockingManager());
+            return new XmlLayoutSerializer(GetDockingManager());
         }
 
-        private DockingManager getDockingManager()
+        private DockingManager GetDockingManager()
         {
             return _serviceLocator.ResolveType<DockingManager>();
         }

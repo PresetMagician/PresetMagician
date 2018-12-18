@@ -5,13 +5,13 @@
         <ResourceDictionary Source="pack://application:,,,/Themes/Styles/DataGridStyle.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Themes/Styles/Scrollbar.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Themes/Styles/WindowStyle.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Themes/Styles/TabItem.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Themes/Styles/TabControl.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style
         x:Key="DefaultButtonStyle"
         BasedOn="{StaticResource {x:Type Button}}"
-        TargetType="{x:Type Button}">
-        <Setter Property="Height" Value="50" />
-    </Style>
+        TargetType="{x:Type Button}" />
 
 </ResourceDictionary>

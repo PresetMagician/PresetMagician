@@ -83,18 +83,26 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Compile Include="Commands\AbstractOpenDialogCommandContainer.cs" />
     <Compile Include="Commands\HelpOpenChatLinkCommandContainer.cs" />
     <Compile Include="Commands\HelpOpenDocumentationLinkCommandContainer.cs" />
     <Compile Include="Commands\HelpOpenSupportLinkCommandContainer.cs" />
+    <Compile Include="Commands\PluginRefreshPluginsCommandContainer.cs" />
     <Compile Include="Commands\PluginScanPluginsCommandContainer.cs" />
     <Compile Include="Commands\ToolsNksfViewCommandContainer.cs" />
     <Compile Include="Commands\ToolsSettingsViewCommandContainer.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="Controls\RibbonDataWindow.cs" />
+    <Compile Include="Controls\TabControl.cs" />
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Converters\VisibilityToBooleanConverter.cs" />
+    <Compile Include="Extensions\CollectionExtensions.cs" />
+    <Compile Include="Extensions\DispatcherExtensions.cs" />
+    <Compile Include="Extensions\FrameworkExtensions.cs" />
     <Compile Include="Helpers\AvalonDockHelper.cs" />
     <Compile Include="Helpers\BindingProxy.cs" />
     <Compile Include="Helpers\ShellDimensionsHelper.cs" />
+    <Compile Include="Models\ApplicationState.cs" />
     <Compile Include="Models\Plugin.cs" />
     <Compile Include="Models\PluginInfoItem.cs" />
     <Compile Include="Models\RuntimeConfiguration.cs" />
@@ -179,6 +187,14 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Themes\Styles\TabControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Styles\TabItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\Brushes\ThemeBrushes.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -338,7 +354,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets\" />
-    <Folder Include="Controls\" />
     <Folder Include="MarkupExtensions\" />
   </ItemGroup>
   <ItemGroup>

@@ -53,13 +53,15 @@
                             LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Search},
                                                            Width=32,
                                                            Height=32}" />
+
+
                         <fluent:Button
                             Padding="0"
                             VerticalAlignment="Center"
                             Command="{catel:CommandManagerBinding Tools.SettingsView}"
                             Content=""
-                            Header="Report Unsupported Plugins"
-                            Icon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Megaphone},
+                            Header="Add all Presets to Export List"
+                            Icon="{iconPacks:PackIcon {x:Static iconPacks:PackIconModernKind.ListAdd},
                                                       Width=16,
                                                       Height=16}"
                             Size="Middle" />
@@ -71,7 +73,16 @@
                                                       Width=16,
                                                       Height=16}"
                             Size="Middle" />
-
+                        <fluent:Button
+                            Padding="0"
+                            VerticalAlignment="Center"
+                            Command="{catel:CommandManagerBinding Tools.SettingsView}"
+                            Content=""
+                            Header="Report Unsupported Plugins"
+                            Icon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Megaphone},
+                                                      Width=16,
+                                                      Height=16}"
+                            Size="Middle" />
 
                     </fluent:RibbonGroupBox>
 

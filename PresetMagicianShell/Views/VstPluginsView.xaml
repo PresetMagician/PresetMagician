@@ -79,7 +79,7 @@
         <xctk:BusyIndicator
             Grid.Row="0"
             IsBusy="{Binding IsScanning}"
-            Visibility="{Binding HasItems, ElementName=VstPluginList, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay, FallbackValue=Visible}">
+            Visibility="{Binding Appli HasItems, ElementName=VstPluginList, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay, FallbackValue=Visible}">
 
             <xctk:BusyIndicator.BusyContentTemplate>
                 <DataTemplate>

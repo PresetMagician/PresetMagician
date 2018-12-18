@@ -2,6 +2,7 @@ using System;
 using Catel;
 using Catel.Collections;
 using Catel.IoC;
+using Drachenkatze.PresetMagician.VSTHost.VST;
 using PresetMagicianShell.Models;
 using PresetMagicianShell.Services.Interfaces;
 using PresetMagicianShell.ViewModels;
@@ -12,7 +13,7 @@ namespace PresetMagicianShell.Services
     {
         private readonly IServiceLocator _serviceLocator;
         private readonly IRuntimeConfigurationService _runtimeConfigurationService;
-
+        public VstHost VstHost { get; set; }
         public VstService(IServiceLocator serviceLocator, IRuntimeConfigurationService runtimeConfigurationService)
         {
             Argument.IsNotNull(() => serviceLocator);
@@ -20,6 +21,7 @@ namespace PresetMagicianShell.Services
 
             _serviceLocator = serviceLocator;
             _runtimeConfigurationService = runtimeConfigurationService;
+            VstHost = new VstHost();
 
             Plugins = _runtimeConfigurationService.RuntimeConfiguration.Plugins;
         }
@@ -28,12 +30,7 @@ namespace PresetMagicianShell.Services
         public FastObservableCollection<Plugin> SelectedPlugins { get; } = new FastObservableCollection<Plugin>();
         public FastObservableCollection<Plugin> Plugins { get; private set; } 
 
-        public void RefreshPluginList()
-        {
-            var vstPluginViewModel = _serviceLocator.ResolveType<VstPluginsViewModel>();
-            vstPluginViewModel.RefreshPluginList.Execute();
-        }
-
+       
         #region SelectedPlugin
 
         private Plugin _selectedPlugin;

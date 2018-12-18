@@ -135,6 +135,7 @@ namespace PresetMagicianShell.Services
             _commandManager.CreateCommandWithGesture(typeof(Commands.Help), "OpenDocumentationLink");
 
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "ScanPlugins");
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "RefreshPlugins");
         }
         
         private void LoadConfiguration()

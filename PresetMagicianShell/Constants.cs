@@ -68,6 +68,7 @@ namespace PresetMagicianShell
     {
         public static class Plugin
         {
+            public const string RefreshPlugins = "Plugin.RefreshPlugins";
             public const string ScanPlugins = "Plugin.ScanPlugins";
         }
         public static class Tools

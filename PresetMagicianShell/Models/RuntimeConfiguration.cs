@@ -15,5 +15,6 @@ namespace PresetMagicianShell.Models
         public FastObservableCollection<VstDirectory> VstDirectories { get; set; } = new FastObservableCollection<VstDirectory>();
         [JsonProperty]
         public FastObservableCollection<Plugin> Plugins { get; set; } = new FastObservableCollection<Plugin>();
+
     }
 }
