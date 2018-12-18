@@ -16,11 +16,11 @@ namespace PresetMagicianShell.Services
     public class RuntimeConfigurationService : IRuntimeConfigurationService
     {
         private static readonly string DefaultLocalConfigFilePath =
-            Path.Combine(Path.GetApplicationDataDirectory(ApplicationDataTarget.UserLocal),
+            Path.Combine(Path.GetApplicationDataDirectory(ApplicationDataTarget.UserRoaming),
                 "configuration.json");
 
         private static readonly string DefaultLocalLayoutFilePath =
-            Path.Combine(Path.GetApplicationDataDirectory(ApplicationDataTarget.UserLocal), "layout.xml");
+            Path.Combine(Path.GetApplicationDataDirectory(ApplicationDataTarget.UserRoaming), "layout.xml");
 
         private readonly JsonSerializer _jsonSerializer;
         private readonly ILog _logger = LogManager.GetCurrentClassLogger();
@@ -30,6 +30,7 @@ namespace PresetMagicianShell.Services
 
         public RuntimeConfigurationService(IServiceLocator serviceLocator)
         {
+            _logger.Info("INIT");
             RuntimeConfiguration = new RuntimeConfiguration();
             _serviceLocator = serviceLocator;
             _jsonSerializer = new JsonSerializer();

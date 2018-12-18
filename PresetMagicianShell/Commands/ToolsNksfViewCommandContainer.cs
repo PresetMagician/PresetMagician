@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
+// ReSharper disable once CheckNamespace
 namespace PresetMagicianShell
 {
     public class ToolsNksfViewCommandContainer : CommandContainerBase

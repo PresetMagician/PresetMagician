@@ -47,7 +47,7 @@
                             Width="60"
                             Padding="0"
                             VerticalAlignment="Center"
-                            Command="{catel:CommandManagerBinding Tools.SettingsView}"
+                            Command="{catel:CommandManagerBinding Plugin.ScanPlugins}"
                             Content=""
                             Header="Scan Plugins"
                             LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Search},
@@ -94,7 +94,7 @@
                     <fluent:RibbonGroupBox Header="Help">
                         <fluent:Button
                             Width="50"
-                            Command="{Binding ShowAboutDialog}"
+                            Command="{catel:CommandManagerBinding Help.OpenDocumentationLink}"
                             Header="Online Help"
                             LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconMaterialKind.HelpNetwork},
                                                            Width=32,
@@ -102,7 +102,7 @@
 
                         <fluent:Button
                             Width="50"
-                            Command="{catel:CommandManagerBinding Tools.SettingsView}"
+                            Command="{catel:CommandManagerBinding Help.OpenChatLink}"
                             Header="Chat"
                             LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconMaterialKind.Chat},
                                                            Width=32,
@@ -110,7 +110,7 @@
 
                         <fluent:Button
                             Width="50"
-                            Command="{catel:CommandManagerBinding Tools.SettingsView}"
+                            Command="{catel:CommandManagerBinding Help.OpenSupportLink}"
                             Header="Support"
                             LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconMaterialKind.Lifebuoy},
                                                            Width=32,

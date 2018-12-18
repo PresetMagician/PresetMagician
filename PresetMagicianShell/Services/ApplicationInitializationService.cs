@@ -129,6 +129,12 @@ namespace PresetMagicianShell.Services
         {
             _commandManager.CreateCommandWithGesture(typeof(Commands.Tools), "NksfView");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Tools), "SettingsView");
+
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Help), "OpenSupportLink");
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Help), "OpenChatLink");
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Help), "OpenDocumentationLink");
+
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "ScanPlugins");
         }
         
         private void LoadConfiguration()

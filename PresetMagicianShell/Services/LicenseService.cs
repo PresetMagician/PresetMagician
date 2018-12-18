@@ -19,12 +19,12 @@ namespace PresetMagicianShell.Services
 {
     public class LicenseService : ILicenseService
     {
-        private const int DefaultTrialPresetExportLimit = 50;
+        private const int _defaultTrialPresetExportLimit = 50;
 
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();
 
-        private static readonly string DefaultLocalLicenseFilePath =
-            Path.Combine(Path.GetApplicationDataDirectory(ApplicationDataTarget.UserLocal), "license.lic");
+        private static readonly string _defaultLocalLicenseFilePath =
+            Path.Combine(Path.GetApplicationDataDirectory(ApplicationDataTarget.UserRoaming), "license.lic");
 
         public License CurrentLicense { get; private set; }
 
@@ -44,7 +44,7 @@ namespace PresetMagicianShell.Services
 
             if (!CurrentLicense.AdditionalAttributes.Contains("PresetExportLimit"))
             {
-                return DefaultTrialPresetExportLimit;
+                return _defaultTrialPresetExportLimit;
             }
             else
             {
@@ -58,7 +58,7 @@ namespace PresetMagicianShell.Services
                 
             }
 
-            return DefaultTrialPresetExportLimit;
+            return _defaultTrialPresetExportLimit;
         }
 
         public List<IValidationFailure> ValidateLicense(string filePath)
@@ -94,12 +94,12 @@ namespace PresetMagicianShell.Services
                 return updateLicense;
             }
 
-            if (File.Exists(DefaultLocalLicenseFilePath))
+            if (File.Exists(_defaultLocalLicenseFilePath))
             {
-                File.Delete(DefaultLocalLicenseFilePath);
+                File.Delete(_defaultLocalLicenseFilePath);
             }
 
-            File.Copy(filePath, DefaultLocalLicenseFilePath);
+            File.Copy(filePath, _defaultLocalLicenseFilePath);
             LicenseChanged.SafeInvoke(this);
 
             return updateLicense;
@@ -109,7 +109,7 @@ namespace PresetMagicianShell.Services
         {
             try
             {
-                var validationFailures = ValidateLicense(DefaultLocalLicenseFilePath);
+                var validationFailures = ValidateLicense(_defaultLocalLicenseFilePath);
 
                 if (!validationFailures.Any())
                 {
