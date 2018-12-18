@@ -1,18 +1,20 @@
 <Window
+    x:Class="PresetMagicianShell.Views.ThemeControlsWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    
-    xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:xtk="http://schemas.xceed.com/wpf/xaml/toolkit"
-    xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    ResizeMode="CanResizeWithGrip"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-    mc:Ignorable="d" x:Class="PresetMagicianShell.Views.ThemeControlsWindow"
-    Title="Sample Controls" Height="804.746" Width="900">
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
+    xmlns:xtk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    Title="Sample Controls"
+    Width="900"
+    Height="804.746"
+    ResizeMode="CanResizeWithGrip"
+    mc:Ignorable="d">
 
-    <!-- from https://github.com/steto-scope/Monotone -->
+    <!--  from https://github.com/steto-scope/Monotone  -->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />
@@ -20,9 +22,16 @@
         </Grid.RowDefinitions>
 
         <DockPanel Grid.Row="0">
-            <Button x:Name="button" Margin="5" Content="Reload styles from disk" Click="Button_Click_2" />
+            <Button
+                x:Name="button"
+                Margin="5"
+                Click="Button_Click_2"
+                Content="Reload styles from disk" />
         </DockPanel>
-        <TabControl x:Name="tabControl" Grid.Row="1" Margin="10">
+        <TabControl
+            x:Name="tabControl"
+            Grid.Row="1"
+            Margin="10">
             <TabItem Header="Misc">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -36,15 +45,25 @@
                             <MenuItem Header="_File">
                                 <MenuItem Header="New">
                                     <MenuItem.Icon>
-                                        <iconPacks:PackIconMaterial Kind="FileDocument"/>
+                                        <iconPacks:PackIconMaterial Kind="FileDocument" />
                                     </MenuItem.Icon>
-                                    <MenuItem Header="C" Command="Cut" />
-                                    <MenuItem Header="open" IsCheckable="True" IsChecked="True" />
+                                    <MenuItem Command="Cut" Header="C" />
+                                    <MenuItem
+                                        Header="open"
+                                        IsCheckable="True"
+                                        IsChecked="True" />
                                 </MenuItem>
-                                <MenuItem Header="Can Open" Command="Copy" IsCheckable="True" IsChecked="True" />
+                                <MenuItem
+                                    Command="Copy"
+                                    Header="Can Open"
+                                    IsCheckable="True"
+                                    IsChecked="True" />
                                 <MenuItem Header="Close" />
                                 <Separator />
-                                <MenuItem Header="End" IsEnabled="False" Command="Copy" />
+                                <MenuItem
+                                    Command="Copy"
+                                    Header="End"
+                                    IsEnabled="False" />
                             </MenuItem>
                             <MenuItem Header="Edit" IsEnabled="False">
                                 <MenuItem />
@@ -58,17 +77,20 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <ToolBarTray Margin="5" IsLocked="False" Orientation="Horizontal">
+                            <ToolBarTray
+                                Margin="5"
+                                IsLocked="False"
+                                Orientation="Horizontal">
                                 <ToolBar x:Name="toolBar" Band="0">
                                     <ToggleButton x:Name="toggleButton">
                                         <ToggleButton.Content>
-                                            <iconPacks:PackIconMaterial Kind="FileDocument"/>
+                                            <iconPacks:PackIconMaterial Kind="FileDocument" />
                                         </ToggleButton.Content>
                                     </ToggleButton>
                                     <Separator />
                                     <Button x:Name="button1">
                                         <Button.Content>
-                                            <iconPacks:PackIconFontAwesome Kind="PawSolid"/>
+                                            <iconPacks:PackIconFontAwesome Kind="PawSolid" />
 
                                         </Button.Content>
                                     </Button>
@@ -78,18 +100,21 @@
                                     <Button x:Name="button2">Another Button</Button>
                                 </ToolBar>
                             </ToolBarTray>
-                            <ToolBarTray Visibility="Collapsed" Margin="5" IsLocked="False"
-                                         Orientation="Vertical">
+                            <ToolBarTray
+                                Margin="5"
+                                IsLocked="False"
+                                Orientation="Vertical"
+                                Visibility="Collapsed">
                                 <ToolBar x:Name="toolBar2" Band="0">
                                     <ToggleButton x:Name="toggleButton2">
                                         <ToggleButton.Content>
-                                            <iconPacks:PackIconFontAwesome Kind="DochubBrands"/>
+                                            <iconPacks:PackIconFontAwesome Kind="DochubBrands" />
                                         </ToggleButton.Content>
                                     </ToggleButton>
                                     <Separator />
                                     <Button x:Name="button3">
                                         <Button.Content>
-                                            <iconPacks:PackIconFontAwesome Kind="PawSolid"/>
+                                            <iconPacks:PackIconFontAwesome Kind="PawSolid" />
                                         </Button.Content>
                                     </Button>
                                 </ToolBar>
@@ -100,33 +125,55 @@
                             </ToolBarTray>
                         </Grid>
 
-                        <Button x:Name="button6" Content="Button" Margin="5" />
-                        <ToggleButton x:Name="toggleButton3" Content="Toggle Button" Margin="5" />
+                        <Button
+                            x:Name="button6"
+                            Margin="5"
+                            Content="Button" />
+                        <ToggleButton
+                            x:Name="toggleButton3"
+                            Margin="5"
+                            Content="Toggle Button" />
 
-                        <CheckBox x:Name="checkBox" Content="CheckBox" Margin="5" IsChecked="True">
+                        <CheckBox
+                            x:Name="checkBox"
+                            Margin="5"
+                            Content="CheckBox"
+                            IsChecked="True">
                             <CheckBox.ContextMenu>
                                 <ContextMenu x:Name="contextMenu">
                                     <MenuItem Header="Item 1" />
-                                    <MenuItem IsEnabled="False" Header="Item 2" />
+                                    <MenuItem Header="Item 2" IsEnabled="False" />
                                     <MenuItem Header="Item 3" />
                                 </ContextMenu>
                             </CheckBox.ContextMenu>
                         </CheckBox>
-                        <CheckBox x:Name="checkBox1" Content="CheckBox (CheckBoxSwitchStyle)"
-                                  Margin="5">
+                        <CheckBox
+                            x:Name="checkBox1"
+                            Margin="5"
+                            Content="CheckBox (CheckBoxSwitchStyle)">
                             <CheckBox.ContextMenu>
                                 <ContextMenu x:Name="contextMenu1">
                                     <MenuItem Header="Item 1" />
-                                    <MenuItem IsEnabled="False" Header="Item 2" />
+                                    <MenuItem Header="Item 2" IsEnabled="False" />
                                     <MenuItem Header="Item 3" />
                                 </ContextMenu>
                             </CheckBox.ContextMenu>
                         </CheckBox>
-                        <RadioButton x:Name="radioButton" Content="RadioButton" GroupName="group" Margin="5" />
-                        <RadioButton x:Name="radioButton1" GroupName="group"  Margin="5"
-                                     Content="RadioButton (RadioButtonArrowStyle)" />
-                        <RadioButton x:Name="radioButton2" GroupName="group"  Margin="5"
-                                     Content="RadioButton (RadioButtonCheckStyle)" />
+                        <RadioButton
+                            x:Name="radioButton"
+                            Margin="5"
+                            Content="RadioButton"
+                            GroupName="group" />
+                        <RadioButton
+                            x:Name="radioButton1"
+                            Margin="5"
+                            Content="RadioButton (RadioButtonArrowStyle)"
+                            GroupName="group" />
+                        <RadioButton
+                            x:Name="radioButton2"
+                            Margin="5"
+                            Content="RadioButton (RadioButtonCheckStyle)"
+                            GroupName="group" />
                         <ComboBox x:Name="comboBox" Margin="5">
                             <ComboBoxItem Content="Item 1" />
                             <ComboBoxItem Content="Item 2" IsEnabled="False" />
@@ -134,16 +181,28 @@
                             <Separator />
                             <ComboBoxItem Content="Item 4" />
                         </ComboBox>
-                        <ComboBox x:Name="comboBox1" Margin="5" IsEditable="True">
+                        <ComboBox
+                            x:Name="comboBox1"
+                            Margin="5"
+                            IsEditable="True">
                             <ComboBoxItem Content="Item 1" />
                             <ComboBoxItem Content="Item 2" IsEnabled="False" />
                             <ComboBoxItem Content="Item 3" />
                             <Separator />
                             <ComboBoxItem Content="Item 4" />
                         </ComboBox>
-                        <Image x:Name="image" Margin="5" Stretch="Fill" />
-                        <Label x:Name="label" Content="Label" Margin="5" />
-                        <TextBlock x:Name="textBlock" Margin="5" Text="TextBlock" />
+                        <Image
+                            x:Name="image"
+                            Margin="5"
+                            Stretch="Fill" />
+                        <Label
+                            x:Name="label"
+                            Margin="5"
+                            Content="Label" />
+                        <TextBlock
+                            x:Name="textBlock"
+                            Margin="5"
+                            Text="TextBlock" />
                         <TextBlock x:Name="textBlock1" Margin="5">
                             <Hyperlink x:Name="hyperlink">Hyperink</Hyperlink>
                         </TextBlock>
@@ -154,28 +213,47 @@
                             <Separator />
                             <ListBoxItem>Item 4</ListBoxItem>
                         </ListBox>
-                        <ScrollViewer Width="100" Height="100" CanContentScroll="True" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto">
-                            <TextBlock Text="dskjhgrkjd hgdkjhg kjdhglkdsjf hgkjfd hghg kjfdgh khg kjdhg ksjhg lksjd hgkjfd hgkjfd hgkdjf hglkfdsj hglkfds jdh"></TextBlock>
+                        <ScrollViewer
+                            Width="100"
+                            Height="100"
+                            CanContentScroll="True"
+                            HorizontalScrollBarVisibility="Auto"
+                            VerticalScrollBarVisibility="Visible">
+                            <TextBlock Text="dskjhgrkjd hgdkjhg kjdhglkdsjf hgkjfd hghg kjfdgh khg kjdhg ksjhg lksjd hgkjfd hgkjfd hgkdjf hglkfdsj hglkfds jdh" />
                         </ScrollViewer>
 
                     </StackPanel>
 
                     <StackPanel Grid.Column="1">
                         <Calendar Margin="5" />
-                        <ListView x:Name="listView" IsEnabled="True" Height="100" Margin="5"
-                                  ScrollViewer.VerticalScrollBarVisibility="Visible"
-                                  ScrollViewer.HorizontalScrollBarVisibility="Visible">
+                        <ListView
+                            x:Name="listView"
+                            Height="100"
+                            Margin="5"
+                            IsEnabled="True"
+                            ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                            ScrollViewer.VerticalScrollBarVisibility="Visible">
                             <ListView.View>
                                 <GridView>
-                                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Header}" />
-                                    <GridViewColumn Header="Length" DisplayMemberBinding="{Binding Name}" />
+                                    <GridViewColumn DisplayMemberBinding="{Binding Header}" Header="Name" />
+                                    <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Length" />
                                 </GridView>
                             </ListView.View>
-                            <MenuItem Header="Foo" Name="Bar" />
-                            <MenuItem IsEnabled="False" Header="Hello World" Name="Disabled" />
-                            <MenuItem IsCheckable="True" IsChecked="True" Header="Item" Name="Checked" />
+                            <MenuItem Name="Bar" Header="Foo" />
+                            <MenuItem
+                                Name="Disabled"
+                                Header="Hello World"
+                                IsEnabled="False" />
+                            <MenuItem
+                                Name="Checked"
+                                Header="Item"
+                                IsCheckable="True"
+                                IsChecked="True" />
                         </ListView>
-                        <ListView x:Name="listView1" Style="{DynamicResource ListViewButtonArrayStyle}" Margin="5">
+                        <ListView
+                            x:Name="listView1"
+                            Margin="5"
+                            Style="{DynamicResource ListViewButtonArrayStyle}">
                             <TextBlock x:Name="textBlock2" Text="List" />
                             <ListViewItem>View</ListViewItem>
                             <ListViewItem>Button</ListViewItem>
@@ -195,20 +273,61 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Slider x:Name="slider" Margin="5" />
-                            <Slider x:Name="slider1" Margin="5" TickPlacement="TopLeft" Grid.Column="1" />
-                            <Slider x:Name="slider2" Margin="5" TickPlacement="BottomRight" Grid.Column="2" />
-                            <Slider x:Name="slider3" Margin="5" TickPlacement="Both" Grid.Column="3" />
-                            <Slider x:Name="slider4" Margin="5" Orientation="Vertical" Grid.Row="1" Height="60"
-                                    HorizontalAlignment="Center" />
-                            <Slider x:Name="slider5" Margin="5" Orientation="Vertical" Grid.Row="1" Grid.Column="1" Height="60"
-                                    HorizontalAlignment="Center" TickPlacement="TopLeft" />
-                            <Slider x:Name="slider6" Margin="5" Orientation="Vertical" Grid.Row="1" Grid.Column="2" Height="60"
-                                    HorizontalAlignment="Center" TickPlacement="BottomRight" />
-                            <Slider x:Name="slider7" Margin="5" Orientation="Vertical" Grid.Row="1" Grid.Column="3" Height="60"
-                                    HorizontalAlignment="Center" TickPlacement="Both" />
+                            <Slider
+                                x:Name="slider1"
+                                Grid.Column="1"
+                                Margin="5"
+                                TickPlacement="TopLeft" />
+                            <Slider
+                                x:Name="slider2"
+                                Grid.Column="2"
+                                Margin="5"
+                                TickPlacement="BottomRight" />
+                            <Slider
+                                x:Name="slider3"
+                                Grid.Column="3"
+                                Margin="5"
+                                TickPlacement="Both" />
+                            <Slider
+                                x:Name="slider4"
+                                Grid.Row="1"
+                                Height="60"
+                                Margin="5"
+                                HorizontalAlignment="Center"
+                                Orientation="Vertical" />
+                            <Slider
+                                x:Name="slider5"
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Height="60"
+                                Margin="5"
+                                HorizontalAlignment="Center"
+                                Orientation="Vertical"
+                                TickPlacement="TopLeft" />
+                            <Slider
+                                x:Name="slider6"
+                                Grid.Row="1"
+                                Grid.Column="2"
+                                Height="60"
+                                Margin="5"
+                                HorizontalAlignment="Center"
+                                Orientation="Vertical"
+                                TickPlacement="BottomRight" />
+                            <Slider
+                                x:Name="slider7"
+                                Grid.Row="1"
+                                Grid.Column="3"
+                                Height="60"
+                                Margin="5"
+                                HorizontalAlignment="Center"
+                                Orientation="Vertical"
+                                TickPlacement="Both" />
 
                         </Grid>
-                        <TreeView x:Name="treeView" Height="60" Margin="5">
+                        <TreeView
+                            x:Name="treeView"
+                            Height="60"
+                            Margin="5">
                             <TreeViewItem Header="Item 1" IsExpanded="True">
                                 <TreeViewItem Header="Subitem 1" />
                                 <TreeViewItem Header="Subitem 2" IsEnabled="False" />
@@ -218,10 +337,19 @@
                             </TreeViewItem>
                             <TreeViewItem Header="Item 2" />
                         </TreeView>
-                        <GroupBox x:Name="groupBox" Header="GroupBox" Margin="5">
+                        <GroupBox
+                            x:Name="groupBox"
+                            Margin="5"
+                            Header="GroupBox">
                             <StackPanel>
-                                <PasswordBox x:Name="passwordBox" Margin="5" Password="Password" />
-                                <TextBox x:Name="textBox" Margin="5" Text="Textbox" />
+                                <PasswordBox
+                                    x:Name="passwordBox"
+                                    Margin="5"
+                                    Password="Password" />
+                                <TextBox
+                                    x:Name="textBox"
+                                    Margin="5"
+                                    Text="Textbox" />
                             </StackPanel>
                         </GroupBox>
 
@@ -231,29 +359,59 @@
 
                         <ProgressBar Margin="5" Value="50" />
 
-                        <ProgressBar Margin="5" Value="50" IsIndeterminate="True"/>
+                        <ProgressBar
+                            Margin="5"
+                            IsIndeterminate="True"
+                            Value="50" />
 
-                        <ProgressBar Margin="5" Value="50" Orientation="Vertical" HorizontalAlignment="Center"
-                                     Height="100" Width="20" />
-                        <Expander x:Name="expander" Header="expander1" HorizontalAlignment="Left" Margin="5" ExpandDirection="Right"
-                                  Height="100" Visibility="Collapsed"
-                                  IsExpanded="True">
+                        <ProgressBar
+                            Width="20"
+                            Height="100"
+                            Margin="5"
+                            HorizontalAlignment="Center"
+                            Orientation="Vertical"
+                            Value="50" />
+                        <Expander
+                            x:Name="expander"
+                            Height="100"
+                            Margin="5"
+                            HorizontalAlignment="Left"
+                            ExpandDirection="Right"
+                            Header="expander1"
+                            IsExpanded="True"
+                            Visibility="Collapsed">
                             <Grid>
                                 <TextBox x:Name="textBox1" Margin="10" />
                             </Grid>
                         </Expander>
-                        <Expander x:Name="expander1" HorizontalAlignment="Right" Header="expander1" Margin="5" ExpandDirection="Left"
-                                  Height="100" IsExpanded="True" Visibility="Collapsed">
+                        <Expander
+                            x:Name="expander1"
+                            Height="100"
+                            Margin="5"
+                            HorizontalAlignment="Right"
+                            ExpandDirection="Left"
+                            Header="expander1"
+                            IsExpanded="True"
+                            Visibility="Collapsed">
                             <Grid>
                                 <TextBox x:Name="textBox2" Margin="10" />
                             </Grid>
                         </Expander>
-                        <Expander x:Name="expander2" Header="Up-Expander" Margin="5" ExpandDirection="Up">
+                        <Expander
+                            x:Name="expander2"
+                            Margin="5"
+                            ExpandDirection="Up"
+                            Header="Up-Expander">
                             <Grid>
                                 <TextBox x:Name="textBox3" Margin="10" />
                             </Grid>
                         </Expander>
-                        <Expander x:Name="expander3" Header="Down-Expander" Margin="5" ExpandDirection="Down" IsExpanded="True">
+                        <Expander
+                            x:Name="expander3"
+                            Margin="5"
+                            ExpandDirection="Down"
+                            Header="Down-Expander"
+                            IsExpanded="True">
                             <Grid>
                                 <TextBox x:Name="textBox4" Margin="10" />
                             </Grid>
@@ -263,11 +421,14 @@
                                 <TextBox Margin="10" />
                             </Grid>
                         </Expander>-->
-                        <RichTextBox x:Name="richTextBox" Height="150" Margin="5" ScrollViewer.HorizontalScrollBarVisibility="Visible">
+                        <RichTextBox
+                            x:Name="richTextBox"
+                            Height="150"
+                            Margin="5"
+                            ScrollViewer.HorizontalScrollBarVisibility="Visible">
                             <FlowDocument>
                                 <Paragraph>
-                                    Flow Document in default text color.
-                                    <Bold>Bold text.</Bold>
+                                    Flow Document in default text color.<Bold>Bold text.</Bold>
                                 </Paragraph>
                                 <Paragraph Foreground="Cyan">
                                     Cyan paragraph (static color).
@@ -292,16 +453,25 @@
                         <ColumnDefinition Width="auto" />
                     </Grid.ColumnDefinitions>
                     <StackPanel>
-                        <xtk:AutoSelectTextBox x:Name="autoSelectTextBox" Text="Auto Select Text Box" Margin="5" AutoMoveFocus="True"
-                                               AutoWordSelection="True" AutoSelectBehavior="OnFocus" />
-                        <xtk:BusyIndicator Margin="5" IsBusy="True" >
+                        <xtk:AutoSelectTextBox
+                            x:Name="autoSelectTextBox"
+                            Margin="5"
+                            AutoMoveFocus="True"
+                            AutoSelectBehavior="OnFocus"
+                            AutoWordSelection="True"
+                            Text="Auto Select Text Box" />
+                        <xtk:BusyIndicator Margin="5" IsBusy="True">
                             BusyIndicator
                             <xtk:BusyIndicator.BusyContentTemplate>
                                 <DataTemplate>
                                     <StackPanel Margin="4">
-                                        <TextBlock x:Name="textBlock" Text="Working..." FontWeight="Bold" HorizontalAlignment="Center" />
+                                        <TextBlock
+                                            x:Name="textBlock"
+                                            HorizontalAlignment="Center"
+                                            FontWeight="Bold"
+                                            Text="Working..." />
                                         <StackPanel Margin="4">
-                                            <ProgressBar Value="40" Height="15" />
+                                            <ProgressBar Height="15" Value="40" />
                                         </StackPanel>
                                     </StackPanel>
                                 </DataTemplate>
@@ -312,9 +482,13 @@
                             <xtk:BusyIndicator.BusyContentTemplate>
                                 <DataTemplate>
                                     <StackPanel Margin="4">
-                                        <TextBlock x:Name="textBlock" Text="Working..." FontWeight="Bold" HorizontalAlignment="Center" />
+                                        <TextBlock
+                                            x:Name="textBlock"
+                                            HorizontalAlignment="Center"
+                                            FontWeight="Bold"
+                                            Text="Working..." />
                                         <StackPanel Margin="4">
-                                            <ProgressBar Value="40" Height="15" />
+                                            <ProgressBar Height="15" Value="40" />
                                         </StackPanel>
                                     </StackPanel>
                                 </DataTemplate>
@@ -324,26 +498,47 @@
                             Item 1
                             Item 2
                         </xtk:ButtonSpinner>
-                        <xtk:WatermarkTextBox x:Name="watermarkTextBox" Margin="5" Watermark="Default Template" />
+                        <xtk:WatermarkTextBox
+                            x:Name="watermarkTextBox"
+                            Margin="5"
+                            Watermark="Default Template" />
 
-                        <xtk:WatermarkTextBox x:Name="watermarkTextBox1" Margin="5" Watermark="Custom Template">
+                        <xtk:WatermarkTextBox
+                            x:Name="watermarkTextBox1"
+                            Margin="5"
+                            Watermark="Custom Template">
                             <xtk:WatermarkTextBox.WatermarkTemplate>
                                 <DataTemplate>
-                                    <Border BorderBrush="{DynamicResource DarkerSelectedBrush}" BorderThickness="1"
-                                            Padding="5">
-                                        <ContentControl Content="{Binding}" FontWeight="Bold" Focusable="False" />
+                                    <Border
+                                        Padding="5"
+                                        BorderBrush="{DynamicResource DarkerSelectedBrush}"
+                                        BorderThickness="1">
+                                        <ContentControl
+                                            Content="{Binding}"
+                                            Focusable="False"
+                                            FontWeight="Bold" />
                                     </Border>
                                 </DataTemplate>
                             </xtk:WatermarkTextBox.WatermarkTemplate>
                         </xtk:WatermarkTextBox>
                         <xtk:ByteUpDown Margin="5" />
-                        <xtk:CheckComboBox Margin="5" ItemsSource="{Binding ItemCollection}" SelectedItem="Item1" />
-                        <xtk:CheckListBox Height="50" Margin="5" ItemsSource="{Binding ItemCollection}" />
+                        <xtk:CheckComboBox
+                            Margin="5"
+                            ItemsSource="{Binding ItemCollection}"
+                            SelectedItem="Item1" />
+                        <xtk:CheckListBox
+                            Height="50"
+                            Margin="5"
+                            ItemsSource="{Binding ItemCollection}" />
                         <xtk:DateTimePicker Margin="5" />
                         <xtk:DateTimeUpDown Margin="5" />
 
-                        <Button x:Name="button7" Margin="5" Content="MessageBox" Click="Button_Click_1" />
-                        <xtk:SplitButton Content="Content" Margin="5">
+                        <Button
+                            x:Name="button7"
+                            Margin="5"
+                            Click="Button_Click_1"
+                            Content="MessageBox" />
+                        <xtk:SplitButton Margin="5" Content="Content">
                             <xtk:SplitButton.DropDownContent>
                                 <StackPanel>
                                     <Button x:Name="button8" Content="SubContent" />
@@ -352,25 +547,49 @@
                             </xtk:SplitButton.DropDownContent>
 
                         </xtk:SplitButton>
-                        <xtk:TimelinePanel BeginDate="01/01/2007" EndDate="12/31/2007" Margin="5">
-                            <TextBlock x:Name="textBlock3" Text="TimelinePanel" xtk:TimelinePanel.Date="02/01/2007" />
-                            <TextBlock x:Name="textBlock4" Text="TimelinePanel" xtk:TimelinePanel.Date="03/31/2007" />
-                            <TextBlock x:Name="textBlock5" Text="TimelinePanel" xtk:TimelinePanel.Date="07/06/2007" />
+                        <xtk:TimelinePanel
+                            Margin="5"
+                            BeginDate="01/01/2007"
+                            EndDate="12/31/2007">
+                            <TextBlock
+                                x:Name="textBlock3"
+                                xtk:TimelinePanel.Date="02/01/2007"
+                                Text="TimelinePanel" />
+                            <TextBlock
+                                x:Name="textBlock4"
+                                xtk:TimelinePanel.Date="03/31/2007"
+                                Text="TimelinePanel" />
+                            <TextBlock
+                                x:Name="textBlock5"
+                                xtk:TimelinePanel.Date="07/06/2007"
+                                Text="TimelinePanel" />
                         </xtk:TimelinePanel>
-                        <xtk:RangeSlider Margin="5" Minimum="0" Maximum="100" LowerValue="20" HigherValue="60" />
+                        <xtk:RangeSlider
+                            Margin="5"
+                            HigherValue="60"
+                            LowerValue="20"
+                            Maximum="100"
+                            Minimum="0" />
 
                     </StackPanel>
 
                     <StackPanel Grid.Column="1">
-                        <xtk:ColorCanvas UsingAlphaChannel="True" Margin="5" />
-                        <xtk:ColorPicker DisplayColorAndName="True" Margin="5" UsingAlphaChannel="True"
-                                         ShowAvailableColors="True" ShowDropDownButton="True"
-                                         ShowRecentColors="True" ShowStandardColors="True" />
-                        <xtk:RichTextBox x:Name="richTextBox1" Height="100" Margin="5">
+                        <xtk:ColorCanvas Margin="5" UsingAlphaChannel="True" />
+                        <xtk:ColorPicker
+                            Margin="5"
+                            DisplayColorAndName="True"
+                            ShowAvailableColors="True"
+                            ShowDropDownButton="True"
+                            ShowRecentColors="True"
+                            ShowStandardColors="True"
+                            UsingAlphaChannel="True" />
+                        <xtk:RichTextBox
+                            x:Name="richTextBox1"
+                            Height="100"
+                            Margin="5">
                             <FlowDocument>
                                 <Paragraph>
-                                    Flow Document in default text color.
-                                    <Bold>Bold text.</Bold>
+                                    Flow Document in default text color.<Bold>Bold text.</Bold>
                                 </Paragraph>
                                 <Paragraph Foreground="Cyan">
                                     Cyan paragraph (static color).
@@ -384,22 +603,33 @@
                             </xtk:RichTextBoxFormatBarManager.FormatBar>
                         </xtk:RichTextBox>
                         <xtk:CalculatorUpDown Margin="5" />
-                        <xtk:MultiLineTextEditor Margin="5" MaxHeight="50">
+                        <xtk:MultiLineTextEditor MaxHeight="50" Margin="5">
                             MultiLineTextEditor
                         </xtk:MultiLineTextEditor>
                         <xtk:TimeSpanUpDown Margin="5" />
                         <xtk:DateTimeUpDown Margin="5" />
-                        <xtk:ValueRangeTextBox x:Name="valueRangeTextBox" Margin="5" ValueDataType="{x:Type sys:Int32}" MinValue="0"
-                                               MaxValue="100" />
+                        <xtk:ValueRangeTextBox
+                            x:Name="valueRangeTextBox"
+                            Margin="5"
+                            MaxValue="100"
+                            MinValue="0"
+                            ValueDataType="{x:Type sys:Int32}" />
                     </StackPanel>
 
                     <StackPanel Grid.Column="2">
                         <xtk:PropertyGrid
-                            SelectedObject="{Binding Path=., RelativeSource={RelativeSource AncestorType={x:Type Grid}}}"
-                            Height="480" Margin="5" />
+                            Height="480"
+                            Margin="5"
+                            SelectedObject="{Binding Path=., RelativeSource={RelativeSource AncestorType={x:Type Grid}}}" />
                     </StackPanel>
-                    <xtk:RangeSlider Grid.Column="3" Margin="5" Minimum="0" Maximum="100" LowerValue="20"
-                                     HigherValue="60" Orientation="Vertical" />
+                    <xtk:RangeSlider
+                        Grid.Column="3"
+                        Margin="5"
+                        HigherValue="60"
+                        LowerValue="20"
+                        Maximum="100"
+                        Minimum="0"
+                        Orientation="Vertical" />
 
 
                 </Grid>
@@ -414,32 +644,50 @@
                         <RowDefinition Height="* " />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <TabControl x:Name="tabControl1" Margin="10">
+                    <TabControl
+                        x:Name="tabControl1"
+                        Margin="10"
+                        Style="{DynamicResource TabControlStyle1}">
                         <TabItem Header="Tab1" IsSelected="True">
                             <Grid />
                         </TabItem>
                         <TabItem>
                             <TabItem.Header>
-                                <TextBlock x:Name="subHeaderText" Text="Multiline TabItem " Width="60"
-                                           TextWrapping="Wrap" TextAlignment="Center" />
+                                <TextBlock
+                                    x:Name="subHeaderText"
+                                    Width="60"
+                                    Text="Multiline TabItem "
+                                    TextAlignment="Center"
+                                    TextWrapping="Wrap" />
                             </TabItem.Header>
                             <Grid />
                         </TabItem>
-                        <TabItem Header="Disabled Tab Item" x:Name="tabItem3" IsEnabled="False">
+                        <TabItem
+                            x:Name="tabItem3"
+                            Header="Disabled Tab Item"
+                            IsEnabled="False">
                             <Grid />
                         </TabItem>
                         <TabItem Header="Tab2">
                             <Grid />
                         </TabItem>
                     </TabControl>
-                    <TabControl x:Name="tabControl2" TabStripPlacement="Left" Grid.Column="1" Margin="10">
+                    <TabControl
+                        x:Name="tabControl2"
+                        Grid.Column="1"
+                        Margin="10"
+                        TabStripPlacement="Left">
                         <TabItem Header="Tab1" IsSelected="True">
                             <Grid />
                         </TabItem>
                         <TabItem>
                             <TabItem.Header>
-                                <TextBlock x:Name="textBlock6" Text="Multiline TabItem " Width="60" TextWrapping="Wrap"
-                                           TextAlignment="Center" />
+                                <TextBlock
+                                    x:Name="textBlock6"
+                                    Width="60"
+                                    Text="Multiline TabItem "
+                                    TextAlignment="Center"
+                                    TextWrapping="Wrap" />
                             </TabItem.Header>
                             <Grid />
                         </TabItem>
@@ -450,14 +698,22 @@
                             <Grid />
                         </TabItem>
                     </TabControl>
-                    <TabControl x:Name="tabControl3" TabStripPlacement="Bottom" Grid.Row="1" Margin="10">
+                    <TabControl
+                        x:Name="tabControl3"
+                        Grid.Row="1"
+                        Margin="10"
+                        TabStripPlacement="Bottom">
                         <TabItem Header="Tab1" IsSelected="True">
                             <Grid />
                         </TabItem>
                         <TabItem>
                             <TabItem.Header>
-                                <TextBlock x:Name="textBlock7" Text="Multiline TabItem " Width="60" TextWrapping="Wrap"
-                                           TextAlignment="Center" />
+                                <TextBlock
+                                    x:Name="textBlock7"
+                                    Width="60"
+                                    Text="Multiline TabItem "
+                                    TextAlignment="Center"
+                                    TextWrapping="Wrap" />
                             </TabItem.Header>
                             <Grid />
                         </TabItem>
@@ -468,14 +724,23 @@
                             <Grid />
                         </TabItem>
                     </TabControl>
-                    <TabControl x:Name="tabControl4" TabStripPlacement="Right" Margin="10" Grid.Row="1" Grid.Column="1">
+                    <TabControl
+                        x:Name="tabControl4"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Margin="10"
+                        TabStripPlacement="Right">
                         <TabItem Header="Tab1" IsSelected="True">
                             <Grid />
                         </TabItem>
                         <TabItem>
                             <TabItem.Header>
-                                <TextBlock x:Name="textBlock8" Text="Multiline TabItem " Width="60" TextWrapping="Wrap"
-                                           TextAlignment="Center" />
+                                <TextBlock
+                                    x:Name="textBlock8"
+                                    Width="60"
+                                    Text="Multiline TabItem "
+                                    TextAlignment="Center"
+                                    TextWrapping="Wrap" />
                             </TabItem.Header>
                             <Grid />
                         </TabItem>
@@ -492,18 +757,20 @@
                 <TabItem.Resources>
                     <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
                 </TabItem.Resources>
-                <xcad:DockingManager x:Name="_dockingManager"
-                              AllowMixedOrientation="True"
-                              BorderBrush="Black"
-                              BorderThickness="1"
-                              >
+                <xcad:DockingManager
+                    x:Name="_dockingManager"
+                    AllowMixedOrientation="True"
+                    BorderBrush="Black"
+                    BorderThickness="1">
 
 
                     <xcad:DockingManager.DocumentHeaderTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <Image x:Name="image" Source="{Binding IconSource}"
-                            Margin="0,0,4,0" />
+                                <Image
+                                    x:Name="image"
+                                    Margin="0,0,4,0"
+                                    Source="{Binding IconSource}" />
                                 <TextBlock x:Name="textBlock" Text="{Binding Title}" />
                             </StackPanel>
                         </DataTemplate>
@@ -513,36 +780,25 @@
                             <xcad:LayoutDocumentPaneGroup>
                                 <xcad:LayoutDocumentPane>
 
-                                    <xcad:LayoutDocument ContentId="document1"
-                                             Title="Document 1"
-                                            >
-                                    </xcad:LayoutDocument>
-                                    <xcad:LayoutDocument ContentId="document2"
-                                             Title="Document 2"
-                                             >
-                                        <TextBox x:Name="textBox5" Text="Document 2 Content"
-                                    AcceptsReturn="True" />
+                                    <xcad:LayoutDocument Title="Document 1" ContentId="document1" />
+                                    <xcad:LayoutDocument Title="Document 2" ContentId="document2">
+                                        <TextBox
+                                            x:Name="textBox5"
+                                            AcceptsReturn="True"
+                                            Text="Document 2 Content" />
                                     </xcad:LayoutDocument>
                                 </xcad:LayoutDocumentPane>
-                            </xcad:LayoutDocumentPaneGroup >
+                            </xcad:LayoutDocumentPaneGroup>
                             <xcad:LayoutAnchorablePaneGroup DockWidth="125">
                                 <xcad:LayoutAnchorablePane>
-                                    <xcad:LayoutAnchorable ContentId="alarms"
-                                               Title="Alarms"
-                                               >
-
-                                    </xcad:LayoutAnchorable>
-                                    <xcad:LayoutAnchorable ContentId="journal"
-                                               Title="Journal">
+                                    <xcad:LayoutAnchorable Title="Alarms" ContentId="alarms" />
+                                    <xcad:LayoutAnchorable Title="Journal" ContentId="journal">
                                         <RichTextBox x:Name="richTextBox2">
                                             <FlowDocument>
-                                                <Paragraph FontSize="14"
-                                            FontFamily="Segoe">
-                                                    This is the content of the Journal Pane.
-                                                    <LineBreak />
-                                                    A
-                                                    <Bold>RichTextBox</Bold> has been added here
-                                                </Paragraph>
+                                                <Paragraph FontFamily="Segoe" FontSize="14">
+                                                    This is the content of the Journal Pane.<LineBreak />
+                                                    A<Bold>RichTextBox</Bold>
+                                                    has been added here</Paragraph>
                                             </FlowDocument>
                                         </RichTextBox>
                                     </xcad:LayoutAnchorable>
@@ -553,23 +809,23 @@
                         <xcad:LayoutRoot.LeftSide>
                             <xcad:LayoutAnchorSide>
                                 <xcad:LayoutAnchorGroup>
-                                    <xcad:LayoutAnchorable Title="Agenda"
-                                               ContentId="agenda"
-                                               >
-                                        <TextBlock x:Name="textBlock9" Text="Agenda Content"
-                                      Margin="10"
-                                      FontSize="18"
-                                      FontWeight="Black"
-                                      TextWrapping="Wrap" />
+                                    <xcad:LayoutAnchorable Title="Agenda" ContentId="agenda">
+                                        <TextBlock
+                                            x:Name="textBlock9"
+                                            Margin="10"
+                                            FontSize="18"
+                                            FontWeight="Black"
+                                            Text="Agenda Content"
+                                            TextWrapping="Wrap" />
                                     </xcad:LayoutAnchorable>
-                                    <xcad:LayoutAnchorable Title="Contacts"
-                                               ContentId="contacts"
-                                               >
-                                        <TextBlock x:Name="textBlock10" Text="Contacts Content"
-                                      Margin="10"
-                                      FontSize="18"
-                                      FontWeight="Black"
-                                      TextWrapping="Wrap" />
+                                    <xcad:LayoutAnchorable Title="Contacts" ContentId="contacts">
+                                        <TextBlock
+                                            x:Name="textBlock10"
+                                            Margin="10"
+                                            FontSize="18"
+                                            FontWeight="Black"
+                                            Text="Contacts Content"
+                                            TextWrapping="Wrap" />
                                     </xcad:LayoutAnchorable>
                                 </xcad:LayoutAnchorGroup>
                             </xcad:LayoutAnchorSide>
@@ -579,7 +835,11 @@
             </TabItem>
             <TabItem Header="Child Windows">
                 <xtk:WindowContainer>
-                    <xtk:ChildWindow Caption="Child Window" Width="200" Canvas.Left="246" Canvas.Top="96">
+                    <xtk:ChildWindow
+                        Canvas.Left="246"
+                        Canvas.Top="96"
+                        Width="200"
+                        Caption="Child Window">
                         <Grid>
                             <TextBlock x:Name="textBlock11" Text="Text" />
                         </Grid>

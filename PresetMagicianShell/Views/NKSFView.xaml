@@ -1,24 +1,24 @@
-﻿<catel:DataWindow x:Class="PresetMagicianShell.Views.NKSFView"
-                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                  xmlns:catel="http://schemas.catelproject.com"
-                  ResizeMode="CanResizeWithGrip"
-                  SizeToContent="Manual"
-                  mc:Ignorable="d"
-                  xmlns:wf="clr-namespace:System.ComponentModel.Design;assembly=System.Design"  
-
-                  xmlns:ViewModels="clr-namespace:PresetMagicianShell.ViewModels"
-                  d:DataContext="{d:DesignInstance ViewModels:NKSFViewModel}"
-
-                  Height="450" Width="800">
+﻿<catel:DataWindow
+    x:Class="PresetMagicianShell.Views.NKSFView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:catel="http://schemas.catelproject.com"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:PresetMagicianShell.ViewModels"
+    xmlns:wf="clr-namespace:System.ComponentModel.Design;assembly=System.Design"
+    Width="800"
+    Height="450"
+    d:DataContext="{d:DesignInstance viewModels:NKSFViewModel}"
+    ResizeMode="CanResizeWithGrip"
+    SizeToContent="Manual"
+    mc:Ignorable="d">
     <catel:DataWindow.Resources>
         <Style TargetType="{x:Type StatusBar}">
             <Setter Property="Background" Value="WhiteSmoke" />
             <Setter Property="Foreground" Value="Black" />
         </Style>
-    </catel:DataWindow.Resources>        
+    </catel:DataWindow.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -33,21 +33,49 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Label Grid.Row="0" Grid.Column="0" Content="SummaryInformation" />
-        <Label Grid.Row="1" Grid.Column="0" Content="ControllerAssignments" />
-        <Label Grid.Row="2" Grid.Column="0" Content="PluginId" />
-        <Label Grid.Row="3" Grid.Column="0" Content="PluginChunk" />
-        <TextBox Grid.Row="0" Grid.Column="1" IsReadOnly="True"
-                 VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" IsReadOnlyCaretVisible="True"
-                 Text="{Binding SummaryInformation}" />
-        <TextBox Grid.Row="1" Grid.Column="1" IsReadOnly="True"
-                 VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" IsReadOnlyCaretVisible="True"
-                 Text="{Binding ControllerAssignments}" />
-        <TextBox Grid.Row="2" Grid.Column="1" IsReadOnly="True" TextWrapping="Wrap"
-                 VerticalScrollBarVisibility="Auto" IsReadOnlyCaretVisible="True" Text="{Binding PluginId}" />
+        <Label
+            Grid.Row="0"
+            Grid.Column="0"
+            Content="SummaryInformation" />
+        <Label
+            Grid.Row="1"
+            Grid.Column="0"
+            Content="ControllerAssignments" />
+        <Label
+            Grid.Row="2"
+            Grid.Column="0"
+            Content="PluginId" />
+        <Label
+            Grid.Row="3"
+            Grid.Column="0"
+            Content="PluginChunk" />
+        <TextBox
+            Grid.Row="0"
+            Grid.Column="1"
+            IsReadOnly="True"
+            IsReadOnlyCaretVisible="True"
+            Text="{Binding SummaryInformation}"
+            TextWrapping="Wrap"
+            VerticalScrollBarVisibility="Auto" />
+        <TextBox
+            Grid.Row="1"
+            Grid.Column="1"
+            IsReadOnly="True"
+            IsReadOnlyCaretVisible="True"
+            Text="{Binding ControllerAssignments}"
+            TextWrapping="Wrap"
+            VerticalScrollBarVisibility="Auto" />
+        <TextBox
+            Grid.Row="2"
+            Grid.Column="1"
+            IsReadOnly="True"
+            IsReadOnlyCaretVisible="True"
+            Text="{Binding PluginId}"
+            TextWrapping="Wrap"
+            VerticalScrollBarVisibility="Auto" />
         <WindowsFormsHost Grid.Row="3" Grid.Column="1">
-            <wf:ByteViewer x:Name="PluginChunkControl"/>
+            <wf:ByteViewer x:Name="PluginChunkControl" />
         </WindowsFormsHost>
-            
+
     </Grid>
 </catel:DataWindow>

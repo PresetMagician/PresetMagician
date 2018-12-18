@@ -8,6 +8,7 @@ using Catel.Services;
 // ReSharper disable once CheckNamespace
 namespace PresetMagicianShell
 {
+    // ReSharper disable once UnusedMember.Global
     public class HelpOpenSupportLinkCommandContainer : CommandContainerBase
     {
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();

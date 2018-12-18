@@ -34,7 +34,7 @@ namespace PresetMagicianShell.ViewModels
 
         public VstPluginsViewModel(ICustomStatusService statusService, IPleaseWaitService pleaseWaitService,
             IRuntimeConfigurationService runtimeConfigurationService, IServiceLocator serviceLocator,
-            IViewModelFactory viewModelFactory, IUIVisualizerService uiVisualizerService, IVstService vstService)
+            IViewModelFactory viewModelFactory, IUIVisualizerService uiVisualizerService, IVstService vstService, ICommandManager commandManager)
         {
             Argument.IsNotNull(() => statusService);
             Argument.IsNotNull(() => pleaseWaitService);
@@ -57,7 +57,7 @@ namespace PresetMagicianShell.ViewModels
             serviceLocator.RegisterInstance(this);
 
             ScanPlugins = new TaskCommand(OnScanPluginsExecute);
-            RefreshPluginList = new TaskCommand(OnRefreshPluginListExecute);
+            
             EnablePlugin = new Command<object>(OnEnablePluginExecute);
             DisablePlugin = new Command<object>(OnDisablePluginExecute);
             ShowPluginInfo = new Command<object>(OnShowPluginInfoExecute);
@@ -72,7 +72,8 @@ namespace PresetMagicianShell.ViewModels
             var productview = (ICollectionViewLiveShaping) CollectionViewSource.GetDefaultView(pView);
             productview.IsLiveSorting = true;
 
-            RefreshPluginList.Execute();
+            commandManager.ExecuteCommand(Commands.Plugin.RefreshPlugins);
+            Title = "VST Plugins";
         }
 
         public Plugin SelectedPlugin
@@ -83,20 +84,17 @@ namespace PresetMagicianShell.ViewModels
 
 
         public FastObservableCollection<Plugin> Plugins { get; }
+        public ApplicationState ApplicationState { get; }
 
         public bool IsScanning { get; private set; }
         public int ScanProgressPercent { get; private set; }
         public string ScanProgressText { get; private set; }
-
-        public override string Title { get; protected set; } = "VST Plugins";
 
         public Command<object> EnablePlugin { get; set; }
 
         public Command<object> DisablePlugin { get; set; }
 
         public Command<object> ShowPluginInfo { get; set; }
-
-        public TaskCommand RefreshPluginList { get; set; }
 
         public TaskCommand ScanPlugins { get; set; }
 
@@ -119,35 +117,6 @@ namespace PresetMagicianShell.ViewModels
             var plugin = parameter as Plugin;
 
             _uiVisualizerService.ShowDialogAsync<VstPluginInfoViewModel>(plugin);
-        }
-
-        private async Task OnRefreshPluginListExecute()
-        {
-            var vstPluginDLLs = new ObservableCollection<string>();
-
-            await TaskHelper.Run(() =>
-            {
-                foreach (var i in _runtimeConfigurationService.RuntimeConfiguration.VstDirectories)
-                foreach (var path in _vstHost.EnumeratePlugins(i.Path))
-                    vstPluginDLLs.Add(path);
-            }, true);
-
-            using (Plugins.SuspendChangeNotifications())
-            {
-                Plugins.RemoveAll(item => !vstPluginDLLs.Contains(item.DllPath));
-
-                foreach (var dllPath in vstPluginDLLs)
-                {
-                    var foundPlugin = (from plugin in Plugins where plugin.DllPath == dllPath select plugin)
-                        .FirstOrDefault();
-
-                    if (foundPlugin == null)
-                        Plugins.Add(new Plugin
-                        {
-                            DllPath = dllPath
-                        });
-                }
-            }
         }
 
         private async Task OnScanPluginsExecute()

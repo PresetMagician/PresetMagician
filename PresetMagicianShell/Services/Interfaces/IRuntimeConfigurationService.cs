@@ -19,6 +19,8 @@ namespace PresetMagicianShell.Services.Interfaces
         
         #region Fields
         RuntimeConfiguration RuntimeConfiguration { get; }
+        ApplicationState ApplicationState { get; }
+
         #endregion
     }
 }

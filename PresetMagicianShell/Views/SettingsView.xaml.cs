@@ -2,23 +2,18 @@ using MahApps.Metro.IconPacks;
 using System.Diagnostics;
 using System.Windows.Controls;
 using System.Windows.Forms.VisualStyles;
+using Catel.Windows;
+using PresetMagicianShell.ViewModels;
 
 namespace PresetMagicianShell.Views
 {
     public partial class SettingsView
     {
-        public Control Icon { get; protected set; }
-
-        public SettingsView()
+        public SettingsView(SettingsViewModel viewModel)
+            : base(viewModel, DataWindowMode.OkCancel)
         {
             InitializeComponent();
-
-            var x = new PackIconEntypo();
-            x.Kind = PackIconEntypoKind.Air;
-
-
-            Icon = x;
-
         }
+       
     }
 }

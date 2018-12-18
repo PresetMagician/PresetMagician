@@ -9,20 +9,12 @@ using PresetMagicianShell.ViewModels;
 // ReSharper disable once CheckNamespace
 namespace PresetMagicianShell
 {
-    public class ToolsSettingsViewCommandContainer : CommandContainerBase
+    // ReSharper disable once UnusedMember.Global
+    public class ToolsSettingsViewCommandContainer : AbstractOpenDialogCommandContainer
     {
-        private static readonly ILog Log = LogManager.GetCurrentClassLogger();
-
-        public ToolsSettingsViewCommandContainer(ICommandManager commandManager)
-            : base(Commands.Tools.SettingsView, commandManager)
+        public ToolsSettingsViewCommandContainer(ICommandManager commandManager, IUIVisualizerService uiVisualizerService, IViewModelFactory viewModelFactory)
+            : base(Commands.Tools.SettingsView, nameof(SettingsViewModel),commandManager, uiVisualizerService, viewModelFactory)
         {
-        }
-
-        protected override async Task ExecuteAsync(object parameter)
-        {
-            base.Execute(parameter);
-
-            AvalonDockHelper.CreateDocument<SettingsViewModel>();
         }
     }
 }

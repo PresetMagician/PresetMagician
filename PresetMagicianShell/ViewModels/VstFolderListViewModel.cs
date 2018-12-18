@@ -24,17 +24,20 @@ namespace PresetMagicianShell.ViewModels
         private readonly IRuntimeConfigurationService _configurationService;
         private readonly ISelectDirectoryService _selectDirectoryService;
         private readonly IVstService _vstService;
+        private readonly ICommandManager _commandManager;
 
         public VstFolderListViewModel(IRuntimeConfigurationService configurationService,
-            ISelectDirectoryService selectDirectoryService, IVstService vstService)
+            ISelectDirectoryService selectDirectoryService, IVstService vstService, ICommandManager commandManager)
         {
             Argument.IsNotNull(() => configurationService);
             Argument.IsNotNull(() => selectDirectoryService);
             Argument.IsNotNull(() => vstService);
+            Argument.IsNotNull(() => commandManager);
 
             _configurationService = configurationService;
             _selectDirectoryService = selectDirectoryService;
             _vstService = vstService;
+            _commandManager = commandManager;
             
 
             AddDefaultVstFolders = new Command(OnAddDefaultVstFoldersExecute);
@@ -62,7 +65,7 @@ namespace PresetMagicianShell.ViewModels
                     VstDirectories.Add(new VstDirectory() { Path = i });
                 }
             }
-            _vstService.RefreshPluginList();
+            _commandManager.ExecuteCommand(Commands.Plugin.RefreshPlugins);
         }
 
         public TaskCommand AddFolder { get; }
@@ -74,7 +77,7 @@ namespace PresetMagicianShell.ViewModels
                 VstDirectories.Add(new VstDirectory() { Path = _selectDirectoryService.DirectoryName });
             }
 
-            _vstService.RefreshPluginList();
+            _commandManager.ExecuteCommand(Commands.Plugin.RefreshPlugins);
         }
 
         public Command<object> RemoveFolder { get; }
@@ -87,7 +90,7 @@ namespace PresetMagicianShell.ViewModels
             {
                 VstDirectories.Remove(folder);
             }
-            _vstService.RefreshPluginList();
+            _commandManager.ExecuteCommand(Commands.Plugin.RefreshPlugins);
         }
 
         #endregion

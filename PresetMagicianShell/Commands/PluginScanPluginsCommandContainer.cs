@@ -1,17 +1,16 @@
 ﻿using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using Catel;
-using Catel.IoC;
 using Catel.Logging;
 using Catel.MVVM;
-using Catel.Services;
+using PresetMagicianShell.Models;
 using PresetMagicianShell.Services.Interfaces;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagicianShell
 {
+    // ReSharper disable once UnusedMember.Global
     public class PluginScanPluginsCommandContainer : CommandContainerBase
     {
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();
@@ -26,15 +25,21 @@ namespace PresetMagicianShell
 
             _runtimeConfigurationService = runtimeConfigurationService;
             _runtimeConfigurationService.RuntimeConfiguration.Plugins.CollectionChanged += OnPluginsListChanged;
-
+            _runtimeConfigurationService.ApplicationState.PropertyChanged += OnAllowPluginScanChanged;
         }
 
         protected override bool CanExecute(object parameter)
         {
-            return (_runtimeConfigurationService.RuntimeConfiguration.Plugins.Count > 0);
+            return _runtimeConfigurationService.RuntimeConfiguration.Plugins.Count > 0 &&
+                   _runtimeConfigurationService.ApplicationState.AllowPluginScan;
         }
 
-        void OnPluginsListChanged(object o, NotifyCollectionChangedEventArgs ev)
+        private void OnAllowPluginScanChanged(object o, PropertyChangedEventArgs ev)
+        {
+            if (ev.PropertyName == nameof(ApplicationState.AllowPluginScan)) InvalidateCommand();
+        }
+
+        private void OnPluginsListChanged(object o, NotifyCollectionChangedEventArgs ev)
         {
             InvalidateCommand();
         }
