@@ -83,6 +83,10 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Compile Include="Commands\HelpOpenChatLinkCommandContainer.cs" />
+    <Compile Include="Commands\HelpOpenDocumentationLinkCommandContainer.cs" />
+    <Compile Include="Commands\HelpOpenSupportLinkCommandContainer.cs" />
+    <Compile Include="Commands\PluginScanPluginsCommandContainer.cs" />
     <Compile Include="Commands\ToolsNksfViewCommandContainer.cs" />
     <Compile Include="Commands\ToolsSettingsViewCommandContainer.cs" />
     <Compile Include="Constants.cs" />

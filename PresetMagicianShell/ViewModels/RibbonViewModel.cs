@@ -115,21 +115,7 @@ namespace PresetMagicianShell.ViewModels
             var mainView = ServiceLocator.Default.ResolveType<LayoutAnchorable>("PresetSelection");
             mainView.ToggleAutoHide();
 
-            var _pleaseWaitService = ServiceLocator.Default.ResolveType<IPleaseWaitService>();
-
-            await Catel.Threading.TaskHelper.Run(async () =>
-            {
-                var TotalItems = 250;
-                var random = new Random();
-
-                for (var i = 0; i < TotalItems; i++)
-                {
-                    _pleaseWaitService.UpdateStatus(i + 1, TotalItems, "doing something");
-
-                    await TaskShim.Delay(random.Next(5, 30));
-                }
-            }, true);
-            _pleaseWaitService.Hide();
+           throw new ArgumentException();
         }
 
         

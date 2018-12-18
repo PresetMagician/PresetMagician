@@ -1,4 +1,5 @@
 using System;
+using Catel.Collections;
 using PresetMagicianShell.Models;
 
 namespace PresetMagicianShell.Services.Interfaces
@@ -10,5 +11,7 @@ namespace PresetMagicianShell.Services.Interfaces
         #endregion
         event EventHandler SelectedPluginChanged;
         Plugin SelectedPlugin { get; set; }
+        FastObservableCollection<Plugin> SelectedPlugins { get; }
+        FastObservableCollection<Plugin> Plugins { get; }
     }
 }

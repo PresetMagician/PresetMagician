@@ -2,12 +2,12 @@
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using Catel;
+using Catel.Collections;
 using Catel.IoC;
 using Catel.Logging;
 using Catel.MVVM;
@@ -15,7 +15,6 @@ using Catel.Services;
 using Catel.Threading;
 using Drachenkatze.PresetMagician.VSTHost.VST;
 using NuGet;
-using Orchestra.Services;
 using PresetMagicianShell.Models;
 using PresetMagicianShell.Services.Interfaces;
 
@@ -24,26 +23,18 @@ namespace PresetMagicianShell.ViewModels
     public class VstPluginsViewModel : ViewModelBase
     {
         private readonly ILog _logger = LogManager.GetCurrentClassLogger();
+        private readonly IPleaseWaitService _pleaseWaitService;
         private readonly IRuntimeConfigurationService _runtimeConfigurationService;
+        private readonly ICustomStatusService _statusService;
         private readonly IUIVisualizerService _uiVisualizerService;
 
         private readonly IViewModelFactory _viewModelFactory;
-        private readonly IPleaseWaitService _pleaseWaitService;
-        private readonly ICustomStatusService _statusService;
         private readonly VstHost _vstHost;
         private readonly IVstService _vstService;
 
-        public event EventHandler ScanComplete;
-
-        public Plugin SelectedPlugin
-        {
-            get { return _vstService.SelectedPlugin; }
-            set { _vstService.SelectedPlugin = value; }
-        }
-
         public VstPluginsViewModel(ICustomStatusService statusService, IPleaseWaitService pleaseWaitService,
             IRuntimeConfigurationService runtimeConfigurationService, IServiceLocator serviceLocator,
-            IViewModelFactory viewModelFactory, IUIVisualizerService uiVisualizerService,IVstService vstService)
+            IViewModelFactory viewModelFactory, IUIVisualizerService uiVisualizerService, IVstService vstService)
         {
             Argument.IsNotNull(() => statusService);
             Argument.IsNotNull(() => pleaseWaitService);
@@ -61,7 +52,7 @@ namespace PresetMagicianShell.ViewModels
             _viewModelFactory = viewModelFactory;
             _uiVisualizerService = uiVisualizerService;
 
-            VstPlugins = runtimeConfigurationService.RuntimeConfiguration.Plugins;
+            Plugins = vstService.Plugins;
 
             serviceLocator.RegisterInstance(this);
 
@@ -71,26 +62,31 @@ namespace PresetMagicianShell.ViewModels
             DisablePlugin = new Command<object>(OnDisablePluginExecute);
             ShowPluginInfo = new Command<object>(OnShowPluginInfoExecute);
 
-            ICollectionView pView = CollectionViewSource.GetDefaultView(VstPlugins);   
-           
-            pView.SortDescriptions.Add(new SortDescription ("Enabled", ListSortDirection.Descending));
-            pView.SortDescriptions.Add(new SortDescription ("IsSupported", ListSortDirection.Descending));
-            pView.SortDescriptions.Add(new SortDescription ("PluginName", ListSortDirection.Ascending));
-            
+            var pView = CollectionViewSource.GetDefaultView(Plugins);
 
-            var productview = (ICollectionViewLiveShaping)CollectionViewSource.GetDefaultView(pView);
+            pView.SortDescriptions.Add(new SortDescription("Enabled", ListSortDirection.Descending));
+            pView.SortDescriptions.Add(new SortDescription("IsSupported", ListSortDirection.Descending));
+            pView.SortDescriptions.Add(new SortDescription("PluginName", ListSortDirection.Ascending));
+
+
+            var productview = (ICollectionViewLiveShaping) CollectionViewSource.GetDefaultView(pView);
             productview.IsLiveSorting = true;
 
             RefreshPluginList.Execute();
         }
 
+        public Plugin SelectedPlugin
+        {
+            get => _vstService.SelectedPlugin;
+            set => _vstService.SelectedPlugin = value;
+        }
 
-        public ObservableCollection<Plugin> VstPlugins { get; }
+
+        public FastObservableCollection<Plugin> Plugins { get; }
 
         public bool IsScanning { get; private set; }
         public int ScanProgressPercent { get; private set; }
         public string ScanProgressText { get; private set; }
-        public CollectionViewSource VstPluginsViewSource { get; set; }
 
         public override string Title { get; protected set; } = "VST Plugins";
 
@@ -103,7 +99,6 @@ namespace PresetMagicianShell.ViewModels
         public TaskCommand RefreshPluginList { get; set; }
 
         public TaskCommand ScanPlugins { get; set; }
-
 
         private void OnEnablePluginExecute(object parameter)
         {
@@ -137,25 +132,28 @@ namespace PresetMagicianShell.ViewModels
                     vstPluginDLLs.Add(path);
             }, true);
 
-            VstPlugins.RemoveAll(item => !vstPluginDLLs.Contains(item.DllPath));
-
-            foreach (var dllPath in vstPluginDLLs)
+            using (Plugins.SuspendChangeNotifications())
             {
-                var foundPlugin = (from plugin in VstPlugins where plugin.DllPath == dllPath select plugin)
-                    .FirstOrDefault();
+                Plugins.RemoveAll(item => !vstPluginDLLs.Contains(item.DllPath));
 
-                if (foundPlugin == null)
-                    VstPlugins.Add(new Plugin
-                    {
-                        DllPath = dllPath
-                    });
+                foreach (var dllPath in vstPluginDLLs)
+                {
+                    var foundPlugin = (from plugin in Plugins where plugin.DllPath == dllPath select plugin)
+                        .FirstOrDefault();
+
+                    if (foundPlugin == null)
+                        Plugins.Add(new Plugin
+                        {
+                            DllPath = dllPath
+                        });
+                }
             }
         }
 
         private async Task OnScanPluginsExecute()
         {
             IsScanning = true;
-            var newList = (from plugin in VstPlugins where plugin.Enabled select plugin).ToList();
+            var newList = (from plugin in Plugins where plugin.Enabled select plugin).ToList();
 
             await TaskHelper.Run(() =>
             {
@@ -199,15 +197,14 @@ namespace PresetMagicianShell.ViewModels
             }, true);
 
             IsScanning = false;
-            ScanComplete.SafeInvoke(this, EventArgs.Empty);
             _pleaseWaitService.Hide();
-            CollectionViewSource.GetDefaultView(VstPlugins).Refresh();
+            CollectionViewSource.GetDefaultView(Plugins).Refresh();
         }
 
         private void UpdateStatus(int currentItem, int totalItems, string statusText)
         {
-            var progressText = String.Format("({1} / {2}) {0}", statusText, currentItem, totalItems);
-            ScanProgressPercent = (int)(((float)currentItem / (float)totalItems)  * 100);
+            var progressText = string.Format("({1} / {2}) {0}", statusText, currentItem, totalItems);
+            ScanProgressPercent = (int) (currentItem / (float) totalItems * 100);
             ScanProgressText = progressText;
             _pleaseWaitService.UpdateStatus(currentItem, totalItems, "{0} {1} " + statusText);
             _statusService.UpdateStatus(progressText);

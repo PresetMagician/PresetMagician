@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media;
 using Catel.IoC;
+using Catel.IO;
 using Catel.Logging;
 using Catel.Services;
 using NBug;
@@ -19,6 +20,7 @@ using PresetMagicianShell.Services.Interfaces;
 using PresetMagicianShell.Views;
 using Win32Mapi;
 using MessageBox = System.Windows.MessageBox;
+using Path = System.IO.Path;
 
 namespace PresetMagicianShell
 {
@@ -156,7 +158,7 @@ namespace PresetMagicianShell
 
             var mapi = new SimpleMapi();
 
-            mapi.AddRecipient("PresetMagician Support", "support@presetmagician.com", false);
+            mapi.AddRecipient(Settings.Links.SupportEmailName, Settings.Links.SupportEmail, false);
 
             mapi.Attach(tempZip);
 
@@ -173,7 +175,25 @@ namespace PresetMagicianShell
                 myDict.Select(x =>
                     "<b>" + x.Key + "</b><br/><pre><code class=\"language-csharp\">" + HttpUtility.HtmlEncode(x.Value) +
                     "</code></pre>").ToArray());
-            mapi.Send("PresetMagician Crash: " + e.Exception.Message, noteText);
+            if (!mapi.Send("PresetMagician Crash: " + e.Exception.Message, noteText))
+            {
+                var crashesDir = Catel.IO.Path.Combine(Catel.IO.Path.GetApplicationDataDirectory(ApplicationDataTarget.UserRoaming),
+                    @"Crashes\", Guid.NewGuid().ToString());
+
+                Directory.CreateDirectory(crashesDir);
+                File.Copy(tempZip, Path.Combine(crashesDir, "DiagnosticData.zip"));
+
+                File.WriteAllText (Path.Combine(crashesDir, "ErrorDescription.txt"),noteText);
+
+                File.WriteAllText(Path.Combine(crashesDir, "0 Send all files in this directory to.txt"), "");
+                File.WriteAllText(Path.Combine(crashesDir, $"1 {Settings.Links.SupportEmail}.txt"), "");
+
+                MessageBox.Show(
+                    "Sorry, there seems to be no E-Mail client available. The Windows explorer will now open." +
+                    $"Please attach the files in the opened directory and send them to {Settings.Links.SupportEmail}");
+
+                Process.Start(crashesDir);
+            }
 
             e.Result = true;
         }

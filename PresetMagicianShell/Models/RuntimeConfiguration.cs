@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using Catel.Collections;
 using Catel.Data;
 using Catel.Runtime.Serialization;
 using Newtonsoft.Json;
@@ -11,8 +12,8 @@ namespace PresetMagicianShell.Models
     public class RuntimeConfiguration: ModelBase
     {
         [JsonProperty]
-        public ObservableCollection<VstDirectory> VstDirectories { get; set; } = new ObservableCollection<VstDirectory>();
+        public FastObservableCollection<VstDirectory> VstDirectories { get; set; } = new FastObservableCollection<VstDirectory>();
         [JsonProperty]
-        public ObservableCollection<Plugin> Plugins { get; set; } = new ObservableCollection<Plugin>();
+        public FastObservableCollection<Plugin> Plugins { get; set; } = new FastObservableCollection<Plugin>();
     }
 }

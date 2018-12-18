@@ -12,6 +12,33 @@ namespace PresetMagicianShell
 {
     public static class Settings
     {
+        #region Links
+        public class Links
+        {
+            private static string MasterSite = "presetmagician.com";
+            private static string MasterProtocol = "https://";
+            private static string SupportSite = "support.presetmagician.com";
+
+            #if DEBUG
+            private static string Site = "localhost/presetmagiciansite/public";
+            private static string Protocol = "http://";
+            #else
+            private static string Site = "presetmagician.com"
+            private static string Protocol = "https://";
+            #endif
+
+            public static readonly string Documentation = $"{MasterProtocol}{SupportSite}/documentation";
+            public static readonly string Support = $"{MasterProtocol}{SupportSite}/support";
+            public static readonly string SupportEmail = "support-confidential@presetmagician.com";
+            public static readonly string SupportEmailName = "PresetMagician Support";
+            public static readonly string Chat = $"https://gitter.im/PresetMagician/general";
+
+            public static readonly string GetTrialLicense = $"{Protocol}{Site}/license/trial";
+            public static readonly string SubmitPlugins = $"{Protocol}{Site}/plugins/submit";
+        }
+        #endregion
+
+        #region Application
         public static class Application
         {
             public static class AutomaticUpdates
@@ -34,18 +61,28 @@ namespace PresetMagicianShell
             
         }
     }
+    #endregion
 
+    #region Commands
     public static class Commands
     {
+        public static class Plugin
+        {
+            public const string ScanPlugins = "Plugin.ScanPlugins";
+        }
         public static class Tools
         {
             public const string NksfView = "Tools.NksfView";
             public const string SettingsView = "Tools.SettingsView";
         }
+
+        public static class Help
+        {
+            public const string OpenSupportLink = "Help.OpenSupportLink";
+            public const string OpenChatLink = "Help.OpenChatLink";
+            public const string OpenDocumentationLink = "Help.OpenDocumentationLink";
+        }
     }
-    
-    public static class Workspaces
-    {
-        public const string DefaultWorkspaceName = "Default";
-    }
+
+    #endregion
 }

@@ -19,7 +19,7 @@ namespace PresetMagicianShell.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -66,24 +66,6 @@ namespace PresetMagicianShell.Properties {
         internal static string PublicKey {
             get {
                 return ResourceManager.GetString("PublicKey", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to https://presetmagician.drachenkatze.org/plugins/submit.
-        /// </summary>
-        internal static string ReportPluginsURL {
-            get {
-                return ResourceManager.GetString("ReportPluginsURL", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to http://localhost:8000/plugins/submit.
-        /// </summary>
-        internal static string ReportPluginsURLDebug {
-            get {
-                return ResourceManager.GetString("ReportPluginsURLDebug", resourceCulture);
             }
         }
     }

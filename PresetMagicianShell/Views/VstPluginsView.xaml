@@ -125,7 +125,7 @@
                 CanUserAddRows="False"
                 CanUserSortColumns="False"
                 GridLinesVisibility="All"
-                ItemsSource="{Binding VstPlugins}"
+                ItemsSource="{Binding Plugins}"
                 RowDetailsVisibilityMode="Collapsed"
                 ScrollViewer.CanContentScroll="True"
                 SelectedItem="{Binding SelectedPlugin}"

@@ -57,7 +57,7 @@ namespace PresetMagicianShell.ViewModels
 
         private async Task OnGetLicenseExecuteAsync()
         {
-            System.Diagnostics.Process.Start("https://presetmagician.drachenkatze.org/license/trial");
+            Process.Start(Settings.Links.GetTrialLicense);
         }
         
         public TaskCommand SelectLicenseFile { get; private set; }
