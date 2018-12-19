@@ -66,6 +66,12 @@ namespace PresetMagicianShell
     #region Commands
     public static class Commands
     {
+        public static class Application
+        {
+            public const string CancelOperation = "Application.CancelOperation";
+            public const string ClearLastOperationErrors = "Application.ClearLastOperationErrors";
+        }
+
         public static class Plugin
         {
             public const string RefreshPlugins = "Plugin.RefreshPlugins";

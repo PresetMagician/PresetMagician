@@ -47,7 +47,8 @@ namespace PresetMagicianShell.Services
             base.Hide();
             var progressBar = InitializeProgressBar();
             _statusService.UpdateStatus("");
-            progressBar.Visibility = Visibility.Collapsed;
+
+            _dispatcherService.BeginInvoke(() => { progressBar.Visibility = Visibility.Collapsed; }, true);
 
         }        
 

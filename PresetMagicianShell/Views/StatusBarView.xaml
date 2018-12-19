@@ -31,29 +31,62 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel x:Name="StackPanel">
-            <StackPanel>
+            <StackPanel orccontrols:PinnableToolTipService.Placement="Top" Visibility="{Binding ApplicationState.ApplicationOperationLastOperationHadErrors, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
+                <StackPanel>
+
+                    <iconPacks:PackIconOcticons
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Kind="Alert"
+                        ToolTip="Errors occured during last operation" />
+                    <TextBlock Text="Errors occured" />
+                    <Button
+                        Height="16"
+                        Margin="0"
+                        Padding="0"
+                        Command="{catel:CommandManagerBinding Application.ClearLastOperationErrors}"
+                        Content="Clear" />
+                </StackPanel>
                 <Separator Width="{Binding ElementName=StackPanel, Path=ActualHeight}" Margin="3,0,3,0">
                     <Separator.LayoutTransform>
                         <RotateTransform Angle="90" />
                     </Separator.LayoutTransform>
                 </Separator>
-                <fluent:StatusBarItem
-                    orccontrols:PinnableToolTipService.InitialShowDelay="0"
-                    orccontrols:PinnableToolTipService.Placement="Top"
-                    Value="{Binding LicensedTo}">
-                    <orccontrols:PinnableToolTipService.ToolTip>
-                        <orccontrols:PinnableToolTip AllowCloseByUser="True" ResizeMode="CanResize">
-                            <StackPanel>
-                                <Label Content="{Binding LicensedTo}" />
-                                <Border
-                                    Width="50"
-                                    Height="50"
-                                    Margin="5" />
-                            </StackPanel>
-                        </orccontrols:PinnableToolTip>
-                    </orccontrols:PinnableToolTipService.ToolTip>
-                </fluent:StatusBarItem>
+                <orccontrols:PinnableToolTipService.ToolTip>
+                    <orccontrols:PinnableToolTip AllowCloseByUser="True" ResizeMode="CanResize">
+                        <StackPanel>
+                            <TextBlock Text="{Binding ApplicationState.ApplicationOperationLastOperation}" />
+                            <TextBlock Text="{Binding ApplicationState.ApplicationOperationLastErrorsAsText}" />
+                            <Border
+                                Width="50"
+                                Height="50"
+                                Margin="5" />
+                        </StackPanel>
+                    </orccontrols:PinnableToolTip>
+                </orccontrols:PinnableToolTipService.ToolTip>
+
             </StackPanel>
+            <StackPanel orccontrols:PinnableToolTipService.InitialShowDelay="0" orccontrols:PinnableToolTipService.Placement="Top">
+                <TextBlock Grid.Column="1" Text="{Binding LicensedTo}" />
+                <Separator Width="{Binding ElementName=StackPanel, Path=ActualHeight}" Margin="3,0,3,0">
+                    <Separator.LayoutTransform>
+                        <RotateTransform Angle="90" />
+                    </Separator.LayoutTransform>
+                </Separator>
+                <orccontrols:PinnableToolTipService.ToolTip>
+                    <orccontrols:PinnableToolTip AllowCloseByUser="True" ResizeMode="CanResize">
+                        <StackPanel>
+                            <Label Content="{Binding LicensedTo}" />
+                            <Border
+                                Width="50"
+                                Height="50"
+                                Margin="5" />
+                        </StackPanel>
+                    </orccontrols:PinnableToolTip>
+                </orccontrols:PinnableToolTipService.ToolTip>
+            </StackPanel>
+
+
             <StackPanel Visibility="{Binding IsUpdatedInstalled, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
                 <Separator Width="{Binding ElementName=StackPanel, Path=ActualHeight}" Margin="3,0,3,0">
                     <Separator.LayoutTransform>
@@ -65,26 +98,26 @@
                     VerticalAlignment="Center"
                     Kind="Download"
                     ToolTip="Update is installed, restart to enable new features" />
-            </StackPanel>
-            <StackPanel Visibility="{Binding IsUpdateAvailable, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
                 <Separator Width="{Binding ElementName=StackPanel, Path=ActualHeight}" Margin="3,0,3,0">
                     <Separator.LayoutTransform>
                         <RotateTransform Angle="90" />
                     </Separator.LayoutTransform>
                 </Separator>
+            </StackPanel>
+            <StackPanel Visibility="{Binding IsUpdateAvailable, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
                 <iconPacks:PackIconMaterial
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Kind="Download"
                     ToolTip="Update is available" />
-            </StackPanel>
-            <StackPanel>
+
                 <Separator Width="{Binding ElementName=StackPanel, Path=ActualHeight}" Margin="3,0,3,0">
                     <Separator.LayoutTransform>
                         <RotateTransform Angle="90" />
                     </Separator.LayoutTransform>
                 </Separator>
-
+            </StackPanel>
+            <StackPanel>
                 <TextBlock Text="{Binding Version}" />
             </StackPanel>
         </StackPanel>

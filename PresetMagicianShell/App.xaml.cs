@@ -94,26 +94,41 @@ namespace PresetMagicianShell
             }
 
             byte[] result;
-            const int readlength = 1024;
+            const int readlength = 32;
 
             var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite);
 
             result = new byte[readlength];
             fileStream.Read(result, 0, readlength);
+            fileStream.Seek(0, SeekOrigin.Begin);
 
             var firstLogEntries = System.Text.Encoding.UTF8.GetString(result);
-            var separatorPosition = firstLogEntries.IndexOf("=>", StringComparison.Ordinal);
-            var dateTimeEntry = firstLogEntries.Substring(0, separatorPosition - 1).Replace(":","-");
 
-            var trimmedFilePath = filePath.Replace(".log", " ");
-            trimmedFilePath += dateTimeEntry + ".log";
+            
 
-            var newLogFile = new FileStream(trimmedFilePath, FileMode.Create);
-            fileStream.Seek(0, SeekOrigin.Begin);
-            fileStream.CopyTo(newLogFile);
+            if (firstLogEntries.Length >= readlength)
+            {
+                // Probably good log file, try to extract the Probably corrupted file. 
+
+                var separatorPosition = firstLogEntries.IndexOf("=>", StringComparison.Ordinal);
+
+                if (separatorPosition == 24)
+                {
+                    // Separator position found, probably valid time entry
+                    var dateTimeEntry = firstLogEntries.Substring(0, separatorPosition - 1).Replace(":","-");
+
+                    var trimmedFilePath = filePath.Replace(".log", " ");
+                    trimmedFilePath += dateTimeEntry + ".log";
+
+                    var newLogFile = new FileStream(trimmedFilePath, FileMode.Create);
+                    fileStream.CopyTo(newLogFile);
+                    newLogFile.Close();
+                }
+            }
+
             fileStream.Flush();
             fileStream.SetLength(0);
-            newLogFile.Close();
+            
         }
 
         private async Task StartShell()
@@ -143,7 +158,7 @@ namespace PresetMagicianShell
         protected override void OnExit(ExitEventArgs e)
         {
             var serviceLocator = ServiceLocator.Default;
-            serviceLocator.ResolveType<IRuntimeConfigurationService>().Save();
+            serviceLocator.ResolveType<IRuntimeConfigurationService>().Save(true);
             base.OnExit(e);
         }
 

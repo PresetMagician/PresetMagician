@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Catel;
-using Catel.Logging;
 using Catel.MVVM;
 using Catel.Threading;
 using PresetMagicianShell.Extensions;
@@ -16,43 +15,56 @@ namespace PresetMagicianShell
     // ReSharper disable once UnusedMember.Global
     public class PluginRefreshPluginsCommandContainer : CommandContainerBase
     {
-        private static readonly ILog _log = LogManager.GetCurrentClassLogger();
-
+        private readonly IApplicationService _applicationService;
         private readonly IRuntimeConfigurationService _runtimeConfigurationService;
         private readonly IVstService _vstService;
 
         public PluginRefreshPluginsCommandContainer(ICommandManager commandManager,
-            IVstService vstService, IRuntimeConfigurationService runtimeConfigurationService)
+            IVstService vstService, IRuntimeConfigurationService runtimeConfigurationService,
+            IApplicationService applicationService)
             : base(Commands.Plugin.RefreshPlugins, commandManager)
         {
             Argument.IsNotNull(() => runtimeConfigurationService);
             Argument.IsNotNull(() => vstService);
+            Argument.IsNotNull(() => applicationService);
 
             _runtimeConfigurationService = runtimeConfigurationService;
             _vstService = vstService;
+            _applicationService = applicationService;
         }
 
         protected override async Task ExecuteAsync(object parameter)
         {
             var vstPluginDLLFiles = new ObservableCollection<string>();
 
-            _log.Debug("Scanning VST directories for changed plugins");
-            _runtimeConfigurationService.ApplicationState.IsPluginsRefreshing = true;
+            _applicationService.StartApplicationOperation(this, "Scanning VST directories for plugins",
+                _runtimeConfigurationService.RuntimeConfiguration.VstDirectories.Count);
+
+            var cancellationToken = _applicationService.GetApplicationOperationCancellationSource().Token;
+            var vstDirectories = _runtimeConfigurationService.RuntimeConfiguration.VstDirectories;
 
             await TaskHelper.Run(() =>
             {
-                ObservableCollection<string> dllFiles = new ObservableCollection<string>();
+                var dllFiles = new ObservableCollection<string>();
 
-                foreach (var i in _runtimeConfigurationService.RuntimeConfiguration.VstDirectories)
+                foreach (var i in vstDirectories)
                 {
+                    _applicationService.UpdateApplicationOperationStatus(
+                        vstDirectories.IndexOf(i),
+                        $"Scanning {i.Path}");
+
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        return;
+                    }
+
                     try
                     {
                         dllFiles = _vstService.VstHost.EnumeratePlugins(i.Path);
                     }
                     catch (Exception e)
                     {
-                        _log.Error($"Unable to scan {i.Path} because of {e.Message}");
-                        _log.Debug(e);
+                        _applicationService.AddApplicationOperationError($"Unable to scan {i.Path} because of {e.Message}");
                     }
 
                     if (dllFiles.Count > 0)
@@ -60,9 +72,9 @@ namespace PresetMagicianShell
                         vstPluginDLLFiles.AddRange(dllFiles);
                     }
                 }
-            }, true);
+            }, true, cancellationToken);
 
-            var plugins = _runtimeConfigurationService.RuntimeConfiguration.Plugins;
+            var plugins = _vstService.Plugins;
 
             using (plugins.SuspendChangeNotifications())
             {
@@ -83,8 +95,15 @@ namespace PresetMagicianShell
                 }
             }
 
-            _log.Debug("Scanning VST directories for changed plugins completed.");
-            _runtimeConfigurationService.ApplicationState.IsPluginsRefreshing = false;
+            if (cancellationToken.IsCancellationRequested)
+            {
+                _applicationService.StopApplicationOperation("VST directory scan aborted.");
+            }
+            else
+            {
+                _applicationService.StopApplicationOperation("VST directory scan completed.");
+            }
+            
         }
     }
 }

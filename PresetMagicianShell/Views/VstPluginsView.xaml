@@ -78,27 +78,26 @@
         </ItemsControl>
         <xctk:BusyIndicator
             Grid.Row="0"
-            IsBusy="{Binding IsScanning}"
-            Visibility="{Binding Appli HasItems, ElementName=VstPluginList, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay, FallbackValue=Visible}">
+            IsBusy="{Binding ApplicationState.IsPluginListBusy, Mode=OneWay}"
+            Visibility="{Binding HasItems, ElementName=VstPluginList, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay, FallbackValue=Visible}">
 
             <xctk:BusyIndicator.BusyContentTemplate>
                 <DataTemplate>
-
                     <StackPanel Width="600" Margin="2">
                         <TextBlock
                             HorizontalAlignment="Center"
                             FontWeight="Bold"
-                            Text="Scanning Plugins" />
+                            Text="{Binding Path=DataContext.ApplicationState.ApplicationBusyOperationDescription, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}" />
                         <StackPanel Margin="2">
                             <ProgressBar
                                 Width="550"
                                 Height="15"
-                                Value="{Binding Path=DataContext.ScanProgressPercent, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                                Value="{Binding Path=DataContext.ApplicationState.ApplicationBusyPercent, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}" />
                             <TextBlock
                                 Width="550"
                                 Height="30"
                                 HorizontalAlignment="Center"
-                                Text="{Binding Path=DataContext.ScanProgressText, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                Text="{Binding Path=DataContext.ApplicationState.ApplicationBusyStatusText, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                 TextAlignment="Left"
                                 TextWrapping="Wrap" />
                         </StackPanel>
@@ -107,6 +106,7 @@
                             <Button
                                 Margin="2,0,0,0"
                                 HorizontalAlignment="Center"
+                                Command="{catel:CommandManagerBinding Application.CancelOperation}"
                                 Content="Cancel" />
                         </Grid>
                     </StackPanel>

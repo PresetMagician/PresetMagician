@@ -1,19 +1,39 @@
-﻿using Catel;
+﻿using System;
+using System.Threading.Tasks;
+using Catel;
 using Catel.MVVM;
 using Orc.Squirrel;
 using Orchestra;
 using Orchestra.Services;
-using PresetMagicianShell.Services;
-using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
 using Portable.Licensing;
+using PresetMagicianShell.Models;
+using PresetMagicianShell.Services;
+using PresetMagicianShell.Services.Interfaces;
 
 namespace PresetMagicianShell.ViewModels
 {
     public class StatusBarViewModel : ViewModelBase
-
     {
+        #region Constructors
+
+        public StatusBarViewModel(IUpdateService updateService,
+            IApplicationInitializationService applicationInitializationService, ILicenseService licenseService, IRuntimeConfigurationService runtimeConfigurationService)
+        {
+            Argument.IsNotNull(() => updateService);
+            Argument.IsNotNull(() => applicationInitializationService);
+            Argument.IsNotNull(() => licenseService);
+            Argument.IsNotNull(() => runtimeConfigurationService);
+
+            _updateService = updateService;
+            _applicationInitializationService = applicationInitializationService as ApplicationInitializationService;
+            _licenseService = licenseService;
+
+            _licenseService.LicenseChanged += OnLicenseChanged;
+            ApplicationState = runtimeConfigurationService.ApplicationState;
+        }
+
+        #endregion Constructors
+
         #region Fields
 
         private readonly IUpdateService _updateService;
@@ -21,23 +41,6 @@ namespace PresetMagicianShell.ViewModels
         private readonly ILicenseService _licenseService;
 
         #endregion Fields
-
-        #region Constructors
-
-        public StatusBarViewModel(IUpdateService updateService, IApplicationInitializationService applicationInitializationService, ILicenseService licenseService)
-        {
-            Argument.IsNotNull(() => updateService);
-            Argument.IsNotNull(() => applicationInitializationService);
-            Argument.IsNotNull(() => licenseService);
-
-            _updateService = updateService;
-            _applicationInitializationService = applicationInitializationService as ApplicationInitializationService;
-            _licenseService = licenseService;
-
-            _licenseService.LicenseChanged += OnLicenseChanged;
-        }
-
-        #endregion Constructors
 
         #region Properties
 
@@ -48,6 +51,7 @@ namespace PresetMagicianShell.ViewModels
         public string Version { get; private set; }
         public License CurrentLicense { get; set; }
 
+        public ApplicationState ApplicationState { get; private set; }
 
         public string LicensedTo
         {
@@ -55,12 +59,10 @@ namespace PresetMagicianShell.ViewModels
             {
                 if (_licenseService.GetCurrentLicense() != null)
                 {
-                    return "Licensed to: "+_licenseService.GetCurrentLicense().Customer.Name;
+                    return "Licensed to: " + _licenseService.GetCurrentLicense().Customer.Name;
                 }
-                else
-                {
-                    return "Not Licensed";
-                }
+
+                return "Not Licensed";
             }
         }
 
@@ -68,11 +70,10 @@ namespace PresetMagicianShell.ViewModels
 
         #region Methods
 
-        private void OnLicenseChanged(Object sender, EventArgs e)
+        private void OnLicenseChanged(object sender, EventArgs e)
         {
             CurrentLicense = _licenseService.GetCurrentLicense();
-            RaisePropertyChanged("LicensedTo");
-
+            RaisePropertyChanged(nameof(LicensedTo));
         }
 
         protected override async Task InitializeAsync()

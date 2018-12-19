@@ -53,7 +53,7 @@ namespace PresetMagicianShell.ViewModels
             _uiVisualizerService = uiVisualizerService;
 
             Plugins = vstService.Plugins;
-
+            ApplicationState = runtimeConfigurationService.ApplicationState;
             serviceLocator.RegisterInstance(this);
 
             ScanPlugins = new TaskCommand(OnScanPluginsExecute);
@@ -69,10 +69,13 @@ namespace PresetMagicianShell.ViewModels
             pView.SortDescriptions.Add(new SortDescription("PluginName", ListSortDirection.Ascending));
 
 
+
+
             var productview = (ICollectionViewLiveShaping) CollectionViewSource.GetDefaultView(pView);
             productview.IsLiveSorting = true;
 
             commandManager.ExecuteCommand(Commands.Plugin.RefreshPlugins);
+
             Title = "VST Plugins";
         }
 
@@ -84,7 +87,7 @@ namespace PresetMagicianShell.ViewModels
 
 
         public FastObservableCollection<Plugin> Plugins { get; }
-        public ApplicationState ApplicationState { get; }
+        public ApplicationState ApplicationState { get; private set; }
 
         public bool IsScanning { get; private set; }
         public int ScanProgressPercent { get; private set; }

@@ -84,6 +84,8 @@
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
     <Compile Include="Commands\AbstractOpenDialogCommandContainer.cs" />
+    <Compile Include="Commands\ApplicationCancelOperationCommandContainer.cs" />
+    <Compile Include="Commands\ApplicationClearLastOperationErrorsCommandContainer.cs" />
     <Compile Include="Commands\HelpOpenChatLinkCommandContainer.cs" />
     <Compile Include="Commands\HelpOpenDocumentationLinkCommandContainer.cs" />
     <Compile Include="Commands\HelpOpenSupportLinkCommandContainer.cs" />
@@ -108,9 +110,12 @@
     <Compile Include="Models\RuntimeConfiguration.cs" />
     <Compile Include="Models\Settings\VstDirectory.cs" />
     <Compile Include="Services\AboutInfoService.cs" />
+    <Compile Include="Services\ApplicationAlreadyBusyException.cs" />
     <Compile Include="Services\ApplicationInitializationService.cs" />
+    <Compile Include="Services\ApplicationService.cs" />
     <Compile Include="Services\CustomPleaseWaitService.cs" />
     <Compile Include="Services\CustomStatusService.cs" />
+    <Compile Include="Services\Interfaces\IApplicationService.cs" />
     <Compile Include="Services\Interfaces\ICustomStatusService.cs" />
     <Compile Include="Services\Interfaces\ILicenseService.cs" />
     <Compile Include="Services\LicenseService.cs" />
