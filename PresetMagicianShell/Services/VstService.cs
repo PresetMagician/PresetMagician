@@ -12,23 +12,20 @@ namespace PresetMagicianShell.Services
     public class VstService : IVstService
     {
         private readonly IServiceLocator _serviceLocator;
-        private readonly IRuntimeConfigurationService _runtimeConfigurationService;
         public VstHost VstHost { get; set; }
-        public VstService(IServiceLocator serviceLocator, IRuntimeConfigurationService runtimeConfigurationService)
+        public VstService(IServiceLocator serviceLocator)
         {
             Argument.IsNotNull(() => serviceLocator);
-            Argument.IsNotNull(() => runtimeConfigurationService);
 
             _serviceLocator = serviceLocator;
-            _runtimeConfigurationService = runtimeConfigurationService;
             VstHost = new VstHost();
 
-            Plugins = _runtimeConfigurationService.RuntimeConfiguration.Plugins;
+          
         }
 
 
         public FastObservableCollection<Plugin> SelectedPlugins { get; } = new FastObservableCollection<Plugin>();
-        public FastObservableCollection<Plugin> Plugins { get; private set; } 
+        public FastObservableCollection<Plugin> Plugins { get; private set; } = new FastObservableCollection<Plugin>();
 
        
         #region SelectedPlugin

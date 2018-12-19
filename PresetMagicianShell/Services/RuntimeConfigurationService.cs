@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Catel;
 using Catel.IoC;
 using Catel.IO;
 using Catel.Logging;
@@ -25,13 +26,19 @@ namespace PresetMagicianShell.Services
         private readonly JsonSerializer _jsonSerializer;
         private readonly ILog _logger = LogManager.GetCurrentClassLogger();
         private readonly IServiceLocator _serviceLocator;
+        private readonly IVstService _vstService;
 
         private LayoutRoot _originalLayout;
 
-        public RuntimeConfigurationService(IServiceLocator serviceLocator)
+        public RuntimeConfigurationService(IServiceLocator serviceLocator, IVstService vstService)
         {
+            Argument.IsNotNull(() => serviceLocator);
+            Argument.IsNotNull(() => vstService);
+
             RuntimeConfiguration = new RuntimeConfiguration();
             ApplicationState = new ApplicationState();
+
+            _vstService = vstService;
             _serviceLocator = serviceLocator;
             _jsonSerializer = new JsonSerializer {Formatting = Formatting.Indented};
         }
@@ -58,6 +65,8 @@ namespace PresetMagicianShell.Services
                 using (JsonReader jsonReader = new JsonTextReader(rd))
                 {
                     RuntimeConfiguration = _jsonSerializer.Deserialize<RuntimeConfiguration>(jsonReader);
+
+                    _vstService.Plugins.AddItems(RuntimeConfiguration.CachedPlugins);
                 }
             }
             catch (Exception e)
@@ -91,17 +100,22 @@ namespace PresetMagicianShell.Services
             dockingManager.Layout = _originalLayout;
         }
 
-        public void Save()
+        public void Save(bool includeCaching = false)
         {
-            SaveConfiguration();
+            SaveConfiguration(includeCaching);
             SaveLayout();
         }
 
-        public void SaveConfiguration()
+        public void SaveConfiguration(bool includeCaching = false)
         {
             using (var sw = new StreamWriter(_defaultLocalConfigFilePath))
             using (JsonWriter jsonWriter = new JsonTextWriter(sw))
             {
+                if (includeCaching)
+                {
+                    RuntimeConfiguration.CachedPlugins = _vstService.Plugins;
+                }
+
                 _jsonSerializer.Serialize(jsonWriter, RuntimeConfiguration);
             }
         }

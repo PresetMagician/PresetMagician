@@ -16,21 +16,24 @@ namespace PresetMagicianShell
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();
 
         private readonly IRuntimeConfigurationService _runtimeConfigurationService;
+        private readonly IVstService _vstService;
 
         public PluginScanPluginsCommandContainer(ICommandManager commandManager,
-            IRuntimeConfigurationService runtimeConfigurationService)
+            IRuntimeConfigurationService runtimeConfigurationService, IVstService vstService)
             : base(Commands.Plugin.ScanPlugins, commandManager)
         {
             Argument.IsNotNull(() => runtimeConfigurationService);
+            Argument.IsNotNull(() => vstService);
 
             _runtimeConfigurationService = runtimeConfigurationService;
-            _runtimeConfigurationService.RuntimeConfiguration.Plugins.CollectionChanged += OnPluginsListChanged;
+            _vstService = vstService;
+            _vstService.Plugins.CollectionChanged += OnPluginsListChanged;
             _runtimeConfigurationService.ApplicationState.PropertyChanged += OnAllowPluginScanChanged;
         }
 
         protected override bool CanExecute(object parameter)
         {
-            return _runtimeConfigurationService.RuntimeConfiguration.Plugins.Count > 0 &&
+            return _vstService.Plugins.Count > 0 &&
                    _runtimeConfigurationService.ApplicationState.AllowPluginScan;
         }
 

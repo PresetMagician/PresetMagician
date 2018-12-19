@@ -64,7 +64,6 @@ namespace PresetMagicianShell.Services
             // Non-async first
             RegisterTypes();
             InitializeCommands();
-            LoadConfiguration();
             
             await TaskHelper.RunAndWaitAsync(new Func<Task>[]
             {
@@ -77,6 +76,7 @@ namespace PresetMagicianShell.Services
         
         public override async Task InitializeBeforeShowingShellAsync()
         {
+            LoadConfiguration();
             _splashScreenService.Action = "Restoring application layout…";
             var x = _serviceLocator.ResolveType<IRuntimeConfigurationService>();
             x.LoadLayout();
@@ -127,6 +127,12 @@ namespace PresetMagicianShell.Services
 
         private void InitializeCommands()
         {
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Application), "CancelOperation");
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Application), "ClearLastOperationErrors");
+            
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "ScanPlugins");
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "RefreshPlugins");
+
             _commandManager.CreateCommandWithGesture(typeof(Commands.Tools), "NksfView");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Tools), "SettingsView");
 
@@ -134,8 +140,7 @@ namespace PresetMagicianShell.Services
             _commandManager.CreateCommandWithGesture(typeof(Commands.Help), "OpenChatLink");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Help), "OpenDocumentationLink");
 
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "ScanPlugins");
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "RefreshPlugins");
+            
         }
         
         private void LoadConfiguration()
@@ -149,11 +154,11 @@ namespace PresetMagicianShell.Services
             var serviceLocator = ServiceLocator.Default;
             serviceLocator.RegisterType<IAboutInfoService, AboutInfoService>();
             serviceLocator.RegisterType<ICustomStatusService, CustomStatusService>();
-            
             serviceLocator.RegisterType<IPleaseWaitService, CustomPleaseWaitService>();
             serviceLocator.RegisterType<ILicenseService, LicenseService>();
             serviceLocator.RegisterType<IRuntimeConfigurationService, RuntimeConfigurationService>();
             serviceLocator.RegisterType<IVstService, VstService>();
+            serviceLocator.RegisterType<IApplicationService, ApplicationService>();
         }
 
         #endregion Methods
