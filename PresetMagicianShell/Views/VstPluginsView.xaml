@@ -18,28 +18,8 @@
 
     <catel:UserControl.Resources>
         <ResourceDictionary>
-            <converters:VisibilityToBooleanConverter x:Key="bla" />
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
-
-            <DataTemplate x:Key="ExpandDetails">
-                <StackPanel>
-                    <iconPacks:PackIconMaterial Width="16" Height="16">
-                        <iconPacks:PackIconMaterial.Style>
-                            <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
-                                <Setter Property="Kind" Value="Folder" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=DetailsVisibility, Converter={StaticResource bla}, Mode=OneWay}" Value="True">
-                                        <Setter Property="Kind" Value="FolderOpen" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </iconPacks:PackIconMaterial.Style>
-                    </iconPacks:PackIconMaterial>
-                </StackPanel>
-
-
-            </DataTemplate>
         </ResourceDictionary>
 
     </catel:UserControl.Resources>
@@ -106,8 +86,20 @@
                             <Button
                                 Margin="2,0,0,0"
                                 HorizontalAlignment="Center"
-                                Command="{catel:CommandManagerBinding Application.CancelOperation}"
-                                Content="Cancel" />
+                                Command="{catel:CommandManagerBinding Application.CancelOperation}">
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}">
+                                        <Setter Property="Content" Value="Cancel Operation" />
+                                        <Setter Property="IsEnabled" Value="True" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=DataContext.ApplicationState.ApplicationOperationCancelRequested, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                                <Setter Property="IsEnabled" Value="False" />
+                                                <Setter Property="Content" Value="Cancelling operation..." />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
                         </Grid>
                     </StackPanel>
                 </DataTemplate>

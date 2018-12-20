@@ -59,7 +59,13 @@ namespace PresetMagicianShell.ViewModels
             {
                 if (_licenseService.GetCurrentLicense() != null)
                 {
+                    if (_licenseService.GetCurrentLicense().Type == LicenseType.Trial)
+                    {
+                        return $"Licensed to: {_licenseService.GetCurrentLicense().Customer.Name} " +
+                               $"(Expires {_licenseService.GetCurrentLicense().Expiration.ToShortDateString()})";
+                    }
                     return "Licensed to: " + _licenseService.GetCurrentLicense().Customer.Name;
+                    
                 }
 
                 return "Not Licensed";

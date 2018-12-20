@@ -38,7 +38,6 @@
             <fluent:Ribbon.Tabs>
 
 
-
                 <fluent:RibbonTabItem Header="Home">
 
                     <fluent:RibbonGroupBox Header="Main Tools">
@@ -48,42 +47,42 @@
                             Padding="0"
                             VerticalAlignment="Center"
                             Command="{catel:CommandManagerBinding Plugin.ScanPlugins}"
-                            Content=""
-                            Header="Scan Plugins"
-                            LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Search},
+                            Header="Analyze Plugins"
+                            LargeIcon="{iconPacks:Material Kind=BarcodeScan,
                                                            Width=32,
                                                            Height=32}" />
 
 
-                        <fluent:Button
-                            Padding="0"
-                            VerticalAlignment="Center"
-                            Command="{catel:CommandManagerBinding Tools.SettingsView}"
-                            Content=""
-                            Header="Add all Presets to Export List"
-                            Icon="{iconPacks:PackIcon {x:Static iconPacks:PackIconModernKind.ListAdd},
-                                                      Width=16,
-                                                      Height=16}"
-                            Size="Middle" />
+                        <fluent:DropDownButton
+                            ClosePopupOnMouseDown="True"
+                            ClosePopupOnMouseDownDelay="250"
+                            Header="Add Presets to Export List"
+                            LargeIcon="{iconPacks:MaterialDesign Kind=AddCircleOutline,
+                                                                 Width=32,
+                                                                 Height=32}"
+                            Size="Large">
+                            <fluent:MenuItem
+                                Command="{catel:CommandManagerBinding Plugin.AllToPresetExportList}"
+                                Header="Presets from all plugins"
+                                Icon="{iconPacks:Modern Kind=AddMultiple}" />
+                            <fluent:MenuItem
+                                Command="{catel:CommandManagerBinding Application.NotImplemented}"
+                                Header="Presets from selected plugins only"
+                                Icon="{iconPacks:MaterialDesign Kind=AddCircle}" />
+                        </fluent:DropDownButton>
 
                         <fluent:Button
-                            Command="{catel:CommandManagerBinding Tools.SettingsView}"
-                            Header="Preset Export List"
-                            Icon="{iconPacks:PackIcon {x:Static iconPacks:PackIconModernKind.List},
-                                                      Width=16,
-                                                      Height=16}"
+                            Command="{catel:CommandManagerBinding Application.NotImplemented}"
+                            Header="View Preset Export List"
+                            Icon="{iconPacks:Modern Kind=BookList}"
                             Size="Middle" />
                         <fluent:Button
                             Padding="0"
                             VerticalAlignment="Center"
-                            Command="{catel:CommandManagerBinding Tools.SettingsView}"
-                            Content=""
+                            Command="{catel:CommandManagerBinding Application.NotImplemented}"
                             Header="Report Unsupported Plugins"
-                            Icon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Megaphone},
-                                                      Width=16,
-                                                      Height=16}"
+                            Icon="{iconPacks:Octicons Kind=Megaphone}"
                             Size="Middle" />
-
                     </fluent:RibbonGroupBox>
 
                     <fluent:RibbonGroupBox Header="Settings">

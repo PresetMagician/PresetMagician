@@ -23,7 +23,7 @@ namespace PresetMagicianShell.Models
         }
         private bool _isPluginsScanning = false;
 
-        public bool IsPluginsScanning
+        public bool IsPluginScanPluginsRunning
         {
             get => _isPluginsScanning;
             set
@@ -40,6 +40,7 @@ namespace PresetMagicianShell.Models
 
         #region Busy States
         public bool IsPluginListBusy { get; private set; }
+        public bool IsPresetExportListBusy { get; private set; }
         #endregion
 
         #region Allowances
@@ -68,6 +69,7 @@ namespace PresetMagicianShell.Models
         public string ApplicationOperationLastErrorsAsText { get;set; }
         public bool ApplicationOperationLastOperationHadErrors { get;set; }
         public string ApplicationOperationLastOperation { get;set; }
+        public bool ApplicationOperationCancelRequested { get; set; }
         #endregion
 
 

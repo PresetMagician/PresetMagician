@@ -129,9 +129,12 @@ namespace PresetMagicianShell.Services
         {
             _commandManager.CreateCommandWithGesture(typeof(Commands.Application), "CancelOperation");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Application), "ClearLastOperationErrors");
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Application), "ApplyConfiguration");
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Application), "NotImplemented");
             
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "ScanPlugins");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "RefreshPlugins");
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "AllToPresetExportList");
 
             _commandManager.CreateCommandWithGesture(typeof(Commands.Tools), "NksfView");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Tools), "SettingsView");

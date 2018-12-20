@@ -44,6 +44,7 @@ namespace PresetMagicianShell.Services
         }
 
         public RuntimeConfiguration RuntimeConfiguration { get; private set; }
+        public RuntimeConfiguration EditableConfiguration { get; private set; }
         public ApplicationState ApplicationState { get; private set; }
 
         public void Load()
@@ -51,8 +52,23 @@ namespace PresetMagicianShell.Services
             LoadConfiguration();
         }
 
+        public void CreateEditableConfiguration()
+        {
+            string output = JsonConvert.SerializeObject(RuntimeConfiguration);
+
+            EditableConfiguration = JsonConvert.DeserializeObject<RuntimeConfiguration>(output);
+        }
+
+        public void ApplyEditableConfiguration()
+        {
+            string output = JsonConvert.SerializeObject(EditableConfiguration);
+
+            RuntimeConfiguration = JsonConvert.DeserializeObject<RuntimeConfiguration>(output);
+        }
+
         public void LoadConfiguration()
         {
+            _logger.Debug("Loading configuration");
             if (!File.Exists(_defaultLocalConfigFilePath))
             {
                 _logger.Info("No configuration found.");
@@ -64,10 +80,17 @@ namespace PresetMagicianShell.Services
                 using (var rd = new StreamReader(_defaultLocalConfigFilePath))
                 using (JsonReader jsonReader = new JsonTextReader(rd))
                 {
-                    RuntimeConfiguration = _jsonSerializer.Deserialize<RuntimeConfiguration>(jsonReader);
+                    using (RuntimeConfiguration.SuspendValidations()) {
+                    var newConfiguration = _jsonSerializer.Deserialize<RuntimeConfiguration>(jsonReader);
 
+                        if (newConfiguration != null)
+                        {
+                            RuntimeConfiguration = newConfiguration;
+                        }
+                    }
                     _vstService.Plugins.AddItems(RuntimeConfiguration.CachedPlugins);
                 }
+                _logger.Debug("Configuration loaded");
             }
             catch (Exception e)
             {
@@ -133,6 +156,14 @@ namespace PresetMagicianShell.Services
         private DockingManager GetDockingManager()
         {
             return _serviceLocator.ResolveType<DockingManager>();
+        }
+
+        public bool IsConfigurationValueEqual (object left, object right)
+        {
+            var leftJson = JsonConvert.SerializeObject(left);
+            var rightJson = JsonConvert.SerializeObject(right);
+
+            return leftJson.Equals(rightJson);
         }
     }
 }

@@ -19,16 +19,11 @@ namespace PresetMagicianShell.ViewModels
     
     public class MainViewModel : ViewModelBase
     {
-        private readonly IVstService _vstService;
-
-        public MainViewModel(IVstService vstService)
+        public MainViewModel()
         {
-            var document = AvalonDockHelper.CreateDocument<VstPluginsViewModel>();
-            document.CanClose = false;
-            var x = (VstPluginsView) document.Content;
-            
-            Argument.IsNotNull(() => vstService);
-            _vstService = vstService;
+            AvalonDockHelper.CreateDocument<VstPluginsViewModel>(activateDocument:true);
+            AvalonDockHelper.CreateDocument<PresetExportListViewModel>();
+           
         }
     }
 }

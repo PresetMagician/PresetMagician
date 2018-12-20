@@ -52,7 +52,7 @@
                         <RotateTransform Angle="90" />
                     </Separator.LayoutTransform>
                 </Separator>
-                <orccontrols:PinnableToolTipService.ToolTip>
+                <!--<orccontrols:PinnableToolTipService.ToolTip>
                     <orccontrols:PinnableToolTip AllowCloseByUser="True" ResizeMode="CanResize">
                         <StackPanel>
                             <TextBlock Text="{Binding ApplicationState.ApplicationOperationLastOperation}" />
@@ -63,7 +63,7 @@
                                 Margin="5" />
                         </StackPanel>
                     </orccontrols:PinnableToolTip>
-                </orccontrols:PinnableToolTipService.ToolTip>
+                </orccontrols:PinnableToolTipService.ToolTip>-->
 
             </StackPanel>
             <StackPanel orccontrols:PinnableToolTipService.InitialShowDelay="0" orccontrols:PinnableToolTipService.Placement="Top">
@@ -73,7 +73,7 @@
                         <RotateTransform Angle="90" />
                     </Separator.LayoutTransform>
                 </Separator>
-                <orccontrols:PinnableToolTipService.ToolTip>
+                <!--<orccontrols:PinnableToolTipService.ToolTip>
                     <orccontrols:PinnableToolTip AllowCloseByUser="True" ResizeMode="CanResize">
                         <StackPanel>
                             <Label Content="{Binding LicensedTo}" />
@@ -83,7 +83,7 @@
                                 Margin="5" />
                         </StackPanel>
                     </orccontrols:PinnableToolTip>
-                </orccontrols:PinnableToolTipService.ToolTip>
+                </orccontrols:PinnableToolTipService.ToolTip>-->
             </StackPanel>
 
 

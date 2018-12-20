@@ -7,6 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:PresetMagicianShell.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:orccontrols="http://schemas.wildgums.com/orc/controls"
     xmlns:viewModels="clr-namespace:PresetMagicianShell.ViewModels"
     Width="800"
     Height="400"
@@ -26,16 +27,35 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
 
                         <Label
                             Grid.Row="0"
                             Grid.Column="0"
-                            Content="VST Folders" />
+                            Content="VST Folders"
+                            Target="{Binding ElementName=VstFolderList}" />
                         <local:VstFolderList
+                            x:Name="VstFolderList"
                             Grid.Row="0"
                             Grid.Column="1"
                             Height="200"
                             Margin="10" />
+
+                        <Label
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Content="VST Folders"
+                            Target="{Binding ElementName=NativeInstrumentsUserContentDirectory}" />
+                        <orccontrols:DirectoryPicker
+                            x:Name="NativeInstrumentsUserContentDirectory"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            LabelText=""
+                            LabelWidth="0"
+                            SelectedDirectory="{Binding EditableConfiguration.NativeInstrumentsUserContentDirectory}" />
 
                     </Grid>
                 </ScrollViewer>

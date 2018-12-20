@@ -1,3 +1,5 @@
+using System.ComponentModel;
+using System.Threading.Tasks;
 using Catel;
 using Catel.MVVM;
 using PresetMagicianShell.Models;
@@ -7,19 +9,37 @@ using MahApps.Metro.IconPacks;
 
 namespace PresetMagicianShell.ViewModels
 {
-    public class SettingsViewModel: PaneViewModel
+    public class SettingsViewModel: ViewModelBase
     {
-        public RuntimeConfiguration RuntimeConfiguration { get; private set; }
+        public RuntimeConfiguration EditableConfiguration { get; private set; }
+
+        private readonly IRuntimeConfigurationService _configurationService;
+        private readonly ICommandManager _commandManager;
 
         public SettingsViewModel(
-            IRuntimeConfigurationService configurationService
+            IRuntimeConfigurationService configurationService,
+            ICommandManager commandManager
         )
         {
             Argument.IsNotNull(() => configurationService);
+            Argument.IsNotNull(() => commandManager);
 
-            RuntimeConfiguration = configurationService.RuntimeConfiguration;
+            _configurationService = configurationService;
+            _commandManager = commandManager;
             Title = "Settings";
         }
 
+        protected override async Task InitializeAsync()
+        {
+            EditableConfiguration = _configurationService.EditableConfiguration;
+        }
+
+        protected override async Task<bool> SaveAsync()
+        {
+            _commandManager.ExecuteCommand("Application.ApplyConfiguration");
+
+            return await base.SaveAsync();
+        }
+      
     }
 }

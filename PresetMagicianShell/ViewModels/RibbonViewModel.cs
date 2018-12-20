@@ -115,7 +115,6 @@ namespace PresetMagicianShell.ViewModels
             var mainView = ServiceLocator.Default.ResolveType<LayoutAnchorable>("PresetSelection");
             mainView.ToggleAutoHide();
 
-           throw new ArgumentException();
         }
 
         

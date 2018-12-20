@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Security;
+using Catel.Collections;
 using Jacobi.Vst.Interop.Host;
 
 namespace Drachenkatze.PresetMagician.VSTHost.VST
@@ -57,10 +60,6 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
         public void LoadVST(IVstPlugin vst)
         {
             var hostCommandStub = new HostCommandStub();
-            hostCommandStub.PluginCalled += (sender, args) =>
-            {
-                Debug.WriteLine(args.Message);
-            };
 
             try
             {
@@ -75,7 +74,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             }
             catch (Exception e)
             {
-                vst.OnLoadError(e.ToString());
+                vst.OnLoadError(e);
             }
         }
 

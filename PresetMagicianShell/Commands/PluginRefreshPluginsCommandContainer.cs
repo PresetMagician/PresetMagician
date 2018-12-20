@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Catel;
+using Catel.Logging;
 using Catel.MVVM;
 using Catel.Threading;
 using PresetMagicianShell.Extensions;
@@ -15,6 +17,8 @@ namespace PresetMagicianShell
     // ReSharper disable once UnusedMember.Global
     public class PluginRefreshPluginsCommandContainer : CommandContainerBase
     {
+        private static readonly ILog _logger = LogManager.GetCurrentClassLogger();
+
         private readonly IApplicationService _applicationService;
         private readonly IRuntimeConfigurationService _runtimeConfigurationService;
         private readonly IVstService _vstService;
@@ -36,12 +40,14 @@ namespace PresetMagicianShell
         protected override async Task ExecuteAsync(object parameter)
         {
             var vstPluginDLLFiles = new ObservableCollection<string>();
+            var vstDirectories = (from vstDirectory in _runtimeConfigurationService.RuntimeConfiguration.VstDirectories
+                where vstDirectory.Active
+                select vstDirectory).ToList();
 
             _applicationService.StartApplicationOperation(this, "Scanning VST directories for plugins",
-                _runtimeConfigurationService.RuntimeConfiguration.VstDirectories.Count);
+                vstDirectories.Count);
 
             var cancellationToken = _applicationService.GetApplicationOperationCancellationSource().Token;
-            var vstDirectories = _runtimeConfigurationService.RuntimeConfiguration.VstDirectories;
 
             await TaskHelper.Run(() =>
             {
@@ -103,7 +109,6 @@ namespace PresetMagicianShell
             {
                 _applicationService.StopApplicationOperation("VST directory scan completed.");
             }
-            
         }
     }
 }

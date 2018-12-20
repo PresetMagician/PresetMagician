@@ -84,11 +84,14 @@
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
     <Compile Include="Commands\AbstractOpenDialogCommandContainer.cs" />
+    <Compile Include="Commands\ApplicationApplyConfigurationCommandContainer.cs" />
     <Compile Include="Commands\ApplicationCancelOperationCommandContainer.cs" />
     <Compile Include="Commands\ApplicationClearLastOperationErrorsCommandContainer.cs" />
+    <Compile Include="Commands\ApplicationNotImplementedCommandContainer.cs" />
     <Compile Include="Commands\HelpOpenChatLinkCommandContainer.cs" />
     <Compile Include="Commands\HelpOpenDocumentationLinkCommandContainer.cs" />
     <Compile Include="Commands\HelpOpenSupportLinkCommandContainer.cs" />
+    <Compile Include="Commands\PluginAllToPresetExportListCommandContainer.cs" />
     <Compile Include="Commands\PluginRefreshPluginsCommandContainer.cs" />
     <Compile Include="Commands\PluginScanPluginsCommandContainer.cs" />
     <Compile Include="Commands\ToolsNksfViewCommandContainer.cs" />
@@ -129,6 +132,7 @@
     <Compile Include="ViewModels\NKSFViewModel.cs" />
     <Compile Include="ViewModels\PaneViewModel.cs" />
     <Compile Include="ViewModels\PresetBankViewModel.cs" />
+    <Compile Include="ViewModels\PresetExportListViewModel.cs" />
     <Compile Include="ViewModels\PresetViewModel.cs" />
     <Compile Include="ViewModels\RegistrationViewModel.cs" />
     <Compile Include="ViewModels\RibbonViewModel.cs" />
@@ -148,6 +152,9 @@
     </Compile>
     <Compile Include="Views\PresetBankView.xaml.cs">
       <DependentUpon>PresetBankView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PresetExportListView.xaml.cs">
+      <DependentUpon>PresetExportListView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\RegistrationWindow.xaml.cs">
       <DependentUpon>RegistrationWindow.xaml</DependentUpon>
@@ -192,6 +199,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Templates\BusyTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\Styles\TabControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -237,6 +248,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\PresetBankView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PresetExportListView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -939,6 +954,17 @@
       <ItemGroup>
         <Reference Include="System.Runtime.Serialization.Xml">
           <HintPath>..\packages\System.Runtime.Serialization.Xml\lib\net46\System.Runtime.Serialization.Xml.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="System.ValueTuple">
+          <HintPath>..\packages\System.ValueTuple\lib\net461\System.ValueTuple.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>

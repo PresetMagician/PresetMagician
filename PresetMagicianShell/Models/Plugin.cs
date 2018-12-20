@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using Catel.Data;
 using Catel.IO;
 using Catel.Runtime.Serialization;
@@ -22,6 +23,7 @@ namespace PresetMagicianShell.Models
 
         public override string ToString()
         {
+            
             if (IsLoaded)
             {
                 return $"{PluginVendor} {PluginName} ({PluginId})";
@@ -32,10 +34,11 @@ namespace PresetMagicianShell.Models
             }
         }
 
-        public void OnLoadError(string errorMessage)
+        public void OnLoadError(Exception e)
         {
             LoadError = true;
-            LoadErrorMessage = errorMessage;
+            LoadErrorMessage = e.ToString();
+            LoadException = e;
         }
 
         public string LoadErrorMessage { get; private set; }
@@ -58,6 +61,7 @@ namespace PresetMagicianShell.Models
 
 
         public bool LoadError { get; private set; }
+        public Exception LoadException { get; private set; }
         public void OnLoaded()
         {
             PluginInfoItems = new ObservableCollection<PluginInfoItem>();
@@ -219,7 +223,8 @@ namespace PresetMagicianShell.Models
                     string display = pluginContext.PluginCommandStub.GetParameterDisplay(i);
                     bool canBeAutomated = pluginContext.PluginCommandStub.CanParameterBeAutomated(i);
 
-                    PluginInfoItems.Add(new PluginInfoItem(String.Format("Parameter Index: {0} Parameter Name: {1} Display: {2} Label: {3} Can be automated: {4}", i, name, display, label, canBeAutomated)));
+                    PluginInfoItems.Add(new PluginInfoItem(
+                        $"Parameter Index: {i} Parameter Name: {name} Display: {display} Label: {label} Can be automated: {canBeAutomated}"));
                 }
             }
         }

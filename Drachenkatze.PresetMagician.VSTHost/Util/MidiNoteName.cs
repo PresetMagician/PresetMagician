@@ -72,10 +72,6 @@
                 return;
             }
 
-            throw new ArgumentOutOfRangeException(
-                      "newFullNoteName",
-                      newFullNoteName,
-                      "Specified argument was not recognized as a valid note name.");
         }
 
         /// <summary>

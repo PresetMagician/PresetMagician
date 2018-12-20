@@ -13,6 +13,7 @@ using Catel.MVVM;
 using Catel.Services;
 using Drachenkatze.PresetMagician.VSTHost.VST;
 using PresetMagicianShell.Helpers;
+using PresetMagicianShell.Models;
 using PresetMagicianShell.Models.Settings;
 using PresetMagicianShell.Services.Interfaces;
 using ApplicationSettings = PresetMagicianShell.Settings.Application;
@@ -24,27 +25,23 @@ namespace PresetMagicianShell.ViewModels
         private readonly IRuntimeConfigurationService _configurationService;
         private readonly ISelectDirectoryService _selectDirectoryService;
         private readonly IVstService _vstService;
-        private readonly ICommandManager _commandManager;
 
         public VstFolderListViewModel(IRuntimeConfigurationService configurationService,
-            ISelectDirectoryService selectDirectoryService, IVstService vstService, ICommandManager commandManager)
+            ISelectDirectoryService selectDirectoryService, IVstService vstService)
         {
             Argument.IsNotNull(() => configurationService);
             Argument.IsNotNull(() => selectDirectoryService);
             Argument.IsNotNull(() => vstService);
-            Argument.IsNotNull(() => commandManager);
 
             _configurationService = configurationService;
             _selectDirectoryService = selectDirectoryService;
             _vstService = vstService;
-            _commandManager = commandManager;
             
-
             AddDefaultVstFolders = new Command(OnAddDefaultVstFoldersExecute);
             AddFolder = new TaskCommand(OnAddFolderExecute);
             RemoveFolder = new Command<object>(OnRemoveFolderExecute);
 
-            VstDirectories = configurationService.RuntimeConfiguration.VstDirectories;
+            VstDirectories = configurationService.EditableConfiguration.VstDirectories;
         }
 
 
@@ -65,7 +62,6 @@ namespace PresetMagicianShell.ViewModels
                     VstDirectories.Add(new VstDirectory() { Path = i });
                 }
             }
-            _commandManager.ExecuteCommand(Commands.Plugin.RefreshPlugins);
         }
 
         public TaskCommand AddFolder { get; }
@@ -77,7 +73,6 @@ namespace PresetMagicianShell.ViewModels
                 VstDirectories.Add(new VstDirectory() { Path = _selectDirectoryService.DirectoryName });
             }
 
-            _commandManager.ExecuteCommand(Commands.Plugin.RefreshPlugins);
         }
 
         public Command<object> RemoveFolder { get; }
@@ -90,7 +85,6 @@ namespace PresetMagicianShell.ViewModels
             {
                 VstDirectories.Remove(folder);
             }
-            _commandManager.ExecuteCommand(Commands.Plugin.RefreshPlugins);
         }
 
         #endregion
