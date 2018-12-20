@@ -56,8 +56,7 @@ namespace PresetMagicianShell.ViewModels
             ApplicationState = runtimeConfigurationService.ApplicationState;
             serviceLocator.RegisterInstance(this);
 
-            ScanPlugins = new TaskCommand(OnScanPluginsExecute);
-            
+           
             EnablePlugin = new Command<object>(OnEnablePluginExecute);
             DisablePlugin = new Command<object>(OnDisablePluginExecute);
             ShowPluginInfo = new Command<object>(OnShowPluginInfoExecute);
@@ -122,64 +121,5 @@ namespace PresetMagicianShell.ViewModels
             _uiVisualizerService.ShowDialogAsync<VstPluginInfoViewModel>(plugin);
         }
 
-        private async Task OnScanPluginsExecute()
-        {
-            IsScanning = true;
-            var newList = (from plugin in Plugins where plugin.Enabled select plugin).ToList();
-
-            await TaskHelper.Run(() =>
-            {
-                foreach (var vst in newList)
-                    try
-                    {
-                        UpdateStatus(newList.IndexOf(vst) + 1, newList.Count, $"Loading {vst.DllPath}");
-                        _vstHost.LoadVST(vst);
-
-                        if (vst.IsLoaded)
-                        {
-                            vst.DeterminatePresetParser();
-
-                            UpdateStatus(newList.IndexOf(vst) + 1, newList.Count, $"Scanning banks for {vst.DllPath}");
-                            vst.PresetParser.ScanBanks();
-                            vst.RootBank.PresetBanks.Clear();
-                            vst.RootBank.PresetBanks.Add(vst.PresetParser.RootBank);
-                            vst.NumPresets = vst.PresetParser.Presets.Count;
-                            vst.Presets = vst.PresetParser.Presets;
-                            vst.IsScanned = true;
-
-                            UpdateStatus(newList.IndexOf(vst) + 1, newList.Count, $"Unloading {vst.DllPath}");
-                            _vstHost.UnloadVST(vst);
-                        }
-                        else
-                        {
-                            _logger.Info("Unable to load {0}", vst.DllPath, vst.LoadErrorMessage);
-                        }
-
-                        UpdateStatus(newList.IndexOf(vst) + 1, newList.Count, $"Done scanning {vst.DllPath}");
-                    }
-                    catch (ReflectionTypeLoadException e)
-                    {
-                        foreach (var i in e.LoaderExceptions) _logger.Info(i.Message);
-                    }
-                    catch (Exception e)
-                    {
-                        _logger.Info("Unable to load {0}, exception occurred: {1}", vst.DllPath, e.ToString());
-                        _logger.Info("{0}", e.StackTrace);
-                    }
-            }, true);
-
-            IsScanning = false;
-            _pleaseWaitService.Hide();
-            CollectionViewSource.GetDefaultView(Plugins).Refresh();
-        }
-
-        private void UpdateStatus(int currentItem, int totalItems, string statusText)
-        {
-            var progressText = string.Format("({1} / {2}) {0}", statusText, currentItem, totalItems);
-            ScanProgressPercent = (int) (currentItem / (float) totalItems * 100);
-            ScanProgressText = progressText;
-            _pleaseWaitService.UpdateStatus(currentItem, totalItems, "{0} {1} " + statusText);
-            _statusService.UpdateStatus(progressText);
-        }
     }
 }

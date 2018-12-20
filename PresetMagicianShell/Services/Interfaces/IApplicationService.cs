@@ -16,5 +16,6 @@ namespace PresetMagicianShell.Services.Interfaces
         void StartApplicationOperation(CommandContainerBase commandContainer, string operationDescription, int totalItems);
         List<string> GetApplicationOperationErrors();
         void ClearLastOperationErrors();
+        void ReportStatus(string statusText);
     }
 }

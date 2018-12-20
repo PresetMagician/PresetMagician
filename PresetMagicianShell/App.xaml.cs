@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows;
@@ -63,6 +64,8 @@ namespace PresetMagicianShell
             LogManager.AddListener(fileLogListener);
             LogManager.GetCurrentClassLogger().Debug("Startup");
 
+            var x = Assembly.GetExecutingAssembly().GetTypes();
+
             try
             {
                 RotateLogFile(fileLogListener.FilePath);
@@ -82,7 +85,7 @@ namespace PresetMagicianShell
             
             NBug.Settings.AdditionalReportFiles.Add(fileLogListener.FilePath);
 
-
+            
             await StartShell();
         }
 
@@ -157,6 +160,7 @@ namespace PresetMagicianShell
 
         protected override void OnExit(ExitEventArgs e)
         {
+            Debug.WriteLine("In OnExit");
             var serviceLocator = ServiceLocator.Default;
             serviceLocator.ResolveType<IRuntimeConfigurationService>().Save(true);
             base.OnExit(e);

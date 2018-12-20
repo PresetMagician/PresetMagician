@@ -72,6 +72,7 @@ namespace PresetMagicianShell.Services
             }
 
             _applicationOperationErrors.Clear();
+            appState.ApplicationOperationCancelRequested = false;
             appState.ApplicationBusyCancellationTokenSource = new CancellationTokenSource();
             appState.ApplicationBusyTotalItems = totalItems;
             appState.ApplicationBusyOperationDescription = operationDescription;
@@ -89,7 +90,7 @@ namespace PresetMagicianShell.Services
                 var property = appState.GetType().GetProperty(appState.ApplicationOperationStatePropertyName);
                 property.SetValue(_runtimeConfigurationService.ApplicationState, value);
             }
-            catch (ArgumentNullException e)
+            catch (Exception e) when (e is ArgumentNullException || e is NullReferenceException)
             {
                 throw new ArgumentException(
                     $"Property {appState.ApplicationOperationStatePropertyName} is not defined or not accessible on "+
@@ -108,6 +109,7 @@ namespace PresetMagicianShell.Services
         {
             var appState = _runtimeConfigurationService.ApplicationState;
             appState.ApplicationBusyCancellationTokenSource.Cancel();
+            appState.ApplicationOperationCancelRequested = true;
             _log.Info($"Cancelling operation \"{appState.ApplicationBusyOperationDescription}\"");
         }
 
@@ -127,6 +129,12 @@ namespace PresetMagicianShell.Services
             
             _pleaseWaitService.UpdateStatus(currentItem, appState.ApplicationBusyTotalItems);
             _statusService.UpdateStatus(progressText);
+        }
+
+        public void ReportStatus(string statusText)
+        {
+            _log.Info(statusText);
+            _statusService.UpdateStatus(statusText);
         }
 
         public void ClearLastOperationErrors()
@@ -156,7 +164,7 @@ namespace PresetMagicianShell.Services
             if (lastErrors.Count > 0)
             {
                 statusMessage = $"{finalMessage} (with errors)";
-                _log.Warning($"Finished operation \"{appState.ApplicationBusyOperationDescription}\" (with errors)");
+                _log.Warning($"Finished operation \"{appState.ApplicationBusyOperationDescription}\" (with errors, see log)");
             }
             else
             {

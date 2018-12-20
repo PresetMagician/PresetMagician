@@ -54,11 +54,6 @@ namespace PresetMagicianShell
                 public static readonly UpdateChannel DefaultChannel = AvailableChannels[2];
             }
 
-            public static class Directories
-            {
-                public const string VstDirectories = "Directories.VstDirectories"; 
-            }
-            
         }
     }
     #endregion
@@ -70,12 +65,15 @@ namespace PresetMagicianShell
         {
             public const string CancelOperation = "Application.CancelOperation";
             public const string ClearLastOperationErrors = "Application.ClearLastOperationErrors";
+            public const string ApplyConfiguration = "Application.ApplyConfiguration";
+            public const string NotImplemented = "Application.NotImplemented";
         }
 
         public static class Plugin
         {
             public const string RefreshPlugins = "Plugin.RefreshPlugins";
             public const string ScanPlugins = "Plugin.ScanPlugins";
+            public const string AllToPresetExportList = "Plugin.AllToPresetExportList";
         }
         public static class Tools
         {

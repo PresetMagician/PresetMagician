@@ -77,7 +77,7 @@ namespace PresetMagicianShell.Helpers
             return AvalonDockHelper.FindDocument(viewType, tag);
         }
 
-        public static LayoutDocument CreateDocument<TService>(object tag = null)
+        public static LayoutDocument CreateDocument<TService>(object tag = null, bool activateDocument = false, bool isClosable = false)
         {
             var sl = ServiceLocator.Default;
             var viewModel = sl.ResolveType<TService>();
@@ -91,7 +91,12 @@ namespace PresetMagicianShell.Helpers
                 document = AvalonDockHelper.CreateDocument(view, tag);
             }
 
-            AvalonDockHelper.ActivateDocument(document);
+            document.CanClose = isClosable;
+
+            if (activateDocument)
+            {
+                AvalonDockHelper.ActivateDocument(document);
+            }
 
             return document;
         }

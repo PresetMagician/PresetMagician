@@ -42,6 +42,7 @@
                             <xcad:LayoutAnchorable
                                 x:Name="PresetSelection"
                                 Title="Preset Selection"
+                                AutoHideMinHeight="300"
                                 CanClose="False"
                                 CanFloat="False"
                                 CanHide="False">
@@ -50,6 +51,7 @@
                             <xcad:LayoutAnchorable
                                 x:Name="LogViewer"
                                 Title="Event Log"
+                                AutoHideMinHeight="300"
                                 CanClose="False"
                                 CanFloat="False"
                                 CanHide="False">

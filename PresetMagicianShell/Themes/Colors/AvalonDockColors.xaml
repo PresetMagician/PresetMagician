@@ -9,9 +9,9 @@
     <Color x:Key="{x:Static reskeys:ResourceKeys.ControlAccentColorKey}">#FF593196</Color>
 
     <Color x:Key="AccentColorBase">#FF593196</Color>
-    <Color x:Key="Color2">#FF450e98</Color> 
+    <Color x:Key="Color2">#FF450e98</Color>
     <!--  Darker  -->
-    <Color x:Key="Color3">#FF9152ef</Color> 
+    <Color x:Key="Color3">#FF9152ef</Color>
     <!--  Lighter  -->
     <Color x:Key="Color4">#FF5200cc</Color>
     <Color x:Key="Color5">#FF8e59de</Color>

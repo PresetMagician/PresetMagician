@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Catel;
 using Catel.Logging;
@@ -10,18 +8,19 @@ using Catel.Reflection;
 using Catel.Services;
 
 // ReSharper disable once CheckNamespace
-namespace PresetMagicianShell 
+namespace PresetMagicianShell
 {
     public abstract class AbstractOpenDialogCommandContainer : CommandContainerBase
     {
-        private string _viewModel;
-
         protected static readonly ILog Log = LogManager.GetCurrentClassLogger();
 
         protected readonly IUIVisualizerService UiVisualizerService;
         protected readonly IViewModelFactory ViewModelFactory;
+        private readonly string _viewModel;
 
-        protected AbstractOpenDialogCommandContainer(string commandName, string viewModel, ICommandManager commandManager, IUIVisualizerService uiVisualizerService, IViewModelFactory viewModelFactory)
+        protected AbstractOpenDialogCommandContainer(string commandName, string viewModel,
+            ICommandManager commandManager, IUIVisualizerService uiVisualizerService,
+            IViewModelFactory viewModelFactory)
             : base(commandName, commandManager)
         {
             Argument.IsNotNull(() => uiVisualizerService);
@@ -34,7 +33,7 @@ namespace PresetMagicianShell
 
         protected override async Task ExecuteAsync(object parameter)
         {
-            base.Execute(parameter);
+            await base.ExecuteAsync(parameter);
 
             var viewModelType = TypeCache.GetTypes(x => string.Equals(x.Name, _viewModel)).FirstOrDefault();
             if (viewModelType == null)

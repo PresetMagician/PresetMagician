@@ -9,7 +9,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
         string DllPath { get; }
         VstPluginContext PluginContext { get; set; }
         void OnLoaded();
-        void OnLoadError(string errorMessage);
+        void OnLoadError(Exception e);
         int PluginId { get; set; }
         string PluginName { get; }
         VstHost.PluginTypes PluginType { get; set; } 

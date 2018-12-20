@@ -1,5 +1,6 @@
 using System;
 using Catel.Collections;
+using Drachenkatze.PresetMagician.VendorPresetParser;
 using Drachenkatze.PresetMagician.VSTHost.VST;
 using PresetMagicianShell.Models;
 
@@ -12,5 +13,8 @@ namespace PresetMagicianShell.Services.Interfaces
         FastObservableCollection<Plugin> SelectedPlugins { get; }
         FastObservableCollection<Plugin> Plugins { get; }
         VstHost VstHost { get; set; }
+        FastObservableCollection<Preset> PresetExportList { get; }
+        Preset SelectedExportPreset { get; set; }
+        event EventHandler SelectedExportPresetChanged;
     }
 }
