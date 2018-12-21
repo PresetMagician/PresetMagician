@@ -66,7 +66,7 @@
                                 Header="Presets from all plugins"
                                 Icon="{iconPacks:Modern Kind=AddMultiple}" />
                             <fluent:MenuItem
-                                Command="{catel:CommandManagerBinding Application.NotImplemented}"
+                                Command="{catel:CommandManagerBinding Plugin.SelectedToPresetExportList}"
                                 Header="Presets from selected plugins only"
                                 Icon="{iconPacks:MaterialDesign Kind=AddCircle}" />
                         </fluent:DropDownButton>
