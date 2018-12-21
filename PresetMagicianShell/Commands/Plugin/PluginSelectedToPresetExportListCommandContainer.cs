@@ -20,7 +20,6 @@ namespace PresetMagicianShell
     // ReSharper disable once UnusedMember.Global
     public class PluginSelectedToPresetExportListCommandContainer : CommandContainerBase
     {
-        private static readonly ILog _log = LogManager.GetCurrentClassLogger();
         private readonly IApplicationService _applicationService;
 
         private readonly IVstService _vstService;

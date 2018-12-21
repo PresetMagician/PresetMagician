@@ -10,7 +10,7 @@ namespace PresetMagicianShell.Services
         public AboutInfo GetAboutInfo()
         {
             var aboutInfo = new AboutInfo(
-                uriInfo: new UriInfo("https://presetmagician.drachenkatze.org", "PresetMagician Homepage"),
+                uriInfo: new UriInfo(Settings.Links.Homepage, "PresetMagician Homepage"),
                 name: "PresetMagician"
             ) {ShowLogButton = false};
 

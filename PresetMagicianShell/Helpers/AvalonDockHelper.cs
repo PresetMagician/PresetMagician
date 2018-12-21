@@ -112,6 +112,11 @@ namespace PresetMagicianShell.Helpers
             LayoutDocumentPane.SelectedContentIndex = LayoutDocumentPane.IndexOfChild(document);
         }
 
+        public static void ActivateDocument<TService>(object tag = null)
+        {
+            ActivateDocument(FindDocument<TService>());
+        }
+
         /// <summary>
         /// Creates the document.
         /// </summary>

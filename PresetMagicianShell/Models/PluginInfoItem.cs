@@ -7,13 +7,17 @@ using Catel.Data;
 
 namespace PresetMagicianShell.Models
 {
-    public class PluginInfoItem : ModelBase
+    public class PluginInfoItem
     {
-        public string Title { get; set; }
+        public string Category { get; set; }
+        public string Name { get; set; }
+        public string Value { get; set; }
 
-        public PluginInfoItem(string title)
+        public PluginInfoItem(string category, string name, string value)
         {
-            Title = title;
+            Category = category;
+            Name = name;
+            Value = value;
         }
     }
 }
