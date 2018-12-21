@@ -83,6 +83,9 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Compile Include="Behaviors\IListItemConverter.cs" />
+    <Compile Include="Behaviors\MultiSelectBehavior.cs" />
+    <Compile Include="Behaviors\TwoListSynchronizer.cs" />
     <Compile Include="Commands\AbstractOpenDialogCommandContainer.cs" />
     <Compile Include="Commands\ApplicationApplyConfigurationCommandContainer.cs" />
     <Compile Include="Commands\ApplicationCancelOperationCommandContainer.cs" />
@@ -92,6 +95,7 @@
     <Compile Include="Commands\HelpOpenDocumentationLinkCommandContainer.cs" />
     <Compile Include="Commands\HelpOpenSupportLinkCommandContainer.cs" />
     <Compile Include="Commands\PluginAllToPresetExportListCommandContainer.cs" />
+    <Compile Include="Commands\PluginSelectedToPresetExportListCommandContainer.cs" />
     <Compile Include="Commands\PluginRefreshPluginsCommandContainer.cs" />
     <Compile Include="Commands\PluginScanPluginsCommandContainer.cs" />
     <Compile Include="Commands\ToolsNksfViewCommandContainer.cs" />

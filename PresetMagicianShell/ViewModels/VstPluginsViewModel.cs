@@ -53,6 +53,7 @@ namespace PresetMagicianShell.ViewModels
             _uiVisualizerService = uiVisualizerService;
 
             Plugins = vstService.Plugins;
+            SelectedPlugins = vstService.SelectedPlugins;
             ApplicationState = runtimeConfigurationService.ApplicationState;
             serviceLocator.RegisterInstance(this);
 
@@ -86,6 +87,7 @@ namespace PresetMagicianShell.ViewModels
 
 
         public FastObservableCollection<Plugin> Plugins { get; }
+        public FastObservableCollection<Plugin> SelectedPlugins { get; }
         public ApplicationState ApplicationState { get; private set; }
 
         public bool IsScanning { get; private set; }

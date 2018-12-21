@@ -2,6 +2,7 @@
     x:Class="PresetMagicianShell.Views.VstPluginsView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:behaviors="clr-namespace:PresetMagicianShell.Behaviors"
     xmlns:catel="http://schemas.catelproject.com"
     xmlns:converters="clr-namespace:PresetMagicianShell.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -113,12 +114,11 @@
 
             <DataGrid
                 x:Name="VstPluginList"
+                behaviors:MultiSelectBehavior.SynchronizedSelectedItems="{Binding SelectedPlugins}"
                 AutoGenerateColumns="False"
                 CanUserAddRows="False"
-                CanUserSortColumns="False"
                 GridLinesVisibility="All"
                 ItemsSource="{Binding Plugins}"
-                RowDetailsVisibilityMode="Collapsed"
                 ScrollViewer.CanContentScroll="True"
                 SelectedItem="{Binding SelectedPlugin}"
                 SelectionUnit="FullRow">
@@ -169,7 +169,7 @@
                         Header="Name"
                         IsReadOnly="True" />
                     <DataGridTextColumn
-                        Width="150"
+                        Width="Auto"
                         Binding="{Binding PluginVendor}"
                         Header="Vendor"
                         IsReadOnly="True" />
@@ -227,6 +227,7 @@
 
                     <DataGridTemplateColumn
                         Width="45"
+                        CanUserResize="False"
                         Header="Status"
                         IsReadOnly="True"
                         SortMemberPath="IsSupported">
@@ -275,7 +276,7 @@
 
                                     <TextBlock.Style>
                                         <Style TargetType="{x:Type TextBlock}">
-                                            <Setter Property="ToolTip" Value="Plugin not scanned yet" />
+                                            <Setter Property="ToolTip" Value="Plugin not analyzed yet" />
                                             <Style.Triggers>
                                                 <MultiDataTrigger>
                                                     <MultiDataTrigger.Conditions>
@@ -313,18 +314,58 @@
                         Binding="{Binding PresetParser.PresetParserType}"
                         Header="Export Module"
                         IsReadOnly="True" />
-                    <DataGridTextColumn
-                        Width="80"
-                        Binding="{Binding PresetParser.Remarks}"
+                    <DataGridTemplateColumn
+                        Width="60"
                         Header="Remarks"
-                        IsReadOnly="True" />
+                        IsReadOnly="True">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    Margin="0"
+                                    Padding="0"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    ToolTipService.BetweenShowDelay="0"
+                                    ToolTipService.InitialShowDelay="100">
+                                    <iconPacks:PackIconOcticons
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Kind="Alert">
+                                        <iconPacks:PackIconOcticons.Style>
+                                            <Style TargetType="{x:Type iconPacks:PackIconOcticons}">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                                <Setter Property="ToolTip" Value="{Binding PresetParser.Remarks, Mode=OneWay}" />
+                                                <Style.Triggers>
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding PresetParser.Remarks, Mode=OneWay}" Value="{x:Null}" />
+                                                        </MultiDataTrigger.Conditions>
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </MultiDataTrigger>
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding PresetParser.Remarks, Mode=OneWay}" Value="" />
+                                                        </MultiDataTrigger.Conditions>
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </MultiDataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </iconPacks:PackIconOcticons.Style>
+                                    </iconPacks:PackIconOcticons>
+                                </TextBlock>
+
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                     <DataGridTextColumn
                         Width="150"
+                        MinWidth="100"
                         Binding="{Binding DllFilename}"
                         Header="Plugin DLL"
                         IsReadOnly="True" />
                     <DataGridTextColumn
-                        Width="150"
+                        Width="1*"
+                        MinWidth="150"
                         Binding="{Binding DllDirectory}"
                         Header="Directory"
                         IsReadOnly="True" />
