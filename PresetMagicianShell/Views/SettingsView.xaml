@@ -47,7 +47,7 @@
                         <Label
                             Grid.Row="1"
                             Grid.Column="0"
-                            Content="VST Folders"
+                            Content="NI User Content Directory"
                             Target="{Binding ElementName=NativeInstrumentsUserContentDirectory}" />
                         <orccontrols:DirectoryPicker
                             x:Name="NativeInstrumentsUserContentDirectory"

@@ -62,6 +62,7 @@ namespace PresetMagicianShell.Models
 
         public bool LoadError { get; private set; }
         public Exception LoadException { get; private set; }
+
         public void OnLoaded()
         {
             PluginInfoItems = new ObservableCollection<PluginInfoItem>();
@@ -166,55 +167,55 @@ namespace PresetMagicianShell.Models
             if (pluginContext != null)
             {
                 // plugin product
-                PluginInfoItems.Add(new PluginInfoItem("Plugin Name " + pluginContext.PluginCommandStub.GetEffectName()));
-                PluginInfoItems.Add(new PluginInfoItem("Product " + pluginContext.PluginCommandStub.GetProductString()));
-                PluginInfoItems.Add(new PluginInfoItem("Vendor " + pluginContext.PluginCommandStub.GetVendorString()));
-                PluginInfoItems.Add(new PluginInfoItem("Vendor Version " + pluginContext.PluginCommandStub.GetVendorVersion().ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("Vst Support " + pluginContext.PluginCommandStub.GetVstVersion().ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("Plugin Category " + pluginContext.PluginCommandStub.GetCategory().ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("Base", "Plugin Name", pluginContext.PluginCommandStub.GetEffectName()));
+                PluginInfoItems.Add(new PluginInfoItem("Base", "Product " , pluginContext.PluginCommandStub.GetProductString()));
+                PluginInfoItems.Add(new PluginInfoItem("Base", "Vendor " , pluginContext.PluginCommandStub.GetVendorString()));
+                PluginInfoItems.Add(new PluginInfoItem("Base", "Vendor Version " , pluginContext.PluginCommandStub.GetVendorVersion().ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("Base", "Vst Support " , pluginContext.PluginCommandStub.GetVstVersion().ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("Base", "Plugin Category " , pluginContext.PluginCommandStub.GetCategory().ToString()));
 
                 // plugin info
-                PluginInfoItems.Add(new PluginInfoItem("Flags " + pluginContext.PluginInfo.Flags.ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("Plugin ID " + pluginContext.PluginInfo.PluginID.ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("Plugin Version " + pluginContext.PluginInfo.PluginVersion.ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("Audio Input Count " + pluginContext.PluginInfo.AudioInputCount.ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("Audio Output Count " + pluginContext.PluginInfo.AudioOutputCount.ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("Initial Delay " + pluginContext.PluginInfo.InitialDelay.ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("Program Count " + pluginContext.PluginInfo.ProgramCount.ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("Parameter Count " + pluginContext.PluginInfo.ParameterCount.ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("Tail Size " + pluginContext.PluginCommandStub.GetTailSize().ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("Base", "Flags " , pluginContext.PluginInfo.Flags.ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("Base", "Plugin ID " , pluginContext.PluginInfo.PluginID.ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("Base", "Plugin Version " , pluginContext.PluginInfo.PluginVersion.ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("Base", "Audio Input Count " , pluginContext.PluginInfo.AudioInputCount.ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("Base", "Audio Output Count " , pluginContext.PluginInfo.AudioOutputCount.ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("Base", "Initial Delay " , pluginContext.PluginInfo.InitialDelay.ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("Base", "Program Count " , pluginContext.PluginInfo.ProgramCount.ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("Base", "Parameter Count " , pluginContext.PluginInfo.ParameterCount.ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("Base", "Tail Size " , pluginContext.PluginCommandStub.GetTailSize().ToString()));
 
                 // can do
-                PluginInfoItems.Add(new PluginInfoItem("CanDo: " + VstPluginCanDo.Bypass + pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.Bypass)).ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("CanDo: " + VstPluginCanDo.MidiProgramNames + pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.MidiProgramNames)).ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("CanDo: " + VstPluginCanDo.Offline + pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.Offline)).ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("CanDo: " + VstPluginCanDo.ReceiveVstEvents + pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.ReceiveVstEvents)).ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("CanDo: " + VstPluginCanDo.ReceiveVstMidiEvent + pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.ReceiveVstMidiEvent)).ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("CanDo: " + VstPluginCanDo.ReceiveVstTimeInfo + pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.ReceiveVstTimeInfo)).ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("CanDo: " + VstPluginCanDo.SendVstEvents + pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.SendVstEvents)).ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("CanDo: " + VstPluginCanDo.SendVstMidiEvent + pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.SendVstMidiEvent)).ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("CanDo" , nameof(VstPluginCanDo.Bypass) , pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.Bypass)).ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("CanDo" , nameof(VstPluginCanDo.MidiProgramNames) , pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.MidiProgramNames)).ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("CanDo" , nameof(VstPluginCanDo.Offline) , pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.Offline)).ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("CanDo" , nameof(VstPluginCanDo.ReceiveVstEvents) , pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.ReceiveVstEvents)).ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("CanDo" , nameof(VstPluginCanDo.ReceiveVstMidiEvent) , pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.ReceiveVstMidiEvent)).ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("CanDo" , nameof(VstPluginCanDo.ReceiveVstTimeInfo) , pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.ReceiveVstTimeInfo)).ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("CanDo" , nameof(VstPluginCanDo.SendVstEvents) , pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.SendVstEvents)).ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("CanDo" , nameof(VstPluginCanDo.SendVstMidiEvent) , pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.SendVstMidiEvent)).ToString()));
 
-                PluginInfoItems.Add(new PluginInfoItem("CanDo: " + VstPluginCanDo.ConformsToWindowRules + pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.ConformsToWindowRules)).ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("CanDo: " + VstPluginCanDo.Metapass + pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.Metapass)).ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("CanDo: " + VstPluginCanDo.MixDryWet + pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.MixDryWet)).ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("CanDo: " + VstPluginCanDo.Multipass + pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.Multipass)).ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("CanDo: " + VstPluginCanDo.NoRealTime + pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.NoRealTime)).ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("CanDo: " + VstPluginCanDo.PlugAsChannelInsert + pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.PlugAsChannelInsert)).ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("CanDo: " + VstPluginCanDo.PlugAsSend + pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.PlugAsSend)).ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("CanDo: " + VstPluginCanDo.SendVstTimeInfo + pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.SendVstTimeInfo)).ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("CanDo: " + VstPluginCanDo.x1in1out + pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.x1in1out)).ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("CanDo: " + VstPluginCanDo.x1in2out + pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.x1in2out)).ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("CanDo: " + VstPluginCanDo.x2in1out + pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.x2in1out)).ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("CanDo: " + VstPluginCanDo.x2in2out + pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.x2in2out)).ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("CanDo: " + VstPluginCanDo.x2in4out + pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.x2in4out)).ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("CanDo: " + VstPluginCanDo.x4in2out + pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.x4in2out)).ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("CanDo: " + VstPluginCanDo.x4in4out + pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.x4in4out)).ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("CanDo: " + VstPluginCanDo.x4in8out + pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.x4in8out)).ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("CanDo: " + VstPluginCanDo.x8in4out + pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.x8in4out)).ToString()));
-                PluginInfoItems.Add(new PluginInfoItem("CanDo: " + VstPluginCanDo.x8in8out + pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.x8in8out)).ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("CanDo" , nameof(VstPluginCanDo.ConformsToWindowRules) , pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.ConformsToWindowRules)).ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("CanDo" , nameof(VstPluginCanDo.Metapass) , pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.Metapass)).ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("CanDo" , nameof(VstPluginCanDo.MixDryWet) , pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.MixDryWet)).ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("CanDo" , nameof(VstPluginCanDo.Multipass) , pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.Multipass)).ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("CanDo" , nameof(VstPluginCanDo.NoRealTime) , pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.NoRealTime)).ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("CanDo" , nameof(VstPluginCanDo.PlugAsChannelInsert) , pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.PlugAsChannelInsert)).ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("CanDo" , nameof(VstPluginCanDo.PlugAsSend) , pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.PlugAsSend)).ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("CanDo" , nameof(VstPluginCanDo.SendVstTimeInfo) , pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.SendVstTimeInfo)).ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("CanDo" , nameof(VstPluginCanDo.x1in1out) , pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.x1in1out)).ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("CanDo" , nameof(VstPluginCanDo.x1in2out) , pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.x1in2out)).ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("CanDo" , nameof(VstPluginCanDo.x2in1out) , pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.x2in1out)).ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("CanDo" , nameof(VstPluginCanDo.x2in2out) , pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.x2in2out)).ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("CanDo" , nameof(VstPluginCanDo.x2in4out) , pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.x2in4out)).ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("CanDo" , nameof(VstPluginCanDo.x4in2out) , pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.x4in2out)).ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("CanDo" , nameof(VstPluginCanDo.x4in4out) , pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.x4in4out)).ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("CanDo" , nameof(VstPluginCanDo.x4in8out) , pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.x4in8out)).ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("CanDo" , nameof(VstPluginCanDo.x8in4out) , pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.x8in4out)).ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("CanDo" , nameof(VstPluginCanDo.x8in8out) , pluginContext.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.x8in8out)).ToString()));
 
-                PluginInfoItems.Add(new PluginInfoItem("Program: " + pluginContext.PluginCommandStub.GetProgram()));
-                PluginInfoItems.Add(new PluginInfoItem("Program Name: " + pluginContext.PluginCommandStub.GetProgramName()));
+                PluginInfoItems.Add(new PluginInfoItem("Program" , "Current Program Index",pluginContext.PluginCommandStub.GetProgram().ToString()));
+                PluginInfoItems.Add(new PluginInfoItem("Program", "Current Program Name", pluginContext.PluginCommandStub.GetProgramName()));
 
                 for (int i = 0; i < pluginContext.PluginInfo.ParameterCount; i++)
                 {
@@ -223,7 +224,7 @@ namespace PresetMagicianShell.Models
                     string display = pluginContext.PluginCommandStub.GetParameterDisplay(i);
                     bool canBeAutomated = pluginContext.PluginCommandStub.CanParameterBeAutomated(i);
 
-                    PluginInfoItems.Add(new PluginInfoItem(
+                    PluginInfoItems.Add(new PluginInfoItem("Parameters", i.ToString(),
                         $"Parameter Index: {i} Parameter Name: {name} Display: {display} Label: {label} Can be automated: {canBeAutomated}"));
                 }
             }

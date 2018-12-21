@@ -72,14 +72,14 @@
                         </fluent:DropDownButton>
 
                         <fluent:Button
-                            Command="{catel:CommandManagerBinding Application.NotImplemented}"
+                            Command="{catel:CommandManagerBinding Preset.ActivatePresetView}"
                             Header="View Preset Export List"
                             Icon="{iconPacks:Modern Kind=BookList}"
                             Size="Middle" />
                         <fluent:Button
                             Padding="0"
                             VerticalAlignment="Center"
-                            Command="{catel:CommandManagerBinding Application.NotImplemented}"
+                            Command="{catel:CommandManagerBinding Plugin.ReportUnsupportedPlugins}"
                             Header="Report Unsupported Plugins"
                             Icon="{iconPacks:Octicons Kind=Megaphone}"
                             Size="Middle" />
@@ -161,6 +161,10 @@
                                 Command="{Binding DoSomething}"
                                 Header="DoSomething"
                                 Icon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Paintcan}}" />
+                            <fluent:MenuItem
+                                Command="{catel:CommandManagerBinding Plugin.ReportAllPlugins}"
+                                Header="Report All Plugins"
+                                Icon="{iconPacks:Octicons Kind=Megaphone}" />
                         </fluent:DropDownButton>
 
                     </fluent:RibbonGroupBox>
