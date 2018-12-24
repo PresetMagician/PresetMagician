@@ -17,8 +17,8 @@ namespace PresetMagicianShell
             private static readonly string _site = "localhost/presetmagiciansite/public";
             private static readonly string _protocol = "http://";
 #else
-            private static string Site = "presetmagician.com"
-            private static string Protocol = "https://";
+            private static readonly string _site = "presetmagician.com";
+            private static readonly string _protocol = "https://";
             #endif
 
             public static readonly string Documentation = $"{_masterProtocol}{_supportSite}/documentation";
@@ -80,9 +80,21 @@ namespace PresetMagicianShell
             public const string ReportAllPlugins = "Plugin.ReportAllPlugins";
         }
 
+        public static class PluginTools
+        {
+            public const string EnablePlugins = "PluginTools.EnablePlugins";
+            public const string DisablePlugins = "PluginTools.DisablePlugins";
+            public const string ShowPluginInfo = "PluginTools.ShowPluginInfo";
+            public const string ShowPluginEditor = "PluginTools.ShowPluginEditor";
+            public const string ShowPluginChunk = "PluginTools.ShowPluginChunk";
+            public const string LoadPlugin = "PluginTools.LoadPlugin";
+            public const string UnloadPlugin = "PluginTools.UnloadPlugin";
+        }
+
         public static class Preset
         {
             public const string ActivatePresetView = "Preset.ActivatePresetView";
+            public const string Export = "Preset.Export";
         }
 
         public static class Tools

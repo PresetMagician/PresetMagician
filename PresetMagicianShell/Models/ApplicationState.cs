@@ -38,6 +38,22 @@ namespace PresetMagicianShell.Models
             }
         }
 
+        private bool _isPresetExportRunning = false;
+
+        public bool IsPresetExportRunning
+        {
+            get => _isPresetExportRunning;
+            set
+            {
+                AllowModifyPresetExportList = !value;
+                IsPresetExportListBusy = value;
+                IsApplicationBusy = value;
+
+                _isPresetExportRunning = value;
+            }
+        }
+
+         
         #region Busy States
         public bool IsPluginListBusy { get; private set; }
         public bool IsPresetExportListBusy { get; private set; }

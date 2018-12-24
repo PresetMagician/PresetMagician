@@ -85,6 +85,7 @@ namespace PresetMagicianShell
 
                         _logger.Debug($"Attempting to load {vst.DllFilename}");
 
+
                         _vstService.VstHost.LoadVST(vst);
 
                         if (vst.IsLoaded)
@@ -100,6 +101,7 @@ namespace PresetMagicianShell
 
                             _dispatcherService.BeginInvoke(() =>
                             {
+                                
                                 vst.RootBank.PresetBanks.Clear();
                                 vst.RootBank.PresetBanks.Add(vst.PresetParser.RootBank);
                                 vst.NumPresets = vst.PresetParser.Presets.Count;

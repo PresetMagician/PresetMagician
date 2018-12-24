@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Windows;
+using Be.Windows.Forms;
 using Catel.Data;
 using Catel.IoC;
 using Catel.IO;
@@ -26,7 +27,7 @@ namespace PresetMagicianShell.Views
             AddCustomButton(new DataWindowButton("Open NKSF File", "OpenNKSFFile"));
             viewModel.PropertyChanged += ViewModel_PropertyChanged;
             InitializeComponent();
-            PluginChunkControl.SetBytes(new byte[0]);
+
         }
 
         private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -34,8 +35,10 @@ namespace PresetMagicianShell.Views
             if (e.PropertyName == "PluginChunk")
             {
                 var s = (NKSFViewModel) sender;
-                
-                PluginChunkControl.SetBytes(s.PluginChunk.ToByteArray());
+
+                var provider = new DynamicByteProvider(s.PluginChunk.ToArray());
+                PluginChunkControl.ByteProvider = provider;
+
             }
         }
 

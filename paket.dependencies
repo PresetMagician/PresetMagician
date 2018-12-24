@@ -23,7 +23,7 @@ nuget MethodTimer.Fody 2.1.1
 nuget ModuleInit.Fody 1.8.1
 nuget LoadAssembliesOnStartup.Fody 2.1.0
 nuget Orc.Squirrel 3.0.0
-nuget Orc.Controls 3.1.0
+nuget Orc.Controls 3.1.1
 nuget System.ValueTuple 4.5.0
 nuget System.Threading.Tasks.Extensions
 nuget SharpVectors.Reloaded
@@ -41,3 +41,4 @@ nuget Simple-MAPI.NET 1.1.0
 nuget Microsoft.Xaml.Behaviors.Wpf
 nuget squirrel.windows 1.9.0
 nuget Anotar.Catel.Fody 4.6.7
+nuget Be.Windows.Forms.HexBox

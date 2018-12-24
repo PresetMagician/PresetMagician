@@ -94,6 +94,13 @@
     <Compile Include="Commands\Help\HelpOpenChatLinkCommandContainer.cs" />
     <Compile Include="Commands\Help\HelpOpenDocumentationLinkCommandContainer.cs" />
     <Compile Include="Commands\Help\HelpOpenSupportLinkCommandContainer.cs" />
+    <Compile Include="Commands\PluginTools\PluginToolsDisablePluginsCommandContainer.cs" />
+    <Compile Include="Commands\PluginTools\PluginToolsEnablePluginsCommandContainer.cs" />
+    <Compile Include="Commands\PluginTools\PluginToolsShowPluginEditorCommandContainer.cs" />
+    <Compile Include="Commands\PluginTools\PluginToolsShowPluginChunkCommandContainer.cs" />
+    <Compile Include="Commands\PluginTools\PluginToolsUnloadPluginCommandContainer.cs" />
+    <Compile Include="Commands\PluginTools\PluginToolsLoadPluginCommandContainer.cs" />
+    <Compile Include="Commands\PluginTools\PluginToolsShowPluginInfoCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginAllToPresetExportListCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginReportAllPluginsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\AbstractReportPluginsCommandContainer.cs" />
@@ -102,6 +109,7 @@
     <Compile Include="Commands\Plugin\PluginRefreshPluginsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginScanPluginsCommandContainer.cs" />
     <Compile Include="Commands\Preset\PresetActivatePresetViewCommandContainer.cs" />
+    <Compile Include="Commands\Preset\PresetExportCommandContainer.cs" />
     <Compile Include="Commands\Tools\ToolsNksfViewCommandContainer.cs" />
     <Compile Include="Commands\Tools\ToolsSettingsViewCommandContainer.cs" />
     <Compile Include="Constants.cs" />
@@ -149,6 +157,7 @@
     <Compile Include="ViewModels\SplashScreenViewModel.cs" />
     <Compile Include="ViewModels\StatusBarViewModel.cs" />
     <Compile Include="ViewModels\VstFolderListViewModel.cs" />
+    <Compile Include="ViewModels\VstPluginChunkViewModel.cs" />
     <Compile Include="ViewModels\VstPluginInfoViewModel.cs" />
     <Compile Include="ViewModels\VstPluginsViewModel.cs" />
     <Compile Include="ViewModels\VstPluginViewModel.cs" />
@@ -157,6 +166,15 @@
     </Compile>
     <Compile Include="Views\NKSFView.xaml.cs">
       <DependentUpon>NKSFView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\VstPluginChunkView.xaml.cs">
+      <DependentUpon>VstPluginChunkView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PluginEditorFrame.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\PluginEditorFrame.Designer.cs">
+      <DependentUpon>PluginEditorFrame.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\PresetBankView.xaml.cs">
       <DependentUpon>PresetBankView.xaml</DependentUpon>
@@ -255,6 +273,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\VstPluginChunkView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\PresetBankView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -335,6 +357,14 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\vst.net\Source\Code\Jacobi.Vst.Core\Jacobi.Vst.Core.Clr4.csproj">
+      <Project>{5950f8a9-f413-4ace-b6e0-6f458b4c26f9}</Project>
+      <Name>Jacobi.Vst.Core.Clr4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\vst.net\Source\Code\Jacobi.Vst.Interop\Jacobi.Vst.Interop.Clr4.vcxproj">
+      <Project>{e0cc0ccf-a40d-4a53-8fac-b6af7e76eb08}</Project>
+      <Name>Jacobi.Vst.Interop.Clr4</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Drachenkatze.PresetMagician.NKSF\Drachenkatze.PresetMagician.NKSF.csproj">
       <Project>{2126df46-7f24-4c2c-b236-514a70b7a3a5}</Project>
       <Name>Drachenkatze.PresetMagician.NKSF</Name>
@@ -402,6 +432,17 @@
       <ItemGroup>
         <Reference Include="Anotar.Catel">
           <HintPath>..\packages\Anotar.Catel.Fody\lib\net452\Anotar.Catel.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="Be.Windows.Forms.HexBox">
+          <HintPath>..\packages\Be.Windows.Forms.HexBox\lib\net40\Be.Windows.Forms.HexBox.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -935,6 +976,17 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
       <ItemGroup>
+        <Reference Include="System.Runtime.CompilerServices.Unsafe">
+          <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe\lib\netstandard1.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
         <Reference Include="System.Runtime.Serialization.Formatters">
           <HintPath>..\packages\System.Runtime.Serialization.Formatters\lib\net46\System.Runtime.Serialization.Formatters.dll</HintPath>
           <Private>True</Private>
@@ -971,8 +1023,8 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
       <ItemGroup>
-        <Reference Include="System.ValueTuple">
-          <HintPath>..\packages\System.ValueTuple\lib\net461\System.ValueTuple.dll</HintPath>
+        <Reference Include="System.Threading.Tasks.Extensions">
+          <HintPath>..\packages\System.Threading.Tasks.Extensions\lib\netstandard1.0\System.Threading.Tasks.Extensions.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -982,18 +1034,8 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
       <ItemGroup>
-        <Reference Include="Jacobi.Vst.Core">
-          <HintPath>..\packages\VST.NET.x64\lib\net40\Jacobi.Vst.Core.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-        <Reference Include="Jacobi.Vst.Framework">
-          <HintPath>..\packages\VST.NET.x64\lib\net40\Jacobi.Vst.Framework.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-        <Reference Include="Jacobi.Vst.Interop">
-          <HintPath>..\packages\VST.NET.x64\lib\net40\Jacobi.Vst.Interop.dll</HintPath>
+        <Reference Include="System.ValueTuple">
+          <HintPath>..\packages\System.ValueTuple\lib\net461\System.ValueTuple.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>

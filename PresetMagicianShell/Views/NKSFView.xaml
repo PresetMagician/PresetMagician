@@ -4,9 +4,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:catel="http://schemas.catelproject.com"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:drawing="clr-namespace:System.Drawing;assembly=System.Drawing"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:PresetMagicianShell.ViewModels"
-    xmlns:wf="clr-namespace:System.ComponentModel.Design;assembly=System.Design"
+    xmlns:wf="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
     Width="800"
     Height="450"
     d:DataContext="{d:DesignInstance viewModels:NKSFViewModel}"
@@ -73,9 +74,21 @@
             Text="{Binding PluginId}"
             TextWrapping="Wrap"
             VerticalScrollBarVisibility="Auto" />
+
+
         <WindowsFormsHost Grid.Row="3" Grid.Column="1">
-            <wf:ByteViewer x:Name="PluginChunkControl" />
+            <wf:HexBox
+                x:Name="PluginChunkControl"
+                AutoSize="False"
+                BytesPerLine="16"
+                ColumnInfoVisible="True"
+                Font="Courier New"
+                LineInfoVisible="True"
+                StringViewVisible="True"
+                UseFixedBytesPerLine="True"
+                VScrollBarVisible="True" />
         </WindowsFormsHost>
+
 
     </Grid>
 </catel:DataWindow>

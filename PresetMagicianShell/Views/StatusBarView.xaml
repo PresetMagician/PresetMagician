@@ -52,7 +52,7 @@
                         <RotateTransform Angle="90" />
                     </Separator.LayoutTransform>
                 </Separator>
-                <!--<orccontrols:PinnableToolTipService.ToolTip>
+                <orccontrols:PinnableToolTipService.ToolTip>
                     <orccontrols:PinnableToolTip AllowCloseByUser="True" ResizeMode="CanResize">
                         <StackPanel>
                             <TextBlock Text="{Binding ApplicationState.ApplicationOperationLastOperation}" />
@@ -63,27 +63,29 @@
                                 Margin="5" />
                         </StackPanel>
                     </orccontrols:PinnableToolTip>
-                </orccontrols:PinnableToolTipService.ToolTip>-->
+                </orccontrols:PinnableToolTipService.ToolTip>
 
             </StackPanel>
-            <StackPanel orccontrols:PinnableToolTipService.InitialShowDelay="0" orccontrols:PinnableToolTipService.Placement="Top">
-                <TextBlock Grid.Column="1" Text="{Binding LicensedTo}" />
+            <StackPanel>
+                <TextBlock
+                    orccontrols:PinnableToolTipService.InitialShowDelay="0"
+                    orccontrols:PinnableToolTipService.Placement="Top"
+                    Text="{Binding LicensedTo}">
+                    <orccontrols:PinnableToolTipService.ToolTip>
+                        <orccontrols:PinnableToolTip AllowCloseByUser="True" ResizeMode="CanResize">
+                            <StackPanel Margin="5">
+                                <TextBlock Text="{Binding LicenseTooltip}" />
+
+                            </StackPanel>
+                        </orccontrols:PinnableToolTip>
+                    </orccontrols:PinnableToolTipService.ToolTip>
+                </TextBlock>
                 <Separator Width="{Binding ElementName=StackPanel, Path=ActualHeight}" Margin="3,0,3,0">
                     <Separator.LayoutTransform>
                         <RotateTransform Angle="90" />
                     </Separator.LayoutTransform>
                 </Separator>
-                <!--<orccontrols:PinnableToolTipService.ToolTip>
-                    <orccontrols:PinnableToolTip AllowCloseByUser="True" ResizeMode="CanResize">
-                        <StackPanel>
-                            <Label Content="{Binding LicensedTo}" />
-                            <Border
-                                Width="50"
-                                Height="50"
-                                Margin="5" />
-                        </StackPanel>
-                    </orccontrols:PinnableToolTip>
-                </orccontrols:PinnableToolTipService.ToolTip>-->
+
             </StackPanel>
 
 

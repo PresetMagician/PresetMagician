@@ -11,14 +11,16 @@ using Catel.Data;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser
 {
-    public class PresetBank : ModelBase
+    
+
+    public class PresetBank : ModelBase, IPresetBank
     {
         public string BankName { get; set; }
-        public PresetBank ParentBank { get; set; } = null;
+        public IPresetBank ParentBank { get; set; } = null;
 
         public PresetBank(string bankName = "All Banks")
         {
-            PresetBanks = new ObservableCollection<PresetBank>();
+            PresetBanks = new ObservableCollection<IPresetBank>();
             
             PresetBanks.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(
                 delegate(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)                    
@@ -64,7 +66,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         /// Gets or sets the Presets value.
         /// </summary>
 
-        public ObservableCollection<PresetBank> PresetBanks { get; set; }
+        public ObservableCollection<IPresetBank> PresetBanks { get; set; }
 
         #endregion
     }
