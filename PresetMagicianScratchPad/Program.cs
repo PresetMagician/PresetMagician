@@ -14,15 +14,22 @@ namespace PresetMagicianScratchPad
         [STAThread]
         static void Main(string[] args)
         {
-            var vstHost = new VstHost();
+            /*var vstHost = new VstHost();
             var plugin = new Plugin();
-            plugin.DllPath = @"C:\Program Files\VSTPlugins\Bazille(x64).dll";
+            plugin.DllPath = @"C:\Program Files\VSTPlugins\Zebralette(x64).dll";
             
             vstHost.LoadVST(plugin);
             plugin.DeterminatePresetParser();
             plugin.PresetParser.ScanBanks();
 
-            vstHost.UnloadVST(plugin);
+            var exporter = new VstPluginExport(vstHost);
+
+            foreach (var i in plugin.PresetParser.Presets)
+            {
+                exporter.ExportPresetAudioPreviewRealtime(plugin, i);
+            }
+
+            vstHost.UnloadVST(plugin);*/
 
         }
     }

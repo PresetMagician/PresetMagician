@@ -18,7 +18,8 @@ Orc.Squirrel.Xaml
 Extended.Wpf.Toolkit
 Dirkster.AvalonDock.Themes.VS2013
 Portable.Licensing
-VST.NET.x64
 Simple-MAPI.NET
 Anotar.Catel.Fody
 System.ValueTuple
+System.Threading.Tasks.Extensions
+Be.Windows.Forms.HexBox

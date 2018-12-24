@@ -6,7 +6,9 @@ using Drachenkatze.PresetMagician.VSTHost.VST;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser
 {
-    public class Preset : ModelBase
+    
+
+    public class Preset : ModelBase, IPreset
     {
         public String PluginDLLPath;
 
@@ -21,62 +23,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             PreviewNote = new MidiNoteName("C5");
         }
 
-        public PresetBank PresetBank { get; set; }
+        public IPresetBank PresetBank { get; set; }
 
         public bool Export { get; set; } = true;
-
-        public String getNKSFBankName()
-        {
-                String bankName = PresetBank.BankName;
-
-                foreach (char c in System.IO.Path.GetInvalidPathChars())
-                {
-                    bankName = bankName.Replace(c, '_');
-                }
-
-                foreach (char c in System.IO.Path.GetInvalidFileNameChars())
-                {
-                    bankName = bankName.Replace(c, '_');
-                }
-
-                return bankName;
-
-        }
-
-        public String getNKSFPluginName ()
-        {
-                String pluginName = PluginName;
-
-                foreach (char c in System.IO.Path.GetInvalidPathChars())
-                {
-                    pluginName = pluginName.Replace(c, '_');
-                }
-
-                foreach (char c in System.IO.Path.GetInvalidFileNameChars())
-                {
-                    pluginName = pluginName.Replace(c, '_');
-                }
-
-                return pluginName;
-        }
-
-        public String getNKSFPresetName () 
-        {
-            // Returns the sanitized preset name
-                String presetName = PresetName;
-
-                foreach (char c in System.IO.Path.GetInvalidFileNameChars())
-                {
-                    presetName = presetName.Replace(c, '_');
-                }
-
-                foreach (char c in System.IO.Path.GetInvalidPathChars())
-                {
-                    presetName = presetName.Replace(c, '_');
-                }
-
-                return presetName;
-        }
 
         public String PluginName { get; set; }
 

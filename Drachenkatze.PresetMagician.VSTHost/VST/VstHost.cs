@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Security;
 using Catel.Collections;
+using Jacobi.Vst.Core;
 using Jacobi.Vst.Interop.Host;
 
 namespace Drachenkatze.PresetMagician.VSTHost.VST
@@ -93,9 +94,63 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             }
         }
 
+        private void MIDI(IVstPlugin plugin, byte Cmd, byte Val1, byte Val2)
+        {
+            /*
+			 * Just a small note on the code for setting up a midi event:
+			 * You can use the VstEventCollection class (Framework) to setup one or more events
+			 * and then call the ToArray() method on the collection when passing it to
+			 * ProcessEvents. This will save you the hassle of dealing with arrays explicitly.
+			 * http://computermusicresource.com/MIDI.Commands.html
+			 *
+			 * Freq to Midi notes etc:
+			 * http://www.sengpielaudio.com/calculator-notenames.htm
+			 *
+			 * Example to use NAudio Midi support
+			 * http://stackoverflow.com/questions/6474388/naudio-and-midi-file-reading
+			 */
+
+            var midiData = new byte[4];
+            midiData[0] = Cmd;
+            midiData[1] = Val1;
+            midiData[2] = Val2;
+            midiData[3] = 0;    // Reserved, unused
+
+            var vse = new VstMidiEvent(/*DeltaFrames*/ 0,
+                /*NoteLength*/ 0,
+                /*NoteOffset*/  0,
+                midiData,
+                /*Detune*/        0,
+                /*NoteOffVelocity*/ 127);
+
+            var ve = new VstEvent[1];
+            ve[0] = vse;
+
+            plugin.PluginContext.PluginCommandStub.ProcessEvents(ve);
+        }
+
+        public void MIDI_CC(IVstPlugin plugin, byte Number, byte Value)
+        {
+            byte Cmd = 0xB0;
+            MIDI(plugin, Cmd, Number, Value);
+        }
+
+        public void MIDI_NoteOff(IVstPlugin plugin, byte Note, byte Velocity)
+        {
+            byte Cmd = 0x80;
+            MIDI(plugin, Cmd, Note, Velocity);
+        }
+
+        public void MIDI_NoteOn(IVstPlugin plugin, byte Note, byte Velocity)
+        {
+            byte Cmd = 0x90;
+            MIDI(plugin, Cmd, Note, Velocity);
+        }
+
         public void UnloadVST(IVstPlugin vst)
         {
             vst.PluginContext?.Dispose();
+            vst.PluginContext = null;
         }
     }
 }

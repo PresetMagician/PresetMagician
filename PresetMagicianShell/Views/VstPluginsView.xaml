@@ -311,6 +311,11 @@
                     </DataGridTemplateColumn>
                     <DataGridTextColumn
                         Width="120"
+                        Binding="{Binding IsLoaded}"
+                        Header="Loaded"
+                        IsReadOnly="True" />
+                    <DataGridTextColumn
+                        Width="120"
                         Binding="{Binding PresetParser.PresetParserType}"
                         Header="Export Module"
                         IsReadOnly="True" />

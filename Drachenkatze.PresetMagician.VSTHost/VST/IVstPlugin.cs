@@ -14,6 +14,6 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
         string PluginName { get; }
         VstHost.PluginTypes PluginType { get; set; } 
         int NumPresets { get; }
-
+        string PluginVendor { get; set; }
     }
 }

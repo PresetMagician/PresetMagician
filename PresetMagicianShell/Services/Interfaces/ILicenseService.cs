@@ -13,5 +13,6 @@ namespace PresetMagicianShell.Services
         License GetCurrentLicense();
 
         event EventHandler LicenseChanged;
+        int getPresetExportLimit();
     }
 }

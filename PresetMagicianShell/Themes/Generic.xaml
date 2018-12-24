@@ -101,10 +101,6 @@
         </Border>
     </ControlTemplate>
 
-    <Style TargetType="{x:Type StatusBar}">
-        <Setter Property="Background" Value="{StaticResource StatusBarColorBrush}" />
-        <Setter Property="Foreground" Value="White" />
-    </Style>
 
     <Style x:Key="FocusVisual2">
         <Setter Property="Control.Template">

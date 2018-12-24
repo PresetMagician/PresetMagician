@@ -5,147 +5,127 @@ using System.Diagnostics;
 
 namespace Drachenkatze.PresetMagician.VSTHost
 {
-    class HostCommandStub : IVstHostCommandStub
-  
+    public class HostCommandStub : IVstHostCommandStub
     {
-        /// <summary>
-        /// Raised when one of the methods is called.
-        /// </summary>
+        public string Directory;
+
         public event EventHandler<PluginCalledEventArgs> PluginCalled;
 
         private void RaisePluginCalled(string message)
         {
             EventHandler<PluginCalledEventArgs> handler = PluginCalled;
 
-            if(handler != null)
+            if (handler != null)
             {
                 handler(this, new PluginCalledEventArgs(message));
             }
         }
 
-        #region IVstHostCommandsStub Members
+        #region IVstHostCommandStub Members
 
-        /// <inheritdoc />
         public IVstPluginContext PluginContext { get; set; }
-        
-        #endregion
+
+        #endregion IVstHostCommandStub Members
 
         #region IVstHostCommands20 Members
 
-        /// <inheritdoc />
         public bool BeginEdit(int index)
         {
-            RaisePluginCalled("BeginEdit(" + index + ")");
-
             return false;
         }
 
-        /// <inheritdoc />
-        public Jacobi.Vst.Core.VstCanDoResult CanDo(string cando)
+        public VstCanDoResult CanDo(VstHostCanDo cando)
         {
-            RaisePluginCalled("CanDo(" + cando + ")");
-            return Jacobi.Vst.Core.VstCanDoResult.Unknown;
+            return VstCanDoResult.Unknown;
         }
 
-        /// <inheritdoc />
-        public bool CloseFileSelector(Jacobi.Vst.Core.VstFileSelect fileSelect)
+        public bool CloseFileSelector(VstFileSelect fileSelect)
         {
-            RaisePluginCalled("CloseFileSelector(" + fileSelect.Command + ")");
-            return false;
+            throw new NotImplementedException();
         }
 
-        /// <inheritdoc />
         public bool EndEdit(int index)
         {
-            RaisePluginCalled("EndEdit(" + index + ")");
             return false;
         }
 
-        /// <inheritdoc />
-        public Jacobi.Vst.Core.VstAutomationStates GetAutomationState()
+        public VstAutomationStates GetAutomationState()
         {
-            RaisePluginCalled("GetAutomationState()");
-            return Jacobi.Vst.Core.VstAutomationStates.Off;
+            throw new NotImplementedException();
         }
 
-        /// <inheritdoc />
         public int GetBlockSize()
         {
-            RaisePluginCalled("GetBlockSize()");
-            return 1024;
+            return 512;
         }
 
-        /// <inheritdoc />
         public string GetDirectory()
         {
-            RaisePluginCalled("GetDirectory()");
-            return null;
+            return Directory;
         }
 
-        /// <inheritdoc />
         public int GetInputLatency()
         {
-            RaisePluginCalled("GetInputLatency()");
             return 0;
         }
 
-        /// <inheritdoc />
-        public Jacobi.Vst.Core.VstHostLanguage GetLanguage()
+        public VstHostLanguage GetLanguage()
         {
-            RaisePluginCalled("GetLanguage()");
-            return Jacobi.Vst.Core.VstHostLanguage.NotSupported;
+            throw new NotImplementedException();
         }
 
-        /// <inheritdoc />
         public int GetOutputLatency()
         {
-            RaisePluginCalled("GetOutputLatency()");
             return 0;
         }
 
-        /// <inheritdoc />
-        public Jacobi.Vst.Core.VstProcessLevels GetProcessLevel()
+        public VstProcessLevels GetProcessLevel()
         {
-            RaisePluginCalled("GetProcessLevel()");
             return Jacobi.Vst.Core.VstProcessLevels.Unknown;
         }
 
-        /// <inheritdoc />
         public string GetProductString()
         {
-            RaisePluginCalled("GetProductString()");
-            return "VST.NET";
+            return "ProductString";
         }
 
-        /// <inheritdoc />
         public float GetSampleRate()
         {
-            RaisePluginCalled("GetSampleRate()");
-            return 44.8f;
+            return 44100f;
         }
 
-        /// <inheritdoc />
-        public Jacobi.Vst.Core.VstTimeInfo GetTimeInfo(Jacobi.Vst.Core.VstTimeInfoFlags filterFlags)
+        private Jacobi.Vst.Core.VstTimeInfo vstTimeInfo = new Jacobi.Vst.Core.VstTimeInfo();
+
+        public VstTimeInfo GetTimeInfo(VstTimeInfoFlags filterFlags)
         {
-            RaisePluginCalled("GetTimeInfo(" + filterFlags + ")");
-            return null;
+            vstTimeInfo.SamplePosition = 0.0;
+            vstTimeInfo.SampleRate = 44100;
+            vstTimeInfo.NanoSeconds = 0.0;
+            vstTimeInfo.PpqPosition = 0.0;
+            vstTimeInfo.Tempo = 120.0;
+            vstTimeInfo.BarStartPosition = 0.0;
+            vstTimeInfo.CycleStartPosition = 0.0;
+            vstTimeInfo.CycleEndPosition = 0.0;
+            vstTimeInfo.TimeSignatureNumerator = 4;
+            vstTimeInfo.TimeSignatureDenominator = 4;
+            vstTimeInfo.SmpteOffset = 0;
+            vstTimeInfo.SmpteFrameRate = new Jacobi.Vst.Core.VstSmpteFrameRate();
+            vstTimeInfo.SamplesToNearestClock = 0;
+            vstTimeInfo.Flags = 0;
+
+            return vstTimeInfo;
         }
 
-        /// <inheritdoc />
         public string GetVendorString()
         {
-            RaisePluginCalled("GetVendorString()");
-            return "Jacobi Software";
+            return "VendorString";
         }
 
-        /// <inheritdoc />
         public int GetVendorVersion()
         {
-            RaisePluginCalled("GetVendorVersion()");
-            return 1000;
+            return 2400;
         }
 
-        /// <inheritdoc />
         public bool IoChanged()
         {
             RaisePluginCalled("IoChanged()");
@@ -159,10 +139,8 @@ namespace Drachenkatze.PresetMagician.VSTHost
             return false;
         }
 
-        /// <inheritdoc />
-        public bool ProcessEvents(Jacobi.Vst.Core.VstEvent[] events)
+        public bool ProcessEvents(VstEvent[] events)
         {
-            RaisePluginCalled("ProcessEvents(" + events.Length + ")");
             return false;
         }
 
@@ -173,50 +151,46 @@ namespace Drachenkatze.PresetMagician.VSTHost
             return false;
         }
 
-        /// <inheritdoc />
         public bool UpdateDisplay()
         {
-            RaisePluginCalled("UpdateDisplay()");
-            return false;
+            return true;
         }
 
-        #endregion
+        #endregion IVstHostCommands20 Members
 
         #region IVstHostCommands10 Members
 
-        /// <inheritdoc />
         public int GetCurrentPluginID()
         {
-            RaisePluginCalled("GetCurrentPluginID()");
             return PluginContext.PluginInfo.PluginID;
         }
 
-        /// <inheritdoc />
         public int GetVersion()
         {
-            RaisePluginCalled("GetVersion()");
-            return 1000;
+            return 2400;
         }
 
-        /// <inheritdoc />
         public void ProcessIdle()
         {
-            RaisePluginCalled("ProcessIdle()");
+            return;
         }
 
-        /// <inheritdoc />
         public void SetParameterAutomated(int index, float value)
         {
-            RaisePluginCalled("SetParameterAutomated(" + index + ", " + value + ")");
         }
 
-        #endregion
+        public VstCanDoResult CanDo(string cando)
+        {
+            return VstCanDoResult.Unknown;
+        }
+
+        #endregion IVstHostCommands10 Members
     }
 
     /// <summary>
     /// Event arguments used when one of the mehtods is called.
     /// </summary>
-    class PluginCalledEventArgs : EventArgs
+    public class PluginCalledEventArgs : EventArgs
     {
         /// <summary>
         /// Constructs a new instance with a <paramref name="message"/>.

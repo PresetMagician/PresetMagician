@@ -23,7 +23,7 @@
             CanCustomizeRibbon="False"
             IsQuickAccessToolBarVisible="False">
 
-            <fluent:Ribbon.ContextualGroups>
+            <!-- <fluent:Ribbon.ContextualGroups>
                 <fluent:RibbonContextualTabGroup
                     x:Name="tabGroup1"
                     Background="Magenta"
@@ -32,7 +32,7 @@
                     Header="Plugin"
                     Visibility="Visible" />
 
-            </fluent:Ribbon.ContextualGroups>
+            </fluent:Ribbon.ContextualGroups>-->
 
 
             <fluent:Ribbon.Tabs>
@@ -40,7 +40,7 @@
 
                 <fluent:RibbonTabItem Header="Home">
 
-                    <fluent:RibbonGroupBox Header="Main Tools">
+                    <fluent:RibbonGroupBox Header="Plugins">
 
                         <fluent:Button
                             Width="60"
@@ -85,6 +85,56 @@
                             Size="Middle" />
                     </fluent:RibbonGroupBox>
 
+
+
+                    <fluent:RibbonGroupBox Header="Plugin Tools">
+                        <fluent:Button
+                            Command="{catel:CommandManagerBinding PluginTools.DisablePlugins}"
+                            Header="Disable Plugin(s)"
+                            Icon="{iconPacks:Octicons Kind=DiffRemoved}"
+                            Size="Middle" />
+                        <fluent:Button
+                            Command="{catel:CommandManagerBinding PluginTools.EnablePlugins}"
+                            Header="Enable Plugin(s)"
+                            Icon="{iconPacks:Octicons Kind=DiffAdded}"
+                            Size="Middle" />
+                        <fluent:Button
+                            Command="{catel:CommandManagerBinding PluginTools.ShowPluginInfo}"
+                            Header="Show Plugin Capabilities"
+                            Icon="{iconPacks:FontAwesome Kind=EyeSolid}"
+                            Size="Middle" />
+                    </fluent:RibbonGroupBox>
+                    <fluent:RibbonGroupBox Header="Plugin Developer Tools">
+                        <fluent:Button
+                            Command="{catel:CommandManagerBinding PluginTools.LoadPlugin}"
+                            Header="Load Plugin"
+                            Icon="{iconPacks:Material Kind=PowerPlug}"
+                            Size="Middle" />
+                        <fluent:Button
+                            Command="{catel:CommandManagerBinding PluginTools.UnloadPlugin}"
+                            Header="Unload Plugin"
+                            Icon="{iconPacks:Material Kind=PowerPlugOff}"
+                            Size="Middle" />
+                        <fluent:Button
+                            Command="{catel:CommandManagerBinding PluginTools.ShowPluginEditor}"
+                            Header="Show Plugin Editor"
+                            Icon="{iconPacks:FontAwesome Kind=EyeSolid}"
+                            Size="Middle" />
+                        <fluent:Button
+                            Command="{catel:CommandManagerBinding PluginTools.ShowPluginChunk}"
+                            Header="Show Plugin Chunk Data"
+                            Icon="{iconPacks:Octicons Kind=FileBinary}"
+                            Size="Middle" />
+                    </fluent:RibbonGroupBox>
+                    <fluent:RibbonGroupBox Header="Preset Tools">
+                        <fluent:Button
+                            Command="{catel:CommandManagerBinding Preset.Export}"
+                            Header="Export Presets"
+                            LargeIcon="{iconPacks:FontAwesome Kind=CogSolid,
+                                                              Width=32,
+                                                              Height=32}"
+                            Size="Large" />
+                    </fluent:RibbonGroupBox>
                     <fluent:RibbonGroupBox Header="Settings">
 
                         <fluent:Button
@@ -100,7 +150,6 @@
 
 
                     </fluent:RibbonGroupBox>
-
                     <fluent:RibbonGroupBox Header="Help">
                         <fluent:Button
                             Width="50"
@@ -170,7 +219,7 @@
                     </fluent:RibbonGroupBox>
                 </fluent:RibbonTabItem>
 
-                <fluent:RibbonTabItem
+                <!--<fluent:RibbonTabItem
                     Group="{Binding ElementName=tabGroup1, Mode=OneWay}"
                     Header="Management"
                     KeyTip="K">
@@ -182,7 +231,7 @@
 
                     </fluent:RibbonGroupBox>
 
-                </fluent:RibbonTabItem>
+                </fluent:RibbonTabItem>-->
             </fluent:Ribbon.Tabs>
         </fluent:Ribbon>
     </Grid>

@@ -206,23 +206,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             }
         }
 
-        public void MIDI_CC(byte Number, byte Value)
-        {
-            byte Cmd = 0xB0;
-            MIDI(Cmd, Number, Value);
-        }
-
-        public void MIDI_NoteOff(byte Note, byte Velocity)
-        {
-            byte Cmd = 0x80;
-            MIDI(Cmd, Note, Velocity);
-        }
-
-        public void MIDI_NoteOn(byte Note, byte Velocity)
-        {
-            byte Cmd = 0x90;
-            MIDI(Cmd, Note, Velocity);
-        }
+        
 
         public void SaveFXP(string filePath)
         {
@@ -306,39 +290,6 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             return pluginUniqueID;
         }
 
-        private void MIDI(byte Cmd, byte Val1, byte Val2)
-        {
-            /*
-			 * Just a small note on the code for setting up a midi event:
-			 * You can use the VstEventCollection class (Framework) to setup one or more events
-			 * and then call the ToArray() method on the collection when passing it to
-			 * ProcessEvents. This will save you the hassle of dealing with arrays explicitly.
-			 * http://computermusicresource.com/MIDI.Commands.html
-			 *
-			 * Freq to Midi notes etc:
-			 * http://www.sengpielaudio.com/calculator-notenames.htm
-			 *
-			 * Example to use NAudio Midi support
-			 * http://stackoverflow.com/questions/6474388/naudio-and-midi-file-reading
-			 */
-
-            var midiData = new byte[4];
-            midiData[0] = Cmd;
-            midiData[1] = Val1;
-            midiData[2] = Val2;
-            midiData[3] = 0;    // Reserved, unused
-
-            var vse = new VstMidiEvent(/*DeltaFrames*/ 0,
-                                                /*NoteLength*/ 0,
-                                                /*NoteOffset*/  0,
-                                                midiData,
-                                                /*Detune*/        0,
-                                                /*NoteOffVelocity*/ 127);
-
-            var ve = new VstEvent[1];
-            ve[0] = vse;
-
-            PluginContext.PluginCommandStub.ProcessEvents(ve);
-        }
+        
     }
 }
