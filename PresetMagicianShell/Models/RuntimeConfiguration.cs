@@ -1,40 +1,38 @@
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Catel.Collections;
 using Catel.Data;
-using Catel.Runtime.Serialization;
 using Newtonsoft.Json;
 using PresetMagicianShell.Models.Settings;
 
 namespace PresetMagicianShell.Models
 {
-    [JsonObjectAttribute(MemberSerialization.OptIn)]
-    public class RuntimeConfiguration: ValidatableModelBase
+    [JsonObject(MemberSerialization.OptIn)]
+    public class RuntimeConfiguration : ValidatableModelBase
     {
         [JsonProperty]
-        [ExcludeFromValidationAttribute]
-        public FastObservableCollection<VstDirectory> VstDirectories { get; private set; } = new FastObservableCollection<VstDirectory>();
+        [ExcludeFromValidation]
+        public FastObservableCollection<VstDirectory> VstDirectories { get; private set; } =
+            new FastObservableCollection<VstDirectory>();
 
-        [JsonProperty]
-        public string NativeInstrumentsUserContentDirectory { get; set; } = null;
+        [JsonProperty] public string NativeInstrumentsUserContentDirectory { get; set; }
 
-        [JsonProperty]
-        public bool ExportWithAudioPreviews { get; set; } = true;
+        [JsonProperty] public bool ExportWithAudioPreviews { get; set; } = true;
 
         [JsonProperty]
         public FastObservableCollection<Plugin> CachedPlugins { get; set; } = new FastObservableCollection<Plugin>();
 
         protected override void ValidateFields(List<IFieldValidationResult> validationResults)
         {
-            if (VstDirectories != null) {
-            foreach (var directory in VstDirectories)
+            if (VstDirectories != null)
             {
-                if (directory.HasErrors)
+                foreach (var directory in VstDirectories)
                 {
-                    validationResults.Add(FieldValidationResult.CreateError(nameof(VstDirectories), directory.GetErrorMessage()));
+                    if (directory.HasErrors)
+                    {
+                        validationResults.Add(FieldValidationResult.CreateError(nameof(VstDirectories),
+                            directory.GetErrorMessage()));
+                    }
                 }
-            }
             }
         }
     }

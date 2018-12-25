@@ -88,6 +88,13 @@
                         Header="Report Unsupported Plugins"
                         Icon="{iconPacks:Octicons Kind=Megaphone}"
                         Size="Middle" />
+                    <fluent:Button
+                        Padding="0"
+                        VerticalAlignment="Center"
+                        Command="{catel:CommandManagerBinding Plugin.RefreshPlugins}"
+                        Header="Refresh Plugin List"
+                        Icon="{iconPacks:Modern Kind=Refresh}"
+                        Size="Middle" />
                 </fluent:RibbonGroupBox>
 
 

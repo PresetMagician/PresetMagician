@@ -63,7 +63,8 @@ namespace PresetMagicianShell.Services
         {
             string output = JsonConvert.SerializeObject(EditableConfiguration);
 
-            RuntimeConfiguration = JsonConvert.DeserializeObject<RuntimeConfiguration>(output);
+            JsonConvert.PopulateObject(output, RuntimeConfiguration);
+            SaveConfiguration();
         }
 
         public void LoadConfiguration()
@@ -81,12 +82,7 @@ namespace PresetMagicianShell.Services
                 using (JsonReader jsonReader = new JsonTextReader(rd))
                 {
                     using (RuntimeConfiguration.SuspendValidations()) {
-                    var newConfiguration = _jsonSerializer.Deserialize<RuntimeConfiguration>(jsonReader);
-
-                        if (newConfiguration != null)
-                        {
-                            RuntimeConfiguration = newConfiguration;
-                        }
+                        _jsonSerializer.Populate(jsonReader,RuntimeConfiguration);
                     }
                     _vstService.Plugins.AddItems(RuntimeConfiguration.CachedPlugins);
                 }

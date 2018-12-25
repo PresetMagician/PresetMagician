@@ -4,3 +4,4 @@ Anotar.Catel.Fody copy_local: false
 Catel.Core
 squirrel.windows
 VST.NET.x64
+Syroot.Windows.IO.KnownFolders

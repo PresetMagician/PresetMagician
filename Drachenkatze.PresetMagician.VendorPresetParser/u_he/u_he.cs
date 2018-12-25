@@ -46,7 +46,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
                 BankName = name
             };
 
-            foreach (var file in directory.EnumerateFiles())
+            foreach (var file in directory.EnumerateFiles("*.h2p"))
             {
                 Preset preset = new Preset();
                 preset.PresetName = file.Name.Replace(".h2p", "");
