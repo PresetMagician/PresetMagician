@@ -145,7 +145,11 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
         private void ConvertToOGG(string inputWave, string outputOGG)
         {
             var path = Path.Combine(Path.GetTempPath(), "ffmpeg.exe");
-            File.WriteAllBytes(path, Resources.ffmpeg);
+
+            if (!File.Exists(path))
+            {
+                File.WriteAllBytes(path, Resources.ffmpeg);
+            }
 
             var process = new Process
             {
@@ -166,7 +170,6 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             process.Close();
             process.Dispose();
 
-            File.Delete(path);
         }
 
         [Time]
