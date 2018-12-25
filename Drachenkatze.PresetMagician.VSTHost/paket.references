@@ -4,3 +4,4 @@ Anotar.Catel.Fody copy_local: false
 MethodTimer.Fody copy_local: false
 Catel.Core
 System.ValueTuple
+VST.NET.x64

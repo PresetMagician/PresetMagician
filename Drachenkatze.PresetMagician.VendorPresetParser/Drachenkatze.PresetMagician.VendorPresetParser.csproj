@@ -75,14 +75,6 @@
     <Compile Include="VendorPresetParser.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\vst.net\Source\Code\Jacobi.Vst.Core\Jacobi.Vst.Core.Clr4.csproj">
-      <Project>{5950f8a9-f413-4ace-b6e0-6f458b4c26f9}</Project>
-      <Name>Jacobi.Vst.Core.Clr4</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\vst.net\Source\Code\Jacobi.Vst.Interop\Jacobi.Vst.Interop.Clr4.vcxproj">
-      <Project>{e0cc0ccf-a40d-4a53-8fac-b6af7e76eb08}</Project>
-      <Name>Jacobi.Vst.Interop.Clr4</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Drachenkatze.PresetMagician.Utils\Drachenkatze.PresetMagician.Utils.csproj">
       <Project>{37ABDA8A-5FFA-41F9-B880-A272D8C21DFF}</Project>
       <Name>Drachenkatze.PresetMagician.Utils</Name>
@@ -369,6 +361,27 @@
         <Reference Include="System.Runtime.Serialization.Xml">
           <HintPath>..\packages\System.Runtime.Serialization.Xml\lib\net46\System.Runtime.Serialization.Xml.dll</HintPath>
           <Private>False</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="Jacobi.Vst.Core">
+          <HintPath>..\packages\VST.NET.x64\lib\net40\Jacobi.Vst.Core.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Jacobi.Vst.Framework">
+          <HintPath>..\packages\VST.NET.x64\lib\net40\Jacobi.Vst.Framework.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Jacobi.Vst.Interop">
+          <HintPath>..\packages\VST.NET.x64\lib\net40\Jacobi.Vst.Interop.dll</HintPath>
+          <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
