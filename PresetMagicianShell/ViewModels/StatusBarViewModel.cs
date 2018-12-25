@@ -86,7 +86,7 @@ namespace PresetMagicianShell.ViewModels
                     if (_licenseService.GetCurrentLicense().Type == LicenseType.Trial)
                     {
                         licenseTooltipItems.Add(
-                            $"License Type: Trial (Expires {_licenseService.GetCurrentLicense().Expiration.ToShortDateString()}");
+                            $"License Type: Trial (Expires {_licenseService.GetCurrentLicense().Expiration.ToShortDateString()})");
 
                         if (_licenseService.getPresetExportLimit() > 0)
                         {

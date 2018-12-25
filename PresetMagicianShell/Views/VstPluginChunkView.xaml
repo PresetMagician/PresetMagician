@@ -15,23 +15,53 @@
     SizeToContent="Manual"
     mc:Ignorable="d">
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+        <TabControl>
+            <TabItem Header="Bank">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <WindowsFormsHost Grid.Row="0">
+                        <wf:HexBox
+                            x:Name="PluginBankChunkControl"
+                            AutoSize="False"
+                            BytesPerLine="16"
+                            ColumnInfoVisible="True"
+                            Font="Courier New"
+                            LineInfoVisible="True"
+                            StringViewVisible="True"
+                            UseFixedBytesPerLine="True"
+                            VScrollBarVisible="True" />
+                    </WindowsFormsHost>
+                    <TextBlock Grid.Row="1" Text="{Binding Plugin.ChunkBankMemoryStream.Length}" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="Preset">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <WindowsFormsHost Grid.Row="0">
+                        <wf:HexBox
+                            x:Name="PluginPresetChunkControl"
+                            AutoSize="False"
+                            BytesPerLine="16"
+                            ColumnInfoVisible="True"
+                            Font="Courier New"
+                            LineInfoVisible="True"
+                            StringViewVisible="True"
+                            UseFixedBytesPerLine="True"
+                            VScrollBarVisible="True" />
+                    </WindowsFormsHost>
+                    <TextBlock Grid.Row="1" Text="{Binding Plugin.ChunkPresetMemoryStream.Length}" />
+                </Grid>
+            </TabItem>
+        </TabControl>
 
-        <WindowsFormsHost Grid.Row="0">
-            <wf:HexBox
-                x:Name="PluginChunkControl"
-                AutoSize="False"
-                BytesPerLine="16"
-                ColumnInfoVisible="True"
-                Font="Courier New"
-                LineInfoVisible="True"
-                StringViewVisible="True"
-                UseFixedBytesPerLine="True"
-                VScrollBarVisible="True" />
-        </WindowsFormsHost>
-        <TextBlock Grid.Row="1" Text="{Binding Plugin.ChunkMemoryStream.Length}" />
+
+
+
     </Grid>
 </catel:DataWindow>

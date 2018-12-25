@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractVendorPresetParser.cs" />
+    <Compile Include="Common\VC2Writer.cs" />
     <Compile Include="NullPresetParser.cs" />
     <Compile Include="Preset.cs" />
     <Compile Include="PresetBank.cs" />

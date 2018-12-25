@@ -33,25 +33,23 @@ namespace PresetMagicianShell.Views
         public VstPluginChunkView(VstPluginChunkViewModel viewModel)
             : base(viewModel, DataWindowMode.Close)
         {
-            AddCustomButton(new DataWindowButton("Open with HxD", "OpenWithHxD"));
+            AddCustomButton(new DataWindowButton("Open Bank with HxD", "OpenWithHxDBank"));
+            AddCustomButton(new DataWindowButton("Open Preset with HxD", "OpenWithHxDPreset"));
 
             viewModel.PropertyChanged += ViewModel_PropertyChanged;
             InitializeComponent();
 
-            var provider = new DynamicByteProvider(viewModel.Plugin.ChunkMemoryStream.ToArray());
-            PluginChunkControl.ByteProvider = provider;
+            var provider = new DynamicByteProvider(viewModel.Plugin.ChunkBankMemoryStream.ToArray());
+            PluginBankChunkControl.ByteProvider = provider;
+
+            var provider2 = new DynamicByteProvider(viewModel.Plugin.ChunkPresetMemoryStream.ToArray());
+            PluginPresetChunkControl.ByteProvider = provider2;
 
         }
 
         private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "PluginChunk")
-            {
-                var s = (VstPluginChunkViewModel) sender;
-
-                var provider = new DynamicByteProvider(s.Plugin.ChunkMemoryStream.ToArray());
-                PluginChunkControl.ByteProvider = provider;
-            }
+           
         }
     }
 }

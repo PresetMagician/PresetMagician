@@ -95,6 +95,7 @@ namespace PresetMagicianShell
         {
             public const string ActivatePresetView = "Preset.ActivatePresetView";
             public const string Export = "Preset.Export";
+            public const string ClearList = "Preset.ClearList";
         }
 
         public static class Tools

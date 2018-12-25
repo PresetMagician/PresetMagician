@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Catel;
@@ -24,15 +25,19 @@ namespace PresetMagicianShell
 
         private readonly IVstService _vstService;
         private readonly IApplicationService _applicationService;
+        private readonly IRuntimeConfigurationService _runtimeConfigurationService;
 
-        public PresetExportCommandContainer(ICommandManager commandManager, IVstService vstService,IApplicationService applicationService)
+        public PresetExportCommandContainer(ICommandManager commandManager, IVstService vstService,IApplicationService applicationService,
+            IRuntimeConfigurationService runtimeConfigurationService)
             : base(Commands.Preset.Export, commandManager)
         {
             Argument.IsNotNull(() => vstService);
             Argument.IsNotNull(() => applicationService);
+            Argument.IsNotNull(() => runtimeConfigurationService);
 
             _vstService = vstService;
             _applicationService = applicationService;
+            _runtimeConfigurationService = runtimeConfigurationService;
         }
 
         [STAThread]
@@ -58,6 +63,14 @@ namespace PresetMagicianShell
             await TaskHelper.Run(() =>
             {
                 var exporter = new VstPluginExport(_vstService.VstHost);
+                var exportDirectory = _runtimeConfigurationService.RuntimeConfiguration
+                    .NativeInstrumentsUserContentDirectory;
+
+                exporter.UserContentDirectory = exportDirectory;
+                if (!Directory.Exists(exportDirectory))
+                {
+                    _log.Warning($"Directory {exportDirectory} does not exist, using the default");
+                }
 
                 foreach (var pluginPreset in pluginPresets)
                 {
@@ -69,9 +82,6 @@ namespace PresetMagicianShell
                     // Create a temporary plugin so that we don't overwrite the plugin info in the list
                     var tempPlugin = new Plugin();
                     tempPlugin.DllPath = plugin.DllPath;
-
-                    Debug.WriteLine("Loading plugin "+plugin.DllPath);
-
 
                     _vstService.VstHost.LoadVST(tempPlugin);
 
@@ -86,11 +96,14 @@ namespace PresetMagicianShell
                         {
                             return;
                         }
-                        //currentPreset++;
-                        exporter.ExportPresetAudioPreviewRealtime(tempPlugin, preset.Preset);
+
+                        if (_runtimeConfigurationService.RuntimeConfiguration.ExportWithAudioPreviews)
+                        {
+                            exporter.ExportPresetAudioPreviewRealtime(tempPlugin, preset.Preset);
+                        }
+
                         exporter.ExportPresetNKSF(tempPlugin, preset.Preset);
                         plugin.PresetParser.OnAfterPresetExport(_vstService.VstHost, tempPlugin);
-                        //worker.ReportProgress((int)((100f * currentPreset) / presets.Count), preset.Preset.PluginName + " " + preset.Preset.PresetName);
                     }
 
                     _vstService.VstHost.UnloadVST(tempPlugin);

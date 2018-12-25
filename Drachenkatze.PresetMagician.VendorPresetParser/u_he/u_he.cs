@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Shell32;
 using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
+using Catel.Collections;
 using Squirrel.Shell;
 using File = System.IO.File;
 
@@ -11,6 +16,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 {
     public abstract class u_he : AbstractVendorPresetParser
     {
+        private Regex parsingRegex = new Regex(@"^(?<type>.*):(\r\n|\r|\n)'(?<value>.*)'",
+        RegexOptions.Multiline | RegexOptions.Compiled);
+
         public void H2PScanBanks(string dataDirectoryName, string productName, bool userPresets)
         {
             var rootDirectory = GetPresetDirectory(dataDirectoryName, productName, userPresets);
@@ -51,6 +59,42 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
                 fs.Read(preset.PresetData, 0, (int)fs.Length);
                 fs.Close();
 
+                var metadata = ExtractMetadata(Encoding.UTF8.GetString(preset.PresetData));
+
+                if (metadata.ContainsKey("Author"))
+                {
+                    preset.Author = metadata["Author"];
+                }
+
+                List<string> comments = new List<string>();
+
+                if (metadata.ContainsKey("Description") && metadata["Description"].Length > 0)
+                {
+                    comments.Add(metadata["Description"]);
+                }
+
+                if (metadata.ContainsKey("Usage") && metadata["Usage"].Length > 0)
+                {
+                    comments.Add(metadata["Usage"]);
+                }
+
+                preset.Comment = string.Join(Environment.NewLine, comments);
+
+                if (metadata.ContainsKey("Categories") && metadata["Categories"].Length > 0)
+                {
+                    preset.Types = ExtractTypes(metadata["Categories"]);
+                }
+
+                if (metadata.ContainsKey("Features") && metadata["Features"].Length > 0)
+                {
+                    ExtractModes(preset.Modes, metadata["Features"]);
+                }
+
+                if (metadata.ContainsKey("Character") && metadata["Character"].Length > 0)
+                {
+                    ExtractModes(preset.Modes, metadata["Character"]);
+                }
+                
                 Presets.Add(preset);
 
             }
@@ -61,6 +105,47 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
             }
 
             return bank;
+        }
+
+        public ObservableCollection<ObservableCollection<string>> ExtractTypes(string types)
+        {
+            ObservableCollection<ObservableCollection<string>> typeCollection = new ObservableCollection<ObservableCollection<string>>(); 
+            var splitTypes = types.Split(',');
+
+            foreach (var splitType in splitTypes)
+            {
+                var coll = new ObservableCollection<string>();
+
+                coll.AddRange(splitType.Trim().Split(':'));
+
+                typeCollection.Add(coll);
+            }
+
+            return typeCollection;
+        }
+
+        public void ExtractModes(ObservableCollection<string> modeCollection, string modes)
+        {
+            var splitModes = modes.Split(',');
+
+            foreach (var splitMode in splitModes)
+            {
+                modeCollection.Add(splitMode.Trim());
+            }
+
+        }
+
+        public Dictionary<string, string> ExtractMetadata(string presetData)
+        {
+            Dictionary<string, string> result = new Dictionary<string, string>();
+            
+
+            foreach (Match match in parsingRegex.Matches(presetData))
+            {
+                result.Add(match.Groups["type"].Value, match.Groups["value"].Value);
+            }
+
+            return result;
         }
 
         public string getDataDirectory(string dataDirectoryName)

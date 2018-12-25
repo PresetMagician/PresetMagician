@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading;
+using Catel.Collections;
 using Drachenkatze.PresetMagician.NKSF.NKSF;
 using Drachenkatze.PresetMagician.VSTHost.Properties;
 using Jacobi.Vst.Core;
@@ -14,9 +15,8 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
 {
     public class VstPluginExport
     {
-        private const int SampleSize = 1024;
-        private bool stoppedPlaying;
-        private VSTStream vstStream;
+        private const int _sampleSize = 1024;
+        public string UserContentDirectory { get; set; }
 
         public VstPluginExport(VstHost vstHost)
         {
@@ -25,51 +25,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
 
         public VstHost VstHost { get; }
 
-        public static string ByteArrayToString(byte[] ba)
-        {
-            var hex = new StringBuilder(ba.Length * 2);
-            foreach (var b in ba)
-            {
-                hex.AppendFormat("{0:x2}", b);
-            }
-
-            return hex.ToString();
-        }
-
-        private byte[] StringToByteArray(string str)
-        {
-            var enc = new ASCIIEncoding();
-            return enc.GetBytes(str);
-        }
-
-        /// <summary>
-        ///     We cheat on the WAV header; we just bypass the header and never
-        ///     verify that it matches 16bit/stereo/44.1kHz.This is just an
-        ///     example, after all.
-        /// </summary>
-        private static void StripWavHeader(BinaryReader stdin)
-        {
-            var tempBuffer = new byte[6];
-            for (var i = 0; i < 30 && stdin.Read(tempBuffer, 0, 2) > 0; i++)
-            {
-                if (tempBuffer[0] == 'd' && tempBuffer[1] == 'a')
-                {
-                    stdin.Read(tempBuffer, 0, 6);
-                    break;
-                }
-            }
-        }
-
-        private void vst_PlayingStarted(object sender, System.EventArgs e)
-        {
-            stoppedPlaying = false;
-        }
-
-        private void vst_PlayingStopped(object sender, System.EventArgs e)
-        {
-            stoppedPlaying = true;
-        }
-
+      
         public void ExportPresetNKSF(IVstPlugin plugin, IPreset preset)
         {
             var vst = plugin;
@@ -83,29 +39,47 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             nksf.kontaktSound.summaryInformation.summaryInformation.name = preset.PresetName;
             nksf.kontaktSound.summaryInformation.summaryInformation.deviceType = "INST";
             nksf.kontaktSound.summaryInformation.summaryInformation.bankChain.Add(plugin.PluginName);
-            nksf.kontaktSound.summaryInformation.summaryInformation.bankChain.Add(preset.PresetBank.BankPath);
+
+            var bankPath = preset.PresetBank.GetBankPath();
+            bankPath.RemoveAt(0);
+            bankPath.RemoveAt(0);
+
+            nksf.kontaktSound.summaryInformation.summaryInformation.bankChain.AddRange(bankPath);
+
+            nksf.kontaktSound.summaryInformation.summaryInformation.Types = preset.Types;
+            nksf.kontaktSound.summaryInformation.summaryInformation.Modes = preset.Modes;
+            nksf.kontaktSound.summaryInformation.summaryInformation.comment = "Generated with PresetMagician";
             nksf.kontaktSound.pluginId.pluginId.VSTMagic = plugin.PluginContext.PluginInfo.PluginID;
             nksf.kontaktSound.pluginChunk.PresetData = preset.PresetData;
 
-            var outputFilename = Path.Combine(getUserContentDirectory(preset),
-                getNKSFPresetName(preset.PresetName) + ".nksf");
+            var outputFilename = Path.Combine(GetUserContentDirectory(preset),
+                GetNKSFPresetName(preset.PresetName) + ".nksf");
             var fileStream2 = new FileStream(outputFilename, FileMode.Create);
             nksf.Write(fileStream2);
             fileStream2.Close();
         }
 
-        public string getUserContentDirectory(IPreset preset)
+        public string GetUserContentDirectory(IPreset preset)
         {
-            var userContentDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                @"Native Instruments\User Content");
+            string userContentDirectory;
+            if (!Directory.Exists(UserContentDirectory))
+            {
+                userContentDirectory = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    @"Native Instruments\User Content");
+            }
+            else
+            {
+                userContentDirectory = UserContentDirectory;
+            }
 
-            var bankDirectory = Path.Combine(userContentDirectory, getNKSFPluginName(preset.PluginName),
+            var bankDirectory = Path.Combine(userContentDirectory, GetNKSFPluginName(preset.PluginName),
                 GetNKSFBankName(preset.PresetBank.BankName));
             Directory.CreateDirectory(bankDirectory);
             return bankDirectory;
         }
 
-        public string getNKSFPluginName(string pluginName)
+        public string GetNKSFPluginName(string pluginName)
         {
             foreach (var c in Path.GetInvalidPathChars())
             {
@@ -120,7 +94,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             return pluginName;
         }
 
-        public string getNKSFPresetName(string presetName)
+        public string GetNKSFPresetName(string presetName)
         {
             // Returns the sanitized preset name
 
@@ -141,14 +115,14 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
 
         private string GetPreviewFilename(IPreset vstPreset)
         {
-            var bankDirectory = getUserContentDirectory(vstPreset);
+            var bankDirectory = GetUserContentDirectory(vstPreset);
 
             var previewDirectory = Path.Combine(bankDirectory, ".previews");
 
             Directory.CreateDirectory(previewDirectory);
 
             return Path.Combine(previewDirectory,
-                getNKSFPresetName(vstPreset.PresetName));
+                GetNKSFPresetName(vstPreset.PresetName));
         }
 
         public string GetNKSFBankName(string bankName)
@@ -218,7 +192,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
 
             var outputCount = ctx.PluginInfo.AudioOutputCount;
             var inputCount = ctx.PluginInfo.AudioInputCount;
-            var blockSize = 512;
+            var blockSize = _sampleSize;
 
             var tempFileName = GetPreviewFilename(preset)+".nksf.wav";
 
@@ -275,8 +249,6 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                     writer.Close();
                 }
             }
-
-            stoppedPlaying = false;
 
             ConvertToOGG(tempFileName, GetPreviewFilename(preset)+".nksf.ogg");
             File.Delete(tempFileName);
