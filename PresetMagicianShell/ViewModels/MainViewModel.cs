@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
@@ -13,17 +14,40 @@ using Catel.Reflection;
 using PresetMagicianShell.Helpers;
 using PresetMagicianShell.Services.Interfaces;
 using PresetMagicianShell.Views;
+using Xceed.Wpf.AvalonDock.Layout;
 
 namespace PresetMagicianShell.ViewModels
 {
     
     public class MainViewModel : ViewModelBase
     {
-        public MainViewModel()
+        private LayoutDocumentPane _layoutDocumentPane;
+        private IRuntimeConfigurationService _runtimeConfigurationService;
+
+        public MainViewModel(IRuntimeConfigurationService runtimeConfigurationService)
         {
+            Argument.IsNotNull(() => runtimeConfigurationService);
             AvalonDockHelper.CreateDocument<VstPluginsViewModel>(activateDocument:true);
             AvalonDockHelper.CreateDocument<PresetExportListViewModel>();
-           
+
+            _layoutDocumentPane = ServiceLocator.Default.ResolveType<LayoutDocumentPane>();
+            _layoutDocumentPane.PropertyChanged += LayoutDocumentPaneOnPropertyChanged;
+            _runtimeConfigurationService = runtimeConfigurationService;
+
+        }
+
+        private void LayoutDocumentPaneOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "SelectedContent")
+            {
+                if (!(_layoutDocumentPane.SelectedContent is null) &&
+                    !(_layoutDocumentPane.SelectedContent.Content is null))
+                {
+                    var type = _layoutDocumentPane.SelectedContent.Content.GetType();
+                    _runtimeConfigurationService.ApplicationState.CurrentDocument = type;
+                }
+
+            }
         }
     }
 }

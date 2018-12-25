@@ -56,7 +56,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         {
             get
             {
-                return string.Join<string>(" / ", GetBankPath());
+                var bankPath = GetBankPath();
+                bankPath.RemoveAt(0);
+                return string.Join<string>(" / ", bankPath);
             }
         }
 

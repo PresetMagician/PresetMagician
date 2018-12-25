@@ -109,6 +109,7 @@
     <Compile Include="Commands\Plugin\PluginRefreshPluginsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginScanPluginsCommandContainer.cs" />
     <Compile Include="Commands\Preset\PresetActivatePresetViewCommandContainer.cs" />
+    <Compile Include="Commands\Preset\PresetClearListCommandContainer.cs" />
     <Compile Include="Commands\Preset\PresetExportCommandContainer.cs" />
     <Compile Include="Commands\Tools\ToolsNksfViewCommandContainer.cs" />
     <Compile Include="Commands\Tools\ToolsSettingsViewCommandContainer.cs" />

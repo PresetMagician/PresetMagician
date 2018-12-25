@@ -35,21 +35,32 @@ namespace PresetMagicianShell.ViewModels
 
         private readonly IUIVisualizerService _uiVisualizerService;
         private readonly IServiceLocator _serviceLocator;
+        private readonly IRuntimeConfigurationService _runtimeConfigurationService;
+
+        public ApplicationState ApplicationState { get; private set; }
+        public RuntimeConfiguration RuntimeConfiguration { get; private set; }
+
         #endregion Fields
 
         #region Constructors
 
         public RibbonViewModel(
             IUIVisualizerService uiVisualizerService,
-            IServiceLocator serviceLocator
+            IServiceLocator serviceLocator,
+            IRuntimeConfigurationService runtimeConfigurationService
            )
         {
             Argument.IsNotNull(() => uiVisualizerService);
             Argument.IsNotNull(() => serviceLocator);
+            Argument.IsNotNull(() => runtimeConfigurationService);
             
             _uiVisualizerService = uiVisualizerService;
             _serviceLocator = serviceLocator;
-            
+            _runtimeConfigurationService = runtimeConfigurationService;
+
+            ApplicationState = runtimeConfigurationService.ApplicationState;
+            RuntimeConfiguration = runtimeConfigurationService.RuntimeConfiguration;
+
             Title = AssemblyHelper.GetEntryAssembly().Title();
             ShowAboutDialog = new TaskCommand(OnShowAboutDialogExecuteAsync);
             ShowThemeTest = new TaskCommand(OnShowThemeTestExecuteAsync);

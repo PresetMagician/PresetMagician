@@ -40,7 +40,7 @@ namespace PresetMagicianShell
 
         protected override async Task ExecuteAsync(object parameter)
         {
-            await _uiVisualizerService.ShowDialogAsync<VstPluginViewModel>(_vstService.SelectedPlugin);
+            await _uiVisualizerService.ShowDialogAsync<VstPluginInfoViewModel>(_vstService.SelectedPlugin);
         }
     }
 }

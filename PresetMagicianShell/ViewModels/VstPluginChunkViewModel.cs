@@ -18,16 +18,39 @@ namespace PresetMagicianShell.ViewModels
         public VstPluginChunkViewModel(Models.Plugin plugin, IVstService vstService) : base(vstService)
         {
             Plugin = plugin;
-            OpenWithHxD = new TaskCommand(OnOpenWithHxDExecute);
+            OpenWithHxDBank = new TaskCommand(OnOpenWithHxDBankExecute);
+            OpenWithHxDPreset = new TaskCommand(OnOpenWithHxDPresetExecute);
         }
 
-        public TaskCommand OpenWithHxD { get; set; }
+        public TaskCommand OpenWithHxDBank { get; set; }
+        public TaskCommand OpenWithHxDPreset { get; set; }
 
-        private async Task OnOpenWithHxDExecute ()
+        private async Task OnOpenWithHxDBankExecute ()
         {
             
                 var tempFile = Path.GetTempFileName();
-                File.WriteAllBytes(tempFile, Plugin.ChunkMemoryStream.ToArray());
+                File.WriteAllBytes(tempFile, Plugin.ChunkBankMemoryStream.ToArray());
+          
+            var process = new Process
+            {
+                StartInfo =
+                {
+                    FileName = @"C:\Program Files\HxD\HxD.exe",
+                    Arguments = tempFile
+                    
+                }
+            };
+
+            process.Start();
+
+
+        }
+
+        private async Task OnOpenWithHxDPresetExecute ()
+        {
+            
+            var tempFile = Path.GetTempFileName();
+            File.WriteAllBytes(tempFile, Plugin.ChunkPresetMemoryStream.ToArray());
           
             var process = new Process
             {

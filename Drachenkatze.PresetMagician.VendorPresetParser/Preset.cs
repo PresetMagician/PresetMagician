@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using CannedBytes.Midi.Message;
 using Catel.Data;
 using Drachenkatze.PresetMagician.Utils;
@@ -34,6 +35,13 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         public String PresetName { get; set; }
 
         public MidiNoteName PreviewNote { get; set; }
+
+        public string Author { get;set; }
+        public string Comment { get;set; }
+
+        public ObservableCollection<ObservableCollection<string>> Types { get; set; } = new ObservableCollection<ObservableCollection<string>>();
+
+        public ObservableCollection<string> Modes { get; set; } = new ObservableCollection<string>();
 
         public int ProgramNumber { get; set; }
 

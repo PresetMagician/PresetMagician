@@ -149,6 +149,7 @@ namespace PresetMagicianShell.Services
 
             _commandManager.CreateCommandWithGesture(typeof(Commands.Preset), "ActivatePresetView");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Preset), "Export");
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Preset), "ClearList");
 
             _commandManager.CreateCommandWithGesture(typeof(Commands.Tools), "NksfView");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Tools), "SettingsView");

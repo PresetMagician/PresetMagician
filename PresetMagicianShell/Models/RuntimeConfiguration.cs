@@ -20,6 +20,9 @@ namespace PresetMagicianShell.Models
         public string NativeInstrumentsUserContentDirectory { get; set; } = null;
 
         [JsonProperty]
+        public bool ExportWithAudioPreviews { get; set; } = true;
+
+        [JsonProperty]
         public FastObservableCollection<Plugin> CachedPlugins { get; set; } = new FastObservableCollection<Plugin>();
 
         protected override void ValidateFields(List<IFieldValidationResult> validationResults)

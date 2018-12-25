@@ -5,8 +5,10 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Catel.Data;
 using Catel.Runtime.Serialization;
+using Drachenkatze.PresetMagician.Controls.Controls.VSTHost;
 using Drachenkatze.PresetMagician.VendorPresetParser;
 using Drachenkatze.PresetMagician.VSTHost.VST;
 using Jacobi.Vst.Core;
@@ -122,19 +124,39 @@ namespace PresetMagicianShell.Models
             }
         }
 
-        public MemoryStream ChunkMemoryStream { get; } = new MemoryStream();
+        public MemoryStream ChunkPresetMemoryStream { get; } = new MemoryStream();
+        public MemoryStream ChunkBankMemoryStream { get; } = new MemoryStream();
+
+        public static string PluginIdNumberToIdString(int pluginUniqueId)
+        {
+            byte[] fxIdArray = BitConverter.GetBytes(pluginUniqueId);
+            Array.Reverse(fxIdArray);
+            string fxIdString = Encoding.Default.GetString(fxIdArray);
+            return fxIdString;
+        }
 
         public void GetPresetChunk ()
         {
             var data = PluginContext.PluginCommandStub.GetChunk(true);
             
             if (!(data is null)) {
-            ChunkMemoryStream.SetLength(0);
-            ChunkMemoryStream.Write(data, 0, data.Length);
+            ChunkPresetMemoryStream.SetLength(0);
+                ChunkPresetMemoryStream.Write(data, 0, data.Length);
 
             Debug.WriteLine($"Copied {data.Length} bytes to stream");
             
-            RaisePropertyChanged(nameof(ChunkMemoryStream));
+            RaisePropertyChanged(nameof(ChunkPresetMemoryStream));
+            }
+
+            data = PluginContext.PluginCommandStub.GetChunk(false);
+            
+            if (!(data is null)) {
+                ChunkBankMemoryStream.SetLength(0);
+                ChunkBankMemoryStream.Write(data, 0, data.Length);
+
+                Debug.WriteLine($"Copied {data.Length} bytes to stream");
+            
+                RaisePropertyChanged(nameof(ChunkBankMemoryStream));
             }
             
         }
@@ -213,6 +235,8 @@ namespace PresetMagicianShell.Models
                 // plugin info
                 _pluginInfoItems.Add(new PluginInfoItem("Base", "Flags " , pluginContext.PluginInfo.Flags.ToString()));
                 _pluginInfoItems.Add(new PluginInfoItem("Base", "Plugin ID " , pluginContext.PluginInfo.PluginID.ToString()));
+                _pluginInfoItems.Add(new PluginInfoItem("Base", "Plugin ID String" , PluginIdNumberToIdString(pluginContext.PluginInfo.PluginID)));
+                
                 _pluginInfoItems.Add(new PluginInfoItem("Base", "Plugin Version " , pluginContext.PluginInfo.PluginVersion.ToString()));
                 _pluginInfoItems.Add(new PluginInfoItem("Base", "Audio Input Count " , pluginContext.PluginInfo.AudioInputCount.ToString()));
                 _pluginInfoItems.Add(new PluginInfoItem("Base", "Audio Output Count " , pluginContext.PluginInfo.AudioOutputCount.ToString()));

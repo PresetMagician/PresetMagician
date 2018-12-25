@@ -108,7 +108,6 @@ namespace PresetMagicianShell.Helpers
         public static void ActivateDocument(LayoutDocument document)
         {
             Argument.IsNotNull("document", document);
-
             LayoutDocumentPane.SelectedContentIndex = LayoutDocumentPane.IndexOfChild(document);
         }
 

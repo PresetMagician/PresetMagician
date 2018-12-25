@@ -122,46 +122,6 @@
                 ScrollViewer.CanContentScroll="True"
                 SelectedItem="{Binding SelectedPlugin}"
                 SelectionUnit="FullRow">
-                <DataGrid.Resources>
-                    <helpers:BindingProxy x:Key="proxy" Data="{Binding}" />
-                    <helpers:BindingProxy x:Key="proxy2" Data="{Binding ElementName=VstPluginList}" />
-                    <ContextMenu x:Key="PluginContextMenu">
-                        <MenuItem
-                            Command="{Binding Data.DisablePlugin, Source={StaticResource proxy}}"
-                            CommandParameter="{Binding Path=Data.SelectedItems, Source={StaticResource proxy2}}"
-                            Header="Disable Plugin"
-                            Icon="{iconPacks:Octicons Kind=DiffRemoved}" />
-                        <MenuItem
-                            Command="{Binding Data.EnablePlugin, Source={StaticResource proxy}}"
-                            CommandParameter="{Binding Path=Data.SelectedItems, Source={StaticResource proxy2}}"
-                            Header="Enable Plugin"
-                            Icon="{iconPacks:Octicons Kind=DiffAdded}" />
-                        <MenuItem
-                            Command="{Binding Data.ShowPluginInfo, Source={StaticResource proxy}}"
-                            CommandParameter="{Binding Path=Data.SelectedItem, Source={StaticResource proxy2}}"
-                            Header="Show Plugin Capabilities"
-                            Icon="{iconPacks:FontAwesome Kind=EyeSolid}">
-                            <MenuItem.Style>
-                                <Style BasedOn="{StaticResource {x:Type MenuItem}}" TargetType="{x:Type MenuItem}">
-                                    <Setter Property="IsEnabled" Value="False" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Data.SelectedItems.Count, Source={StaticResource proxy2}}" Value="1">
-                                            <Setter Property="IsEnabled" Value="True" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </MenuItem.Style>
-                        </MenuItem>
-                    </ContextMenu>
-                </DataGrid.Resources>
-                <DataGrid.RowStyle>
-                    <Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="DataGridRow">
-                        <Setter Property="ContextMenu" Value="{StaticResource PluginContextMenu}" />
-                    </Style>
-
-
-                </DataGrid.RowStyle>
-
                 <DataGrid.Columns>
                     <DataGridTextColumn
                         Width="150"
@@ -378,82 +338,5 @@
             </DataGrid>
         </xctk:BusyIndicator>
 
-        <DockPanel
-            Grid.Row="1"
-            Grid.ColumnSpan="2"
-            VerticalAlignment="Bottom">
-
-            <Button
-                x:Name="ScanPluginButton"
-                Margin="6,2,2,2"
-                Padding="2,2,2,2"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Stretch"
-                Command="{Binding ScanPlugins}"
-                IsEnabled="True">
-                <StackPanel Orientation="Horizontal">
-
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Text="Scan Plugins" />
-                </StackPanel>
-            </Button>
-            <Button
-                x:Name="CreatePresetsButton"
-                Margin="6,2,2,2"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Stretch"
-                Click="ExportButton_Click"
-                IsEnabled="False">
-                <StackPanel Orientation="Horizontal">
-
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Text="Scan Presets" />
-                </StackPanel>
-            </Button>
-            <Button
-                x:Name="ReportUnsupportedPlugins"
-                Margin="6,2,2,2"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Stretch"
-                Click="ReportUnsupportedPlugins_OnClick"
-                IsEnabled="False">
-                <Button.ToolTip>
-                    <ToolTip>
-                        <StackPanel>
-                            <TextBlock>
-                                Submits unsupported Plugins to the PresetMagician Website, so they can be prioritized.
-                            </TextBlock>
-                            <TextBlock FontWeight="Bold">Privacy Notice: We submit the Plugin Name, Vendor Name, Plugin ID and your email so we can make sure nobody pushes their favorite plugin on top of the priority list.</TextBlock>
-                        </StackPanel>
-                    </ToolTip>
-                </Button.ToolTip>
-                <StackPanel Orientation="Horizontal">
-
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Text="Submit unsupported Plugins" />
-                </StackPanel>
-            </Button>
-            <Button
-                x:Name="ShowPluginInfo"
-                Margin="6,2,2,2"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Stretch"
-                Click="ShowPluginInfo_OnClick"
-                IsEnabled="False">
-                <StackPanel Orientation="Horizontal">
-
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Text="Show Plugin Info" />
-                </StackPanel>
-            </Button>
-        </DockPanel>
     </Grid>
 </catel:UserControl>

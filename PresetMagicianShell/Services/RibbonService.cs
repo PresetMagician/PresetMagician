@@ -1,6 +1,8 @@
 ﻿using System.Windows;
+using Catel.IoC;
 using Orchestra.Services;
 using PresetMagicianShell.Views;
+using Xceed.Wpf.AvalonDock.Layout;
 
 namespace PresetMagicianShell.Services
 {
@@ -10,7 +12,8 @@ namespace PresetMagicianShell.Services
 
         public FrameworkElement GetRibbon()
         {
-            return new RibbonView();
+            return ServiceLocator.Default.ResolveType<RibbonView>();
+            
         }
 
         public FrameworkElement GetMainView()

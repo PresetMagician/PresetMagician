@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using Catel.Data;
 
@@ -52,6 +54,33 @@ namespace PresetMagicianShell.Models
                 _isPresetExportRunning = value;
             }
         }
+
+        private Type _currentDocument;
+
+        public Type CurrentDocument
+        {
+            get { return _currentDocument; }
+            set
+            {
+                if (value == typeof(PresetMagicianShell.Views.PresetExportListView))
+                {
+                    SelectedRibbonTabIndex = 1;
+                }
+
+                if (value == typeof(PresetMagicianShell.Views.VstPluginsView))
+                {
+                    SelectedRibbonTabIndex = 0;
+                }
+
+                RaisePropertyChanged("SelectedRibbonTabIndex");
+                _currentDocument = value;
+            }
+        }
+
+        #region Toolbars
+
+        public int SelectedRibbonTabIndex { get; set; } = 1;
+        #endregion
 
          
         #region Busy States

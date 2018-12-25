@@ -40,6 +40,10 @@ namespace PresetMagicianShell
 
         protected override async Task ExecuteAsync(object parameter)
         {
+            if (!_vstService.SelectedPlugin.IsLoaded)
+            {
+                _vstService.VstHost.LoadVST(_vstService.SelectedPlugin);
+            }
             _vstService.SelectedPlugin.GetPresetChunk();
             await _uiVisualizerService.ShowDialogAsync<VstPluginChunkViewModel>(_vstService.SelectedPlugin);
         }
