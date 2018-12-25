@@ -65,7 +65,6 @@
     <Compile Include="VST\IPresetBank.cs" />
     <Compile Include="VST\IVstPlugin.cs" />
     <Compile Include="VST\VSTPluginExport.cs" />
-    <Compile Include="VST\VSTStream.cs" />
     <Compile Include="VST\VSTPlugin.cs" />
     <Compile Include="VST\VstPathScanner.cs" />
     <Compile Include="VST\VstHost.cs" />

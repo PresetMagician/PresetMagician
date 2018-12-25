@@ -19,5 +19,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
         int ProgramNumber { get; set; }
         ObservableCollection<ObservableCollection<string>> Types { get; set; }
         ObservableCollection<string> Modes { get; set; }
+        string Author { get; set; }
+        string Comment { get; set; }
     }
 }

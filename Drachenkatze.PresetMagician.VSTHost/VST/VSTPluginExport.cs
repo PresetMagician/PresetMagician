@@ -15,7 +15,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
 {
     public class VstPluginExport
     {
-        private const int _sampleSize = 1024;
+        private const int _sampleSize = 8192;
         public string UserContentDirectory { get; set; }
 
         public VstPluginExport(VstHost vstHost)
@@ -48,7 +48,9 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
 
             nksf.kontaktSound.summaryInformation.summaryInformation.Types = preset.Types;
             nksf.kontaktSound.summaryInformation.summaryInformation.Modes = preset.Modes;
-            nksf.kontaktSound.summaryInformation.summaryInformation.comment = "Generated with PresetMagician";
+            nksf.kontaktSound.summaryInformation.summaryInformation.author = preset.Author;
+
+            nksf.kontaktSound.summaryInformation.summaryInformation.comment = preset.Comment + Environment.NewLine + "Generated with PresetMagician";
             nksf.kontaktSound.pluginId.pluginId.VSTMagic = plugin.PluginContext.PluginInfo.PluginID;
             nksf.kontaktSound.pluginChunk.PresetData = preset.PresetData;
 
@@ -186,7 +188,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             }
 
             //ctx.PluginCommandStub.BeginSetProgram();
-            Debug.WriteLine(ctx.PluginCommandStub.SetChunk(preset.PresetData, VSTPlugin.PresetChunk_UseCurrentProgram));
+            ctx.PluginCommandStub.SetChunk(preset.PresetData, VSTPlugin.PresetChunk_UseCurrentProgram);
             //ctx.PluginCommandStub.EndSetProgram();
             //ctx.PluginCommandStub.SetProgram(preset.ProgramNumber);
 
@@ -236,9 +238,9 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                         ctx.PluginCommandStub.ProcessReplacing(inputBuffers, outputBuffers);
                         for (var j = 0; j < blockSize; j++)
                         {
-                            for (var i = 0; i < outputBuffers.Length; i++)
+                            foreach (var t in outputBuffers)
                             {
-                                writer.WriteSample(outputBuffers[i][j]);
+                                writer.WriteSample(t[j]);
                             }
                         }
                     }
