@@ -2,7 +2,7 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Forms;
-
+using Syroot.Windows.IO;
 using Application = System.Windows.Application;
 
 namespace Drachenkatze.PresetMagician.GUI.GUI
@@ -32,7 +32,6 @@ namespace Drachenkatze.PresetMagician.GUI.GUI
         {
             using (var openFileDialog = new OpenFileDialog())
             {
-                KnownFolders
                 var downloadsPath = new KnownFolder(KnownFolderType.Downloads).Path;
 
                 openFileDialog.InitialDirectory = downloadsPath;

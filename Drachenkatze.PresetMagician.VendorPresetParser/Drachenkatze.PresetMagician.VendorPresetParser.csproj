@@ -48,6 +48,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractVendorPresetParser.cs" />
+    <Compile Include="AudioThing\AudioThing HandClapper.cs" />
+    <Compile Include="AudioThing\AudioThing LatinPercussion.cs" />
+    <Compile Include="AudioThing\AudioThing SR88.cs" />
+    <Compile Include="AudioThing\AudioThing HATS.cs" />
+    <Compile Include="AudioThing\AudioThing miniBit.cs" />
+    <Compile Include="AudioThing\AudioThing miniBitCM.cs" />
+    <Compile Include="AudioThing\AudioThing.cs" />
     <Compile Include="Common\VC2Writer.cs" />
     <Compile Include="NullPresetParser.cs" />
     <Compile Include="Preset.cs" />
@@ -271,6 +278,17 @@
         </Reference>
         <Reference Include="Squirrel">
           <HintPath>..\packages\squirrel.windows\lib\Net45\Squirrel.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="Syroot.KnownFolders">
+          <HintPath>..\packages\Syroot.Windows.IO.KnownFolders\lib\net452\Syroot.KnownFolders.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
