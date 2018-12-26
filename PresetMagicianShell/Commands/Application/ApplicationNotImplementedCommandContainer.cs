@@ -22,9 +22,6 @@ namespace PresetMagicianShell
             return false;
         }
 
-        protected override async Task ExecuteAsync(object parameter)
-        {
-            base.Execute(parameter);
-        }
+       
     }
 }

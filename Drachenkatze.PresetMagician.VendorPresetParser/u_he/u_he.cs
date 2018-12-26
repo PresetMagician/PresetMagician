@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using Anotar.Catel;
 using Catel.Collections;
 using Squirrel.Shell;
 using File = System.IO.File;
@@ -176,7 +177,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 
             var shortCutDataDirectoryName = getDataDirectory(dataDirectoryName + ".lnk");
 
-            Debug.WriteLine("Estimated shortcut directory name is " + shortCutDataDirectoryName);
             string dataDirectory;
 
             if (IsShortcut(shortCutDataDirectoryName))
@@ -190,9 +190,10 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 
             if (dataDirectory == null)
             {
-                #warning Implement error handler here plus logging
+                LogTo.Error("Unable to find the data directory, aborting.");
+                LogTo.Debug("Estimated shortcut directory name is " + shortCutDataDirectoryName);
+                return;
             }
-            Debug.WriteLine("Data directory is " + dataDirectory);
 
             if (userPresets)
             {
@@ -225,9 +226,10 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
                 }
                 shellLink.Dispose();
             }
-            catch (System.IO.IOException e)
+            catch (IOException e)
             {
-                // TODO: Implement catel logger
+                LogTo.Error("Error while trying to resolve the shortcut {0} because of {1} {2}", path, e.Message, e);
+                LogTo.Debug(e.StackTrace);
             }
             
             var shell = new Shell();
@@ -251,36 +253,13 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
                 }
                 shellLink.Dispose();
             }
-            catch (System.IO.IOException e)
+            catch (IOException e)
             {
-                // TODO: Implement catel logger
+                LogTo.Error("Error while trying to resolve the shortcut {0} because of {1} {2}", path, e.Message, e);
+                LogTo.Debug(e.StackTrace);
             }
 
             return null;
-        }
-
-        public static string ResolveShortcutShell32(string path)
-        {
-            var directory = Path.GetDirectoryName(path);
-            var file = Path.GetFileName(path);
-            var shell = new Shell();
-            var folder = shell.NameSpace(directory);
-            var folderItem = folder.ParseName(file);
-            if (folderItem == null)
-            {
-                return null;
-            }
-
-
-            try
-            {
-                var link = (ShellLinkObject) folderItem.GetLink;
-                return link.Target.Path;
-            }
-            catch (Exception e)
-            {
-                return null;
-            }
         }
 
         public static string ResolveShortcut(string path)
@@ -299,13 +278,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
             {
                 return targetPath;
             }
-            
-            /*targetPath = ResolveShortcutShell32(path);
-
-            if (targetPath != null)
-            {
-                return targetPath;
-            }*/
 
             return null;
         }

@@ -48,14 +48,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractVendorPresetParser.cs" />
-    <Compile Include="AudioThing\AudioThing HandClapper.cs" />
-    <Compile Include="AudioThing\AudioThing LatinPercussion.cs" />
-    <Compile Include="AudioThing\AudioThing SR88.cs" />
-    <Compile Include="AudioThing\AudioThing HATS.cs" />
-    <Compile Include="AudioThing\AudioThing miniBit.cs" />
-    <Compile Include="AudioThing\AudioThing miniBitCM.cs" />
+    <Compile Include="AudioThing\AudioThing_HandClapper.cs" />
+    <Compile Include="AudioThing\AudioThing_LatinPercussion.cs" />
+    <Compile Include="AudioThing\AudioThing_SR88.cs" />
+    <Compile Include="AudioThing\AudioThing_HATS.cs" />
+    <Compile Include="AudioThing\AudioThing_miniBit.cs" />
+    <Compile Include="AudioThing\AudioThing_miniBitCM.cs" />
     <Compile Include="AudioThing\AudioThing.cs" />
+    <Compile Include="Common\VC2Parser.cs" />
     <Compile Include="Common\VC2Writer.cs" />
+    <Compile Include="HumanoidSoundSystems\HumanoidSoundSystems_Enzyme.cs" />
     <Compile Include="NullPresetParser.cs" />
     <Compile Include="Preset.cs" />
     <Compile Include="PresetBank.cs" />
@@ -67,21 +69,22 @@
     <Compile Include="StandardVst\BankTrickeryVSTPresetParser.cs" />
     <Compile Include="StandardVst\FallbackVstPresetParser.cs" />
     <Compile Include="StandardVst\FullBankVstPresetParser.cs" />
-    <Compile Include="u_he\u_he BazilleCM.cs" />
-    <Compile Include="u_he\u_he Repro5.cs" />
-    <Compile Include="u_he\u_he Repro1.cs" />
-    <Compile Include="u_he\u_he Hive.cs" />
-    <Compile Include="u_he\u_he Diva.cs" />
-    <Compile Include="u_he\u_he Bazille.cs" />
-    <Compile Include="u_he\u_he TripleCheese.cs" />
-    <Compile Include="u_he\u_he Podolski.cs" />
-    <Compile Include="u_he\u_he ZebraCM.cs" />
-    <Compile Include="u_he\u_he Zebra2.cs" />
-    <Compile Include="u_he\u_he ACE.cs" />
-    <Compile Include="u_he\u_he Zebralette.cs" />
-    <Compile Include="u_he\u_he TyrellN6.cs" />
+    <Compile Include="u_he\u_he_BazilleCM.cs" />
+    <Compile Include="u_he\u_he_Repro5.cs" />
+    <Compile Include="u_he\u_he_Repro1.cs" />
+    <Compile Include="u_he\u_he_Hive.cs" />
+    <Compile Include="u_he\u_he_Diva.cs" />
+    <Compile Include="u_he\u_he_Bazille.cs" />
+    <Compile Include="u_he\u_he_TripleCheese.cs" />
+    <Compile Include="u_he\u_he_Podolski.cs" />
+    <Compile Include="u_he\u_he_ZebraCM.cs" />
+    <Compile Include="u_he\u_he_Zebra2.cs" />
+    <Compile Include="u_he\u_he_ACE.cs" />
+    <Compile Include="u_he\u_he_Zebralette.cs" />
+    <Compile Include="u_he\u_he_TyrellN6.cs" />
     <Compile Include="u_he\u_he.cs" />
     <Compile Include="VendorPresetParser.cs" />
+    <Compile Include="Xfer_Records\Xfer_Records_Serum.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Drachenkatze.PresetMagician.Utils\Drachenkatze.PresetMagician.Utils.csproj">
@@ -117,6 +120,9 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="MadronaLabs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\.paket\paket.targets" />

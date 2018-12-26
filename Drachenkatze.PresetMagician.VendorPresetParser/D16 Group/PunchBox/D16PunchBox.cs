@@ -17,7 +17,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group.PunchBox
         private const string FactoryBankPath = @"D16 Group\PunchBox\Presets\Master.d16pkg";
         private const string UserBankPath = @"D16 Group\PunchBox\UserStore\Presets\Master";
 
-        private const string BankNameFactory = "Factory";
         private const string BankNameUser = "User";
 
         private int PresetExportCount;

@@ -21,8 +21,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
             var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 @"AudioThing\Presets\Hats");
 
-            ConfigNode = "Hats_SETTINGS";
-
             DoScan(factoryBank, directory);
         }
     }

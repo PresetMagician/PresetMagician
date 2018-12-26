@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using Catel.Data;
-using Catel.Runtime.Serialization;
-using Drachenkatze.PresetMagician.Controls.Controls.VSTHost;
 using Drachenkatze.PresetMagician.VendorPresetParser;
 using Drachenkatze.PresetMagician.VSTHost.VST;
 using Jacobi.Vst.Core;
@@ -77,6 +74,12 @@ namespace PresetMagicianShell.Models
         public void OnLoaded()
         {
             PluginName = PluginContext.PluginCommandStub.GetEffectName();
+
+            if (PluginName.Length == 0)
+            {
+                // Fallback to product name
+                PluginName = PluginContext.PluginCommandStub.GetProductString();
+            }
             PluginVendor = PluginContext.PluginCommandStub.GetVendorString();
             PluginId = PluginContext.PluginInfo.PluginID;
             NumPresets = PluginContext.PluginInfo.ProgramCount;

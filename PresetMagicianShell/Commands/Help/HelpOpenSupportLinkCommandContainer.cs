@@ -19,7 +19,7 @@ namespace PresetMagicianShell
             
         }
 
-        protected override async Task ExecuteAsync(object parameter)
+        protected override void Execute (object parameter)
         {
             base.Execute(parameter);
             Process.Start(Settings.Links.Support);

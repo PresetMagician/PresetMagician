@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Syroot.Windows.IO;
 namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
 {
-    public class AudioThing_HandClapper : AudioThing, IVendorPresetParser
+    class AudioThing_miniBit: AudioThing, IVendorPresetParser
     {
-        public override List<int> SupportedPlugins => new List<int> {1212363341};
+        public override List<int> SupportedPlugins => new List<int> {1833525876};
 
 
         public void ScanBanks()
@@ -18,11 +21,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
 
             RootBank.PresetBanks.Add(factoryBank);
 
-            var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                @"AudioThing\Presets\HandClapper");
-
-            ConfigNode = "HandClapper_SETTINGS";
-
+            var directory = Path.Combine(new KnownFolder(KnownFolderType.PublicDocuments).Path,
+                @"AudioThing\Presets\miniBit\Factory");
+            
             DoScan(factoryBank, directory);
         }
     }

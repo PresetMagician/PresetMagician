@@ -26,6 +26,8 @@ namespace PresetMagicianShell.ViewModels
             PresetExportList = vstService.PresetExportList;
             ApplicationState = runtimeConfigurationService.ApplicationState;
             serviceLocator.RegisterInstance(this);
+            
+            SelectedPresets = vstService.SelectedPresets;
 
             Title = "Preset Export List";
         }
@@ -36,7 +38,7 @@ namespace PresetMagicianShell.ViewModels
             set => _vstService.SelectedExportPreset = value;
         }
 
-
+        public FastObservableCollection<Preset> SelectedPresets { get; }
         public FastObservableCollection<Preset> PresetExportList { get; }
         public ApplicationState ApplicationState { get; }
     }

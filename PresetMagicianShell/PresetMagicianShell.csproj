@@ -108,6 +108,7 @@
     <Compile Include="Commands\Plugin\PluginSelectedToPresetExportListCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginRefreshPluginsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginScanPluginsCommandContainer.cs" />
+    <Compile Include="Commands\PresetTools\PresetToolsShowPresetDataCommandContainer.cs" />
     <Compile Include="Commands\Preset\PresetActivatePresetViewCommandContainer.cs" />
     <Compile Include="Commands\Preset\PresetClearListCommandContainer.cs" />
     <Compile Include="Commands\Preset\PresetExportCommandContainer.cs" />
@@ -149,6 +150,7 @@
     <Compile Include="ViewModels\NKSFViewModel.cs" />
     <Compile Include="ViewModels\PaneViewModel.cs" />
     <Compile Include="ViewModels\PresetBankViewModel.cs" />
+    <Compile Include="ViewModels\PresetDataViewModel.cs" />
     <Compile Include="ViewModels\PresetExportListViewModel.cs" />
     <Compile Include="ViewModels\PresetViewModel.cs" />
     <Compile Include="ViewModels\RegistrationViewModel.cs" />
@@ -167,6 +169,9 @@
     </Compile>
     <Compile Include="Views\NKSFView.xaml.cs">
       <DependentUpon>NKSFView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PresetDataView.xaml.cs">
+      <DependentUpon>PresetDataView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\VstPluginChunkView.xaml.cs">
       <DependentUpon>VstPluginChunkView.xaml</DependentUpon>
@@ -274,6 +279,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\PresetDataView.xaml" />
     <Page Include="Views\VstPluginChunkView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

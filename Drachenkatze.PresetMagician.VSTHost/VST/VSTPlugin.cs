@@ -1,5 +1,4 @@
-﻿using Drachenkatze.PresetMagician.Controls.Controls.VSTHost;
-using Jacobi.Vst.Core;
+﻿using Jacobi.Vst.Core;
 using Jacobi.Vst.Interop.Host;
 using System;
 using System.Collections.Generic;
@@ -8,6 +7,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
+using Drachenkatze.PresetMagician.Utils;
 
 namespace Drachenkatze.PresetMagician.VSTHost.VST
 {

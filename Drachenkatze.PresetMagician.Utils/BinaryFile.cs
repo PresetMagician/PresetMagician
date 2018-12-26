@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace Drachenkatze.PresetMagician.Controls.Controls.VSTHost
+namespace Drachenkatze.PresetMagician.Utils
 {
     /// <summary>
     /// Class for reading and writing binary files.

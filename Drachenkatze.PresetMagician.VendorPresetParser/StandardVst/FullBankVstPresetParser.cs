@@ -9,8 +9,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
 {
     public class FullBankVstPresetParser : AbstractStandardVstPresetParser, IVendorPresetParser
     {
-        private const string BankNameFactory = "Factory";
-
         public override bool CanHandle()
         {
             if (DeterminateVSTPresetSaveMode() == PresetSaveModes.FullBank)
