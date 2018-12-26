@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\PropertyChanged.Fody\build\PropertyChanged.Fody.props" Condition="Exists('..\packages\PropertyChanged.Fody\build\PropertyChanged.Fody.props')" Label="Paket" />
+  <Import Project="..\packages\Costura.Fody\build\Costura.Fody.props" Condition="Exists('..\packages\Costura.Fody\build\Costura.Fody.props')" Label="Paket" />
+  <Import Project="..\packages\Anotar.Catel.Fody\build\Anotar.Catel.Fody.props" Condition="Exists('..\packages\Anotar.Catel.Fody\build\Anotar.Catel.Fody.props')" Label="Paket" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <Import Project="..\Packages.props" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
-    <ProjectGuid>{0E183CA0-0CF2-4857-839E-E65BD6E9781D}</ProjectGuid>
+    <ProjectGuid>{AFF54505-FF0C-460D-8870-132E39C970E8}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Drachenkatze.PresetMagician.GUI</RootNamespace>
+    <RootNamespace>PresetMagician</RootNamespace>
     <AssemblyName>PresetMagician</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -16,8 +16,6 @@
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -30,143 +28,219 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
-  <PropertyGroup>
-    <SignManifests>false</SignManifests>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ManifestCertificateThumbprint>6679B586788095FD6932DEE638AD4D59DA1D120C</ManifestCertificateThumbprint>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ManifestKeyFile>PresetMagicianGUI_TemporaryKey.pfx</ManifestKeyFile>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32bit>false</Prefer32bit>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32bit>false</Prefer32bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>PresetMagician.ico</ApplicationIcon>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
+    <ApplicationIcon>Resources\Icons\PresetMagician.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="PresentationCore" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="All" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Management" />
-    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Config\Config.cs" />
-    <Compile Include="Controls\VSTFolderListControl.xaml.cs">
-      <DependentUpon>VSTFolderListControl.xaml</DependentUpon>
+    <Compile Include="Behaviors\IListItemConverter.cs" />
+    <Compile Include="Behaviors\MultiSelectBehavior.cs" />
+    <Compile Include="Behaviors\TwoListSynchronizer.cs" />
+    <Compile Include="Commands\AbstractOpenDialogCommandContainer.cs" />
+    <Compile Include="Commands\Application\ApplicationApplyConfigurationCommandContainer.cs" />
+    <Compile Include="Commands\Application\ApplicationCancelOperationCommandContainer.cs" />
+    <Compile Include="Commands\Application\ApplicationClearLastOperationErrorsCommandContainer.cs" />
+    <Compile Include="Commands\Application\ApplicationNotImplementedCommandContainer.cs" />
+    <Compile Include="Commands\Help\HelpOpenChatLinkCommandContainer.cs" />
+    <Compile Include="Commands\Help\HelpOpenDocumentationLinkCommandContainer.cs" />
+    <Compile Include="Commands\Help\HelpOpenSupportLinkCommandContainer.cs" />
+    <Compile Include="Commands\PluginTools\PluginToolsDisablePluginsCommandContainer.cs" />
+    <Compile Include="Commands\PluginTools\PluginToolsEnablePluginsCommandContainer.cs" />
+    <Compile Include="Commands\PluginTools\PluginToolsShowPluginEditorCommandContainer.cs" />
+    <Compile Include="Commands\PluginTools\PluginToolsShowPluginChunkCommandContainer.cs" />
+    <Compile Include="Commands\PluginTools\PluginToolsUnloadPluginCommandContainer.cs" />
+    <Compile Include="Commands\PluginTools\PluginToolsLoadPluginCommandContainer.cs" />
+    <Compile Include="Commands\PluginTools\PluginToolsShowPluginInfoCommandContainer.cs" />
+    <Compile Include="Commands\Plugin\PluginAllToPresetExportListCommandContainer.cs" />
+    <Compile Include="Commands\Plugin\PluginReportAllPluginsCommandContainer.cs" />
+    <Compile Include="Commands\Plugin\AbstractReportPluginsCommandContainer.cs" />
+    <Compile Include="Commands\Plugin\PluginReportUnsupportedPluginsCommandContainer.cs" />
+    <Compile Include="Commands\Plugin\PluginSelectedToPresetExportListCommandContainer.cs" />
+    <Compile Include="Commands\Plugin\PluginRefreshPluginsCommandContainer.cs" />
+    <Compile Include="Commands\Plugin\PluginScanPluginsCommandContainer.cs" />
+    <Compile Include="Commands\PresetTools\PresetToolsShowPresetDataCommandContainer.cs" />
+    <Compile Include="Commands\Preset\PresetActivatePresetViewCommandContainer.cs" />
+    <Compile Include="Commands\Preset\PresetClearListCommandContainer.cs" />
+    <Compile Include="Commands\Preset\PresetExportCommandContainer.cs" />
+    <Compile Include="Commands\Tools\ToolsNksfViewCommandContainer.cs" />
+    <Compile Include="Commands\Tools\ToolsSettingsViewCommandContainer.cs" />
+    <Compile Include="Commands\Tools\ToolsUpdateLicenseCommandContainer.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="Controls\RibbonDataWindow.cs" />
+    <Compile Include="Controls\TabControl.cs" />
+    <Compile Include="Converters\NullToVisibilityConverter.cs" />
+    <Compile Include="Converters\VisibilityToBooleanConverter.cs" />
+    <Compile Include="Extensions\CollectionExtensions.cs" />
+    <Compile Include="Extensions\DispatcherExtensions.cs" />
+    <Compile Include="Extensions\FrameworkExtensions.cs" />
+    <Compile Include="Helpers\AvalonDockHelper.cs" />
+    <Compile Include="Helpers\BindingProxy.cs" />
+    <Compile Include="Helpers\ShellDimensionsHelper.cs" />
+    <Compile Include="Models\ApplicationState.cs" />
+    <Compile Include="Models\Plugin.cs" />
+    <Compile Include="Models\PluginInfoItem.cs" />
+    <Compile Include="Models\RuntimeConfiguration.cs" />
+    <Compile Include="Models\Settings\VstDirectory.cs" />
+    <Compile Include="Services\AboutInfoService.cs" />
+    <Compile Include="Services\ApplicationAlreadyBusyException.cs" />
+    <Compile Include="Services\ApplicationInitializationService.cs" />
+    <Compile Include="Services\ApplicationService.cs" />
+    <Compile Include="Services\CustomPleaseWaitService.cs" />
+    <Compile Include="Services\CustomStatusService.cs" />
+    <Compile Include="Services\Interfaces\IApplicationService.cs" />
+    <Compile Include="Services\Interfaces\ICustomStatusService.cs" />
+    <Compile Include="Services\Interfaces\ILicenseService.cs" />
+    <Compile Include="Services\LicenseService.cs" />
+    <Compile Include="Services\RuntimeConfigurationService.cs" />
+    <Compile Include="Services\EventArgs\StartupActionChangedEventArgs.cs" />
+    <Compile Include="Services\Interfaces\IRuntimeConfigurationService.cs" />
+    <Compile Include="Services\Interfaces\IVstService.cs" />
+    <Compile Include="Services\SplashScreenService.cs" />
+    <Compile Include="Services\VstService.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\NKSFViewModel.cs" />
+    <Compile Include="ViewModels\PaneViewModel.cs" />
+    <Compile Include="ViewModels\PresetBankViewModel.cs" />
+    <Compile Include="ViewModels\PresetDataViewModel.cs" />
+    <Compile Include="ViewModels\PresetExportListViewModel.cs" />
+    <Compile Include="ViewModels\PresetViewModel.cs" />
+    <Compile Include="ViewModels\RegistrationViewModel.cs" />
+    <Compile Include="ViewModels\RibbonViewModel.cs" />
+    <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="ViewModels\ShellViewModel.cs" />
+    <Compile Include="ViewModels\SplashScreenViewModel.cs" />
+    <Compile Include="ViewModels\StatusBarViewModel.cs" />
+    <Compile Include="ViewModels\VstFolderListViewModel.cs" />
+    <Compile Include="ViewModels\VstPluginChunkViewModel.cs" />
+    <Compile Include="ViewModels\VstPluginInfoViewModel.cs" />
+    <Compile Include="ViewModels\VstPluginsViewModel.cs" />
+    <Compile Include="ViewModels\VstPluginViewModel.cs" />
+    <Compile Include="Views\MainView.xaml.cs">
+      <DependentUpon>MainView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="EscapeConverter.cs" />
-    <Compile Include="GUI\AboutDialog.xaml.cs">
-      <DependentUpon>AboutDialog.xaml</DependentUpon>
+    <Compile Include="Views\NKSFView.xaml.cs">
+      <DependentUpon>NKSFView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\PluginInfoWindow.xaml.cs">
-      <DependentUpon>PluginInfoWindow.xaml</DependentUpon>
+    <Compile Include="Views\PresetDataView.xaml.cs">
+      <DependentUpon>PresetDataView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\RegistrationWindow.xaml.cs">
+    <Compile Include="Views\VstPluginChunkView.xaml.cs">
+      <DependentUpon>VstPluginChunkView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PluginEditorFrame.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\PluginEditorFrame.Designer.cs">
+      <DependentUpon>PluginEditorFrame.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PresetBankView.xaml.cs">
+      <DependentUpon>PresetBankView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PresetExportListView.xaml.cs">
+      <DependentUpon>PresetExportListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RegistrationWindow.xaml.cs">
       <DependentUpon>RegistrationWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\SplashScreen.xaml.cs">
+    <Compile Include="Views\RibbonView.xaml.cs">
+      <DependentUpon>RibbonView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ShellWindow.xaml.cs">
+      <DependentUpon>ShellWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SplashScreen.xaml.cs">
       <DependentUpon>SplashScreen.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\Plugin.cs" />
-    <Compile Include="Options.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
+    <Compile Include="Views\StatusBarView.xaml.cs">
+      <DependentUpon>StatusBarView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
+    <Compile Include="Views\ThemeControlsWindow.xaml.cs">
+      <DependentUpon>ThemeControlsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Settings.cs" />
-    <Compile Include="ViewModels\VSTPathViewModel.cs" />
-    <Compile Include="ViewModels\VSTPluginViewModel.cs" />
-    <Compile Include="ViewModels\VSTPresetViewModel.cs" />
-    <Compile Include="Controls\VSTPluginListControl.xaml.cs">
-      <DependentUpon>VSTPluginListControl.xaml</DependentUpon>
+    <Compile Include="Views\VstFolderList.xaml.cs">
+      <DependentUpon>VstFolderList.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\VSTPresetListControl.xaml.cs">
-      <DependentUpon>VSTPresetListControl.xaml</DependentUpon>
+    <Compile Include="Views\VstPluginInfoView.xaml.cs">
+      <DependentUpon>VstPluginInfoView.xaml</DependentUpon>
     </Compile>
-    <Page Include="Controls\VSTFolderListControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Compile Include="Views\VstPluginsView.xaml.cs">
+      <DependentUpon>VstPluginsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\VstPluginView.xaml.cs">
+      <DependentUpon>VstPluginView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Workers\ProgressUserState.cs" />
+    <None Include="NBug.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="GUI\AboutDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\PluginInfoWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Themes\Icons.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\RegistrationWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\SplashScreen.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
+    </None>
+    <Compile Include="Services\RibbonService.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="Controls\VSTPluginListControl.xaml">
+    <Page Include="Templates\BusyTemplate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\VSTPresetListControl.xaml">
+    <Page Include="Themes\Styles\TabControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Styles\TabItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -178,7 +252,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Themes\Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\Styles\DataGridStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Styles\Scrollbar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -186,48 +268,83 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Themes\Styles\WindowStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MainView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\NKSFView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PresetDataView.xaml" />
+    <Page Include="Views\VstPluginChunkView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PresetBankView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PresetExportListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\RegistrationWindow.xaml" />
+    <Page Include="Views\RibbonView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsView.xaml" />
+    <Page Include="Views\ShellWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SplashScreen.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\StatusBarView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ThemeControlsWindow.xaml" />
+    <Page Include="Views\VstFolderList.xaml" />
+    <Page Include="Views\VstPluginInfoView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\VstPluginsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\VstPluginView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ModuleInitializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Content Include="Media\Splashscreen.svg" />
-    <Resource Include="PresetMagician.ico" />
-    <None Include="paket.references" />
-    <None Include="Resources\Splashscreen.svg" />
-    <Content Include="Documentation\Licenses\LICENSE-BouncyCastle.Crypto.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\Licenses\LICENSE-Fody.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\Licenses\LICENSE-GSF.Media.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\Licenses\LICENSE-MessagePack.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\Licenses\LICENSE-NAudio.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\Licenses\LICENSE-Newtonsoft.Json.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\Licenses\LICENSE-Platform.Net.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\Licenses\LICENSE-Portable.Licensing.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\Licenses\LICENSE-Source.JetBrains.Annotations.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\Licenses\LICENSE-VST.NET.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\Licenses\LICENSE-GSF.Core.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -239,6 +356,15 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\ThirdPartyNotices\*.txt" />
+    <Resource Include="Resources\Icons\PresetMagician.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="FodyWeavers.xml">
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Drachenkatze.PresetMagician.NKSF\Drachenkatze.PresetMagician.NKSF.csproj">
       <Project>{2126df46-7f24-4c2c-b236-514a70b7a3a5}</Project>
       <Name>Drachenkatze.PresetMagician.NKSF</Name>
@@ -248,21 +374,30 @@
       <Name>Drachenkatze.PresetMagician.Utils</Name>
     </ProjectReference>
     <ProjectReference Include="..\Drachenkatze.PresetMagician.VendorPresetParser\Drachenkatze.PresetMagician.VendorPresetParser.csproj">
-      <Project>{3F01003F-9E52-4F4D-A5FD-ECDD9017C048}</Project>
+      <Project>{3f01003f-9e52-4f4d-a5fd-ecdd9017c048}</Project>
       <Name>Drachenkatze.PresetMagician.VendorPresetParser</Name>
     </ProjectReference>
     <ProjectReference Include="..\Drachenkatze.PresetMagician.VSTHost\Drachenkatze.PresetMagician.VSTHost.csproj">
       <Project>{bb9702b3-2826-411a-b7c5-ef64348a7a5c}</Project>
       <Name>Drachenkatze.PresetMagician.VSTHost</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NBug\NBug\NBug.csproj">
+      <Project>{62ced1d5-f603-40de-8bf5-3e49d3a392f4}</Project>
+      <Name>NBug</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="FodyWeavers.xml" />
+    <Resource Include="Resources\Images\Splashscreen.svg" />
   </ItemGroup>
   <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
+    <None Include="PresetMagician.nuspec">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.6.2">
       <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.7.2 %28x86 and x64%29</ProductName>
+      <ProductName>Microsoft .NET Framework 4.6.2 %28x86 and x64%29</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
@@ -272,13 +407,87 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+    <Page Include="Themes\Colors\AvalonDockColors.xaml" />
+    <Page Include="Themes\Master.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets\" />
+    <Folder Include="MarkupExtensions\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="msvcr110.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\.paket\paket.targets" />
+  <Target Name="AfterBuild" Condition=" '$(Configuration)' == 'Release'">
+    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+      <Output TaskParameter="Assemblies" ItemName="myAssemblyInfo" />
+    </GetAssemblyIdentity>
+    <Exec Command="..\packages\NuGet.CommandLine\tools\NuGet pack PresetMagician.nuspec -Version %(myAssemblyInfo.Version) -Properties Configuration=Release -OutputDirectory $(OutDir) -BasePath $(OutDir)" />
+    <Exec Command="..\packages\squirrel.windows\tools\squirrel --no-delta --framework-version=net462 --releasify $(OutDir)PresetMagician.$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(3)).nupkg" />
+  </Target>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="Anotar.Catel">
+          <HintPath>..\packages\Anotar.Catel.Fody\lib\net452\Anotar.Catel.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="Be.Windows.Forms.HexBox">
+          <HintPath>..\packages\Be.Windows.Forms.HexBox\lib\net40\Be.Windows.Forms.HexBox.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="System.Configuration">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Catel.Core">
+          <HintPath>..\packages\Catel.Core\lib\net46\Catel.Core.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="Catel.Fody.Attributes">
+          <HintPath>..\packages\Catel.Fody\lib\net452\Catel.Fody.Attributes.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="System.Windows.Forms">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Catel.MVVM">
+          <HintPath>..\packages\Catel.MVVM\lib\net46\Catel.MVVM.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
       <ItemGroup>
@@ -289,6 +498,106 @@
         </Reference>
         <Reference Include="System.Windows.Interactivity">
           <HintPath>..\packages\ControlzEx\lib\net462\System.Windows.Interactivity.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="Costura">
+          <HintPath>..\packages\Costura.Fody\lib\net40\Costura.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="DeltaCompressionDotNet">
+          <HintPath>..\packages\DeltaCompressionDotNet\lib\net20\DeltaCompressionDotNet.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="DeltaCompressionDotNet.MsDelta">
+          <HintPath>..\packages\DeltaCompressionDotNet\lib\net20\DeltaCompressionDotNet.MsDelta.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="DeltaCompressionDotNet.PatchApi">
+          <HintPath>..\packages\DeltaCompressionDotNet\lib\net20\DeltaCompressionDotNet.PatchApi.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="Xceed.Wpf.AvalonDock">
+          <HintPath>..\packages\Dirkster.AvalonDock.Themes.VS2013\lib\net4\Xceed.Wpf.AvalonDock.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2013">
+          <HintPath>..\packages\Dirkster.AvalonDock.Themes.VS2013\lib\net4\Xceed.Wpf.AvalonDock.Themes.VS2013.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="Microsoft.Expression.Interactions">
+          <HintPath>..\packages\Expression.Blend.Sdk.WPF\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="System.Windows.Interactivity">
+          <HintPath>..\packages\Expression.Blend.Sdk.WPF\lib\net45\System.Windows.Interactivity.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="Xceed.Wpf.AvalonDock">
+          <HintPath>..\packages\Extended.Wpf.Toolkit\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero">
+          <HintPath>..\packages\Extended.Wpf.Toolkit\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro">
+          <HintPath>..\packages\Extended.Wpf.Toolkit\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010">
+          <HintPath>..\packages\Extended.Wpf.Toolkit\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Xceed.Wpf.DataGrid">
+          <HintPath>..\packages\Extended.Wpf.Toolkit\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Xceed.Wpf.Toolkit">
+          <HintPath>..\packages\Extended.Wpf.Toolkit\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -309,8 +618,8 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
       <ItemGroup>
-        <Reference Include="JetBrains.Annotations">
-          <HintPath>..\packages\JetBrains.Annotations\lib\net20\JetBrains.Annotations.dll</HintPath>
+        <Reference Include="Ionic.Zip">
+          <HintPath>..\packages\Ionic.Zip\lib\Ionic.Zip.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -336,6 +645,54 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
       <ItemGroup>
+        <Reference Include="MethodTimer">
+          <HintPath>..\packages\MethodTimer.Fody\lib\net452\MethodTimer.dll</HintPath>
+          <Private>False</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="ModuleInit">
+          <HintPath>..\packages\ModuleInit.Fody\lib\net452\ModuleInit.dll</HintPath>
+          <Private>False</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="Mono.Cecil">
+          <HintPath>..\packages\Mono.Cecil\lib\net40\Mono.Cecil.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Mono.Cecil.Mdb">
+          <HintPath>..\packages\Mono.Cecil\lib\net40\Mono.Cecil.Mdb.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Mono.Cecil.Pdb">
+          <HintPath>..\packages\Mono.Cecil\lib\net40\Mono.Cecil.Pdb.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Mono.Cecil.Rocks">
+          <HintPath>..\packages\Mono.Cecil\lib\net40\Mono.Cecil.Rocks.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
         <Reference Include="Newtonsoft.Json">
           <HintPath>..\packages\NewtonSoft.Json\lib\net45\Newtonsoft.Json.dll</HintPath>
           <Private>True</Private>
@@ -347,8 +704,194 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
       <ItemGroup>
-        <Reference Include="PropertyChanged">
-          <HintPath>..\packages\PropertyChanged.Fody\lib\net452\PropertyChanged.dll</HintPath>
+        <Reference Include="Orc.Controls">
+          <HintPath>..\packages\Orc.Controls\lib\net46\Orc.Controls.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="Orc.FileSystem">
+          <HintPath>..\packages\Orc.FileSystem\lib\net46\Orc.FileSystem.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="Orc.LogViewer">
+          <HintPath>..\packages\Orc.LogViewer\lib\net46\Orc.LogViewer.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="Orc.Squirrel">
+          <HintPath>..\packages\Orc.Squirrel\lib\net46\Orc.Squirrel.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="Orc.Squirrel.Xaml">
+          <HintPath>..\packages\Orc.Squirrel.Xaml\lib\net46\Orc.Squirrel.Xaml.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="System.Management">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Orc.SystemInfo">
+          <HintPath>..\packages\Orc.SystemInfo\lib\net46\Orc.SystemInfo.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="Orchestra.Core">
+          <HintPath>..\packages\Orchestra.Core\lib\net46\Orchestra.Core.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="Orchestra.Shell.Ribbon.Fluent">
+          <HintPath>..\packages\Orchestra.Shell.Ribbon.Fluent\lib\net46\Orchestra.Shell.Ribbon.Fluent.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="Portable.Licensing">
+          <HintPath>..\packages\Portable.Licensing\lib\portable-net40+sl4+wp7+win8\Portable.Licensing.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="SharpCompress">
+          <HintPath>..\packages\SharpCompress\lib\net45\SharpCompress.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="SharpVectors.Converters.Wpf">
+          <HintPath>..\packages\SharpVectors.Reloaded\lib\net40\SharpVectors.Converters.Wpf.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="SharpVectors.Core">
+          <HintPath>..\packages\SharpVectors.Reloaded\lib\net40\SharpVectors.Core.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="SharpVectors.Css">
+          <HintPath>..\packages\SharpVectors.Reloaded\lib\net40\SharpVectors.Css.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="SharpVectors.Dom">
+          <HintPath>..\packages\SharpVectors.Reloaded\lib\net40\SharpVectors.Dom.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="SharpVectors.Model">
+          <HintPath>..\packages\SharpVectors.Reloaded\lib\net40\SharpVectors.Model.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="SharpVectors.Rendering.Gdi">
+          <HintPath>..\packages\SharpVectors.Reloaded\lib\net40\SharpVectors.Rendering.Gdi.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="SharpVectors.Rendering.Wpf">
+          <HintPath>..\packages\SharpVectors.Reloaded\lib\net40\SharpVectors.Rendering.Wpf.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="SharpVectors.Runtime.Wpf">
+          <HintPath>..\packages\SharpVectors.Reloaded\lib\net40\SharpVectors.Runtime.Wpf.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="SimpleMapi">
+          <HintPath>..\packages\Simple-MAPI.NET\lib\net20\SimpleMapi.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="Splat">
+          <HintPath>..\packages\Splat\lib\net461\Splat.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="NuGet.Squirrel">
+          <HintPath>..\packages\squirrel.windows\lib\Net45\NuGet.Squirrel.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Squirrel">
+          <HintPath>..\packages\squirrel.windows\lib\Net45\Squirrel.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -369,11 +912,25 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
       <ItemGroup>
+        <Reference Include="System.Collections.Immutable">
+          <HintPath>..\packages\System.Collections.Immutable\lib\netstandard1.3\System.Collections.Immutable.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="System.ComponentModel.DataAnnotations">
+          <Paket>True</Paket>
+        </Reference>
         <Reference Include="mscorlib">
           <Paket>True</Paket>
         </Reference>
-        <Reference Include="System.Net.Http">
-          <HintPath>..\packages\System.Net.Http\lib\net46\System.Net.Http.dll</HintPath>
+        <Reference Include="System.ComponentModel.Annotations">
+          <HintPath>..\packages\System.ComponentModel.Annotations\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -383,8 +940,11 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
       <ItemGroup>
-        <Reference Include="System.Security.Cryptography.Algorithms">
-          <HintPath>..\packages\System.Security.Cryptography.Algorithms\lib\net461\System.Security.Cryptography.Algorithms.dll</HintPath>
+        <Reference Include="System.Drawing">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="System.Drawing.Primitives">
+          <HintPath>..\packages\System.Drawing.Primitives\lib\net45\System.Drawing.Primitives.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -394,8 +954,8 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
       <ItemGroup>
-        <Reference Include="System.Security.Cryptography.Encoding">
-          <HintPath>..\packages\System.Security.Cryptography.Encoding\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+        <Reference Include="System.IO.FileSystem.Watcher">
+          <HintPath>..\packages\System.IO.FileSystem.Watcher\lib\net46\System.IO.FileSystem.Watcher.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -405,8 +965,8 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
       <ItemGroup>
-        <Reference Include="System.Security.Cryptography.Primitives">
-          <HintPath>..\packages\System.Security.Cryptography.Primitives\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+        <Reference Include="System.Reflection">
+          <HintPath>..\packages\System.Reflection\lib\net462\System.Reflection.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -416,8 +976,87 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
       <ItemGroup>
-        <Reference Include="System.Security.Cryptography.X509Certificates">
-          <HintPath>..\packages\System.Security.Cryptography.X509Certificates\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
+        <Reference Include="System.Runtime.CompilerServices.Unsafe">
+          <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe\lib\netstandard1.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="System.Runtime.Serialization.Formatters">
+          <HintPath>..\packages\System.Runtime.Serialization.Formatters\lib\net46\System.Runtime.Serialization.Formatters.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="System.Runtime.Serialization">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="System.Runtime.Serialization.Primitives">
+          <HintPath>..\packages\System.Runtime.Serialization.Primitives\lib\net46\System.Runtime.Serialization.Primitives.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="System.Runtime.Serialization.Xml">
+          <HintPath>..\packages\System.Runtime.Serialization.Xml\lib\net46\System.Runtime.Serialization.Xml.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="System.Threading.Tasks.Extensions">
+          <HintPath>..\packages\System.Threading.Tasks.Extensions\lib\netstandard1.0\System.Threading.Tasks.Extensions.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="System.ValueTuple">
+          <HintPath>..\packages\System.ValueTuple\lib\net461\System.ValueTuple.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="Jacobi.Vst.Core">
+          <HintPath>..\packages\VST.NET.x64\lib\net40\Jacobi.Vst.Core.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Jacobi.Vst.Framework">
+          <HintPath>..\packages\VST.NET.x64\lib\net40\Jacobi.Vst.Framework.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Jacobi.Vst.Interop">
+          <HintPath>..\packages\VST.NET.x64\lib\net40\Jacobi.Vst.Interop.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>

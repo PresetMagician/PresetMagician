@@ -6,7 +6,7 @@ using System.Security;
 using System.Windows;
 using Drachenkatze.PresetMagician.Utils;
 using Drachenkatze.PresetMagician.VSTHost.VST;
-using PresetMagicianShell.Models;
+using PresetMagician.Models;
 
 namespace PresetMagicianScratchPad
 {

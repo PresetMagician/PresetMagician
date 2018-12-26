@@ -120,14 +120,4 @@
   <data name="PublicKey" xml:space="preserve">
     <value>MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAEv+X4rWDFuNQu4zUGu9B1gP8ZQRzxvxE76Est3LAI0iQ1OJVgFjI+s7tBVeKXfLLrozWdB/uxH1+LuuJ6dwKLJHaK7wVQBZbuKoqBtRUIeSv+MPz8dSvrPv6oytbdmgPM</value>
   </data>
-  <data name="ReportPluginsURL" xml:space="preserve">
-    <value>https://presetmagician.drachenkatze.org/plugins/submit</value>
-  </data>
-  <data name="ReportPluginsURLDebug" xml:space="preserve">
-    <value>http://localhost:8000/plugins/submit</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Splashscreen" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Splashscreen.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
 </root>

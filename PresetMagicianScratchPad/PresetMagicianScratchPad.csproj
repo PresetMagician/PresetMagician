@@ -89,7 +89,7 @@
       <Project>{bb9702b3-2826-411a-b7c5-ef64348a7a5c}</Project>
       <Name>Drachenkatze.PresetMagician.VSTHost</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PresetMagicianShell\PresetMagicianShell.csproj">
+    <ProjectReference Include="..\PresetMagician\PresetMagician.csproj">
       <Project>{aff54505-ff0c-460d-8870-132e39c970e8}</Project>
       <Name>PresetMagicianShell</Name>
     </ProjectReference>
