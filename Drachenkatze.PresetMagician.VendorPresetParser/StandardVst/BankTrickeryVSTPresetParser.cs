@@ -5,8 +5,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
 {
     public class BankTrickeryVstPresetParser : AbstractStandardVstPresetParser, IVendorPresetParser
     {
-        private const string BankNameFactory = "Factory";
-
         public override bool CanHandle()
         {
             if (DeterminateVSTPresetSaveMode() == PresetSaveModes.BankTrickery)

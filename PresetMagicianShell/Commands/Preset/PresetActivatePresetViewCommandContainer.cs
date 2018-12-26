@@ -12,14 +12,12 @@ namespace PresetMagicianShell
     // ReSharper disable once UnusedMember.Global
     public class PresetActivatePresetViewCommandContainer : CommandContainerBase
     {
-        private static readonly ILog _log = LogManager.GetCurrentClassLogger();
-
         public PresetActivatePresetViewCommandContainer(ICommandManager commandManager)
             : base(Commands.Preset.ActivatePresetView, commandManager)
         {
         }
 
-        protected override async Task ExecuteAsync(object parameter)
+        protected override void Execute (object parameter)
         {
             AvalonDockHelper.ActivateDocument<PresetExportListViewModel>();
             base.Execute(parameter);

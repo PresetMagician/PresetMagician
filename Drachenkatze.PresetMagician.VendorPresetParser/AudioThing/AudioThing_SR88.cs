@@ -4,9 +4,9 @@ using System.IO;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
 {
-    public class AudioThing_LatinPercussion : AudioThing, IVendorPresetParser
+    public class AudioThing_SR88 : AudioThing, IVendorPresetParser
     {
-        public override List<int> SupportedPlugins => new List<int> {1819293752};
+        public override List<int> SupportedPlugins => new List<int> {1397897272};
 
 
         public void ScanBanks()
@@ -19,9 +19,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
             RootBank.PresetBanks.Add(factoryBank);
 
             var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                @"AudioThing\Presets\LatinPercussion");
-
-            ConfigNode = "LatinPercussion_SETTINGS";
+                @"AudioThing\Presets\SR-88");
 
             DoScan(factoryBank, directory);
         }

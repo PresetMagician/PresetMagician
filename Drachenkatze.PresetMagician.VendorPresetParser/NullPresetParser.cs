@@ -17,7 +17,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         {
         }
 
-        public bool CanHandle()
+        public override bool CanHandle()
         {
             return true;
         }

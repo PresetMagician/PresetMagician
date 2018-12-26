@@ -13,6 +13,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 {
     public abstract class AbstractVendorPresetParser
     {
+        protected const string BankNameFactory = "Factory";
+        
         public IVstPlugin VstPlugin { get; set; }
         public virtual List<int> SupportedPlugins => new List<int>();
 

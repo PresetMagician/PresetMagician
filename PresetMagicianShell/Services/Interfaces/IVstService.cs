@@ -15,6 +15,7 @@ namespace PresetMagicianShell.Services.Interfaces
         VstHost VstHost { get; set; }
         FastObservableCollection<Preset> PresetExportList { get; }
         Preset SelectedExportPreset { get; set; }
+        FastObservableCollection<Preset> SelectedPresets { get; }
         event EventHandler SelectedExportPresetChanged;
     }
 }

@@ -27,7 +27,7 @@ namespace PresetMagicianShell
             _applicationService = applicationService;
         }
 
-        protected override async Task ExecuteAsync(object parameter)
+        protected override void Execute (object parameter)
         {
             _applicationService.CancelApplicationOperation();
         }

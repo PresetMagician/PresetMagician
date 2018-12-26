@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Xml;
 using System.IO;
 
-namespace Drachenkatze.PresetMagician.Controls.Controls.VSTHost
+namespace Drachenkatze.PresetMagician.Utils
 {
     /// <summary>
     /// Class for reading and writing Steinberg Preset files and Bank files (fxp and fxb files).
@@ -84,7 +83,6 @@ namespace Drachenkatze.PresetMagician.Controls.Controls.VSTHost
 
         private string chunkData;
         private byte[] chunkDataByteArray;
-        private XmlDocument xmlDocument;
 
         public string ChunkMagic { get { return chunkMagic; } set { chunkMagic = value; } }
         public int ByteSize { get { return byteSize; } set { byteSize = value; } }
@@ -100,7 +98,6 @@ namespace Drachenkatze.PresetMagician.Controls.Controls.VSTHost
         public int ChunkSize { get { return chunkSize; } set { chunkSize = value; } }
         public string ChunkData { get { return chunkData; } set { chunkData = value; } }
         public byte[] ChunkDataByteArray { get { return chunkDataByteArray; } set { chunkDataByteArray = value; } }
-        public XmlDocument XmlDocument { get { return xmlDocument; } set { xmlDocument = value; } }
 
         // default constructor
         public FXP()
@@ -117,20 +114,6 @@ namespace Drachenkatze.PresetMagician.Controls.Controls.VSTHost
         public void WriteFile(string filePath)
         {
             BinaryFile bf = new BinaryFile(filePath, BinaryFile.ByteOrder.BigEndian, true);
-
-            // determine if the chunkdata is saved as XML
-            bool writeXMLChunkData = false;
-            string xmlChunkData = "";
-            if (XmlDocument != null)
-            {
-                StringWriter stringWriter = new StringWriter();
-                XmlTextWriter xmlTextWriter = new XmlTextWriter(stringWriter);
-                XmlDocument.WriteTo(xmlTextWriter);
-                xmlTextWriter.Flush();
-                xmlChunkData = stringWriter.ToString().Replace("'", "&apos;");
-                ChunkSize = xmlChunkData.Length;
-                writeXMLChunkData = true;
-            }
 
             if (ChunkMagic != "CcnK")
             {
@@ -157,15 +140,9 @@ namespace Drachenkatze.PresetMagician.Controls.Controls.VSTHost
                 bf.Write(Future, 128);                      // future, 128
                 bf.Write(ChunkSize);                        // chunkSize, 4
 
-                if (writeXMLChunkData)
-                {
-                    bf.Write(xmlChunkData);                 // chunkData, <chunkSize>
-                }
-                else
-                {
+              
                     // Even though the main FXP is BigEndian format the preset chunk is saved in LittleEndian format
                     bf.Write(chunkDataByteArray, BinaryFile.ByteOrder.LittleEndian);
-                }
             }
             else if (FxMagic == "FPCh")
             {
@@ -181,15 +158,10 @@ namespace Drachenkatze.PresetMagician.Controls.Controls.VSTHost
                 bf.Write(Name, 28);                         // name, 28
                 bf.Write(ChunkSize);                        // chunkSize, 4
 
-                if (writeXMLChunkData)
-                {
-                    bf.Write(xmlChunkData);                 // chunkData, <chunkSize>
-                }
-                else
-                {
+               
                     // Even though the main FXP is BigEndian format the preset chunk is saved in LittleEndian format
                     bf.Write(chunkDataByteArray, BinaryFile.ByteOrder.LittleEndian);
-                }
+               
             }
             else if (FxMagic == "FxCk")
             {
@@ -280,17 +252,6 @@ namespace Drachenkatze.PresetMagician.Controls.Controls.VSTHost
             }
 
             bf.Close();
-
-            // read the xml chunk into memory
-            XmlDocument = new XmlDocument();
-            try
-            {
-                if (chunkData != null) XmlDocument.LoadXml(chunkData);
-            }
-            catch (XmlException)
-            {
-                //Console.Out.WriteLine("No XML found");
-            }
         }
     }
 }

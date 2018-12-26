@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:catel="http://schemas.catelproject.com"
+    xmlns:behaviors="clr-namespace:PresetMagicianShell.Behaviors"
     xmlns:converters="clr-namespace:PresetMagicianShell.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:helpers="clr-namespace:PresetMagicianShell.Helpers"
@@ -77,6 +78,7 @@
 
             <DataGrid
                 x:Name="PresetExportList"
+                behaviors:MultiSelectBehavior.SynchronizedSelectedItems="{Binding SelectedPresets}"
                 AutoGenerateColumns="False"
                 CanUserAddRows="False"
                 CanUserSortColumns="False"

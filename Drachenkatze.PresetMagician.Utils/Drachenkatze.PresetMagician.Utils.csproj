@@ -39,7 +39,10 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BinaryFile.cs" />
+    <Compile Include="FXP.cs" />
     <Compile Include="HashUtils.cs" />
+    <Compile Include="HexDump.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

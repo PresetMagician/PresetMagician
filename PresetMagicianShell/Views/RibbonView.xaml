@@ -164,6 +164,15 @@
                                                      Height=32}"
                         Size="Large" />
                 </fluent:RibbonGroupBox>
+                <fluent:RibbonGroupBox>
+                    <fluent:Button
+                        Command="{catel:CommandManagerBinding PresetTools.ShowPresetData}"
+                        Header="Show Preset Data"
+                        LargeIcon="{iconPacks:Octicons Kind=FileBinary,
+                                                     Width=32,
+                                                     Height=32}"
+                        Size="Large" />
+                </fluent:RibbonGroupBox>
             </fluent:RibbonTabItem>
             <fluent:RibbonTabItem Header="Settings / Help">
                 <fluent:RibbonGroupBox Header="Settings">

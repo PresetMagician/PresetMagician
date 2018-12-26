@@ -42,7 +42,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FXP.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -50,7 +49,6 @@
     </Compile>
     <Compile Include="HostCommandStub.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Util\BinaryFile.cs" />
     <Compile Include="Util\Check.cs" />
     <Compile Include="Util\MidiNoteName.cs" />
     <Compile Include="Util\Properties.cs" />
