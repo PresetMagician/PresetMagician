@@ -1,295 +1,220 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Management;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading;
+using System.Reflection;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Threading;
-using Drachenkatze.PresetMagician.GUI.GUI;
-using Drachenkatze.PresetMagician.GUI.Properties;
-using Drachenkatze.PresetMagician.GUI.ViewModels;
-using Drachenkatze.PresetMagician.NKSF.NKSF;
-using Drachenkatze.PresetMagician.VSTHost.VST;
-using Newtonsoft.Json;
-using Platform.Text;
-using Portable.Licensing;
-using Portable.Licensing.Validation;
-using SplashScreen = Drachenkatze.PresetMagician.GUI.GUI.SplashScreen;
-using CommandLine;
-using CommandLine.Text;
-using Drachenkatze.PresetMagician.Utils;
-using System.Security.Permissions;
-using System.Windows.Documents;
-using Drachenkatze.PresetMagician.GUI.Models;
-using Newtonsoft.Json.Linq;
+using System.Windows.Forms;
+using System.Windows.Media;
+using Catel.IoC;
+using Catel.IO;
+using Catel.Logging;
+using Catel.Services;
+using NBug.Events;
+using Orchestra.Services;
+using PresetMagician.Services.Interfaces;
+using PresetMagician.Views;
+using PresetMagician;
+using Win32Mapi;
+using MessageBox = System.Windows.MessageBox;
+using Path = System.IO.Path;
 
-namespace Drachenkatze.PresetMagician.GUI
+namespace PresetMagician
 {
-    public class SystemCodeInfo
+    /// <summary>
+    ///     Interaction logic for App.xaml
+    /// </summary>
+    public partial class App
     {
-        public SystemCodeInfo()
+        public App()
         {
+            SetupExceptionHandling();
         }
 
-        public String MachineName
+        private void SetupExceptionHandling()
         {
-            get
+            AppDomain.CurrentDomain.UnhandledException += NBug.Handler.UnhandledException;
+            Current.DispatcherUnhandledException += NBug.Handler.DispatcherUnhandledException;
+            TaskScheduler.UnobservedTaskException += NBug.Handler.UnobservedTaskException;
+
+            NBug.Settings.CustomSubmissionEvent += Settings_CustomSubmissionEvent;
+        }
+
+        protected override async void OnStartup(StartupEventArgs e)
+        {
+            var languageService = ServiceLocator.Default.ResolveType<ILanguageService>();
+            languageService.PreferredCulture = new CultureInfo("en-US");
+            languageService.FallbackCulture = new CultureInfo("en-US");
+
+#if DEBUG
+            LogManager.AddDebugListener(true);
+#endif
+
+            var fileLogListener = new FileLogListener
             {
-                return Environment.MachineName;
+                IgnoreCatelLogging = true,
+                FilePath = @"{AppDataLocal}\Logs\PresetMagician.log",
+                TimeDisplay = TimeDisplay.DateTime
+            };
+
+            LogManager.AddListener(fileLogListener);
+            LogManager.GetCurrentClassLogger().Debug("Startup");
+
+            var x = Assembly.GetExecutingAssembly().GetTypes();
+
+            try
+            {
+                RotateLogFile(fileLogListener.FilePath);
             }
-        }
-
-        public String SystemCode
-        {
-            get
+            catch (Exception exception)
             {
-                return getSystemHash();
+                LogManager.GetCurrentClassLogger().Error("Tried to rotate the log file, but it failed.");
+                LogManager.GetCurrentClassLogger().Error(exception);
+                  MessageBox.Show(
+                    $"Unable to rotate the log file {fileLogListener.FilePath}. Please verify that you have access to that file. " +
+                    $"We will continue, but no logging will be available. Additional information: {Environment.NewLine}{Environment.NewLine}{exception}",
+                    "Log File Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
+
+            
+            NBug.Settings.AdditionalReportFiles.Add(fileLogListener.FilePath);
+
+            
+            await StartShell();
         }
 
-        public String getSystemHash()
+        private void RotateLogFile(string filePath)
         {
-            ManagementObject os = new ManagementObject("Win32_OperatingSystem=@");
-            string serial = (string)os["SerialNumber"];
-
-            return HashUtils.getFormattedSHA256Hash(serial);
-        }
-    }
-
-    public partial class App : Application
-    {
-        private SplashScreen splash;
-
-        private delegate void StringParameterDelegate(string value);
-
-        private readonly object stateLock = new object();
-        private Options options;
-
-        private async Task DoSomeWork()
-        {
-            for (int i = 0; i < 100; i++)
+            if (!File.Exists(filePath))
             {
-                splash.setSplashMessage("Initializing Kittens..." + i);
-                Thread.Sleep(50);
+                return;
             }
-        }
 
-        public void processCommandLine(string[] args)
-        {
-            var parserResult = CommandLine.Parser.Default.ParseArguments<Options>(args);
+            byte[] result;
+            const int readlength = 32;
 
-            parserResult.WithParsed<Options>(options => this.options = options);
-            parserResult.WithNotParsed<Options>(errs =>
+            var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite);
+
+            result = new byte[readlength];
+            fileStream.Read(result, 0, readlength);
+            fileStream.Seek(0, SeekOrigin.Begin);
+
+            var firstLogEntries = System.Text.Encoding.UTF8.GetString(result);
+
+            
+
+            if (firstLogEntries.Length >= readlength)
             {
-                var helpText = HelpText.AutoBuild(parserResult, h => h, e =>
+                // Probably good log file, try to extract the Probably corrupted file. 
+
+                var separatorPosition = firstLogEntries.IndexOf("=>", StringComparison.Ordinal);
+
+                if (separatorPosition == 24)
                 {
-                    //Console.WriteLine(e.HelpText.)
-                    return e;
-                });
-                Console.WriteLine(helpText);
-            });
+                    // Separator position found, probably valid time entry
+                    var dateTimeEntry = firstLogEntries.Substring(0, separatorPosition - 1).Replace(":","-");
 
-            if (options.ForceRegistration)
-            {
-                var regWindow = new RegistrationWindow();
-                regWindow.Show();
-            }
-        }
+                    var trimmedFilePath = filePath.Replace(".log", " ");
+                    trimmedFilePath += dateTimeEntry + ".log";
 
-        private static void DispatcherExceptionHandler(object sender, DispatcherUnhandledExceptionEventArgs args)
-        {
-            LogException(args.Exception, "Exception caught by DispatcherExceptionHandler\n");
-        }
-
-        private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args)
-        {
-            LogException((Exception)args.ExceptionObject, "Exception caught by UnhandledExceptionHandler\n");
-        }
-
-        private static void UnobservedTaskException()
-        {
-        }
-
-        private static void LogException(Exception e, string type)
-        {
-            var now = DateTime.Now;
-            var dateString = now.ToString("s").Replace(':', '_');
-
-            var outputFile = dateString + " ExceptionLog.txt";
-            var outputPath = Path.Combine(getAppDataDir().FullName, @"ExceptionDumps\");
-            var fullFileName = Path.Combine(outputPath, outputFile);
-
-            Directory.CreateDirectory(outputPath);
-            FileStream s = new FileStream(fullFileName, FileMode.Create);
-            byte[] typeMessage = Encoding.ASCII.GetBytes(type);
-            byte[] exceptionMessage = Encoding.ASCII.GetBytes(e.ToString());
-            byte[] stackTrace = Encoding.ASCII.GetBytes(e.StackTrace.ToString());
-            s.Write(typeMessage, 0, typeMessage.Length);
-            s.Write(exceptionMessage, 0, exceptionMessage.Length);
-            s.Write(stackTrace, 0, stackTrace.Length);
-
-            s.Close();
-
-            MessageBox.Show("An unhandled exception occured. The log has been written to " + fullFileName);
-        }
-
-        public void App_start(object sender, StartupEventArgs e)
-        {
-            AppDomain currentDomain = AppDomain.CurrentDomain;
-            currentDomain.UnhandledException += new UnhandledExceptionEventHandler(UnhandledExceptionHandler);
-            processCommandLine(e.Args);
-
-            /*splash = new SplashScreen();
-            splash.Show();*/
-
-            App.vstPaths = new VSTPathViewModel();
-            App.vstPlugins = new VSTPluginViewModel();
-            App.vstPresets = new VSTPresetViewModel();
-            App.vstHost = new VstHost();
-
-            if (Settings.Default.UpgradeRequired)
-            {
-                Settings.Default.Upgrade();
-                Settings.Default.UpgradeRequired = false;
-                Settings.Default.Save();
+                    var newLogFile = new FileStream(trimmedFilePath, FileMode.Create);
+                    fileStream.CopyTo(newLogFile);
+                    newLogFile.Close();
+                }
             }
 
-            readVSTPathsFromConfig();
-
+            fileStream.Flush();
+            fileStream.SetLength(0);
             
         }
 
-        
-
-        
-
-        
-
-        public static DirectoryInfo getAppDataDir()
+        private async Task StartShell()
         {
-            DirectoryInfo appData = new DirectoryInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Drachenkatze\PresetMagician"));
+            var serviceLocator = ServiceLocator.Default;
+            var shellService = serviceLocator.ResolveType<IShellService>();
 
-            if (!appData.Exists)
-            {
-                appData.Create();
-            }
-            return appData;
-        }
+            var x = await shellService.CreateAsync<ShellWindow>();
 
-        private void readVSTPathsFromConfig()
-        {
-            Settings set = Settings.Default;
 
-            IEnumerable<string> vstPaths = set.VstPluginPaths.Split(',');
-
-            foreach (string i in vstPaths)
-            {
-                try
-                {
-                    App.vstPaths.VstPaths.Add(new DirectoryInfo(i));
-                }
-                catch (ArgumentException)
-                {
-                }
-            }
-        }
-
-        public void App_Exit(object sender, ExitEventArgs e)
-        {
-            IEnumerable<string> vstPaths;
-
-            vstPaths = from path in App.vstPaths.VstPaths select path.FullName;
-
-            Settings set = Settings.Default;
-
-            set.VstPluginPaths = String.Join(",", vstPaths);
-
-            set.Save();
-        }
-
-        public static String getSystemInfo()
-        {
-            SystemCodeInfo systemInfo = new SystemCodeInfo();
-
-            string output = JsonConvert.SerializeObject(systemInfo);
-            return TextConversion.ToBase64String(Encoding.ASCII.GetBytes(output));
-        }
-
-        public static void setStatusBar(string status)
-        {
-            TextBlock textBlock = (TextBlock)Application.Current.MainWindow.FindName("statusMessage");
-
-            if (textBlock != null)
-            {
-                textBlock.Text = status;
-            }
-        }
-
-        public static void activateTab(int index)
-        {
-            TabControl tabControl = (TabControl)Application.Current.MainWindow.FindName("MainTabs");
-
-            tabControl.SelectedIndex = index;
-        }
-
-        public static async Task<string> submitPlugins(List<Plugin> pluginsToReport)
-        {
-            JObject o = JObject.FromObject(new
-            {
-                pluginSubmission = new
-                {
-                    email = App.license.Customer.Email,
-                    plugins =
-                        from p in pluginsToReport
-                        orderby p.VstPlugin.PluginId
-                        select new
-                        {
-                            vendorName = p.VstPlugin.PluginVendor,
-                            pluginName = p.VstPlugin.PluginName,
-                            pluginId = p.VstPlugin.PluginId
-                        }
-                }
-            });
-
-            var submitUrl = Drachenkatze.PresetMagician.GUI.Properties.Resources.ReportPluginsURL;
 #if DEBUG
-            submitUrl = Drachenkatze.PresetMagician.GUI.Properties.Resources.ReportPluginsURLDebug;
+
+            var ScreenNumber = 2;
+            if (Screen.AllScreens.Length >= ScreenNumber)
+            {
+                x.WindowState = WindowState.Normal;
+                var screenBounds = Screen.AllScreens[ScreenNumber - 1].Bounds;
+                x.WindowStartupLocation = WindowStartupLocation.Manual;
+                x.Left = screenBounds.Left;
+                x.Top = screenBounds.Top;
+                x.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+                x.WindowState = WindowState.Maximized;
+            }
 #endif
-
-            HttpContent content = new StringContent(o.ToString());
-
-            HttpClient client = new HttpClient();
-
-            // Add an Accept header for JSON format.
-            client.DefaultRequestHeaders.Accept.Add(
-                new MediaTypeWithQualityHeaderValue("application/json"));
-
-            // List data response.
-            var response = await client.PostAsync(submitUrl, content);
-
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                return "Submitted successfully";
-            }
-            else
-            {
-                var responseString = await response.Content.ReadAsStringAsync();
-                return "An error occured: " + responseString;
-            }
         }
 
-        public static VSTPathViewModel vstPaths { get; set; }
-        public static VSTPluginViewModel vstPlugins { get; set; }
-        public static VSTPresetViewModel vstPresets { get; set; }
-        public static VstHost vstHost { get; set; }
+        protected override void OnExit(ExitEventArgs e)
+        {
+            Debug.WriteLine("In OnExit");
+            var serviceLocator = ServiceLocator.Default;
+            serviceLocator.ResolveType<IRuntimeConfigurationService>().Save(true);
+            base.OnExit(e);
+        }
+
+        // Custom Submission Event handler
+        private void Settings_CustomSubmissionEvent(object sender, CustomSubmissionEventArgs e)
+        {
+            var tempZip = Path.GetTempPath() + Guid.NewGuid() + ".zip";
+            var fs = new FileStream(tempZip, FileMode.Create);
+            e.File.Seek(0, SeekOrigin.Begin);
+            e.File.CopyTo(fs);
+            fs.Close();
+
+            var mapi = new SimpleMapi();
+
+            mapi.AddRecipient(Settings.Links.SupportEmailName, Settings.Links.SupportEmail, false);
+
+            mapi.Attach(tempZip);
+
+            var myDict = new Dictionary<string, string>
+            {
+                ["User Comments"] = e.Report.GeneralInfo.UserDescription,
+                ["Exception Type"] = e.Report.GeneralInfo.ExceptionType,
+                ["Exception Backtrace"] = e.Exception.StackTrace,
+                ["Application"] = e.Report.GeneralInfo.HostApplication + " " +
+                                  e.Report.GeneralInfo.HostApplicationVersion
+            };
+
+            var noteText = string.Join("<br/>",
+                myDict.Select(x =>
+                    "<b>" + x.Key + "</b><br/><pre><code class=\"language-csharp\">" + HttpUtility.HtmlEncode(x.Value) +
+                    "</code></pre>").ToArray());
+            if (!mapi.Send("PresetMagician Crash: " + e.Exception.Message, noteText))
+            {
+                var crashesDir = Catel.IO.Path.Combine(Catel.IO.Path.GetApplicationDataDirectory(ApplicationDataTarget.UserRoaming),
+                    @"Crashes\", Guid.NewGuid().ToString());
+
+                Directory.CreateDirectory(crashesDir);
+                File.Copy(tempZip, Path.Combine(crashesDir, "DiagnosticData.zip"));
+
+                File.WriteAllText (Path.Combine(crashesDir, "ErrorDescription.txt"),noteText);
+
+                File.WriteAllText(Path.Combine(crashesDir, "0 Send all files in this directory to.txt"), "");
+                File.WriteAllText(Path.Combine(crashesDir, $"1 {Settings.Links.SupportEmail}.txt"), "");
+
+                MessageBox.Show(
+                    "Sorry, there seems to be no E-Mail client available. The Windows explorer will now open." +
+                    $"Please attach the files in the opened directory and send them to {Settings.Links.SupportEmail}");
+
+                Process.Start(crashesDir);
+            }
+
+            e.Result = true;
+        }
     }
 }

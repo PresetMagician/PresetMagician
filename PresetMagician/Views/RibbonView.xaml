@@ -1,0 +1,276 @@
+﻿<catel:UserControl
+    x:Class="PresetMagician.Views.RibbonView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ViewModels="clr-namespace:PresetMagician.ViewModels"
+    xmlns:catel="http://schemas.catelproject.com"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:fluent="urn:fluent-ribbon"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:orchestra="http://schemas.wildgums.com/orchestra"
+    d:DataContext="{d:DesignInstance ViewModels:RibbonViewModel}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <catel:UserControl.Resources>
+        <ResourceDictionary>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        </ResourceDictionary>
+    </catel:UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <fluent:Ribbon
+            x:Name="ribbon"
+            Grid.Row="0"
+            AutomaticStateManagement="False"
+            CanCustomizeRibbon="False"
+            IsQuickAccessToolBarVisible="False"
+            SelectedTabIndex="{Binding ApplicationState.SelectedRibbonTabIndex}">
+
+            <!-- <fluent:Ribbon.ContextualGroups>
+                <fluent:RibbonContextualTabGroup
+                    x:Name="tabGroup1"
+                    Background="Magenta"
+                    BorderBrush="Magenta"
+                    Foreground="DeepPink"
+                    Header="Plugin"
+                    Visibility="Visible" />
+
+            </fluent:Ribbon.ContextualGroups>-->
+
+
+            <fluent:RibbonTabItem Header="Plugins">
+
+                <fluent:RibbonGroupBox Header="Plugins">
+
+                    <fluent:Button
+                        Width="60"
+                        Padding="0"
+                        VerticalAlignment="Center"
+                        Command="{catel:CommandManagerBinding Plugin.ScanPlugins}"
+                        Header="Analyze Plugins"
+                        LargeIcon="{iconPacks:Material Kind=BarcodeScan,
+                                                       Width=32,
+                                                       Height=32}" />
+
+
+                    <fluent:DropDownButton
+                        ClosePopupOnMouseDown="True"
+                        ClosePopupOnMouseDownDelay="250"
+                        Header="Add Presets to Export List"
+                        LargeIcon="{iconPacks:MaterialDesign Kind=AddCircleOutline,
+                                                             Width=32,
+                                                             Height=32}"
+                        Size="Large">
+                        <fluent:MenuItem
+                            Command="{catel:CommandManagerBinding Plugin.AllToPresetExportList}"
+                            Header="Presets from all plugins"
+                            Icon="{iconPacks:Modern Kind=AddMultiple}" />
+                        <fluent:MenuItem
+                            Command="{catel:CommandManagerBinding Plugin.SelectedToPresetExportList}"
+                            Header="Presets from selected plugins only"
+                            Icon="{iconPacks:MaterialDesign Kind=AddCircle}" />
+                    </fluent:DropDownButton>
+
+                    <fluent:Button
+                        Command="{catel:CommandManagerBinding Preset.ActivatePresetView}"
+                        Header="View Preset Export List"
+                        Icon="{iconPacks:Modern Kind=BookList}"
+                        Size="Middle" />
+                    <fluent:Button
+                        Padding="0"
+                        VerticalAlignment="Center"
+                        Command="{catel:CommandManagerBinding Plugin.ReportUnsupportedPlugins}"
+                        Header="Report Unsupported Plugins"
+                        Icon="{iconPacks:Octicons Kind=Megaphone}"
+                        Size="Middle" />
+                    <fluent:Button
+                        Padding="0"
+                        VerticalAlignment="Center"
+                        Command="{catel:CommandManagerBinding Plugin.RefreshPlugins}"
+                        Header="Refresh Plugin List"
+                        Icon="{iconPacks:Modern Kind=Refresh}"
+                        Size="Middle" />
+                </fluent:RibbonGroupBox>
+
+
+
+                <fluent:RibbonGroupBox Header="Plugin Tools">
+                    <fluent:Button
+                        Command="{catel:CommandManagerBinding PluginTools.DisablePlugins}"
+                        Header="Disable Plugin(s)"
+                        Icon="{iconPacks:Octicons Kind=DiffRemoved}"
+                        Size="Middle" />
+                    <fluent:Button
+                        Command="{catel:CommandManagerBinding PluginTools.EnablePlugins}"
+                        Header="Enable Plugin(s)"
+                        Icon="{iconPacks:Octicons Kind=DiffAdded}"
+                        Size="Middle" />
+                </fluent:RibbonGroupBox>
+                <fluent:RibbonGroupBox Header="Plugin Developer Tools">
+                    <fluent:Button
+                        Command="{catel:CommandManagerBinding PluginTools.LoadPlugin}"
+                        Header="Load Plugin"
+                        Icon="{iconPacks:Material Kind=PowerPlug}"
+                        Size="Middle" />
+                    <fluent:Button
+                        Command="{catel:CommandManagerBinding PluginTools.UnloadPlugin}"
+                        Header="Unload Plugin"
+                        Icon="{iconPacks:Material Kind=PowerPlugOff}"
+                        Size="Middle" />
+                    <fluent:Button
+                        Command="{catel:CommandManagerBinding PluginTools.ShowPluginEditor}"
+                        Header="Show Plugin Editor"
+                        Icon="{iconPacks:FontAwesome Kind=EyeSolid}"
+                        Size="Middle" />
+                    <fluent:Button
+                        Command="{catel:CommandManagerBinding PluginTools.ShowPluginChunk}"
+                        Header="Show Plugin Chunk Data"
+                        Icon="{iconPacks:Octicons Kind=FileBinary}"
+                        Size="Middle" />
+                    <fluent:Button
+                        Command="{catel:CommandManagerBinding PluginTools.ShowPluginInfo}"
+                        Header="Show Plugin Capabilities"
+                        Icon="{iconPacks:FontAwesome Kind=EyeSolid}"
+                        Size="Middle" />
+                </fluent:RibbonGroupBox>
+            </fluent:RibbonTabItem>
+            <fluent:RibbonTabItem Header="Presets">
+                <fluent:RibbonGroupBox Header="Preset Export">
+                    <fluent:Button
+                        Command="{catel:CommandManagerBinding Preset.Export}"
+                        Header="Export Presets"
+                        LargeIcon="{iconPacks:FontAwesome Kind=CogSolid,
+                                                          Width=32,
+                                                          Height=32}"
+                        Size="Large" />
+                    <fluent:ToggleButton
+                        Header="Enable Audio Previews (slow)"
+                        Icon="{iconPacks:Octicons Kind=Unmute}"
+                        IsChecked="{Binding RuntimeConfiguration.ExportWithAudioPreviews, FallbackValue=true}"
+                        Size="Middle"
+                        ToolTip="Audio Preview requires about 1-2 seconds for each exported preset" />
+                </fluent:RibbonGroupBox>
+                <fluent:RibbonGroupBox>
+                    <fluent:Button
+                        Command="{catel:CommandManagerBinding Preset.ClearList}"
+                        Header="Clear Export List"
+                        LargeIcon="{iconPacks:Modern Kind=ListDelete,
+                                                     Width=32,
+                                                     Height=32}"
+                        Size="Large" />
+                </fluent:RibbonGroupBox>
+                <fluent:RibbonGroupBox>
+                    <fluent:Button
+                        Command="{catel:CommandManagerBinding PresetTools.ShowPresetData}"
+                        Header="Show Preset Data"
+                        LargeIcon="{iconPacks:Octicons Kind=FileBinary,
+                                                     Width=32,
+                                                     Height=32}"
+                        Size="Large" />
+                </fluent:RibbonGroupBox>
+            </fluent:RibbonTabItem>
+            <fluent:RibbonTabItem Header="Settings / Help">
+                <fluent:RibbonGroupBox Header="Settings">
+
+                    <fluent:Button
+                        Padding="0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Command="{catel:CommandManagerBinding Tools.SettingsView}"
+                        Content=""
+                        Header="Settings"
+                        LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Settings},
+                                                       Width=32,
+                                                       Height=32}" />
+                    
+                    <fluent:Button
+                        Padding="0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Command="{catel:CommandManagerBinding Tools.UpdateLicense}"
+                        Content=""
+                        Header="Update License"
+                        LargeIcon="{iconPacks:Material Kind=Certificate,
+                                                       Width=32,
+                                                       Height=32}" />
+
+
+                </fluent:RibbonGroupBox>
+                <fluent:RibbonGroupBox Header="Help">
+                    <fluent:Button
+                        Width="50"
+                        Command="{catel:CommandManagerBinding Help.OpenDocumentationLink}"
+                        Header="Online Help"
+                        LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconMaterialKind.HelpNetwork},
+                                                       Width=32,
+                                                       Height=32}" />
+
+                    <fluent:Button
+                        Width="50"
+                        Command="{catel:CommandManagerBinding Help.OpenChatLink}"
+                        Header="Chat"
+                        LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconMaterialKind.Chat},
+                                                       Width=32,
+                                                       Height=32}" />
+
+                    <fluent:Button
+                        Width="50"
+                        Command="{catel:CommandManagerBinding Help.OpenSupportLink}"
+                        Header="Support"
+                        LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconMaterialKind.Lifebuoy},
+                                                       Width=32,
+                                                       Height=32}" />
+
+                    <fluent:Button
+                        Width="50"
+                        Command="{Binding ShowAboutDialog}"
+                        Header="About"
+                        LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconEntypoKind.InfoWithCircle},
+                                                       Width=32,
+                                                       Height=32}" />
+
+                </fluent:RibbonGroupBox>
+
+                <fluent:RibbonGroupBox Header="Tools">
+                    <fluent:Button
+                        Padding="0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Command="{catel:CommandManagerBinding Tools.NksfView}"
+                        Content=""
+                        Header="NKSF Inspector"
+                        LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Telescope},
+                                                       Width=32,
+                                                       Height=32}" />
+
+                    <fluent:DropDownButton Header="Developer Tools" LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Beaker}, Width=32, Height=32}">
+                        <fluent:MenuItem
+                            Command="{Binding ShowThemeTest}"
+                            Header="Theme Test"
+                            Icon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Paintcan}}" />
+                        <fluent:MenuItem
+                            Command="{Binding ResetDock}"
+                            Header="Reset Dock"
+                            Icon="{iconPacks:PackIcon {x:Static iconPacks:PackIconModernKind.Reset}}" />
+                        <fluent:MenuItem
+                            Command="{Binding DoSomething}"
+                            Header="DoSomething"
+                            Icon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Paintcan}}" />
+                        <fluent:MenuItem
+                            Command="{catel:CommandManagerBinding Plugin.ReportAllPlugins}"
+                            Header="Report All Plugins"
+                            Icon="{iconPacks:Octicons Kind=Megaphone}" />
+                    </fluent:DropDownButton>
+
+                </fluent:RibbonGroupBox>
+            </fluent:RibbonTabItem>
+
+
+        </fluent:Ribbon>
+    </Grid>
+</catel:UserControl>

@@ -1,0 +1,94 @@
+<catel:UserControl
+    x:Class="PresetMagician.Views.VstFolderList"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:catel="http://schemas.catelproject.com"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:PresetMagician.ViewModels"
+    d:DataContext="{d:DesignInstance viewModels:VstFolderListViewModel}"
+    d:DesignHeight="154.88"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <DataGrid
+            x:Name="VstDirectoryGrid"
+            Grid.Row="0"
+            AutoGenerateColumns="False"
+            CanUserSortColumns="True"
+            GridLinesVisibility="All"
+            ItemsSource="{Binding VstDirectories}">
+            <DataGrid.Columns>
+                <DataGridCheckBoxColumn Binding="{Binding Active}" Header="Active" />
+                <DataGridTextColumn
+                    Width="*"
+                    Binding="{Binding Path}"
+                    CanUserSort="True"
+                    Header="Path"
+                    IsReadOnly="True" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <DockPanel Grid.Row="1" VerticalAlignment="Bottom">
+            <Button
+                Margin="6,2,2,2"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Stretch"
+                VerticalContentAlignment="Center"
+                Command="{Binding AddDefaultVstFolders}">
+
+                <StackPanel Orientation="Horizontal">
+
+                    <TextBlock
+                        Margin="2,4,4,4"
+                        VerticalAlignment="Center"
+                        Text="Add Default VST Paths" />
+                </StackPanel>
+            </Button>
+            <Button
+                Margin="6,2,2,2"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Stretch"
+                Command="{Binding AddFolder}">
+                <StackPanel Orientation="Horizontal">
+
+                    <TextBlock
+                        Margin="2,4,4,4"
+                        VerticalAlignment="Center"
+                        Text="Add Folder…" />
+                </StackPanel>
+            </Button>
+            <Button
+                Margin="6,2,2,2"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Stretch"
+                Command="{Binding RemoveFolder}"
+                CommandParameter="{Binding Path=SelectedItems, ElementName=VstDirectoryGrid}">
+                <Button.Style>
+                    <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="{x:Type Button}">
+                        <Setter Property="IsEnabled" Value="True" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SelectedItems.Count, ElementName=VstDirectoryGrid}" Value="0">
+                                <Setter Property="IsEnabled" Value="False" />
+                            </DataTrigger>
+                        </Style.Triggers>
+
+                    </Style>
+                </Button.Style>
+
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock
+                        Margin="2,4,4,4"
+                        VerticalAlignment="Center"
+                        Text="Remove Folder" />
+                </StackPanel>
+            </Button>
+        </DockPanel>
+    </Grid>
+</catel:UserControl>

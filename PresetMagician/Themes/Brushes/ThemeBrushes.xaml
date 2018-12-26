@@ -1,5 +1,10 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:options="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
+    xmlns:reskeys="clr-namespace:Xceed.Wpf.AvalonDock.Themes.VS2013.Themes;assembly=Xceed.Wpf.AvalonDock.Themes.VS2013">
 
+    <!--  From WPF-Plus  -->
     <!--  Generic  -->
     <SolidColorBrush x:Key="BackgroundColor1Brush" Color="{DynamicResource BackgroundColor1}" />
     <SolidColorBrush x:Key="BackgroundColor2Brush" Color="{DynamicResource BackgroundColor2}" />
@@ -17,7 +22,7 @@
     <SolidColorBrush x:Key="RedColorBrush" Color="{DynamicResource RedColor}" />
 
     <!--  Window  -->
-    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="{DynamicResource BackgroundColor3}" />
+    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#eeeef2" />
     <SolidColorBrush x:Key="WindowForegroundBrush" Color="{DynamicResource ForegroundColor1}" />
 
     <!--  TabControl  -->
@@ -48,9 +53,9 @@
     <SolidColorBrush x:Key="TextBoxBorderBrush" Color="{DynamicResource BackgroundColor6}" />
     <SolidColorBrush x:Key="TextBoxForegroundBrush" Color="{DynamicResource ForegroundColor2}" />
     <SolidColorBrush x:Key="TextBoxHoverBackgroundBrush" Color="{DynamicResource BackgroundColor4}" />
-    <SolidColorBrush x:Key="TextBoxHoverBorderBrush" Color="{DynamicResource BackgroundColor6}" />
+    <SolidColorBrush x:Key="TextBoxHoverBorderBrush" Color="{DynamicResource AccentColorLight}" />
     <SolidColorBrush x:Key="TextBoxFocusBackgroundBrush" Color="{DynamicResource BackgroundColor4}" />
-    <SolidColorBrush x:Key="TextBoxFocusBorderBrush" Color="{DynamicResource BackgroundColor6}" />
+    <SolidColorBrush x:Key="TextBoxFocusBorderBrush" Color="{DynamicResource AccentColorDark}" />
     <SolidColorBrush x:Key="TextBoxDisabledBackgroundBrush" Color="Transparent" />
     <SolidColorBrush x:Key="TextBoxDisabledBorderBrush" Color="{DynamicResource BackgroundColor5}" />
     <SolidColorBrush x:Key="TextBoxDisabledForegroundBrush" Color="{DynamicResource ForegroundColor3}" />
@@ -115,12 +120,15 @@
     <SolidColorBrush x:Key="DataGridBorderBrush" Color="{DynamicResource BackgroundColor6}" />
     <SolidColorBrush x:Key="DataGridLinesBrush" Color="{DynamicResource BackgroundColor3}" />
     <SolidColorBrush x:Key="DataGridSelectAllButtonBackgroundBrush" Color="{DynamicResource BackgroundColor5}" />
-    <SolidColorBrush x:Key="DataGridHeaderBackgroundBrush" Color="{DynamicResource AccentColorDark}" />
+    <SolidColorBrush x:Key="DataGridHeaderBackgroundBrush" Color="#ede2fc" />
     <SolidColorBrush x:Key="DataGridRowHeaderBackgroundBrush" Color="{DynamicResource BackgroundColor3}" />
-    <SolidColorBrush x:Key="DataGridRowFirstBackgroundBrush" Color="{DynamicResource BackgroundColor1}" />
-    <SolidColorBrush x:Key="DataGridRowSecondBackgroundBrush" Color="{DynamicResource BackgroundColor2}" />
     <SolidColorBrush x:Key="DataGridRowSelectedBackgroundBrush" Color="{DynamicResource SelectionColor1}" />
-    <SolidColorBrush x:Key="DataGridCellSelectedBackgroundBrush" Color="{DynamicResource SelectionColor2}" />
+    <SolidColorBrush x:Key="DataGridRowSelectedFocusedBackgroundBrush" Color="{DynamicResource SelectionColor1}" />
+    <SolidColorBrush x:Key="DataGridHeaderGridlinesBrush" Color="{DynamicResource BackgroundColor5}" />
+
+    <SolidColorBrush x:Key="DataGridAlternatingRowBrush" Color="{DynamicResource BackgroundColor1}" />
+
+
     <SolidColorBrush x:Key="DataGridDisabledForegroundBrush" Color="{DynamicResource ForegroundColor3}" />
 
     <!--  ScrollBar  -->
@@ -135,4 +143,5 @@
     <!--  GridSplitter  -->
     <SolidColorBrush x:Key="GridSplitterBackgroundBrush" Color="{DynamicResource BackgroundColor6}" />
     <SolidColorBrush x:Key="GridSplitterForegroundBrush" Color="{DynamicResource BackgroundColor4}" />
+
 </ResourceDictionary>

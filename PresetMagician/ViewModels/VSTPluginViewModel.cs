@@ -1,41 +1,52 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using Drachenkatze.PresetMagician.GUI.Models;
-using Drachenkatze.PresetMagician.VSTHost.VST;
-using JetBrains.Annotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Catel;
+using Catel.Data;
+using Catel.Fody;
+using Catel.MVVM;
+using PresetMagician.Services.Interfaces;
 
-namespace Drachenkatze.PresetMagician.GUI.ViewModels
+namespace PresetMagician.ViewModels
 {
-    public class VSTPluginViewModel : INotifyPropertyChanged
+    public class VstPluginViewModel : ViewModelBase
     {
-        public VSTPluginViewModel()
+        private readonly IVstService _vstService;
+
+        public VstPluginViewModel(IVstService vstService)
         {
-            this.VstPlugins = new ObservableCollection<Plugin>();
+            Argument.IsNotNull(() => vstService);
+            _vstService = vstService;
+            _vstService.SelectedPluginChanged += OnSelectedPluginChanged;
+            Plugin = _vstService.SelectedPlugin;
+            DoSomething = new Command(OnDoSomethingExecute);
+            
         }
 
-        public ObservableCollection<Plugin> VstPlugins { get; set; }
-
-        private ListViewMode _listViewMode;
-
-        public ListViewMode ListViewMode
+        private void OnSelectedPluginChanged(object o, EventArgs e)
         {
-            get { return _listViewMode; }
-            set
-            {
-                if (value == _listViewMode) return;
-                _listViewMode = value;
-                OnPropertyChanged();
-            }
+            Plugin = _vstService.SelectedPlugin;
+            RaisePropertyChanged(nameof(Plugin));
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public Command DoSomething  { get; set; }
 
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void OnDoSomethingExecute ()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            Debug.WriteLine("Direct: "+Plugin.Presets.Count);
         }
+
+        public bool IsPluginSet
+        {
+            get { return Plugin != null; }
+        }
+
+        public Models.Plugin Plugin { get; protected set; }
+      
     }
+
 }
