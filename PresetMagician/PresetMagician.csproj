@@ -425,7 +425,7 @@
       <Output TaskParameter="Assemblies" ItemName="myAssemblyInfo" />
     </GetAssemblyIdentity>
     <Exec Command="..\packages\NuGet.CommandLine\tools\NuGet pack PresetMagician.nuspec -Version %(myAssemblyInfo.Version) -Properties Configuration=Release -OutputDirectory $(OutDir) -BasePath $(OutDir)" />
-    <Exec Command="..\packages\squirrel.windows\tools\squirrel --no-delta --framework-version=net462 --releasify $(OutDir)PresetMagician.$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(3)).nupkg" />
+    <Exec Command="..\packages\squirrel.windows\tools\squirrel --no-delta --setupIcon=Resources/Icons/PresetMagician.ico --icon=Resources/Icons/PresetMagician.ico  --framework-version=net462 --releasify $(OutDir)PresetMagician.$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(3)).nupkg" />
   </Target>
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">

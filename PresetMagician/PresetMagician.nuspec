@@ -9,6 +9,7 @@
     <description>PresetMagician</description>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <copyright>Copyright 2018</copyright>
+    <iconUrl>https://presetmagician.com/PresetMagician.ico</iconUrl>
     <dependencies />
   </metadata>
   <files>

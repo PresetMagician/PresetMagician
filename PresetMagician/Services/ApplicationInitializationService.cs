@@ -76,6 +76,7 @@ namespace PresetMagician.Services
         
         public override async Task InitializeBeforeShowingShellAsync()
         {
+            _splashScreenService.Action = "Loading configuration…";
             LoadConfiguration();
             _splashScreenService.Action = "Restoring application layout…";
             var x = _serviceLocator.ResolveType<IRuntimeConfigurationService>();
@@ -110,14 +111,8 @@ namespace PresetMagician.Services
                 Settings.Application.AutomaticUpdates.DefaultChannel,
                 Settings.Application.AutomaticUpdates.CheckForUpdatesDefaultValue);
 
-            var y = updateService.CurrentChannel;
-
             _squirrelResult = await updateService.CheckForUpdatesAsync(new SquirrelContext());
-
-#pragma warning disable 4014
-            // Not dot await, it's a background thread
-            //updateService.InstallAvailableUpdatesAsync(new SquirrelContext());
-#pragma warning restore 4014
+            
         }
 
         public SquirrelResult getSquirrel()
