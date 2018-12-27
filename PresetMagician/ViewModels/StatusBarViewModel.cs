@@ -31,6 +31,8 @@ namespace PresetMagician.ViewModels
 
             _licenseService.LicenseChanged += OnLicenseChanged;
             ApplicationState = runtimeConfigurationService.ApplicationState;
+            
+            InstallUpdate = new TaskCommand(OnInstallUpdateExecute);
         }
 
         #endregion Constructors
@@ -54,6 +56,13 @@ namespace PresetMagician.ViewModels
 
         public ApplicationState ApplicationState { get; private set; }
 
+        public TaskCommand InstallUpdate  { get; set; }
+
+        private async Task OnInstallUpdateExecute ()
+        {
+            await _updateService.InstallAvailableUpdatesAsync(new SquirrelContext());
+        }
+        
         public string LicensedTo
         {
             get
@@ -146,6 +155,7 @@ namespace PresetMagician.ViewModels
         private void OnUpdateInstalled(object sender, EventArgs e)
         {
             IsUpdatedInstalled = _updateService.IsUpdatedInstalled;
+            IsUpdateAvailable = false;
         }
 
         #endregion Methods

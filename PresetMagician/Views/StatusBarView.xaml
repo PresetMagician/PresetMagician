@@ -90,16 +90,13 @@
 
 
             <StackPanel Visibility="{Binding IsUpdatedInstalled, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
-                <Separator Width="{Binding ElementName=StackPanel, Path=ActualHeight}" Margin="3,0,3,0">
-                    <Separator.LayoutTransform>
-                        <RotateTransform Angle="90" />
-                    </Separator.LayoutTransform>
-                </Separator>
+                <StackPanel><TextBlock Text="Update is installed, restart to enable new features"/>
                 <iconPacks:PackIconMaterial
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Kind="Download"
                     ToolTip="Update is installed, restart to enable new features" />
+                </StackPanel>
                 <Separator Width="{Binding ElementName=StackPanel, Path=ActualHeight}" Margin="3,0,3,0">
                     <Separator.LayoutTransform>
                         <RotateTransform Angle="90" />
@@ -107,11 +104,16 @@
                 </Separator>
             </StackPanel>
             <StackPanel Visibility="{Binding IsUpdateAvailable, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
-                <iconPacks:PackIconMaterial
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Kind="Download"
-                    ToolTip="Update is available" />
+                <Button Height="16"
+                        Margin="0"
+                        Padding="0"
+                        Command="{Binding InstallUpdate}" BorderThickness="0" Background="Transparent"><StackPanel><TextBlock Text="Click to install update"/>
+                    <iconPacks:PackIconMaterial 
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Kind="Download"
+                        ToolTip="Update is available" /></StackPanel></Button>                
+                
 
                 <Separator Width="{Binding ElementName=StackPanel, Path=ActualHeight}" Margin="3,0,3,0">
                     <Separator.LayoutTransform>

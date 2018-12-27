@@ -44,10 +44,10 @@ namespace PresetMagician
                 public const bool CheckForUpdatesDefaultValue = true;
 
                 public static readonly ImmutableArray<UpdateChannel> AvailableChannels = ImmutableArray.Create(
-                    new UpdateChannel("Stable", "https://presetmagician.drachenkatze.org/downloads/stable"),
-                    new UpdateChannel("Beta", "https://presetmagician.drachenkatze.org/downloads/beta")
+                    new UpdateChannel("Stable", "https://presetmagician.com/downloads/stable"),
+                    new UpdateChannel("Beta", "https://presetmagician.com/downloads/beta")
                         {IsPrerelease = true},
-                    new UpdateChannel("Alpha", "https://presetmagician.drachenkatze.org/downloads/alpha")
+                    new UpdateChannel("Alpha", "https://presetmagician.com/downloads/alpha")
                         {IsPrerelease = true}
                 );
 
