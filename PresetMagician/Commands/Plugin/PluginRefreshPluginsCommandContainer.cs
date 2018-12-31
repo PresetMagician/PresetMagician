@@ -93,10 +93,24 @@ namespace PresetMagician
 
                     if (foundPlugin == null)
                     {
-                        plugins.Add(new Plugin
+                        var plugin = new Plugin
                         {
                             DllPath = dllPath
-                        });
+                        };
+                        
+                        plugins.Add(plugin);
+                        
+                        var foundCachedPlugin = (from cachedPlugin in _vstService.CachedPlugins where cachedPlugin.DllPath == dllPath select cachedPlugin)
+                            .FirstOrDefault();
+
+                        if (foundCachedPlugin != null)
+                        {
+                            plugin.Enabled = foundCachedPlugin.Enabled;
+                            plugin.PluginType = foundCachedPlugin.PluginType;
+                            plugin.PluginId = foundCachedPlugin.PluginId;
+                            plugin.PluginVendor = foundCachedPlugin.PluginVendor;
+                            plugin.PluginName = foundCachedPlugin.PluginName;
+                        }
                     }
                 }
             }

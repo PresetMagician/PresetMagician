@@ -26,6 +26,7 @@ namespace PresetMagician.Services
 
         public FastObservableCollection<Plugin> SelectedPlugins { get; } = new FastObservableCollection<Plugin>();
         public FastObservableCollection<Plugin> Plugins { get; } = new FastObservableCollection<Plugin>();
+        public FastObservableCollection<Plugin> CachedPlugins { get; } = new FastObservableCollection<Plugin>();
         
         public FastObservableCollection<Preset> SelectedPresets { get; } = new FastObservableCollection<Preset>();
         public FastObservableCollection<Preset> PresetExportList { get; } = new FastObservableCollection<Preset>();

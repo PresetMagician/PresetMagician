@@ -16,6 +16,7 @@ namespace PresetMagician.Services.Interfaces
         FastObservableCollection<Preset> PresetExportList { get; }
         Preset SelectedExportPreset { get; set; }
         FastObservableCollection<Preset> SelectedPresets { get; }
+        FastObservableCollection<Plugin> CachedPlugins { get; }
         event EventHandler SelectedExportPresetChanged;
     }
 }
