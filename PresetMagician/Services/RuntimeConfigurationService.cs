@@ -63,7 +63,12 @@ namespace PresetMagician.Services
         {
             string output = JsonConvert.SerializeObject(EditableConfiguration);
 
-            JsonConvert.PopulateObject(output, RuntimeConfiguration);
+            using (RuntimeConfiguration.SuspendValidations()) {
+                RuntimeConfiguration.CachedPlugins.Clear();
+                RuntimeConfiguration.VstDirectories.Clear();
+                JsonConvert.PopulateObject(output, RuntimeConfiguration);
+            }
+            
             SaveConfiguration();
         }
 
@@ -82,9 +87,12 @@ namespace PresetMagician.Services
                 using (JsonReader jsonReader = new JsonTextReader(rd))
                 {
                     using (RuntimeConfiguration.SuspendValidations()) {
+                        RuntimeConfiguration.CachedPlugins.Clear();
+                        RuntimeConfiguration.VstDirectories.Clear();
                         _jsonSerializer.Populate(jsonReader,RuntimeConfiguration);
                     }
-                    _vstService.Plugins.AddItems(RuntimeConfiguration.CachedPlugins);
+                    //#error refactor this so that the base plugin info is separate from the metadata.   
+                    _vstService.CachedPlugins.AddItems(RuntimeConfiguration.CachedPlugins);
                 }
                 _logger.Debug("Configuration loaded");
             }

@@ -36,8 +36,17 @@
         <ItemsControl
             Grid.Row="0"
             HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Visibility="{Binding ItemsSource, ElementName=VstPluginList, Converter={StaticResource NullToVisibilityConverter}, Mode=OneWay, FallbackValue=Hidden}">
+            VerticalAlignment="Center">
+            <ItemsControl.Style>
+                <Style TargetType="{x:Type ItemsControl}">
+                    <Setter Property="Visibility" Value="Visible" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding HasItems, ElementName=VstPluginList, Mode=OneWay}" Value="True">
+                            <Setter Property="Visibility" Value="Hidden" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ItemsControl.Style>
             <TextBlock TextAlignment="Center">
                 No Plugins found.
             </TextBlock>
