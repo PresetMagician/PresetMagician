@@ -2,15 +2,11 @@
     x:Class="PresetMagician.Views.VstPluginView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:catel="http://schemas.catelproject.com"
-    xmlns:converters="clr-namespace:PresetMagician.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vendorPresetParser="clr-namespace:Drachenkatze.PresetMagician.VendorPresetParser;assembly=Drachenkatze.PresetMagician.VendorPresetParser"
     xmlns:viewModels="clr-namespace:PresetMagician.ViewModels"
-    xmlns:views="clr-namespace:PresetMagician.Views"
     Padding="2,2,2,2"
     d:DataContext="{d:DesignInstance viewModels:VstPluginViewModel}"
     mc:Ignorable="d">
@@ -100,10 +96,6 @@
                             IsReadOnly="False" />
                     </DataGrid.Columns>
                 </DataGrid>
-                <Button
-                    Grid.Column="3"
-                    Command="{Binding DoSomething}"
-                    Content="bla" />
             </Grid>
         </ControlTemplate>
     </catel:UserControl.Resources>
@@ -117,7 +109,6 @@
                             <Condition Binding="{Binding IsPluginSet, Mode=OneWay}" Value="True" />
                             <Condition Binding="{Binding Plugin.IsScanned, Mode=OneWay}" Value="True" />
                         </MultiDataTrigger.Conditions>
-
                         <Setter Property="Template" Value="{StaticResource BankView}" />
                     </MultiDataTrigger>
                     <MultiDataTrigger>

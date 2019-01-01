@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Catel.MVVM;
 using System.IO;
 using Catel;
@@ -44,6 +45,7 @@ namespace PresetMagician.ViewModels
             Title = "NKSF Viewer";
 
             OpenNKSFFile = new TaskCommand(OnOpenNKSFFileExecute);
+            OpenWithHxD = new TaskCommand(OnOpenWithHxDExecute);
             
         }
 
@@ -91,6 +93,29 @@ namespace PresetMagician.ViewModels
             }
 
             Log.Debug("Parse Complete");
+        }
+        
+        public TaskCommand OpenWithHxD { get; set; }
+
+        private async Task OnOpenWithHxDExecute ()
+        {
+            
+            var tempFile = Path.GetTempFileName();
+            File.WriteAllBytes(tempFile, PluginChunk.ToArray());
+          
+            var process = new Process
+            {
+                StartInfo =
+                {
+                    FileName = @"C:\Program Files\HxD\HxD.exe",
+                    Arguments = tempFile
+                    
+                }
+            };
+
+            process.Start();
+
+
         }
 
         #endregion Commands

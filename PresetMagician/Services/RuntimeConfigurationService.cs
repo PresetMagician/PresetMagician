@@ -127,21 +127,20 @@ namespace PresetMagician.Services
             dockingManager.Layout = _originalLayout;
         }
 
-        public void Save(bool includeCaching = false)
+        public void Save()
         {
-            SaveConfiguration(includeCaching);
+            SaveConfiguration();
             SaveLayout();
         }
 
-        public void SaveConfiguration(bool includeCaching = false)
+        public void SaveConfiguration()
         {
             using (var sw = new StreamWriter(_defaultLocalConfigFilePath))
             using (JsonWriter jsonWriter = new JsonTextWriter(sw))
             {
-                if (includeCaching)
-                {
+               
                     RuntimeConfiguration.CachedPlugins = _vstService.Plugins;
-                }
+                
 
                 _jsonSerializer.Serialize(jsonWriter, RuntimeConfiguration);
             }

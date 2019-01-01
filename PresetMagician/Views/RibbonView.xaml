@@ -157,6 +157,13 @@
                 </fluent:RibbonGroupBox>
                 <fluent:RibbonGroupBox>
                     <fluent:Button
+                        Command="{catel:CommandManagerBinding Preset.ClearSelected}"
+                        Header="Remove Selected"
+                        LargeIcon="{iconPacks:Modern Kind=ListDeleteInline,
+                                                     Width=32,
+                                                     Height=32}"
+                        Size="Large" />
+                    <fluent:Button
                         Command="{catel:CommandManagerBinding Preset.ClearList}"
                         Header="Clear Export List"
                         LargeIcon="{iconPacks:Modern Kind=ListDelete,

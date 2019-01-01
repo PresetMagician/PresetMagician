@@ -25,6 +25,8 @@ namespace PresetMagician.Views
             : base(viewModel, DataWindowMode.Close)
         {
             AddCustomButton(new DataWindowButton("Open NKSF File", "OpenNKSFFile"));
+            AddCustomButton(new DataWindowButton("Open Chunk with HxD", "OpenWithHxD"));
+
             viewModel.PropertyChanged += ViewModel_PropertyChanged;
             InitializeComponent();
 
@@ -42,34 +44,5 @@ namespace PresetMagician.Views
             }
         }
 
-        private void SavePresetChunk_Click(object sender, RoutedEventArgs e)
-        {
-            /*    if (PluginChunk.Stream == null)
-                {
-                    System.Windows.MessageBox.Show("No data loaded");
-                    return;
-                }
-                var fileContent = string.Empty;
-                var filePath = string.Empty;
-
-                using (SaveFileDialog saveFileDialog = new SaveFileDialog())
-                {
-                    string downloadsPath = new KnownFolder(KnownFolderType.Downloads).Path;
-
-                    saveFileDialog.InitialDirectory = downloadsPath;
-                    saveFileDialog.Filter = "Binary Files (*.bin)|*.bin";
-                    saveFileDialog.FilterIndex = 1;
-                    saveFileDialog.RestoreDirectory = true;
-
-                    if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                    {
-                        using (var fileStream = new FileStream(filePath = saveFileDialog.FileName, FileMode.Create))
-                        {
-                            PluginChunk.Stream.Seek(0, SeekOrigin.Begin);
-                            PluginChunk.Stream.CopyTo(fileStream);
-                        }
-                    }
-                }*/
-        }
     }
 }

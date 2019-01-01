@@ -213,7 +213,7 @@
         /// <summary>
         /// Backing field for the <see cref="OctaveOffset"/> property.
         /// </summary>
-        private int octaveOffset;
+        private int octaveOffset = -2;
 
         /// <summary>
         /// Gets or sets the octave offset.

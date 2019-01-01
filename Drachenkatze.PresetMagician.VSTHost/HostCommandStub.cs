@@ -2,6 +2,7 @@
 using Jacobi.Vst.Core.Host;
 using Jacobi.Vst.Core;
 using System.Diagnostics;
+using Anotar.Catel;
 
 namespace Drachenkatze.PresetMagician.VSTHost
 {
@@ -13,12 +14,13 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         private void RaisePluginCalled(string message)
         {
-            EventHandler<PluginCalledEventArgs> handler = PluginCalled;
+            //LogTo.Debug(message);
+            /*EventHandler<PluginCalledEventArgs> handler = PluginCalled;
 
             if (handler != null)
             {
                 handler(this, new PluginCalledEventArgs(message));
-            }
+            }*/
         }
 
         #region IVstHostCommandStub Members
@@ -31,66 +33,79 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public bool BeginEdit(int index)
         {
+            RaisePluginCalled("BeginEdit");
             return false;
         }
 
         public VstCanDoResult CanDo(VstHostCanDo cando)
         {
+            RaisePluginCalled("CanDo");
             return VstCanDoResult.Unknown;
         }
 
         public bool CloseFileSelector(VstFileSelect fileSelect)
         {
+            RaisePluginCalled("CloseFileSelector");
             throw new NotImplementedException();
         }
 
         public bool EndEdit(int index)
         {
+            RaisePluginCalled("EndEdit");
             return false;
         }
 
         public VstAutomationStates GetAutomationState()
         {
+            RaisePluginCalled("GetAutomationStates");
             throw new NotImplementedException();
         }
 
         public int GetBlockSize()
         {
+            RaisePluginCalled("GetBlockSize");
             return 512;
         }
 
         public string GetDirectory()
         {
+            RaisePluginCalled("GetDirectory");
             return Directory;
         }
 
         public int GetInputLatency()
         {
+            RaisePluginCalled("GetInputLatency");
             return 0;
         }
 
         public VstHostLanguage GetLanguage()
         {
+            RaisePluginCalled("GetLanguage");
             throw new NotImplementedException();
         }
 
         public int GetOutputLatency()
         {
+            RaisePluginCalled("GetOutputLatency");
             return 0;
         }
 
         public VstProcessLevels GetProcessLevel()
         {
+            RaisePluginCalled("GetProcessLevel");
             return Jacobi.Vst.Core.VstProcessLevels.Unknown;
         }
 
         public string GetProductString()
         {
-            return "ProductString";
+            RaisePluginCalled("GetProductString");
+            return "PresetMagician";
         }
 
         public float GetSampleRate()
         {
+            RaisePluginCalled("GetSampleRate");
             return 44100f;
         }
 
@@ -98,6 +113,8 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public VstTimeInfo GetTimeInfo(VstTimeInfoFlags filterFlags)
         {
+            RaisePluginCalled("GetTimeInfo");
+            
             vstTimeInfo.SamplePosition = 0.0;
             vstTimeInfo.SampleRate = 44100;
             vstTimeInfo.NanoSeconds = 0.0;
@@ -118,11 +135,13 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public string GetVendorString()
         {
-            return "VendorString";
+            RaisePluginCalled("GetVendorString");
+            return "Drachenkatze";
         }
 
         public int GetVendorVersion()
         {
+            RaisePluginCalled("GetVendorVersion");
             return 2400;
         }
 
@@ -141,6 +160,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public bool ProcessEvents(VstEvent[] events)
         {
+            RaisePluginCalled("ProcessEvents");
             return false;
         }
 
@@ -153,6 +173,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public bool UpdateDisplay()
         {
+            RaisePluginCalled("UpdateDisplay");
             return true;
         }
 
@@ -162,25 +183,29 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public int GetCurrentPluginID()
         {
+            RaisePluginCalled("GetCurrentPluginID");
             return PluginContext.PluginInfo.PluginID;
         }
 
         public int GetVersion()
         {
+            RaisePluginCalled("GetVersion");
             return 2400;
         }
 
         public void ProcessIdle()
         {
-            return;
+            RaisePluginCalled("ProcessIdle");
         }
 
         public void SetParameterAutomated(int index, float value)
         {
+            RaisePluginCalled("SetParameterAutomated");
         }
 
         public VstCanDoResult CanDo(string cando)
         {
+            RaisePluginCalled("CanDo2");
             return VstCanDoResult.Unknown;
         }
 

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Drachenkatze.PresetMagician.Utils;
 using Drachenkatze.PresetMagician.VSTHost.VST;
 using Jacobi.Vst.Core;
+using Anotar.Catel;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
 {
@@ -37,15 +38,17 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
 
             if (VstPlugin.PluginContext.PluginInfo.ProgramCount > 1)
             {
+                LogTo.Debug(VstPlugin.PluginName + ": Program count is greater than 1, checking for preset save mode");
                 if (!AreChunksConsistent(false))
                 {
                     return PresetSaveModes.Fallback;
                 }
 
-                Debug.WriteLine(VstPlugin.PluginName + ": bank chunks are consistent");
+                LogTo.Debug(VstPlugin.PluginName + ": bank chunks are consistent");
+
                 if (IsCurrentProgramStoredInBankChunk())
                 {
-                    Debug.WriteLine(VstPlugin.PluginName + ": current program is stored in the bank chunk");
+                    LogTo.Debug(VstPlugin.PluginName + ": current program is stored in the bank chunk");
                     return PresetSaveModes.FullBank;
 
                     // Perfect, just put out the full bank chunk. Nothing to do here.
@@ -56,7 +59,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
                     // save the preset and restore the original program 0
                     if (AreChunksConsistent(true))
                     {
-                        Debug.WriteLine(VstPlugin.PluginName + ": program chunks are consistent");
+                        LogTo.Debug(VstPlugin.PluginName + ": program chunks are consistent");
                         return PresetSaveModes.BankTrickery;
                     }
                 }
@@ -79,11 +82,14 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
 
         public bool AreChunksConsistent(bool isPreset)
         {
+            LogTo.Debug(VstPlugin.PluginName + ": checking if chunks are consistent");
             VstPlugin.PluginContext.PluginCommandStub.SetProgram(0);
-
+            
             string firstPresetHash =
                 HashUtils.getFormattedSHA256Hash(VstPlugin.PluginContext.PluginCommandStub.GetChunk(isPreset));
 
+            LogTo.Debug(VstPlugin.PluginName + ": hash for program 0 is "+firstPresetHash);
+            
             for (int i = 0; i < 10; i++)
             {
                 VstPlugin.PluginContext.PluginCommandStub.SetProgram(0);

@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Catel.Data;
+using Drachenkatze.PresetMagician.NKSF.NKSF;
 using Drachenkatze.PresetMagician.VendorPresetParser;
 using Drachenkatze.PresetMagician.VSTHost.VST;
 using Jacobi.Vst.Core;
@@ -166,6 +167,9 @@ namespace PresetMagician.Models
 
         [JsonProperty]
         public bool Enabled { get; set; } = true;
+        
+        [JsonProperty]
+        public bool Reported { get; set; }
 
         [JsonProperty]
         public string DllPath { get; set; }
@@ -219,6 +223,9 @@ namespace PresetMagician.Models
             }
         }
 
+        [JsonProperty]
+        public ControllerAssignments DefaultControllerAssignments { get; set; }
+        
         public void PopulatePluginInfoItems()
         {
             _pluginInfoItems = new ObservableCollection<PluginInfoItem>();

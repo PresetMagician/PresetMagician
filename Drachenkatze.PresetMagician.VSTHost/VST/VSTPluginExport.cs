@@ -15,7 +15,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
 {
     public class VstPluginExport
     {
-        private const int _sampleSize = 8192;
+        private const int _sampleSize = 512;
         public string UserContentDirectory { get; set; }
 
         public VstPluginExport(VstHost vstHost)
@@ -224,18 +224,20 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                     ctx.PluginCommandStub.StartProcess();
                     // Empty buffer
                     int k;
-
-                    for (k = 0; k < 512; k++)
+                    
+                    for (k = 0; k < ctx.PluginInfo.InitialDelay; k++)
                     {
-                        //ctx.PluginCommandStub.ProcessReplacing(inputBuffers, outputBuffers);
+                        ctx.PluginCommandStub.ProcessReplacing(inputBuffers, outputBuffers);
                     }
-
+                    
                     VstHost.MIDI_NoteOn(vst, (byte) preset.PreviewNote.NoteNumber, 127);
+
+                    
                     for (k = 0; k < loops; k++)
                     {
                         if (k == noteOffLoop)
                         {
-                            VstHost.MIDI_NoteOff(vst, 60, 127);
+                            VstHost.MIDI_NoteOff(vst, (byte) preset.PreviewNote.NoteNumber, 127);
                         }
 
                         ctx.PluginCommandStub.ProcessReplacing(inputBuffers, outputBuffers);
