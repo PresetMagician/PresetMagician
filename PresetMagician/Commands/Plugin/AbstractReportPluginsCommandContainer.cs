@@ -131,7 +131,8 @@ namespace PresetMagician
                             pluginSupported = p.IsSupported,
                             pluginSupportedSince = VersionHelper.GetCurrentVersion(),
                             pluginType = p.PluginTypeDescription,
-                            pluginCapabilities = p.PluginInfoItems
+                            pluginCapabilities = p.PluginInfoItems,
+                            pluginRemarks = p.PresetParser.Remarks
                         }
                 }
             });
@@ -153,6 +154,8 @@ namespace PresetMagician
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     _applicationService.ReportStatus("Report submitted successfully");
+                    pluginsToReport.Select(c => {c.Reported = true; return c;}).ToList();
+                    _runtimeConfigurationService.Save();
                 }
                 else
                 {

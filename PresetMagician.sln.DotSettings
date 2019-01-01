@@ -11,6 +11,7 @@
 	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=3BA75ABC07FADD4C8746946D6D60939A/RelativePath/@EntryValue">..\..\..\..\Downloads\CatelReSharperCodeTemplates.DotSettings</s:String>
 	<s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File3BA75ABC07FADD4C8746946D6D60939A/@KeyIndexDefined">True</s:Boolean>
 	<s:Double x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File3BA75ABC07FADD4C8746946D6D60939A/RelativePriority/@EntryValue">1</s:Double>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=Arturia/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Catel/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Drachenkatze/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Madrona/@EntryIndexedValue">True</s:Boolean>

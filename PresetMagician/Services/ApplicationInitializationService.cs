@@ -145,6 +145,7 @@ namespace PresetMagician.Services
             _commandManager.CreateCommandWithGesture(typeof(Commands.Preset), "ActivatePresetView");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Preset), "Export");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Preset), "ClearList");
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Preset), nameof(Commands.Preset.ClearSelected));
             
             _commandManager.CreateCommandWithGesture(typeof(Commands.PresetTools), nameof(Commands.PresetTools.ShowPresetData));
 

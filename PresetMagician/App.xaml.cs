@@ -162,7 +162,7 @@ namespace PresetMagician
         {
             Debug.WriteLine("In OnExit");
             var serviceLocator = ServiceLocator.Default;
-            serviceLocator.ResolveType<IRuntimeConfigurationService>().Save(true);
+            serviceLocator.ResolveType<IRuntimeConfigurationService>().Save();
             base.OnExit(e);
         }
 

@@ -110,6 +110,7 @@ namespace PresetMagician
                             plugin.PluginId = foundCachedPlugin.PluginId;
                             plugin.PluginVendor = foundCachedPlugin.PluginVendor;
                             plugin.PluginName = foundCachedPlugin.PluginName;
+                            plugin.Reported = foundCachedPlugin.Reported;
                         }
                     }
                 }

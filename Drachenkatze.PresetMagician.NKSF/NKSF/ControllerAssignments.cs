@@ -8,12 +8,11 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
     [MessagePackObject]
     public class ControllerAssignments
     {
-        [Key("ni8")]
-        public List<List<ControllerAssignment>> controllerAssignments { get; set; }
+        [Key("ni8")] public List<List<ControllerAssignment>> controllerAssignments { get; set; }
 
-        public ControllerAssignments ()
+        public ControllerAssignments()
         {
             controllerAssignments = new List<List<ControllerAssignment>>();
-            }
+        }
     }
 }

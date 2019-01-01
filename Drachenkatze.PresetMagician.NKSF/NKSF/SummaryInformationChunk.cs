@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 using MessagePack;
 
@@ -30,9 +31,11 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
 
         public override void DeserializeMessagePack(byte[] buffer)
         {
-            summaryInformation = MessagePackSerializer.Deserialize<SummaryInformation>(buffer);
-
             Debug.WriteLine(MessagePackSerializer.ToJson(buffer));
+            try {
+            summaryInformation = MessagePackSerializer.Deserialize<SummaryInformation>(buffer);
+            
+            
             Debug.WriteLine(summaryInformation.author);
             Debug.WriteLine(summaryInformation.comment);
             Debug.WriteLine(summaryInformation.deviceType);
@@ -41,6 +44,7 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
             Debug.WriteLine(summaryInformation.vendor);
             Debug.WriteLine(summaryInformation.bankChain.Count);
             Debug.WriteLine(summaryInformation.bankChain[0]);
+            } catch (Exception) {}
         }
 
         public string getJSON()

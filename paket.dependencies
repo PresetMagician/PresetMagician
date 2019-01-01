@@ -43,3 +43,5 @@ nuget squirrel.windows
 nuget Anotar.Catel.Fody 4.6.7
 nuget Be.Windows.Forms.HexBox
 nuget SharpCompress 0.18.1
+nuget sqlite-net-pcl
+nuget SQLitePCLRaw.bundle_e_sqlite3 

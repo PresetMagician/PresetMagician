@@ -111,6 +111,7 @@
     <Compile Include="Commands\PresetTools\PresetToolsShowPresetDataCommandContainer.cs" />
     <Compile Include="Commands\Preset\PresetActivatePresetViewCommandContainer.cs" />
     <Compile Include="Commands\Preset\PresetClearListCommandContainer.cs" />
+    <Compile Include="Commands\Preset\PresetClearSelectedCommandContainer.cs" />
     <Compile Include="Commands\Preset\PresetExportCommandContainer.cs" />
     <Compile Include="Commands\Tools\ToolsNksfViewCommandContainer.cs" />
     <Compile Include="Commands\Tools\ToolsSettingsViewCommandContainer.cs" />
@@ -150,7 +151,6 @@
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\NKSFViewModel.cs" />
     <Compile Include="ViewModels\PaneViewModel.cs" />
-    <Compile Include="ViewModels\PresetBankViewModel.cs" />
     <Compile Include="ViewModels\PresetDataViewModel.cs" />
     <Compile Include="ViewModels\PresetExportListViewModel.cs" />
     <Compile Include="ViewModels\PresetViewModel.cs" />
@@ -182,9 +182,6 @@
     </Compile>
     <Compile Include="Views\PluginEditorFrame.Designer.cs">
       <DependentUpon>PluginEditorFrame.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\PresetBankView.xaml.cs">
-      <DependentUpon>PresetBankView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PresetExportListView.xaml.cs">
       <DependentUpon>PresetExportListView.xaml</DependentUpon>
@@ -282,10 +279,6 @@
     </Page>
     <Page Include="Views\PresetDataView.xaml" />
     <Page Include="Views\VstPluginChunkView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\PresetBankView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -420,6 +413,27 @@
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <PropertyGroup>
+        <__paket__SQLitePCLRaw_lib_e_sqlite3_v110_xp_targets>net35\SQLitePCLRaw.lib.e_sqlite3.v110_xp</__paket__SQLitePCLRaw_lib_e_sqlite3_v110_xp_targets>
+      </PropertyGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <PropertyGroup>
+        <__paket__SQLitePCLRaw_lib_e_sqlite3_osx_targets>net35\SQLitePCLRaw.lib.e_sqlite3.osx</__paket__SQLitePCLRaw_lib_e_sqlite3_osx_targets>
+      </PropertyGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <PropertyGroup>
+        <__paket__SQLitePCLRaw_lib_e_sqlite3_linux_targets>net35\SQLitePCLRaw.lib.e_sqlite3.linux</__paket__SQLitePCLRaw_lib_e_sqlite3_linux_targets>
+      </PropertyGroup>
+    </When>
+  </Choose>
   <Target Name="AfterBuild" Condition=" '$(Configuration)' == 'Release'">
     <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
       <Output TaskParameter="Assemblies" ItemName="myAssemblyInfo" />
@@ -885,6 +899,44 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
       <ItemGroup>
+        <Reference Include="SQLitePCLRaw.batteries_e_sqlite3">
+          <HintPath>..\packages\SQLitePCLRaw.bundle_e_sqlite3\lib\net45\SQLitePCLRaw.batteries_e_sqlite3.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="SQLitePCLRaw.batteries_v2">
+          <HintPath>..\packages\SQLitePCLRaw.bundle_e_sqlite3\lib\net45\SQLitePCLRaw.batteries_v2.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="SQLitePCLRaw.core">
+          <HintPath>..\packages\SQLitePCLRaw.core\lib\net45\SQLitePCLRaw.core.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="SQLitePCLRaw.provider.e_sqlite3">
+          <HintPath>..\packages\SQLitePCLRaw.provider.e_sqlite3.net45\lib\net45\SQLitePCLRaw.provider.e_sqlite3.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
         <Reference Include="NuGet.Squirrel">
           <HintPath>..\packages\squirrel.windows\lib\Net45\NuGet.Squirrel.dll</HintPath>
           <Private>True</Private>
@@ -1080,4 +1132,7 @@
     </When>
   </Choose>
   <Import Project="..\packages\Fody\build\Fody.targets" Condition="Exists('..\packages\Fody\build\Fody.targets')" Label="Paket" />
+  <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.linux\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_linux_targets).targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.linux\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_linux_targets).targets')" Label="Paket" />
+  <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.osx\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_osx_targets).targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.osx\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_osx_targets).targets')" Label="Paket" />
+  <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_xp\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_v110_xp_targets).targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_xp\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_v110_xp_targets).targets')" Label="Paket" />
 </Project>

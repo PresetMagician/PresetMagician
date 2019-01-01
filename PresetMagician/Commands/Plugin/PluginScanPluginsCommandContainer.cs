@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using Catel;
 using Catel.Logging;
 using Catel.MVVM;
@@ -25,9 +26,11 @@ namespace PresetMagician
         private readonly IVstService _vstService;
         private readonly IApplicationService _applicationService;
         private readonly IDispatcherService _dispatcherService;
+        private readonly ICommandManager _commandManager;
 
         public PluginScanPluginsCommandContainer(ICommandManager commandManager,
-            IRuntimeConfigurationService runtimeConfigurationService, IVstService vstService, IApplicationService applicationService,
+            IRuntimeConfigurationService runtimeConfigurationService, IVstService vstService,
+            IApplicationService applicationService,
             IDispatcherService dispatcherService)
             : base(Commands.Plugin.ScanPlugins, commandManager)
         {
@@ -39,6 +42,7 @@ namespace PresetMagician
             _vstService = vstService;
             _applicationService = applicationService;
             _dispatcherService = dispatcherService;
+            _commandManager = commandManager;
 
             _vstService.Plugins.CollectionChanged += OnPluginsListChanged;
             _runtimeConfigurationService.ApplicationState.PropertyChanged += OnAllowPluginScanChanged;
@@ -101,7 +105,6 @@ namespace PresetMagician
 
                             _dispatcherService.BeginInvoke(() =>
                             {
-                                
                                 vst.RootBank.PresetBanks.Clear();
                                 vst.RootBank.PresetBanks.Add(vst.PresetParser.RootBank);
                                 vst.NumPresets = vst.PresetParser.Presets.Count;
@@ -135,6 +138,23 @@ namespace PresetMagician
             else
             {
                 _applicationService.StopApplicationOperation("Plugin analysis completed.");
+            }
+
+            var unreportedPlugins =
+                (from plugin in _vstService.Plugins where !plugin.Reported && plugin.IsScanned select plugin).Any();
+
+            if (unreportedPlugins)
+            {
+                var result =
+                    MessageBox.Show(
+                        "There are unsupported plugins which are not reported." + Environment.NewLine +
+                        "Would you like to report them, so we can implement support for them?",
+                        "Report Unsupported Plugins", MessageBoxButton.YesNo);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    _commandManager.ExecuteCommand(Commands.Plugin.ReportUnsupportedPlugins);
+                }
             }
         }
     }

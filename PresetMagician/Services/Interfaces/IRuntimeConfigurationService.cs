@@ -7,13 +7,13 @@ namespace PresetMagician.Services.Interfaces
     {
         #region Methods
         void Load();
-        void Save(bool includeCaching = false);
+        void Save();
         void LoadConfiguration();
         void LoadLayout();
         
         void ResetLayout();
 
-        void SaveConfiguration(bool includeCaching = false);
+        void SaveConfiguration();
         void SaveLayout();
         #endregion
         
