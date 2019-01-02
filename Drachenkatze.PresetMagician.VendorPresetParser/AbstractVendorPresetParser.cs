@@ -18,11 +18,13 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         public IVstPlugin VstPlugin { get; set; }
         public virtual List<int> SupportedPlugins => new List<int>();
 
+        public virtual int AudioPreviewPreDelay { get; set; } = 40;
+
         public virtual string Remarks { get; set; }
 
         public virtual bool IsNullParser => false;
 
-        public string PresetParserType => GetType().Name.ToString();
+        public string PresetParserType => GetType().Name;
 
         private readonly PresetBank _rootBank = new PresetBank();
 

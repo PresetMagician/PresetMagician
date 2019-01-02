@@ -33,7 +33,6 @@ namespace PresetMagician.ViewModels
             _layoutDocumentPane = ServiceLocator.Default.ResolveType<LayoutDocumentPane>();
             _layoutDocumentPane.PropertyChanged += LayoutDocumentPaneOnPropertyChanged;
             _runtimeConfigurationService = runtimeConfigurationService;
-
         }
 
         private void LayoutDocumentPaneOnPropertyChanged(object sender, PropertyChangedEventArgs e)

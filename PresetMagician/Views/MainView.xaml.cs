@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +25,7 @@ namespace PresetMagician.Views
     /// </summary>
     public partial class MainView
     {
+        private IRuntimeConfigurationService _runtimeConfigurationService;
         public MainView()
         {
             InitializeComponent();
@@ -31,8 +34,21 @@ namespace PresetMagician.Views
 
             serviceLocator.RegisterInstance(DockingManager);
             serviceLocator.RegisterInstance(LayoutDocumentPane);
-            serviceLocator.RegisterInstance(PresetSelection, "PresetSelection");
+            serviceLocator.RegisterInstance(PluginSettings, "PluginSettings");
+
+            _runtimeConfigurationService = serviceLocator.ResolveType<IRuntimeConfigurationService>();
+
+            PluginSettings.PropertyChanged += OnPluginSettingsPropertyChanged;
 
         }
+
+        private void OnPluginSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "IsAutoHidden")
+            {
+                Debug.WriteLine(PluginSettings.IsAutoHidden);
+                _runtimeConfigurationService.ApplicationState.IsPluginSettingsVisible = !PluginSettings.IsAutoHidden;
+            }
+        } 
     }
 }

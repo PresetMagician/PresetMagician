@@ -105,12 +105,12 @@ namespace PresetMagician
 
                         if (foundCachedPlugin != null)
                         {
-                            plugin.Enabled = foundCachedPlugin.Enabled;
                             plugin.PluginType = foundCachedPlugin.PluginType;
                             plugin.PluginId = foundCachedPlugin.PluginId;
                             plugin.PluginVendor = foundCachedPlugin.PluginVendor;
                             plugin.PluginName = foundCachedPlugin.PluginName;
                             plugin.Reported = foundCachedPlugin.Reported;
+                            plugin.Configuration = foundCachedPlugin.Configuration;
                         }
                     }
                 }

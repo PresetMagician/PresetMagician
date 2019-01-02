@@ -40,7 +40,7 @@ namespace PresetMagician
         {
             foreach (var plugin in _vstService.SelectedPlugins)
             {
-                plugin.Enabled = true;
+                plugin.Configuration.IsEnabled = true;
             }
 
             _runtimeConfigurationService.SaveConfiguration();

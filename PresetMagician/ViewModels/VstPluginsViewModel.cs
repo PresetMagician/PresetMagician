@@ -44,7 +44,7 @@ namespace PresetMagician.ViewModels
            
             var pView = CollectionViewSource.GetDefaultView(Plugins);
 
-            pView.SortDescriptions.Add(new SortDescription("Enabled", ListSortDirection.Descending));
+            pView.SortDescriptions.Add(new SortDescription("Configuration.IsEnabled", ListSortDirection.Descending));
             pView.SortDescriptions.Add(new SortDescription("IsSupported", ListSortDirection.Descending));
             pView.SortDescriptions.Add(new SortDescription("PluginName", ListSortDirection.Ascending));
 

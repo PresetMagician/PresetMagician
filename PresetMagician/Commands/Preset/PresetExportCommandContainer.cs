@@ -84,6 +84,7 @@ namespace PresetMagician
                     tempPlugin.DllPath = plugin.DllPath;
 
                     _vstService.VstHost.LoadVST(tempPlugin);
+                    tempPlugin.Configuration = plugin.Configuration;
 
                     foreach (var preset in pluginPreset.Presets)
                     {
