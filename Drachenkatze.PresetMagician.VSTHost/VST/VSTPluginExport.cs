@@ -175,7 +175,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
         [Time]
         public bool ExportPresetAudioPreviewRealtime(IVstPlugin plugin, IPreset preset)
         {
-            var blockSize = VstHost.SampleSize;
+            var blockSize = VstHost.BlockSize;
             
             var vst = plugin;
 
