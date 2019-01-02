@@ -9,6 +9,7 @@ using Catel;
 using Catel.Logging;
 using Catel.MVVM;
 using System.Collections.Specialized;
+using System.IO;
 using Catel.Data;
 using Newtonsoft.Json.Linq;
 using Orchestra;
@@ -147,6 +148,7 @@ namespace PresetMagician
 
             // List data response.
 
+            File.WriteAllText(@"C:\Users\Drachenkatze\Desktop\request.txt", pluginReport.ToString());
             try
             {
                 var response = await client.PostAsync(Settings.Links.SubmitPlugins, content);
@@ -154,7 +156,7 @@ namespace PresetMagician
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     _applicationService.ReportStatus("Report submitted successfully");
-                    pluginsToReport.Select(c => {c.Reported = true; return c;}).ToList();
+                    pluginsToReport.Select(c => {c.Configuration.IsReported = true; return c;}).ToList();
                     _runtimeConfigurationService.Save();
                 }
                 else

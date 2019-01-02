@@ -7,5 +7,6 @@ namespace PresetMagician.Models
         bool IsEnabled { get; set; }
         int AudioPreviewPreDelay { get; set; }
         ControllerAssignments DefaultControllerAssignments { get; set; }
+        bool IsReported { get; set; }
     }
 }
