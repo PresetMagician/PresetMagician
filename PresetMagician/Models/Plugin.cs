@@ -71,9 +71,6 @@ namespace PresetMagician.Models
         public MemoryStream ChunkBankMemoryStream { get; } = new MemoryStream();
 
         
-
-        [JsonProperty] public bool Reported { get; set; }
-
         [JsonProperty] public string DllPath { get; set; }
         
         [JsonProperty] public IPluginConfiguration Configuration { get; set; }
@@ -347,17 +344,6 @@ namespace PresetMagician.Models
                     pluginContext.PluginCommandStub.GetProgram().ToString()));
                 _pluginInfoItems.Add(new PluginInfoItem("Program", "Current Program Name",
                     pluginContext.PluginCommandStub.GetProgramName()));
-
-                for (int i = 0; i < pluginContext.PluginInfo.ParameterCount; i++)
-                {
-                    string name = pluginContext.PluginCommandStub.GetParameterName(i);
-                    string label = pluginContext.PluginCommandStub.GetParameterLabel(i);
-                    string display = pluginContext.PluginCommandStub.GetParameterDisplay(i);
-                    bool canBeAutomated = pluginContext.PluginCommandStub.CanParameterBeAutomated(i);
-
-                    _pluginInfoItems.Add(new PluginInfoItem("Parameters", i.ToString(),
-                        $"Parameter Index: {i} Parameter Name: {name} Display: {display} Label: {label} Can be automated: {canBeAutomated}"));
-                }
             }
         }
     }
