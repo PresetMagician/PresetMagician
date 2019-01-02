@@ -57,7 +57,10 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             Unknown
         }
 
-      
+        public const int SampleSize = 512;
+        public const float SampleRate = 44100f;
+
+
         public void LoadVST(IVstPlugin vst)
         {
             var hostCommandStub = new HostCommandStub();
@@ -69,7 +72,12 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                 vst.PluginContext = ctx;
                 ctx.Set("PluginPath", vst.DllPath);
                 ctx.Set("HostCmdStub", hostCommandStub);
+                ctx.PluginCommandStub.SetBlockSize(SampleSize);
+                ctx.PluginCommandStub.SetSampleRate(SampleRate);
+                
+                
                 ctx.PluginCommandStub.Open();
+                ctx.PluginCommandStub.StartProcess();
                 vst.PluginContext.PluginCommandStub.MainsChanged(true);
                 vst.OnLoaded();
             }

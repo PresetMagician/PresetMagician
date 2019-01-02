@@ -7,6 +7,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vendorPresetParser="clr-namespace:Drachenkatze.PresetMagician.VendorPresetParser;assembly=Drachenkatze.PresetMagician.VendorPresetParser"
     xmlns:viewModels="clr-namespace:PresetMagician.ViewModels"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:orccontrols="http://schemas.wildgums.com/orc/controls"
+    xmlns:controls="clr-namespace:PresetMagician.Controls"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     Padding="2,2,2,2"
     d:DataContext="{d:DesignInstance viewModels:VstPluginViewModel}"
     mc:Ignorable="d">
@@ -39,12 +43,12 @@
         </ControlTemplate>
 
         <ControlTemplate x:Key="BankView">
+           
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="250" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
                 <TreeView
@@ -98,6 +102,69 @@
                 </DataGrid>
             </Grid>
         </ControlTemplate>
+        
+        <ControlTemplate x:Key="PluginSettings">
+            
+                <Grid VerticalAlignment="Top" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                    <Label Content="Audio Preview Pre-Delay"
+                         />
+                    <iconPacks:PackIconFontAwesome Margin="0,0,10,0" VerticalAlignment="Center" Kind="QuestionCircleSolid" ToolTipService.ShowDuration="12000">
+                        <iconPacks:PackIconFontAwesome.ToolTip>
+                         <StackPanel Margin="5" Width="600">
+                                    <TextBlock TextWrapping="Wrap">
+                                        This setting controls how many cycles PresetMagician waits between loading the
+                                        preset and sending the MIDI note event. The empty cycles are not included in the
+                                        preview. Note that high values affect the export speed negatively. Setting this
+                                        to 0 uses the default value from the preset parser module.<LineBreak />
+                                        <LineBreak />
+                                        Some plugins require some processing time after loading a preset. If the MIDI
+                                        note event is too early, no sound will be played, resulting in an empty preview
+                                        file.<LineBreak />
+                                        <LineBreak />
+                                        Unfortunately, some plugins require variable processing time after loading a
+                                        preset, so you might need to experiment with the values.
+                                    </TextBlock>
+
+                                </StackPanel>
+                        </iconPacks:PackIconFontAwesome.ToolTip>
+                        
+                            
+                    </iconPacks:PackIconFontAwesome>
+                    </StackPanel>
+                  
+                    <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                        <xctk:IntegerUpDown Width="200" Height="20" MaxWidth="200" Value="{Binding Plugin.Configuration.AudioPreviewPreDelay}" Watermark="Pre-Delay after loading preset (empty=default)" />
+                        <TextBlock>Default from preset parser:</TextBlock>
+                        <TextBlock Text="{Binding Plugin.PresetParser.AudioPreviewPreDelay}"/>
+                    </StackPanel>
+                    
+
+                </Grid>
+            
+        </ControlTemplate>
+        
+        <ControlTemplate x:Key="PluginTabControl">
+            <controls:TabControl Margin="2" TabStripPlacement="Top">
+                <TabItem Header="Settings">
+                    <ScrollViewer VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto">
+                        <ContentControl Template="{StaticResource PluginSettings}"></ContentControl>
+                        </ScrollViewer>
+                </TabItem>
+                <TabItem Header="Bank View" VerticalContentAlignment="Stretch">
+                    <ContentControl Template="{StaticResource BankView}"></ContentControl>
+                </TabItem>
+                
+            </controls:TabControl>
+        </ControlTemplate>
     </catel:UserControl.Resources>
 
     <ContentControl>
@@ -109,7 +176,7 @@
                             <Condition Binding="{Binding IsPluginSet, Mode=OneWay}" Value="True" />
                             <Condition Binding="{Binding Plugin.IsScanned, Mode=OneWay}" Value="True" />
                         </MultiDataTrigger.Conditions>
-                        <Setter Property="Template" Value="{StaticResource BankView}" />
+                        <Setter Property="Template" Value="{StaticResource PluginTabControl}" />
                     </MultiDataTrigger>
                     <MultiDataTrigger>
                         <MultiDataTrigger.Conditions>

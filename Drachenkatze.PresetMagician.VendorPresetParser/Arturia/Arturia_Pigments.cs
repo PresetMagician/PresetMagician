@@ -6,8 +6,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
     {
         public override List<int> SupportedPlugins => new List<int> { 1264677937 };
 
-        public override string Remarks { get; set; } =
-            "Exported audio previews are randomly empty; this could be a pigments bug.";
+        public override int AudioPreviewPreDelay { get; set; } = 512;
         
         public void ScanBanks()
         {

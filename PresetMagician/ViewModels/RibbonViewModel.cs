@@ -123,9 +123,9 @@ namespace PresetMagician.ViewModels
         /// </summary>
         private async Task OnDoSomethingExecuteAsync()
         {
-            var mainView = ServiceLocator.Default.ResolveType<LayoutAnchorable>("PresetSelection");
-            mainView.ToggleAutoHide();
-
+            var mainView = ServiceLocator.Default.ResolveType<LayoutAnchorable>("PluginSettings");
+            
+            //mainView.ToggleAutoHide();
         }
 
         

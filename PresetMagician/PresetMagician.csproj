@@ -101,6 +101,7 @@
     <Compile Include="Commands\PluginTools\PluginToolsUnloadPluginCommandContainer.cs" />
     <Compile Include="Commands\PluginTools\PluginToolsLoadPluginCommandContainer.cs" />
     <Compile Include="Commands\PluginTools\PluginToolsShowPluginInfoCommandContainer.cs" />
+    <Compile Include="Commands\PluginTools\PluginToolsViewSettingsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginAllToPresetExportListCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginReportAllPluginsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\AbstractReportPluginsCommandContainer.cs" />
@@ -129,6 +130,7 @@
     <Compile Include="Helpers\ShellDimensionsHelper.cs" />
     <Compile Include="Models\ApplicationState.cs" />
     <Compile Include="Models\Plugin.cs" />
+    <Compile Include="Models\PluginConfiguration.cs" />
     <Compile Include="Models\PluginInfoItem.cs" />
     <Compile Include="Models\RuntimeConfiguration.cs" />
     <Compile Include="Models\Settings\VstDirectory.cs" />

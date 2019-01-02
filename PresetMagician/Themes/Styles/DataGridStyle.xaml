@@ -5,13 +5,12 @@
 
     <system:Boolean x:Key="BooleanTrue">true</system:Boolean>
     <PriorityBinding x:Key="EnabledBinding">
-        <Binding Path="Enabled" />
+        <Binding Path="Configuration.IsEnabled" />
         <Binding Source="{StaticResource BooleanTrue}" />
     </PriorityBinding>
 
     <!--  Default Row Style  -->
     <Style x:Key="DefaultRowStyle" TargetType="{x:Type DataGridRow}">
-        <Setter Property="DetailsTemplate" Value="{DynamicResource RowDetailsDataTemplate}" />
     </Style>
 
     <!--  Default ColumnHeaderGripperStyle  -->

@@ -40,8 +40,8 @@
                     <xcad:LayoutAnchorSide>
                         <xcad:LayoutAnchorGroup>
                             <xcad:LayoutAnchorable
-                                x:Name="PresetSelection"
-                                Title="Preset Selection"
+                                x:Name="PluginSettings"
+                                Title="Plugin Settings"
                                 AutoHideMinHeight="300"
                                 CanClose="False"
                                 CanFloat="False"

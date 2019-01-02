@@ -59,6 +59,7 @@
     <None Include="Util\WaveChannel24To32.cs" />
     <None Include="Util\WaveChannel32To32.cs" />
     <Compile Include="VST\EventArgs\VstPluginLoadErrorEventArgs.cs" />
+    <Compile Include="VST\IPluginConfiguration.cs" />
     <Compile Include="VST\IPreset.cs" />
     <Compile Include="VST\IPresetBank.cs" />
     <Compile Include="VST\IVstPlugin.cs" />

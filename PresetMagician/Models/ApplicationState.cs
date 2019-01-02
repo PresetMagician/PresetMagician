@@ -83,6 +83,8 @@ namespace PresetMagician.Models
         #endregion
 
          
+        public bool IsPluginSettingsVisible { get; set; }
+        
         #region Busy States
         public bool IsPluginListBusy { get; private set; }
         public bool IsPresetExportListBusy { get; private set; }

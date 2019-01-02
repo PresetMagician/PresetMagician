@@ -1,26 +1,28 @@
 ﻿using System.Collections.Specialized;
 using Catel;
+using Catel.IoC;
 using Catel.MVVM;
 using PresetMagician.Services.Interfaces;
+using Xceed.Wpf.AvalonDock.Layout;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
 {
     // ReSharper disable once UnusedMember.Global
-    public class PluginToolsDisablePluginsCommandContainer : CommandContainerBase
+    public class PluginToolsViewSettingsCommandContainer : CommandContainerBase
     {
         private readonly IRuntimeConfigurationService _runtimeConfigurationService;
         private readonly IVstService _vstService;
 
-        public PluginToolsDisablePluginsCommandContainer(ICommandManager commandManager, IVstService vstService,
-            IRuntimeConfigurationService runtimeConfigurationService)
-            : base(Commands.PluginTools.DisablePlugins, commandManager)
+        public PluginToolsViewSettingsCommandContainer(ICommandManager commandManager, IVstService vstService,
+            IRuntimeConfigurationService runtimeConfigurationService
+        )
+            : base(Commands.PluginTools.ViewSettings, commandManager)
         {
             Argument.IsNotNull(() => vstService);
             Argument.IsNotNull(() => runtimeConfigurationService);
 
             _vstService = vstService;
-
             _vstService.SelectedPlugins.CollectionChanged += OnSelectedPluginsListChanged;
             _runtimeConfigurationService = runtimeConfigurationService;
         }
@@ -38,12 +40,10 @@ namespace PresetMagician
 
         protected override void Execute(object parameter)
         {
-            foreach (var plugin in _vstService.SelectedPlugins)
-            {
-                plugin.Configuration.IsEnabled = false;
-            }
-
-            _runtimeConfigurationService.SaveConfiguration();
+            var pluginSettings = ServiceLocator.Default.ResolveType<LayoutAnchorable>("PluginSettings");
+            pluginSettings.ToggleAutoHide();
+            
+            
         }
     }
 }

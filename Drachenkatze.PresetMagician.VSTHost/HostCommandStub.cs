@@ -3,6 +3,7 @@ using Jacobi.Vst.Core.Host;
 using Jacobi.Vst.Core;
 using System.Diagnostics;
 using Anotar.Catel;
+using Drachenkatze.PresetMagician.VSTHost.VST;
 
 namespace Drachenkatze.PresetMagician.VSTHost
 {
@@ -14,7 +15,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         private void RaisePluginCalled(string message)
         {
-            //LogTo.Debug(message);
+            LogTo.Debug(message);
             /*EventHandler<PluginCalledEventArgs> handler = PluginCalled;
 
             if (handler != null)
@@ -64,7 +65,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
         public int GetBlockSize()
         {
             RaisePluginCalled("GetBlockSize");
-            return 512;
+            return VstHost.SampleSize;
         }
 
         public string GetDirectory()
@@ -93,13 +94,13 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public VstProcessLevels GetProcessLevel()
         {
-            RaisePluginCalled("GetProcessLevel");
-            return Jacobi.Vst.Core.VstProcessLevels.Unknown;
+            //RaisePluginCalled("GetProcessLevel");
+            return Jacobi.Vst.Core.VstProcessLevels.Realtime;
         }
 
         public string GetProductString()
         {
-            RaisePluginCalled("GetProductString");
+            //RaisePluginCalled("GetProductString");
             return "PresetMagician";
         }
 
@@ -113,7 +114,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public VstTimeInfo GetTimeInfo(VstTimeInfoFlags filterFlags)
         {
-            RaisePluginCalled("GetTimeInfo");
+            //RaisePluginCalled("GetTimeInfo");
             
             vstTimeInfo.SamplePosition = 0.0;
             vstTimeInfo.SampleRate = 44100;
@@ -200,12 +201,12 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public void SetParameterAutomated(int index, float value)
         {
-            RaisePluginCalled("SetParameterAutomated");
+            //RaisePluginCalled("SetParameterAutomated");
         }
 
         public VstCanDoResult CanDo(string cando)
         {
-            RaisePluginCalled("CanDo2");
+            RaisePluginCalled("CanDo2 "+cando);
             return VstCanDoResult.Unknown;
         }
 

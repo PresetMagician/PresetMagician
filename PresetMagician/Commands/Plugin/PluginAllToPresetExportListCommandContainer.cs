@@ -60,7 +60,7 @@ namespace PresetMagician
 
         protected override async Task ExecuteAsync(object parameter)
         {
-            var pluginsToScan = (from plugin in _vstService.Plugins where plugin.Enabled select plugin).ToList();
+            var pluginsToScan = (from plugin in _vstService.Plugins where plugin.Configuration.IsEnabled select plugin).ToList();
             var addedPresets = 0;
             var totalPresets = 0;
             bool listExceeded = false;

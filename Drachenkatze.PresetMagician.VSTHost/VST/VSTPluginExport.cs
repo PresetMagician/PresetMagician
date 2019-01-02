@@ -15,7 +15,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
 {
     public class VstPluginExport
     {
-        private const int _sampleSize = 512;
+        
         public string UserContentDirectory { get; set; }
 
         public VstPluginExport(VstHost vstHost)
@@ -175,6 +175,8 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
         [Time]
         public bool ExportPresetAudioPreviewRealtime(IVstPlugin plugin, IPreset preset)
         {
+            var blockSize = VstHost.SampleSize;
+            
             var vst = plugin;
 
             var ctx = vst.PluginContext;
@@ -190,14 +192,13 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                 throw new NoRealtimeProcessingException();
             }
 
-            //ctx.PluginCommandStub.BeginSetProgram();
+            
+
             ctx.PluginCommandStub.SetChunk(preset.PresetData, VSTPlugin.PresetChunk_UseCurrentProgram);
-            //ctx.PluginCommandStub.EndSetProgram();
-            //ctx.PluginCommandStub.SetProgram(preset.ProgramNumber);
 
             var outputCount = ctx.PluginInfo.AudioOutputCount;
             var inputCount = ctx.PluginInfo.AudioInputCount;
-            var blockSize = _sampleSize;
+            
 
             var tempFileName = GetPreviewFilename(preset)+".nksf.wav";
 
@@ -205,8 +206,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             {
                 using (var outputMgr = new VstAudioBufferManager(outputCount, blockSize))
                 {
-                    ctx.PluginCommandStub.SetBlockSize(blockSize);
-                    ctx.PluginCommandStub.SetSampleRate(44100f);
+                    
 
                     var outputBuffers = outputMgr.ToArray();
                     var inputBuffers = inputMgr.ToArray();
@@ -216,16 +216,23 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                     var noteOffSecond = 1;
                     var loops = 44100 * targetLength / blockSize;
                     var noteOffLoop = 44100 * noteOffSecond / blockSize;
+                                        
+                    var initialDelay = plugin.PresetParserAudioPreviewPreDelay;
 
+                    if (plugin.Configuration.AudioPreviewPreDelay != 0)
+                    {
+                        initialDelay = plugin.Configuration.AudioPreviewPreDelay;
+                    }
+                    
+                    Debug.WriteLine("Using initial delay of "+initialDelay);
+                    
                     var writer = new WaveFileWriter(tempFileName, p);
 
-                    ctx.PluginCommandStub.MainsChanged(true);
-
-                    ctx.PluginCommandStub.StartProcess();
+                    
                     // Empty buffer
                     int k;
-                    
-                    for (k = 0; k < ctx.PluginInfo.InitialDelay; k++)
+                                
+                    for (k = 0; k < initialDelay; k++)
                     {
                         ctx.PluginCommandStub.ProcessReplacing(inputBuffers, outputBuffers);
                     }
@@ -249,9 +256,6 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                             }
                         }
                     }
-
-                    ctx.PluginCommandStub.StopProcess();
-                    ctx.PluginCommandStub.MainsChanged(false);
 
                     writer.Close();
                 }

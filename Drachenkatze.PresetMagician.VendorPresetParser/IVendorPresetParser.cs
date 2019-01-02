@@ -13,6 +13,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         PresetBank RootBank { get; }
         ObservableCollection<Preset> Presets { get; }
         IVstPlugin VstPlugin { get; set; }
+        int AudioPreviewPreDelay { get; set; }
         string Remarks { get; set; }
         string PresetParserType { get; }
         bool IsNullParser { get; }
