@@ -6,7 +6,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
     {
         public override List<int> SupportedPlugins => new List<int> { 1264677937 };
 
-        public override int AudioPreviewPreDelay { get; set; } = 512;
+        public override int AudioPreviewPreDelay { get; set; } = 2048;
         
         public void ScanBanks()
         {

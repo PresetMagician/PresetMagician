@@ -130,6 +130,8 @@
     <Compile Include="Helpers\BindingProxy.cs" />
     <Compile Include="Helpers\ShellDimensionsHelper.cs" />
     <Compile Include="Models\ApplicationState.cs" />
+    <Compile Include="Models\ControllerAssignments\ControllerAssignmentControl.cs" />
+    <Compile Include="Models\ControllerAssignments\ControllerAssignmentPage.cs" />
     <Compile Include="Models\Plugin.cs" />
     <Compile Include="Models\PluginConfiguration.cs" />
     <Compile Include="Models\PluginInfoItem.cs" />
@@ -442,7 +444,7 @@
       <Output TaskParameter="Assemblies" ItemName="myAssemblyInfo" />
     </GetAssemblyIdentity>
     <Exec Command="..\packages\NuGet.CommandLine\tools\NuGet pack PresetMagician.nuspec -Version %(myAssemblyInfo.Version) -Properties Configuration=Release -OutputDirectory $(OutDir) -BasePath $(OutDir)" />
-    <Exec Command="..\packages\squirrel.windows\tools\squirrel --no-delta --setupIcon=Resources/Icons/PresetMagician.ico --icon=Resources/Icons/PresetMagician.ico  --framework-version=net462 --releasify $(OutDir)PresetMagician.$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(3)).nupkg" />
+    <Exec Command="..\packages\squirrel.windows\tools\squirrel --no-delta --setupIcon=Resources/Icons/PresetMagician.ico --icon=Resources/Icons/PresetMagician.ico  --framework-version=net462 --releasify $(OutDir)PresetMagician.$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(3)).nupkg --releaseDir=$(SolutionDir)\Releases" />
   </Target>
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">

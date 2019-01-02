@@ -39,7 +39,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             nksf.kontaktSound.summaryInformation.summaryInformation.name = preset.PresetName;
             nksf.kontaktSound.summaryInformation.summaryInformation.deviceType = "INST";
             nksf.kontaktSound.summaryInformation.summaryInformation.bankChain.Add(plugin.PluginName);
-
+            
             var bankPath = preset.PresetBank.GetBankPath();
             bankPath.RemoveAt(0);
             bankPath.RemoveAt(0);
@@ -53,6 +53,12 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             nksf.kontaktSound.summaryInformation.summaryInformation.comment = preset.Comment + Environment.NewLine + "Generated with PresetMagician";
             nksf.kontaktSound.pluginId.pluginId.VSTMagic = plugin.PluginContext.PluginInfo.PluginID;
             nksf.kontaktSound.pluginChunk.PresetData = preset.PresetData;
+
+            if (plugin.Configuration.DefaultControllerAssignments != null)
+            {
+                nksf.kontaktSound.controllerAssignments.controllerAssignments =
+                    plugin.Configuration.DefaultControllerAssignments;
+            }
 
             var outputFilename = Path.Combine(GetUserContentDirectory(preset),
                 GetNKSFPresetName(preset.PresetName) + ".nksf");
