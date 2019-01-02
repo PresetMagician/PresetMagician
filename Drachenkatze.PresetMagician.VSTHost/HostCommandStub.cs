@@ -65,7 +65,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
         public int GetBlockSize()
         {
             RaisePluginCalled("GetBlockSize");
-            return VstHost.SampleSize;
+            return VstHost.BlockSize;
         }
 
         public string GetDirectory()

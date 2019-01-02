@@ -57,7 +57,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             Unknown
         }
 
-        public const int SampleSize = 512;
+        public const int BlockSize = 512;
         public const float SampleRate = 44100f;
 
 
@@ -72,18 +72,40 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                 vst.PluginContext = ctx;
                 ctx.Set("PluginPath", vst.DllPath);
                 ctx.Set("HostCmdStub", hostCommandStub);
-                ctx.PluginCommandStub.SetBlockSize(SampleSize);
+                ctx.PluginCommandStub.SetBlockSize(BlockSize);
                 ctx.PluginCommandStub.SetSampleRate(SampleRate);
-                
                 
                 ctx.PluginCommandStub.Open();
                 ctx.PluginCommandStub.StartProcess();
                 vst.PluginContext.PluginCommandStub.MainsChanged(true);
+                IdleLoop(vst,1024);
                 vst.OnLoaded();
             }
             catch (Exception e)
             {
                 vst.OnLoadError(e);
+            }
+        }
+
+        public void IdleLoop(IVstPlugin plugin, int loops)
+        {
+            var ctx = plugin.PluginContext;
+            var outputCount = ctx.PluginInfo.AudioOutputCount;
+            var inputCount = ctx.PluginInfo.AudioInputCount;
+
+            using (var inputMgr = new VstAudioBufferManager(inputCount, BlockSize))
+            {
+                using (var outputMgr = new VstAudioBufferManager(outputCount, BlockSize))
+                {
+                    var outputBuffers = outputMgr.ToArray();
+                    var inputBuffers = inputMgr.ToArray();
+                    int k;
+
+                    for (k = 0; k < loops; k++)
+                    {
+                        ctx.PluginCommandStub.ProcessReplacing(inputBuffers, outputBuffers);
+                    }
+                }
             }
         }
 
