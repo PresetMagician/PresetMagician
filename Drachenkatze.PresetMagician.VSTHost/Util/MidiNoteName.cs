@@ -1,4 +1,6 @@
-﻿namespace CannedBytes.Midi.Message
+﻿using Catel.Data;
+
+namespace CannedBytes.Midi.Message
 {
     using System;
     using System.Diagnostics.Contracts;
@@ -7,7 +9,7 @@
     /// <summary>
     /// A class that helps in generating a name for a note number.
     /// </summary>
-    public class MidiNoteName
+    public class MidiNoteName: ObservableObject
     {
         /// <summary>
         /// Contains all the names of all the notes (in one octave).
@@ -62,7 +64,14 @@
             {
                 if (upperNoteName.Length > nn.Length)
                 {
-                    this.octave = int.Parse(upperNoteName.Substring(nn.Length), CultureInfo.InvariantCulture);
+                    try
+                    {
+                        this.octave = int.Parse(upperNoteName.Substring(nn.Length), CultureInfo.InvariantCulture);
+                    }
+                    catch (FormatException)
+                    {
+                        return;
+                    }
                 }
 
                 this.noteName = nn;
@@ -92,6 +101,8 @@
         private void CompileFullNoteName()
         {
             this.fullNoteName = this.NoteName + this.Octave.ToString(CultureInfo.InvariantCulture);
+            RaisePropertyChanged(nameof(FullNoteName));
+
         }
 
         /// <summary>
