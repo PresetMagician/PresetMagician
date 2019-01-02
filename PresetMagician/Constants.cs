@@ -98,6 +98,7 @@ namespace PresetMagician
             public const string Export = "Preset.Export";
             public const string ClearList = "Preset.ClearList";
             public const string ClearSelected = "Preset.ClearSelected";
+            public const string ApplyMidiNote = "Preset.ApplyMidiNote";
         }
         
         public static class PresetTools

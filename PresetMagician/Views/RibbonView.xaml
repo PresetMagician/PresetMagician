@@ -161,7 +161,7 @@
                         Size="Middle"
                         ToolTip="Audio Preview requires about 1-2 seconds for each exported preset" />
                 </fluent:RibbonGroupBox>
-                <fluent:RibbonGroupBox>
+                <fluent:RibbonGroupBox Header="List Tools">
                     <fluent:Button
                         Command="{catel:CommandManagerBinding Preset.ClearSelected}"
                         Header="Remove Selected"
@@ -169,13 +169,25 @@
                                                      Width=32,
                                                      Height=32}"
                         Size="Large" />
+                    <StackPanel Orientation="Horizontal">
+                        <fluent:TextBox MinWidth="96" Width="96" Header="MIDI Note" Text="{Binding ApplyMidiNote.FullNoteName}" IsEnabled="{Binding HasPresetSelection}"/>
+                        <fluent:Button Icon="{iconPacks:FontAwesome Kind=ClipboardCheckSolid,
+                                                     Width=16,
+                                                     Height=16}"
+                                       ToolTip="Apply MIDI note to selected presets"
+                                       Command="{catel:CommandManagerBinding Preset.ApplyMidiNote}"
+                                       CommandParameter="{Binding Path=ApplyMidiNote.FullNoteName}"
+                            Size="Small" Header="Apply"/>
+                    </StackPanel>
+                    
                     <fluent:Button
                         Command="{catel:CommandManagerBinding Preset.ClearList}"
+                        Size="Middle"
                         Header="Clear Export List"
-                        LargeIcon="{iconPacks:Modern Kind=ListDelete,
-                                                     Width=32,
-                                                     Height=32}"
-                        Size="Large" />
+                        Icon="{iconPacks:Modern Kind=ListDelete,
+                                                     Width=16,
+                                                     Height=16}"
+                        />
                 </fluent:RibbonGroupBox>
                 <fluent:RibbonGroupBox>
                     <fluent:Button

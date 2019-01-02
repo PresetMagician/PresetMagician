@@ -111,6 +111,7 @@
     <Compile Include="Commands\Plugin\PluginScanPluginsCommandContainer.cs" />
     <Compile Include="Commands\PresetTools\PresetToolsShowPresetDataCommandContainer.cs" />
     <Compile Include="Commands\Preset\PresetActivatePresetViewCommandContainer.cs" />
+    <Compile Include="Commands\Preset\PresetApplyMidiNoteCommandContainer - Copy.cs" />
     <Compile Include="Commands\Preset\PresetClearListCommandContainer.cs" />
     <Compile Include="Commands\Preset\PresetClearSelectedCommandContainer.cs" />
     <Compile Include="Commands\Preset\PresetExportCommandContainer.cs" />
