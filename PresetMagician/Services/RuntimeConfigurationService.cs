@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using Catel;
 using Catel.IoC;
 using Catel.IO;
@@ -138,10 +139,22 @@ namespace PresetMagician.Services
             using (var sw = new StreamWriter(_defaultLocalConfigFilePath))
             using (JsonWriter jsonWriter = new JsonTextWriter(sw))
             {
-               
-                    RuntimeConfiguration.CachedPlugins = _vstService.Plugins;
-                
 
+                foreach (var plugin in _vstService.Plugins)
+                {
+                    var foundCachedPlugin = (from cachedPlugin in RuntimeConfiguration.CachedPlugins where cachedPlugin.DllPath ==plugin.DllPath select cachedPlugin)
+                        .FirstOrDefault();
+
+                    if (foundCachedPlugin == null)
+                    {
+                        RuntimeConfiguration.CachedPlugins.Add(plugin);
+                    }
+                    else
+                    {
+                        foundCachedPlugin.Configuration = plugin.Configuration;
+                    }
+                }
+                
                 _jsonSerializer.Serialize(jsonWriter, RuntimeConfiguration);
             }
         }

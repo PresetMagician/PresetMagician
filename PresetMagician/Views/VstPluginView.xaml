@@ -8,9 +8,10 @@
     xmlns:vendorPresetParser="clr-namespace:Drachenkatze.PresetMagician.VendorPresetParser;assembly=Drachenkatze.PresetMagician.VendorPresetParser"
     xmlns:viewModels="clr-namespace:PresetMagician.ViewModels"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-    xmlns:orccontrols="http://schemas.wildgums.com/orc/controls"
     xmlns:controls="clr-namespace:PresetMagician.Controls"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    xmlns:fluent="urn:fluent-ribbon"
+    xmlns:controllerAssignments="clr-namespace:PresetMagician.Models.ControllerAssignments"
     Padding="2,2,2,2"
     d:DataContext="{d:DesignInstance viewModels:VstPluginViewModel}"
     mc:Ignorable="d">
@@ -43,7 +44,7 @@
         </ControlTemplate>
 
         <ControlTemplate x:Key="BankView">
-           
+
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="250" />
@@ -102,67 +103,187 @@
                 </DataGrid>
             </Grid>
         </ControlTemplate>
-        
+
         <ControlTemplate x:Key="PluginSettings">
-            
-                <Grid VerticalAlignment="Top" >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
 
-                    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
-                    <Label Content="Audio Preview Pre-Delay"
-                         />
-                    <iconPacks:PackIconFontAwesome Margin="0,0,10,0" VerticalAlignment="Center" Kind="QuestionCircleSolid" ToolTipService.ShowDuration="12000">
+            <Grid VerticalAlignment="Top">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                    <Label Content="Audio Preview Pre-Delay" />
+                    <iconPacks:PackIconFontAwesome Margin="0,0,10,0" VerticalAlignment="Center"
+                                                   Kind="QuestionCircleSolid" ToolTipService.ShowDuration="12000">
                         <iconPacks:PackIconFontAwesome.ToolTip>
-                         <StackPanel Margin="5" Width="600">
-                                    <TextBlock TextWrapping="Wrap">
-                                        This setting controls how many cycles PresetMagician waits between loading the
-                                        preset and sending the MIDI note event. The empty cycles are not included in the
-                                        preview. Note that high values affect the export speed negatively. Setting this
-                                        to 0 uses the default value from the preset parser module.<LineBreak />
-                                        <LineBreak />
-                                        Some plugins require some processing time after loading a preset. If the MIDI
-                                        note event is too early, no sound will be played, resulting in an empty preview
-                                        file.<LineBreak />
-                                        <LineBreak />
-                                        Unfortunately, some plugins require variable processing time after loading a
-                                        preset, so you might need to experiment with the values.
-                                    </TextBlock>
+                            <StackPanel Margin="5" Width="600">
+                                <TextBlock TextWrapping="Wrap">
+                                    This setting controls how many cycles PresetMagician waits between loading the
+                                    preset and sending the MIDI note event. The empty cycles are not included in the
+                                    preview. Note that high values affect the export speed negatively. Setting this
+                                    to 0 uses the default value from the preset parser module.<LineBreak />
+                                    <LineBreak />
+                                    Some plugins require some processing time after loading a preset. If the MIDI
+                                    note event is too early, no sound will be played, resulting in an empty preview
+                                    file.<LineBreak />
+                                    <LineBreak />
+                                    Unfortunately, some plugins require variable processing time after loading a
+                                    preset, so you might need to experiment with the values.
+                                </TextBlock>
 
-                                </StackPanel>
+                            </StackPanel>
                         </iconPacks:PackIconFontAwesome.ToolTip>
-                        
-                            
-                    </iconPacks:PackIconFontAwesome>
-                    </StackPanel>
-                  
-                    <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
-                        <xctk:IntegerUpDown Width="200" Height="20" MaxWidth="200" Value="{Binding Plugin.Configuration.AudioPreviewPreDelay}" Watermark="Pre-Delay after loading preset (empty=default)" />
-                        <TextBlock>Default from preset parser:</TextBlock>
-                        <TextBlock Text="{Binding Plugin.PresetParser.AudioPreviewPreDelay}"/>
-                    </StackPanel>
-                    
 
-                </Grid>
-            
+
+                    </iconPacks:PackIconFontAwesome>
+                </StackPanel>
+
+                <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                    <xctk:IntegerUpDown Width="200" Height="20" MaxWidth="200"
+                                        Value="{Binding Plugin.Configuration.AudioPreviewPreDelay}"
+                                        Watermark="Pre-Delay after loading preset (empty=default)" />
+                    <TextBlock>Default from preset parser:</TextBlock>
+                    <TextBlock Text="{Binding Plugin.PresetParser.AudioPreviewPreDelay}" />
+                </StackPanel>
+
+
+            </Grid>
+
         </ControlTemplate>
-        
+
+        <DataTemplate x:Key="ControllerPage" DataType="controllerAssignments:ControllerAssignmentPage">
+
+            <ItemsControl ItemsSource="{Binding Controls}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Margin="1,0,0,0" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="controllerAssignments:ControllerAssignmentControl">
+                        <StackPanel>
+                            <StackPanel.Style>
+                                <Style TargetType="{x:Type StackPanel}">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding name}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Hidden" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+                            <TextBlock Text="{Binding Path=section}" />
+                            <Border Background="DarkSlateGray" Height="5">
+                                <Border.Style>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="Width" Value="100" />
+                                        <Setter Property="Margin" Value="0,0,0,0" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding LastSectionItem}" Value="True">
+                                                <Setter Property="Width" Value="90" />
+                                                <Setter Property="Margin" Value="0,0,10,0" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+
+                            </Border>
+                            <Slider Orientation="Vertical" Width="20" Height="60" />
+                            <TextBlock Text="{Binding Path=name}" HorizontalAlignment="Center" />
+                            <TextBlock Text="{Binding Path=id}" HorizontalAlignment="Center" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+
+            </ItemsControl>
+
+        </DataTemplate>
+
+        <ControlTemplate x:Key="ControllerAssignments">
+
+            <Grid VerticalAlignment="Top" HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <WrapPanel Grid.Row="0">
+                    <fluent:Button
+                        Command="{Binding OpenNKSFFile}"
+                        Size="Middle"
+                        Header="Load Mappings from NKSF file"
+                        Icon="{iconPacks:FontAwesome Kind=FolderOpenRegular,
+                                                     Width=16,
+                                                     Height=16}" />
+                    <fluent:Button
+                        Command="{Binding ClearMappings}"
+                        Size="Middle"
+                        Header="Clear Mappings"
+                        Icon="{iconPacks:Modern Kind=ClearReflectHorizontal,
+                                                     Width=16,
+                                                     Height=16}" />
+                </WrapPanel>
+               
+
+                <TabControl SelectedIndex="{Binding CurrentControllerAssignmentPage}" ContentTemplate="{StaticResource ControllerPage}"
+                            ItemsSource="{Binding ControllerAssignmentPages}" TabStripPlacement="Top" Grid.Row="1">
+                    <TabControl.Style>
+                        <Style TargetType="{x:Type TabControl}">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ControllerAssignmentPages.Count}" Value="0">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                        
+                    </TabControl.Style>
+                    <TabControl.ItemContainerStyle>
+                        <Style TargetType="{x:Type TabItem}">
+                            <Setter Property="Header" Value="{Binding Title}" />
+                        </Style>
+                    </TabControl.ItemContainerStyle>
+                </TabControl>
+                
+                <TextBlock Grid.Row="1" Text="No controller assignments defined" HorizontalAlignment="Center"
+                           VerticalAlignment="Center">
+                    <TextBlock.Style>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ControllerAssignmentPages.Count}" Value="0">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+
+            </Grid>
+
+        </ControlTemplate>
+
         <ControlTemplate x:Key="PluginTabControl">
             <controls:TabControl Margin="2" TabStripPlacement="Top">
                 <TabItem Header="Settings">
                     <ScrollViewer VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto">
-                        <ContentControl Template="{StaticResource PluginSettings}"></ContentControl>
-                        </ScrollViewer>
+                        <ContentControl Template="{StaticResource PluginSettings}" />
+                    </ScrollViewer>
+                </TabItem>
+                <TabItem Header="Controller Assignments">
+                    <ContentControl Template="{StaticResource ControllerAssignments}" />
                 </TabItem>
                 <TabItem Header="Bank View" VerticalContentAlignment="Stretch">
-                    <ContentControl Template="{StaticResource BankView}"></ContentControl>
+                    <ContentControl Template="{StaticResource BankView}" />
                 </TabItem>
-                
+
             </controls:TabControl>
         </ControlTemplate>
     </catel:UserControl.Resources>

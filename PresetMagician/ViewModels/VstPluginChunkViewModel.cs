@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Catel.Data;
 using Catel.MVVM;
+using Catel.Services;
 using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
 
@@ -15,7 +16,7 @@ namespace PresetMagician.ViewModels
 {
     public class VstPluginChunkViewModel : VstPluginViewModel
     {
-        public VstPluginChunkViewModel(Models.Plugin plugin, IVstService vstService) : base(vstService)
+        public VstPluginChunkViewModel(Models.Plugin plugin, IVstService vstService, IOpenFileService openFileService) : base(vstService, openFileService)
         {
             Plugin = plugin;
             OpenWithHxDBank = new TaskCommand(OnOpenWithHxDBankExecute);

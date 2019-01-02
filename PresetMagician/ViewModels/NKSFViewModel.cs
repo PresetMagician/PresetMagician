@@ -20,9 +20,7 @@ namespace PresetMagician.ViewModels
 
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();
 
-        private readonly IFileService _fileService;
         private readonly IOpenFileService _openFileService;
-        private readonly IPleaseWaitService _pleaseWaitService;
 
         #endregion Fields
 
@@ -32,15 +30,13 @@ namespace PresetMagician.ViewModels
         public MemoryStream PluginChunk { get; set; }
         private string filePath { get; set; }
 
-        public NKSFViewModel(IOpenFileService openFileService, IFileService fileService, IPleaseWaitService pleaseWaitService)
+        public NKSFViewModel(IOpenFileService openFileService)
         {
             Argument.IsNotNull(() => openFileService);
-            Argument.IsNotNull(() => fileService);
-            Argument.IsNotNull(() => pleaseWaitService);
+            
 
             _openFileService = openFileService;
-            _fileService = fileService;
-            _pleaseWaitService = pleaseWaitService;
+           
 
             Title = "NKSF Viewer";
 

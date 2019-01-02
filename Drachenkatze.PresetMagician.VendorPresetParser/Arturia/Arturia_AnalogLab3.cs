@@ -7,7 +7,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
         public override List<int> SupportedPlugins => new List<int> { 1097621810 };
 
         public override string Remarks { get; set; } =
-            "Only AnalogLab3 multi presets are currently supported, as the format has not been fully reverse engineered.";
+            "Only AnalogLab3 multi presets are currently supported, as the format has not been fully reverse engineered. Audio previews are not working at the moment.";
         
         public void ScanBanks()
         {

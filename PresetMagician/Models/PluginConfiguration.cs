@@ -8,6 +8,6 @@ namespace PresetMagician.Models
     {
         [JsonProperty] public bool IsEnabled { get; set; } = true;
         [JsonProperty] public int AudioPreviewPreDelay { get; set; }
-        [JsonProperty] public ControllerAssignments DefaultControllerAssignments { get; set; }
+        [JsonProperty] public Drachenkatze.PresetMagician.NKSF.NKSF.ControllerAssignments DefaultControllerAssignments { get; set; }
     }
 }
