@@ -148,7 +148,6 @@ namespace PresetMagician
 
             // List data response.
 
-            File.WriteAllText(@"C:\Users\Drachenkatze\Desktop\request.txt", pluginReport.ToString());
             try
             {
                 var response = await client.PostAsync(Settings.Links.SubmitPlugins, content);

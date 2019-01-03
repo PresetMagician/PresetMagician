@@ -141,7 +141,7 @@ namespace PresetMagician
             }
 
             var unreportedPlugins =
-                (from plugin in _vstService.Plugins where !plugin.Configuration.IsReported && plugin.IsScanned select plugin).Any();
+                (from plugin in _vstService.Plugins where !plugin.Configuration.IsReported && !plugin.IsSupported && plugin.IsScanned && plugin.Configuration.IsEnabled select plugin).Any();
 
             if (unreportedPlugins)
             {
