@@ -10,6 +10,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
         public void ScanBanks()
         {
             H2PScanBanks("BazilleCM.data", "BazilleCM", false);
+            H2PScanBanks("Bazille.data", "Bazille", true);
         }
     }
 }
