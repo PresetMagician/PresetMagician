@@ -128,6 +128,7 @@ namespace PresetMagician.Services
             _commandManager.CreateCommandWithGesture(typeof(Commands.Application), "NotImplemented");
             
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "ScanPlugins");
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), nameof(Commands.Plugin.ScanSelectedPlugins));
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "RefreshPlugins");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "AllToPresetExportList");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "SelectedToPresetExportList");

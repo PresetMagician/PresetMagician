@@ -102,10 +102,12 @@
     <Compile Include="Commands\PluginTools\PluginToolsLoadPluginCommandContainer.cs" />
     <Compile Include="Commands\PluginTools\PluginToolsShowPluginInfoCommandContainer.cs" />
     <Compile Include="Commands\PluginTools\PluginToolsViewSettingsCommandContainer.cs" />
+    <Compile Include="Commands\Plugin\AbstractScanPluginsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginAllToPresetExportListCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginReportAllPluginsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\AbstractReportPluginsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginReportUnsupportedPluginsCommandContainer.cs" />
+    <Compile Include="Commands\Plugin\PluginScanSelectedPluginsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginSelectedToPresetExportListCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginRefreshPluginsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginScanPluginsCommandContainer.cs" />

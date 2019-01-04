@@ -74,6 +74,7 @@ namespace PresetMagician
         {
             public const string RefreshPlugins = "Plugin.RefreshPlugins";
             public const string ScanPlugins = "Plugin.ScanPlugins";
+            public const string ScanSelectedPlugins = "Plugin.ScanSelectedPlugins";
             public const string AllToPresetExportList = "Plugin.AllToPresetExportList";
             public const string SelectedToPresetExportList = "Plugin.SelectedToPresetExportList";
             public const string ReportUnsupportedPlugins = "Plugin.ReportUnsupportedPlugins";

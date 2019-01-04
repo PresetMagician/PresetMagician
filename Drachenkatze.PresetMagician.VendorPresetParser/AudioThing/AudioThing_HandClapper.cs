@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
 {
-    public class AudioThing_HandClapper : AudioThing, IVendorPresetParser
+    class AudioThing_HandClapper : AudioThing, IVendorPresetParser
     {
         public override List<int> SupportedPlugins => new List<int> {1212363341};
 
