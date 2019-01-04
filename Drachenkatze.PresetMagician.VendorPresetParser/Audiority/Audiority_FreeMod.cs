@@ -7,15 +7,15 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Audiority
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
-    public class Audiority_XenoVerb : Audiority, IVendorPresetParser
+    public class Audiority_FreeMod: Audiority, IVendorPresetParser
     {
-        public override List<int> SupportedPlugins => new List<int> {1199076962};
+        public override List<int> SupportedPlugins => new List<int> {1316253289};
 
 
         public void ScanBanks()
         {
-            var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments),
-                @"Audiority\Presets\XenoVerb");
+            var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                @"Audiority\Presets\FreeMod");
 
             DoScan(RootBank, directory);
         }
