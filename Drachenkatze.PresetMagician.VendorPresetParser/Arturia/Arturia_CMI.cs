@@ -1,7 +1,10 @@
 using System.Collections.Generic;
+using JetBrains.Annotations;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
 {
+    // ReSharper disable once InconsistentNaming
+    [UsedImplicitly]
     public class Arturia_CMI: Arturia, IVendorPresetParser
     {
         public override List<int> SupportedPlugins => new List<int> { 1129138550 };
@@ -13,8 +16,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
         
         public void ScanBanks()
         {
-            List<string> instruments = new List<string>();
-            instruments.Add("CMI");
+            var instruments = new List<string> {"CMI"};
             ScanPresets(instruments);
         }
     }

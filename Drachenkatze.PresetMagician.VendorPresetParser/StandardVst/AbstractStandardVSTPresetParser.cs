@@ -1,9 +1,7 @@
-﻿using System;
-using System.Diagnostics;
+﻿using Anotar.Catel;
 using Drachenkatze.PresetMagician.Utils;
 using Drachenkatze.PresetMagician.VSTHost.VST;
 using Jacobi.Vst.Core;
-using Anotar.Catel;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
 {
@@ -53,23 +51,19 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
 
                     // Perfect, just put out the full bank chunk. Nothing to do here.
                 }
-                else
+
+                // Trick Maschine by getting the program chunk, save it to program 0, get the bank chunk,
+                // save the preset and restore the original program 0
+                if (AreChunksConsistent(true))
                 {
-                    // Trick Maschine by getting the program chunk, save it to program 0, get the bank chunk,
-                    // save the preset and restore the original program 0
-                    if (AreChunksConsistent(true))
-                    {
-                        LogTo.Debug(VstPlugin.PluginName + ": program chunks are consistent");
-                        return PresetSaveModes.BankTrickery;
-                    }
+                    LogTo.Debug(VstPlugin.PluginName + ": program chunks are consistent");
+                    return PresetSaveModes.BankTrickery;
                 }
 
                 return PresetSaveModes.Fallback;
             }
-            else
-            {
-                return PresetSaveModes.None;
-            }
+
+            return PresetSaveModes.None;
         }
 
         /**
@@ -122,10 +116,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
     }
 }

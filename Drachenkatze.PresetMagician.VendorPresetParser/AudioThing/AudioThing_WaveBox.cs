@@ -7,24 +7,17 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
-    public class AudioThing_HATS : AudioThing, IVendorPresetParser
+    public class AudioThing_WaveBox : AudioThing, IVendorPresetParser
     {
-        public override List<int> SupportedPlugins => new List<int> {1212240979};
+        public override List<int> SupportedPlugins => new List<int> {1467368056};
 
 
         public void ScanBanks()
         {
-            var factoryBank = new PresetBank
-            {
-                BankName = BankNameFactory
-            };
-
-            RootBank.PresetBanks.Add(factoryBank);
-
             var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                @"AudioThing\Presets\Hats");
+                @"AudioThing\Presets\WaveBox");
 
-            DoScan(factoryBank, directory);
+            DoScan(RootBank, directory);
         }
     }
 }

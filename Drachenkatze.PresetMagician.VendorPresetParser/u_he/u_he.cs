@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using Shell32;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Anotar.Catel;
 using Catel.Collections;
+using Shell32;
 using Squirrel.Shell;
-using File = System.IO.File;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 {
@@ -158,9 +155,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 
         public string GetPresetDirectory(string dataDirectoryName, string productName, bool userPresets)
         {
-            object[] args = new object[] { getDataDirectory(dataDirectoryName), productName, userPresets };
+            object[] args = { getDataDirectory(dataDirectoryName), productName, userPresets };
 
-            Thread staThread = new Thread(new ParameterizedThreadStart(GetPresetDirectorySTA));
+            Thread staThread = new Thread(GetPresetDirectorySTA);
             staThread.SetApartmentState(ApartmentState.STA);
             staThread.Start(args);
             staThread.Join();

@@ -2,7 +2,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Xml.Linq;
 using Anotar.Catel;
 using Drachenkatze.PresetMagician.VSTHost.VST;
 
@@ -47,7 +46,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
                     Presets.Add(preset);
                 } catch (Exception e)
                 {
-                    LogTo.Error("Error processing preset {0} because of {1} {2}", file.FullName, e.Message, e.ToString());
+                    LogTo.Error("Error processing preset {0} because of {1} {2}", file.FullName, e.Message, e);
                     LogTo.Debug(e.StackTrace);
                 }
             }

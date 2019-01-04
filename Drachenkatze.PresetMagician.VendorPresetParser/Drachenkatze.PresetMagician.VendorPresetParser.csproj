@@ -87,13 +87,29 @@
     <Compile Include="Arturia\Models\Type.cs" />
     <Compile Include="Audiority\Audiority.cs" />
     <Compile Include="Audiority\Audiority_XenoVerb.cs" />
+    <Compile Include="AudioThing\AudioThing_Filterjam.cs" />
+    <Compile Include="AudioThing\AudioThing_FogConvolver.cs" />
+    <Compile Include="AudioThing\AudioThing_Frostbite.cs" />
     <Compile Include="AudioThing\AudioThing_HandClapper.cs" />
     <Compile Include="AudioThing\AudioThing_LatinPercussion.cs" />
+    <Compile Include="AudioThing\AudioThing_Megaphone.cs" />
+    <Compile Include="AudioThing\AudioThing_miniVerb.cs" />
+    <Compile Include="AudioThing\AudioThing_OuterSpace.cs" />
+    <Compile Include="AudioThing\AudioThing_PhaseMotionV2.cs" />
+    <Compile Include="AudioThing\AudioThing_Reels.cs" />
+    <Compile Include="AudioThing\AudioThing_SpaceStrip.cs" />
+    <Compile Include="AudioThing\AudioThing_Speaker.cs" />
     <Compile Include="AudioThing\AudioThing_SR88.cs" />
     <Compile Include="AudioThing\AudioThing_HATS.cs" />
     <Compile Include="AudioThing\AudioThing_miniBit.cs" />
     <Compile Include="AudioThing\AudioThing_miniBitCM.cs" />
     <Compile Include="AudioThing\AudioThing.cs" />
+    <Compile Include="AudioThing\AudioThing_TheOrb.cs" />
+    <Compile Include="AudioThing\AudioThing_TypeA.cs" />
+    <Compile Include="AudioThing\AudioThing_ValveExciter.cs" />
+    <Compile Include="AudioThing\AudioThing_ValveFilterVF1.cs" />
+    <Compile Include="AudioThing\AudioThing_VinylStrip.cs" />
+    <Compile Include="AudioThing\AudioThing_WaveBox.cs" />
     <Compile Include="Common\VC2Parser.cs" />
     <Compile Include="Common\VC2Writer.cs" />
     <Compile Include="HumanoidSoundSystems\HumanoidSoundSystems_Enzyme.cs" />
@@ -140,7 +156,9 @@
     <Compile Include="u_he\u_he_Zebralette.cs" />
     <Compile Include="u_he\u_he_TyrellN6.cs" />
     <Compile Include="u_he\u_he.cs" />
+    <Compile Include="u_he\u_he_Zebrify.cs" />
     <Compile Include="VendorPresetParser.cs" />
+    <Compile Include="VoidPresetParser.cs" />
     <Compile Include="Xfer_Records\Xfer_Records_Serum.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -277,6 +295,17 @@
       <ItemGroup>
         <Reference Include="GSF.Core">
           <HintPath>..\packages\GSF.Core\lib\net46\GSF.Core.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="JetBrains.Annotations">
+          <HintPath>..\packages\JetBrains.Annotations\lib\net20\JetBrains.Annotations.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>

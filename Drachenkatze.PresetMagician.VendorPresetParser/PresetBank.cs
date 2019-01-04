@@ -1,13 +1,8 @@
-﻿using Drachenkatze.PresetMagician.VSTHost.VST;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.Specialized;
 using Catel.Data;
+using Drachenkatze.PresetMagician.VSTHost.VST;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser
 {
@@ -16,24 +11,22 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
     public class PresetBank : ModelBase, IPresetBank
     {
         public string BankName { get; set; }
-        public IPresetBank ParentBank { get; set; } = null;
+        public IPresetBank ParentBank { get; set; }
 
         public PresetBank(string bankName = "All Banks")
         {
             PresetBanks = new ObservableCollection<IPresetBank>();
             
-            PresetBanks.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(
-                delegate(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)                    
+            PresetBanks.CollectionChanged += delegate(object sender, NotifyCollectionChangedEventArgs e)                    
+            {
+                if (e.Action == NotifyCollectionChangedAction.Add)
                 {
-                    if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+                    foreach (var i in e.NewItems)
                     {
-                        foreach (var i in e.NewItems)
-                        {
-                            ((PresetBank) i).ParentBank = this;
-                        }
+                        ((PresetBank) i).ParentBank = this;
                     }
                 }
-            );
+            };
             BankName = bankName;
         }
 

@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using JetBrains.Annotations;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
 {
+    // ReSharper disable once InconsistentNaming
+    [UsedImplicitly]
     public class AudioThing_SR88 : AudioThing, IVendorPresetParser
     {
         public override List<int> SupportedPlugins => new List<int> {1397897272};

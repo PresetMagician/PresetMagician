@@ -1,4 +1,5 @@
 GSF.Core
+JetBrains.Annotations
 PropertyChanged.Fody copy_local: false
 Anotar.Catel.Fody copy_local: false
 Catel.Core

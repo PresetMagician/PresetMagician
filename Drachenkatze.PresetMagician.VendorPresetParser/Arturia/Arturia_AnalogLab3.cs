@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using JetBrains.Annotations;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
 {
+    [UsedImplicitly]
     public class Arturia_AnalogLab3: Arturia, IVendorPresetParser
     {
         public override List<int> SupportedPlugins => new List<int> { 1097621810 };
@@ -11,8 +13,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
         
         public void ScanBanks()
         {
-            List<string> instruments = new List<string>();
-            instruments.Add("Analog Lab");
+            var instruments = new List<string> {"Analog Lab"};
             ScanPresets(instruments);
         }
     }
