@@ -39,6 +39,21 @@ namespace PresetMagician.Models
                 _isPluginsScanning = value;
             }
         }
+        
+        public bool IsPluginScanSelectedPluginsRunning
+        {
+            get => _isPluginsScanning;
+            set
+            {
+                AllowPluginScan = !value;
+                AllowReportUnsupportedPlugins = !value;
+                AllowModifyPresetExportList = !value;
+                IsPluginListBusy = value;
+                IsApplicationBusy = value;
+
+                _isPluginsScanning = value;
+            }
+        }
 
         private bool _isPresetExportRunning = false;
 

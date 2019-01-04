@@ -53,6 +53,7 @@
                         VerticalAlignment="Center"
                         Command="{catel:CommandManagerBinding Plugin.ScanPlugins}"
                         Header="Analyze Plugins"
+                        ToolTip="Loads all plugins, analyzes their capabilities and loads their presets" 
                         LargeIcon="{iconPacks:Material Kind=BarcodeScan,
                                                        Width=32,
                                                        Height=32}" />
@@ -116,6 +117,16 @@
                         IsChecked="{Binding ApplicationState.IsPluginSettingsVisible, FallbackValue=false}"
                         Icon="{iconPacks:FontAwesome Kind=CogsSolid}"
                         Size="Middle" />
+                    <fluent:Button
+                        Padding="0"
+                        VerticalAlignment="Center"
+                        Command="{catel:CommandManagerBinding Plugin.ScanSelectedPlugins}"
+                        Size="Middle"
+                        Header="Analyze Selected Plugins"
+                        ToolTip="Loads selected plugins, analyzes their capabilities and loads their presets" 
+                        Icon="{iconPacks:Material Kind=BarcodeScan,
+                                                       Width=16,
+                                                       Height=16}" />
                 </fluent:RibbonGroupBox>
                 <fluent:RibbonGroupBox Header="Plugin Developer Tools">
                     <fluent:Button

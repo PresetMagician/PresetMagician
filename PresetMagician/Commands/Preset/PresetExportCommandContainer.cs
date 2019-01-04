@@ -98,7 +98,8 @@ namespace PresetMagician
                             return;
                         }
 
-                        if (_runtimeConfigurationService.RuntimeConfiguration.ExportWithAudioPreviews)
+                        if (_runtimeConfigurationService.RuntimeConfiguration.ExportWithAudioPreviews &&
+                            plugin.PluginType == VstHost.PluginTypes.Instrument)
                         {
                             exporter.ExportPresetAudioPreviewRealtime(tempPlugin, preset.Preset);
                         }

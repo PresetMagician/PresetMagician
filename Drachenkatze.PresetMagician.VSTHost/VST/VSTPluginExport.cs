@@ -33,11 +33,26 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
 
             var nksf = new NKSFRiff();
             var guid = Guid.NewGuid();
+            string fileExtension = "";
 
             nksf.kontaktSound.summaryInformation.summaryInformation.vendor = plugin.PluginVendor;
             nksf.kontaktSound.summaryInformation.summaryInformation.uuid = guid;
             nksf.kontaktSound.summaryInformation.summaryInformation.name = preset.PresetName;
-            nksf.kontaktSound.summaryInformation.summaryInformation.deviceType = "INST";
+
+            if (plugin.PluginType == VstHost.PluginTypes.Instrument)
+            {
+                nksf.kontaktSound.summaryInformation.summaryInformation.deviceType = "INST";
+                fileExtension = ".nksf";
+            } else if (plugin.PluginType == VstHost.PluginTypes.Effect)
+            {
+                nksf.kontaktSound.summaryInformation.summaryInformation.deviceType = "FX";
+                fileExtension = ".nksfx";
+            }
+            else
+            {
+                throw new ArgumentException("Unknown device type");
+            }
+
             nksf.kontaktSound.summaryInformation.summaryInformation.bankChain.Add(plugin.PluginName);
             
             var bankPath = preset.PresetBank.GetBankPath();
@@ -61,7 +76,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             }
 
             var outputFilename = Path.Combine(GetUserContentDirectory(preset),
-                GetNKSFPresetName(preset.PresetName) + ".nksf");
+                GetNKSFPresetName(preset.PresetName) + fileExtension);
             var fileStream2 = new FileStream(outputFilename, FileMode.Create);
             nksf.Write(fileStream2);
             fileStream2.Close();
