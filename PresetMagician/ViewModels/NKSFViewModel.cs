@@ -53,7 +53,7 @@ namespace PresetMagician.ViewModels
         {
             try
             {
-                _openFileService.Filter = "NKSF Files (*.nksf)|*.nksf";
+                _openFileService.Filter = "NKS Files (*.nksf,*.nksfx)|*.nksf;*.nksfx";
                 _openFileService.IsMultiSelect = false;
 
                 if (await _openFileService.DetermineFileAsync())

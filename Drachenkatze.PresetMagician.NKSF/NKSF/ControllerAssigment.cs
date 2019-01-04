@@ -9,7 +9,7 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
         [Key("autoname")]
         public Boolean autoname { get; set; }
 
-        [Key("id")] public int id { get; set; }
+        [Key("id")] public int? id { get; set; }
 
         [Key("name")] public String name { get; set; }
 

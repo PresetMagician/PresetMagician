@@ -36,7 +36,7 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
 
         [Key("types")]
         public ObservableCollection<ObservableCollection<String>> Types { get; set; }
-
+    
         [Key("modes")]
         public ObservableCollection<String> Modes { get; set; }
 
@@ -46,8 +46,8 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
             Types = new ObservableCollection<ObservableCollection<string>>();
             Modes = new ObservableCollection<string>();
             uuid = Guid.NewGuid();
-            author = "";
-            comment = "";
+            author = null;
+            comment = null;
         }
     }
 }

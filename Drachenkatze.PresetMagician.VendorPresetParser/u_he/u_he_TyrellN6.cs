@@ -9,6 +9,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
         public void ScanBanks()
         {
             H2PScanBanks("TyrellN6.data", "TyrellN6", false);
+            H2PScanBanks("TyrellN6.data", "TyrellN6", true);
         }
     }
 }

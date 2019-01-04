@@ -9,6 +9,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
         public void ScanBanks()
         {
             H2PScanBanks("Hive.data", "Hive", false);
+            H2PScanBanks("Hive.data", "Hive", true);
         }
     }
 }
