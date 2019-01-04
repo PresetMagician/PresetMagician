@@ -47,7 +47,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
         public string getPresetHash()
         {
-            return HashUtils.getFormattedSHA256Hash(this.PresetData);
+            return HashUtils.getFormattedSHA256Hash(PresetData);
         }
     }
 }

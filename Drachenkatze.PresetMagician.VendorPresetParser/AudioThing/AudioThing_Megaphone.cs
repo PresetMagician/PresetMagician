@@ -4,12 +4,12 @@ using System.IO;
 using JetBrains.Annotations;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
-{
+{    
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
-    public class AudioThing_HATS : AudioThing, IVendorPresetParser
+    public class AudioThing_Megaphone : AudioThing, IVendorPresetParser
     {
-        public override List<int> SupportedPlugins => new List<int> {1212240979};
+        public override List<int> SupportedPlugins => new List<int> {1298485352};
 
 
         public void ScanBanks()
@@ -22,7 +22,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
             RootBank.PresetBanks.Add(factoryBank);
 
             var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                @"AudioThing\Presets\Hats");
+                @"AudioThing\Presets\Megaphone");
 
             DoScan(factoryBank, directory);
         }

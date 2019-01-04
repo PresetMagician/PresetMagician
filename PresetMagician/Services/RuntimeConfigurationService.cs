@@ -142,17 +142,15 @@ namespace PresetMagician.Services
 
                 foreach (var plugin in _vstService.Plugins)
                 {
-                    var foundCachedPlugin = (from cachedPlugin in RuntimeConfiguration.CachedPlugins where cachedPlugin.DllPath ==plugin.DllPath select cachedPlugin)
-                        .FirstOrDefault();
+                    var foundCachedPlugins = (from cachedPlugin in RuntimeConfiguration.CachedPlugins where cachedPlugin.DllPath ==plugin.DllPath select cachedPlugin).ToList();
 
-                    if (foundCachedPlugin == null)
+                    if (foundCachedPlugins.Any())
                     {
-                        RuntimeConfiguration.CachedPlugins.Add(plugin);
+                        RuntimeConfiguration.CachedPlugins.RemoveItems(foundCachedPlugins);
                     }
-                    else
-                    {
-                        foundCachedPlugin.Configuration = plugin.Configuration;
-                    }
+                    
+                    RuntimeConfiguration.CachedPlugins.Add(plugin);
+                  
                 }
                 
                 _jsonSerializer.Serialize(jsonWriter, RuntimeConfiguration);

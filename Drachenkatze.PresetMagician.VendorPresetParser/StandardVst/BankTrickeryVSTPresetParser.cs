@@ -1,7 +1,4 @@
-﻿using Drachenkatze.PresetMagician.VSTHost.VST;
-using System.Collections.Generic;
-
-namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
+﻿namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
 {
     public class BankTrickeryVstPresetParser : AbstractStandardVstPresetParser, IVendorPresetParser
     {

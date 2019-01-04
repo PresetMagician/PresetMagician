@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using JetBrains.Annotations;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
 {
-    class AudioThing_HandClapper : AudioThing, IVendorPresetParser
+    // ReSharper disable once InconsistentNaming
+    [UsedImplicitly]
+    public class AudioThing_HandClapper : AudioThing, IVendorPresetParser
     {
         public override List<int> SupportedPlugins => new List<int> {1212363341};
 

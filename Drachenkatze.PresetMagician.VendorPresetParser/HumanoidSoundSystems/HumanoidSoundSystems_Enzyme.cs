@@ -2,10 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Drachenkatze.PresetMagician.Utils;
+using Drachenkatze.PresetMagician.VSTHost.VST;
 using GSF;
+using JetBrains.Annotations;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.HumanoidSoundSystems
 {
+    // ReSharper disable once InconsistentNaming
+    [UsedImplicitly]
     public class HumanoidSoundSystems_Enzyme: AbstractVendorPresetParser, IVendorPresetParser
     {
         public override List<int> SupportedPlugins => new List<int> { 1162762841 };
@@ -19,8 +23,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.HumanoidSoundSystems
            
             DoScan(RootBank, rootDirectory);
         }
-        
-        protected void DoScan(PresetBank rootBank, string directory)
+
+        private void DoScan(IPresetBank rootBank, string directory)
         {
             var dirInfo = new DirectoryInfo(directory);
             foreach (var file in dirInfo.EnumerateFiles("*.enz"))
