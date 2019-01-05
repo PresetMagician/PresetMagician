@@ -46,10 +46,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
                 actualPresetDocument.Save(writer);
                 preset.PresetData = Encoding.UTF8.GetBytes(builder.ToString());
             }
-            
-            
-
-            LogTo.Debug(actualPresetDocument.ToString());
         }
 
         protected virtual void MigrateData(XNode source, XNode dest, Preset preset)
