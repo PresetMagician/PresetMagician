@@ -6,6 +6,7 @@
     xmlns:catel="http://schemas.catelproject.com"
     xmlns:converters="clr-namespace:PresetMagician.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dgx="urn:tom-englert.de/DataGridExtensions"
     xmlns:helpers="clr-namespace:PresetMagician.Helpers"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -20,8 +21,32 @@
     <catel:UserControl.Resources>
         <ResourceDictionary>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-            <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+            
+            <ControlTemplate x:Key="ComboboxFilter">
+                <Grid d:DataContext="{d:DesignInstance dgx:DataGridFilterColumnControl}">
+                    <Grid>
+                        <Control Style="{DynamicResource {x:Static dgx:DataGridFilter.IconStyleKey}}"/>
+                        <ComboBox x:Name="ComboBox" Width="Auto" MinWidth="20" Height="20" Margin="0" Padding="0" Text="{Binding Path=Filter, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding SelectableValues}" IsEditable="True" />
+                    </Grid>
+                </Grid>
+                <ControlTemplate.Triggers>
+                    <Trigger SourceName="ComboBox" Property="Text" Value="">
+                        <Setter TargetName="ComboBox" Property="Opacity" Value="0" />
+                    </Trigger>
+                    <Trigger SourceName="ComboBox" Property="Text" Value="{x:Null}">
+                        <Setter TargetName="ComboBox" Property="Opacity" Value="0" />
+                    </Trigger>
+                    <Trigger SourceName="ComboBox" Property="IsMouseOver" Value="True">
+                        <Setter TargetName="ComboBox" Property="Opacity" Value="1" />
+                    </Trigger>
+                    <Trigger SourceName="ComboBox" Property="IsFocused" Value="True">
+                        <Setter TargetName="ComboBox" Property="Opacity" Value="1" />
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
         </ResourceDictionary>
+        
+          
 
     </catel:UserControl.Resources>
     <Grid ScrollViewer.CanContentScroll="False">
@@ -41,7 +66,7 @@
                 <Style TargetType="{x:Type ItemsControl}">
                     <Setter Property="Visibility" Value="Visible" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding HasItems, ElementName=VstPluginList, Mode=OneWay}" Value="True">
+                        <DataTrigger Binding="{Binding HasPlugins, Mode=OneWay}" Value="True">
                             <Setter Property="Visibility" Value="Hidden" />
                         </DataTrigger>
                     </Style.Triggers>
@@ -69,7 +94,7 @@
         <xctk:BusyIndicator
             Grid.Row="0"
             IsBusy="{Binding ApplicationState.IsPluginListBusy, Mode=OneWay}"
-            Visibility="{Binding HasItems, ElementName=VstPluginList, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay, FallbackValue=Visible}">
+            Visibility="{Binding HasPlugins, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay, FallbackValue=Visible}">
 
             <xctk:BusyIndicator.BusyContentTemplate>
                 <DataTemplate>
@@ -130,12 +155,16 @@
                 ItemsSource="{Binding Plugins}"
                 ScrollViewer.CanContentScroll="True"
                 SelectedItem="{Binding SelectedPlugin}"
+                dgx:DataGridFilter.IsAutoFilterEnabled="True"
+                dgx:Tools.ApplyInitialSorting="True"
+                dgx:DataGridFilter.FilterEvaluationDelay="0:0:0.1"
                 SelectionUnit="FullRow">
                 <DataGrid.Columns>
                     <DataGridTextColumn
                         Width="150"
                         Binding="{Binding PluginName}"
                         Header="Name"
+                        SortDirection="Ascending"
                         IsReadOnly="True" />
                     <DataGridTextColumn
                         Width="Auto"
@@ -148,6 +177,7 @@
                         Header="Presets"
                         IsReadOnly="True" />
                     <DataGridTemplateColumn
+                        dgx:DataGridFilterColumn.IsFilterVisible="False"
                         Width="45"
                         CellStyle="{StaticResource NoPaddingCellStyle}"
                         Header="Type"
@@ -198,7 +228,9 @@
                         Width="45"
                         CanUserResize="False"
                         Header="Status"
+                        dgx:DataGridFilterColumn.IsFilterVisible="False"
                         IsReadOnly="True"
+                        SortDirection="Ascending"
                         SortMemberPath="IsSupported">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
@@ -290,6 +322,7 @@
                         IsReadOnly="True" />
                     <DataGridTemplateColumn
                         Width="60"
+                        dgx:DataGridFilterColumn.IsFilterVisible="False"
                         Header="Remarks"
                         IsReadOnly="True">
                         <DataGridTemplateColumn.CellTemplate>

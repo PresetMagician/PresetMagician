@@ -87,7 +87,7 @@ namespace PresetMagician.Models
 
         public int NumPresets { get; set; }
 
-        [JsonProperty] public string PluginName { get; set; }
+        [JsonProperty] public string PluginName { get; set; } = "";
 
         public int PresetParserAudioPreviewPreDelay => PresetParser.AudioPreviewPreDelay;
 

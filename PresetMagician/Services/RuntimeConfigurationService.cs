@@ -21,6 +21,10 @@ namespace PresetMagician.Services
             Path.Combine(Path.GetApplicationDataDirectory(ApplicationDataTarget.UserRoaming),
                 "configuration.json");
 
+        private static readonly string _defaultLocalConfigBackupFilePath =
+            Path.Combine(Path.GetApplicationDataDirectory(ApplicationDataTarget.UserRoaming),
+                "configuration.backup.json");
+        
         private static readonly string _defaultLocalLayoutFilePath =
             Path.Combine(Path.GetApplicationDataDirectory(ApplicationDataTarget.UserRoaming), "layout.xml");
 
@@ -136,6 +140,8 @@ namespace PresetMagician.Services
 
         public void SaveConfiguration()
         {
+            File.Delete(_defaultLocalConfigBackupFilePath);
+            File.Copy(_defaultLocalConfigFilePath, _defaultLocalConfigBackupFilePath);
             using (var sw = new StreamWriter(_defaultLocalConfigFilePath))
             using (JsonWriter jsonWriter = new JsonTextWriter(sw))
             {

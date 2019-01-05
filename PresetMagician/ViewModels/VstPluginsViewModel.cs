@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -42,19 +43,13 @@ namespace PresetMagician.ViewModels
             serviceLocator.RegisterInstance(this);
 
            
-            var pView = CollectionViewSource.GetDefaultView(Plugins);
-
-            pView.SortDescriptions.Add(new SortDescription("Configuration.IsEnabled", ListSortDirection.Descending));
-            pView.SortDescriptions.Add(new SortDescription("IsSupported", ListSortDirection.Descending));
-            pView.SortDescriptions.Add(new SortDescription("PluginName", ListSortDirection.Ascending));
-
-
-
-
-            var productview = (ICollectionViewLiveShaping) CollectionViewSource.GetDefaultView(pView);
-            productview.IsLiveSorting = true;
-
+            Plugins.CollectionChanged += PluginsOnCollectionChanged;
             Title = "VST Plugins";
+        }
+
+        private void PluginsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            RaisePropertyChanged(nameof(HasPlugins));
         }
 
         protected override async Task InitializeAsync()
@@ -63,6 +58,8 @@ namespace PresetMagician.ViewModels
             { _commandManager.ExecuteCommand(Commands.Plugin.RefreshPlugins); },true);
             await base.InitializeAsync();
         }
+
+        public bool HasPlugins => Plugins.Count > 0;
 
         public Plugin SelectedPlugin
         {

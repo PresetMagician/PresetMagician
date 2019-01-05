@@ -95,6 +95,11 @@ namespace PresetMagician.ViewModels
 
         private void GenerateControllerMappingModels()
         {
+            if (!IsPluginSet)
+            {
+                return;
+            }
+            
             var controllerAssignmentPages = new ObservableCollection<ControllerAssignmentPage>();
 
             if (Plugin.Configuration.DefaultControllerAssignments != null)
