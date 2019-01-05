@@ -7,6 +7,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
     public abstract class AbstractVendorPresetParser
     {
         protected const string BankNameFactory = "Factory";
+        protected const string BankNameUser = "User";
         
         public IVstPlugin VstPlugin { get; set; }
         public virtual List<int> SupportedPlugins => new List<int>();
@@ -22,6 +23,10 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         private readonly PresetBank _rootBank = new PresetBank();
 
         public PresetBank RootBank { get; set; } = new PresetBank();
+        
+        public ObservableCollection<ObservableCollection<string>> DefaultTypes { get; set; } = new ObservableCollection<ObservableCollection<string>>();
+
+        public ObservableCollection<string> DefaultModes { get; set; } = new ObservableCollection<string>();
        
         public ObservableCollection<Preset> Presets { get; } = new ObservableCollection<Preset>();
 

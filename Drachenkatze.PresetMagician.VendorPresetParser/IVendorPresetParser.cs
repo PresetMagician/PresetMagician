@@ -14,6 +14,11 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         bool IsNullParser { get; }
 
         bool CanHandle();
+        
+        ObservableCollection<ObservableCollection<string>> DefaultTypes { get; set; }
+
+        ObservableCollection<string> DefaultModes { get; set; }
+
 
         void ScanBanks();
         void OnAfterPresetExport(VstHost host, IVstPlugin plugin);
