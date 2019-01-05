@@ -128,7 +128,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group.PunchBox
             preset.SetPlugin(VstPlugin);
             preset.PresetBank = presetBank;
 
-            var ms = VC2Writer.WriteVC2(pluginState.ToString());
+            var ms = VC2Parser.WriteVC2(pluginState.ToString());
 
             preset.PresetData = ms.ToArray();
 

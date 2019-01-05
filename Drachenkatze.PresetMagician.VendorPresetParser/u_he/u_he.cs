@@ -19,10 +19,13 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 
         public void H2PScanBanks(string dataDirectoryName, string productName, bool userPresets)
         {
+            LogTo.Debug($"Begin H2PScanBanks with dataDirectoryName {dataDirectoryName} product name {productName} and userPresets {userPresets}");
             var rootDirectory = GetPresetDirectory(dataDirectoryName, productName, userPresets);
+            LogTo.Debug($"Parsing PresetDirectory {rootDirectory}");
+            
             var directoryInfo = new DirectoryInfo(rootDirectory);
 
-            string bankName = "Factory Bank";
+            var bankName = "Factory Bank";
             if (userPresets)
             {
                 bankName = "User Bank";

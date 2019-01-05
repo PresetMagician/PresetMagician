@@ -1,68 +1,55 @@
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml;
 using Anotar.Catel;
 using Drachenkatze.PresetMagician.VSTHost.VST;
+using GSF;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
 {
-    public class VC2Parser
+    public class VC2Parser: RecursiveBankDirectoryParser
     {
-        protected string Extension;
-        protected IVstPlugin _vstPlugin;
-        protected ObservableCollection<Preset> Presets { get; }
-
         protected Regex XmlHeaderReplacerRegex;
+        protected Func<string, string> PreProcessXmlFunc = null;
         
-        public VC2Parser(IVstPlugin vstPlugin, string extension, ObservableCollection<Preset> presets)
+        public VC2Parser(IVstPlugin vstPlugin, string extension, ObservableCollection<Preset> presets):
+            base(vstPlugin, extension, presets)
         {
-            _vstPlugin = vstPlugin;
-            Extension = extension;
-            Presets = presets;
             XmlHeaderReplacerRegex = new Regex(@"<\?xml.*?\?>", RegexOptions.Compiled);
         }
-        
-        public void DoScan(PresetBank rootBank, string directory)
+
+        public void SetPreProcessXmlFunction(Func<string, string> func)
         {
-            var dirInfo = new DirectoryInfo(directory);
-            foreach (var file in dirInfo.EnumerateFiles("*."+Extension))
-            {
-                try
-                {
-                    Preset preset = new Preset();
-                    preset.PresetName = file.Name.Replace("." + Extension, "");
-                    preset.SetPlugin(_vstPlugin);
-                    preset.PresetBank = rootBank;
-
-                    var data = File.ReadAllText(file.FullName);
-
-                    var xmlWithoutHeader = XmlHeaderReplacerRegex.Replace(data, "");
-
-                    var ms = VC2Writer.WriteVC2(xmlWithoutHeader);
-                   
-                    preset.PresetData = ms.ToArray();
-                    
-                    Presets.Add(preset);
-                } catch (Exception e)
-                {
-                    LogTo.Error("Error processing preset {0} because of {1} {2}", file.FullName, e.Message, e);
-                    LogTo.Debug(e.StackTrace);
-                }
-            }
-
-            foreach (var subDirectory in dirInfo.EnumerateDirectories())
-            {
-                var bank = new PresetBank
-                {
-                    BankName = subDirectory.Name
-                };
-
-                DoScan(bank, subDirectory.FullName);
-                rootBank.PresetBanks.Add(bank);
-            }
+            PreProcessXmlFunc = func;
         }
-        
-        
+
+        protected override void ProcessFile(string fileName, Preset preset)
+        {
+            var data = File.ReadAllText(fileName);
+
+            if (PreProcessXmlFunc != null)
+            {
+                data = PreProcessXmlFunc.Invoke(data);
+            }
+            var xmlWithoutHeader = XmlHeaderReplacerRegex.Replace(data, "");
+
+            preset.PresetData = WriteVC2(xmlWithoutHeader).ToArray();
+        }
+
+        public static MemoryStream WriteVC2(string pluginData)
+        {
+            var ms = new MemoryStream();
+            
+            ms.Write(new byte[] { 0x56, 0x43, 0x32, 0x21 }, 0, 4);
+            byte[] data = Encoding.UTF8.GetBytes(pluginData);
+            ms.Write(LittleEndian.GetBytes(data.Length), 0, 4);
+            ms.Write(data, 0, data.Length);
+            ms.WriteByte(0);
+
+            return ms;
+        }
     }
 }
