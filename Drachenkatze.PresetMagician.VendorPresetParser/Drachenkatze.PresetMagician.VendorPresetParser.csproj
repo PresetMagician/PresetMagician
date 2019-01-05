@@ -123,6 +123,7 @@
     <Compile Include="AudioThing\AudioThing_ValveFilterVF1.cs" />
     <Compile Include="AudioThing\AudioThing_VinylStrip.cs" />
     <Compile Include="AudioThing\AudioThing_WaveBox.cs" />
+    <Compile Include="Common\RecursiveBankDirectoryParser.cs" />
     <Compile Include="Common\VC2Parser.cs" />
     <Compile Include="Common\VC2Writer.cs" />
     <Compile Include="HumanoidSoundSystems\HumanoidSoundSystems_Enzyme.cs" />
@@ -133,6 +134,15 @@
     <Compile Include="D16 Group\PunchBox\D16PunchBox.cs" />
     <Compile Include="IVendorPresetParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SlateDigital\SlateDigitalPresetParser.cs" />
+    <Compile Include="SlateDigital\SlateDigital_FGX.cs" />
+    <Compile Include="SlateDigital\SlateDigital_VBCFGGrey.cs" />
+    <Compile Include="SlateDigital\SlateDigital_VBCFGMu.cs" />
+    <Compile Include="SlateDigital\SlateDigital_VBCFGRed.cs" />
+    <Compile Include="SlateDigital\SlateDigital_VBCRack.cs" />
+    <Compile Include="SlateDigital\SlateDigital_VerbsuiteClassics.cs" />
+    <Compile Include="SlateDigital\SlateDigital_VirtualMixRack.cs" />
+    <Compile Include="SlateDigital\SlateDigital_VirtualTapeMachines.cs" />
     <Compile Include="StandardVst\AbstractStandardVSTPresetParser.cs" />
     <Compile Include="StandardVst\BankTrickeryVSTPresetParser.cs" />
     <Compile Include="StandardVst\FallbackVstPresetParser.cs" />
