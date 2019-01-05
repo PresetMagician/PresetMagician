@@ -15,14 +15,15 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
     public abstract class u_he : AbstractVendorPresetParser
     {
         private Regex parsingRegex = new Regex(@"^(?<type>.*):(\r\n|\r|\n)'(?<value>.*)'",
-        RegexOptions.Multiline | RegexOptions.Compiled);
+            RegexOptions.Multiline | RegexOptions.Compiled);
 
         public void H2PScanBanks(string dataDirectoryName, string productName, bool userPresets)
         {
-            LogTo.Debug($"Begin H2PScanBanks with dataDirectoryName {dataDirectoryName} product name {productName} and userPresets {userPresets}");
+            LogTo.Debug(
+                $"Begin H2PScanBanks with dataDirectoryName {dataDirectoryName} product name {productName} and userPresets {userPresets}");
             var rootDirectory = GetPresetDirectory(dataDirectoryName, productName, userPresets);
             LogTo.Debug($"Parsing PresetDirectory {rootDirectory}");
-            
+
             var directoryInfo = new DirectoryInfo(rootDirectory);
 
             var bankName = "Factory Bank";
@@ -37,7 +38,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
             }
 
             RootBank.PresetBanks.Add(H2PScanBank(bankName, directoryInfo));
-            
+            LogTo.Debug($"End H2PScanBanks");
         }
 
         public PresetBank H2PScanBank(string name, DirectoryInfo directory)
@@ -49,6 +50,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 
             foreach (var file in directory.EnumerateFiles("*.h2p"))
             {
+                LogTo.Debug($"Parsing file {file.FullName}");
                 Preset preset = new Preset();
                 preset.PresetName = file.Name.Replace(".h2p", "");
                 preset.SetPlugin(VstPlugin);
@@ -57,7 +59,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
                 var fs = file.OpenRead();
 
                 preset.PresetData = new byte[fs.Length];
-                fs.Read(preset.PresetData, 0, (int)fs.Length);
+                fs.Read(preset.PresetData, 0, (int) fs.Length);
                 fs.Close();
 
                 var metadata = ExtractMetadata(Encoding.UTF8.GetString(preset.PresetData));
@@ -95,9 +97,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
                 {
                     ExtractModes(preset.Modes, metadata["Character"]);
                 }
-                
-                Presets.Add(preset);
 
+                Presets.Add(preset);
             }
 
             foreach (var subDirectory in directory.EnumerateDirectories("*", SearchOption.TopDirectoryOnly))
@@ -110,7 +111,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 
         public ObservableCollection<ObservableCollection<string>> ExtractTypes(string types)
         {
-            ObservableCollection<ObservableCollection<string>> typeCollection = new ObservableCollection<ObservableCollection<string>>(); 
+            ObservableCollection<ObservableCollection<string>> typeCollection =
+                new ObservableCollection<ObservableCollection<string>>();
             var splitTypes = types.Split(',');
 
             foreach (var splitType in splitTypes)
@@ -133,17 +135,26 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
             {
                 modeCollection.Add(splitMode.Trim());
             }
-
         }
 
         public Dictionary<string, string> ExtractMetadata(string presetData)
         {
             Dictionary<string, string> result = new Dictionary<string, string>();
-            
+
 
             foreach (Match match in parsingRegex.Matches(presetData))
             {
-                result.Add(match.Groups["type"].Value, match.Groups["value"].Value);
+                var type = match.Groups["type"].Value;
+                var value = match.Groups["value"].Value;
+                try
+                {
+                    result.Add(type, value);
+                }
+                catch (ArgumentException)
+                {
+                    LogTo.Debug(
+                        $"Unable to add metadata for type {type} with value {value} because {type} already exists.");
+                }
             }
 
             return result;
@@ -158,22 +169,22 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 
         public string GetPresetDirectory(string dataDirectoryName, string productName, bool userPresets)
         {
-            object[] args = { getDataDirectory(dataDirectoryName), productName, userPresets };
+            object[] args = {getDataDirectory(dataDirectoryName), productName, userPresets};
 
             Thread staThread = new Thread(GetPresetDirectorySTA);
             staThread.SetApartmentState(ApartmentState.STA);
             staThread.Start(args);
             staThread.Join();
 
-            return (string)args[0];
+            return (string) args[0];
         }
 
         public void GetPresetDirectorySTA(object param)
         {
-            object[] args = (object[])param;
-            string dataDirectoryName = (string)args[0];
-            string productName = (string)args[1];
-            bool userPresets = (bool)args[2];
+            object[] args = (object[]) param;
+            string dataDirectoryName = (string) args[0];
+            string productName = (string) args[1];
+            bool userPresets = (bool) args[2];
 
             var shortCutDataDirectoryName = getDataDirectory(dataDirectoryName + ".lnk");
 
@@ -224,6 +235,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
                     shellLink.Dispose();
                     return true;
                 }
+
                 shellLink.Dispose();
             }
             catch (IOException e)
@@ -231,7 +243,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
                 LogTo.Error("Error while trying to resolve the shortcut {0} because of {1} {2}", path, e.Message, e);
                 LogTo.Debug(e.StackTrace);
             }
-            
+
             var shell = new Shell();
             var folder = shell.NameSpace(directory);
             var folderItem = folder.ParseName(file);
@@ -251,6 +263,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
                 {
                     return shellLink.Target;
                 }
+
                 shellLink.Dispose();
             }
             catch (IOException e)
@@ -266,7 +279,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
         {
             string targetPath;
 
-            
+
             if (!IsShortcut(path))
             {
                 return string.Empty;
