@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Catel;
+using Catel.IoC;
 using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
@@ -20,26 +21,36 @@ using PresetMagician.Services.Interfaces;
 namespace PresetMagician
 {
     // ReSharper disable once UnusedMember.Global
-    public class PluginScanSelectedPluginsCommandContainer : AbstractScanPluginsCommandContainer
+    public class PluginScanSelectedPluginCommandContainer : AbstractScanPluginsCommandContainer
     {
-        public PluginScanSelectedPluginsCommandContainer(ICommandManager commandManager,
+        public PluginScanSelectedPluginCommandContainer(ICommandManager commandManager,
             IRuntimeConfigurationService runtimeConfigurationService, IVstService vstService,
             IApplicationService applicationService,
             IDispatcherService dispatcherService)
-            : base(Commands.Plugin.ScanSelectedPlugins, commandManager, runtimeConfigurationService, vstService, applicationService, dispatcherService)
+            : base(Commands.Plugin.ScanSelectedPlugin, commandManager, runtimeConfigurationService, vstService, applicationService, dispatcherService)
         {
-            vstService.SelectedPlugins.CollectionChanged += OnPluginsListChanged;
+            vstService.SelectedPluginChanged += VstServiceOnSelectedPluginChanged;
+        }
+
+        private void VstServiceOnSelectedPluginChanged(object sender, EventArgs e)
+        {
+            InvalidateCommand();
         }
 
         protected override List<Plugin> GetPluginsToScan()
         {
-            return (from plugin in _vstService.SelectedPlugins where plugin.Configuration.IsEnabled select plugin).ToList();
+            if (_vstService.SelectedPlugin == null || _vstService.SelectedPlugin.Configuration.IsEnabled == false)
+            {
+                return new List<Plugin>();
+            }
+            
+            return new List<Plugin> { _vstService.SelectedPlugin};
         }
 
         protected override bool CanExecute(object parameter)
         {
             return base.CanExecute(parameter) &&
-                   _vstService.SelectedPlugins.Count > 0;
+                   _vstService.SelectedPlugin != null && _vstService.SelectedPlugin.Configuration.IsEnabled;
         }
     }
 }

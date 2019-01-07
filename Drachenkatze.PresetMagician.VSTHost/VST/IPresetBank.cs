@@ -20,5 +20,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
         ObservableCollection<IPresetBank> PresetBanks { get; set; }
 
         List<string> GetBankPath();
+        IPresetBank FindBankPath(string bankPath);
+        IPresetBank CreateRecursive(string bankPath);
     }
 }

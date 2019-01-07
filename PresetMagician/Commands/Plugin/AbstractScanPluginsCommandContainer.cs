@@ -12,6 +12,7 @@ using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
 using Catel.Threading;
+using NuGet;
 using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
 
@@ -100,6 +101,12 @@ namespace PresetMagician
                         {
                             _logger.Debug($"Loaded {vst.DllFilename}, attempting to find presetParser");
                             vst.DeterminatePresetParser();
+
+                            if (vst.PresetParser.SupportsAdditionalBankFiles)
+                            {
+                                vst.PresetParser.AdditionalBankFiles.Clear();
+                                vst.PresetParser.AdditionalBankFiles.AddRange(vst.Configuration.AdditionalBankFiles);
+                            }
 
                             _applicationService.UpdateApplicationOperationStatus(
                                 pluginsToScan.IndexOf(vst),

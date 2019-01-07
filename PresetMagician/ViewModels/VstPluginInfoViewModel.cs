@@ -14,7 +14,7 @@ namespace PresetMagician.ViewModels
 {
     class VstPluginInfoViewModel : VstPluginViewModel
     {
-        public VstPluginInfoViewModel(Models.Plugin plugin, IVstService vstService, IOpenFileService openFileService) : base(vstService, openFileService)
+        public VstPluginInfoViewModel(Models.Plugin plugin, IVstService vstService, IOpenFileService openFileService, ISelectDirectoryService selectDirectoryService) : base(vstService, openFileService, selectDirectoryService)
         {
             Plugin = plugin;
         }

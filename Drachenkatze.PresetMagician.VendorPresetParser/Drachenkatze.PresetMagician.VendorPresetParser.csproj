@@ -138,6 +138,7 @@
     <Compile Include="PresetBank.cs" />
     <Compile Include="D16 Group\D16Group.cs" />
     <Compile Include="IVendorPresetParser.cs" />
+    <Compile Include="PresetFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SlateDigital\SlateDigitalPresetParser.cs" />
     <Compile Include="SlateDigital\SlateDigital_FGX.cs" />

@@ -21,7 +21,7 @@ namespace PresetMagician
             private static readonly string _protocol = "https://";
             #endif
 
-            public static readonly string Documentation = $"{_masterProtocol}{_supportSite}/documentation";
+            public static readonly string Documentation = $"https://presetmagician.gitbook.io/help/";
             public static readonly string Support = $"{_masterProtocol}{_supportSite}/support";
             public static readonly string SupportEmail = "support-confidential@presetmagician.com";
             public static readonly string SupportEmailName = "PresetMagician Support";
@@ -75,6 +75,7 @@ namespace PresetMagician
             public const string RefreshPlugins = "Plugin.RefreshPlugins";
             public const string ScanPlugins = "Plugin.ScanPlugins";
             public const string ScanSelectedPlugins = "Plugin.ScanSelectedPlugins";
+            public const string ScanSelectedPlugin = "Plugin.ScanSelectedPlugin";
             public const string AllToPresetExportList = "Plugin.AllToPresetExportList";
             public const string SelectedToPresetExportList = "Plugin.SelectedToPresetExportList";
             public const string ReportUnsupportedPlugins = "Plugin.ReportUnsupportedPlugins";

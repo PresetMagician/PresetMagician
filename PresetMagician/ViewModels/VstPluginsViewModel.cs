@@ -67,12 +67,8 @@ namespace PresetMagician.ViewModels
             set => _vstService.SelectedPlugin = value;
         }
 
-
         public FastObservableCollection<Plugin> Plugins { get; }
         public FastObservableCollection<Plugin> SelectedPlugins { get; }
         public ApplicationState ApplicationState { get; private set; }
-
-      
-
     }
 }

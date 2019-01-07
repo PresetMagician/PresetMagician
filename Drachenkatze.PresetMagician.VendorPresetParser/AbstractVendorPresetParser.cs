@@ -8,6 +8,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
     {
         protected const string BankNameFactory = "Factory";
         protected const string BankNameUser = "User";
+
+        public virtual bool SupportsAdditionalBankFiles { get; set; } = false;
+        public virtual List<BankFile> AdditionalBankFiles { get; } = null;
         
         public IVstPlugin VstPlugin { get; set; }
         public virtual List<int> SupportedPlugins => new List<int>();

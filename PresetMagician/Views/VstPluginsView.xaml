@@ -177,6 +177,50 @@
                         Header="Presets"
                         IsReadOnly="True" />
                     <DataGridTemplateColumn
+                        Width="60"
+                        dgx:DataGridFilterColumn.IsFilterVisible="False"
+                        Header="Remarks"
+                        IsReadOnly="True">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    Margin="0"
+                                    Padding="0"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    ToolTipService.BetweenShowDelay="0"
+                                    ToolTipService.InitialShowDelay="100">
+                                    <iconPacks:PackIconOcticons
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Kind="Alert">
+                                        <iconPacks:PackIconOcticons.Style>
+                                            <Style TargetType="{x:Type iconPacks:PackIconOcticons}">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                                <Setter Property="ToolTip" Value="{Binding PresetParser.Remarks, Mode=OneWay}" />
+                                                <Style.Triggers>
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding PresetParser.Remarks, Mode=OneWay}" Value="{x:Null}" />
+                                                        </MultiDataTrigger.Conditions>
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </MultiDataTrigger>
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding PresetParser.Remarks, Mode=OneWay}" Value="" />
+                                                        </MultiDataTrigger.Conditions>
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </MultiDataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </iconPacks:PackIconOcticons.Style>
+                                    </iconPacks:PackIconOcticons>
+                                </TextBlock>
+
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn
                         dgx:DataGridFilterColumn.IsFilterVisible="False"
                         Width="45"
                         CellStyle="{StaticResource NoPaddingCellStyle}"
@@ -320,50 +364,7 @@
                         Binding="{Binding PresetParser.PresetParserType}"
                         Header="Export Module"
                         IsReadOnly="True" />
-                    <DataGridTemplateColumn
-                        Width="60"
-                        dgx:DataGridFilterColumn.IsFilterVisible="False"
-                        Header="Remarks"
-                        IsReadOnly="True">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock
-                                    Margin="0"
-                                    Padding="0"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    ToolTipService.BetweenShowDelay="0"
-                                    ToolTipService.InitialShowDelay="100">
-                                    <iconPacks:PackIconOcticons
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Kind="Alert">
-                                        <iconPacks:PackIconOcticons.Style>
-                                            <Style TargetType="{x:Type iconPacks:PackIconOcticons}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                                <Setter Property="ToolTip" Value="{Binding PresetParser.Remarks, Mode=OneWay}" />
-                                                <Style.Triggers>
-                                                    <MultiDataTrigger>
-                                                        <MultiDataTrigger.Conditions>
-                                                            <Condition Binding="{Binding PresetParser.Remarks, Mode=OneWay}" Value="{x:Null}" />
-                                                        </MultiDataTrigger.Conditions>
-                                                        <Setter Property="Visibility" Value="Collapsed" />
-                                                    </MultiDataTrigger>
-                                                    <MultiDataTrigger>
-                                                        <MultiDataTrigger.Conditions>
-                                                            <Condition Binding="{Binding PresetParser.Remarks, Mode=OneWay}" Value="" />
-                                                        </MultiDataTrigger.Conditions>
-                                                        <Setter Property="Visibility" Value="Collapsed" />
-                                                    </MultiDataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </iconPacks:PackIconOcticons.Style>
-                                    </iconPacks:PackIconOcticons>
-                                </TextBlock>
-
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
+                    
                     <DataGridTextColumn
                         Width="150"
                         MinWidth="100"
