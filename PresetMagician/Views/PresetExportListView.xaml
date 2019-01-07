@@ -6,6 +6,7 @@
     xmlns:behaviors="clr-namespace:PresetMagician.Behaviors"
     xmlns:converters="clr-namespace:PresetMagician.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dgx="urn:tom-englert.de/DataGridExtensions"
     xmlns:helpers="clr-namespace:PresetMagician.Helpers"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -85,6 +86,9 @@
                 GridLinesVisibility="All"
                 ItemsSource="{Binding PresetExportList}"
                 RowDetailsVisibilityMode="Collapsed"
+                dgx:DataGridFilter.IsAutoFilterEnabled="True"
+                dgx:Tools.ApplyInitialSorting="True"
+                dgx:DataGridFilter.FilterEvaluationDelay="0:0:0.1"
                 ScrollViewer.CanContentScroll="True"
                 SelectedItem="{Binding SelectedExportPreset}"
                 SelectionUnit="FullRow">

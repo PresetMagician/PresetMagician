@@ -107,6 +107,7 @@
     <Compile Include="Commands\Plugin\PluginReportAllPluginsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\AbstractReportPluginsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginReportUnsupportedPluginsCommandContainer.cs" />
+    <Compile Include="Commands\Plugin\PluginScanSelectedPluginCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginScanSelectedPluginsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginSelectedToPresetExportListCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginRefreshPluginsCommandContainer.cs" />

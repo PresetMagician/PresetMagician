@@ -58,11 +58,14 @@
     <None Include="Util\WaveChannel16To32.cs" />
     <None Include="Util\WaveChannel24To32.cs" />
     <None Include="Util\WaveChannel32To32.cs" />
+    <Compile Include="VST\BankFile.cs" />
     <Compile Include="VST\EventArgs\VstPluginLoadErrorEventArgs.cs" />
+    <Compile Include="VST\IBankFile.cs" />
     <Compile Include="VST\IPluginConfiguration.cs" />
     <Compile Include="VST\IPreset.cs" />
     <Compile Include="VST\IPresetBank.cs" />
     <Compile Include="VST\IVstPlugin.cs" />
+    <Compile Include="VST\VstHelpers.cs" />
     <Compile Include="VST\VSTPluginExport.cs" />
     <Compile Include="VST\VSTPlugin.cs" />
     <Compile Include="VST\VstPathScanner.cs" />

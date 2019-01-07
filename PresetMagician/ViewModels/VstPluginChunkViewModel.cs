@@ -16,7 +16,7 @@ namespace PresetMagician.ViewModels
 {
     public class VstPluginChunkViewModel : VstPluginViewModel
     {
-        public VstPluginChunkViewModel(Models.Plugin plugin, IVstService vstService, IOpenFileService openFileService) : base(vstService, openFileService)
+        public VstPluginChunkViewModel(Models.Plugin plugin, IVstService vstService, IOpenFileService openFileService, ISelectDirectoryService selectDirectoryService) : base(vstService, openFileService, selectDirectoryService)
         {
             Plugin = plugin;
             OpenWithHxDBank = new TaskCommand(OnOpenWithHxDBankExecute);

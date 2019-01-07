@@ -1,4 +1,7 @@
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Drachenkatze.PresetMagician.NKSF.NKSF;
+using Drachenkatze.PresetMagician.VSTHost.VST;
 
 namespace PresetMagician.Models
 {
@@ -8,5 +11,6 @@ namespace PresetMagician.Models
         int AudioPreviewPreDelay { get; set; }
         ControllerAssignments DefaultControllerAssignments { get; set; }
         bool IsReported { get; set; }
+        ObservableCollection<BankFile> AdditionalBankFiles { get; }
     }
 }

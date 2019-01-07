@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Linq;
+using Catel.Collections;
 using Catel.Data;
 using Drachenkatze.PresetMagician.VSTHost.VST;
 
@@ -53,6 +56,56 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
                 bankPath.RemoveAt(0);
                 return string.Join<string>(" / ", bankPath);
             }
+        }
+
+        public IPresetBank CreateRecursive(string bankPath)
+        {
+            var bankParts = bankPath.Split('/').ToList();
+            IPresetBank foundBank = null;
+            
+            foreach (var presetBank in PresetBanks)
+            {
+                if (presetBank.BankName == bankParts.First())
+                {
+                    foundBank = presetBank;
+                    break;
+                }
+            }
+
+            if (foundBank == null)
+            {
+                foundBank = new PresetBank(bankParts.First());
+                PresetBanks.Add(foundBank);
+            }
+            
+            bankParts.RemoveAt(0);
+
+            if (bankParts.Count > 0)
+            {
+                foundBank.CreateRecursive(string.Join<string>(" / ", bankParts));    
+            }
+
+            return foundBank;
+        }
+
+        public IPresetBank FindBankPath(string bankPath)
+        {
+            if (BankPath == bankPath)
+            {
+                return this;
+            }
+
+            foreach (var presetBank in PresetBanks)
+            {
+                var result = presetBank.FindBankPath(bankPath);
+
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+
+            return null;
         }
 
         #region Properties
