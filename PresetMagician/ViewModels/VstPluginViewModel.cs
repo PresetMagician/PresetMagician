@@ -2,16 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Sockets;
 using System.Threading.Tasks;
-using System.Web.Caching;
-using System.Windows;
 using Anotar.Catel;
 using Catel;
 using Catel.Logging;
@@ -21,7 +19,6 @@ using Drachenkatze.PresetMagician.NKSF.NKSF;
 using Drachenkatze.PresetMagician.VSTHost.VST;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Orchestra;
 using PresetMagician.Models;
 using PresetMagician.Models.ControllerAssignments;
 using PresetMagician.Models.NativeInstrumentsResources;
@@ -327,13 +324,14 @@ namespace PresetMagician.ViewModels
 
         private async Task OnSubmitResourceExecute()
         {
-            Debug.WriteLine("FOO");
             List<string> categoryNames = new List<string>();
             
             foreach (var category in NativeInstrumentsResource.Categories.CategoryNames)
             {
                 categoryNames.Add(category.Name);
             }
+            
+            Debug.WriteLine(string.Join(",", categoryNames));
             
             var resourceSubmission = JObject.FromObject(new
             {
@@ -377,6 +375,15 @@ namespace PresetMagician.ViewModels
                 }
             }
             catch (HttpRequestException e)
+            {
+                LogTo.Error($"Error submitting resource: {e.Message}");
+                LogTo.Debug(e.StackTrace);
+            }
+            catch (SocketException e)
+            {
+                LogTo.Error($"Error submitting resource: {e.Message}");
+                LogTo.Debug(e.StackTrace);
+            }catch (Exception e)
             {
                 LogTo.Error($"Error submitting resource: {e.Message}");
                 LogTo.Debug(e.StackTrace);

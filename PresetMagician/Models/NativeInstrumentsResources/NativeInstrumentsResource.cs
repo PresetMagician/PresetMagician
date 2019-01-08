@@ -224,9 +224,12 @@ namespace PresetMagician.Models.NativeInstrumentsResources
             OSO_logo = ReplaceImageFromBase64((string) obj["image_OSO_logo"], OSO_logoStream);
 
             List<string> categoryStrings = ((string) obj["categories"]).Split(',').ToList();
+            
+            Categories.CategoryNames.Clear();
+            
             foreach (var categoryString in categoryStrings)
             {
-                Categories.CategoryNames.Add(new Category {Name = (string)categoryString});
+                Categories.CategoryNames.Add(new Category {Name = categoryString});
             }
         
 

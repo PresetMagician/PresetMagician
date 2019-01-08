@@ -14,7 +14,7 @@
     xmlns:controllerAssignments="clr-namespace:PresetMagician.Models.ControllerAssignments"
     Padding="2,2,2,2"
     Width="900"
-    Height="600"
+    Height="620"
     ResizeMode="CanResizeWithGrip"
     SizeToContent="Manual"
     d:DataContext="{d:DesignInstance viewModels:VstPluginViewModel}"
@@ -444,6 +444,13 @@
                 </TabControl>
 
                  <DockPanel Grid.Row="3" Grid.ColumnSpan="2" Grid.Column="0" VerticalAlignment="Bottom">
+                     <Button
+                         HorizontalAlignment="Left"
+                         VerticalAlignment="Stretch"
+                         VerticalContentAlignment="Center"
+                         Content="{iconPacks:Material Reload}"
+                         ToolTip="Reload Online Resources"
+                         Command="{Binding QueryOnlineResources}"/>
                      <ComboBox ItemsSource="{Binding OnlineResources}" SelectedItem="{Binding SelectedOnlineResource, Mode=OneWayToSource}">
                          <ComboBox.ItemTemplate>
                              <DataTemplate>
@@ -453,22 +460,14 @@
                              </DataTemplate>
                          </ComboBox.ItemTemplate>
                      </ComboBox>
+                    
                      <Button
-                         Margin="6,2,2,2"
-                         HorizontalAlignment="Left"
-                         VerticalAlignment="Stretch"
-                         VerticalContentAlignment="Center"
-                         Content="Reload Online Resources"
-                         Command="{Binding QueryOnlineResources}"/>
-                     <Button
-                         Margin="6,2,2,2"
                          HorizontalAlignment="Left"
                          VerticalAlignment="Stretch"
                          VerticalContentAlignment="Center"
                          Content="Load…"
                          Command="{Binding LoadSelectedOnlineResource}"/>
                      <Button
-                            Margin="6,2,2,2"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Stretch"
                             VerticalContentAlignment="Center"
