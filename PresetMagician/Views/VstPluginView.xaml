@@ -455,6 +455,8 @@
                          <ComboBox.ItemTemplate>
                              <DataTemplate>
                                  <StackPanel Orientation="Horizontal">
+                                     <TextBlock Text="{Binding DataContext.Plugin.PluginName, RelativeSource={RelativeSource AncestorType=catel:DataWindow}}"></TextBlock>
+                                     <TextBlock Text="by"></TextBlock>
                                      <TextBlock Text="{Binding author}"></TextBlock>
                                  </StackPanel>
                              </DataTemplate>
