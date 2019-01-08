@@ -39,15 +39,7 @@
                 <xcad:LayoutRoot.BottomSide>
                     <xcad:LayoutAnchorSide>
                         <xcad:LayoutAnchorGroup>
-                            <xcad:LayoutAnchorable
-                                x:Name="PluginSettings"
-                                Title="Plugin Settings"
-                                AutoHideMinHeight="300"
-                                CanClose="False"
-                                CanFloat="False"
-                                CanHide="False">
-                                <local:VstPluginView />
-                            </xcad:LayoutAnchorable>
+                           
                             <xcad:LayoutAnchorable
                                 x:Name="LogViewer"
                                 Title="Event Log"

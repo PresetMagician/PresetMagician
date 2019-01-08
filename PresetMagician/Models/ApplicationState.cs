@@ -111,9 +111,6 @@ namespace PresetMagician.Models
 
         public int SelectedRibbonTabIndex { get; set; } = 1;
         #endregion
-
-         
-        public bool IsPluginSettingsVisible { get; set; }
         
         #region Busy States
         public bool IsPluginListBusy { get; private set; }

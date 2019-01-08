@@ -34,21 +34,9 @@ namespace PresetMagician.Views
 
             serviceLocator.RegisterInstance(DockingManager);
             serviceLocator.RegisterInstance(LayoutDocumentPane);
-            serviceLocator.RegisterInstance(PluginSettings, "PluginSettings");
 
             _runtimeConfigurationService = serviceLocator.ResolveType<IRuntimeConfigurationService>();
 
-            PluginSettings.PropertyChanged += OnPluginSettingsPropertyChanged;
-
         }
-
-        private void OnPluginSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "IsAutoHidden")
-            {
-                Debug.WriteLine(PluginSettings.IsAutoHidden);
-                _runtimeConfigurationService.ApplicationState.IsPluginSettingsVisible = !PluginSettings.IsAutoHidden;
-            }
-        } 
     }
 }

@@ -1,4 +1,4 @@
-﻿<catel:UserControl
+﻿<catel:DataWindow
     x:Class="PresetMagician.Views.VstPluginView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -13,10 +13,16 @@
     xmlns:fluent="urn:fluent-ribbon"
     xmlns:controllerAssignments="clr-namespace:PresetMagician.Models.ControllerAssignments"
     Padding="2,2,2,2"
+    Width="900"
+    Height="600"
+    ResizeMode="CanResizeWithGrip"
+    SizeToContent="Manual"
     d:DataContext="{d:DesignInstance viewModels:VstPluginViewModel}"
     mc:Ignorable="d">
 
-    <catel:UserControl.Resources>
+    <catel:DataWindow.Resources>
+
+        <fluent:ColorToSolidColorBrushValueConverter x:Key="ColorToSolidColorBrush_ValueConverter" />
 
         <HierarchicalDataTemplate
             x:Key="Contents"
@@ -159,10 +165,9 @@
                     </Grid.RowDefinitions>
                     <DataGrid
                         Grid.Row="0"
-                        Margin="5"
                         x:Name="AdditionalBankFiles"
                         ItemsSource="{Binding Plugin.Configuration.AdditionalBankFiles}">
-                        
+
                         <DataGrid.Columns>
                             <DataGridTextColumn
                                 Width="*"
@@ -189,34 +194,24 @@
                             HorizontalAlignment="Left"
                             VerticalAlignment="Stretch"
                             VerticalContentAlignment="Center"
-                            Command="{Binding AddAdditionalPresetFiles}">
+                            Content="Add Files…"
+                            Command="{Binding AddAdditionalPresetFiles}"/>
 
-                            <StackPanel Orientation="Horizontal">
-
-                                <TextBlock
-                                    Margin="2,4,4,4"
-                                    VerticalAlignment="Center"
-                                    Text="Add Files…" />
-                            </StackPanel>
-                        </Button>
+                          
+                        
                         <Button
                             Margin="6,2,2,2"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Stretch"
-                            Command="{Binding AddAdditionalPresetFolder}">
-                            <StackPanel Orientation="Horizontal">
-
-                                <TextBlock
-                                    Margin="2,4,4,4"
-                                    VerticalAlignment="Center"
-                                    Text="Add Files from Folder…" />
-                            </StackPanel>
-                        </Button>
+                            Content="Add Files from Folder…"
+                            Command="{Binding AddAdditionalPresetFolder}"/>
+                          
                         <Button
                             Margin="6,2,2,2"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Stretch"
                             Command="{Binding RemoveAdditionalBankFiles}"
+                            Content="Remove"
                             CommandParameter="{Binding Path=SelectedItems, ElementName=AdditionalBankFiles}">
                             <Button.Style>
                                 <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="{x:Type Button}">
@@ -231,18 +226,11 @@
 
                                 </Style>
                             </Button.Style>
-
-
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock
-                                    Margin="2,4,4,4"
-                                    VerticalAlignment="Center"
-                                    Text="Remove" />
-                            </StackPanel>
                         </Button>
                         <Button
                             Margin="6,2,2,2"
                             HorizontalAlignment="Left"
+                            Content="Re-Analyze Plugin"
                             VerticalAlignment="Stretch"
                             Command="{catel:CommandManagerBinding Plugin.ScanSelectedPlugin}">
                             <Button.Style>
@@ -255,20 +243,240 @@
                                             <Setter Property="IsEnabled" Value="False" />
                                         </DataTrigger>
                                     </Style.Triggers>
-
                                 </Style>
                             </Button.Style>
-
-
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock
-                                    Margin="2,4,4,4"
-                                    VerticalAlignment="Center"
-                                    Text="Re-Analyze Plugin" />
-                            </StackPanel>
                         </Button>
                     </DockPanel>
                 </Grid>
+            </Grid>
+
+        </ControlTemplate>
+
+
+        <ControlTemplate x:Key="PluginResources">
+
+            <Grid VerticalAlignment="Top">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300" />
+                    <ColumnDefinition Width="550" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <GroupBox Header="Background Color" Grid.Row="0" Grid.Column="0">
+                    <xctk:ColorPicker x:Name="BackgroundColor" Height="22" Width="150"
+                                      SelectedColor="{Binding NativeInstrumentsResource.Color.BackgroundColor}"
+                                      ColorMode="ColorCanvas"
+                                      DisplayColorAndName="True"
+                                      MaxDropDownWidth="250"
+                                      ShowTabHeaders="False"
+                                      ShowDropDownButton="True"
+                                      UsingAlphaChannel="False" />
+                </GroupBox>
+              
+                <GroupBox Grid.Row="1" Grid.Column="0" Header="Short Names">
+               
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0" Content="Visual Browser" />
+                    <TextBox Grid.Row="0" Grid.Column="1"
+                             Text="{Binding NativeInstrumentsResource.ShortNames.VB_shortname}" />
+
+                    <Label Grid.Row="1" Grid.Column="0" Content="Maschine Studio" />
+                    <TextBox Grid.Row="1" Grid.Column="1"
+                             Text="{Binding NativeInstrumentsResource.ShortNames.MST_shortname}" />
+
+                    <Label Grid.Row="2" Grid.Column="0" Content="Maschine Mikro" />
+                    <TextBox Grid.Row="2" Grid.Column="1"
+                             Text="{Binding NativeInstrumentsResource.ShortNames.MIKRO_shortname}" />
+
+                    <Label Grid.Row="3" Grid.Column="0" Content="Maschine MK1/MK2" />
+                    <TextBox Grid.Row="3" Grid.Column="1"
+                             Text="{Binding NativeInstrumentsResource.ShortNames.MKII_shortname}" />
+                </Grid>
+                    </GroupBox>
+
+                <GroupBox Grid.Row="2" Grid.Column="0" Header="Categories">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="150" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <DataGrid Grid.Row="0" x:Name="CategoryNames"
+                              ItemsSource="{Binding NativeInstrumentsResource.Categories.CategoryNames}"
+                              IsReadOnly="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding Path=Name}"
+                                Header="Category"
+                                IsReadOnly="False"
+                                SortDirection="Ascending" />
+
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <DockPanel Grid.Row="1" VerticalAlignment="Bottom">
+                        <Button
+                            Margin="6,2,2,2"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Stretch"
+                            VerticalContentAlignment="Center"
+                            Content="Add Category…"
+                            Command="{Binding AddCategory}"/>
+                        <Button
+                            Margin="6,2,2,2"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Stretch"
+                            Command="{Binding RemoveCategory}"
+                            Content="Remove"
+                            CommandParameter="{Binding Path=SelectedItems, ElementName=CategoryNames}">
+                            <Button.Style>
+                                <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="{x:Type Button}">
+                                    <Setter Property="IsEnabled" Value="True" />
+                                    <Style.Triggers>
+                                        <DataTrigger
+                                            Binding="{Binding SelectedItems.Count, ElementName=CategoryNames}"
+                                            Value="0">
+                                            <Setter Property="IsEnabled" Value="False" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </DockPanel>
+                </Grid>
+                    </GroupBox>
+
+                <TabControl Grid.Row="0" Grid.RowSpan="3" Grid.Column="1">
+                    <TabItem Header="Visual Browser">
+                        <WrapPanel Orientation="Vertical">
+                            <GroupBox Header="Logo">
+                                <WrapPanel Orientation="Vertical">
+                                    <StackPanel Width="324" Height="47" Margin="0"
+                                                Background="{Binding NativeInstrumentsResource.Color.BackgroundColor, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}">
+                                        <Image Margin="0" Width="279" Height="47"
+                                               Source="{Binding NativeInstrumentsResource.VB_logo}"
+                                               HorizontalAlignment="Left" />
+                                    </StackPanel>
+                                    <Button Command="{Binding ReplaceVBLogo}" Content="Replace Logo (279x47 pixels)" />
+                                </WrapPanel>
+                            </GroupBox>
+                            <GroupBox Header="Artwork">
+                                <WrapPanel Orientation="Vertical">
+                            <Image Margin="0" Width="96" Height="47"
+                                   Source="{Binding NativeInstrumentsResource.VB_artwork}" HorizontalAlignment="Left" />
+                            <Button Command="{Binding ReplaceVBArtwork}" Content="Replace Artwork (96x47 pixels)" />
+                            </WrapPanel>
+                            </GroupBox>
+                        </WrapPanel>
+                    </TabItem>
+                    <TabItem Header="Maschine Studio/MK3/S49/S61/S88">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <GroupBox Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Header="Logo">
+                                <WrapPanel Orientation="Vertical">
+                                    <StackPanel Width="240" Height="196" Margin="0"
+                                                Background="{Binding NativeInstrumentsResource.Color.BackgroundColor, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}">
+                                        <Image Margin="0" Width="240" Height="196"
+                                               Source="{Binding NativeInstrumentsResource.MST_logo}"
+                                               HorizontalAlignment="Left" />
+                                    </StackPanel>
+                                    <Button Command="{Binding ReplaceMSTLogo}" Content="Replace Logo (240x196 pixels)" />
+                                </WrapPanel>
+                            </GroupBox>
+                            <GroupBox  Grid.Column="1" Grid.Row="0" Header="Artwork">
+                                <WrapPanel Orientation="Vertical">
+                                    <Image Margin="0" Width="134" Height="66"
+                                           Source="{Binding NativeInstrumentsResource.MST_artwork}" HorizontalAlignment="Left" />
+                                    <Button Command="{Binding ReplaceMSTArtwork}" Content="Replace Artwork (134x66 pixels)" />
+                                </WrapPanel>
+                            </GroupBox>
+                            <GroupBox  Grid.Column="1" Grid.Row="1" Header="Plugin">
+                                <WrapPanel Orientation="Vertical">
+                                    <Image Margin="0" Width="127" Height="70"
+                                           Source="{Binding NativeInstrumentsResource.MST_plugin}" HorizontalAlignment="Left" />
+                                    <Button Command="{Binding ReplaceMSTPlugin}" Content="Replace Plugin Artwork (127x70 pixels)" />
+                                </WrapPanel>
+                            </GroupBox>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="OSO">
+                        <WrapPanel Orientation="Vertical">
+                            <GroupBox Header="Logo">
+                                <WrapPanel Orientation="Vertical">
+                                    <StackPanel Width="417" Height="65" Margin="0"
+                                                Background="{Binding NativeInstrumentsResource.Color.BackgroundColor, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}">
+                                        <Image Margin="0" Width="417" Height="65"
+                                               Source="{Binding NativeInstrumentsResource.OSO_logo}"
+                                               HorizontalAlignment="Left" />
+                                    </StackPanel>
+                                    <Button Command="{Binding ReplaceOSOLogo}" Content="Replace Logo (417x65 pixels)" />
+                                </WrapPanel>
+                            </GroupBox>
+                        </WrapPanel>
+                    </TabItem>
+                </TabControl>
+
+                 <DockPanel Grid.Row="3" Grid.ColumnSpan="2" Grid.Column="0" VerticalAlignment="Bottom">
+                     <ComboBox ItemsSource="{Binding OnlineResources}" SelectedItem="{Binding SelectedOnlineResource, Mode=OneWayToSource}">
+                         <ComboBox.ItemTemplate>
+                             <DataTemplate>
+                                 <StackPanel Orientation="Horizontal">
+                                     <TextBlock Text="{Binding author}"></TextBlock>
+                                 </StackPanel>
+                             </DataTemplate>
+                         </ComboBox.ItemTemplate>
+                     </ComboBox>
+                     <Button
+                         Margin="6,2,2,2"
+                         HorizontalAlignment="Left"
+                         VerticalAlignment="Stretch"
+                         VerticalContentAlignment="Center"
+                         Content="Reload Online Resources"
+                         Command="{Binding QueryOnlineResources}"/>
+                     <Button
+                         Margin="6,2,2,2"
+                         HorizontalAlignment="Left"
+                         VerticalAlignment="Stretch"
+                         VerticalContentAlignment="Center"
+                         Content="Load…"
+                         Command="{Binding LoadSelectedOnlineResource}"/>
+                     <Button
+                            Margin="6,2,2,2"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Stretch"
+                            VerticalContentAlignment="Center"
+                            Content="Submit Resources…"
+                            ToolTip="Submits your resources to the online database, so other users can use it"
+                            Command="{Binding SubmitResource}"/>
+                    </DockPanel>
+
             </Grid>
 
         </ControlTemplate>
@@ -399,13 +607,18 @@
                 <TabItem Header="Controller Assignments">
                     <ContentControl Template="{StaticResource ControllerAssignments}" />
                 </TabItem>
+                <TabItem Header="Resources">
+                    <ScrollViewer VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto">
+                        <ContentControl Template="{StaticResource PluginResources}" />
+                    </ScrollViewer>
+                </TabItem>
                 <TabItem Header="Bank View" VerticalContentAlignment="Stretch">
                     <ContentControl Template="{StaticResource BankView}" />
                 </TabItem>
 
             </controls:TabControl>
         </ControlTemplate>
-    </catel:UserControl.Resources>
+    </catel:DataWindow.Resources>
 
     <ContentControl>
         <ContentControl.Style>
@@ -439,4 +652,4 @@
         </ContentControl.Style>
     </ContentControl>
 
-</catel:UserControl>
+</catel:DataWindow>
