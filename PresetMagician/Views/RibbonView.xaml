@@ -111,10 +111,9 @@
                         Header="Enable Plugin(s)"
                         Icon="{iconPacks:Octicons Kind=DiffAdded}"
                         Size="Middle" />
-                    <fluent:ToggleButton
+                    <fluent:Button
                         Command="{catel:CommandManagerBinding PluginTools.ViewSettings}"
                         Header="Plugin Settings"
-                        IsChecked="{Binding ApplicationState.IsPluginSettingsVisible, FallbackValue=false}"
                         Icon="{iconPacks:FontAwesome Kind=CogsSolid}"
                         Size="Middle" />
                     <fluent:Button

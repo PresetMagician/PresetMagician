@@ -18,5 +18,6 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
         int NumPresets { get; }
         string PluginVendor { get; set; }
         int PresetParserAudioPreviewPreDelay { get; }
+        bool IsScanned { get; set; }
     }
 }

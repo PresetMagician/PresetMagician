@@ -124,6 +124,7 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Controls\RibbonDataWindow.cs" />
     <Compile Include="Controls\TabControl.cs" />
+    <Compile Include="Converters\ColorToBrushConverter.cs" />
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Converters\VisibilityToBooleanConverter.cs" />
     <Compile Include="Extensions\CollectionExtensions.cs" />
@@ -135,6 +136,13 @@
     <Compile Include="Models\ApplicationState.cs" />
     <Compile Include="Models\ControllerAssignments\ControllerAssignmentControl.cs" />
     <Compile Include="Models\ControllerAssignments\ControllerAssignmentPage.cs" />
+    <Compile Include="Models\NativeInstrumentsResources\Categories.cs" />
+    <Compile Include="Models\NativeInstrumentsResources\Category.cs" />
+    <Compile Include="Models\NativeInstrumentsResources\CategoryDB.cs" />
+    <Compile Include="Models\NativeInstrumentsResources\Color.cs" />
+    <Compile Include="Models\NativeInstrumentsResources\NativeInstrumentsResource.cs" />
+    <Compile Include="Models\NativeInstrumentsResources\OnlineResource.cs" />
+    <Compile Include="Models\NativeInstrumentsResources\ShortNames.cs" />
     <Compile Include="Models\Plugin.cs" />
     <Compile Include="Models\PluginConfiguration.cs" />
     <Compile Include="Models\PluginInfoItem.cs" />

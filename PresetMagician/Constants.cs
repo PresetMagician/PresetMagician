@@ -29,6 +29,9 @@ namespace PresetMagician
 
             public static readonly string GetTrialLicense = $"{_protocol}{_site}/license/trial";
             public static readonly string SubmitPlugins = $"{_protocol}{_site}/plugins/submit";
+            public static readonly string SubmitResource = $"{_protocol}{_site}/plugins/submitResource";
+            public static readonly string GetOnlineResources = $"{_protocol}{_site}/plugins/getResources/";
+            public static readonly string GetOnlineResource = $"{_protocol}{_site}/plugins/getResource/";
 
             public static readonly string Homepage = $"{_masterProtocol}{_masterSite}";
         }
