@@ -153,6 +153,7 @@
     <Compile Include="StandardVst\BankTrickeryVSTPresetParser.cs" />
     <Compile Include="StandardVst\FallbackVstPresetParser.cs" />
     <Compile Include="StandardVst\FullBankVstPresetParser.cs" />
+    <Compile Include="TUBerln\Synister.cs" />
     <Compile Include="u_he\u_he_ColourCopy.cs" />
     <Compile Include="u_he\u_he_Filterscape.cs" />
     <Compile Include="u_he\u_he_FilterscapeQ6.cs" />
