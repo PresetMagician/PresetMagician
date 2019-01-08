@@ -330,9 +330,7 @@ namespace PresetMagician.ViewModels
             {
                 categoryNames.Add(category.Name);
             }
-            
-            Debug.WriteLine(string.Join(",", categoryNames));
-            
+                        
             var resourceSubmission = JObject.FromObject(new
             {
                 email = _licenseService.GetCurrentLicense().Customer.Email,
