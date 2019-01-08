@@ -124,7 +124,6 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Controls\RibbonDataWindow.cs" />
     <Compile Include="Controls\TabControl.cs" />
-    <Compile Include="Converters\ColorToBrushConverter.cs" />
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Converters\VisibilityToBooleanConverter.cs" />
     <Compile Include="Extensions\CollectionExtensions.cs" />
