@@ -17,6 +17,11 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.ValhallaDSP
         
         public override string BankLoadingNotes { get; set; } = $"Presets are loaded from {ParseDirectory}. First sub-folder defines the bank.";
 
+        public ValhallaDSP_ValhallaVintageVerb()
+        {
+            DefaultModes.Add("Reverb");
+        }
+        
         public void ScanBanks()
         {
             DoScan(RootBank, ParseDirectory);
