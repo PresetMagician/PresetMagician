@@ -93,9 +93,7 @@ namespace PresetMagician.ViewModels
 
                 if (_vstService.SelectedPresets.Count == 1)
                 {
-                    Debug.WriteLine(_vstService.SelectedExportPreset.PreviewNote.FullNoteName);
                     ApplyMidiNote.FullNoteName = _vstService.SelectedExportPreset.PreviewNote.FullNoteName;
-                    Debug.WriteLine(ApplyMidiNote.FullNoteName);
                 }
                 else
                 {
