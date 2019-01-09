@@ -153,6 +153,12 @@
     <Compile Include="StandardVst\BankTrickeryVSTPresetParser.cs" />
     <Compile Include="StandardVst\FallbackVstPresetParser.cs" />
     <Compile Include="StandardVst\FullBankVstPresetParser.cs" />
+    <Compile Include="ToguAudioLine\ToguAudioLine.cs" />
+    <Compile Include="ToguAudioLine\ToguAudioLine_TalBassline101.cs" />
+    <Compile Include="ToguAudioLine\ToguAudioLine_TalDAC.cs" />
+    <Compile Include="ToguAudioLine\ToguAudioLine_TalDubX.cs" />
+    <Compile Include="ToguAudioLine\ToguAudioLine_TalMod.cs" />
+    <Compile Include="ToguAudioLine\ToguAudioLine_TalUNoLXV2.cs" />
     <Compile Include="TUBerln\Synister.cs" />
     <Compile Include="u_he\u_he_ColourCopy.cs" />
     <Compile Include="u_he\u_he_Filterscape.cs" />
