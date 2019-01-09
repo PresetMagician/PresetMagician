@@ -15,6 +15,13 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.ValhallaDSP
             Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
             @"Valhalla DSP, LLC\ValhallaPlate\Presets");
         
+        public ValhallaDSP_ValhallaPlate()
+        {
+            DefaultModes.Add("Reverb");
+            DefaultModes.Add("Plate");
+        }
+
+        
         public override string BankLoadingNotes { get; set; } = $"Presets are loaded from {ParseDirectory}. First sub-folder defines the bank.";
 
         public void ScanBanks()

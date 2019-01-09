@@ -19,6 +19,11 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.ValhallaDSP
             $"Factory Presets are loaded from {ParseDirectory}. Sub-folders define the bank. User presets are "+
             "currently not supported, if you know where user presets are saved please let me know";
 
+        public ValhallaDSP_ValhallaUberMod()
+        {
+            DefaultModes.Add("Delay");
+        }
+        
         public void ScanBanks()
         {
             DoScan(RootBank, ParseDirectory);
