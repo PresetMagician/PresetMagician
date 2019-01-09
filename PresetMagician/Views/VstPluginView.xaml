@@ -119,6 +119,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
@@ -155,10 +156,35 @@
                 </StackPanel>
 
                 <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                    <StackPanel.Style>
+                    <Style TargetType="{x:Type StackPanel}">
+                        <Setter Property="Visibility" Value="Collapsed"></Setter>
+                        <Style.Triggers>
+                            <DataTrigger
+                                Binding="{Binding Plugin.PresetParser.SupportsAdditionalBankFiles}"
+                                Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                    </StackPanel.Style>
                     <Label Content="Additional Banks/Presets" />
                 </StackPanel>
 
                 <Grid Grid.Row="1" Grid.Column="1">
+                    <Grid.Style>
+                        <Style TargetType="{x:Type Grid}">
+                            <Setter Property="Visibility" Value="Collapsed"></Setter>
+                            <Style.Triggers>
+                                <DataTrigger
+                                    Binding="{Binding Plugin.PresetParser.SupportsAdditionalBankFiles}"
+                                    Value="True">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                        
                     <Grid.RowDefinitions>
                         <RowDefinition Height="250" />
                         <RowDefinition Height="Auto" />
@@ -248,7 +274,39 @@
                         </Button>
                     </DockPanel>
                 </Grid>
-            </Grid>
+                
+                <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Top">
+                    <StackPanel.Style>
+                        <Style TargetType="{x:Type StackPanel}">
+                            <Setter Property="Visibility" Value="Collapsed"></Setter>
+                            <Style.Triggers>
+                                <DataTrigger
+                                    Binding="{Binding Plugin.PresetParser.SupportsAdditionalBankFiles}"
+                                    Value="False">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
+                    <Label Content="Bank/Preset Loading Notes" />
+                </StackPanel>
+
+                <TextBox Grid.Row="2" Grid.Column="1" IsReadOnly="True" Text="{Binding Plugin.PresetParser.BankLoadingNotes}" TextWrapping="Wrap">
+                    <TextBox.Style>
+                        <Style TargetType="{x:Type TextBox}">
+                            <Setter Property="Visibility" Value="Collapsed"></Setter>
+                            <Style.Triggers>
+                                <DataTrigger
+                                    Binding="{Binding Plugin.PresetParser.SupportsAdditionalBankFiles}"
+                                    Value="False">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+               
+            </TextBox>
+                </Grid>
 
         </ControlTemplate>
 

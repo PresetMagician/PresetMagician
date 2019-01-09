@@ -187,6 +187,11 @@
     <Compile Include="u_he\u_he_TyrellN6.cs" />
     <Compile Include="u_he\u_he.cs" />
     <Compile Include="u_he\u_he_Zebrify.cs" />
+    <Compile Include="ValhallaDSP\ValhallaDSP.cs" />
+    <Compile Include="ValhallaDSP\ValhallaDSP_ValhallaPlate.cs" />
+    <Compile Include="ValhallaDSP\ValhallaDSP_ValhallaRoom.cs" />
+    <Compile Include="ValhallaDSP\ValhallaDSP_ValhallaUberMod.cs" />
+    <Compile Include="ValhallaDSP\ValhallaDSP_ValhallaVintageVerb.cs" />
     <Compile Include="VendorPresetParser.cs" />
     <Compile Include="VoidPresetParser.cs" />
     <Compile Include="Xfer_Records\Xfer_Records_Serum.cs" />

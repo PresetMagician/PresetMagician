@@ -16,6 +16,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         
         string Remarks { get; set; }
         string PresetParserType { get; }
+        
+        string BankLoadingNotes { get; set; }
         bool IsNullParser { get; }
 
         bool CanHandle();
