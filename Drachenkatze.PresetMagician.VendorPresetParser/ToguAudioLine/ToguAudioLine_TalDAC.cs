@@ -8,7 +8,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.ToguAudioLine
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
-    public class ToguAudioLine_TalDAC : ToguAudioLine, IVendorPresetParser
+    public class ToguAudioLine_TalDAC : AbstractVendorPresetParser, IVendorPresetParser
     {
         public override List<int> SupportedPlugins => new List<int> {1684104024};
 
