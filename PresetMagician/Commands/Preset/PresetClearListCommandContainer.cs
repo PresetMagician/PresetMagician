@@ -23,6 +23,7 @@ namespace PresetMagician
 
         protected override void Execute(object parameter)
         {
+            _vstService.SelectedPresets.Clear();
             _vstService.PresetExportList.Clear();
         }
     }
