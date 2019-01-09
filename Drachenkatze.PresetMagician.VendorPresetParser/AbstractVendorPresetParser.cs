@@ -32,6 +32,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         public ObservableCollection<string> DefaultModes { get; set; } = new ObservableCollection<string>();
        
         public ObservableCollection<Preset> Presets { get; } = new ObservableCollection<Preset>();
+        
+        public virtual string BankLoadingNotes { get; set; }
 
         public virtual bool CanHandle()
         {

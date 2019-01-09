@@ -133,16 +133,30 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
             LogTo.Debug(VstPlugin.PluginName + ": checking if chunks are consistent");
             VstPlugin.PluginContext.PluginCommandStub.SetProgram(0);
 
+            var chunk = VstPlugin.PluginContext.PluginCommandStub.GetChunk(isPreset);
+
+            if (chunk == null)
+            {
+                return false;
+            }
+            
             string firstPresetHash =
-                HashUtils.getFormattedSHA256Hash(VstPlugin.PluginContext.PluginCommandStub.GetChunk(isPreset));
+                HashUtils.getFormattedSHA256Hash(chunk);
 
             LogTo.Debug(VstPlugin.PluginName + ": hash for program 0 is " + firstPresetHash);
 
             for (int i = 0; i < 10; i++)
             {
                 VstPlugin.PluginContext.PluginCommandStub.SetProgram(0);
+                chunk = VstPlugin.PluginContext.PluginCommandStub.GetChunk(isPreset);
+
+                if (chunk == null)
+                {
+                    return false;
+                }
+                
                 if (firstPresetHash !=
-                    HashUtils.getFormattedSHA256Hash(VstPlugin.PluginContext.PluginCommandStub.GetChunk(isPreset)))
+                    HashUtils.getFormattedSHA256Hash(chunk))
                 {
                     return false;
                 }

@@ -16,6 +16,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             1364228170,
             1098206310, // Audiority Low Filter
             1098208102, // Audiority Side Filter
+            1483101268, // Xfer OTT
+            1936223602, // ValhallaDSP Shimmer
+            1181828456, // ValhallaDSP FreqEcho
             0
         };
 
