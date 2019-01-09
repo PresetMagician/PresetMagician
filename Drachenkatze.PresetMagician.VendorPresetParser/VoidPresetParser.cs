@@ -19,6 +19,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             1483101268, // Xfer OTT
             1936223602, // ValhallaDSP Shimmer
             1181828456, // ValhallaDSP FreqEcho
+            1919243828, // TAL Reverb 4
+            1665682481, // Tal Chorus LX
+            
             0
         };
 
