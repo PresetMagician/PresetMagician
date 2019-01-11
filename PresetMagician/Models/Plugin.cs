@@ -123,13 +123,24 @@ namespace PresetMagician.Models
         {
             PluginName = PluginContext.PluginCommandStub.GetEffectName();
 
-            if (PluginName.Length == 0)
+            if (string.IsNullOrEmpty(PluginName))
             {
-                // Fallback to product name
                 PluginName = PluginContext.PluginCommandStub.GetProductString();
-            }
 
+                if (string.IsNullOrEmpty(PluginName))
+                {
+                    // Extreme fallback: Use plugin DLL name
+                    PluginName = DllFilename.Replace(".dll", "");
+                }
+            }
+            
             PluginVendor = PluginContext.PluginCommandStub.GetVendorString();
+            
+            if (string.IsNullOrEmpty(PluginVendor))
+            {
+                PluginVendor = "Unknown";
+            }
+            
             PluginId = PluginContext.PluginInfo.PluginID;
             NumPresets = PluginContext.PluginInfo.ProgramCount;
 
