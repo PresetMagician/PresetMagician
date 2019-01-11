@@ -29,6 +29,7 @@ namespace PresetMagician
 
             public static readonly string GetTrialLicense = $"{_protocol}{_site}/license/trial";
             public static readonly string SubmitPlugins = $"{_protocol}{_site}/plugins/submit";
+            public static readonly string SubmitPluginsLive = $"https://presetmagician.com/plugins/submit";
             public static readonly string SubmitResource = $"{_protocol}{_site}/plugins/submitResource";
             public static readonly string GetOnlineResources = $"{_protocol}{_site}/plugins/getResources/";
             public static readonly string GetOnlineResource = $"{_protocol}{_site}/plugins/getResource/";
@@ -82,7 +83,6 @@ namespace PresetMagician
             public const string AllToPresetExportList = "Plugin.AllToPresetExportList";
             public const string SelectedToPresetExportList = "Plugin.SelectedToPresetExportList";
             public const string ReportUnsupportedPlugins = "Plugin.ReportUnsupportedPlugins";
-            public const string ReportAllPlugins = "Plugin.ReportAllPlugins";
         }
 
         public static class PluginTools
@@ -95,6 +95,8 @@ namespace PresetMagician
             public const string ShowPluginChunk = "PluginTools.ShowPluginChunk";
             public const string LoadPlugin = "PluginTools.LoadPlugin";
             public const string UnloadPlugin = "PluginTools.UnloadPlugin";
+
+            public const string ReportSinglePluginToLive = "PluginTools.ReportSinglePluginToLive";
         }
 
         public static class Preset

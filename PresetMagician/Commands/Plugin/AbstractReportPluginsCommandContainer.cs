@@ -26,12 +26,14 @@ namespace PresetMagician
         protected abstract ILog _log { get; set; }
         private readonly IApplicationService _applicationService;
         private readonly ILicenseService _licenseService;
-        private readonly IVstService _vstService;
+        protected readonly IVstService _vstService;
         private readonly IRuntimeConfigurationService _runtimeConfigurationService;
         protected bool ReportAll { get; set; } = false;
 
-        protected AbstractReportPluginsCommandContainer(string command, ICommandManager commandManager, IVstService vstService,
-            ILicenseService licenseService, IApplicationService applicationService, IRuntimeConfigurationService runtimeConfigurationService)
+        protected AbstractReportPluginsCommandContainer(string command, ICommandManager commandManager,
+            IVstService vstService,
+            ILicenseService licenseService, IApplicationService applicationService,
+            IRuntimeConfigurationService runtimeConfigurationService)
             : base(command, commandManager)
         {
             Argument.IsNotNull(() => vstService);
@@ -68,19 +70,15 @@ namespace PresetMagician
                 numPluginsToReport = (from plugin in _vstService.Plugins
                     where plugin.IsScanned && plugin.IsSupported == false
                     select plugin).Count();
-               
             }
 
             return (
                 _runtimeConfigurationService.ApplicationState.AllowReportUnsupportedPlugins && numPluginsToReport > 0);
-
         }
 
         private void OnPluginListChanged(object o, NotifyCollectionChangedEventArgs ev)
         {
-           
-                InvalidateCommand();
-            
+            InvalidateCommand();
         }
 
         private void OnAllowReportUnsupportedPluginsChanged(object o, PropertyChangedEventArgs ev)
@@ -99,23 +97,32 @@ namespace PresetMagician
             }
         }
 
+        protected virtual List<Plugin> GetPluginsToReport()
+        {
+            if (ReportAll)
+            {
+                return (from plugin in _vstService.Plugins
+                    where plugin.IsScanned
+                    select plugin).ToList();
+            }
+
+
+            return (from plugin in _vstService.Plugins
+                where plugin.IsScanned && plugin.IsSupported == false
+                select plugin).ToList();
+        }
+
+        protected virtual string GetPluginReportSite()
+        {
+            return Settings.Links.SubmitPlugins;
+        }
+
         protected override async Task ExecuteAsync(object parameter)
         {
             List<Plugin> pluginsToReport;
 
-            if (ReportAll)
-            {
-                pluginsToReport = (from plugin in _vstService.Plugins
-                    where plugin.IsScanned
-                    select plugin).ToList();
-            }
-            else
-            {
-                pluginsToReport = (from plugin in _vstService.Plugins
-                    where plugin.IsScanned && plugin.IsSupported == false
-                    select plugin).ToList();
-            }
-            
+            pluginsToReport = GetPluginsToReport();
+
             var pluginReport = JObject.FromObject(new
             {
                 pluginSubmission = new
@@ -150,12 +157,16 @@ namespace PresetMagician
 
             try
             {
-                var response = await client.PostAsync(Settings.Links.SubmitPlugins, content);
+                var response = await client.PostAsync(GetPluginReportSite(), content);
 
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     _applicationService.ReportStatus("Report submitted successfully");
-                    pluginsToReport.Select(c => {c.Configuration.IsReported = true; return c;}).ToList();
+                    pluginsToReport.Select(c =>
+                    {
+                        c.Configuration.IsReported = true;
+                        return c;
+                    }).ToList();
                     _runtimeConfigurationService.Save();
                 }
                 else

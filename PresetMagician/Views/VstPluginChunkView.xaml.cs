@@ -33,6 +33,7 @@ namespace PresetMagician.Views
         public VstPluginChunkView(VstPluginChunkViewModel viewModel)
             : base(viewModel, DataWindowMode.Close)
         {
+            AddCustomButton(new DataWindowButton("Load Bank Chunk", "LoadBankChunk"));
             AddCustomButton(new DataWindowButton("Open Bank with HxD", "OpenWithHxDBank"));
             AddCustomButton(new DataWindowButton("Open Preset with HxD", "OpenWithHxDPreset"));
 

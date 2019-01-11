@@ -124,6 +124,7 @@
     <Compile Include="AudioThing\AudioThing_VinylStrip.cs" />
     <Compile Include="AudioThing\AudioThing_WaveBox.cs" />
     <Compile Include="Common\RecursiveBankDirectoryParser.cs" />
+    <Compile Include="Common\RecursiveFXPDirectoryParser.cs" />
     <Compile Include="Common\VC2Parser.cs" />
     <Compile Include="Common\VC2Writer.cs" />
     <Compile Include="D16 Group\D16_Frontier.cs" />
@@ -136,6 +137,13 @@
     <Compile Include="Eiosis\Eisosi_AirEQ51.cs" />
     <Compile Include="Eiosis\Eiosis_Deesser.cs" />
     <Compile Include="HumanoidSoundSystems\HumanoidSoundSystems_Enzyme.cs" />
+    <Compile Include="ImageLine\ImageLine_Drumaxx.cs" />
+    <Compile Include="ImageLine\ImageLine_Hardcore.cs" />
+    <Compile Include="ImageLine\ImageLine_Morphine.cs" />
+    <Compile Include="ImageLine\ImageLine_Poizone.cs" />
+    <Compile Include="ImageLine\ImageLine_Sakura.cs" />
+    <Compile Include="ImageLine\ImageLine_Sawer.cs" />
+    <Compile Include="ImageLine\ImageLine_ToxicBiohazard.cs" />
     <Compile Include="NullPresetParser.cs" />
     <Compile Include="Preset.cs" />
     <Compile Include="PresetBank.cs" />

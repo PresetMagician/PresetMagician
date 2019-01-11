@@ -29,9 +29,9 @@ namespace PresetMagician.ViewModels
 {
     public class VstPluginViewModel : ViewModelBase
     {
-        private static readonly ILog Log = LogManager.GetCurrentClassLogger();
+        protected static readonly ILog Log = LogManager.GetCurrentClassLogger();
         private readonly IVstService _vstService;
-        private readonly IOpenFileService _openFileService;
+        protected readonly IOpenFileService _openFileService;
         private readonly ISelectDirectoryService _selectDirectoryService;
         private readonly ILicenseService _licenseService;
 
