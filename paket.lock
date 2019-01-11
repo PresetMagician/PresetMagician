@@ -115,6 +115,7 @@ NUGET
       Fody (>= 3.2.13)
     SharpCompress (0.18.1)
     SharpVectors.Reloaded (1.2)
+    SharpZipLib (1.1)
     Simple-MAPI.NET (1.1)
     Splat (5.1.4)
       System.Drawing.Primitives (>= 4.3)

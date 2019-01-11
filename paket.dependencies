@@ -46,3 +46,4 @@ nuget SharpCompress 0.18.1
 nuget sqlite-net-pcl
 nuget SQLitePCLRaw.bundle_e_sqlite3 
 nuget DataGridExtensions
+nuget SharpZipLib

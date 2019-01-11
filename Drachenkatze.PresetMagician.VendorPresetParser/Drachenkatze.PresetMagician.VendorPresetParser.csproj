@@ -129,6 +129,9 @@
     <Compile Include="D16 Group\D16_Frontier.cs" />
     <Compile Include="D16 Group\D16_PunchBox.cs" />
     <Compile Include="D16 Group\D16_Repeater.cs" />
+    <Compile Include="DmitrySches\DmitrySchesPresetParser.cs" />
+    <Compile Include="DmitrySches\DmitrySches_Thorn.cs" />
+    <Compile Include="DmitrySches\DmitrySches_ThornCM.cs" />
     <Compile Include="Eiosis\Eisosi_AirEQ.cs" />
     <Compile Include="Eiosis\Eisosi_AirEQ51.cs" />
     <Compile Include="Eiosis\Eiosis_Deesser.cs" />
@@ -394,6 +397,17 @@
       <ItemGroup>
         <Reference Include="SharpCompress">
           <HintPath>..\packages\SharpCompress\lib\net45\SharpCompress.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="ICSharpCode.SharpZipLib">
+          <HintPath>..\packages\SharpZipLib\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>

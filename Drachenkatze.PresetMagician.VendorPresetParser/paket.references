@@ -9,3 +9,4 @@ Syroot.Windows.IO.KnownFolders
 sqlite-net-pcl
 SQLitePCLRaw.bundle_e_sqlite3 
 System.ValueTuple
+SharpZipLib
