@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Drachenkatze.PresetMagician.VendorPresetParser.Common;
 using JetBrains.Annotations;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.DmitrySches
