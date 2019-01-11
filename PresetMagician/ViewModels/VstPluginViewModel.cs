@@ -171,7 +171,8 @@ namespace PresetMagician.ViewModels
         {
             try
             {
-                _openFileService.Filter = "Bank/Preset Files (*.fxb,*.fxp)|*.fxp;*.fxp";
+                _openFileService.Filter = "Bank/Preset Files (*.fxb;*.fxp)|*.fxb;*.fxp";
+                _openFileService.FilterIndex = 0;
                 _openFileService.IsMultiSelect = true;
 
                 if (await _openFileService.DetermineFileAsync())
