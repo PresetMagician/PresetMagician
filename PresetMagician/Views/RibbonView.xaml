@@ -301,8 +301,8 @@
                             Header="DoSomething"
                             Icon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Paintcan}}" />
                         <fluent:MenuItem
-                            Command="{catel:CommandManagerBinding Plugin.ReportAllPlugins}"
-                            Header="Report All Plugins"
+                            Command="{catel:CommandManagerBinding PluginTools.ReportSinglePluginToLive}"
+                            Header="Report Single Plugin"
                             Icon="{iconPacks:Octicons Kind=Megaphone}" />
                     </fluent:DropDownButton>
 

@@ -201,6 +201,11 @@ namespace PresetMagician.Models
             LoadException = e;
         }
 
+        public void SetPresetChunk(byte [] data, bool isPreset)
+        {
+            PluginContext.PluginCommandStub.SetChunk(data, isPreset);
+        }
+        
         public void GetPresetChunk()
         {
             var data = PluginContext.PluginCommandStub.GetChunk(true);

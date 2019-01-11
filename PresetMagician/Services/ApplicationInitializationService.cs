@@ -134,7 +134,6 @@ namespace PresetMagician.Services
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "AllToPresetExportList");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "SelectedToPresetExportList");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "ReportUnsupportedPlugins");
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "ReportAllPlugins");
 
             _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "EnablePlugins");
             _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "DisablePlugins");
@@ -144,6 +143,7 @@ namespace PresetMagician.Services
             _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "ShowPluginChunk");
             _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "LoadPlugin");
             _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "UnloadPlugin");
+            _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), nameof(Commands.PluginTools.ReportSinglePluginToLive));
 
             _commandManager.CreateCommandWithGesture(typeof(Commands.Preset), "ActivatePresetView");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Preset), "Export");
