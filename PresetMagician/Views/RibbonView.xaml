@@ -53,7 +53,7 @@
                         VerticalAlignment="Center"
                         Command="{catel:CommandManagerBinding Plugin.ScanPlugins}"
                         Header="Analyze Plugins"
-                        ToolTip="Loads all plugins, analyzes their capabilities and loads their presets" 
+                        ToolTip="Loads all plugins, analyzes their capabilities and loads their presets"
                         LargeIcon="{iconPacks:Material Kind=BarcodeScan,
                                                        Width=32,
                                                        Height=32}" />
@@ -99,8 +99,13 @@
                 </fluent:RibbonGroupBox>
 
 
-
                 <fluent:RibbonGroupBox Header="Plugin Tools">
+                    <fluent:Button
+                        Command="{catel:CommandManagerBinding PluginTools.ViewSettings}"
+                        Header="Plugin Settings"
+                        Width="60"
+                        LargeIcon="{iconPacks:FontAwesome Kind=CogsSolid, Width=32, Height=32}"
+                        Size="Large" />
                     <fluent:Button
                         Command="{catel:CommandManagerBinding PluginTools.DisablePlugins}"
                         Header="Disable Plugin(s)"
@@ -111,18 +116,14 @@
                         Header="Enable Plugin(s)"
                         Icon="{iconPacks:Octicons Kind=DiffAdded}"
                         Size="Middle" />
-                    <fluent:Button
-                        Command="{catel:CommandManagerBinding PluginTools.ViewSettings}"
-                        Header="Plugin Settings"
-                        Icon="{iconPacks:FontAwesome Kind=CogsSolid}"
-                        Size="Middle" />
+
                     <fluent:Button
                         Padding="0"
                         VerticalAlignment="Center"
                         Command="{catel:CommandManagerBinding Plugin.ScanSelectedPlugins}"
                         Size="Middle"
                         Header="Analyze Selected Plugins"
-                        ToolTip="Loads selected plugins, analyzes their capabilities and loads their presets" 
+                        ToolTip="Loads selected plugins, analyzes their capabilities and loads their presets"
                         Icon="{iconPacks:Material Kind=BarcodeScan,
                                                        Width=16,
                                                        Height=16}" />
@@ -180,24 +181,26 @@
                                                      Height=32}"
                         Size="Large" />
                     <StackPanel Orientation="Horizontal">
-                        <fluent:TextBox MinWidth="96" Width="96" Header="MIDI Note" Text="{Binding ApplyMidiNote.FullNoteName}" IsEnabled="{Binding HasPresetSelection}"/>
-                        <fluent:Button Icon="{iconPacks:FontAwesome Kind=ClipboardCheckSolid,
+                        <fluent:TextBox MinWidth="96" Width="96" Header="MIDI Note"
+                                        Text="{Binding ApplyMidiNote.FullNoteName}"
+                                        IsEnabled="{Binding HasPresetSelection}" />
+                        <fluent:Button
+                            Icon="{iconPacks:FontAwesome Kind=ClipboardCheckSolid,
                                                      Width=16,
                                                      Height=16}"
-                                       ToolTip="Apply MIDI note to selected presets"
-                                       Command="{catel:CommandManagerBinding Preset.ApplyMidiNote}"
-                                       CommandParameter="{Binding Path=ApplyMidiNote.FullNoteName}"
-                            Size="Small" Header="Apply"/>
+                            ToolTip="Apply MIDI note to selected presets"
+                            Command="{catel:CommandManagerBinding Preset.ApplyMidiNote}"
+                            CommandParameter="{Binding Path=ApplyMidiNote.FullNoteName}"
+                            Size="Small" Header="Apply" />
                     </StackPanel>
-                    
+
                     <fluent:Button
                         Command="{catel:CommandManagerBinding Preset.ClearList}"
                         Size="Middle"
                         Header="Clear Export List"
                         Icon="{iconPacks:Modern Kind=ListDelete,
                                                      Width=16,
-                                                     Height=16}"
-                        />
+                                                     Height=16}" />
                 </fluent:RibbonGroupBox>
                 <fluent:RibbonGroupBox>
                     <fluent:Button
@@ -222,7 +225,7 @@
                         LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Settings},
                                                        Width=32,
                                                        Height=32}" />
-                    
+
                     <fluent:Button
                         Padding="0"
                         HorizontalAlignment="Center"
@@ -283,7 +286,8 @@
                                                        Width=32,
                                                        Height=32}" />
 
-                    <fluent:DropDownButton Header="Developer Tools" LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Beaker}, Width=32, Height=32}">
+                    <fluent:DropDownButton Header="Developer Tools"
+                                           LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Beaker}, Width=32, Height=32}">
                         <fluent:MenuItem
                             Command="{Binding ShowThemeTest}"
                             Header="Theme Test"
