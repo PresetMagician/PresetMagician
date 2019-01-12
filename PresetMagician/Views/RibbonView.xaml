@@ -154,6 +154,11 @@
                         Header="Show Plugin Capabilities"
                         Icon="{iconPacks:FontAwesome Kind=EyeSolid}"
                         Size="Middle" />
+                    <fluent:Button
+                        Command="{catel:CommandManagerBinding PluginTools.ReportSinglePluginToLive}"
+                        Header="Report Single Plugin"
+                        Icon="{iconPacks:Octicons Kind=Megaphone}"
+                        Size="Middle"/>
                 </fluent:RibbonGroupBox>
             </fluent:RibbonTabItem>
             <fluent:RibbonTabItem Header="Presets">
@@ -300,10 +305,7 @@
                             Command="{Binding DoSomething}"
                             Header="DoSomething"
                             Icon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Paintcan}}" />
-                        <fluent:MenuItem
-                            Command="{catel:CommandManagerBinding PluginTools.ReportSinglePluginToLive}"
-                            Header="Report Single Plugin"
-                            Icon="{iconPacks:Octicons Kind=Megaphone}" />
+                        
                     </fluent:DropDownButton>
 
                 </fluent:RibbonGroupBox>

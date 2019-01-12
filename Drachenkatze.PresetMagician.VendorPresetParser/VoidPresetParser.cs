@@ -21,6 +21,11 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             1181828456, // ValhallaDSP FreqEcho
             1919243828, // TAL Reverb 4
             1665682481, // Tal Chorus LX
+            1296985972, // MeldaProduction MNotepad
+            1297052499, // MeldaProduction Oscilloscope
+            1297245539, // MeldaProduction Recorder
+            1297306467, // MeldaProduction StereoScope
+            1297380718, // MeldaProduction Tuner
             
             0
         };
