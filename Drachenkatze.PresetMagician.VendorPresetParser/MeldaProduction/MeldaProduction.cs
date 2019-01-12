@@ -36,12 +36,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
             var rootDocument = XDocument.Parse(File.ReadAllText(fullFilename));
 
             var rootElement = rootDocument.Element(rootTag);
-
-            var factoryBank = new PresetBank();
-            factoryBank.BankName = BankNameFactory;
-            ScanPresetXML(rootElement, factoryBank);
-            
-            RootBank.PresetBanks.Add(factoryBank);
+           
+            ScanPresetXML(rootElement, RootBank);
         }
 
         public void ScanPresetXML(XElement rootElement, PresetBank presetBank)
@@ -54,7 +50,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
 
                 if (bankNameElement == null)
                 {
-                    bankNameElement = directory.Attribute("Name");
+                    bankNameElement = directory.Attribute("name");
 
                     if (bankNameElement == null)
                     {
