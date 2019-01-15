@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.HashFunction.xxHash;
 using System.Security.Cryptography;
+using System.Data.HashFunction;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,6 +10,12 @@ namespace Drachenkatze.PresetMagician.Utils
 {
     public class HashUtils
     {
+        private static readonly IxxHash _xxHash = xxHashFactory.Instance.Create();
+
+        public static string getIxxHash(byte[] input)
+        {
+            return _xxHash.ComputeHash(input).AsBase64String();
+        }
         public static string getFormattedSHA256Hash (string input)
         {
             return FormatHash(GetHash(SHA256.Create(), input));

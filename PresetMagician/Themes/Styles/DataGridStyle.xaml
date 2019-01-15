@@ -5,7 +5,7 @@
 
     <system:Boolean x:Key="BooleanTrue">true</system:Boolean>
     <PriorityBinding x:Key="EnabledBinding">
-        <Binding Path="Configuration.IsEnabled" />
+        <Binding Path="IsEnabled" />
         <Binding Source="{StaticResource BooleanTrue}" />
     </PriorityBinding>
 

@@ -1,4 +1,4 @@
-namespace PresetMagician.Models.NativeInstrumentsResources
+namespace SharedModels.NativeInstrumentsResources
 {
     public class OnlineResource
     {

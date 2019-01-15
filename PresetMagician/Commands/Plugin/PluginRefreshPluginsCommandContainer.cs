@@ -1,15 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using Catel;
 using Catel.Logging;
 using Catel.MVVM;
+using Catel.Services;
 using Catel.Threading;
 using PresetMagician.Extensions;
 using PresetMagician.Models;
+using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
+using SharedModels;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -22,19 +27,25 @@ namespace PresetMagician
         private readonly IApplicationService _applicationService;
         private readonly IRuntimeConfigurationService _runtimeConfigurationService;
         private readonly IVstService _vstService;
+        private readonly IDispatcherService _dispatcherService;
+        private readonly IMessageService _messageService;
 
         public PluginRefreshPluginsCommandContainer(ICommandManager commandManager,
             IVstService vstService, IRuntimeConfigurationService runtimeConfigurationService,
-            IApplicationService applicationService)
+            IApplicationService applicationService, IDispatcherService dispatcherService, IMessageService messageService)
             : base(Commands.Plugin.RefreshPlugins, commandManager)
         {
             Argument.IsNotNull(() => runtimeConfigurationService);
             Argument.IsNotNull(() => vstService);
             Argument.IsNotNull(() => applicationService);
+            Argument.IsNotNull(() => dispatcherService);
+            Argument.IsNotNull(() => messageService);
 
             _runtimeConfigurationService = runtimeConfigurationService;
+            _dispatcherService = dispatcherService;
             _vstService = vstService;
             _applicationService = applicationService;
+            _messageService = messageService;
         }
 
         protected override async Task ExecuteAsync(object parameter)
@@ -82,9 +93,21 @@ namespace PresetMagician
 
             var plugins = _vstService.Plugins;
 
-            using (plugins.SuspendChangeNotifications())
+            await _dispatcherService.InvokeAsync(() =>
             {
-                plugins.RemoveAll(item => !vstPluginDLLFiles.Contains(item.DllPath));
+
+                foreach (var plugin in plugins)
+                {
+                    if (!vstPluginDLLFiles.Contains(plugin.DllPath))
+                    {
+                        plugin.IsPresent = false;
+                    }
+                    else
+                    {
+                        plugin.IsPresent = true;
+                    }
+                }
+                
 
                 foreach (var dllPath in vstPluginDLLFiles)
                 {
@@ -97,24 +120,34 @@ namespace PresetMagician
                         {
                             DllPath = dllPath
                         };
-                        
-                        plugins.Add(plugin);
-                        
-                        var foundCachedPlugin = (from cachedPlugin in _vstService.CachedPlugins where cachedPlugin.DllPath == dllPath select cachedPlugin)
-                            .FirstOrDefault();
 
-                        if (foundCachedPlugin != null)
-                        {
-                            plugin.PluginType = foundCachedPlugin.PluginType;
-                            plugin.PluginId = foundCachedPlugin.PluginId;
-                            plugin.PluginVendor = foundCachedPlugin.PluginVendor;
-                            plugin.PluginName = foundCachedPlugin.PluginName;
-                            plugin.Configuration = foundCachedPlugin.Configuration;
-                        }
+                        plugins.Add(plugin);
                     }
                 }
-            }
+                
+                
+            });
 
+            var crashedPlugin = (from plugin in plugins where plugin.IsScanning select plugin).FirstOrDefault();
+
+            if (crashedPlugin != null)
+            {
+                var result = await _messageService.ShowAsync(
+                    $"It seems the plugin {crashedPlugin.DllFilename} caused PresetMagician to crash during the last scan." +
+                    Environment.NewLine +
+                    "Would you like to disable the plugin?",
+                    "Plugin crash detected", MessageButton.YesNo);
+
+                if (result == MessageResult.Yes)
+                {
+                    crashedPlugin.IsEnabled = false;
+                }
+
+                crashedPlugin.IsScanning = false;
+            }
+            
+            await _vstService.SavePlugins();
+            
             if (cancellationToken.IsCancellationRequested)
             {
                 _applicationService.StopApplicationOperation("VST directory scan aborted.");

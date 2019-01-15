@@ -17,6 +17,7 @@ namespace PresetMagician.Services
         private readonly IRuntimeConfigurationService _runtimeConfigurationService;
         private readonly ICustomStatusService _statusService;
         private readonly IPleaseWaitService _pleaseWaitService;
+        private string _lastUpdateStatus;
         private ILog _log;
 
         private readonly List<string> _applicationOperationErrors = new List<string>();
@@ -126,7 +127,14 @@ namespace PresetMagician.Services
 
             var progressText = string.Format("({1} / {2}) {0}", statusText, currentItem, appState.ApplicationBusyTotalItems);
             appState.ApplicationBusyCurrentItem = currentItem;
-            
+
+            if (progressText == _lastUpdateStatus)
+            {
+                return;
+            }
+
+            _lastUpdateStatus = progressText;
+
             _pleaseWaitService.UpdateStatus(currentItem, appState.ApplicationBusyTotalItems);
             _statusService.UpdateStatus(progressText);
         }

@@ -14,7 +14,9 @@ using Catel.MVVM;
 using Catel.Services;
 using Catel.Threading;
 using PresetMagician.Models;
+using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
+using SharedModels;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -25,15 +27,15 @@ namespace PresetMagician
         public PluginScanSelectedPluginsCommandContainer(ICommandManager commandManager,
             IRuntimeConfigurationService runtimeConfigurationService, IVstService vstService,
             IApplicationService applicationService,
-            IDispatcherService dispatcherService)
-            : base(Commands.Plugin.ScanSelectedPlugins, commandManager, runtimeConfigurationService, vstService, applicationService, dispatcherService)
+            IDispatcherService dispatcherService, IDatabaseService databaseService)
+            : base(Commands.Plugin.ScanSelectedPlugins, commandManager, runtimeConfigurationService, vstService, applicationService, dispatcherService, databaseService)
         {
             vstService.SelectedPlugins.CollectionChanged += OnPluginsListChanged;
         }
 
         protected override List<Plugin> GetPluginsToScan()
         {
-            return (from plugin in _vstService.SelectedPlugins where plugin.Configuration.IsEnabled select plugin).ToList();
+            return (from plugin in _vstService.SelectedPlugins where plugin.IsEnabled select plugin).ToList();
         }
 
         protected override bool CanExecute(object parameter)

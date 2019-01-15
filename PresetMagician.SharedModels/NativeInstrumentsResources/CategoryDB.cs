@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace PresetMagician.Models.NativeInstrumentsResources
+namespace SharedModels.NativeInstrumentsResources
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class CategoryDB

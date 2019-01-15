@@ -22,7 +22,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
             var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 @"Slate Digital\FG-X Virtual Mastering Console\Presets");
 
-            var vc2parser = new VC2Parser(VstPlugin, "",Presets);
+            var vc2parser = new VC2Parser(Plugin, "",Presets);
             vc2parser.SetPreProcessXmlFunction(PreProcessXML);
             vc2parser.DoScan(RootBank, directory);
         }

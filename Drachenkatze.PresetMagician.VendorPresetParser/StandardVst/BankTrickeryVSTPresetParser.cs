@@ -1,6 +1,8 @@
-﻿using Anotar.Catel;
+﻿using System.Threading.Tasks;
+using Anotar.Catel;
 using Drachenkatze.PresetMagician.Utils;
 using Drachenkatze.PresetMagician.VSTHost.VST;
+using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
 {
@@ -16,25 +18,15 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
             return false;
         }
 
-        public void ScanBanks()
+        protected override async Task GetFactoryPresets()
         {
-            RootBank.PresetBanks.Add(GetFactoryPresets());
-            ParseAdditionalBanks();
-        }
+            var factoryBank = FindOrCreateBank(BankNameFactory);
 
-        private PresetBank GetFactoryPresets()
-        {
-            PresetBank factoryBank = new PresetBank
-            {
-                BankName = BankNameFactory
-            };
-
-            GetPresets(factoryBank, 0, VstPlugin.PluginContext.PluginInfo.ProgramCount);
+            await GetPresets(factoryBank, 0, Plugin.PluginContext.PluginInfo.ProgramCount, "Builtin");
             
-            return factoryBank;
         }
 
-        protected override void GetPresets(IPresetBank bank, int start, int numPresets)
+        protected override async Task GetPresets(PresetBank bank, int start, int numPresets, string sourceFile)
         {
             if (start < 0)
             {
@@ -44,31 +36,34 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
 
             var endIndex = start + numPresets;
             
-            if (endIndex > VstPlugin.PluginContext.PluginInfo.ProgramCount)
+            if (endIndex > Plugin.PluginContext.PluginInfo.ProgramCount)
             {
-                LogTo.Error($"GetPresets between {start} and {endIndex} would exceed maximum program count of {VstPlugin.PluginContext.PluginInfo.ProgramCount}, ignoring.");
+                LogTo.Error($"GetPresets between {start} and {endIndex} would exceed maximum program count of {Plugin.PluginContext.PluginInfo.ProgramCount}, ignoring.");
                 return;
             }
             
             for (int index = start; index < endIndex; index++)
             {
-                var vstPreset = new Preset();
+                Plugin.PluginContext.PluginCommandStub.SetProgram(0);
+                var programBackup = Plugin.PluginContext.PluginCommandStub.GetChunk(true);
+                Plugin.PluginContext.PluginCommandStub.SetProgram(index);
 
-                VstPlugin.PluginContext.PluginCommandStub.SetProgram(0);
-                byte[] programBackup = VstPlugin.PluginContext.PluginCommandStub.GetChunk(true);
+                var vstPreset = new Preset
+                {
+                    SourceFile = sourceFile + ":" + index,
+                    PresetBank = bank,
+                    PresetName = Plugin.PluginContext.PluginCommandStub.GetProgramName(),
+                    Plugin = Plugin
+                };
 
-                VstPlugin.PluginContext.PluginCommandStub.SetProgram(index);
-                vstPreset.PresetName = VstPlugin.PluginContext.PluginCommandStub.GetProgramName();
-                byte[] realProgram = VstPlugin.PluginContext.PluginCommandStub.GetChunk(true);
-                VstPlugin.PluginContext.PluginCommandStub.SetProgram(0);
-                VstPlugin.PluginContext.PluginCommandStub.SetChunk(realProgram, true);
-                vstPreset.PresetData = VstPlugin.PluginContext.PluginCommandStub.GetChunk(false);
-                VstPlugin.PluginContext.PluginCommandStub.SetChunk(programBackup, true);
 
-                vstPreset.ProgramNumber = VstPlugin.PluginContext.PluginCommandStub.GetProgram();
-                vstPreset.PresetBank = bank;
+                byte[] realProgram = Plugin.PluginContext.PluginCommandStub.GetChunk(true);
+                Plugin.PluginContext.PluginCommandStub.SetProgram(0);
+                Plugin.PluginContext.PluginCommandStub.SetChunk(realProgram, true);
+                var presetData = Plugin.PluginContext.PluginCommandStub.GetChunk(false);
+                Plugin.PluginContext.PluginCommandStub.SetChunk(programBackup, true);
 
-                var hash = HashUtils.getFormattedSHA256Hash(realProgram);
+                var hash = HashUtils.getIxxHash(realProgram);
 
                 if (PresetHashes.Contains(hash))
                 {
@@ -76,9 +71,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
                 }
                 else
                 {
-                    vstPreset.SetPlugin(VstPlugin);
-
-                    Presets.Add(vstPreset);
+                    PresetHashes.Add(hash);
+                    await PresetDataStorer.PersistPreset(vstPreset, presetData);   
                 }
             }
 

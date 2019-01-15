@@ -9,6 +9,7 @@ using System.Xml.Linq;
 using Anotar.Catel;
 using Catel.Collections;
 using Drachenkatze.PresetMagician.VendorPresetParser.Common;
+using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
 {
@@ -91,7 +92,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
 
             
             preset.PresetName = name.Replace(Extension, "");
-            preset.SetPlugin(VstPlugin);
+            preset.SetPlugin(Plugin);
             preset.PresetBank = presetBank;
 
             var ms = VC2Parser.WriteVC2(pluginState.ToString());

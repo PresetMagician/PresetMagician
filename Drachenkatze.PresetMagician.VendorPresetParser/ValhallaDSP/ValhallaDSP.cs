@@ -1,4 +1,5 @@
 using Drachenkatze.PresetMagician.VendorPresetParser.Common;
+using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.ValhallaDSP
 {
@@ -6,7 +7,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.ValhallaDSP
     {
         protected void DoScan(PresetBank rootBank, string directory)
         {
-            var vc2parser = new VC2Parser(VstPlugin, "vpreset",Presets);
+            var vc2parser = new VC2Parser(Plugin, "vpreset",Presets);
             vc2parser.DoScan(rootBank, directory);
         }
     }

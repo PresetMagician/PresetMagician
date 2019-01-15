@@ -1,6 +1,6 @@
 using Catel.Data;
 
-namespace PresetMagician.Models.NativeInstrumentsResources
+namespace SharedModels.NativeInstrumentsResources
 {
     public class ShortNames: ModelBase
     {

@@ -3,6 +3,7 @@ using Catel.Collections;
 using Catel.Data;
 using Newtonsoft.Json;
 using PresetMagician.Models.Settings;
+using SharedModels;
 
 namespace PresetMagician.Models
 {
@@ -17,6 +18,8 @@ namespace PresetMagician.Models
         [JsonProperty] public string NativeInstrumentsUserContentDirectory { get; set; }
 
         [JsonProperty] public bool ExportWithAudioPreviews { get; set; } = true;
+
+        [JsonProperty] public bool CompressPresetData { get; set; } 
 
         [JsonProperty]
         public FastObservableCollection<Plugin> CachedPlugins { get; set; } = new FastObservableCollection<Plugin>();

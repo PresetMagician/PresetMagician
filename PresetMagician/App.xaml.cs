@@ -19,6 +19,7 @@ using Orchestra.Services;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.Views;
 using PresetMagician;
+using PresetMagician.Services;
 using Win32Mapi;
 using MessageBox = System.Windows.MessageBox;
 using Path = System.IO.Path;

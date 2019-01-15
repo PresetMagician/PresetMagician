@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser
@@ -29,6 +30,16 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             
             0
         };
+        
+        public async Task DoScan()
+        {
+            
+        }
+        
+        public virtual int GetNumPresets()
+        {
+            return 0;
+        }
 
         public void ScanBanks()
         {

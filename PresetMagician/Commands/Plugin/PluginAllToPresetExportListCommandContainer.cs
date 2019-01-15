@@ -11,6 +11,7 @@ using Drachenkatze.PresetMagician.VendorPresetParser;
 using PresetMagician.Models;
 using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
+using SharedModels;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -60,7 +61,7 @@ namespace PresetMagician
 
         protected override async Task ExecuteAsync(object parameter)
         {
-            var pluginsToScan = (from plugin in _vstService.Plugins where plugin.Configuration.IsEnabled select plugin).ToList();
+            var pluginsToScan = (from plugin in _vstService.Plugins where plugin.IsEnabled select plugin).ToList();
             var addedPresets = 0;
             var totalPresets = 0;
             bool listExceeded = false;

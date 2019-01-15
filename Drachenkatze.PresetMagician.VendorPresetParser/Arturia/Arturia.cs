@@ -5,11 +5,13 @@ using System.IO;
 using System.Linq;
 using Anotar.Catel;
 using Catel.Collections;
-using Drachenkatze.PresetMagician.VendorPresetParser.Arturia.Models;
+using ArturiaModels = Drachenkatze.PresetMagician.VendorPresetParser.Arturia.Models;
 using GSF;
+using SharedModels;
 using SQLite;
 using Environment = System.Environment;
 using Exception = System.Exception;
+using Preset = SharedModels.Preset;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
 {
@@ -45,6 +47,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
 
                 foreach (var presetData in pack.Presets)
                 {
+                    
                     var preset = new Preset
                     {
                         PresetBank = presetBank,
@@ -61,7 +64,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
                    
                    
                    preset.Modes.AddRange((from c in characteristics select c.name).ToList());
-                   preset.SetPlugin(VstPlugin);
+                   preset.SetPlugin(Plugin);
 
                    var fileName = presetData.Preset.file_path.Replace('/', '\\');
                    var content = File.ReadAllBytes(fileName);
@@ -92,17 +95,17 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
             _db.Close();
         }
 
-        private IEnumerable<(Models.Preset Preset, SoundDesigner SoundDesigner, Pack Pack, Type Type)> GetPresets(IEnumerable<Instrument> instruments)
+        private IEnumerable<(Models.Preset Preset, ArturiaModels.SoundDesigner SoundDesigner, ArturiaModels.Pack Pack,ArturiaModels.Type Type)> GetPresets(IEnumerable<ArturiaModels.Instrument> instruments)
         {
             var instrumentIds = (from q in instruments
                 select q.key_id).ToList();
 
             return (from preset in _db.Table<Models.Preset>()
-                    join soundDesigner in _db.Table<SoundDesigner>() on preset.sound_designer equals soundDesigner
+                    join soundDesigner in _db.Table<ArturiaModels.SoundDesigner>() on preset.sound_designer equals soundDesigner
                         .key_id
-                    join pack in _db.Table<Pack>() on preset.pack equals pack
+                    join pack in _db.Table<ArturiaModels.Pack>() on preset.pack equals pack
                         .key_id
-                    join type in _db.Table<Type>() on preset.type equals type
+                    join type in _db.Table<ArturiaModels.Type>() on preset.type equals type
                         .key_id
                     where
                         preset.hide_in_browser == false &&
@@ -111,22 +114,22 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
                 ).ToList();
         }
 
-        private IEnumerable<Characteristic> GetPresetCharacteristics(Models.Preset preset)
+        private IEnumerable<ArturiaModels.Characteristic> GetPresetCharacteristics(Models.Preset preset)
         {
-            var characteristicKeys= (from presetCharacteristic in _db.Table<PresetCharacteristic>()
+            var characteristicKeys= (from presetCharacteristic in _db.Table<ArturiaModels.PresetCharacteristic>()
                 where presetCharacteristic.preset_key == preset.key_id
                 select presetCharacteristic.characteristic_key).ToList();
             
-            return (from characteristic in _db.Table<Characteristic>()
+            return (from characteristic in _db.Table<ArturiaModels.Characteristic>()
                     where characteristicKeys.Contains(characteristic.key_id)
                         select characteristic).ToList();
                     
                     
         }
 
-        private IEnumerable<Instrument> GetInstruments(ICollection<string> instruments)
+        private IEnumerable<ArturiaModels.Instrument> GetInstruments(ICollection<string> instruments)
         {
-            return _db.Table<Instrument>().Where(o => instruments.Contains(o.name)).ToList();
+            return _db.Table<ArturiaModels.Instrument>().Where(o => instruments.Contains(o.name)).ToList();
         }
 
         private static string GetDatabasePath()

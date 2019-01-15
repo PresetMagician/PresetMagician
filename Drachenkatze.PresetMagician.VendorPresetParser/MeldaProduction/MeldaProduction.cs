@@ -4,6 +4,7 @@ using System.IO;
 using System.Xml.Linq;
 using Anotar.Catel;
 using GSF;
+using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
 {
@@ -86,7 +87,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
                 
                 var preset = new Preset();
                 preset.PresetName = nameAttribute.Value;
-                preset.SetPlugin(VstPlugin);
+                preset.SetPlugin(Plugin);
                 preset.PresetBank = presetBank;
 
                 var base64 = presetElement.Value.Trim().Replace("-", "/").Replace("$", "");

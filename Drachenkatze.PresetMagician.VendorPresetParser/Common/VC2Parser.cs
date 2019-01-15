@@ -7,6 +7,8 @@ using System.Xml;
 using Anotar.Catel;
 using Drachenkatze.PresetMagician.VSTHost.VST;
 using GSF;
+using PresetMagician.Models;
+using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
 {
@@ -15,8 +17,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
         protected Regex XmlHeaderReplacerRegex;
         protected Func<string, string> PreProcessXmlFunc = null;
         
-        public VC2Parser(IVstPlugin vstPlugin, string extension, ObservableCollection<Preset> presets):
-            base(vstPlugin, extension, presets)
+        public VC2Parser(Plugin plugin, string extension, ObservableCollection<Preset> presets):
+            base(plugin, extension, presets)
         {
             XmlHeaderReplacerRegex = new Regex(@"<\?xml.*?\?>", RegexOptions.Compiled);
         }

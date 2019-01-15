@@ -13,6 +13,7 @@ using Catel.Services;
 using PresetMagician.Models;
 using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
+using SharedModels;
 
 namespace PresetMagician.ViewModels
 {

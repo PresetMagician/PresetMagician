@@ -197,7 +197,7 @@
                     </DataGridTemplateColumn>
                     <DataGridTextColumn
                         Width="150"
-                        Binding="{Binding PluginName, Mode=OneWay}"
+                        Binding="{Binding Plugin.PluginName, Mode=OneWay}"
                         Header="Plugin"
                         IsReadOnly="True"
                         SortDirection="Descending" />

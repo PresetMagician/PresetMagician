@@ -50,7 +50,6 @@
     <Compile Include="HostCommandStub.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\Check.cs" />
-    <Compile Include="Util\MidiNoteName.cs" />
     <Compile Include="Util\Properties.cs" />
     <None Include="Util\RecordableMixerStream32.cs" />
     <None Include="Util\Wave24To16Stream.cs" />
@@ -58,16 +57,13 @@
     <None Include="Util\WaveChannel16To32.cs" />
     <None Include="Util\WaveChannel24To32.cs" />
     <None Include="Util\WaveChannel32To32.cs" />
-    <Compile Include="VST\BankFile.cs" />
     <Compile Include="VST\EventArgs\VstPluginLoadErrorEventArgs.cs" />
     <Compile Include="VST\IBankFile.cs" />
     <Compile Include="VST\IPluginConfiguration.cs" />
     <Compile Include="VST\IPreset.cs" />
     <Compile Include="VST\IPresetBank.cs" />
-    <Compile Include="VST\IVstPlugin.cs" />
     <Compile Include="VST\VstHelpers.cs" />
     <Compile Include="VST\VSTPluginExport.cs" />
-    <Compile Include="VST\VSTPlugin.cs" />
     <Compile Include="VST\VstPathScanner.cs" />
     <Compile Include="VST\VstHost.cs" />
   </ItemGroup>
@@ -93,6 +89,10 @@
     <ProjectReference Include="..\Drachenkatze.PresetMagician.Utils\Drachenkatze.PresetMagician.Utils.csproj">
       <Project>{37abda8a-5ffa-41f9-b880-a272d8c21dff}</Project>
       <Name>Drachenkatze.PresetMagician.Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PresetMagician.SharedModels\PresetMagician.SharedModels.csproj">
+      <Project>{445ac4fe-6acc-4e19-9424-b35c0b8b5804}</Project>
+      <Name>PresetMagician.SharedModels</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

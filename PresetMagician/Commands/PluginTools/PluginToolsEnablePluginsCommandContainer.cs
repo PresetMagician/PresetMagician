@@ -1,6 +1,8 @@
 ﻿using System.Collections.Specialized;
+using System.Threading.Tasks;
 using Catel;
 using Catel.MVVM;
+using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
 
 // ReSharper disable once CheckNamespace
@@ -9,20 +11,20 @@ namespace PresetMagician
     // ReSharper disable once UnusedMember.Global
     public class PluginToolsEnablePluginsCommandContainer : CommandContainerBase
     {
-        private readonly IRuntimeConfigurationService _runtimeConfigurationService;
+        private readonly IDatabaseService _databaseService;
         private readonly IVstService _vstService;
 
         public PluginToolsEnablePluginsCommandContainer(ICommandManager commandManager, IVstService vstService,
-            IRuntimeConfigurationService runtimeConfigurationService
+            IDatabaseService databaseService
         )
             : base(Commands.PluginTools.EnablePlugins, commandManager)
         {
             Argument.IsNotNull(() => vstService);
-            Argument.IsNotNull(() => runtimeConfigurationService);
+            Argument.IsNotNull(() => databaseService);
 
             _vstService = vstService;
             _vstService.SelectedPlugins.CollectionChanged += OnSelectedPluginsListChanged;
-            _runtimeConfigurationService = runtimeConfigurationService;
+            _databaseService = databaseService;
         }
 
         protected override bool CanExecute(object parameter)
@@ -35,15 +37,14 @@ namespace PresetMagician
             InvalidateCommand();
         }
 
-
-        protected override void Execute(object parameter)
+        protected override async Task ExecuteAsync(object parameter)
         {
             foreach (var plugin in _vstService.SelectedPlugins)
             {
-                plugin.Configuration.IsEnabled = true;
+                plugin.IsEnabled = true;
             }
 
-            _runtimeConfigurationService.SaveConfiguration();
+            await _vstService.SavePlugins();
         }
     }
 }

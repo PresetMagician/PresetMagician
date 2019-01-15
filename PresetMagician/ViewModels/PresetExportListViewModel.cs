@@ -7,6 +7,7 @@ using Catel.Services;
 using Drachenkatze.PresetMagician.VendorPresetParser;
 using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
+using SharedModels;
 
 namespace PresetMagician.ViewModels
 {
