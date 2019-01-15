@@ -17,7 +17,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Eiosis
             var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 @"Eiosis\AirEQ\Presets");
 
-            var parser = new SlateDigitalPresetParser(VstPlugin, "epf", Presets, "AEqP");
+            var parser = new SlateDigitalPresetParser(Plugin, "epf", Presets, "AEqP");
             parser.DoScan(RootBank, directory);
         }
     }

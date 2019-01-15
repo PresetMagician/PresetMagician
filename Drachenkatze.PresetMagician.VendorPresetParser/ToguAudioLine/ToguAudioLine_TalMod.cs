@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Drachenkatze.PresetMagician.VendorPresetParser.Common;
 using JetBrains.Annotations;
+using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.ToguAudioLine
 {
@@ -25,7 +26,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.ToguAudioLine
         
         protected void DoScan(PresetBank rootBank, string directory)
         {
-            var vc2parser = new VC2Parser(VstPlugin, "talmod",Presets);
+            var vc2parser = new VC2Parser(Plugin, "talmod",Presets);
             vc2parser.DoScan(rootBank, directory);
         }
     }

@@ -26,3 +26,6 @@ Be.Windows.Forms.HexBox
 VST.NET.x64
 SQLitePCLRaw.bundle_e_sqlite3 
 DataGridExtensions
+EntityFramework
+System.Data.SQLite
+SQLite.CodeFirst

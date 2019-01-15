@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Drachenkatze.PresetMagician.Utils;
+using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.Xfer_Records
 {
@@ -33,7 +34,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Xfer_Records
                 fxp.ReadFile(file.FullName);
 
                 var preset = new Preset {PresetName = fxp.Name.Trim('\0'), PresetBank = rootBank};
-                preset.SetPlugin(VstPlugin);
+                preset.SetPlugin(Plugin);
 
                 preset.PresetData = fxp.ChunkDataByteArray;
                 Presets.Add(preset);

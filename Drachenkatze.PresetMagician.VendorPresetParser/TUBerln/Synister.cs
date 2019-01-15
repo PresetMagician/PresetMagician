@@ -15,7 +15,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.TUBerln
             var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments),
                 @"Synister");
 
-            var vc2parser = new VC2Parser(VstPlugin, "xml",Presets);
+            var vc2parser = new VC2Parser(Plugin, "xml",Presets);
             vc2parser.DoScan(RootBank, directory);
         }
     }

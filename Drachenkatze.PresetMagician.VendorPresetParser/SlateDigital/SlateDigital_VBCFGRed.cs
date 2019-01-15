@@ -17,7 +17,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
             var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 @"Slate Digital\Virtual Buss Compressors FG-Red\Presets");
 
-            var parser = new SlateDigitalPresetParser(VstPlugin, "epf", Presets, "VBCr");
+            var parser = new SlateDigitalPresetParser(Plugin, "epf", Presets, "VBCr");
             parser.DoScan(RootBank, directory);
         }
     }

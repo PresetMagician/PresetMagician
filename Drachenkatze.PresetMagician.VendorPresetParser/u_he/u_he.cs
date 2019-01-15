@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using Anotar.Catel;
 using Catel.Collections;
+using SharedModels;
 using Shell32;
 using Squirrel.Shell;
 
@@ -53,7 +54,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
                 LogTo.Debug($"Parsing file {file.FullName}");
                 Preset preset = new Preset();
                 preset.PresetName = file.Name.Replace(".h2p", "");
-                preset.SetPlugin(VstPlugin);
+                preset.SetPlugin(Plugin);
                 preset.PresetBank = bank;
 
                 var fs = file.OpenRead();
@@ -162,7 +163,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 
         public string getDataDirectory(string dataDirectoryName)
         {
-            var vstPluginsPath = Path.GetDirectoryName(VstPlugin.DllPath);
+            var vstPluginsPath = Path.GetDirectoryName(Plugin.DllPath);
 
             return Path.Combine(vstPluginsPath, dataDirectoryName);
         }

@@ -5,6 +5,8 @@ using Drachenkatze.PresetMagician.VendorPresetParser.Common;
 using Drachenkatze.PresetMagician.VSTHost.VST;
 using GSF.Collections;
 using ICSharpCode.SharpZipLib.Zip.Compression;
+using PresetMagician.Models;
+using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.DmitrySches
 {
@@ -13,8 +15,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.DmitrySches
         private byte[] _decodeBuffer;
         private const int DecodeBufferSize = 1024*1024*100;
         
-        public DmitrySchesPresetParser(IVstPlugin vstPlugin, string extension,
-            ObservableCollection<Preset> presets) : base(vstPlugin, extension, presets)
+        public DmitrySchesPresetParser(Plugin plugin, string extension,
+            ObservableCollection<Preset> presets) : base(plugin, extension, presets)
         {
             _decodeBuffer = new byte[DecodeBufferSize];
         }

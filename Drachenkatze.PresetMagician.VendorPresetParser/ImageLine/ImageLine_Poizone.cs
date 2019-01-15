@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Drachenkatze.PresetMagician.VendorPresetParser.Common;
 using JetBrains.Annotations;
+using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.ImageLine
 {
@@ -25,7 +26,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.ImageLine
         
         protected void DoScan(PresetBank rootBank, string directory)
         {
-            var parser = new RecursiveFXPDirectoryParser(VstPlugin, "fxp",Presets);
+            var parser = new RecursiveFXPDirectoryParser(Plugin, "fxp",Presets);
             parser.DoScan(rootBank, directory);
         }
     }

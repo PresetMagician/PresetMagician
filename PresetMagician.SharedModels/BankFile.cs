@@ -1,17 +1,24 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Anotar.Catel;
+using PresetMagician.Models;
+using SharedModels;
 
-namespace Drachenkatze.PresetMagician.VSTHost.VST
+namespace PresetMagician.SharedModels
 {
-    public class BankFile : IBankFile
+    public class BankFile 
     {
+        [Key]
+        public int BankId { get; set; }
+        public Plugin Plugin { get; set; }
+        
         public string Path { get; set; } 
         public string BankName { get; set; }
         public string ProgramRange { get; set; }
 
         public List<(int start, int length)> GetProgramRanges()
         {
-            List<(int start, int length)> ranges = new List<(int start, int length)>();
+            var ranges = new List<(int start, int length)>();
 
             if (ProgramRange == null)
             {

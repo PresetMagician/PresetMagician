@@ -15,6 +15,7 @@ using MethodTimer;
 using PresetMagician.Models;
 using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
+using SharedModels;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -71,7 +72,7 @@ namespace PresetMagician
         protected override async Task ExecuteAsync(object parameter)
         {
             var pluginsToScan =
-                (from plugin in _vstService.SelectedPlugins where plugin.Configuration.IsEnabled select plugin).ToList();
+                (from plugin in _vstService.SelectedPlugins where plugin.IsEnabled select plugin).ToList();
             int addedPresets = 0;
             int totalPresets = 0;
             bool listExceeded = false;

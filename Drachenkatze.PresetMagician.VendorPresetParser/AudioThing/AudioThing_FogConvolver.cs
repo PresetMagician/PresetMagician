@@ -5,6 +5,7 @@ using System.Linq;
 using System.Xml.Linq;
 using Anotar.Catel;
 using JetBrains.Annotations;
+using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
 {

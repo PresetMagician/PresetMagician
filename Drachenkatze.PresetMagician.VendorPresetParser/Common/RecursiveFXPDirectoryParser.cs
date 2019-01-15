@@ -1,12 +1,14 @@
 using System.Collections.ObjectModel;
 using Drachenkatze.PresetMagician.Utils;
 using Drachenkatze.PresetMagician.VSTHost.VST;
+using PresetMagician.Models;
+using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
 {
     public class RecursiveFXPDirectoryParser: RecursiveBankDirectoryParser
     {
-        public RecursiveFXPDirectoryParser(IVstPlugin vstPlugin, string extension, ObservableCollection<Preset> presets) : base(vstPlugin, extension, presets)
+        public RecursiveFXPDirectoryParser(Plugin plugin, string extension, ObservableCollection<Preset> presets) : base(plugin, extension, presets)
         {
         }
 

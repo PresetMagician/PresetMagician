@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using JetBrains.Annotations;
+using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.DmitrySches
 {
@@ -24,7 +25,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.DmitrySches
         
         protected void DoScan(PresetBank rootBank, string directory)
         {
-            var vc2parser = new DmitrySchesPresetParser(VstPlugin, "thorn",Presets);
+            var vc2parser = new DmitrySchesPresetParser(Plugin, "thorn",Presets);
             vc2parser.DoScan(rootBank, directory);
         }
     }

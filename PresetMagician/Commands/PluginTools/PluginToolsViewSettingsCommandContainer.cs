@@ -9,6 +9,7 @@ using Drachenkatze.PresetMagician.VSTHost.VST;
 using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.ViewModels;
+using SharedModels;
 using Xceed.Wpf.AvalonDock.Layout;
 
 // ReSharper disable once CheckNamespace
@@ -43,7 +44,7 @@ namespace PresetMagician
 
         protected override bool CanExecute(object parameter)
         {
-            return _vstService.SelectedPlugins.Count > 0 && _vstService.SelectedPlugin.IsScanned;
+            return _vstService.SelectedPlugins.Count > 0 && _vstService.SelectedPlugin != null && _vstService.SelectedPlugin.IsScanned;
         }
 
         private void OnSelectedPluginsListChanged(object o, NotifyCollectionChangedEventArgs ev)

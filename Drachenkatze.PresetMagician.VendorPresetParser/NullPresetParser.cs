@@ -1,4 +1,6 @@
-﻿namespace Drachenkatze.PresetMagician.VendorPresetParser
+﻿using System.Threading.Tasks;
+
+namespace Drachenkatze.PresetMagician.VendorPresetParser
 {
     public class NullPresetParser : AbstractVendorPresetParser, IVendorPresetParser
     {
@@ -6,6 +8,16 @@
 
         public void ScanBanks()
         {
+        }
+
+        public async Task DoScan()
+        {
+            
+        }
+        
+        public virtual int GetNumPresets()
+        {
+            return 0;
         }
 
         public override bool CanHandle()

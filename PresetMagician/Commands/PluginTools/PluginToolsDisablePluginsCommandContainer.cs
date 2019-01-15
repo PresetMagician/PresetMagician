@@ -1,4 +1,5 @@
 ﻿using System.Collections.Specialized;
+using System.Threading.Tasks;
 using Catel;
 using Catel.MVVM;
 using PresetMagician.Services.Interfaces;
@@ -36,14 +37,14 @@ namespace PresetMagician
         }
 
 
-        protected override void Execute(object parameter)
+        protected override async Task ExecuteAsync(object parameter)
         {
             foreach (var plugin in _vstService.SelectedPlugins)
             {
-                plugin.Configuration.IsEnabled = false;
+                plugin.IsEnabled = false;
             }
 
-            _runtimeConfigurationService.SaveConfiguration();
+            await _vstService.SavePlugins();
         }
     }
 }

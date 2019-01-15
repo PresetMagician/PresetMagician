@@ -7,6 +7,8 @@ using System.Xml.XPath;
 using Anotar.Catel;
 using Drachenkatze.PresetMagician.VendorPresetParser.Common;
 using Drachenkatze.PresetMagician.VSTHost.VST;
+using PresetMagician.Models;
+using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
 {
@@ -14,8 +16,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
     {
         protected string _presetSectionName;
 
-        public SlateDigitalPresetParser(IVstPlugin vstPlugin, string extension,
-            ObservableCollection<Preset> presets, string presetSectionName) : base(vstPlugin, extension, presets)
+        public SlateDigitalPresetParser(Plugin plugin, string extension,
+            ObservableCollection<Preset> presets, string presetSectionName) : base(plugin, extension, presets)
         {
             _presetSectionName = presetSectionName;
         }
@@ -31,7 +33,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
         protected override void ProcessFile(string fileName, Preset preset)
         {
             var xmlPreset = XDocument.Load(fileName);
-            var chunk = _vstPlugin.PluginContext.PluginCommandStub.GetChunk(false);
+            var chunk = _plugin.PluginContext.PluginCommandStub.GetChunk(false);
             var chunkXML = Encoding.UTF8.GetString(chunk);
 
             var actualPresetDocument = XDocument.Parse(chunkXML);

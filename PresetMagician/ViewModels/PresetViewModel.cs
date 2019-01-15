@@ -7,6 +7,7 @@ using Catel.Fody;
 using Catel.MVVM;
 using Drachenkatze.PresetMagician.VendorPresetParser;
 using Drachenkatze.PresetMagician.VSTHost.VST;
+using SharedModels;
 
 namespace PresetMagician.ViewModels
 {

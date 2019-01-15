@@ -1,4 +1,5 @@
 using Drachenkatze.PresetMagician.VendorPresetParser;
+using SharedModels;
 
 namespace PresetMagician.ViewModels
 {

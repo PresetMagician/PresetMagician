@@ -1,18 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Media.Imaging;
 using System.Xml.Linq;
 using Anotar.Catel;
 using Catel.Data;
-using Drachenkatze.PresetMagician.VSTHost.VST;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using PresetMagician.Extensions;
-using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
+using SharedModels;
+using SharedModels.NativeInstrumentsResources;
 using ColorConverter = System.Windows.Media.ColorConverter;
 
 namespace PresetMagician.Models.NativeInstrumentsResources
@@ -59,19 +56,19 @@ namespace PresetMagician.Models.NativeInstrumentsResources
                 "NI Resources");
         }
 
-        public static string GetDistDatabaseDirectory(IVstPlugin plugin)
+        public static string GetDistDatabaseDirectory(Plugin plugin)
         {
             return Path.Combine(GetNativeInstrumentsResourcesDirectory(), "dist_database",
                 plugin.PluginVendor.ToLower(), plugin.PluginName.ToLower());
         }
 
-        public static string GetImageDirectory(IVstPlugin plugin)
+        public static string GetImageDirectory(Plugin plugin)
         {
             return Path.Combine(GetNativeInstrumentsResourcesDirectory(), "image", plugin.PluginVendor.ToLower(),
                 plugin.PluginName.ToLower());
         }
 
-        public void Save(IVstPlugin plugin)
+        public void Save(Plugin plugin)
         {
             var files = GetFiles(plugin);
 
@@ -161,7 +158,7 @@ namespace PresetMagician.Models.NativeInstrumentsResources
             }
         }
 
-        public void CreateMetaFile(IVstPlugin plugin, string dbType, string outputFile)
+        public void CreateMetaFile(Plugin plugin, string dbType, string outputFile)
         {
             var doc = new XDocument();
             doc.Declaration = new XDeclaration("1.0", "UTF-8", "no");
@@ -186,7 +183,7 @@ namespace PresetMagician.Models.NativeInstrumentsResources
             doc.Save(outputFile);
         }
 
-        public Dictionary<string, string> GetFiles(IVstPlugin plugin)
+        public Dictionary<string, string> GetFiles(Plugin plugin)
         {
             Dictionary<string, string> files = new Dictionary<string, string>();
             var ResourcesDirectory = GetDistDatabaseDirectory(plugin);
@@ -234,7 +231,7 @@ namespace PresetMagician.Models.NativeInstrumentsResources
         
 
         }
-        public void Load(IVstPlugin plugin)
+        public void Load(Plugin plugin)
         {
             if (plugin == null || !plugin.IsScanned)
             {
@@ -287,7 +284,7 @@ namespace PresetMagician.Models.NativeInstrumentsResources
                 else
                 {
                     var categoryDb = new CategoryDB();
-                    if (plugin.PluginType == VstHost.PluginTypes.Instrument)
+                    if (plugin.PluginType == Plugin.PluginTypes.Instrument)
                     {
                         categoryDb.FileType = "INST";
                     }
@@ -304,7 +301,7 @@ namespace PresetMagician.Models.NativeInstrumentsResources
             else
             {
                 var categoryDb = new CategoryDB();
-                if (plugin.PluginType == VstHost.PluginTypes.Instrument)
+                if (plugin.PluginType == Plugin.PluginTypes.Instrument)
                 {
                     categoryDb.FileType = "INST";
                 }

@@ -3,7 +3,7 @@ using SQLite;
 namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia.Models
 {
     [Table("Instruments", WithoutRowId = true)]
-    public class Instrument
+    internal class Instrument
     {
         public int key_id { get; set; }
         public string name { get; set; }

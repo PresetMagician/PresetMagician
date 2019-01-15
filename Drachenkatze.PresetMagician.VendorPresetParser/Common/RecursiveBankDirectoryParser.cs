@@ -3,18 +3,20 @@ using System.Collections.ObjectModel;
 using System.IO;
 using Anotar.Catel;
 using Drachenkatze.PresetMagician.VSTHost.VST;
+using PresetMagician.Models;
+using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
 {
     public class RecursiveBankDirectoryParser
     {
         protected string Extension;
-        protected IVstPlugin _vstPlugin;
+        protected Plugin _plugin;
         protected ObservableCollection<Preset> Presets { get; }
         
-        public RecursiveBankDirectoryParser(IVstPlugin vstPlugin, string extension, ObservableCollection<Preset> presets)
+        public RecursiveBankDirectoryParser(Plugin plugin, string extension, ObservableCollection<Preset> presets)
         {
-            _vstPlugin = vstPlugin;
+            _plugin = plugin;
             Extension = extension;
             Presets = presets;
         }
@@ -35,7 +37,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
                 {
                     Preset preset = new Preset();
                     preset.PresetName = file.Name.Replace("." + Extension, "");
-                    preset.SetPlugin(_vstPlugin);
+                    preset.SetPlugin(_plugin);
                     preset.PresetBank = rootBank;
 
                     ProcessFile(file.FullName, preset);

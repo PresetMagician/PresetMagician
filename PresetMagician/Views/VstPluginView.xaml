@@ -5,13 +5,14 @@
     xmlns:catel="http://schemas.catelproject.com"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vendorPresetParser="clr-namespace:Drachenkatze.PresetMagician.VendorPresetParser;assembly=Drachenkatze.PresetMagician.VendorPresetParser"
+    xmlns:sharedModels="clr-namespace:Drachenkatze.PresetMagician.VendorPresetParser;assembly=PresetMagician.SharedModels"
     xmlns:viewModels="clr-namespace:PresetMagician.ViewModels"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:controls="clr-namespace:PresetMagician.Controls"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     xmlns:fluent="urn:fluent-ribbon"
     xmlns:controllerAssignments="clr-namespace:PresetMagician.Models.ControllerAssignments"
+    xmlns:sharedModels1="clr-namespace:SharedModels;assembly=PresetMagician.SharedModels"
     Padding="2,2,2,2"
     Width="900"
     Height="620"
@@ -26,7 +27,7 @@
 
         <HierarchicalDataTemplate
             x:Key="Contents"
-            DataType="{x:Type vendorPresetParser:PresetBank}"
+            DataType="{x:Type sharedModels1:PresetBank}"
             ItemsSource="{Binding PresetBanks}">
             <TextBlock Text="{Binding BankName}" />
         </HierarchicalDataTemplate>
@@ -149,7 +150,7 @@
 
                 <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
                     <xctk:IntegerUpDown Width="200" Height="20" MaxWidth="200"
-                                        Value="{Binding Plugin.Configuration.AudioPreviewPreDelay}"
+                                        Value="{Binding Plugin.AudioPreviewPreDelay}"
                                         Watermark="Pre-Delay after loading preset (empty=default)" />
                     <TextBlock>Default from preset parser:</TextBlock>
                     <TextBlock Text="{Binding Plugin.PresetParser.AudioPreviewPreDelay}" />
@@ -192,7 +193,7 @@
                     <DataGrid
                         Grid.Row="0"
                         x:Name="AdditionalBankFiles"
-                        ItemsSource="{Binding Plugin.Configuration.AdditionalBankFiles}">
+                        ItemsSource="{Binding Plugin.AdditionalBankFiles}">
 
                         <DataGrid.Columns>
                             <DataGridTextColumn

@@ -19,6 +19,7 @@ using Drachenkatze.PresetMagician.VSTHost.VST;
 using NuGet;
 using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
+using SharedModels;
 
 namespace PresetMagician.ViewModels
 {
@@ -42,7 +43,6 @@ namespace PresetMagician.ViewModels
             ApplicationState = runtimeConfigurationService.ApplicationState;
             serviceLocator.RegisterInstance(this);
 
-           
             Plugins.CollectionChanged += PluginsOnCollectionChanged;
             Title = "VST Plugins";
         }
@@ -67,7 +67,7 @@ namespace PresetMagician.ViewModels
             set => _vstService.SelectedPlugin = value;
         }
 
-        public FastObservableCollection<Plugin> Plugins { get; }
+        public ObservableCollection<Plugin> Plugins { get; }
         public FastObservableCollection<Plugin> SelectedPlugins { get; }
         public ApplicationState ApplicationState { get; private set; }
     }

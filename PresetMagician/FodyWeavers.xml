@@ -3,5 +3,5 @@
   <MethodTimer />
   <Catel />
   <ModuleInit />
-  <LoadAssembliesOnStartup ExcludeOptimizedAssemblies='true' />
+  
 </Weavers>

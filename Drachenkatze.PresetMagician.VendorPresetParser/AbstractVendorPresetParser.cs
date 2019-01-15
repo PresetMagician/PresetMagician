@@ -1,6 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using Drachenkatze.PresetMagician.VSTHost.VST;
+using Jacobi.Vst.Core;
+using PresetMagician.Models;
+using PresetMagician.SharedModels;
+using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser
 {
@@ -12,7 +18,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         public virtual bool SupportsAdditionalBankFiles { get; set; } = false;
         public virtual List<BankFile> AdditionalBankFiles { get; } = null;
         
-        public IVstPlugin VstPlugin { get; set; }
+        public Plugin Plugin { get; set; }
         public virtual List<int> SupportedPlugins => new List<int>();
 
         public virtual int AudioPreviewPreDelay { get; set; } = 40;
@@ -23,21 +29,35 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
         public string PresetParserType => GetType().Name;
 
-        private readonly PresetBank _rootBank = new PresetBank();
-
         public PresetBank RootBank { get; set; } = new PresetBank();
         
         public ObservableCollection<ObservableCollection<string>> DefaultTypes { get; set; } = new ObservableCollection<ObservableCollection<string>>();
 
         public ObservableCollection<string> DefaultModes { get; set; } = new ObservableCollection<string>();
        
-        public ObservableCollection<Preset> Presets { get; } = new ObservableCollection<Preset>();
+        public ObservableCollection<Preset> Presets { get; set; } = new ObservableCollection<Preset>();
         
         public virtual string BankLoadingNotes { get; set; }
+        public IPresetDataStorer PresetDataStorer { get; set; }
 
+        public virtual int GetNumPresets()
+        {
+            throw new NotImplementedException(); 
+        }
+        
+        public async Task DoScan()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ScanBanks()
+        {
+            throw new NotImplementedException();
+        }
+        
         public virtual bool CanHandle()
         {
-            if (SupportedPlugins.Contains(VstPlugin.PluginId))
+            if (SupportedPlugins.Contains(Plugin.PluginId))
             {
                 return true;
             }
@@ -45,7 +65,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             return false;
         }
 
-        public virtual void OnAfterPresetExport(VstHost host, IVstPlugin plugin)
+        public virtual void OnAfterPresetExport(IVstHost host, Plugin plugin)
         {
 
         }

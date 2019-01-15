@@ -9,8 +9,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:orccontrols="http://schemas.wildgums.com/orc/controls"
     xmlns:viewModels="clr-namespace:PresetMagician.ViewModels"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     Width="800"
-    Height="400"
+    Height="600"
     d:DataContext="{d:DesignInstance viewModels:SettingsViewModel}"
     mc:Ignorable="d">
     <Grid>
@@ -28,6 +29,7 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
@@ -56,6 +58,31 @@
                             LabelText=""
                             LabelWidth="0"
                             SelectedDirectory="{Binding EditableConfiguration.NativeInstrumentsUserContentDirectory}" />
+                        
+                        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
+                            <Label Content="Compress Database" />
+                            <iconPacks:PackIconFontAwesome Margin="0,0,10,0" VerticalAlignment="Center"
+                                                           Kind="QuestionCircleSolid" ToolTipService.ShowDuration="12000">
+                                <iconPacks:PackIconFontAwesome.ToolTip>
+                                    <StackPanel Margin="5" Width="600">
+                                        <TextBlock TextWrapping="Wrap">
+                                            This setting controls if the preset data should be stored compressed in the database.
+                                            Saves up to 70% space in the database, but increases preset processing time by a factor of 3.
+                                            <LineBreak />
+                                            If you change this setting, existing preset data in the database will not
+                                            be changed.
+                                        </TextBlock>
+
+                                    </StackPanel>
+                                </iconPacks:PackIconFontAwesome.ToolTip>
+                            </iconPacks:PackIconFontAwesome>
+                        </StackPanel>
+                        
+                        <CheckBox
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            IsChecked="{Binding EditableConfiguration.CompressPresetData}"
+                           Content="Compress Preset Data in Database" />
 
                     </Grid>
                 </ScrollViewer>

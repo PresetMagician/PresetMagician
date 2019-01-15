@@ -24,6 +24,9 @@ using PresetMagician.Models.ControllerAssignments;
 using PresetMagician.Models.NativeInstrumentsResources;
 using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
+using PresetMagician.SharedModels;
+using SharedModels;
+using SharedModels.NativeInstrumentsResources;
 
 namespace PresetMagician.ViewModels
 {
@@ -53,6 +56,7 @@ namespace PresetMagician.ViewModels
             _openFileService = openFileService;
             _selectDirectoryService = selectDirectoryService;
             _licenseService = licenseService;
+            _vstService = vstService;
 
             OpenNKSFFile = new TaskCommand(OnOpenNKSFFileExecute);
             ClearMappings = new TaskCommand(OnClearMappingsExecute);
@@ -78,6 +82,7 @@ namespace PresetMagician.ViewModels
             Title = "Settings for " + Plugin.PluginName;
 
             LoadNativeInstrumentsResources();
+            GenerateControllerMappingModels();
         }
 
         public TaskCommand LoadSelectedOnlineResource { get; set; }
@@ -113,6 +118,14 @@ namespace PresetMagician.ViewModels
         protected override async Task<bool> SaveAsync()
         {
             NativeInstrumentsResource.Save(Plugin);
+            try
+            {
+                await _vstService.SavePlugins();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+            }
 
             return await base.SaveAsync();
         }
@@ -441,7 +454,7 @@ namespace PresetMagician.ViewModels
 
         private void AddBankFile(string path)
         {
-            if (!(from bankFile in Plugin.Configuration.AdditionalBankFiles where bankFile.Path == path select bankFile)
+            if (!(from bankFile in Plugin.AdditionalBankFiles where bankFile.Path == path select bankFile)
                 .Any())
             {
                 string bankName;
@@ -455,7 +468,7 @@ namespace PresetMagician.ViewModels
                     bankName = Path.GetFileNameWithoutExtension(path);
                 }
 
-                Plugin.Configuration.AdditionalBankFiles.Add(new BankFile {Path = path, BankName = bankName});
+                Plugin.AdditionalBankFiles.Add(new BankFile {Path = path, BankName = bankName});
             }
         }
 
@@ -467,7 +480,7 @@ namespace PresetMagician.ViewModels
 
             foreach (var folder in folders.ToList())
             {
-                Plugin.Configuration.AdditionalBankFiles.Remove(folder);
+                Plugin.AdditionalBankFiles.Remove(folder);
             }
         }
 
@@ -494,7 +507,7 @@ namespace PresetMagician.ViewModels
 
         private async Task OnClearMappingsExecute()
         {
-            Plugin.Configuration.DefaultControllerAssignments = null;
+            Plugin.DefaultControllerAssignments = null;
             GenerateControllerMappingModels();
         }
 
@@ -505,7 +518,7 @@ namespace PresetMagician.ViewModels
                 NKSFRiff n = new NKSFRiff();
                 n.Read(fileStream);
 
-                Plugin.Configuration.DefaultControllerAssignments =
+                Plugin.DefaultControllerAssignments =
                     n.kontaktSound.controllerAssignments.controllerAssignments;
             }
 
@@ -521,12 +534,13 @@ namespace PresetMagician.ViewModels
 
             var controllerAssignmentPages = new ObservableCollection<ControllerAssignmentPage>();
 
-            if (Plugin.Configuration.DefaultControllerAssignments != null)
+            if (Plugin.DefaultControllerAssignments != null)
             {
-                foreach (var page in Plugin.Configuration.DefaultControllerAssignments.controllerAssignments)
+                foreach (var page in Plugin.DefaultControllerAssignments.controllerAssignments)
                 {
+                    
                     var controllerAssignmentPage = new ControllerAssignmentPage();
-                    List<string> titles = new List<string>();
+                    var titles = new List<string>();
                     foreach (var control in page)
                     {
                         var newControl = new ControllerAssignmentControl(control);
@@ -548,11 +562,11 @@ namespace PresetMagician.ViewModels
                     if (titles.Count == 0)
                     {
                         controllerAssignmentPage.Title =
-                            $"Page {Plugin.Configuration.DefaultControllerAssignments.controllerAssignments.IndexOf(page)}";
+                            $"Page {Plugin.DefaultControllerAssignments.controllerAssignments.IndexOf(page)}";
                     }
                     else
                     {
-                        controllerAssignmentPage.Title = String.Join(" / ", titles);
+                        controllerAssignmentPage.Title = string.Join(" / ", titles);
                     }
 
 
@@ -573,7 +587,7 @@ namespace PresetMagician.ViewModels
         public Plugin Plugin { get; protected set; }
         public NativeInstrumentsResource NativeInstrumentsResource { get; protected set; }
 
-        public void LoadNativeInstrumentsResources()
+        private void LoadNativeInstrumentsResources()
         {
             NativeInstrumentsResource = new NativeInstrumentsResource();
             NativeInstrumentsResource.Load(Plugin);

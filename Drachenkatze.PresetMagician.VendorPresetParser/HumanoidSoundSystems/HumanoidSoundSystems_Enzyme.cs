@@ -5,6 +5,7 @@ using Drachenkatze.PresetMagician.Utils;
 using Drachenkatze.PresetMagician.VSTHost.VST;
 using GSF;
 using JetBrains.Annotations;
+using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.HumanoidSoundSystems
 {
@@ -24,7 +25,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.HumanoidSoundSystems
             DoScan(RootBank, rootDirectory);
         }
 
-        private void DoScan(IPresetBank rootBank, string directory)
+        private void DoScan(PresetBank rootBank, string directory)
         {
             var dirInfo = new DirectoryInfo(directory);
             foreach (var file in dirInfo.EnumerateFiles("*.enz"))
@@ -37,7 +38,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.HumanoidSoundSystems
                 {
                     PresetName = file.Name.Replace(".enz", ""), PresetBank = rootBank
                 };
-                preset.SetPlugin(VstPlugin);
+                preset.SetPlugin(Plugin);
 
                 var relativeFile = BinaryFile.StringToByteArray(file.FullName.Replace(rootDirectory, ""));
                 var tuningFile = BinaryFile.StringToByteArray(@"Tunings\Basic\Default.tun");

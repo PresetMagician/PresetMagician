@@ -9,6 +9,8 @@ using System.Xml.Linq;
 using Catel.Collections;
 using Drachenkatze.PresetMagician.VendorPresetParser.Common;
 using Drachenkatze.PresetMagician.VSTHost.VST;
+using PresetMagician.Models;
+using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group.PunchBox
 {
@@ -41,7 +43,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group.PunchBox
             RootBank.PresetBanks.Add(GetUserPresets());
         }
 
-        public override void OnAfterPresetExport(VstHost host, IVstPlugin plugin)
+        public override void OnAfterPresetExport(IVstHost host, Plugin plugin)
         {
             PresetExportCount++;
             if (PresetExportCount > 60)

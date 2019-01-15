@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using Catel;
+using Catel.Collections;
 using Catel.IoC;
 using Catel.IO;
 using Catel.Logging;
@@ -27,23 +28,20 @@ namespace PresetMagician.Services
         
         private static readonly string _defaultLocalLayoutFilePath =
             Path.Combine(Path.GetApplicationDataDirectory(ApplicationDataTarget.UserRoaming), "layout.xml");
-
+        
         private readonly JsonSerializer _jsonSerializer;
         private readonly ILog _logger = LogManager.GetCurrentClassLogger();
         private readonly IServiceLocator _serviceLocator;
-        private readonly IVstService _vstService;
 
         private LayoutRoot _originalLayout;
 
-        public RuntimeConfigurationService(IServiceLocator serviceLocator, IVstService vstService)
+        public RuntimeConfigurationService(IServiceLocator serviceLocator)
         {
             Argument.IsNotNull(() => serviceLocator);
-            Argument.IsNotNull(() => vstService);
 
             RuntimeConfiguration = new RuntimeConfiguration();
             ApplicationState = new ApplicationState();
 
-            _vstService = vstService;
             _serviceLocator = serviceLocator;
             _jsonSerializer = new JsonSerializer {Formatting = Formatting.Indented};
         }
@@ -96,8 +94,6 @@ namespace PresetMagician.Services
                         RuntimeConfiguration.VstDirectories.Clear();
                         _jsonSerializer.Populate(jsonReader,RuntimeConfiguration);
                     }
-                    //#error refactor this so that the base plugin info is separate from the metadata.   
-                    _vstService.CachedPlugins.AddItems(RuntimeConfiguration.CachedPlugins);
                 }
                 _logger.Debug("Configuration loaded");
             }
@@ -141,24 +137,15 @@ namespace PresetMagician.Services
         public void SaveConfiguration()
         {
             File.Delete(_defaultLocalConfigBackupFilePath);
-            File.Copy(_defaultLocalConfigFilePath, _defaultLocalConfigBackupFilePath);
+
+            if (File.Exists(_defaultLocalConfigFilePath))
+            {
+                File.Copy(_defaultLocalConfigFilePath, _defaultLocalConfigBackupFilePath);
+            }
+            
             using (var sw = new StreamWriter(_defaultLocalConfigFilePath))
             using (JsonWriter jsonWriter = new JsonTextWriter(sw))
             {
-
-                foreach (var plugin in _vstService.Plugins)
-                {
-                    var foundCachedPlugins = (from cachedPlugin in RuntimeConfiguration.CachedPlugins where cachedPlugin.DllPath ==plugin.DllPath select cachedPlugin).ToList();
-
-                    if (foundCachedPlugins.Any())
-                    {
-                        RuntimeConfiguration.CachedPlugins.RemoveItems(foundCachedPlugins);
-                    }
-                    
-                    RuntimeConfiguration.CachedPlugins.Add(plugin);
-                  
-                }
-                
                 _jsonSerializer.Serialize(jsonWriter, RuntimeConfiguration);
             }
         }

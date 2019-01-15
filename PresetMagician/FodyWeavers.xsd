@@ -7,7 +7,6 @@
         <xs:element name="MethodTimer" minOccurs="0" maxOccurs="1" type="xs:anyType" />
         <xs:element name="Catel" minOccurs="0" maxOccurs="1" type="xs:anyType" />
         <xs:element name="ModuleInit" minOccurs="0" maxOccurs="1" type="xs:anyType" />
-        <xs:element name="LoadAssembliesOnStartup" minOccurs="0" maxOccurs="1" type="xs:anyType" />
         <xs:element name="Costura" minOccurs="0" maxOccurs="1">
           <xs:complexType>
             <xs:all>

@@ -9,6 +9,8 @@ using System.Security;
 using Catel.Collections;
 using Jacobi.Vst.Core;
 using Jacobi.Vst.Interop.Host;
+using PresetMagician.Models;
+using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VSTHost.VST
 {
@@ -24,7 +26,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
     {
     }
 
-    public class VstHost
+    public class VstHost : IVstHost
     {
         //public VSTPluginExport pluginExporter;
 
@@ -50,18 +52,13 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             return vstPlugins;
         }
 
-        public enum PluginTypes
-        {
-            Effect,
-            Instrument,
-            Unknown
-        }
+       
 
         public const int BlockSize = 512;
         public const float SampleRate = 44100f;
 
 
-        public void LoadVST(IVstPlugin vst)
+        public void LoadVST(Plugin vst)
         {
             var hostCommandStub = new HostCommandStub();
 
@@ -87,7 +84,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             }
         }
 
-        public void IdleLoop(IVstPlugin plugin, int loops)
+        public void IdleLoop(Plugin plugin, int loops)
         {
             var ctx = plugin.PluginContext;
             var outputCount = ctx.PluginInfo.AudioOutputCount;
@@ -109,22 +106,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             }
         }
 
-        private void HostCmdStub_PluginCalled(object sender, PluginCalledEventArgs e)
-        {
-            var hostCmdStub = (HostCommandStub) sender;
-
-            // can be null when called from inside the plugin main entry point.
-            if (hostCmdStub.PluginContext.PluginInfo != null)
-            {
-                Debug.WriteLine("Plugin " + hostCmdStub.PluginContext.PluginInfo.PluginID + " called:" + e.Message);
-            }
-            else
-            {
-                Debug.WriteLine("The loading Plugin called:" + e.Message);
-            }
-        }
-
-        private void MIDI(IVstPlugin plugin, byte Cmd, byte Val1, byte Val2)
+        private void MIDI(Plugin plugin, byte Cmd, byte Val1, byte Val2)
         {
             /*
 			 * Just a small note on the code for setting up a midi event:
@@ -159,25 +141,25 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             plugin.PluginContext.PluginCommandStub.ProcessEvents(ve);
         }
 
-        public void MIDI_CC(IVstPlugin plugin, byte Number, byte Value)
+        public void MIDI_CC(Plugin plugin, byte Number, byte Value)
         {
             byte Cmd = 0xB0;
             MIDI(plugin, Cmd, Number, Value);
         }
 
-        public void MIDI_NoteOff(IVstPlugin plugin, byte Note, byte Velocity)
+        public void MIDI_NoteOff(Plugin plugin, byte Note, byte Velocity)
         {
             byte Cmd = 0x80;
             MIDI(plugin, Cmd, Note, Velocity);
         }
 
-        public void MIDI_NoteOn(IVstPlugin plugin, byte Note, byte Velocity)
+        public void MIDI_NoteOn(Plugin plugin, byte Note, byte Velocity)
         {
             byte Cmd = 0x90;
             MIDI(plugin, Cmd, Note, Velocity);
         }
 
-        public void UnloadVST(IVstPlugin vst)
+        public void UnloadVST(Plugin vst)
         {
             vst.PluginContext?.Dispose();
             vst.PluginContext = null;

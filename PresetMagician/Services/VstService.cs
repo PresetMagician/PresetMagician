@@ -1,4 +1,9 @@
 using System;
+using System.Collections.ObjectModel;
+using System.Data.Entity;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 using Catel;
 using Catel.Collections;
 using Catel.IoC;
@@ -6,26 +11,40 @@ using Drachenkatze.PresetMagician.VendorPresetParser;
 using Drachenkatze.PresetMagician.VSTHost.VST;
 using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
+using SharedModels;
 
 namespace PresetMagician.Services
 {
     public class VstService : IVstService
     {
-        private readonly IServiceLocator _serviceLocator;
-
-        public VstService(IServiceLocator serviceLocator)
+        private IDatabaseService _databaseService;
+        public VstService(IDatabaseService databaseService)
         {
-            Argument.IsNotNull(() => serviceLocator);
+            Argument.IsNotNull(() => databaseService);
 
-            _serviceLocator = serviceLocator;
+            _databaseService = databaseService;
+            _databaseService.Context.Plugins.Include(plugin => plugin.AdditionalBankFiles).Load();
+
+            Plugins = _databaseService.Context.Plugins.Local;
+            
             VstHost = new VstHost();
+        }
+
+        public async Task SavePlugins()
+        {
+            await _databaseService.Context.SaveChangesAsync();
+        }
+
+        public byte[] GetPresetData(Preset preset)
+        {
+            return _databaseService.Context.GetPresetData(preset);
         }
 
         public VstHost VstHost { get; set; }
 
 
         public FastObservableCollection<Plugin> SelectedPlugins { get; } = new FastObservableCollection<Plugin>();
-        public FastObservableCollection<Plugin> Plugins { get; } = new FastObservableCollection<Plugin>();
+        public ObservableCollection<Plugin> Plugins { get; }
         public FastObservableCollection<Plugin> CachedPlugins { get; } = new FastObservableCollection<Plugin>();
         
         public FastObservableCollection<Preset> SelectedPresets { get; } = new FastObservableCollection<Preset>();

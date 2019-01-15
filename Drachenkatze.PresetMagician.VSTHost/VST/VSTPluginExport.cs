@@ -5,11 +5,14 @@ using System.Text;
 using System.Threading;
 using Catel.Collections;
 using Drachenkatze.PresetMagician.NKSF.NKSF;
+using Drachenkatze.PresetMagician.VendorPresetParser;
 using Drachenkatze.PresetMagician.VSTHost.Properties;
 using Jacobi.Vst.Core;
 using Jacobi.Vst.Interop.Host;
 using MethodTimer;
 using NAudio.Wave;
+using PresetMagician.Models;
+using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VSTHost.VST
 {
@@ -26,24 +29,24 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
         public VstHost VstHost { get; }
 
       
-        public void ExportPresetNKSF(IVstPlugin plugin, IPreset preset)
+        public void ExportPresetNKSF(Plugin plugin, Preset preset, byte[] data)
         {
             var vst = plugin;
             vst.PluginContext.PluginCommandStub.Open();
 
             var nksf = new NKSFRiff();
             var guid = Guid.NewGuid();
-            string fileExtension = "";
+            string fileExtension;
 
             nksf.kontaktSound.summaryInformation.summaryInformation.vendor = plugin.PluginVendor;
             nksf.kontaktSound.summaryInformation.summaryInformation.uuid = guid;
             nksf.kontaktSound.summaryInformation.summaryInformation.name = preset.PresetName;
 
-            if (plugin.PluginType == VstHost.PluginTypes.Instrument)
+            if (plugin.PluginType == Plugin.PluginTypes.Instrument)
             {
                 nksf.kontaktSound.summaryInformation.summaryInformation.deviceType = "INST";
                 fileExtension = ".nksf";
-            } else if (plugin.PluginType == VstHost.PluginTypes.Effect)
+            } else if (plugin.PluginType == Plugin.PluginTypes.Effect)
             {
                 nksf.kontaktSound.summaryInformation.summaryInformation.deviceType = "FX";
                 fileExtension = ".nksfx";
@@ -57,7 +60,6 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             
             var bankPath = preset.PresetBank.GetBankPath();
             bankPath.RemoveAt(0);
-            bankPath.RemoveAt(0);
 
             nksf.kontaktSound.summaryInformation.summaryInformation.bankChain.AddRange(bankPath);
 
@@ -67,12 +69,12 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
 
             nksf.kontaktSound.summaryInformation.summaryInformation.comment = preset.Comment + Environment.NewLine + "Generated with PresetMagician";
             nksf.kontaktSound.pluginId.pluginId.VSTMagic = plugin.PluginContext.PluginInfo.PluginID;
-            nksf.kontaktSound.pluginChunk.PresetData = preset.PresetData;
+            nksf.kontaktSound.pluginChunk.PresetData = data;
 
-            if (plugin.Configuration.DefaultControllerAssignments != null)
+            if (plugin.DefaultControllerAssignments != null)
             {
                 nksf.kontaktSound.controllerAssignments.controllerAssignments =
-                    plugin.Configuration.DefaultControllerAssignments;
+                    plugin.DefaultControllerAssignments;
             }
 
             var outputFilename = Path.Combine(GetUserContentDirectory(preset),
@@ -82,7 +84,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             fileStream2.Close();
         }
 
-        public string GetUserContentDirectory(IPreset preset)
+        public string GetUserContentDirectory(Preset preset)
         {
             string userContentDirectory;
             if (!Directory.Exists(UserContentDirectory))
@@ -96,7 +98,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                 userContentDirectory = UserContentDirectory;
             }
 
-            var bankDirectory = Path.Combine(userContentDirectory, GetNKSFPluginName(preset.PluginName),
+            var bankDirectory = Path.Combine(userContentDirectory, GetNKSFPluginName(preset.Plugin.PluginName),
                 GetNKSFBankName(preset.PresetBank.BankName));
             Directory.CreateDirectory(bankDirectory);
             return bankDirectory;
@@ -136,7 +138,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
 
       
 
-        private string GetPreviewFilename(IPreset vstPreset)
+        private string GetPreviewFilename(Preset vstPreset)
         {
             var bankDirectory = GetUserContentDirectory(vstPreset);
 
@@ -194,7 +196,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
         }
 
         [Time]
-        public bool ExportPresetAudioPreviewRealtime(IVstPlugin plugin, IPreset preset)
+        public bool ExportPresetAudioPreviewRealtime(Plugin plugin, Preset preset, byte[] data)
         {
             var blockSize = VstHost.BlockSize;
             
@@ -207,7 +209,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                 throw new EffectsNotSupportedException();
             }
 
-            // check if the plugin supports real time proccesing
+            // check if the plugin supports real time processing
             if (ctx.PluginCommandStub.CanDo(VstCanDoHelper.ToString(VstPluginCanDo.NoRealTime)) == VstCanDoResult.Yes)
             {
                 throw new NoRealtimeProcessingException();
@@ -215,7 +217,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
 
             
 
-            ctx.PluginCommandStub.SetChunk(preset.PresetData, VSTPlugin.PresetChunk_UseCurrentProgram);
+            ctx.PluginCommandStub.SetChunk(data, false);
 
             var outputCount = ctx.PluginInfo.AudioOutputCount;
             var inputCount = ctx.PluginInfo.AudioInputCount;
@@ -240,9 +242,9 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                                         
                     var initialDelay = plugin.PresetParserAudioPreviewPreDelay;
 
-                    if (plugin.Configuration.AudioPreviewPreDelay != 0)
+                    if (plugin.AudioPreviewPreDelay != 0)
                     {
-                        initialDelay = plugin.Configuration.AudioPreviewPreDelay;
+                        initialDelay = plugin.AudioPreviewPreDelay;
                     }
                     
                     Debug.WriteLine("Using initial delay of "+initialDelay);

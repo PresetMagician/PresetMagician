@@ -16,6 +16,7 @@ using Orchestra;
 using PresetMagician.Models;
 using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
+using SharedModels;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -164,7 +165,7 @@ namespace PresetMagician
                     _applicationService.ReportStatus("Report submitted successfully");
                     pluginsToReport.Select(c =>
                     {
-                        c.Configuration.IsReported = true;
+                        c.IsReported = true;
                         return c;
                     }).ToList();
                     _runtimeConfigurationService.Save();

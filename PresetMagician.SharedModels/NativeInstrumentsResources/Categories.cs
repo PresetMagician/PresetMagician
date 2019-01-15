@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Newtonsoft.Json;
+using PresetMagician.Models.NativeInstrumentsResources;
 
-namespace PresetMagician.Models.NativeInstrumentsResources
+namespace SharedModels.NativeInstrumentsResources
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class Categories

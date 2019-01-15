@@ -10,12 +10,13 @@ using Catel.Services;
 using PresetMagician.Models;
 using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
+using SharedModels;
 
 namespace PresetMagician.ViewModels
 {
     class VstPluginInfoViewModel : VstPluginViewModel
     {
-        public VstPluginInfoViewModel(Models.Plugin plugin, IVstService vstService, IOpenFileService openFileService,
+        public VstPluginInfoViewModel(Plugin plugin, IVstService vstService, IOpenFileService openFileService,
             ISelectDirectoryService selectDirectoryService, ILicenseService licenseService) : base(plugin, vstService, openFileService, selectDirectoryService,licenseService)
         {
             Plugin = plugin;

@@ -4,14 +4,15 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:behaviors="clr-namespace:PresetMagician.Behaviors"
     xmlns:catel="http://schemas.catelproject.com"
-    xmlns:converters="clr-namespace:PresetMagician.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dgx="urn:tom-englert.de/DataGridExtensions"
-    xmlns:helpers="clr-namespace:PresetMagician.Helpers"
+
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:PresetMagician.ViewModels"
+    xmlns:models="clr-namespace:SharedModels;assembly=PresetMagician.SharedModels"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    xmlns:fluent="urn:fluent-ribbon"
     Padding="1"
     d:DataContext="{d:DesignInstance viewModels:VstPluginsViewModel}"
     d:DesignHeight="450"
@@ -21,6 +22,7 @@
     <catel:UserControl.Resources>
         <ResourceDictionary>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <fluent:ColorToSolidColorBrushValueConverter x:Key="ColorToSolidColorBrush_ValueConverter" />
             
             <ControlTemplate x:Key="ComboboxFilter">
                 <Grid d:DataContext="{d:DesignInstance dgx:DataGridFilterColumnControl}">
@@ -159,7 +161,22 @@
                 dgx:Tools.ApplyInitialSorting="True"
                 dgx:DataGridFilter.FilterEvaluationDelay="0:0:0.1"
                 SelectionUnit="FullRow">
+                <DataGrid.Resources>
+                    <DataTemplate x:Key="PluginImages" DataType="{x:Type models:Plugin}">
+                        <StackPanel Height="22" Margin="0" Orientation="Horizontal"
+                                    Background="{Binding NativeInstrumentsResource.Color.BackgroundColor, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}">
+                            <Image Margin="0,0,10,0" Height="22" RenderOptions.BitmapScalingMode="HighQuality"
+                                   Source="{Binding NativeInstrumentsResource.VB_artwork}"
+                                   HorizontalAlignment="Left" />
+                            <Image Margin="0" Height="22" RenderOptions.BitmapScalingMode="HighQuality"
+                                   Source="{Binding NativeInstrumentsResource.VB_logo}"
+                                   HorizontalAlignment="Left" />
+                        </StackPanel>
+                    </DataTemplate>
+                </DataGrid.Resources>
                 <DataGrid.Columns>
+                    <DataGridTemplateColumn CellStyle="{StaticResource NoPaddingCellStyle}"
+                                            dgx:DataGridFilterColumn.IsFilterVisible="False" CellTemplate="{StaticResource PluginImages}"/>
                     <DataGridTextColumn
                         Width="150"
                         Binding="{Binding PluginName}"

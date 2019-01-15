@@ -1,25 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Linq;
-using Catel.Collections;
 using Catel.Data;
-using Drachenkatze.PresetMagician.VSTHost.VST;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser
+namespace SharedModels
 {
     
 
-    public class PresetBank : ModelBase, IPresetBank
+    public class PresetBank : ObservableObject
     {
         public string BankName { get; set; }
-        public IPresetBank ParentBank { get; set; }
+        public PresetBank ParentBank { get; set; }
 
         public PresetBank(string bankName = "All Banks")
         {
-            PresetBanks = new ObservableCollection<IPresetBank>();
-            
+            PresetBanks = new ObservableCollection<PresetBank>();
+
             PresetBanks.CollectionChanged += delegate(object sender, NotifyCollectionChangedEventArgs e)                    
             {
                 if (e.Action == NotifyCollectionChangedAction.Add)
@@ -33,12 +31,17 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             BankName = bankName;
         }
 
+        public PresetBank First()
+        {
+            return PresetBanks.First();
+        }
+
         public List<string> GetBankPath ()
         {
            
                 List<string> bankPaths = new List<string>();
 
-                if (ParentBank != null)
+                if (ParentBank != null && ParentBank.ParentBank != null)
                 {
                     bankPaths.AddRange(ParentBank.GetBankPath());
                 }
@@ -54,14 +57,14 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             {
                 var bankPath = GetBankPath();
                 bankPath.RemoveAt(0);
-                return string.Join<string>(" / ", bankPath);
+                return string.Join<string>("/", bankPath);
             }
         }
 
-        public IPresetBank CreateRecursive(string bankPath)
+        public PresetBank CreateRecursive(string bankPath)
         {
             var bankParts = bankPath.Split('/').ToList();
-            IPresetBank foundBank = null;
+            PresetBank foundBank = null;
             
             foreach (var presetBank in PresetBanks)
             {
@@ -82,13 +85,13 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
             if (bankParts.Count > 0)
             {
-                foundBank.CreateRecursive(string.Join<string>(" / ", bankParts));    
+                return foundBank.CreateRecursive(string.Join<string>("/", bankParts));    
             }
 
             return foundBank;
         }
 
-        public IPresetBank FindBankPath(string bankPath)
+        public PresetBank FindBankPath(string bankPath)
         {
             if (BankPath == bankPath)
             {
@@ -114,7 +117,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         /// Gets or sets the Presets value.
         /// </summary>
 
-        public ObservableCollection<IPresetBank> PresetBanks { get; set; }
+        public ObservableCollection<PresetBank> PresetBanks { get; set; }
 
         #endregion
     }

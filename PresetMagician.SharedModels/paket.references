@@ -1,0 +1,9 @@
+Catel.Core
+System.ValueTuple
+Anotar.Catel.Fody
+VST.NET.x64
+Catel.Fody
+Fody
+PropertyChanged.Fody copy_local: false
+SharpZipLib
+K4os.Compression.LZ4

@@ -14,6 +14,7 @@ using PresetMagician.Helpers;
 using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.ViewModels;
+using SharedModels;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -44,11 +45,11 @@ namespace PresetMagician
         protected override async Task ExecuteAsync(object parameter)
         {
             var pluginPresets = from item in _vstService.PresetExportList
-                group item by item.PluginDLLPath into pluginGroup
+                group item by item.Plugin into pluginGroup
                 let first = pluginGroup.First()
                 select new
                 {
-                    Plugin = new { DLLPath = first.PluginDLLPath },
+                    Plugin = first.Plugin,
                     Presets = pluginGroup.Select(gi => new { Preset = gi })
                 };
 
@@ -75,7 +76,7 @@ namespace PresetMagician
                 foreach (var pluginPreset in pluginPresets)
                 {
                     var plugin = (from q in _vstService.Plugins
-                        where q.DllPath == pluginPreset.Plugin.DLLPath
+                        where q.DllPath == pluginPreset.Plugin.DllPath
                         select q).First();
 
 
@@ -84,7 +85,6 @@ namespace PresetMagician
                     tempPlugin.DllPath = plugin.DllPath;
 
                     _vstService.VstHost.LoadVST(tempPlugin);
-                    tempPlugin.Configuration = plugin.Configuration;
 
                     foreach (var preset in pluginPreset.Presets)
                     {
@@ -97,18 +97,22 @@ namespace PresetMagician
                         {
                             return;
                         }
+                        
+                        var presetData = _vstService.GetPresetData(preset.Preset);
 
                         if (_runtimeConfigurationService.RuntimeConfiguration.ExportWithAudioPreviews &&
-                            plugin.PluginType == VstHost.PluginTypes.Instrument)
+                            plugin.PluginType == Plugin.PluginTypes.Instrument)
                         {
-                            exporter.ExportPresetAudioPreviewRealtime(tempPlugin, preset.Preset);
+                            exporter.ExportPresetAudioPreviewRealtime(tempPlugin, preset.Preset, presetData);
                         }
-
-                        exporter.ExportPresetNKSF(tempPlugin, preset.Preset);
+                        
+                        exporter.ExportPresetNKSF(tempPlugin, preset.Preset, presetData);
                         plugin.PresetParser.OnAfterPresetExport(_vstService.VstHost, tempPlugin);
+                        preset.Preset.LastExported = DateTime.Now;
                     }
 
                     _vstService.VstHost.UnloadVST(tempPlugin);
+                    _vstService.SavePlugins();
                 }
             });
 

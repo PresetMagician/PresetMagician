@@ -16,6 +16,7 @@ using Catel.Threading;
 using MethodTimer;
 using Orc.Squirrel;
 using Orchestra.Services;
+using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.ViewModels;
 
@@ -78,6 +79,8 @@ namespace PresetMagician.Services
         {
             _splashScreenService.Action = "Loading configuration…";
             LoadConfiguration();
+
+            InitDatabase();
             _splashScreenService.Action = "Restoring application layout…";
             var x = _serviceLocator.ResolveType<IRuntimeConfigurationService>();
             x.LoadLayout();
@@ -169,6 +172,11 @@ namespace PresetMagician.Services
             var runtimeConfigurationService = _serviceLocator.ResolveType<IRuntimeConfigurationService>();
             runtimeConfigurationService.Load();
         }
+        
+        private void InitDatabase()
+        {
+            
+        }
 
         private void RegisterTypes()
         {
@@ -180,6 +188,7 @@ namespace PresetMagician.Services
             serviceLocator.RegisterType<IRuntimeConfigurationService, RuntimeConfigurationService>();
             serviceLocator.RegisterType<IVstService, VstService>();
             serviceLocator.RegisterType<IApplicationService, ApplicationService>();
+            serviceLocator.RegisterType<IDatabaseService, DatabaseService>();
         }
 
         #endregion Methods

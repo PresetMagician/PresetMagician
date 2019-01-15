@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -8,117 +11,75 @@ using System.Text;
 using Catel.Data;
 using Drachenkatze.PresetMagician.NKSF.NKSF;
 using Drachenkatze.PresetMagician.VendorPresetParser;
-using Drachenkatze.PresetMagician.VSTHost.VST;
 using Jacobi.Vst.Core;
 using Jacobi.Vst.Interop.Host;
 using Newtonsoft.Json;
+using PresetMagician.Models;
+using PresetMagician.Models.NativeInstrumentsResources;
+using PresetMagician.SharedModels;
 using Path = Catel.IO.Path;
 
-namespace PresetMagician.Models
+namespace SharedModels
 {
-    [JsonObject(MemberSerialization.OptIn)]
-    public class Plugin : ModelBase, IVstPlugin, IDisposable
+    public class Plugin : ObservableObject, IDisposable
     {
+        private int CollectionChangedCounter;
+        
+        public enum PluginTypes
+        {
+            Effect,
+            Instrument,
+            Unknown
+        }
+
+        public Dictionary<(int, string), Preset> PresetCache = new Dictionary<(int, string), Preset>();
+
+        #region Methods
+        
         public Plugin()
         {
-            PresetParser = new NullPresetParser();
-            Configuration = new PluginConfiguration();
+            Presets.CollectionChanged += PresetsOnCollectionChanged;
+            RootBank.PresetBanks.Add(new PresetBank());
         }
 
-
-        public string LoadErrorMessage { get; private set; }
-
-        /// <summary>
-        /// Gets or sets the table collection.
-        /// </summary>
-        public List<PluginInfoItem> PluginInfoItems
+        private void PresetsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            get { return _pluginInfoItems.ToList(); }
-        }
-
-        private ObservableCollection<PluginInfoItem> _pluginInfoItems = new ObservableCollection<PluginInfoItem>();
-
-        #region PresetBanks property
-
-        /// <summary>
-        /// Gets or sets the PresetBanks value.
-        /// </summary>
-        public PresetBank RootBank { get; } = new PresetBank();
-
-        public ObservableCollection<Preset> Presets { get; set; } = new ObservableCollection<Preset>();
-
-        #endregion
-
-
-        #region Properties
-
-        public bool LoadError { get; private set; }
-        public Exception LoadException { get; private set; }
-
-        private VstPluginContext _pluginContext = null;
-
-        public VstPluginContext PluginContext
-        {
-            get { return _pluginContext; }
-            set
+            if (CollectionChangedCounter != Presets.Count)
             {
-                _pluginContext = value;
-                RaisePropertyChanged(nameof(IsLoaded));
+                CollectionChangedCounter = Presets.Count;
+                RaisePropertyChanged(nameof(NumPresets));
             }
         }
-
-        public MemoryStream ChunkPresetMemoryStream { get; } = new MemoryStream();
-        public MemoryStream ChunkBankMemoryStream { get; } = new MemoryStream();
-
         
-        [JsonProperty] public string DllPath { get; set; }
-        
-        [JsonProperty] public IPluginConfiguration Configuration { get; set; }
-
-        public string DllDirectory => Path.GetDirectoryName(DllPath);
-
-        public string DllFilename => Path.GetFileName(DllPath);
-
-        [JsonProperty] public VstHost.PluginTypes PluginType { get; set; } = VstHost.PluginTypes.Unknown;
-
-        public String PluginTypeDescription => PluginType.ToString();
-
-        [JsonProperty] public int PluginId { get; set; }
-
-        public int NumPresets { get; set; }
-
-        [JsonProperty] public string PluginName { get; set; } = "";
-
-        public int PresetParserAudioPreviewPreDelay => PresetParser.AudioPreviewPreDelay;
-
-        [JsonProperty] public string PluginVendor { get; set; }
-
-
-        public IVendorPresetParser PresetParser { get; private set; }
-
-        public bool IsScanned { get; set; }
-
-        public bool IsLoaded
+        public void SetPresetChunk(byte [] data, bool isPreset)
         {
-            get
+            
+            PluginContext.PluginCommandStub.SetChunk(data, isPreset);
+        }
+        
+        public void GetPresetChunk()
+        {
+            var data = PluginContext.PluginCommandStub.GetChunk(true);
+
+            if (!(data is null))
             {
-                if (PluginContext != null)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                ChunkPresetMemoryStream.SetLength(0);
+                ChunkPresetMemoryStream.Write(data, 0, data.Length);
+
+                RaisePropertyChanged(nameof(ChunkPresetMemoryStream));
+            }
+
+            data = PluginContext.PluginCommandStub.GetChunk(false);
+
+            if (!(data is null))
+            {
+                ChunkBankMemoryStream.SetLength(0);
+                ChunkBankMemoryStream.Write(data, 0, data.Length);
+
+                RaisePropertyChanged(nameof(ChunkBankMemoryStream));
             }
         }
-
         
-
-        public bool IsSupported { get; set; }
-
-        #endregion
-
         public void OnLoaded()
         {
             PluginName = PluginContext.PluginCommandStub.GetEffectName();
@@ -142,30 +103,17 @@ namespace PresetMagician.Models
             }
             
             PluginId = PluginContext.PluginInfo.PluginID;
-            NumPresets = PluginContext.PluginInfo.ProgramCount;
 
             if (PluginContext.PluginInfo.Flags.HasFlag(VstPluginFlags.IsSynth))
             {
-                PluginType = VstHost.PluginTypes.Instrument;
+                PluginType = PluginTypes.Instrument;
             }
             else
             {
-                PluginType = VstHost.PluginTypes.Effect;
+                PluginType = PluginTypes.Effect;
             }
 
             PopulatePluginInfoItems();
-        }
-
-        public void DeterminatePresetParser()
-        {
-            PresetParser = VendorPresetParser.GetPresetHandler(this);
-
-            if (PresetParser == null)
-            {
-                IsSupported = false;
-            }
-
-            IsSupported = !PresetParser.IsNullParser;
         }
 
         public void Dispose()
@@ -184,14 +132,7 @@ namespace PresetMagician.Models
 
         public override string ToString()
         {
-            if (IsLoaded)
-            {
-                return $"{PluginVendor} {PluginName} ({PluginId})";
-            }
-            else
-            {
-                return $"{DllPath}";
-            }
+            return IsLoaded ? $"{PluginVendor} {PluginName} ({PluginId})" : $"{DllPath}";
         }
 
         public void OnLoadError(Exception e)
@@ -199,38 +140,6 @@ namespace PresetMagician.Models
             LoadError = true;
             LoadErrorMessage = e.ToString();
             LoadException = e;
-        }
-
-        public void SetPresetChunk(byte [] data, bool isPreset)
-        {
-            PluginContext.PluginCommandStub.SetChunk(data, isPreset);
-        }
-        
-        public void GetPresetChunk()
-        {
-            var data = PluginContext.PluginCommandStub.GetChunk(true);
-
-            if (!(data is null))
-            {
-                ChunkPresetMemoryStream.SetLength(0);
-                ChunkPresetMemoryStream.Write(data, 0, data.Length);
-
-                Debug.WriteLine($"Copied {data.Length} bytes to stream");
-
-                RaisePropertyChanged(nameof(ChunkPresetMemoryStream));
-            }
-
-            data = PluginContext.PluginCommandStub.GetChunk(false);
-
-            if (!(data is null))
-            {
-                ChunkBankMemoryStream.SetLength(0);
-                ChunkBankMemoryStream.Write(data, 0, data.Length);
-
-                Debug.WriteLine($"Copied {data.Length} bytes to stream");
-
-                RaisePropertyChanged(nameof(ChunkBankMemoryStream));
-            }
         }
 
         public void PopulatePluginInfoItems()
@@ -362,5 +271,150 @@ namespace PresetMagician.Models
                     pluginContext.PluginCommandStub.GetProgramName()));
             }
         }
+        
+        #endregion
+
+        [NotMapped]
+        public string LoadErrorMessage { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the table collection.
+        /// </summary>
+        [NotMapped]
+        public List<PluginInfoItem> PluginInfoItems
+        {
+            get { return _pluginInfoItems.ToList(); }
+        }
+
+        private ObservableCollection<PluginInfoItem> _pluginInfoItems = new ObservableCollection<PluginInfoItem>();
+
+        #region PresetBanks property
+
+        /// <summary>
+        /// Gets or sets the PresetBanks value.
+        /// </summary>
+        [NotMapped]
+        public PresetBank RootBank { get; } = new PresetBank();
+        
+        
+        public ObservableCollection<Preset> Presets { get; set; } = new ObservableCollection<Preset>();
+
+        #endregion
+
+
+        #region Properties
+
+        [NotMapped]
+        public bool LoadError { get; private set; }
+        
+        [NotMapped]
+        public Exception LoadException { get; private set; }
+
+        private VstPluginContext _pluginContext;
+
+        [NotMapped]
+        public VstPluginContext PluginContext
+        {
+            get { return _pluginContext; }
+            set
+            {
+                _pluginContext = value;
+                RaisePropertyChanged(nameof(IsLoaded));
+            }
+        }
+
+        [NotMapped]
+        public MemoryStream ChunkPresetMemoryStream { get; } = new MemoryStream();
+        [NotMapped]
+        public MemoryStream ChunkBankMemoryStream { get; } = new MemoryStream();
+
+        
+        [Key]
+        public int Id { get; set; }
+        
+        /// <summary>
+        /// Defines the full path to the plugin DLL
+        /// </summary>
+        [Index(IsUnique = true)]
+        public string DllPath { get; set; }
+        
+        /// <summary>
+        /// Returns the DLL directory in which the DLL is located
+        /// </summary>
+        public string DllDirectory => string.IsNullOrEmpty(DllPath) ? null : Path.GetDirectoryName(DllPath);
+
+        /// <summary>
+        /// Returns the Dll Filename without the path
+        /// </summary>
+        public string DllFilename => string.IsNullOrEmpty(DllPath) ? null : Path.GetFileName(DllPath);
+        
+        /// <summary>
+        /// Defines if the current plugin is enabled
+        /// </summary>
+        public bool IsEnabled { get; set; } = true;
+        
+        /// <summary>
+        /// Defines if the current plugin is being scanned.
+        /// This flag is used to detect crashes
+        /// </summary>
+        public bool IsScanning { get; set; }
+        
+        /// <summary>
+        /// Defines if the plugin DLL is present.
+        /// A plugin is present if it's DLL Path exists and it is contained within the configured paths
+        /// </summary>
+        public bool IsPresent { get; set; } = true;
+        
+        
+        public int AudioPreviewPreDelay { get; set; }
+        
+        [NotMapped]
+        public ControllerAssignments DefaultControllerAssignments { get; set; }
+
+        // ReSharper disable once UnusedMember.Global
+        public string SerializedDefaultControllerAssignments
+        {
+            get => JsonConvert.SerializeObject(DefaultControllerAssignments);
+            set => DefaultControllerAssignments = JsonConvert.DeserializeObject<ControllerAssignments>(value);
+        }
+
+        public bool IsReported { get; set; }
+        public ObservableCollection<BankFile> AdditionalBankFiles { get; } = new ObservableCollection<BankFile>();
+
+        public ICollection<Type> DefaultTypes { get; set; } = new HashSet<Type>();
+
+        public ICollection<Mode> DefaultModes { get; set; } = new HashSet<Mode>();
+        
+        public PluginTypes PluginType { get; set; } = PluginTypes.Unknown;
+
+        public string PluginTypeDescription => PluginType.ToString();
+
+        public int PluginId { get; set; }
+
+        [NotMapped]
+        public int NumPresets => Presets.Count;
+
+        public string PluginName { get; set; } = "";
+
+        public int PresetParserAudioPreviewPreDelay => PresetParser?.AudioPreviewPreDelay ?? 0;
+
+        public string PluginVendor { get; set; }
+
+        public IVendorPresetParser PresetParser { get; set; }
+
+        [NotMapped]
+        public bool IsScanned { get; set; }
+
+        public bool IsLoaded => PluginContext != null;
+
+
+        [NotMapped]
+        public bool IsSupported { get; set; }
+
+        [NotMapped]
+        public NativeInstrumentsResource NativeInstrumentsResource { get; set; } = new NativeInstrumentsResource();
+        #endregion
+
+        
     }
 }

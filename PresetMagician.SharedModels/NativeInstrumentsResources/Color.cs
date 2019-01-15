@@ -1,7 +1,7 @@
 using Catel.Data;
 using Newtonsoft.Json;
 
-namespace PresetMagician.Models.NativeInstrumentsResources
+namespace SharedModels.NativeInstrumentsResources
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class Color: ModelBase
