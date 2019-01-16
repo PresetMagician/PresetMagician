@@ -52,3 +52,4 @@ nuget EntityFramework
 nuget SQLite.CodeFirst
 nuget System.Data.HashFunction.xxHash
 nuget K4os.Compression.LZ4
+nuget EFInteractiveViews

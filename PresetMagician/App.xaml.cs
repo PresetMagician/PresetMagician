@@ -65,8 +65,6 @@ namespace PresetMagician
             LogManager.AddListener(fileLogListener);
             LogManager.GetCurrentClassLogger().Debug("Startup");
 
-            var x = Assembly.GetExecutingAssembly().GetTypes();
-
             try
             {
                 RotateLogFile(fileLogListener.FilePath);
@@ -86,7 +84,6 @@ namespace PresetMagician
             
             NBug.Settings.AdditionalReportFiles.Add(fileLogListener.FilePath);
 
-            
             await StartShell();
         }
 

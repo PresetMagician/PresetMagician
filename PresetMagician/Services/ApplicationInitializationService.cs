@@ -19,6 +19,7 @@ using Orchestra.Services;
 using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.ViewModels;
+using SharedModels;
 
 namespace PresetMagician.Services
 {
@@ -52,6 +53,9 @@ namespace PresetMagician.Services
             _viewModelFactory = viewModelFactory;
 
             _splashScreenService = serviceLocator.ResolveType<ISplashScreenService>() as SplashScreenService;
+            
+            _splashScreenService.Action = "Initializing database…";
+            InitDatabase();
             _squirrelResult = new SquirrelResult();
 
         }
@@ -60,40 +64,39 @@ namespace PresetMagician.Services
 
         #region Methods
 
+        [Time]
         public override async Task InitializeBeforeCreatingShellAsync()
         {
             // Non-async first
             RegisterTypes();
             InitializeCommands();
-            
-            await TaskHelper.RunAndWaitAsync(new Func<Task>[]
-            {
-                CheckForUpdatesAsync
-                
-            });
-
-            
         }
         
+        [Time]
         public override async Task InitializeBeforeShowingShellAsync()
         {
             _splashScreenService.Action = "Loading configuration…";
             LoadConfiguration();
 
-            InitDatabase();
+            
             _splashScreenService.Action = "Restoring application layout…";
             var x = _serviceLocator.ResolveType<IRuntimeConfigurationService>();
             x.LoadLayout();
         }
 
-        public override Task InitializeAfterShowingShellAsync()
+        [Time]
+        public override async Task InitializeAfterShowingShellAsync()
         {
             var serviceLocator = ServiceLocator.Default;
             var licenseService = serviceLocator.ResolveType<ILicenseService>(); 
             if (!licenseService.CheckLicense()) {
                 StartRegistration();
             }
-            return base.InitializeAfterShowingShellAsync();
+
+            await TaskHelper.Run(() =>
+                { _commandManager.ExecuteCommand(Commands.Plugin.RefreshPlugins); },true);
+            await base.InitializeAfterShowingShellAsync();
+            await CheckForUpdatesAsync();
         }
 
         private async void StartRegistration()
@@ -107,7 +110,6 @@ namespace PresetMagician.Services
         private async Task CheckForUpdatesAsync()
         {
             Log.Info("Checking for updates…");
-            _splashScreenService.Action = "Checking for updates…";
 
             var updateService = _serviceLocator.ResolveType<IUpdateService>();
             updateService.Initialize(Settings.Application.AutomaticUpdates.AvailableChannels,
@@ -123,6 +125,7 @@ namespace PresetMagician.Services
             return _squirrelResult;
         }
 
+        [Time]
         private void InitializeCommands()
         {
             _commandManager.CreateCommandWithGesture(typeof(Commands.Application), "CancelOperation");
@@ -167,17 +170,21 @@ namespace PresetMagician.Services
             
         }
         
+        [Time]
         private void LoadConfiguration()
         {
             var runtimeConfigurationService = _serviceLocator.ResolveType<IRuntimeConfigurationService>();
             runtimeConfigurationService.Load();
         }
         
+        [Time]
         private void InitDatabase()
         {
+            ApplicationDatabaseContext.InitializeViewCache();
             
         }
 
+        [Time]
         private void RegisterTypes()
         {
             var serviceLocator = ServiceLocator.Default;

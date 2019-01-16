@@ -7,3 +7,7 @@ Fody
 PropertyChanged.Fody copy_local: false
 SharpZipLib
 K4os.Compression.LZ4
+EntityFramework
+System.Data.SQLite
+SQLite.CodeFirst
+EFInteractiveViews

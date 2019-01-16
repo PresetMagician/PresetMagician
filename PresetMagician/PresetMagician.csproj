@@ -35,7 +35,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <DebugType>pdbonly</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -132,14 +132,9 @@
     <Compile Include="Helpers\AvalonDockHelper.cs" />
     <Compile Include="Helpers\BindingProxy.cs" />
     <Compile Include="Helpers\ShellDimensionsHelper.cs" />
-    <Compile Include="Migrations\BaseMigration.cs" />
-    <Compile Include="Migrations\IMigration.cs" />
-    <Compile Include="Migrations\Migration20191501.cs" />
-    <Compile Include="Models\ApplicationDatabaseContext.cs" />
     <Compile Include="Models\ApplicationState.cs" />
     <Compile Include="Models\ControllerAssignments\ControllerAssignmentControl.cs" />
     <Compile Include="Models\ControllerAssignments\ControllerAssignmentPage.cs" />
-    <Compile Include="Models\EventArgs\PresetUpdatedEventArgs.cs" />
     <Compile Include="Models\RuntimeConfiguration.cs" />
     <Compile Include="Models\Settings\VstDirectory.cs" />
     <Compile Include="Services\AboutInfoService.cs" />
