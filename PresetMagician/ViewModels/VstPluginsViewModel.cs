@@ -54,8 +54,7 @@ namespace PresetMagician.ViewModels
 
         protected override async Task InitializeAsync()
         {
-            await TaskHelper.Run(() =>
-            { _commandManager.ExecuteCommand(Commands.Plugin.RefreshPlugins); },true);
+            
             await base.InitializeAsync();
         }
 
