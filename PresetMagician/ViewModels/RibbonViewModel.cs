@@ -2,35 +2,34 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls.Primitives;
 using CannedBytes.Midi.Message;
 using Catel;
-using Catel.Collections;
-using Catel.Configuration;
 using Catel.IoC;
-using Catel.IO;
 using Catel.MVVM;
 using Catel.Reflection;
-using Catel.Runtime.Serialization;
 using Catel.Services;
-using Catel.Threading;
-using Drachenkatze.PresetMagician.VendorPresetParser;
-using Drachenkatze.PresetMagician.VSTHost.VST;
+using ColorThiefDotNet;
 using Orchestra.Services;
-using Orchestra.ViewModels;
-using Portable.Licensing;
 using PresetMagician.Models;
-using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.Views;
-using Xceed.Wpf.AvalonDock;
-using Xceed.Wpf.AvalonDock.Layout.Serialization;
-using Win32Mapi;
-using Xceed.Wpf.AvalonDock.Layout;
+using SharedModels.NativeInstrumentsResources;
+using Color = System.Drawing.Color;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using Drachenkatze.PresetMagician.Utils;
+using Brushes = System.Drawing.Brushes;
+using ColorConverter = System.Drawing.ColorConverter;
+using Pen = System.Drawing.Pen;
+using Size = System.Drawing.Size;
 
 namespace PresetMagician.ViewModels
 {
@@ -55,13 +54,13 @@ namespace PresetMagician.ViewModels
             IServiceLocator serviceLocator,
             IRuntimeConfigurationService runtimeConfigurationService,
             IVstService vstService
-           )
+        )
         {
             Argument.IsNotNull(() => uiVisualizerService);
             Argument.IsNotNull(() => serviceLocator);
             Argument.IsNotNull(() => runtimeConfigurationService);
             Argument.IsNotNull(() => vstService);
-            
+
             _uiVisualizerService = uiVisualizerService;
             _serviceLocator = serviceLocator;
             _vstService = vstService;
@@ -75,14 +74,16 @@ namespace PresetMagician.ViewModels
             Title = AssemblyHelper.GetEntryAssembly().Title();
             ShowAboutDialog = new TaskCommand(OnShowAboutDialogExecuteAsync);
             ShowThemeTest = new TaskCommand(OnShowThemeTestExecuteAsync);
-            ResetDock = new TaskCommand(OnResetDockExecuteAsync);
             DoSomething = new TaskCommand(OnDoSomethingExecuteAsync);
         }
+
         #endregion
-        
+
         #region Properties
+
         public bool HasPresetSelection { get; set; }
         public MidiNoteName ApplyMidiNote { get; set; } = new MidiNoteName();
+
         #endregion
 
         private void OnSelectedPresetsListChanged(object o, NotifyCollectionChangedEventArgs ev)
@@ -105,8 +106,9 @@ namespace PresetMagician.ViewModels
                 HasPresetSelection = false;
             }
         }
-        
+
         #region Commands
+
         /// <summary>
         /// Gets the ShowKeyboardMappings command.
         /// </summary>
@@ -120,7 +122,7 @@ namespace PresetMagician.ViewModels
             var aboutService = ServiceLocator.Default.ResolveType<IAboutService>();
             await aboutService.ShowAboutAsync();
         }
-        
+
         /// <summary>
         /// Gets the ShowKeyboardMappings command.
         /// </summary>
@@ -135,20 +137,6 @@ namespace PresetMagician.ViewModels
             aboutService.Show();
         }
 
-        /// <summary>
-        /// Gets the ShowKeyboardMappings command.
-        /// </summary>
-        public TaskCommand ResetDock { get; private set; }
-
-        /// <summary>
-        /// Method to invoke when the ShowKeyboardMappings command is executed.
-        /// </summary>
-        private async Task OnResetDockExecuteAsync()
-        {
-            var serviceLocator = ServiceLocator.Default;
-            var x = serviceLocator.ResolveType<IRuntimeConfigurationService>();
-            x.ResetLayout();
-        }
 
         /// <summary>
         /// Gets the ShowKeyboardMappings command.
@@ -160,13 +148,14 @@ namespace PresetMagician.ViewModels
         /// </summary>
         private async Task OnDoSomethingExecuteAsync()
         {
-            var mainView = ServiceLocator.Default.ResolveType<LayoutAnchorable>("PluginSettings");
             
-            //mainView.ToggleAutoHide();
+
+
+           
         }
 
         
-       
-        #endregion 
+
+        #endregion
     }
 }

@@ -35,7 +35,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -147,7 +147,9 @@
     <Compile Include="Services\Interfaces\IApplicationService.cs" />
     <Compile Include="Services\Interfaces\ICustomStatusService.cs" />
     <Compile Include="Services\Interfaces\ILicenseService.cs" />
+    <Compile Include="Services\Interfaces\INativeInstrumentsResourceGeneratorService.cs" />
     <Compile Include="Services\LicenseService.cs" />
+    <Compile Include="Services\NativeInstrumentsResourceGeneratorService.cs" />
     <Compile Include="Services\RuntimeConfigurationService.cs" />
     <Compile Include="Services\EventArgs\StartupActionChangedEventArgs.cs" />
     <Compile Include="Services\Interfaces\IRuntimeConfigurationService.cs" />
@@ -376,10 +378,6 @@
       <Project>{3f01003f-9e52-4f4d-a5fd-ecdd9017c048}</Project>
       <Name>Drachenkatze.PresetMagician.VendorPresetParser</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Drachenkatze.PresetMagician.VSTHost\Drachenkatze.PresetMagician.VSTHost.csproj">
-      <Project>{bb9702b3-2826-411a-b7c5-ef64348a7a5c}</Project>
-      <Name>Drachenkatze.PresetMagician.VSTHost</Name>
-    </ProjectReference>
     <ProjectReference Include="..\NBug\NBug\NBug.csproj">
       <Project>{62ced1d5-f603-40de-8bf5-3e49d3a392f4}</Project>
       <Name>NBug</Name>
@@ -387,6 +385,18 @@
     <ProjectReference Include="..\PresetMagician.SharedModels\PresetMagician.SharedModels.csproj">
       <Project>{445ac4fe-6acc-4e19-9424-b35c0b8b5804}</Project>
       <Name>PresetMagician.SharedModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PresetMagician.VstHost\PresetMagician.VstHost.csproj">
+      <Project>{bb9702b3-2826-411a-b7c5-ef64348a7a5c}</Project>
+      <Name>PresetMagician.VstHost</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\vst.net\Source\Code\Jacobi.Vst.Core\Jacobi.Vst.Core.Clr4.csproj">
+      <Project>{5950f8a9-f413-4ace-b6e0-6f458b4c26f9}</Project>
+      <Name>Jacobi.Vst.Core.Clr4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\vst.net\Source\Code\Jacobi.Vst.Interop\Jacobi.Vst.Interop.Clr4.vcxproj">
+      <Project>{e0cc0ccf-a40d-4a53-8fac-b6af7e76eb08}</Project>
+      <Name>Jacobi.Vst.Interop.Clr4</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -698,6 +708,17 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
       <ItemGroup>
+        <Reference Include="ColorThief.Desktop.v46">
+          <HintPath>..\packages\ksemenenko.ColorThief\lib\net46\ColorThief.Desktop.v46.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
         <Reference Include="MahApps.Metro.IconPacks">
           <HintPath>..\packages\MahApps.Metro.IconPacks\lib\net46\MahApps.Metro.IconPacks.dll</HintPath>
           <Private>True</Private>
@@ -954,20 +975,6 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
       <ItemGroup>
-        <Reference Include="System.ComponentModel.DataAnnotations">
-          <Paket>True</Paket>
-        </Reference>
-        <Reference Include="SQLite.CodeFirst">
-          <HintPath>..\packages\SQLite.CodeFirst\lib\net45\SQLite.CodeFirst.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
-      <ItemGroup>
         <Reference Include="SQLitePCLRaw.batteries_e_sqlite3">
           <HintPath>..\packages\SQLitePCLRaw.bundle_e_sqlite3\lib\net45\SQLitePCLRaw.batteries_e_sqlite3.dll</HintPath>
           <Private>True</Private>
@@ -1044,6 +1051,9 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
       <ItemGroup>
+        <Reference Include="System.ComponentModel.DataAnnotations">
+          <Paket>True</Paket>
+        </Reference>
         <Reference Include="mscorlib">
           <Paket>True</Paket>
         </Reference>
@@ -1187,27 +1197,6 @@
       <ItemGroup>
         <Reference Include="System.ValueTuple">
           <HintPath>..\packages\System.ValueTuple\lib\net461\System.ValueTuple.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
-      <ItemGroup>
-        <Reference Include="Jacobi.Vst.Core">
-          <HintPath>..\packages\VST.NET.x64\lib\net40\Jacobi.Vst.Core.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-        <Reference Include="Jacobi.Vst.Framework">
-          <HintPath>..\packages\VST.NET.x64\lib\net40\Jacobi.Vst.Framework.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-        <Reference Include="Jacobi.Vst.Interop">
-          <HintPath>..\packages\VST.NET.x64\lib\net40\Jacobi.Vst.Interop.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>

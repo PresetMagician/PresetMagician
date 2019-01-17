@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows;
@@ -43,6 +44,13 @@ namespace PresetMagician
             TaskScheduler.UnobservedTaskException += NBug.Handler.UnobservedTaskException;
 
             NBug.Settings.CustomSubmissionEvent += Settings_CustomSubmissionEvent;
+            
+            #if DEBUG
+            AppDomain.CurrentDomain.FirstChanceException += (sender, eventArgs) =>
+            {
+                Debug.WriteLine(eventArgs.Exception.ToString());
+            };
+            #endif
         }
 
         protected override async void OnStartup(StartupEventArgs e)

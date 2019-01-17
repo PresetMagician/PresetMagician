@@ -77,11 +77,6 @@ namespace PresetMagician.Services
         {
             _splashScreenService.Action = "Loading configuration…";
             LoadConfiguration();
-
-            
-            _splashScreenService.Action = "Restoring application layout…";
-            var x = _serviceLocator.ResolveType<IRuntimeConfigurationService>();
-            x.LoadLayout();
         }
 
         [Time]
@@ -196,6 +191,7 @@ namespace PresetMagician.Services
             serviceLocator.RegisterType<IVstService, VstService>();
             serviceLocator.RegisterType<IApplicationService, ApplicationService>();
             serviceLocator.RegisterType<IDatabaseService, DatabaseService>();
+            serviceLocator.RegisterType<INativeInstrumentsResourceGeneratorService, NativeInstrumentsResourceGeneratorService>();
         }
 
         #endregion Methods

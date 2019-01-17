@@ -18,6 +18,7 @@ using Drachenkatze.PresetMagician.VendorPresetParser;
 using NuGet;
 using PresetMagician.Models;
 using PresetMagician.Models.EventArgs;
+using PresetMagician.Models.NativeInstrumentsResources;
 using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
 using SharedModels;
@@ -36,6 +37,7 @@ namespace PresetMagician
         protected readonly IDispatcherService _dispatcherService;
         protected readonly ICommandManager _commandManager;
         protected readonly IDatabaseService _databaseService;
+        protected readonly INativeInstrumentsResourceGeneratorService _resourceGeneratorService;
         private int _totalPresets;
         private int _currentPresetIndex;
         private int updateThrottle;
@@ -46,7 +48,7 @@ namespace PresetMagician
             IRuntimeConfigurationService runtimeConfigurationService, IVstService vstService,
             IApplicationService applicationService,
             IDispatcherService dispatcherService,
-            IDatabaseService databaseService)
+            IDatabaseService databaseService, INativeInstrumentsResourceGeneratorService resourceGeneratorService)
             : base(command, commandManager)
         {
             Argument.IsNotNull(() => runtimeConfigurationService);
@@ -54,6 +56,7 @@ namespace PresetMagician
             Argument.IsNotNull(() => applicationService);
             Argument.IsNotNull(() => dispatcherService);
             Argument.IsNotNull(() => databaseService);
+            Argument.IsNotNull(() => resourceGeneratorService);
 
             _runtimeConfigurationService = runtimeConfigurationService;
             _vstService = vstService;
@@ -61,6 +64,7 @@ namespace PresetMagician
             _dispatcherService = dispatcherService;
             _databaseService = databaseService;
             _commandManager = commandManager;
+            _resourceGeneratorService = resourceGeneratorService;
 
             _vstService.Plugins.CollectionChanged += OnPluginsListChanged;
             _runtimeConfigurationService.ApplicationState.PropertyChanged += OnAllowPluginScanChanged;
@@ -137,6 +141,7 @@ namespace PresetMagician
                             _databaseService.Context.LoadPresetsForPlugin(vst);
                             vst.Presets.CollectionChanged -= PresetsOnCollectionChanged;
 
+                            
                             _totalPresets = vst.PresetParser.GetNumPresets();
                             _currentPresetIndex = 0;
 
@@ -165,9 +170,30 @@ namespace PresetMagician
                             _databaseService.Context.PresetUpdated -= ContextOnPresetUpdated;
 
                             vst.IsScanned = true;
-                            _dispatcherService.Invoke(() => { vst.NativeInstrumentsResource.Load(vst); });
+                            
+
+                            await _dispatcherService.InvokeAsync(async () =>
+                            {
+                            vst.NativeInstrumentsResource.Load(vst);
+                                if (_runtimeConfigurationService.RuntimeConfiguration.AutoCreateResources)
+                                {
+                                    _logger.Debug($"Auto-generating resources for {vst.DllFilename}");
+                                    _applicationService.UpdateApplicationOperationStatus(
+                                        pluginsToScan.IndexOf(vst),
+                                        $"Auto-generating resources for {vst.DllFilename}");
+
+
+                                    await _resourceGeneratorService.AutoGenerateResources(vst);
+                                }
+                                    });
+                                
+
+                           
+                            
 
                             await _databaseService.Context.Flush();
+
+                            
 
                             _logger.Debug($"Unloading {vst.DllFilename}");
                             _vstService.VstHost.UnloadVST(vst);

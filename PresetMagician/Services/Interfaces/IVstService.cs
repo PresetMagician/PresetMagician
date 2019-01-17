@@ -15,7 +15,7 @@ namespace PresetMagician.Services.Interfaces
         Plugin SelectedPlugin { get; set; }
         FastObservableCollection<Plugin> SelectedPlugins { get; }
         ObservableCollection<Plugin> Plugins { get; }
-        VstHost VstHost { get; set; }
+        Drachenkatze.PresetMagician.VSTHost.VST.VstHost VstHost { get; set; }
         FastObservableCollection<Preset> PresetExportList { get; }
         Preset SelectedExportPreset { get; set; }
         FastObservableCollection<Preset> SelectedPresets { get; }

@@ -1,9 +1,22 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
+using System.Threading;
+using System.Windows;
 using System.Windows.Forms;
-
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Threading;
+using ControlzEx.Standard;
 using Jacobi.Vst.Core;
 using Jacobi.Vst.Interop.Host;
+using PresetMagician.Helpers;
+using SharedModels;
+using IWin32Window = System.Windows.Forms.IWin32Window;
+using Size = System.Drawing.Size;
+
 
 namespace PresetMagician.Views
 {
@@ -79,6 +92,10 @@ namespace PresetMagician.Views
 
             base.Show();
         }
+
+       
+
+        
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {

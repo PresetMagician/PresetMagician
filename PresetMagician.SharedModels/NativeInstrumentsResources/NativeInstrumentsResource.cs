@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Windows.Media.Imaging;
+using System.Windows.Media;
 using System.Xml.Linq;
 using Anotar.Catel;
 using Catel.Data;
@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SharedModels;
 using SharedModels.NativeInstrumentsResources;
-using ColorConverter = System.Windows.Media.ColorConverter;
+using Color = SharedModels.NativeInstrumentsResources.Color;
 
 namespace PresetMagician.Models.NativeInstrumentsResources
 {
@@ -19,37 +19,45 @@ namespace PresetMagician.Models.NativeInstrumentsResources
         public Color Color { get; set; } = new Color();
         public Categories Categories { get; set; } = new Categories();
         public ShortNames ShortNames { get; set; } = new ShortNames();
+        
+        private ResourceStates _resourceState;
+
+        public ResourceStates ResourceState
+        {
+            get => _resourceState;
+            set
+            {
+                switch (value)
+                {
+                    case ResourceStates.Empty:
+                    case ResourceStates.AutomaticallyGenerated:
+                    case ResourceStates.FromDisk:
+                        ShouldSave = false;
+                        break;
+                    case ResourceStates.FromWeb:
+                    case ResourceStates.UserModified:
+                        ShouldSave = true;
+                        break;
+                }
+
+                _resourceState = value;
+            }
+        }
+        
+        public bool ShouldSave { get; set; }
 
         #region Images
 
-        /*public string MST_artwork { get; set; }
-        public string MST_logo { get; set; }
-        public string MST_plugin { get; set; }
-        
-        public string OSO_logo { get; set; }
-        public string VB_artwork { get; set; }
-        public string VB_logo { get; set; }*/
+        public ResourceImage VB_logo { get; } = new ResourceImage(279, 47, "VB_logo.png");
+        public ResourceImage VB_artwork { get; } = new ResourceImage(96, 47, "VB_artwork.png");
+        public ResourceImage MST_artwork { get; } = new ResourceImage(134, 66, "MST_artwork.png");
+        public ResourceImage MST_plugin { get; } = new ResourceImage(127, 70, "MST_plugin.png");
+        public ResourceImage MST_logo { get; } = new ResourceImage(240, 196, "MST_logo.png");
+        public ResourceImage OSO_logo { get; } = new ResourceImage(417, 65, "OSO_logo.png");
 
+        public List<ResourceImage> ResourceImages { get; } = new List<ResourceImage>();
         #endregion
-
-        public BitmapImage VB_logo { get; set; } = new BitmapImage();
-        public MemoryStream VB_logoStream { get; set; } = new MemoryStream();
-
-        public BitmapImage VB_artwork { get; set; } = new BitmapImage();
-        public MemoryStream VB_artworkStream { get; set; } = new MemoryStream();
-
-        public BitmapImage MST_artwork { get; set; } = new BitmapImage();
-        public MemoryStream MST_artworkStream { get; set; } = new MemoryStream();
-
-        public BitmapImage MST_plugin { get; set; } = new BitmapImage();
-        public MemoryStream MST_pluginStream { get; set; } = new MemoryStream();
-
-        public BitmapImage MST_logo { get; set; } = new BitmapImage();
-        public MemoryStream MST_logoStream { get; set; } = new MemoryStream();
-
-        public BitmapImage OSO_logo { get; set; } = new BitmapImage();
-        public MemoryStream OSO_logoStream { get; set; } = new MemoryStream();
-
+        
         public static string GetNativeInstrumentsResourcesDirectory()
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments),
@@ -68,38 +76,74 @@ namespace PresetMagician.Models.NativeInstrumentsResources
                 plugin.PluginName.ToLower());
         }
 
+        public NativeInstrumentsResource()
+        {
+            ResourceImages.Add(VB_logo);
+            ResourceImages.Add(VB_artwork);
+            ResourceImages.Add(MST_logo);
+            ResourceImages.Add(MST_plugin);
+            ResourceImages.Add(MST_artwork);
+            ResourceImages.Add(OSO_logo);
+        }
+
+        private static string GetHexColor(System.Windows.Media.Color color)
+        {
+            return $"{color.R:X2}{color.G:X2}{color.B:X2}";
+        }
+
+        public string GetCategoriesJson()
+        {
+            Categories.CategoryDB.First().Categories.Clear();
+
+            foreach (var category in Categories.CategoryNames)
+            {
+                Categories.CategoryDB.First().Categories.Add(category.Name);
+            }
+
+            return JsonConvert.SerializeObject(Categories);
+        }
+
         public void Save(Plugin plugin)
         {
+            LogTo.Debug($"Begin saving metadata for {plugin.PluginName}");
             var files = GetFiles(plugin);
-
             var ResourcesDirectory = GetDistDatabaseDirectory(plugin);
             var ImagesDirectory = GetImageDirectory(plugin);
+            
+            if (!Directory.Exists(ImagesDirectory))
+            {
+                Directory.CreateDirectory(ImagesDirectory);
+            }
+            
+            foreach (var image in ResourceImages)
+            {
+                image.Save(ImagesDirectory);
+            }
+
+            if (!ShouldSave)
+            {
+                LogTo.Debug($"Not saving metadata for {plugin.PluginName} with state {ResourceState.ToString()}");
+                return;
+            }
+          
 
             if (!Directory.Exists(ResourcesDirectory))
             {
                 Directory.CreateDirectory(ResourcesDirectory);
             }
 
-            if (!Directory.Exists(ImagesDirectory))
-            {
-                Directory.CreateDirectory(ImagesDirectory);
-            }
+            
 
-            Color.VB_bgcolor = $"{Color.BackgroundColor.R:X2}{Color.BackgroundColor.G:X2}{Color.BackgroundColor.B:X2}";
+            Color.VB_bgcolor = GetHexColor(Color.BackgroundColor);
             File.WriteAllText(files["color"], JsonConvert.SerializeObject(Color));
 
             File.WriteAllText(files["shortname"], JsonConvert.SerializeObject(ShortNames));
 
             try
             {
-                Categories.CategoryDB.First().Categories.Clear();
+                
 
-                foreach (var category in Categories.CategoryNames)
-                {
-                    Categories.CategoryDB.First().Categories.Add(category.Name);
-                }
-
-                File.WriteAllText(files["categories"], JsonConvert.SerializeObject(Categories));
+                File.WriteAllText(files["categories"], GetCategoriesJson());
             }
             catch (Exception e)
             {
@@ -127,55 +171,24 @@ namespace PresetMagician.Models.NativeInstrumentsResources
                 LogTo.Debug(e.StackTrace);
             }
 
-            if (VB_logoStream.Length > 0)
-            {
-                File.WriteAllBytes(files["VB_logo"], VB_logoStream.ToArray());
-            }
             
-            if (VB_artworkStream.Length > 0)
-            {
-                File.WriteAllBytes(files["VB_artwork"], VB_artworkStream.ToArray());
-            }
-            
-            if (MST_logoStream.Length > 0)
-            {
-                File.WriteAllBytes(files["MST_logo"], MST_logoStream.ToArray());
-            }
-            
-            if (MST_artworkStream.Length > 0)
-            {
-                File.WriteAllBytes(files["MST_artwork"], MST_artworkStream.ToArray());
-            }
-            
-            if (MST_pluginStream.Length > 0)
-            {
-                File.WriteAllBytes(files["MST_plugin"], MST_pluginStream.ToArray());
-            }
-            
-            if (OSO_logoStream.Length > 0)
-            {
-                File.WriteAllBytes(files["OSO_logo"], OSO_logoStream.ToArray());
-            }
+
         }
 
-        public void CreateMetaFile(Plugin plugin, string dbType, string outputFile)
+        private static void CreateMetaFile(Plugin plugin, string dbType, string outputFile)
         {
-            var doc = new XDocument();
-            doc.Declaration = new XDeclaration("1.0", "UTF-8", "no");
+            var doc = new XDocument {Declaration = new XDeclaration("1.0", "UTF-8", "no")};
 
             var resource = new XElement("resource");
             resource.SetAttributeValue("version", "1.0");
 
-            var vendor = new XElement("vendor");
-            vendor.Value = plugin.PluginVendor;
+            var vendor = new XElement("vendor") {Value = plugin.PluginVendor};
             resource.Add(vendor);
 
-            var name = new XElement("name");
-            name.Value = plugin.PluginName;
+            var name = new XElement("name") {Value = plugin.PluginName};
             resource.Add(name);
 
-            var type = new XElement("type");
-            type.Value = dbType;
+            var type = new XElement("type") {Value = dbType};
             resource.Add(type);
 
             doc.Add(resource);
@@ -183,22 +196,14 @@ namespace PresetMagician.Models.NativeInstrumentsResources
             doc.Save(outputFile);
         }
 
-        public Dictionary<string, string> GetFiles(Plugin plugin)
+        private static Dictionary<string, string> GetFiles(Plugin plugin)
         {
-            Dictionary<string, string> files = new Dictionary<string, string>();
-            var ResourcesDirectory = GetDistDatabaseDirectory(plugin);
-            var ImagesDirectory = GetImageDirectory(plugin);
+            var files = new Dictionary<string, string>();
+            var resourcesDirectory = GetDistDatabaseDirectory(plugin);
 
-            files.Add("color", Path.Combine(ResourcesDirectory, "color.json"));
-            files.Add("shortname", Path.Combine(ResourcesDirectory, "shortname.json"));
-            files.Add("categories", Path.Combine(ResourcesDirectory, "categories.json"));
-
-            files.Add("VB_logo", Path.Combine(ImagesDirectory, "VB_logo.png"));
-            files.Add("VB_artwork", Path.Combine(ImagesDirectory, "VB_artwork.png"));
-            files.Add("MST_logo", Path.Combine(ImagesDirectory, "MST_logo.png"));
-            files.Add("MST_artwork", Path.Combine(ImagesDirectory, "MST_artwork.png"));
-            files.Add("MST_plugin", Path.Combine(ImagesDirectory, "MST_plugin.png"));
-            files.Add("OSO_logo", Path.Combine(ImagesDirectory, "OSO_logo.png"));
+            files.Add("color", Path.Combine(resourcesDirectory, "color.json"));
+            files.Add("shortname", Path.Combine(resourcesDirectory, "shortname.json"));
+            files.Add("categories", Path.Combine(resourcesDirectory, "categories.json"));
 
             return files;
         }
@@ -213,14 +218,16 @@ namespace PresetMagician.Models.NativeInstrumentsResources
             ShortNames.MST_shortname = (string)obj["shortName_MST"];
             ShortNames.MIKRO_shortname = (string)obj["shortName_MIKRO"];
 
-            VB_logo = ReplaceImageFromBase64((string) obj["image_VB_logo"], VB_logoStream);
-            VB_artwork = ReplaceImageFromBase64((string) obj["image_VB_artwork"], VB_artworkStream);
-            MST_logo = ReplaceImageFromBase64((string) obj["image_MST_logo"], MST_logoStream);
-            MST_artwork = ReplaceImageFromBase64((string) obj["image_MST_artwork"], MST_artworkStream);
-            MST_plugin = ReplaceImageFromBase64((string) obj["image_MST_plugin"], MST_pluginStream);
-            OSO_logo = ReplaceImageFromBase64((string) obj["image_OSO_logo"], OSO_logoStream);
+            VB_logo.ReplaceFromBase64((string) obj["image_VB_logo"]);
+            VB_artwork.ReplaceFromBase64((string) obj["image_VB_artwork"]);
+            MST_logo.ReplaceFromBase64((string) obj["image_MST_logo"]);
+            MST_artwork.ReplaceFromBase64((string) obj["image_MST_artwork"]);
+            MST_plugin.ReplaceFromBase64((string) obj["image_MST_plugin"]);
+            OSO_logo.ReplaceFromBase64((string) obj["image_OSO_logo"]);
+            
+           
 
-            List<string> categoryStrings = ((string) obj["categories"]).Split(',').ToList();
+            var categoryStrings = ((string) obj["categories"]).Split(',').ToList();
             
             Categories.CategoryNames.Clear();
             
@@ -228,7 +235,9 @@ namespace PresetMagician.Models.NativeInstrumentsResources
             {
                 Categories.CategoryNames.Add(new Category {Name = categoryString});
             }
-        
+
+            ResourceState = ResourceStates.FromWeb;
+
 
         }
         public void Load(Plugin plugin)
@@ -251,7 +260,7 @@ namespace PresetMagician.Models.NativeInstrumentsResources
             }
             else
             {
-                Color.BackgroundColor = (System.Windows.Media.Color) ColorConverter.ConvertFromString("#000000");
+                Color.BackgroundColor = Colors.Transparent;
             }
 
             if (File.Exists(files["shortname"]))
@@ -266,13 +275,15 @@ namespace PresetMagician.Models.NativeInstrumentsResources
                 ShortNames.MIKRO_shortname = plugin.PluginName;
                 ShortNames.MST_shortname = plugin.PluginName;
             }
+            
+            Categories.CategoryNames.Clear();
 
             if (File.Exists(files["categories"]))
             {
                 Categories = JsonConvert.DeserializeObject<Categories>(
                     File.ReadAllText(files["categories"]));
 
-                Categories.CategoryNames.Clear();
+                
                 if (Categories.CategoryDB.Count == 1)
                 {
                     var categoryStrings = Categories.CategoryDB.First().Categories.ToArray();
@@ -283,15 +294,10 @@ namespace PresetMagician.Models.NativeInstrumentsResources
                 }
                 else
                 {
-                    var categoryDb = new CategoryDB();
-                    if (plugin.PluginType == Plugin.PluginTypes.Instrument)
+                    var categoryDb = new CategoryDB
                     {
-                        categoryDb.FileType = "INST";
-                    }
-                    else
-                    {
-                        categoryDb.FileType = "FX";
-                    }
+                        FileType = plugin.PluginType == Plugin.PluginTypes.Instrument ? "INST" : "FX",
+                    };
 
                     Categories.CategoryDB.Add(categoryDb);
                     Categories.Vendor = plugin.PluginVendor;
@@ -300,84 +306,67 @@ namespace PresetMagician.Models.NativeInstrumentsResources
             }
             else
             {
-                var categoryDb = new CategoryDB();
-                if (plugin.PluginType == Plugin.PluginTypes.Instrument)
+                var categoryDb = new CategoryDB
                 {
-                    categoryDb.FileType = "INST";
-                }
-                else
-                {
-                    categoryDb.FileType = "FX";
-                }
+                    FileType = plugin.PluginType == Plugin.PluginTypes.Instrument ? "INST" : "FX"
+                };
 
                 Categories.CategoryDB.Add(categoryDb);
                 Categories.Vendor = plugin.PluginVendor;
                 Categories.Product = plugin.PluginName;
             }
 
-            if (File.Exists(files["VB_logo"]))
-            {
-                VB_logo = ReplaceImage(files["VB_logo"], VB_logoStream);
+            var imagesDirectory = GetImageDirectory(plugin);
+            
+            foreach (var resourceImage in ResourceImages) {
+                resourceImage.Load(imagesDirectory);
             }
 
-            if (File.Exists(files["VB_artwork"]))
-            {
-                VB_artwork = ReplaceImage(files["VB_artwork"], VB_artworkStream);
-            }
-
-            if (File.Exists(files["MST_logo"]))
-            {
-                MST_logo = ReplaceImage(files["MST_logo"], MST_logoStream);
-            }
-
-            if (File.Exists(files["MST_artwork"]))
-            {
-                MST_artwork = ReplaceImage(files["MST_artwork"], MST_artworkStream);
-            }
-
-            if (File.Exists(files["MST_plugin"]))
-            {
-                MST_plugin = ReplaceImage(files["MST_plugin"], MST_pluginStream);
-            }
-
-            if (File.Exists(files["OSO_logo"]))
-            {
-                OSO_logo = ReplaceImage(files["OSO_logo"], OSO_logoStream);
-            }
+            ResourceState = ResourceStates.FromDisk;
         }
-        
-        
 
-        public BitmapImage ReplaceImage(string fileName, MemoryStream targetStream)
+        public bool HasChanges(Plugin plugin)
         {
-            targetStream.SetLength(0);
+            var originalResources = new NativeInstrumentsResource();
+            originalResources.Load(plugin);
 
-            var bytes = File.ReadAllBytes(fileName);
-            targetStream.Write(bytes, 0, bytes.Length);
-            targetStream.Seek(0, SeekOrigin.Begin);
+            if (originalResources.Categories.CategoryNames.Count != Categories.CategoryNames.Count)
+            {
+                return true;
+            }
 
-            var targetImage = new BitmapImage();
-            targetImage.BeginInit();
-            targetImage.StreamSource = targetStream;
-            targetImage.EndInit();
+            foreach (var categoryName in originalResources.Categories.CategoryNames)
+                {
+                    if (!(from cat in Categories.CategoryNames where cat.Name == categoryName.Name select cat).Any())
+                    {
+                        return true;
+                    }
+                }
+         
 
-            return targetImage;
+            foreach (var image in ResourceImages)
+            {
+                if (image.ShouldSaveImage)
+                {
+                    return true;
+                }
+            }
+
+            return
+                GetHexColor(originalResources.Color.BackgroundColor) != GetHexColor(Color.BackgroundColor) ||
+                originalResources.ShortNames.VB_shortname != ShortNames.VB_shortname ||
+                originalResources.ShortNames.MST_shortname != ShortNames.MST_shortname ||
+                originalResources.ShortNames.MKII_shortname != ShortNames.MKII_shortname ||
+                originalResources.ShortNames.MIKRO_shortname != ShortNames.MIKRO_shortname;
         }
-        
-        public BitmapImage ReplaceImageFromBase64(string base64, MemoryStream targetStream)
+
+        public enum ResourceStates
         {
-            targetStream.SetLength(0);
-
-            var bytes = Convert.FromBase64String(base64);
-            targetStream.Write(bytes, 0, bytes.Length);
-            targetStream.Seek(0, SeekOrigin.Begin);
-
-            var targetImage = new BitmapImage();
-            targetImage.BeginInit();
-            targetImage.StreamSource = targetStream;
-            targetImage.EndInit();
-
-            return targetImage;
+            Empty,
+            FromDisk,
+            FromWeb,
+            AutomaticallyGenerated,
+            UserModified
         }
     }
 }

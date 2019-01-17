@@ -1,15 +1,10 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Data.Entity;
-using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using Catel;
 using Catel.Collections;
-using Catel.IoC;
-using Drachenkatze.PresetMagician.VendorPresetParser;
 using Drachenkatze.PresetMagician.VSTHost.VST;
-using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
 using SharedModels;
 
@@ -27,7 +22,7 @@ namespace PresetMagician.Services
 
             Plugins = _databaseService.Context.Plugins.Local;
             
-            VstHost = new VstHost();
+            VstHost = new Drachenkatze.PresetMagician.VSTHost.VST.VstHost();
         }
 
         public async Task SavePlugins()
@@ -40,7 +35,7 @@ namespace PresetMagician.Services
             return _databaseService.Context.GetPresetData(preset);
         }
 
-        public VstHost VstHost { get; set; }
+        public Drachenkatze.PresetMagician.VSTHost.VST.VstHost VstHost { get; set; }
 
 
         public FastObservableCollection<Plugin> SelectedPlugins { get; } = new FastObservableCollection<Plugin>();

@@ -49,6 +49,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
@@ -69,6 +70,7 @@
     <Compile Include="NativeInstrumentsResources\Category.cs" />
     <Compile Include="NativeInstrumentsResources\CategoryDB.cs" />
     <Compile Include="NativeInstrumentsResources\Color.cs" />
+    <Compile Include="NativeInstrumentsResources\ResourceImage.cs" />
     <Compile Include="NativeInstrumentsResources\NativeInstrumentsResource.cs" />
     <Compile Include="NativeInstrumentsResources\OnlineResource.cs" />
     <Compile Include="NativeInstrumentsResources\ShortNames.cs" />
@@ -91,6 +93,14 @@
     <ProjectReference Include="..\Drachenkatze.PresetMagician.Utils\Drachenkatze.PresetMagician.Utils.csproj">
       <Project>{37abda8a-5ffa-41f9-b880-a272d8c21dff}</Project>
       <Name>Drachenkatze.PresetMagician.Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\vst.net\Source\Code\Jacobi.Vst.Core\Jacobi.Vst.Core.Clr4.csproj">
+      <Project>{5950f8a9-f413-4ace-b6e0-6f458b4c26f9}</Project>
+      <Name>Jacobi.Vst.Core.Clr4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\vst.net\Source\Code\Jacobi.Vst.Interop\Jacobi.Vst.Interop.Clr4.vcxproj">
+      <Project>{e0cc0ccf-a40d-4a53-8fac-b6af7e76eb08}</Project>
+      <Name>Jacobi.Vst.Interop.Clr4</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -400,27 +410,6 @@
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
       <ItemGroup>
         <Reference Include="System.Xml.Linq">
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
-      <ItemGroup>
-        <Reference Include="Jacobi.Vst.Core">
-          <HintPath>..\packages\VST.NET.x64\lib\net40\Jacobi.Vst.Core.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-        <Reference Include="Jacobi.Vst.Framework">
-          <HintPath>..\packages\VST.NET.x64\lib\net40\Jacobi.Vst.Framework.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-        <Reference Include="Jacobi.Vst.Interop">
-          <HintPath>..\packages\VST.NET.x64\lib\net40\Jacobi.Vst.Interop.dll</HintPath>
-          <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>

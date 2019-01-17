@@ -32,24 +32,24 @@ namespace PresetMagician.ViewModels
 {
     public class VstPluginViewModel : ViewModelBase
     {
-        protected static readonly ILog Log = LogManager.GetCurrentClassLogger();
+        private static readonly ILog Log = LogManager.GetCurrentClassLogger();
         private readonly IVstService _vstService;
-        protected readonly IOpenFileService _openFileService;
+        private readonly IOpenFileService _openFileService;
         private readonly ISelectDirectoryService _selectDirectoryService;
         private readonly ILicenseService _licenseService;
+        private readonly INativeInstrumentsResourceGeneratorService _resourceGeneratorService;
 
-        public ObservableCollection<OnlineResource> OnlineResources { get; set; } =
-            new ObservableCollection<OnlineResource>();
-
-        public OnlineResource SelectedOnlineResource { get; set; }
+       
 
         public VstPluginViewModel(Plugin plugin, IVstService vstService, IOpenFileService openFileService,
-            ISelectDirectoryService selectDirectoryService, ILicenseService licenseService)
+            ISelectDirectoryService selectDirectoryService, ILicenseService licenseService, INativeInstrumentsResourceGeneratorService
+                resourceGeneratorService)
         {
             Argument.IsNotNull(() => vstService);
             Argument.IsNotNull(() => openFileService);
             Argument.IsNotNull(() => selectDirectoryService);
             Argument.IsNotNull(() => licenseService);
+            Argument.IsNotNull(() => resourceGeneratorService);
 
             Plugin = plugin;
 
@@ -57,8 +57,9 @@ namespace PresetMagician.ViewModels
             _selectDirectoryService = selectDirectoryService;
             _licenseService = licenseService;
             _vstService = vstService;
+            _resourceGeneratorService = resourceGeneratorService;
 
-            OpenNKSFFile = new TaskCommand(OnOpenNKSFFileExecute);
+            OpenNKSFile = new TaskCommand(OnOpenNKSFileExecute);
             ClearMappings = new TaskCommand(OnClearMappingsExecute);
             AddAdditionalPresetFiles = new TaskCommand(OnAddAdditionalPresetFilesExecute);
             AddAdditionalPresetFolder = new TaskCommand(OnAddAdditionalPresetFolderExecute);
@@ -78,15 +79,39 @@ namespace PresetMagician.ViewModels
             SubmitResource = new TaskCommand(OnSubmitResourceExecute);
             QueryOnlineResources = new TaskCommand(OnQueryOnlineResourcesExecute);
             LoadSelectedOnlineResource = new TaskCommand(OnLoadSelectedOnlineResourceExecute);
+            
+            GenerateResources = new TaskCommand(OnGenerateResourcesExecute);
+            
 
             Title = "Settings for " + Plugin.PluginName;
 
-            LoadNativeInstrumentsResources();
             GenerateControllerMappingModels();
         }
+        
+        #region Properties
+        
+        public ObservableCollection<OnlineResource> OnlineResources { get; set; } =
+            new ObservableCollection<OnlineResource>();
 
+        public OnlineResource SelectedOnlineResource { get; set; }
+        
+        public ObservableCollection<ControllerAssignmentPage> ControllerAssignmentPages { get; set; } =
+            new ObservableCollection<ControllerAssignmentPage>();
+
+        public int CurrentControllerAssignmentPage { get; set; }
+        
+        
+        public bool IsPluginSet => Plugin != null;
+
+        public Plugin Plugin { get; protected set; }
+        
+        #endregion
+
+        #region Commands
+        
+        #region LoadSelectedOnlineResource
+        
         public TaskCommand LoadSelectedOnlineResource { get; set; }
-
 
         private async Task OnLoadSelectedOnlineResourceExecute()
         {
@@ -107,38 +132,21 @@ namespace PresetMagician.ViewModels
                     var part = await response.Content.ReadAsStringAsync();
                     var data = JObject.Parse(part);
 
-                   NativeInstrumentsResource.LoadFromJObject(data);
+                    Plugin.NativeInstrumentsResource.LoadFromJObject(data);
                 }
             }
             catch (HttpRequestException e)
             {
+                Log.Error($"Unable to load online resources, error {e.ToString()}");
+                Log.Debug(e);
             }
         }
+        #endregion
+        
+        #region OpenNKSFile
+        public TaskCommand OpenNKSFile { get; set; }
 
-        protected override async Task<bool> SaveAsync()
-        {
-            NativeInstrumentsResource.Save(Plugin);
-            try
-            {
-                await _vstService.SavePlugins();
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e);
-            }
-
-            return await base.SaveAsync();
-        }
-
-        public ObservableCollection<ControllerAssignmentPage> ControllerAssignmentPages { get; set; } =
-            new ObservableCollection<ControllerAssignmentPage>();
-
-        public int CurrentControllerAssignmentPage { get; set; }
-
-
-        public TaskCommand OpenNKSFFile { get; set; }
-
-        private async Task OnOpenNKSFFileExecute()
+        private async Task OnOpenNKSFileExecute()
         {
             try
             {
@@ -155,29 +163,10 @@ namespace PresetMagician.ViewModels
                 Log.Error(ex, "Failed to open file");
             }
         }
-
-
-        private List<string> GetFiles(string path, List<string> patterns)
-        {
-            List<string> files = new List<string>();
-            var directory = new DirectoryInfo(path);
-
-            foreach (var pattern in patterns)
-            {
-                var results = directory.EnumerateFiles(pattern, SearchOption.AllDirectories);
-
-                foreach (var result in results)
-                {
-                    if (!files.Contains(result.FullName))
-                    {
-                        files.Add(result.FullName);
-                    }
-                }
-            }
-
-            return files;
-        }
-
+        #endregion
+        
+        #region AddAdditionalPresetFiles
+        
         public TaskCommand AddAdditionalPresetFiles { get; set; }
 
         private async Task OnAddAdditionalPresetFilesExecute()
@@ -201,6 +190,58 @@ namespace PresetMagician.ViewModels
                 Log.Error(ex, "Failed to open file");
             }
         }
+        
+        #endregion
+        #endregion
+
+        protected override async Task<bool> SaveAsync()
+        {
+            if (Plugin.NativeInstrumentsResource.HasChanges(Plugin))
+            {
+                Plugin.NativeInstrumentsResource.ShouldSave = true;
+                Plugin.NativeInstrumentsResource.Save(Plugin);
+            }
+            
+            try
+            {
+                await _vstService.SavePlugins();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+            }
+
+            return await base.SaveAsync();
+        }
+
+        
+
+
+       
+
+
+        private List<string> GetFiles(string path, List<string> patterns)
+        {
+            List<string> files = new List<string>();
+            var directory = new DirectoryInfo(path);
+
+            foreach (var pattern in patterns)
+            {
+                var results = directory.EnumerateFiles(pattern, SearchOption.AllDirectories);
+
+                foreach (var result in results)
+                {
+                    if (!files.Contains(result.FullName))
+                    {
+                        files.Add(result.FullName);
+                    }
+                }
+            }
+
+            return files;
+        }
+
+        
 
         public TaskCommand AddAdditionalPresetFolder { get; set; }
 
@@ -235,9 +276,8 @@ namespace PresetMagician.ViewModels
 
                 if (await _openFileService.DetermineFileAsync())
                 {
-                    NativeInstrumentsResource.VB_logo =
-                        NativeInstrumentsResource.ReplaceImage(_openFileService.FileName,
-                            NativeInstrumentsResource.VB_logoStream);
+                    Plugin.NativeInstrumentsResource.VB_logo.ReplaceFromFile(_openFileService.FileName,
+                        NativeInstrumentsResource.ResourceStates.UserModified);
                 }
             }
             catch (Exception ex)
@@ -257,9 +297,8 @@ namespace PresetMagician.ViewModels
 
                 if (await _openFileService.DetermineFileAsync())
                 {
-                    NativeInstrumentsResource.VB_artwork =
-                        NativeInstrumentsResource.ReplaceImage(_openFileService.FileName,
-                            NativeInstrumentsResource.VB_artworkStream);
+                    Plugin.NativeInstrumentsResource.VB_artwork.ReplaceFromFile(_openFileService.FileName,
+                        NativeInstrumentsResource.ResourceStates.UserModified);
                 }
             }
             catch (Exception ex)
@@ -279,9 +318,9 @@ namespace PresetMagician.ViewModels
 
                 if (await _openFileService.DetermineFileAsync())
                 {
-                    NativeInstrumentsResource.MST_artwork =
-                        NativeInstrumentsResource.ReplaceImage(_openFileService.FileName,
-                            NativeInstrumentsResource.MST_artworkStream);
+                    Plugin.NativeInstrumentsResource.MST_artwork.ReplaceFromFile(_openFileService.FileName,
+                        NativeInstrumentsResource.ResourceStates.UserModified);
+                 
                 }
             }
             catch (Exception ex)
@@ -301,9 +340,8 @@ namespace PresetMagician.ViewModels
 
                 if (await _openFileService.DetermineFileAsync())
                 {
-                    NativeInstrumentsResource.MST_logo =
-                        NativeInstrumentsResource.ReplaceImage(_openFileService.FileName,
-                            NativeInstrumentsResource.MST_logoStream);
+                    Plugin.NativeInstrumentsResource.MST_logo.ReplaceFromFile(_openFileService.FileName,
+                        NativeInstrumentsResource.ResourceStates.UserModified);
                 }
             }
             catch (Exception ex)
@@ -323,9 +361,8 @@ namespace PresetMagician.ViewModels
 
                 if (await _openFileService.DetermineFileAsync())
                 {
-                    NativeInstrumentsResource.MST_plugin =
-                        NativeInstrumentsResource.ReplaceImage(_openFileService.FileName,
-                            NativeInstrumentsResource.MST_pluginStream);
+                    Plugin.NativeInstrumentsResource.MST_plugin.ReplaceFromFile(_openFileService.FileName,
+                        NativeInstrumentsResource.ResourceStates.UserModified);
                 }
             }
             catch (Exception ex)
@@ -338,29 +375,33 @@ namespace PresetMagician.ViewModels
 
         private async Task OnSubmitResourceExecute()
         {
+            var niResource = Plugin.NativeInstrumentsResource;
+            
             List<string> categoryNames = new List<string>();
             
-            foreach (var category in NativeInstrumentsResource.Categories.CategoryNames)
+            foreach (var category in niResource.Categories.CategoryNames)
             {
                 categoryNames.Add(category.Name);
             }
+
+            
                         
             var resourceSubmission = JObject.FromObject(new
             {
                 email = _licenseService.GetCurrentLicense().Customer.Email,
                 pluginId = Plugin.PluginId.ToString(),
-                bgColor = NativeInstrumentsResource.Color.VB_bgcolor,
-                shortName_VB = NativeInstrumentsResource.ShortNames.VB_shortname,
-                shortName_MST = NativeInstrumentsResource.ShortNames.MST_shortname,
-                shortName_MKII = NativeInstrumentsResource.ShortNames.MKII_shortname,
-                shortName_MIKRO = NativeInstrumentsResource.ShortNames.MIKRO_shortname,
+                bgColor = niResource.Color.VB_bgcolor,
+                shortName_VB = niResource.ShortNames.VB_shortname,
+                shortName_MST = niResource.ShortNames.MST_shortname,
+                shortName_MKII = niResource.ShortNames.MKII_shortname,
+                shortName_MIKRO = niResource.ShortNames.MIKRO_shortname,
                 categories = string.Join(",", categoryNames),
-                image_VB_logo = Convert.ToBase64String(NativeInstrumentsResource.VB_logoStream.ToArray()),
-                image_VB_artwork = Convert.ToBase64String(NativeInstrumentsResource.VB_artworkStream.ToArray()),
-                image_MST_logo = Convert.ToBase64String(NativeInstrumentsResource.MST_logoStream.ToArray()),
-                image_MST_artwork = Convert.ToBase64String(NativeInstrumentsResource.MST_artworkStream.ToArray()),
-                image_MST_plugin = Convert.ToBase64String(NativeInstrumentsResource.MST_pluginStream.ToArray()),
-                image_OSO_logo = Convert.ToBase64String(NativeInstrumentsResource.OSO_logoStream.ToArray())
+                image_VB_logo = niResource.VB_logo.ToBase64(),
+                image_VB_artwork = niResource.VB_artwork.ToBase64(),
+                image_MST_logo = niResource.MST_logo.ToBase64(),
+                image_MST_artwork = niResource.MST_artwork.ToBase64(),
+                image_MST_plugin = niResource.MST_plugin.ToBase64(),
+                image_OSO_logo = niResource.OSO_logo.ToBase64()
             });
 
             HttpContent content = new StringContent(resourceSubmission.ToString());
@@ -441,9 +482,8 @@ namespace PresetMagician.ViewModels
 
                 if (await _openFileService.DetermineFileAsync())
                 {
-                    NativeInstrumentsResource.OSO_logo =
-                        NativeInstrumentsResource.ReplaceImage(_openFileService.FileName,
-                            NativeInstrumentsResource.OSO_logoStream);
+                    Plugin.NativeInstrumentsResource.OSO_logo.ReplaceFromFile(_openFileService.FileName,
+                        NativeInstrumentsResource.ResourceStates.UserModified);
                 }
             }
             catch (Exception ex)
@@ -451,25 +491,25 @@ namespace PresetMagician.ViewModels
                 Log.Error(ex, "Failed to open file");
             }
         }
+        
+        public TaskCommand GenerateResources { get; set; }
+
+        private async Task OnGenerateResourcesExecute ()
+        {
+            await _resourceGeneratorService.GenerateResources(Plugin);
+        }
 
         private void AddBankFile(string path)
         {
-            if (!(from bankFile in Plugin.AdditionalBankFiles where bankFile.Path == path select bankFile)
+            if ((from bankFile in Plugin.AdditionalBankFiles where bankFile.Path == path select bankFile)
                 .Any())
             {
-                string bankName;
-
-                if (Path.GetExtension(path) == ".fxp")
-                {
-                    bankName = "User Presets";
-                }
-                else
-                {
-                    bankName = Path.GetFileNameWithoutExtension(path);
-                }
-
-                Plugin.AdditionalBankFiles.Add(new BankFile {Path = path, BankName = bankName});
+                return;
             }
+
+            var bankName = Path.GetExtension(path) == ".fxp" ? "User Presets" : Path.GetFileNameWithoutExtension(path);
+
+            Plugin.AdditionalBankFiles.Add(new BankFile {Path = path, BankName = bankName});
         }
 
         public Command<object> RemoveAdditionalBankFiles { get; set; }
@@ -492,7 +532,7 @@ namespace PresetMagician.ViewModels
 
             foreach (var category in categories.ToList())
             {
-                NativeInstrumentsResource.Categories.CategoryNames.Remove(category);
+                Plugin.NativeInstrumentsResource.Categories.CategoryNames.Remove(category);
             }
         }
 
@@ -500,7 +540,7 @@ namespace PresetMagician.ViewModels
 
         private void OnAddCategoryExecute()
         {
-            NativeInstrumentsResource.Categories.CategoryNames.Add(new Category {Name = "New Category"});
+            Plugin.NativeInstrumentsResource.Categories.CategoryNames.Add(new Category {Name = "New Category"});
         }
 
         public TaskCommand ClearMappings { get; set; }
@@ -579,18 +619,7 @@ namespace PresetMagician.ViewModels
             CurrentControllerAssignmentPage = 0;
         }
 
-        public bool IsPluginSet
-        {
-            get { return Plugin != null; }
-        }
 
-        public Plugin Plugin { get; protected set; }
-        public NativeInstrumentsResource NativeInstrumentsResource { get; protected set; }
-
-        private void LoadNativeInstrumentsResources()
-        {
-            NativeInstrumentsResource = new NativeInstrumentsResource();
-            NativeInstrumentsResource.Load(Plugin);
-        }
+       
     }
 }

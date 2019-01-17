@@ -43,7 +43,7 @@ namespace PresetMagician
         {
             if (!_vstService.SelectedPlugin.IsLoaded)
             {
-                _vstService.VstHost.LoadVST(_vstService.SelectedPlugin);
+                await _vstService.VstHost.LoadVSTAsync(_vstService.SelectedPlugin);
             }
         }
     }

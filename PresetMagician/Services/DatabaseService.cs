@@ -1,11 +1,3 @@
-using System;
-using System.Collections.ObjectModel;
-using System.Data.Entity;
-using System.Diagnostics;
-using System.Linq;
-using Drachenkatze.PresetMagician.VSTHost.VST;
-using PresetMagician.Models;
-using PresetMagician.Services.Interfaces;
 using SharedModels;
 
 namespace PresetMagician.Services
