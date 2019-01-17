@@ -1,25 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Catel.Data;
-using Catel.MVVM;
-using Catel.Services;
-using PresetMagician.Models;
-using PresetMagician.Services;
-using PresetMagician.Services.Interfaces;
+﻿using Catel.MVVM;
 using SharedModels;
 
 namespace PresetMagician.ViewModels
 {
-    class VstPluginInfoViewModel : VstPluginViewModel
+    class VstPluginInfoViewModel : ViewModelBase
     {
-        public VstPluginInfoViewModel(Plugin plugin, IVstService vstService, IOpenFileService openFileService,
-            ISelectDirectoryService selectDirectoryService, ILicenseService licenseService) : base(plugin, vstService, openFileService, selectDirectoryService,licenseService)
+        public VstPluginInfoViewModel(Plugin plugin)
         {
             Plugin = plugin;
+            Title = "Plugin Info for " + Plugin.PluginName;
         }
+        
+        public Plugin Plugin { get; protected set; }
     }
 }

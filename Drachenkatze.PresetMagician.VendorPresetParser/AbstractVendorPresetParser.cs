@@ -42,17 +42,19 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
         public virtual int GetNumPresets()
         {
+            var rand = new Random();
+            return rand.Next(3000);
             throw new NotImplementedException(); 
         }
         
         public async Task DoScan()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         public void ScanBanks()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
         
         public virtual bool CanHandle()

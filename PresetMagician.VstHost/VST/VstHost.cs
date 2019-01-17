@@ -6,7 +6,9 @@ using System.IO;
 using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Security;
+using System.Threading.Tasks;
 using Catel.Collections;
+using Catel.Threading;
 using Jacobi.Vst.Core;
 using Jacobi.Vst.Interop.Host;
 using PresetMagician.Models;
@@ -57,13 +59,16 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
         public const int BlockSize = 512;
         public const float SampleRate = 44100f;
 
+        public async Task LoadVSTAsync(Plugin vst)
+        {
+            await TaskHelper.Run(() => LoadVST(vst), true);
+        }
 
         public void LoadVST(Plugin vst)
         {
             var hostCommandStub = new HostCommandStub();
 
-            try
-            {
+           
                 var ctx = VstPluginContext.Create(vst.DllPath, hostCommandStub);
 
                 vst.PluginContext = ctx;
@@ -77,11 +82,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                 vst.PluginContext.PluginCommandStub.MainsChanged(true);
                 IdleLoop(vst,1024);
                 vst.OnLoaded();
-            }
-            catch (Exception e)
-            {
-                vst.OnLoadError(e);
-            }
+           
         }
 
         public void IdleLoop(Plugin plugin, int loops)
@@ -161,6 +162,8 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
 
         public void UnloadVST(Plugin vst)
         {
+            vst.PluginContext.PluginCommandStub.MainsChanged(false);
+            vst.PluginContext.PluginCommandStub.StopProcess();
             vst.PluginContext?.Dispose();
             vst.PluginContext = null;
         }

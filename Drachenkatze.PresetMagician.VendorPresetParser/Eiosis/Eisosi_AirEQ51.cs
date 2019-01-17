@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Xml.Linq;
 using System.Xml.XPath;
-using Drachenkatze.PresetMagician.VSTHost.VST;
+using PresetMagician.VstHost.VST;
 using JetBrains.Annotations;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital

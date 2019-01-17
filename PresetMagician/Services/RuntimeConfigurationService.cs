@@ -31,18 +31,12 @@ namespace PresetMagician.Services
         
         private readonly JsonSerializer _jsonSerializer;
         private readonly ILog _logger = LogManager.GetCurrentClassLogger();
-        private readonly IServiceLocator _serviceLocator;
 
-        private LayoutRoot _originalLayout;
-
-        public RuntimeConfigurationService(IServiceLocator serviceLocator)
+        public RuntimeConfigurationService()
         {
-            Argument.IsNotNull(() => serviceLocator);
-
             RuntimeConfiguration = new RuntimeConfiguration();
             ApplicationState = new ApplicationState();
 
-            _serviceLocator = serviceLocator;
             _jsonSerializer = new JsonSerializer {Formatting = Formatting.Indented};
         }
 
@@ -103,35 +97,10 @@ namespace PresetMagician.Services
             }
         }
 
-        public void LoadLayout()
-        {
-            return;
-            // Disabled because loading the layout causes no documents to be active
-
-            _originalLayout = GetDockingManager().Layout;
-
-            if (File.Exists(_defaultLocalLayoutFilePath))
-                try
-                {
-                    GetLayoutSerializer().Deserialize(_defaultLocalLayoutFilePath);
-                }
-                catch (Exception)
-                {
-                    // Probably something wrong with the file, ignore
-                }
-        }
-
-        public void ResetLayout()
-        {
-            var dockingManager = GetDockingManager();
-
-            dockingManager.Layout = _originalLayout;
-        }
-
+       
         public void Save()
         {
             SaveConfiguration();
-            SaveLayout();
         }
 
         public void SaveConfiguration()
@@ -148,21 +117,6 @@ namespace PresetMagician.Services
             {
                 _jsonSerializer.Serialize(jsonWriter, RuntimeConfiguration);
             }
-        }
-
-        public void SaveLayout()
-        {
-            GetLayoutSerializer().Serialize(_defaultLocalLayoutFilePath);
-        }
-
-        private XmlLayoutSerializer GetLayoutSerializer()
-        {
-            return new XmlLayoutSerializer(GetDockingManager());
-        }
-
-        private DockingManager GetDockingManager()
-        {
-            return _serviceLocator.ResolveType<DockingManager>();
         }
 
         public bool IsConfigurationValueEqual (object left, object right)

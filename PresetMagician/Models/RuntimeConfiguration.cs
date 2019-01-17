@@ -19,7 +19,9 @@ namespace PresetMagician.Models
 
         [JsonProperty] public bool ExportWithAudioPreviews { get; set; } = true;
 
-        [JsonProperty] public bool CompressPresetData { get; set; } 
+        [JsonProperty] public bool CompressPresetData { get; set; }
+        
+        [JsonProperty] public bool AutoCreateResources { get; set; } 
 
         [JsonProperty]
         public FastObservableCollection<Plugin> CachedPlugins { get; set; } = new FastObservableCollection<Plugin>();

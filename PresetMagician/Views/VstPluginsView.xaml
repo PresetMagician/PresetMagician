@@ -166,10 +166,10 @@
                         <StackPanel Height="22" Margin="0" Orientation="Horizontal"
                                     Background="{Binding NativeInstrumentsResource.Color.BackgroundColor, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}">
                             <Image Margin="0,0,10,0" Height="22" RenderOptions.BitmapScalingMode="HighQuality"
-                                   Source="{Binding NativeInstrumentsResource.VB_artwork}"
+                                   Source="{Binding NativeInstrumentsResource.VB_artwork.Image}"
                                    HorizontalAlignment="Left" />
                             <Image Margin="0" Height="22" RenderOptions.BitmapScalingMode="HighQuality"
-                                   Source="{Binding NativeInstrumentsResource.VB_logo}"
+                                   Source="{Binding NativeInstrumentsResource.VB_logo.Image}"
                                    HorizontalAlignment="Left" />
                         </StackPanel>
                     </DataTemplate>

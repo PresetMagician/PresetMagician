@@ -9,12 +9,8 @@ namespace PresetMagician.Services.Interfaces
         void Load();
         void Save();
         void LoadConfiguration();
-        void LoadLayout();
         
-        void ResetLayout();
-
         void SaveConfiguration();
-        void SaveLayout();
         #endregion
         
         #region Fields

@@ -28,8 +28,8 @@ namespace PresetMagician
         public PluginScanSelectedPluginCommandContainer(ICommandManager commandManager,
             IRuntimeConfigurationService runtimeConfigurationService, IVstService vstService,
             IApplicationService applicationService,
-            IDispatcherService dispatcherService, IDatabaseService databaseService)
-            : base(Commands.Plugin.ScanSelectedPlugin, commandManager, runtimeConfigurationService, vstService, applicationService, dispatcherService, databaseService)
+            IDispatcherService dispatcherService, IDatabaseService databaseService, INativeInstrumentsResourceGeneratorService resourceGeneratorService)
+            : base(Commands.Plugin.ScanSelectedPlugin, commandManager, runtimeConfigurationService, vstService, applicationService, dispatcherService, databaseService, resourceGeneratorService)
         {
             vstService.SelectedPluginChanged += VstServiceOnSelectedPluginChanged;
         }

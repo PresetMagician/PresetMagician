@@ -27,8 +27,8 @@ namespace PresetMagician
         public PluginScanSelectedPluginsCommandContainer(ICommandManager commandManager,
             IRuntimeConfigurationService runtimeConfigurationService, IVstService vstService,
             IApplicationService applicationService,
-            IDispatcherService dispatcherService, IDatabaseService databaseService)
-            : base(Commands.Plugin.ScanSelectedPlugins, commandManager, runtimeConfigurationService, vstService, applicationService, dispatcherService, databaseService)
+            IDispatcherService dispatcherService, IDatabaseService databaseService, INativeInstrumentsResourceGeneratorService resourceGeneratorService)
+            : base(Commands.Plugin.ScanSelectedPlugins, commandManager, runtimeConfigurationService, vstService, applicationService, dispatcherService, databaseService, resourceGeneratorService)
         {
             vstService.SelectedPlugins.CollectionChanged += OnPluginsListChanged;
         }

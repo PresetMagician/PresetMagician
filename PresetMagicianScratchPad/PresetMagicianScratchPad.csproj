@@ -85,9 +85,9 @@
       <Project>{3f01003f-9e52-4f4d-a5fd-ecdd9017c048}</Project>
       <Name>Drachenkatze.PresetMagician.VendorPresetParser</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Drachenkatze.PresetMagician.VSTHost\Drachenkatze.PresetMagician.VSTHost.csproj">
+    <ProjectReference Include="..\PresetMagician.VstHost\PresetMagician.VstHost.csproj">
       <Project>{bb9702b3-2826-411a-b7c5-ef64348a7a5c}</Project>
-      <Name>Drachenkatze.PresetMagician.VSTHost</Name>
+      <Name>PresetMagician.VstHost</Name>
     </ProjectReference>
     <ProjectReference Include="..\PresetMagician\PresetMagician.csproj">
       <Project>{aff54505-ff0c-460d-8870-132e39c970e8}</Project>

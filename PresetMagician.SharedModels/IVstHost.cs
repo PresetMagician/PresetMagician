@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using PresetMagician.Models;
 using SharedModels;
 
@@ -18,5 +19,6 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
         void MIDI_NoteOff(Plugin plugin, byte Note, byte Velocity);
         void MIDI_NoteOn(Plugin plugin, byte Note, byte Velocity);
         void UnloadVST(Plugin vst);
+        Task LoadVSTAsync(Plugin vst);
     }
 }

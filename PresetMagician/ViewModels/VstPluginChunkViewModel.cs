@@ -17,17 +17,23 @@ using SharedModels;
 
 namespace PresetMagician.ViewModels
 {
-    public class VstPluginChunkViewModel : VstPluginViewModel
+    public class VstPluginChunkViewModel : ViewModelBase
     {
-        public VstPluginChunkViewModel(Plugin plugin, IVstService vstService, IOpenFileService openFileService,
-            ISelectDirectoryService selectDirectoryService, ILicenseService licenseService) : base(plugin, vstService, openFileService,
-            selectDirectoryService, licenseService)
+        private static readonly ILog Log = LogManager.GetCurrentClassLogger();
+        private readonly IOpenFileService _openFileService;
+        
+        public VstPluginChunkViewModel(Plugin plugin, IOpenFileService openFileService)
         {
+            _openFileService = openFileService;
             Plugin = plugin;
+            Title = "Plugin Info for " + Plugin.PluginName;
+            
             OpenWithHxDBank = new TaskCommand(OnOpenWithHxDBankExecute);
             OpenWithHxDPreset = new TaskCommand(OnOpenWithHxDPresetExecute);
             LoadBankChunk = new TaskCommand(OnLoadBankChunkExecute);
         }
+        
+        public Plugin Plugin { get; protected set; }
 
         public TaskCommand LoadBankChunk { get; set; }
 
@@ -51,7 +57,7 @@ namespace PresetMagician.ViewModels
         
         
         public TaskCommand OpenWithHxDBank { get; set; }
-        public TaskCommand OpenWithHxDPreset { get; set; }
+        
 
         private async Task OnOpenWithHxDBankExecute()
         {
@@ -69,6 +75,8 @@ namespace PresetMagician.ViewModels
 
             process.Start();
         }
+        
+        public TaskCommand OpenWithHxDPreset { get; set; }
 
         private async Task OnOpenWithHxDPresetExecute()
         {
