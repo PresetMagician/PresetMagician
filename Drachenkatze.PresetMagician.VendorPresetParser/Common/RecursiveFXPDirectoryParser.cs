@@ -6,18 +6,19 @@ using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
 {
-    public class RecursiveFXPDirectoryParser: RecursiveBankDirectoryParser
+    public class RecursiveFXPDirectoryParser : RecursiveBankDirectoryParser
     {
-        public RecursiveFXPDirectoryParser(Plugin plugin, string extension, ObservableCollection<Preset> presets) : base(plugin, extension, presets)
+        public RecursiveFXPDirectoryParser(Plugin plugin, string extension, IPresetDataStorer presetDataStorer) : base(
+            plugin, extension, presetDataStorer)
         {
         }
 
-        protected override void ProcessFile(string fileName, Preset preset)
+        protected override byte[] ProcessFile(string fileName, Preset preset)
         {
             var fxp = new FXP();
             fxp.ReadFile(fileName);
 
-            preset.PresetData = fxp.ChunkDataByteArray;
+            return fxp.ChunkDataByteArray;
         }
     }
 }

@@ -7,17 +7,14 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Audiority
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
-    public class Audiority_BlueFace: Audiority, IVendorPresetParser
+    public class Audiority_BlueFace : Audiority, IVendorPresetParser
     {
         public override List<int> SupportedPlugins => new List<int> {1194668409};
 
-
-        public void ScanBanks()
+        protected override string GetDataDirectory()
         {
-            var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 @"Audiority\Presets\Blue Face");
-
-            DoScan(RootBank, directory);
         }
     }
 }

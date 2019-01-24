@@ -11,13 +11,10 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Audiority
     {
         public override List<int> SupportedPlugins => new List<int> {1199076962};
 
-
-        public void ScanBanks()
+        protected override string GetDataDirectory()
         {
-            var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments),
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments),
                 @"Audiority\Presets\XenoVerb");
-
-            DoScan(RootBank, directory);
         }
     }
 }

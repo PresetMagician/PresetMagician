@@ -7,17 +7,14 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Audiority
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
-    public class Audiority_HarmonicMaximizer: Audiority, IVendorPresetParser
+    public class Audiority_HarmonicMaximizer : Audiority, IVendorPresetParser
     {
         public override List<int> SupportedPlugins => new List<int> {1097091149};
 
-
-        public void ScanBanks()
+        protected override string GetDataDirectory()
         {
-            var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 @"Audiority\Presets\Harmonic Maximizer");
-
-            DoScan(RootBank, directory);
         }
     }
 }

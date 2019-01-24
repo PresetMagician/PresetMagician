@@ -4,7 +4,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 {
     public class u_he_FilterscapeQ6 : u_he, IVendorPresetParser
     {
-        public override List<int> SupportedPlugins => new List<int> { 1179865398 };
+        public override List<int> SupportedPlugins => new List<int> {1179865398};
 
         public void ScanBanks()
         {

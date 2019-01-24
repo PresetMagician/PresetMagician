@@ -1,14 +1,23 @@
+using System.Threading.Tasks;
 using Drachenkatze.PresetMagician.VendorPresetParser.Common;
 using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.ValhallaDSP
 {
-    public abstract class ValhallaDSP: AbstractVendorPresetParser
+    public abstract class ValhallaDSP : AbstractVendorPresetParser
     {
-        protected void DoScan(PresetBank rootBank, string directory)
+        protected abstract string GetDataDirectory();
+
+        public override void Init()
         {
-            var vc2parser = new VC2Parser(Plugin, "vpreset",Presets);
-            vc2parser.DoScan(rootBank, directory);
+             BankLoadingNotes =
+            $"Presets are loaded from {GetDataDirectory()}. First sub-folder defines the bank.";
+        }
+
+        public override async Task DoScan()
+        {
+            var parser = new VC2Parser(Plugin, "vpreset", PresetDataStorer);
+            await parser.DoScan(RootBank, GetDataDirectory());
         }
     }
 }

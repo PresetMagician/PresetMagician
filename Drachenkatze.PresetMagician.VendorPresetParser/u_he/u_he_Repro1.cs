@@ -4,7 +4,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 {
     internal class u_he_Repro1 : u_he, IVendorPresetParser
     {
-        public override List<int> SupportedPlugins => new List<int> { 1968332593 };
+        public override List<int> SupportedPlugins => new List<int> {1968332593};
 
         public void ScanBanks()
         {

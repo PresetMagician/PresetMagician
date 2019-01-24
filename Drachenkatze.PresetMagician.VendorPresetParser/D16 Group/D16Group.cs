@@ -17,7 +17,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
     {
         protected abstract string XmlPluginName { get; }
         protected abstract string Extension { get; }
-        
+
         protected void ProcessD16PKGArchive(string archiveName, PresetBank bank)
         {
             Plugin.Debug($"ProcessD16PKGArchive {archiveName}");
@@ -40,7 +40,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
                     presetEntry.Open().CopyTo(ms);
                     ms.Seek(0, SeekOrigin.Begin);
 
-                    var presetData = Encoding.UTF8.GetString(ms.ToArray()); 
+                    var presetData = Encoding.UTF8.GetString(ms.ToArray());
 
                     Presets.Add(GetPreset(presetEntry.Name, presetData, bank));
                 }
@@ -52,7 +52,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
             Plugin.Debug($"ProcessPresetDirectory {presetDirectory}");
             var dirInfo = new DirectoryInfo(presetDirectory);
 
-            
+
             foreach (var file in dirInfo.EnumerateFiles("*" + Extension))
             {
                 var presetData = File.ReadAllText(file.FullName);
@@ -86,11 +86,10 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
             presetElement.SetAttributeValue("tags", null);
             presetElement.SetAttributeValue("version", null);
 
-         
 
             parametersState.Add(presetElement);
 
-            
+
             preset.PresetName = name.Replace(Extension, "");
             preset.SetPlugin(Plugin);
             preset.PresetBank = presetBank;
@@ -104,9 +103,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
 
         protected virtual void PostProcessXML(XElement presetElement)
         {
-            
         }
-        
+
         protected List<string> GetModes(string tags)
         {
             List<string> modes = new List<string>();
@@ -121,16 +119,17 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
             {
                 modes.AddRange(dict["Mode"]);
             }
+
             return modes;
         }
-        
+
         protected Dictionary<string, string[]> ExtractTags(string tags)
         {
             return tags.Split(';')
                 .Select(x => x.Split(':'))
                 .ToDictionary(x => x[0], x => x[1].Split('|'));
         }
-        
+
         protected string GetFactoryBankPath(string factoryBankPath)
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
@@ -141,6 +140,5 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), userBankPath);
         }
-       
     }
 }

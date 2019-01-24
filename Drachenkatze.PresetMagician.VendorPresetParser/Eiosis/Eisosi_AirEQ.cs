@@ -8,17 +8,19 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Eiosis
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
-    public class Eiosis_AirEQ : AbstractVendorPresetParser, IVendorPresetParser
+    public class Eiosis_AirEQ : SlateDigital.SlateDigital, IVendorPresetParser
     {
         public override List<int> SupportedPlugins => new List<int> {1095070032};
 
-        public void ScanBanks()
+       protected override string GetDataDirectory()
         {
-            var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 @"Eiosis\AirEQ\Presets");
-
-            var parser = new SlateDigitalPresetParser(RemoteVstService, Plugin, "epf", Presets, "AEqP");
-            parser.DoScan(RootBank, directory);
         }
+
+        protected override string GetPresetSectionName()
+       {
+           return "AEqP";
+       }
     }
 }

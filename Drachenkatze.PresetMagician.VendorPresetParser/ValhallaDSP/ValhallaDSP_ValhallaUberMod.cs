@@ -11,22 +11,25 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.ValhallaDSP
     {
         public override List<int> SupportedPlugins => new List<int> {1969382770};
 
-        private static readonly string ParseDirectory = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-            @"Valhalla DSP, LLC\ValhallaUberMod\Factory Presets");
-
-        public override string BankLoadingNotes { get; set; } =
-            $"Factory Presets are loaded from {ParseDirectory}. Sub-folders define the bank. User presets are "+
-            "currently not supported, if you know where user presets are saved please let me know";
-
-        public ValhallaDSP_ValhallaUberMod()
+        protected override string GetDataDirectory()
         {
+            return Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+                @"Valhalla DSP, LLC\ValhallaUberMod\Factory Presets");
+        }
+
+        public override void Init()
+        {
+            base.Init();
+            BankLoadingNotes = $"Factory Presets are loaded from {GetDataDirectory()}. Sub-folders define the bank. User presets are " +
+                               "currently not supported, if you know where user presets are saved please let me know";
+            
             DefaultModes.Add("Delay");
+            
+            
         }
         
-        public void ScanBanks()
-        {
-            DoScan(RootBank, ParseDirectory);
-        }
+      
+
     }
 }

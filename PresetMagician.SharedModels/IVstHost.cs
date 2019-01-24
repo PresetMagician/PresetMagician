@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using PresetMagician.Models;
@@ -13,8 +14,6 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
         /// </summary>
         /// <param name="pluginDirectory"></param>
         /// <returns></returns>
-        ObservableCollection<string> EnumeratePlugins(string pluginDirectory);
-
         bool LoadVst(VstPlugin vst);
         void MIDI_CC(VstPlugin plugin, byte Number, byte Value);
         void MIDI_NoteOff(VstPlugin plugin, byte Note, byte Velocity);

@@ -8,17 +8,19 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
-    public class SlateDigital_VerbSuiteClassics : AbstractVendorPresetParser, IVendorPresetParser
+    public class SlateDigital_VerbSuiteClassics : SlateDigital, IVendorPresetParser
     {
         public override List<int> SupportedPlugins => new List<int> {1450402640};
 
-        public void ScanBanks()
+       protected override string GetDataDirectory()
         {
-            var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 @"Slate Digital\VerbSuite Classics\Presets");
-
-            var parser = new SlateDigitalPresetParser(RemoteVstService, Plugin, "epf", Presets, "VscP");
-            parser.DoScan(RootBank, directory);
         }
+
+       protected override string GetPresetSectionName()
+       {
+           return "VscP";
+       }
     }
 }

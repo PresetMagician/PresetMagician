@@ -18,9 +18,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
     {
         public override List<int> SupportedPlugins => new List<int> {1095070005};
 
-        public void ScanBanks()
+       protected override string GetDataDirectory()
         {
-            var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 @"Eiosis\AirEQ 5.1\Presets");
 
             var parser = new AirEQ51PresetParser(VstPlugin, "epf", Presets, "AEqP");
@@ -58,3 +58,4 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
         }
     }
 }*/
+

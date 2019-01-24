@@ -1,0 +1,7 @@
+Catel.Core
+Catel.MVVM
+EntityFramework
+System.Data.SQLite
+SQLitePCLRaw.bundle_e_sqlite3
+sqlite-net-pcl
+CsvHelper

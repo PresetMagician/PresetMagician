@@ -22,7 +22,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group.PunchBox
         private const string FactoryBankPath = @"D16 Group\PunchBox\Presets\Master.d16pkg";
         private const string UserBankPath = @"D16 Group\PunchBox\UserStore\Presets\Master";
 
-        
 
         private int PresetExportCount;
 
@@ -71,13 +70,13 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group.PunchBox
             ProcessD16PKGArchive(GetFactoryBankPath(FactoryBankPath), factoryBank);
             return factoryBank;
         }
-        
+
         protected override void PostProcessXML(XElement presetElement)
         {
-           foreach (var element in presetElement.Element("ExtraData").Element("Samples").Elements())
-           {
-               element.SetAttributeValue("origin", "Factory");
-           }
+            foreach (var element in presetElement.Element("ExtraData").Element("Samples").Elements())
+            {
+                element.SetAttributeValue("origin", "Factory");
+            }
         }
     }
 }

@@ -14,9 +14,9 @@ namespace PresetMagician.Services
         
         public DatabaseService()
         {
-            _dbContext = ApplicationDatabaseContext.Create();
+            _dbContext = new ApplicationDatabaseContext();
         }
-
+        
         public ApplicationDatabaseContext Context
         {
             get { return _dbContext; }

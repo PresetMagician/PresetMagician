@@ -12,6 +12,7 @@ using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
 using Catel.Threading;
+using Drachenkatze.PresetMagician.Utils;
 using PresetMagician.Extensions;
 using PresetMagician.Models;
 using PresetMagician.Services;
@@ -64,7 +65,7 @@ namespace PresetMagician
 
             await TaskHelper.Run(() =>
             {
-                var dllFiles = new ObservableCollection<string>();
+                var dllFiles = new List<string>();
 
                 foreach (var i in vstDirectories)
                 {
@@ -79,7 +80,7 @@ namespace PresetMagician
 
                     try
                     {
-                        dllFiles = _vstService.VstHost.EnumeratePlugins(i.Path);
+                        dllFiles = VstUtils.EnumeratePlugins(i.Path);
                     }
                     catch (Exception e)
                     {
