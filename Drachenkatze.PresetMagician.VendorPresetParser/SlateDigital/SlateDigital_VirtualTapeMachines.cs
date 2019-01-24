@@ -8,17 +8,19 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
-    public class SlateDigital_VirtualTapeMachines : AbstractVendorPresetParser, IVendorPresetParser
+    public class SlateDigital_VirtualTapeMachines : SlateDigital, IVendorPresetParser
     {
         public override List<int> SupportedPlugins => new List<int> {1448365427};
 
-        public void ScanBanks()
+       protected override string GetDataDirectory()
         {
-            var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 @"Slate Digital\Virtual Tape Machines\Presets");
-
-            var parser = new SlateDigitalPresetParser(RemoteVstService, Plugin, "epf", Presets, "VTMs");
-            parser.DoScan(RootBank, directory);
         }
+
+       protected override string GetPresetSectionName()
+       {
+           return "VTMs";
+       }
     }
 }

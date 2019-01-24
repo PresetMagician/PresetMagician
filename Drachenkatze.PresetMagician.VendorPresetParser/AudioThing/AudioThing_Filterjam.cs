@@ -12,12 +12,10 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
         public override List<int> SupportedPlugins => new List<int> {1179279725};
 
 
-        public void ScanBanks()
+        protected override string GetDataDirectory()
         {
-            var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments),
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments),
                 @"AudioThing\Presets\Filterjam");
-
-            DoScan(RootBank, directory);
         }
     }
 }

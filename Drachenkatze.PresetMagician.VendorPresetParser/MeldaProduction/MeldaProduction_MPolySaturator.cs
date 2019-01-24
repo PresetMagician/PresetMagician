@@ -5,7 +5,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
-    public class MeldaProduction_MPolySaturator: MeldaProduction, IVendorPresetParser
+    public class MeldaProduction_MPolySaturator : MeldaProduction, IVendorPresetParser
     {
         public override List<int> SupportedPlugins => new List<int> {1297117011};
 

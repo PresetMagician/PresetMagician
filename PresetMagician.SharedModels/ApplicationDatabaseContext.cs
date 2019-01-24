@@ -24,6 +24,7 @@ namespace SharedModels
         public event EventHandler<PresetUpdatedEventArgs> PresetUpdated;
         public bool CompressPresetData { private get; set; }
         public MidiNoteName PreviewNote { private get; set; }
+        public static string OverrideDbPath;
         
         private readonly List<(Preset preset, byte[] presetData)> presetDataList = new List<(Preset preset, byte[] presetData)>();
 
@@ -39,7 +40,6 @@ namespace SharedModels
             Configuration.ValidateOnSaveEnabled = false;
         }
 
-
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             var sqliteConnectionInitializer =
@@ -54,8 +54,13 @@ namespace SharedModels
 
         
 
-        private static string GetDatabasePath()
+        private static string GetDatabasePath(string dbPath = null)
         {
+            if (!string.IsNullOrEmpty(dbPath))
+            {
+                return dbPath;
+            }
+            
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                 @"Drachenkatze\PresetMagician\PresetMagician.sqlite3");
         }
@@ -74,18 +79,17 @@ namespace SharedModels
 
         public static string GetConnectionString()
         {
+            
             var cs = new SQLiteConnectionStringBuilder()
-                { DataSource = GetDatabasePath(), ForeignKeys = false, SyncMode = SynchronizationModes.Off, CacheSize = -10240 };
+                { DataSource = GetDatabasePath(OverrideDbPath), ForeignKeys = false, SyncMode = SynchronizationModes.Off, CacheSize = -10240 };
 
             return cs.ConnectionString;
         }
 
         public static ApplicationDatabaseContext Create()
         {
-            
-            var context = new ApplicationDatabaseContext();
-
-            return context;
+           
+                return new ApplicationDatabaseContext();
         }
 
         public static void InitializeViewCache()

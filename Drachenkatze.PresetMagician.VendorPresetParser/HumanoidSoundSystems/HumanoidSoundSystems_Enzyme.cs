@@ -11,17 +11,18 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.HumanoidSoundSystems
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
-    public class HumanoidSoundSystems_Enzyme: AbstractVendorPresetParser, IVendorPresetParser
+    public class HumanoidSoundSystems_Enzyme : AbstractVendorPresetParser, IVendorPresetParser
     {
-        public override List<int> SupportedPlugins => new List<int> { 1162762841 };
+        public override List<int> SupportedPlugins => new List<int> {1162762841};
 
-        private string rootDirectory; 
+        private string rootDirectory;
+
         public void ScanBanks()
         {
             rootDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 @"Humanoid Sound Systems\Enzyme\EnzymeData\Presets");
-            
-           
+
+
             DoScan(RootBank, rootDirectory);
         }
 
@@ -32,8 +33,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.HumanoidSoundSystems
             {
                 var data = File.ReadAllBytes(file.FullName);
                 var ms = new MemoryStream();
-                ms.Write(data,0, data.Length);
-                
+                ms.Write(data, 0, data.Length);
+
                 var preset = new Preset
                 {
                     PresetName = file.Name.Replace(".enz", ""), PresetBank = rootBank
@@ -42,20 +43,20 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.HumanoidSoundSystems
 
                 var relativeFile = BinaryFile.StringToByteArray(file.FullName.Replace(rootDirectory, ""));
                 var tuningFile = BinaryFile.StringToByteArray(@"Tunings\Basic\Default.tun");
-                
+
                 ms.Seek(0, SeekOrigin.End);
                 ms.WriteByte(0x01);
-                ms.WriteByte((byte)relativeFile.Length);
+                ms.WriteByte((byte) relativeFile.Length);
                 ms.Write(relativeFile, 0, relativeFile.Length);
-                
+
                 ms.WriteByte(0x01);
-                ms.WriteByte((byte)tuningFile.Length);
+                ms.WriteByte((byte) tuningFile.Length);
                 ms.Write(tuningFile, 0, tuningFile.Length);
 
                 ms.Seek(0, SeekOrigin.Begin);
 
                 var ms2 = new MemoryStream();
-                ms2.Write(LittleEndian.GetBytes(ms.Length),0,4);
+                ms2.Write(LittleEndian.GetBytes(ms.Length), 0, 4);
                 ms.WriteTo(ms2);
                 ms2.Seek(0, SeekOrigin.Begin);
 

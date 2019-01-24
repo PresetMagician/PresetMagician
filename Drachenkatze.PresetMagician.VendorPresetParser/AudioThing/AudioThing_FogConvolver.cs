@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using Anotar.Catel;
+using Drachenkatze.PresetMagician.VendorPresetParser.Common;
 using JetBrains.Annotations;
 using SharedModels;
 
@@ -11,15 +13,26 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
-    public class AudioThing_FogConvolver : AudioThing, IVendorPresetParser
+    public class AudioThing_FogConvolver : AbstractVendorPresetParser, IVendorPresetParser
     {
         public override List<int> SupportedPlugins => new List<int> {1716479811};
 
-
-        public void ScanBanks()
+        public override void Init()
         {
-            var settingsFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            BankLoadingNotes = $"Presets are loaded from {GetSettingsFile()}";
+        }
+
+        public string GetSettingsFile()
+        {
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 @"AudioThing\Presets\FogConvolver\settings.ats");
+        }
+
+        public override async Task DoScan()
+        {
+            var vc2parser = new VC2Parser(Plugin, "atp", PresetDataStorer);
+
+            var settingsFile = GetSettingsFile();
 
             var settingsXml = XDocument.Load(settingsFile);
             var banksElement = settingsXml.Element("FogConvolver_GENERAL_SETTINGS").Element("BANKS");
@@ -42,17 +55,11 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
                 }
 
                 var bankName = path.Split('\\').Last();
-                var factoryBank = new PresetBank
-                {
-                    BankName = bankName
-                };
 
-                RootBank.PresetBanks.Add(factoryBank);
-                DoScan(factoryBank, path);
+                var factoryBank = RootBank.CreateRecursive(bankName);
 
+                await vc2parser.DoScan(factoryBank, path);
             }
-            
-            
         }
     }
 }

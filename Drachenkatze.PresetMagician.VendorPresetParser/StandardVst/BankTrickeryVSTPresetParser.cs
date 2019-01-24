@@ -23,7 +23,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
             var factoryBank = FindOrCreateBank(BankNameFactory);
 
             await GetPresets(factoryBank, 0, Plugin.PluginInfo.ProgramCount, "Builtin");
-            
         }
 
         protected override async Task GetPresets(PresetBank bank, int start, int numPresets, string sourceFile)
@@ -35,13 +34,14 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
             }
 
             var endIndex = start + numPresets;
-            
+
             if (endIndex > Plugin.PluginInfo.ProgramCount)
             {
-                Plugin.Error($"GetPresets between {start} and {endIndex} would exceed maximum program count of {Plugin.PluginInfo.ProgramCount}, ignoring.");
+                Plugin.Error(
+                    $"GetPresets between {start} and {endIndex} would exceed maximum program count of {Plugin.PluginInfo.ProgramCount}, ignoring.");
                 return;
             }
-            
+
             for (int index = start; index < endIndex; index++)
             {
                 RemoteVstService.SetProgram(Plugin.Guid, 0);
@@ -57,9 +57,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
                 };
 
 
-                byte[] realProgram = RemoteVstService.GetChunk(Plugin.Guid,true);
+                byte[] realProgram = RemoteVstService.GetChunk(Plugin.Guid, true);
                 RemoteVstService.SetProgram(Plugin.Guid, 0);
-                
+
                 RemoteVstService.SetChunk(Plugin.Guid, realProgram, true);
                 var presetData = RemoteVstService.GetChunk(Plugin.Guid, false);
                 RemoteVstService.SetChunk(Plugin.Guid, programBackup, true);
@@ -73,10 +73,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
                 else
                 {
                     PresetHashes.Add(hash);
-                    await PresetDataStorer.PersistPreset(vstPreset, presetData);   
+                    await PresetDataStorer.PersistPreset(vstPreset, presetData);
                 }
             }
-
         }
     }
 }

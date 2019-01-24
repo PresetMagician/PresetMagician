@@ -10,24 +10,24 @@ using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.DmitrySches
 {
-    public class DmitrySchesPresetParser: RecursiveBankDirectoryParser
+    public class DmitrySchesPresetParser : RecursiveBankDirectoryParser
     {
         private byte[] _decodeBuffer;
-        private const int DecodeBufferSize = 1024*1024*100;
-        
+        private const int DecodeBufferSize = 1024 * 1024 * 100;
+
         public DmitrySchesPresetParser(Plugin plugin, string extension,
-            ObservableCollection<Preset> presets) : base(plugin, extension, presets)
+           IPresetDataStorer presetDataStorer) : base(plugin, extension, presetDataStorer)
         {
             _decodeBuffer = new byte[DecodeBufferSize];
         }
 
-        protected override void ProcessFile(string fileName, Preset preset)
-        {            
+        protected override byte[] ProcessFile(string fileName, Preset preset)
+        {
             var inflater = new Inflater(false);
             inflater.SetInput(File.ReadAllBytes(fileName));
             var size = inflater.Inflate(_decodeBuffer);
 
-            preset.PresetData = _decodeBuffer.GetRange(0, size).ToArray();
+            return _decodeBuffer.GetRange(0, size).ToArray();
         }
     }
 }

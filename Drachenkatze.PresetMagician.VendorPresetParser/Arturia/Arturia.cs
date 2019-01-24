@@ -16,8 +16,11 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
     {
         private SQLiteConnection _db;
 
-        public override string BankLoadingNotes { get; set; } = $"Presets are loaded from {GetDatabasePath()}";
-        
+        public override void Init()
+        {
+            BankLoadingNotes = $"Presets are loaded from {GetDatabasePath()}";
+        }
+
         protected abstract List<string> GetInstrumentNames();
 
         public override int GetNumPresets()
@@ -56,7 +59,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
             foreach (var pack in presetsByPacks)
             {
                 var presetBank = RootBank.CreateRecursive(pack.Pack.Key);
-                
+
                 foreach (var presetData in pack.Presets)
                 {
                     var preset = new Preset

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using Anotar.Catel;
 using Drachenkatze.PresetMagician.VendorPresetParser.Common;
@@ -13,19 +14,31 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
-    public class SlateDigital_FGX: AbstractVendorPresetParser, IVendorPresetParser
+    public class SlateDigital_FGX : AbstractVendorPresetParser, IVendorPresetParser
     {
         public override List<int> SupportedPlugins => new List<int> {1179069784};
 
-        public void ScanBanks()
+        public override void Init()
         {
-            var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+            BankLoadingNotes = $"Presets are loaded from {GetDataDirectory()}";
+        }
+        
+       protected string GetDataDirectory()
+        {
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 @"Slate Digital\FG-X Virtual Mastering Console\Presets");
 
-            var vc2parser = new VC2Parser(Plugin, "",Presets);
-            vc2parser.SetPreProcessXmlFunction(PreProcessXML);
-            vc2parser.DoScan(RootBank, directory);
+            
         }
+       
+       public override async Task DoScan()
+       {
+           var vc2parser = new VC2Parser(Plugin, "", PresetDataStorer);
+           vc2parser.SetPreProcessXmlFunction(PreProcessXML);
+           vc2parser.DoScan(RootBank, GetDataDirectory());
+           
+       }
+       
 
         private string PreProcessXML(string data)
         {
@@ -42,9 +55,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
                     rootElement.Add(newAtt);
                 }
             }
+
             Plugin.Debug(xmlPreset.ToString());
             return xmlPreset.ToString();
         }
-        
     }
 }

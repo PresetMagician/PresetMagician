@@ -53,3 +53,4 @@ nuget System.Data.HashFunction.xxHash
 nuget K4os.Compression.LZ4
 nuget EFInteractiveViews
 nuget ksemenenko.ColorThief
+nuget CsvHelper

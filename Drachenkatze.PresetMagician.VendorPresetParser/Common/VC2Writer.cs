@@ -6,6 +6,5 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
 {
     public class VC2Writer
     {
-        
     }
 }

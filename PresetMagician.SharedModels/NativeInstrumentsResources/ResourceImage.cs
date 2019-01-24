@@ -23,7 +23,8 @@ namespace SharedModels.NativeInstrumentsResources
             Filename = fileName;
         }
 
-        public BitmapImage Image { get; set; } = new BitmapImage(new Uri("pack://application:,,,/Resources/Images/empty.png"));
+      
+        public BitmapImage Image { get; set; } = new BitmapImage(new Uri("pack://application:,,,/PresetMagician.SharedModels;component/Resources/Images/empty.png"));
         public MemoryStream ImageStream { get; set; } = new MemoryStream();
         public Size TargetSize { get; set; }
         public string Filename { get; set; }

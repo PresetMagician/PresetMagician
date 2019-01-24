@@ -7,17 +7,14 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Audiority
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
-    public class Audiority_Distortion1: Audiority, IVendorPresetParser
+    public class Audiority_Distortion1 : Audiority, IVendorPresetParser
     {
         public override List<int> SupportedPlugins => new List<int> {1194668340};
 
-
-        public void ScanBanks()
+        protected override string GetDataDirectory()
         {
-            var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 @"Audiority\Presets\Distortion 1");
-
-            DoScan(RootBank, directory);
         }
     }
 }

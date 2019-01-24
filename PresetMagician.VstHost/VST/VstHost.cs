@@ -90,17 +90,7 @@ namespace PresetMagician.VstHost.VST
         /// </summary>
         /// <param name="pluginDirectory"></param>
         /// <returns></returns>
-        public ObservableCollection<string> EnumeratePlugins(string pluginDirectory)
-        {
-            var vstPlugins = new ObservableCollection<string>();
-            foreach (var file in Directory.EnumerateFiles(
-                pluginDirectory, "*.dll", SearchOption.AllDirectories))
-            {
-                vstPlugins.Add(file);
-            }
-
-            return vstPlugins;
-        }
+        
 
 
         public const int BlockSize = 512;

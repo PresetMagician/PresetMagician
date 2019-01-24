@@ -12,12 +12,10 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
         public override List<int> SupportedPlugins => new List<int> {1467368056};
 
 
-        public void ScanBanks()
+        protected override string GetDataDirectory()
         {
-            var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 @"AudioThing\Presets\WaveBox");
-
-            DoScan(RootBank, directory);
         }
     }
 }

@@ -11,21 +11,19 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.ValhallaDSP
     {
         public override List<int> SupportedPlugins => new List<int> {1986356531};
 
-        private static readonly string ParseDirectory = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-            @"Valhalla DSP, LLC\ValhallaVintageVerb\Presets");
-        
-        public override string BankLoadingNotes { get; set; } = $"Presets are loaded from {ParseDirectory}. First sub-folder defines the bank.";
+        protected override string GetDataDirectory()
+        {
+            return Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+                @"Valhalla DSP, LLC\ValhallaVintageVerb\Presets");
+        }
 
-        public ValhallaDSP_ValhallaVintageVerb()
+        public override void Init()
         {
             DefaultModes.Add("Reverb");
+            
+            base.Init();
         }
-        
-        public void ScanBanks()
-        {
-            DoScan(RootBank, ParseDirectory);
-        }
+       
     }
-  
 }

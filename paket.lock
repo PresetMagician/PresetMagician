@@ -29,6 +29,8 @@ NUGET
     ControlzEx (3.0.2.4)
     Costura.Fody (3.2.1)
       Fody (>= 3.3.3)
+    CsvHelper (12.1.1)
+      System.ValueTuple (>= 4.4)
     DataGridExtensions (1.0.40)
       Expression.Blend.Sdk (>= 1.0.2)
     DeltaCompressionDotNet (1.1)

@@ -12,8 +12,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
         public override List<int> SupportedPlugins => new List<int>
         {
-            1951355500, 
-            1919243824, 
+            1951355500,
+            1919243824,
             1364228170,
             1098206310, // Audiority Low Filter
             1098208102, // Audiority Side Filter
@@ -27,15 +27,14 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             1297245539, // MeldaProduction Recorder
             1297306467, // MeldaProduction StereoScope
             1297380718, // MeldaProduction Tuner
-            
+
             0
         };
-        
+
         public async Task DoScan()
         {
-            
         }
-        
+
         public virtual int GetNumPresets()
         {
             return 0;

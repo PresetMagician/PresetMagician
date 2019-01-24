@@ -26,12 +26,14 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         int GetNumPresets();
 
         bool CanHandle();
+        void Init();
         
         ObservableCollection<ObservableCollection<string>> DefaultTypes { get; set; }
         ObservableCollection<string> DefaultModes { get; set; }
 
         IPresetDataStorer PresetDataStorer { get; set; }
         IRemoteVstService RemoteVstService { get; set; }
+        List<int> GetSupportedPlugins();
         void ScanBanks();
         Task DoScan();
         void OnAfterPresetExport();

@@ -11,6 +11,27 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 {
     public static class VendorPresetParser
     {
+        public static Dictionary<int, IVendorPresetParser> GetPresetHandlerList()
+        {
+            var pluginHandlers = new Dictionary<int, IVendorPresetParser>();
+            var type = typeof(IVendorPresetParser);
+            
+            var currentAssembly = Assembly.GetExecutingAssembly();
+
+            var types = currentAssembly.GetTypes()
+                .Where(p => p.GetInterfaces().Contains(type));
+
+            foreach (var parser in types)
+            {
+                IVendorPresetParser instance = (IVendorPresetParser) Activator.CreateInstance(parser);
+                foreach (var pluginId in instance.GetSupportedPlugins())
+                {
+                    pluginHandlers.Add(pluginId, instance);
+                }
+            }
+
+            return pluginHandlers;
+        }
         private static IVendorPresetParser GetPresetHandler(Plugin vstPlugin, IRemoteVstService remoteVstService)
         {
             vstPlugin.Debug("Resolving PresetHandler for plugin {0}", vstPlugin);
@@ -27,7 +48,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             {
                 IVendorPresetParser instance = (IVendorPresetParser) Activator.CreateInstance(parser);
                 instance.RemoteVstService = remoteVstService;
-                
+
                 if (instance.IsNullParser)
                 {
                     continue;
@@ -37,7 +58,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
                 if (instance.CanHandle())
                 {
                     vstPlugin.Debug("Using PresetHandler {0} for plugin {1}", instance, vstPlugin);
-                    
+
                     return instance;
                 }
             }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Threading.Tasks;
 using Anotar.Catel;
 using Drachenkatze.PresetMagician.VSTHost.VST;
 using PresetMagician.Models;
@@ -12,16 +13,16 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
     {
         protected readonly string Extension;
         protected readonly Plugin _plugin;
-        protected ObservableCollection<Preset> Presets { get; }
-        
-        public RecursiveBankDirectoryParser(Plugin plugin, string extension, ObservableCollection<Preset> presets)
+        protected readonly IPresetDataStorer _presetDataStorer;
+
+        public RecursiveBankDirectoryParser(Plugin plugin, string extension, IPresetDataStorer presetDataStorer)
         {
             _plugin = plugin;
             Extension = extension;
-            Presets = presets;
+            _presetDataStorer = presetDataStorer;
         }
-        
-        public void DoScan(PresetBank rootBank, string directory)
+
+        public async Task DoScan(PresetBank rootBank, string directory)
         {
             var dirInfo = new DirectoryInfo(directory);
             var pattern = "*";
@@ -30,19 +31,21 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
             {
                 pattern = pattern + "." + Extension;
             }
-            
+
             foreach (var file in dirInfo.EnumerateFiles(pattern))
             {
                 try
                 {
                     var preset = new Preset {PresetName = file.Name.Replace("." + Extension, "")};
-                    preset.SetPlugin(_plugin);
+                    preset.Plugin = _plugin;
+                    preset.SourceFile = file.FullName;
                     preset.PresetBank = rootBank;
 
-                    ProcessFile(file.FullName, preset);
-                    
-                    Presets.Add(preset);
-                } catch (Exception e)
+                    var data = ProcessFile(file.FullName, preset);
+
+                    await _presetDataStorer.PersistPreset(preset, data);
+                }
+                catch (Exception e)
                 {
                     _plugin.Error("Error processing preset {0} because of {1} {2}", file.FullName, e.Message, e);
                     _plugin.Debug(e.StackTrace);
@@ -51,19 +54,15 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
 
             foreach (var subDirectory in dirInfo.EnumerateDirectories())
             {
-                var bank = new PresetBank
-                {
-                    BankName = subDirectory.Name
-                };
-
-                DoScan(bank, subDirectory.FullName);
-                rootBank.PresetBanks.Add(bank);
+                var bank = rootBank.CreateRecursive(subDirectory.Name);
+             
+                await DoScan(bank, subDirectory.FullName);
             }
         }
 
-        protected virtual void ProcessFile(string fileName, Preset preset)
+        protected virtual byte[] ProcessFile(string fileName, Preset preset)
         {
-            preset.PresetData = File.ReadAllBytes(fileName);
+            return File.ReadAllBytes(fileName);
         }
     }
 }

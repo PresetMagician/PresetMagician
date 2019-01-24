@@ -16,9 +16,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
     {
         private readonly string _presetSectionName;
         private readonly IRemoteVstService _remoteVstService;
-        
+
         public SlateDigitalPresetParser(IRemoteVstService remoteVstService, Plugin plugin, string extension,
-            ObservableCollection<Preset> presets, string presetSectionName) : base(plugin, extension, presets)
+            IPresetDataStorer presetDataStorer, string presetSectionName) : base(plugin, extension, presetDataStorer)
         {
             _remoteVstService = remoteVstService;
             _presetSectionName = presetSectionName;
@@ -32,7 +32,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
                 $"string(/package/archives/archive[@client_id='{_presetSectionName}-preset']/section/entry[@id='Preset author']/@value)");
         }
 
-        protected override void ProcessFile(string fileName, Preset preset)
+        protected override byte[] ProcessFile(string fileName, Preset preset)
         {
             var xmlPreset = XDocument.Load(fileName);
             var chunk = _remoteVstService.GetChunk(_plugin.Guid, false);
@@ -48,7 +48,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
             using (TextWriter writer = new StringWriter(builder))
             {
                 actualPresetDocument.Save(writer);
-                preset.PresetData = Encoding.UTF8.GetBytes(builder.ToString());
+                return Encoding.UTF8.GetBytes(builder.ToString());
             }
         }
 
@@ -64,14 +64,14 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
             var insertNode = dest.XPathSelectElement(dataNode2);
             insertNode.Elements().Remove();
             insertNode.Add(nodes);
-            
+
             var presetNameNode = new XElement("entry");
             presetNameNode.SetAttributeValue("id", "Preset name");
             presetNameNode.SetAttributeValue("type", "string");
-            
-            
-            presetNameNode.SetAttributeValue("value",preset.PresetBank.BankName + "/"+preset.PresetName);
-            
+
+
+            presetNameNode.SetAttributeValue("value", preset.PresetBank.BankName + "/" + preset.PresetName);
+
             insertNode.Add(presetNameNode);
         }
 

@@ -17,9 +17,14 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
         public virtual bool SupportsAdditionalBankFiles { get; set; } = false;
         public virtual List<BankFile> AdditionalBankFiles { get; } = null;
-        
+
         public Plugin Plugin { get; set; }
         public virtual List<int> SupportedPlugins => new List<int>();
+
+        public List<int> GetSupportedPlugins()
+        {
+            return SupportedPlugins;
+        }
 
         public virtual int AudioPreviewPreDelay { get; set; } = 40;
 
@@ -30,14 +35,15 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         public string PresetParserType => GetType().Name;
 
         public PresetBank RootBank { get; set; } = new PresetBank();
-        
-        public ObservableCollection<ObservableCollection<string>> DefaultTypes { get; set; } = new ObservableCollection<ObservableCollection<string>>();
+
+        public ObservableCollection<ObservableCollection<string>> DefaultTypes { get; set; } =
+            new ObservableCollection<ObservableCollection<string>>();
 
         public ObservableCollection<string> DefaultModes { get; set; } = new ObservableCollection<string>();
-       
+
         public ObservableCollection<Preset> Presets { get; set; } = new ObservableCollection<Preset>();
         public IRemoteVstService RemoteVstService { get; set; }
-        
+
         public virtual string BankLoadingNotes { get; set; }
         public IPresetDataStorer PresetDataStorer { get; set; }
 
@@ -45,9 +51,13 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         {
             var rand = new Random();
             return rand.Next(3000);
-            throw new NotImplementedException(); 
+            throw new NotImplementedException();
         }
-        
+
+        public virtual void Init()
+        {
+        }
+
         public virtual async Task DoScan()
         {
             //throw new NotImplementedException();
@@ -57,7 +67,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         {
             //throw new NotImplementedException();
         }
-        
+
         public virtual bool CanHandle()
         {
             if (SupportedPlugins.Contains(Plugin.PluginId))
@@ -70,9 +80,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
         public virtual void OnAfterPresetExport()
         {
-
         }
-
-       
     }
 }

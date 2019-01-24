@@ -8,16 +8,16 @@ using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
 {
-    public class MeldaProduction: AbstractVendorPresetParser
+    public class MeldaProduction : AbstractVendorPresetParser
     {
         protected static readonly string ParseDirectory = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             @"MeldaProduction\");
-        
+
         protected static readonly string FallbackParseDirectory = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
             @"MeldaProduction\");
-        
+
         public void ScanPresetXMLFile(string filename, string rootTag)
         {
             var fullFilename = Path.Combine(ParseDirectory, filename);
@@ -37,7 +37,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
             var rootDocument = XDocument.Parse(File.ReadAllText(fullFilename));
 
             var rootElement = rootDocument.Element(rootTag);
-           
+
             ScanPresetXML(rootElement, RootBank);
         }
 
@@ -60,10 +60,11 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
                         continue;
                     }
                 }
+
                 var subBank = new PresetBank();
                 subBank.BankName = bankNameElement.Value;
                 ScanPresetXML(directory, subBank);
-                
+
                 presetBank.PresetBanks.Add(subBank);
             }
 
@@ -84,16 +85,16 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
                         continue;
                     }
                 }
-                
+
                 var preset = new Preset();
                 preset.PresetName = nameAttribute.Value;
                 preset.SetPlugin(Plugin);
                 preset.PresetBank = presetBank;
 
                 var base64 = presetElement.Value.Trim().Replace("-", "/").Replace("$", "");
-                
+
                 preset.PresetData = Convert.FromBase64String(base64);
-                
+
                 Presets.Add(preset);
             }
         }

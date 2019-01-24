@@ -20,9 +20,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
     {
         public override List<int> SupportedPlugins => new List<int> {1447909458};
 
-        public void ScanBanks()
+       protected override string GetDataDirectory()
         {
-            var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 @"Slate Digital\Virtual Mix Rack\Presets\Virtual Mix Rack");
 
             var parser = new SlateDigitalVMXPresetParser(VstPlugin, "epf", Presets, "VMXR");
@@ -54,3 +54,4 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
         }
     }
 }*/
+

@@ -249,6 +249,7 @@
     <Compile Include="NullPresetParser.cs" />
     <Compile Include="D16 Group\D16Group.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SlateDigital\SlateDigital.cs" />
     <Compile Include="SlateDigital\SlateDigitalPresetParser.cs" />
     <Compile Include="SlateDigital\SlateDigital_FGX.cs" />
     <Compile Include="SlateDigital\SlateDigital_VBCFGGrey.cs" />

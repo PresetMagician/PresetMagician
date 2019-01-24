@@ -8,17 +8,19 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
-    public class SlateDigital_VBCFGMu : AbstractVendorPresetParser, IVendorPresetParser
+    public class SlateDigital_VBCFGMu : SlateDigital, IVendorPresetParser
     {
         public override List<int> SupportedPlugins => new List<int> {1447183213};
 
-        public void ScanBanks()
+       protected override string GetDataDirectory()
         {
-            var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 @"Slate Digital\Virtual Buss Compressors FG-MU\Presets");
-
-            var parser = new SlateDigitalPresetParser(RemoteVstService, Plugin, "epf", Presets, "VBCm");
-            parser.DoScan(RootBank, directory);
         }
+
+       protected override string GetPresetSectionName()
+       {
+           return "VBCm";
+       }
     }
 }
