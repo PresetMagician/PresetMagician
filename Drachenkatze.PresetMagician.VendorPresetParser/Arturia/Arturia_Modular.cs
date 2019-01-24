@@ -5,14 +5,13 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
-    public class Arturia_Modular: Arturia, IVendorPresetParser
+    public class Arturia_Modular : Arturia, IVendorPresetParser
     {
-        public override List<int> SupportedPlugins => new List<int> { 1297040435 };
+        public override List<int> SupportedPlugins => new List<int> {1297040435};
 
-        public void ScanBanks()
+        protected override List<string> GetInstrumentNames()
         {
-            var instruments = new List<string> {"Modular"};
-            ScanPresets(instruments);
+            return new List<string> {"Modular"};
         }
     }
 }

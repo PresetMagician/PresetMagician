@@ -119,6 +119,8 @@ namespace PresetMagician
                         _databaseService.Context.SaveChanges();
                         _databaseService.Context.CompressPresetData =
                             _runtimeConfigurationService.RuntimeConfiguration.CompressPresetData;
+                        _databaseService.Context.PreviewNote =
+                            _runtimeConfigurationService.RuntimeConfiguration.DefaultPreviewMidiNote;
 
                         var remoteVstService = await _vstService.LoadVst(plugin);
 

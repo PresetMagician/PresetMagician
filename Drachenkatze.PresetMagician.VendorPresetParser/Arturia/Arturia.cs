@@ -1,37 +1,49 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Anotar.Catel;
+using System.Threading.Tasks;
 using Catel.Collections;
-using ArturiaModels = Drachenkatze.PresetMagician.VendorPresetParser.Arturia.Models;
 using GSF;
 using SharedModels;
 using SQLite;
-using Environment = System.Environment;
-using Exception = System.Exception;
-using Preset = SharedModels.Preset;
+using ArturiaModels = Drachenkatze.PresetMagician.VendorPresetParser.Arturia.Models;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
 {
-    public class Arturia : AbstractVendorPresetParser
+    public abstract class Arturia : AbstractVendorPresetParser
     {
         private SQLiteConnection _db;
 
-        protected void ScanPresets(List<string> instruments)
+        public override string BankLoadingNotes { get; set; } = $"Presets are loaded from {GetDatabasePath()}";
+        
+        protected abstract List<string> GetInstrumentNames();
+
+        public override int GetNumPresets()
         {
-            Plugin.Debug($"Attempting to load arturia presets using {GetDatabasePath()}");
-            try
+            InitDb();
+            var instruments = GetInstrumentNames();
+            var instrumentList = GetInstruments(instruments);
+
+            return GetPresets(instrumentList).Count();
+        }
+
+        private void InitDb()
+        {
+            if (_db != null)
             {
-                _db = new SQLiteConnection(GetDatabasePath());
-            }
-            catch (Exception e)
-            {
-                Plugin.Debug(e.ToString());
                 return;
             }
 
+            Plugin.Debug($"Attempting to load arturia presets using {GetDatabasePath()}");
+            _db = new SQLiteConnection(GetDatabasePath());
+        }
+
+        public override async Task DoScan()
+        {
+            InitDb();
+            var instruments = GetInstrumentNames();
 
             var instrumentList = GetInstruments(instruments);
             var allPresets = GetPresets(instrumentList);
@@ -43,66 +55,64 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
 
             foreach (var pack in presetsByPacks)
             {
-                var presetBank = new PresetBank {BankName = pack.Pack.Key};
-
+                var presetBank = RootBank.CreateRecursive(pack.Pack.Key);
+                
                 foreach (var presetData in pack.Presets)
                 {
-                    
                     var preset = new Preset
                     {
                         PresetBank = presetBank,
                         PresetName = presetData.Preset.name,
                         Author = presetData.SoundDesigner.name,
-                        Comment = presetData.Preset.comment
+                        Comment = presetData.Preset.comment,
+                        Plugin = Plugin
                     };
 
                     var types = new ObservableCollection<string> {presetData.Type.name};
 
                     preset.Types.Add(types);
 
-                   var characteristics = GetPresetCharacteristics(presetData.Preset);
-                   
-                   
-                   preset.Modes.AddRange((from c in characteristics select c.name).ToList());
-                   preset.SetPlugin(Plugin);
+                    var characteristics = GetPresetCharacteristics(presetData.Preset);
 
-                   var fileName = presetData.Preset.file_path.Replace('/', '\\');
-                   var content = File.ReadAllBytes(fileName);
-                   var ms = new MemoryStream();
-                   ms.Write(LittleEndian.GetBytes(content.Length),0,4);
-                   ms.WriteByte(0);
-                   ms.WriteByte(0);
-                   ms.WriteByte(0);
-                   ms.WriteByte(0);
-                   ms.Write(LittleEndian.GetBytes(content.Length),0,4);
-                   ms.WriteByte(0);
-                   ms.WriteByte(0);
-                   ms.WriteByte(0);
-                   ms.WriteByte(0);
-                   ms.Write(content, 0, content.Length);
-                   ms.Write(content, 0, content.Length);
 
-                   preset.PresetData = ms.ToArray();
-                   Presets.Add(preset);
+                    preset.Modes.AddRange((from c in characteristics select c.name).ToList());
+                    preset.SetPlugin(Plugin);
+
+                    var fileName = presetData.Preset.file_path.Replace('/', '\\');
+                    var content = File.ReadAllBytes(fileName);
+                    var ms = new MemoryStream();
+                    ms.Write(LittleEndian.GetBytes(content.Length), 0, 4);
+                    ms.WriteByte(0);
+                    ms.WriteByte(0);
+                    ms.WriteByte(0);
+                    ms.WriteByte(0);
+                    ms.Write(LittleEndian.GetBytes(content.Length), 0, 4);
+                    ms.WriteByte(0);
+                    ms.WriteByte(0);
+                    ms.WriteByte(0);
+                    ms.WriteByte(0);
+                    ms.Write(content, 0, content.Length);
+                    ms.Write(content, 0, content.Length);
+
+                    preset.SourceFile = fileName;
+                    await PresetDataStorer.PersistPreset(preset, ms.ToArray());
                 }
-
-                RootBank.PresetBanks.Add(presetBank);
             }
-
-            Debug.WriteLine(presetsByPacks);
-
 
             _db.Close();
         }
 
-        private IEnumerable<(Models.Preset Preset, ArturiaModels.SoundDesigner SoundDesigner, ArturiaModels.Pack Pack,ArturiaModels.Type Type)> GetPresets(IEnumerable<ArturiaModels.Instrument> instruments)
+        private IEnumerable<(ArturiaModels.Preset Preset, ArturiaModels.SoundDesigner SoundDesigner, ArturiaModels.Pack
+            Pack,
+            ArturiaModels.Type Type)> GetPresets(IEnumerable<ArturiaModels.Instrument> instruments)
         {
             var instrumentIds = (from q in instruments
                 select q.key_id).ToList();
 
-            return (from preset in _db.Table<Models.Preset>()
-                    join soundDesigner in _db.Table<ArturiaModels.SoundDesigner>() on preset.sound_designer equals soundDesigner
-                        .key_id
+            return (from preset in _db.Table<ArturiaModels.Preset>()
+                    join soundDesigner in _db.Table<ArturiaModels.SoundDesigner>() on preset.sound_designer equals
+                        soundDesigner
+                            .key_id
                     join pack in _db.Table<ArturiaModels.Pack>() on preset.pack equals pack
                         .key_id
                     join type in _db.Table<ArturiaModels.Type>() on preset.type equals type
@@ -114,17 +124,15 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
                 ).ToList();
         }
 
-        private IEnumerable<ArturiaModels.Characteristic> GetPresetCharacteristics(Models.Preset preset)
+        private IEnumerable<ArturiaModels.Characteristic> GetPresetCharacteristics(ArturiaModels.Preset preset)
         {
-            var characteristicKeys= (from presetCharacteristic in _db.Table<ArturiaModels.PresetCharacteristic>()
+            var characteristicKeys = (from presetCharacteristic in _db.Table<ArturiaModels.PresetCharacteristic>()
                 where presetCharacteristic.preset_key == preset.key_id
                 select presetCharacteristic.characteristic_key).ToList();
-            
+
             return (from characteristic in _db.Table<ArturiaModels.Characteristic>()
-                    where characteristicKeys.Contains(characteristic.key_id)
-                        select characteristic).ToList();
-                    
-                    
+                where characteristicKeys.Contains(characteristic.key_id)
+                select characteristic).ToList();
         }
 
         private IEnumerable<ArturiaModels.Instrument> GetInstruments(ICollection<string> instruments)

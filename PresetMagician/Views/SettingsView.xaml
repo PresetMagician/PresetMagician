@@ -35,6 +35,7 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
                         <Label
@@ -94,7 +95,7 @@
                         <!-- Auto-create resources -->
                         <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Top">
                             <Label Content="Auto-Create NI Resources" VerticalAlignment="Top" />
-                            <iconPacks:PackIconFontAwesome Margin="0,0,10,0" VerticalAlignment="Top"
+                            <iconPacks:PackIconFontAwesome Margin="0,0,10,0" VerticalAlignment="Center"
                                                            Kind="QuestionCircleSolid" ToolTipService.ShowDuration="12000">
                                 <iconPacks:PackIconFontAwesome.ToolTip>
                                     <StackPanel Margin="5" Width="600">
@@ -121,6 +122,18 @@
                                 <TextBlock Text="Automatically creates images, colors and other information"/>
                             </CheckBox>
                             <TextBlock FontStyle="Italic">“brought to you by using the latest in Voodoo Ritual Technology™.”</TextBlock>
+                        </StackPanel>
+                        
+                         <!-- Auto-create resources -->
+                        <StackPanel Grid.Row="4" Grid.Column="0" Orientation="Horizontal">
+                            <Label Content="Default Preview Note" />
+                        </StackPanel>
+                        
+                        <StackPanel Orientation="Vertical" Grid.Row="4"
+                                    Grid.Column="1" VerticalAlignment="Top">
+                            
+                            <TextBox Text="{Binding EditableConfiguration.DefaultPreviewMidiNote.FullNoteName}"/>
+                            
                         </StackPanel>
                         
 

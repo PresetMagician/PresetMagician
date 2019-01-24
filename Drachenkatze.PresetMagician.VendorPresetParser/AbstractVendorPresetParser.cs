@@ -48,7 +48,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             throw new NotImplementedException(); 
         }
         
-        public async Task DoScan()
+        public virtual async Task DoScan()
         {
             //throw new NotImplementedException();
         }
