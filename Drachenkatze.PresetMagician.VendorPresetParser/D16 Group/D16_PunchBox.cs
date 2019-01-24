@@ -43,15 +43,16 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group.PunchBox
             RootBank.PresetBanks.Add(GetUserPresets());
         }
 
-        public override void OnAfterPresetExport(IVstHost host, Plugin plugin)
+        public override void OnAfterPresetExport()
         {
             PresetExportCount++;
-            if (PresetExportCount > 60)
+            if (PresetExportCount <= 60)
             {
-                PresetExportCount = 0;
-                host.UnloadVST(plugin);
-                host.LoadVST(plugin);
+                return;
             }
+
+            PresetExportCount = 0;
+            RemoteVstService.ReloadPlugin(Plugin.Guid);
         }
 
         private PresetBank GetUserPresets()

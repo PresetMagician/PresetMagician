@@ -90,6 +90,7 @@ namespace PresetMagician
             public const string EnablePlugins = "PluginTools.EnablePlugins";
             public const string DisablePlugins = "PluginTools.DisablePlugins";
             public const string ViewSettings = "PluginTools.ViewSettings";
+            public const string ViewErrors = "PluginTools.ViewErrors";
             public const string ShowPluginInfo = "PluginTools.ShowPluginInfo";
             public const string ShowPluginEditor = "PluginTools.ShowPluginEditor";
             public const string ShowPluginChunk = "PluginTools.ShowPluginChunk";

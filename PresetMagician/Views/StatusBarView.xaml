@@ -28,7 +28,8 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel x:Name="StackPanel">
-            <StackPanel orccontrols:PinnableToolTipService.Placement="Top" Visibility="{Binding ApplicationState.ApplicationOperationLastOperationHadErrors, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
+            <StackPanel orccontrols:PinnableToolTipService.Placement="Top"
+                        Visibility="{Binding ApplicationState.ApplicationOperationLastOperationHadErrors, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
                 <StackPanel>
 
                     <iconPacks:PackIconOcticons
@@ -63,6 +64,24 @@
                 </orccontrols:PinnableToolTipService.ToolTip>
 
             </StackPanel>
+
+            <StackPanel>
+                <StackPanel ToolTip="Number of running/total plugin host workers">
+                    <iconPacks:PackIconMaterial
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Kind="Worker" />
+                    <TextBlock Text="{Binding ApplicationState.RunningWorkers}" />
+                    <TextBlock Text=" / " />
+                    <TextBlock Text="{Binding ApplicationState.TotalWorkers}" />
+                </StackPanel>
+                <Separator Width="{Binding ElementName=StackPanel, Path=ActualHeight}" Margin="3,0,3,0">
+                    <Separator.LayoutTransform>
+                        <RotateTransform Angle="90" />
+                    </Separator.LayoutTransform>
+                </Separator>
+            </StackPanel>
+
             <StackPanel>
                 <TextBlock
                     orccontrols:PinnableToolTipService.InitialShowDelay="0"
@@ -86,13 +105,15 @@
             </StackPanel>
 
 
-            <StackPanel Visibility="{Binding IsUpdatedInstalled, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
-                <StackPanel><TextBlock Text="Update is installed, restart to enable new features"/>
-                <iconPacks:PackIconMaterial
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Kind="Download"
-                    ToolTip="Update is installed, restart to enable new features" />
+            <StackPanel
+                Visibility="{Binding IsUpdatedInstalled, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
+                <StackPanel>
+                    <TextBlock Text="Update is installed, restart to enable new features" />
+                    <iconPacks:PackIconMaterial
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Kind="Download"
+                        ToolTip="Update is installed, restart to enable new features" />
                 </StackPanel>
                 <Separator Width="{Binding ElementName=StackPanel, Path=ActualHeight}" Margin="3,0,3,0">
                     <Separator.LayoutTransform>
@@ -100,17 +121,22 @@
                     </Separator.LayoutTransform>
                 </Separator>
             </StackPanel>
-            <StackPanel Visibility="{Binding IsUpdateAvailable, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
+            <StackPanel
+                Visibility="{Binding IsUpdateAvailable, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
                 <Button Height="16"
                         Margin="0"
                         Padding="0"
-                        Command="{Binding InstallUpdate}" BorderThickness="0" Background="Transparent"><StackPanel><TextBlock Text="Click to install update"/>
-                    <iconPacks:PackIconMaterial 
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Kind="Download"
-                        ToolTip="Update is available" /></StackPanel></Button>                
-                
+                        Command="{Binding InstallUpdate}" BorderThickness="0" Background="Transparent">
+                    <StackPanel>
+                        <TextBlock Text="Click to install update" />
+                        <iconPacks:PackIconMaterial
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Kind="Download"
+                            ToolTip="Update is available" />
+                    </StackPanel>
+                </Button>
+
 
                 <Separator Width="{Binding ElementName=StackPanel, Path=ActualHeight}" Margin="3,0,3,0">
                     <Separator.LayoutTransform>

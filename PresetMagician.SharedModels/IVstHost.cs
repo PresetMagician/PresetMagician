@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using PresetMagician.Models;
+using PresetMagician.VstHost.VST;
 using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VSTHost.VST
@@ -14,11 +15,10 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
         /// <returns></returns>
         ObservableCollection<string> EnumeratePlugins(string pluginDirectory);
 
-        void LoadVST(Plugin vst);
-        void MIDI_CC(Plugin plugin, byte Number, byte Value);
-        void MIDI_NoteOff(Plugin plugin, byte Note, byte Velocity);
-        void MIDI_NoteOn(Plugin plugin, byte Note, byte Velocity);
-        void UnloadVST(Plugin vst);
-        Task LoadVSTAsync(Plugin vst);
+        bool LoadVst(VstPlugin vst);
+        void MIDI_CC(VstPlugin plugin, byte Number, byte Value);
+        void MIDI_NoteOff(VstPlugin plugin, byte Note, byte Velocity);
+        void MIDI_NoteOn(VstPlugin plugin, byte Note, byte Velocity);
+        void UnloadVst(VstPlugin vst);
     }
 }

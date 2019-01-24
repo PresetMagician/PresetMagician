@@ -1,4 +1,5 @@
-﻿using System.Collections.Specialized;
+﻿using System;
+using System.Collections.Specialized;
 using System.Threading.Tasks;
 using Catel;
 using Catel.MVVM;
@@ -43,13 +44,10 @@ namespace PresetMagician
         {
             if (!_vstService.SelectedPlugin.IsLoaded)
             {
-                _vstService.VstHost.LoadVST(_vstService.SelectedPlugin);
+                await _vstService.LoadVstInteractive(_vstService.SelectedPlugin);
             }
-            PluginEditorFrame dlg = new PluginEditorFrame();
-            dlg.PluginCommandStub = _vstService.SelectedPlugin.PluginContext.PluginCommandStub;
 
-            dlg.Show();
-            //dlg.ShowDialog();
+            _vstService.SelectedPlugin.RemoteVstService.OpenEditor(_vstService.SelectedPlugin.Guid);
         }
     }
 }

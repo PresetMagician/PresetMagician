@@ -1,4 +1,5 @@
-﻿using System.Collections.Specialized;
+﻿using System;
+using System.Collections.Specialized;
 using System.Threading.Tasks;
 using Catel;
 using Catel.MVVM;
@@ -43,7 +44,7 @@ namespace PresetMagician
         {
             if (_vstService.SelectedPlugin.IsLoaded)
             {
-                _vstService.VstHost.UnloadVST(_vstService.SelectedPlugin);
+                await _vstService.UnloadVst(_vstService.SelectedPlugin);
             }
         }
     }

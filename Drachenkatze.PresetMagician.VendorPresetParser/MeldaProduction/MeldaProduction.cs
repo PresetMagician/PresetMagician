@@ -29,7 +29,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
 
             if (!File.Exists(fullFilename))
             {
-                LogTo.Error(
+                Plugin.Error(
                     $"Error: Could not find {filename} in neither {ParseDirectory} nor {FallbackParseDirectory}");
                 return;
             }
@@ -55,8 +55,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
 
                     if (bankNameElement == null)
                     {
-                        LogTo.Error("A bankNameElement has no name attribute.");
-                        LogTo.Debug(directory.ToString);
+                        Plugin.Error("A bankNameElement has no name attribute.");
+                        Plugin.Debug(directory.ToString());
                         continue;
                     }
                 }
@@ -79,8 +79,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
 
                     if (nameAttribute == null)
                     {
-                        LogTo.Error("A presetElement has no name attribute.");
-                        LogTo.Debug(presetElement.ToString);
+                        Plugin.Error("A presetElement has no name attribute.");
+                        Plugin.Debug(presetElement.ToString());
                         continue;
                     }
                 }

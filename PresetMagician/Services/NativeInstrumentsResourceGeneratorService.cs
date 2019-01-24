@@ -35,23 +35,14 @@ namespace PresetMagician.Services
 {
     public class NativeInstrumentsResourceGeneratorService : INativeInstrumentsResourceGeneratorService
     {
-        private readonly IVstService _vstService;
-        
-        public NativeInstrumentsResourceGeneratorService(IVstService vstService)
-        {
-            Argument.IsNotNull(() => vstService);
-
-            _vstService = vstService;
-        }
-
         [Time]
-        public async Task AutoGenerateResources(Plugin plugin)
+        public void AutoGenerateResources(Plugin plugin, IRemoteVstService remoteVstService)
         {
             var generate = false;
             var imagesToSave = new List<ResourceImage>();
             foreach (var img in plugin.NativeInstrumentsResource.ResourceImages)
             {
-                if (img.ResourceState != NativeInstrumentsResource.ResourceStates.Empty)
+                if (img.State.State != NativeInstrumentsResource.ResourceStates.Empty)
                 {
                     continue;
                 }
@@ -60,41 +51,91 @@ namespace PresetMagician.Services
                 imagesToSave.Add(img);
             }
 
-            var previousState = plugin.NativeInstrumentsResource.ResourceState;
-            
-            if (plugin.NativeInstrumentsResource.ResourceState ==
+            var previousCategoriesState = plugin.NativeInstrumentsResource.CategoriesState.State;
+            var previousColorState = plugin.NativeInstrumentsResource.ColorState.State;
+            var previousShortNameState = plugin.NativeInstrumentsResource.ShortNamesState.State;
+
+            if (plugin.NativeInstrumentsResource.CategoriesState.State ==
+                NativeInstrumentsResource.ResourceStates.Empty ||
+                plugin.NativeInstrumentsResource.ShortNamesState.State ==
+                NativeInstrumentsResource.ResourceStates.Empty || plugin.NativeInstrumentsResource.ColorState.State ==
                 NativeInstrumentsResource.ResourceStates.Empty || generate)
             {
-                await GenerateResources(plugin);
+                GenerateResources(plugin, remoteVstService);
 
-                if (previousState == NativeInstrumentsResource.ResourceStates.Empty)
+                if (previousCategoriesState == NativeInstrumentsResource.ResourceStates.Empty)
                 {
-                    plugin.NativeInstrumentsResource.ShouldSave = true;
+                    plugin.NativeInstrumentsResource.CategoriesState.ShouldSave = true;
                 }
-                
+
+                if (previousColorState == NativeInstrumentsResource.ResourceStates.Empty)
+                {
+                    plugin.NativeInstrumentsResource.ColorState.ShouldSave = true;
+                }
+
+                if (previousShortNameState == NativeInstrumentsResource.ResourceStates.Empty)
+                {
+                    plugin.NativeInstrumentsResource.ShortNamesState.ShouldSave = true;
+                }
+
                 foreach (var img in imagesToSave)
                 {
-                    img.ShouldSaveImage = true;
-                    plugin.NativeInstrumentsResource.Save(plugin);
+                    if (img.State.State == NativeInstrumentsResource.ResourceStates.AutomaticallyGenerated)
+                    {
+                        img.State.ShouldSave = true;
+                    }
                 }
+
+                plugin.NativeInstrumentsResource.Save(plugin);
             }
         }
-        
-        [Time]
-        [STAThread]
-        public async Task GenerateResources(Plugin plugin)
+
+        public bool ShouldCreateScreenshot(Plugin plugin)
         {
-            var wasLoaded = plugin.IsLoaded;
-            if (!plugin.IsLoaded)
-            {
-                _vstService.VstHost.LoadVST(plugin);
-            }
-
-            Bitmap bmp = await TaskHelper.Run(() => CaptureScreenshot(plugin), true);
-
-            
+            var shouldCreateScreenshot = false;
             
             var niResource = plugin.NativeInstrumentsResource;
+            
+            if (niResource.ColorState.State == NativeInstrumentsResource.ResourceStates.Empty)
+            {
+                shouldCreateScreenshot = true;
+            }
+            
+            foreach (var img in niResource.ResourceImages)
+            {
+                if (img.State.State == NativeInstrumentsResource.ResourceStates.Empty)
+                {
+                    shouldCreateScreenshot = true;
+                }
+            }
+
+            return shouldCreateScreenshot;
+        }
+
+        [Time]
+        public void GenerateResources(Plugin plugin, IRemoteVstService remoteVstService, bool force = false)
+        {
+            Image bmp;
+            var niResource = plugin.NativeInstrumentsResource;
+
+            if (!ShouldCreateScreenshot(plugin) && !force)
+            {
+                return;
+            }
+            
+            var data = remoteVstService.CreateScreenshot(plugin.Guid);
+
+            if (data != null)
+            {
+                var ms = new MemoryStream();
+                ms.Write(data, 0, data.Length);
+                ms.Seek(0, SeekOrigin.Begin);
+                bmp = Bitmap.FromStream(ms);
+            }
+            else
+            {
+                return;
+            }
 
             var pluginName = plugin.PluginName;
             var pluginVendor = plugin.PluginVendor;
@@ -107,31 +148,22 @@ namespace PresetMagician.Services
                 NativeInstrumentsResource.ResourceStates.AutomaticallyGenerated);
 
 
-            niResource.Color.BackgroundColor = DetectBestColor(bmp);
+            niResource.Color.BackgroundColor = DetectBestColor((Bitmap) bmp);
 
-            niResource.MST_logo.ReplaceFromStream(RenderBigLogo(pluginName,  pluginVendor, niResource.MST_logo.TargetSize, 35 ,12),
-                NativeInstrumentsResource.ResourceStates.AutomaticallyGenerated);
-            
-            niResource.VB_logo.ReplaceFromStream(RenderLogo(pluginName, niResource.VB_logo.TargetSize, 30, new Point(7,2)),
-                NativeInstrumentsResource.ResourceStates.AutomaticallyGenerated);
-            
-            niResource.OSO_logo.ReplaceFromStream(RenderLogo(pluginName, niResource.OSO_logo.TargetSize, 43, new Point(7,2)),
+            niResource.MST_logo.ReplaceFromStream(
+                RenderBigLogo(pluginName, pluginVendor, niResource.MST_logo.TargetSize, 35, 12),
                 NativeInstrumentsResource.ResourceStates.AutomaticallyGenerated);
 
-            if (wasLoaded)
-            {
-                _vstService.VstHost.UnloadVST(plugin);
-            }
+            niResource.VB_logo.ReplaceFromStream(
+                RenderLogo(pluginName, niResource.VB_logo.TargetSize, 30, new Point(7, 2)),
+                NativeInstrumentsResource.ResourceStates.AutomaticallyGenerated);
+
+            niResource.OSO_logo.ReplaceFromStream(
+                RenderLogo(pluginName, niResource.OSO_logo.TargetSize, 43, new Point(7, 2)),
+                NativeInstrumentsResource.ResourceStates.AutomaticallyGenerated);
         }
 
-        
 
-        private static Bitmap CaptureScreenshot(Plugin plugin)
-        {
-            return ScreenCapture.CaptureVstScreenshot(plugin.PluginContext);
-        }
-        
-        
         [Time]
         private static MemoryStream RenderLogo(string pluginName, Size targetSize, int fontSize, Point offset)
         {
@@ -146,14 +178,14 @@ namespace PresetMagician.Services
 
 
             var d = new DrawingVisual();
-            
-            
+
+
             var d1 = d.RenderOpen();
             d1.DrawText(text, offset);
             d1.Close();
             var bmp2 = new RenderTargetBitmap(targetSize.Width,
                 targetSize.Height, 96, 96, PixelFormats.Pbgra32);
-            
+
             bmp2.Render(d);
 
             var pngImage = new PngBitmapEncoder();
@@ -164,9 +196,10 @@ namespace PresetMagician.Services
 
             return ms;
         }
-        
+
         [Time]
-        private static MemoryStream RenderBigLogo(string pluginName, string vendorName, Size targetSize, int pluginFontSize, int vendorFontSize)
+        private static MemoryStream RenderBigLogo(string pluginName, string vendorName, Size targetSize,
+            int pluginFontSize, int vendorFontSize)
         {
             var center = new Point(0, 0);
             FormattedText text = new FormattedText(pluginName, CultureInfo.GetCultureInfo("en-us"),
@@ -190,14 +223,11 @@ namespace PresetMagician.Services
             };
 
 
-
-
             var d1 = d.RenderOpen();
-            
-      
-            
+
+
             center.X = 0;
-            center.Y = (double)targetSize.Height / 2 - text.Height/ 2;
+            center.Y = (double) targetSize.Height / 2 - text.Height / 2;
             d1.DrawText(text, center);
             center.Y = 20;
             d1.DrawText(text2, center);
@@ -205,7 +235,7 @@ namespace PresetMagician.Services
             d1.Close();
             var bmp2 = new RenderTargetBitmap(targetSize.Width,
                 targetSize.Height, 96, 96, PixelFormats.Pbgra32);
-            
+
             bmp2.Render(d);
 
             var pngImage = new PngBitmapEncoder();
@@ -328,7 +358,6 @@ namespace PresetMagician.Services
         [Time]
         private static Size GetResizeSize(Size input, Size targetSize)
         {
-           
             var finalSize = new Size();
 
             var sourceHeight = (double) input.Height;

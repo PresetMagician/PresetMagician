@@ -15,7 +15,7 @@ namespace PresetMagician.Services.Interfaces
         Plugin SelectedPlugin { get; set; }
         FastObservableCollection<Plugin> SelectedPlugins { get; }
         ObservableCollection<Plugin> Plugins { get; }
-        Drachenkatze.PresetMagician.VSTHost.VST.VstHost VstHost { get; set; }
+        VstHost.VST.VstHost VstHost { get; set; }
         FastObservableCollection<Preset> PresetExportList { get; }
         Preset SelectedExportPreset { get; set; }
         FastObservableCollection<Preset> SelectedPresets { get; }
@@ -23,5 +23,8 @@ namespace PresetMagician.Services.Interfaces
         event EventHandler SelectedExportPresetChanged;
         Task SavePlugins();
         byte[] GetPresetData(Preset preset);
+        Task<IRemoteVstService> LoadVst(Plugin plugin, bool backgroundProcessing = true, bool sharedPool = true);
+        Task<IRemoteVstService> LoadVstInteractive(Plugin plugin);
+        Task UnloadVst(Plugin plugin);
     }
 }

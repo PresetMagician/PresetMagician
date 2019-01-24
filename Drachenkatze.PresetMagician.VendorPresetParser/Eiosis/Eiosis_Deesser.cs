@@ -17,7 +17,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Eiosis
             var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 @"Eiosis\E2Deesser\Presets");
 
-            var parser = new SlateDigitalPresetParser(Plugin, "epf", Presets, "E2DS");
+            var parser = new SlateDigitalPresetParser(RemoteVstService, Plugin, "epf", Presets, "E2DS");
             parser.DoScan(RootBank, directory);
         }
     }

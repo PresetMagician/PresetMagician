@@ -64,6 +64,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Design" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -102,6 +103,7 @@
     <Compile Include="Commands\PluginTools\PluginToolsUnloadPluginCommandContainer.cs" />
     <Compile Include="Commands\PluginTools\PluginToolsLoadPluginCommandContainer.cs" />
     <Compile Include="Commands\PluginTools\PluginToolsShowPluginInfoCommandContainer.cs" />
+    <Compile Include="Commands\PluginTools\PluginToolsViewErrorsCommandContainer.cs" />
     <Compile Include="Commands\PluginTools\PluginToolsViewSettingsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\AbstractScanPluginsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginAllToPresetExportListCommandContainer.cs" />
@@ -170,6 +172,7 @@
     <Compile Include="ViewModels\StatusBarViewModel.cs" />
     <Compile Include="ViewModels\VstFolderListViewModel.cs" />
     <Compile Include="ViewModels\VstPluginChunkViewModel.cs" />
+    <Compile Include="ViewModels\VstPluginLogViewModel.cs" />
     <Compile Include="ViewModels\VstPluginInfoViewModel.cs" />
     <Compile Include="ViewModels\VstPluginsViewModel.cs" />
     <Compile Include="ViewModels\VstPluginViewModel.cs" />
@@ -217,6 +220,9 @@
     </Compile>
     <Compile Include="Views\VstFolderList.xaml.cs">
       <DependentUpon>VstFolderList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\VstPluginLogView.xaml.cs">
+      <DependentUpon>VstPluginLogView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\VstPluginInfoView.xaml.cs">
       <DependentUpon>VstPluginInfoView.xaml</DependentUpon>
@@ -314,6 +320,10 @@
     </Page>
     <Page Include="Views\ThemeControlsWindow.xaml" />
     <Page Include="Views\VstFolderList.xaml" />
+    <Page Include="Views\VstPluginLogView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\VstPluginInfoView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -382,6 +392,10 @@
       <Project>{62ced1d5-f603-40de-8bf5-3e49d3a392f4}</Project>
       <Name>NBug</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PresetMagician.RemoteVstHost\PresetMagician.RemoteVstHost.csproj">
+      <Project>{f07c1405-2149-4da5-ace7-54f5278ad2e4}</Project>
+      <Name>PresetMagician.RemoteVstHost</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PresetMagician.SharedModels\PresetMagician.SharedModels.csproj">
       <Project>{445ac4fe-6acc-4e19-9424-b35c0b8b5804}</Project>
       <Name>PresetMagician.SharedModels</Name>
@@ -400,6 +414,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Images\empty.png" />
     <Resource Include="Resources\Images\Splashscreen.svg" />
   </ItemGroup>
   <ItemGroup>

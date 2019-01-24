@@ -42,7 +42,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
                     rootElement.Add(newAtt);
                 }
             }
-            LogTo.Debug(xmlPreset.ToString());
+            Plugin.Debug(xmlPreset.ToString());
             return xmlPreset.ToString();
         }
         

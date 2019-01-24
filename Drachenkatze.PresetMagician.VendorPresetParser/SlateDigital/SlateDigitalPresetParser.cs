@@ -14,11 +14,13 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
 {
     public class SlateDigitalPresetParser : RecursiveBankDirectoryParser
     {
-        protected string _presetSectionName;
-
-        public SlateDigitalPresetParser(Plugin plugin, string extension,
+        private readonly string _presetSectionName;
+        private readonly IRemoteVstService _remoteVstService;
+        
+        public SlateDigitalPresetParser(IRemoteVstService remoteVstService, Plugin plugin, string extension,
             ObservableCollection<Preset> presets, string presetSectionName) : base(plugin, extension, presets)
         {
+            _remoteVstService = remoteVstService;
             _presetSectionName = presetSectionName;
         }
 
@@ -33,7 +35,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
         protected override void ProcessFile(string fileName, Preset preset)
         {
             var xmlPreset = XDocument.Load(fileName);
-            var chunk = _plugin.PluginContext.PluginCommandStub.GetChunk(false);
+            var chunk = _remoteVstService.GetChunk(_plugin.Guid, false);
             var chunkXML = Encoding.UTF8.GetString(chunk);
 
             var actualPresetDocument = XDocument.Parse(chunkXML);

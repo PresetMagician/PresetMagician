@@ -61,13 +61,11 @@ namespace PresetMagician
 
             var cancellationToken = _applicationService.GetApplicationOperationCancellationSource().Token;
 
-            await TaskHelper.Run(() =>
+            await TaskHelper.Run(async () =>
             {
-                var exporter = new VstPluginExport(_vstService.VstHost);
                 var exportDirectory = _runtimeConfigurationService.RuntimeConfiguration
                     .NativeInstrumentsUserContentDirectory;
 
-                exporter.UserContentDirectory = exportDirectory;
                 if (!Directory.Exists(exportDirectory))
                 {
                     _log.Warning($"Directory {exportDirectory} does not exist, using the default");
@@ -81,10 +79,9 @@ namespace PresetMagician
 
 
                     // Create a temporary plugin so that we don't overwrite the plugin info in the list
-                    var tempPlugin = new Plugin();
-                    tempPlugin.DllPath = plugin.DllPath;
+                    var tempPlugin = new Plugin {DllPath = plugin.DllPath};
 
-                    _vstService.VstHost.LoadVST(tempPlugin);
+                    var remoteVstService = await _vstService.LoadVst(plugin, false);
 
                     foreach (var preset in pluginPreset.Presets)
                     {
@@ -99,20 +96,22 @@ namespace PresetMagician
                         }
                         
                         var presetData = _vstService.GetPresetData(preset.Preset);
-
+                        var presetExportInfo = new PresetExportInfo(preset.Preset);
                         if (_runtimeConfigurationService.RuntimeConfiguration.ExportWithAudioPreviews &&
                             plugin.PluginType == Plugin.PluginTypes.Instrument)
                         {
-                            exporter.ExportPresetAudioPreviewRealtime(tempPlugin, preset.Preset, presetData);
+                            
+                            remoteVstService.ExportNksAudioPreview(tempPlugin.Guid, presetExportInfo, presetData, exportDirectory, preset.Preset.Plugin.GetAudioPreviewDelay());
                         }
                         
-                        exporter.ExportPresetNKSF(tempPlugin, preset.Preset, presetData);
-                        plugin.PresetParser.OnAfterPresetExport(_vstService.VstHost, tempPlugin);
+                        remoteVstService.ExportNks(tempPlugin.Guid, presetExportInfo, presetData, exportDirectory);
+                        
+                        plugin.PresetParser.OnAfterPresetExport();
                         preset.Preset.LastExported = DateTime.Now;
                     }
 
-                    _vstService.VstHost.UnloadVST(tempPlugin);
-                    _vstService.SavePlugins();
+                    await _vstService.UnloadVst(tempPlugin);
+                    await _vstService.SavePlugins();
                 }
             });
 

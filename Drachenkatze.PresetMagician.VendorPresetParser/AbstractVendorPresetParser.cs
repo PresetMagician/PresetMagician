@@ -36,6 +36,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         public ObservableCollection<string> DefaultModes { get; set; } = new ObservableCollection<string>();
        
         public ObservableCollection<Preset> Presets { get; set; } = new ObservableCollection<Preset>();
+        public IRemoteVstService RemoteVstService { get; set; }
         
         public virtual string BankLoadingNotes { get; set; }
         public IPresetDataStorer PresetDataStorer { get; set; }
@@ -67,7 +68,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             return false;
         }
 
-        public virtual void OnAfterPresetExport(IVstHost host, Plugin plugin)
+        public virtual void OnAfterPresetExport()
         {
 
         }

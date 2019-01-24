@@ -31,8 +31,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         ObservableCollection<string> DefaultModes { get; set; }
 
         IPresetDataStorer PresetDataStorer { get; set; }
+        IRemoteVstService RemoteVstService { get; set; }
         void ScanBanks();
         Task DoScan();
-        void OnAfterPresetExport(IVstHost host, Plugin plugin);
+        void OnAfterPresetExport();
     }
 }

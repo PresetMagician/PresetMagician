@@ -5,7 +5,8 @@ namespace PresetMagician.Services.Interfaces
 {
     public interface INativeInstrumentsResourceGeneratorService
     {
-        Task AutoGenerateResources(Plugin plugin);
-        Task GenerateResources(Plugin plugin);
+        void AutoGenerateResources(Plugin plugin, IRemoteVstService remoteVstService);
+        void GenerateResources(Plugin plugin, IRemoteVstService remoteVstService, bool force = false);
+        bool ShouldCreateScreenshot(Plugin plugin);
     }
 }

@@ -127,6 +127,11 @@
                         Icon="{iconPacks:Material Kind=BarcodeScan,
                                                        Width=16,
                                                        Height=16}" />
+                    <fluent:Button
+                        Command="{catel:CommandManagerBinding PluginTools.ViewErrors}"
+                        Header="View Plugin Log"
+                        Icon="{iconPacks:FontAwesome Kind=ListAltSolid}"
+                        Size="Middle" />
                 </fluent:RibbonGroupBox>
                 <fluent:RibbonGroupBox Header="Plugin Developer Tools">
                     <fluent:Button

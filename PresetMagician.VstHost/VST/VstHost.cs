@@ -1,20 +1,23 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Runtime.ExceptionServices;
-using System.Security;
-using System.Threading.Tasks;
-using Catel.Collections;
-using Catel.Threading;
+using System.Timers;
+using System.Windows;
+using System.Windows.Threading;
+using Drachenkatze.PresetMagician.VSTHost;
+using Drachenkatze.PresetMagician.VSTHost.VST;
 using Jacobi.Vst.Core;
+using Jacobi.Vst.Core.Host;
 using Jacobi.Vst.Interop.Host;
-using PresetMagician.Models;
+using MethodTimer;
+using PresetMagician.VstHost.Util;
 using SharedModels;
 
-namespace Drachenkatze.PresetMagician.VSTHost.VST
+namespace PresetMagician.VstHost.VST
 {
     public class NoOfflineSupportException : Exception
     {
@@ -30,11 +33,56 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
 
     public class VstHost : IVstHost
     {
-        //public VSTPluginExport pluginExporter;
+        private Timer _audioTimer;
+        private Timer _guiTimer;
 
-        public VstHost()
+        public VstHost(bool useTimer = false)
         {
-            //pluginExporter = new VSTPluginExport();
+            if (useTimer)
+            {
+                _audioTimer = new Timer();
+                _audioTimer.Elapsed += AudioTimerOnElapsed;
+                _audioTimer.Interval = 50;
+                _audioTimer.Enabled = true;
+                _audioTimer.AutoReset = false;
+
+                _guiTimer = new Timer();
+                _guiTimer.Elapsed += GuiTimerOnElapsed;
+                _guiTimer.Interval = 150;
+                _guiTimer.Enabled = true;
+                _guiTimer.AutoReset = false;
+            }
+        }
+
+        private void GuiTimerOnElapsed(object sender, ElapsedEventArgs e)
+        {
+            lock (_guiTimer)
+            {
+                foreach (var plugin in _plugins.ToArray())
+                {
+                    if (plugin.IsEditorOpen)
+                    {
+                        plugin.PluginContext.PluginCommandStub.EditorIdle();
+                        plugin.RedrawEditor();
+                    }
+                }
+            }
+
+
+            _guiTimer.Start();
+        }
+
+        private void AudioTimerOnElapsed(object sender, ElapsedEventArgs e)
+        {
+            lock (_audioTimer)
+            {
+                foreach (var plugin in _plugins.ToArray())
+                {
+                    IdleLoop(plugin.PluginContext, 1);
+                }
+            }
+
+            _audioTimer.Start();
         }
 
         /// <summary>
@@ -54,40 +102,72 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             return vstPlugins;
         }
 
-       
 
         public const int BlockSize = 512;
         public const float SampleRate = 44100f;
 
-        public async Task LoadVSTAsync(Plugin vst)
+        private static List<VstPlugin> _plugins = new List<VstPlugin>();
+
+        public bool LoadVST(Plugin vst, int idleLoopCount = 1024)
         {
-            await TaskHelper.Run(() => LoadVST(vst), true);
+            throw new Exception("Dont use anymore");
         }
 
-        public void LoadVST(Plugin vst)
+        public bool LoadVst(VstPlugin vst)
         {
-            var hostCommandStub = new HostCommandStub();
+            LoadVstInternal(vst);
 
-           
-                var ctx = VstPluginContext.Create(vst.DllPath, hostCommandStub);
+            if (vst.BackgroundProcessing)
+            {
+                lock (_audioTimer)
+                {
+                    lock (_guiTimer)
+                    {
+                        _plugins.Add(vst);
+                    }
+                }
+            }
 
-                vst.PluginContext = ctx;
-                ctx.Set("PluginPath", vst.DllPath);
-                ctx.Set("HostCmdStub", hostCommandStub);
-                ctx.PluginCommandStub.SetBlockSize(BlockSize);
-                ctx.PluginCommandStub.SetSampleRate(SampleRate);
-                
-                ctx.PluginCommandStub.Open();
-                ctx.PluginCommandStub.StartProcess();
-                vst.PluginContext.PluginCommandStub.MainsChanged(true);
-                IdleLoop(vst,1024);
-                vst.OnLoaded();
-           
+            return true;
         }
 
-        public void IdleLoop(Plugin plugin, int loops)
+        public void ReloadPlugin(VstPlugin vst)
         {
-            var ctx = plugin.PluginContext;
+            UnloadVst(vst);
+            LoadVstInternal(vst);
+        }
+
+        private static void LoadVstInternal(VstPlugin vst)
+        {
+            var hostCommandStub = new NewHostCommandStub();
+            hostCommandStub.PluginDll = Path.GetFileName(vst.DllPath);
+
+            Debug.WriteLine($"{hostCommandStub.PluginDll}: Loading plugin");
+            var ctx = VstPluginContext.Create(vst.DllPath, hostCommandStub);
+            ctx.Set("Plugin", vst);
+
+            vst.PluginContext = ctx;
+            ctx.Set("PluginPath", vst.DllPath);
+            ctx.Set("HostCmdStub", hostCommandStub);
+            Debug.WriteLine($"{hostCommandStub.PluginDll}: Opening plugin");
+            ctx.PluginCommandStub.Open();
+
+            Debug.WriteLine($"{hostCommandStub.PluginDll}: Set Block Size");
+            ctx.PluginCommandStub.SetBlockSize(BlockSize);
+            Debug.WriteLine($"{hostCommandStub.PluginDll}: Set Sample Rate");
+            ctx.PluginCommandStub.SetSampleRate(SampleRate);
+
+            Debug.WriteLine($"{hostCommandStub.PluginDll}: Activating output");
+            vst.PluginContext.PluginCommandStub.MainsChanged(true);
+
+            Debug.WriteLine($"{hostCommandStub.PluginDll}: starting to process");
+            ctx.PluginCommandStub.StartProcess();
+            
+            Debug.WriteLine($"{vst.DllFilename}: adding to list");
+        }
+
+        public static void IdleLoop(IVstPluginContext ctx, int loops)
+        {
             var outputCount = ctx.PluginInfo.AudioOutputCount;
             var inputCount = ctx.PluginInfo.AudioInputCount;
 
@@ -107,7 +187,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             }
         }
 
-        private void MIDI(Plugin plugin, byte Cmd, byte Val1, byte Val2)
+        private void MIDI(VstPlugin plugin, byte Cmd, byte Val1, byte Val2)
         {
             /*
 			 * Just a small note on the code for setting up a midi event:
@@ -127,13 +207,13 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             midiData[0] = Cmd;
             midiData[1] = Val1;
             midiData[2] = Val2;
-            midiData[3] = 0;    // Reserved, unused
+            midiData[3] = 0; // Reserved, unused
 
-            var vse = new VstMidiEvent(/*DeltaFrames*/ 0,
+            var vse = new VstMidiEvent( /*DeltaFrames*/ 0,
                 /*NoteLength*/ 0,
-                /*NoteOffset*/  0,
+                /*NoteOffset*/ 0,
                 midiData,
-                /*Detune*/        0,
+                /*Detune*/ 0,
                 /*NoteOffVelocity*/ 127);
 
             var ve = new VstEvent[1];
@@ -142,30 +222,57 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             plugin.PluginContext.PluginCommandStub.ProcessEvents(ve);
         }
 
-        public void MIDI_CC(Plugin plugin, byte Number, byte Value)
+        public void MIDI_CC(VstPlugin plugin, byte Number, byte Value)
         {
             byte Cmd = 0xB0;
             MIDI(plugin, Cmd, Number, Value);
         }
 
-        public void MIDI_NoteOff(Plugin plugin, byte Note, byte Velocity)
+        public void MIDI_NoteOff(VstPlugin plugin, byte Note, byte Velocity)
         {
             byte Cmd = 0x80;
             MIDI(plugin, Cmd, Note, Velocity);
         }
 
-        public void MIDI_NoteOn(Plugin plugin, byte Note, byte Velocity)
+        public void MIDI_NoteOn(VstPlugin plugin, byte Note, byte Velocity)
         {
             byte Cmd = 0x90;
             MIDI(plugin, Cmd, Note, Velocity);
         }
 
-        public void UnloadVST(Plugin vst)
+        public void UnloadVst(VstPlugin vst)
         {
-            vst.PluginContext.PluginCommandStub.MainsChanged(false);
-            vst.PluginContext.PluginCommandStub.StopProcess();
-            vst.PluginContext?.Dispose();
-            vst.PluginContext = null;
+            lock (_audioTimer)
+            {
+                lock (_guiTimer)
+                {
+                    if (vst.BackgroundProcessing)
+                    {
+                        Debug.WriteLine($"{vst.DllFilename}: removing from list");
+                        _plugins.Remove(vst);
+                    }
+
+
+                    if (vst.IsEditorOpen)
+                    {
+                        Debug.WriteLine($"{vst.DllFilename}: closing editor in shutdown");
+                        Application.Current.Dispatcher.Invoke(() => { vst.CloseEditor(); });
+                    }
+
+                    Debug.WriteLine($"{vst.DllFilename}: stopping process");
+                    vst.PluginContext?.PluginCommandStub.StopProcess();
+                    Debug.WriteLine($"{vst.DllFilename}: turning off");
+                    vst.PluginContext?.PluginCommandStub.MainsChanged(false);
+
+                    Debug.WriteLine($"{vst.DllFilename}: starting shutdown");
+                    vst.PluginContext?.PluginCommandStub.Close();
+                    vst.PluginContext = null;
+                }
+            }
+        }
+
+        public void DisposeVST(VstPlugin plugin)
+        {
         }
     }
 }

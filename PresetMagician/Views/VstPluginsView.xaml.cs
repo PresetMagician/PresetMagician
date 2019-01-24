@@ -33,8 +33,12 @@ namespace PresetMagician.Views
             InitializeComponent();
         }
 
-
-
-     
+        private void VstPluginList_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (VstPluginList.SelectedItem != null)
+            {
+                VstPluginList.ScrollIntoView(VstPluginList.SelectedItem);
+            }
+        }
     }
 }

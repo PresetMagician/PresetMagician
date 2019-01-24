@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using Jacobi.Vst.Interop.Host;
-using PresetMagician.Models;
 using PresetMagician.SharedModels;
-using SharedModels;
 
-namespace Drachenkatze.PresetMagician.VSTHost.VST
+namespace SharedModels
 {
     public interface IVstPlugin
     {
-        string DllPath { get; }
-        VstPluginContext PluginContext { get; set; }
+        
         void OnLoaded();
         void OnLoadError(Exception e);
         int PluginId { get; set; }

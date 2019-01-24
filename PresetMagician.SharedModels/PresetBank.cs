@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
+using Catel.Collections;
 using Catel.Data;
 
 namespace SharedModels
@@ -16,7 +17,7 @@ namespace SharedModels
 
         public PresetBank(string bankName = "All Banks")
         {
-            PresetBanks = new ObservableCollection<PresetBank>();
+            PresetBanks = new FastObservableCollection<PresetBank>();
 
             PresetBanks.CollectionChanged += delegate(object sender, NotifyCollectionChangedEventArgs e)                    
             {
@@ -117,7 +118,7 @@ namespace SharedModels
         /// Gets or sets the Presets value.
         /// </summary>
 
-        public ObservableCollection<PresetBank> PresetBanks { get; set; }
+        public FastObservableCollection<PresetBank> PresetBanks { get; set; }
 
         #endregion
     }

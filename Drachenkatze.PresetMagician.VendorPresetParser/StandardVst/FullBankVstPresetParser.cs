@@ -20,7 +20,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
         {
             var factoryBank = FindOrCreateBank(BankNameFactory);
 
-            await GetPresets(factoryBank, 0, Plugin.PluginContext.PluginInfo.ProgramCount, "Builtin");
+            await GetPresets(factoryBank, 0, Plugin.PluginInfo.ProgramCount, "Builtin");
         }
 
         [Time]
@@ -28,32 +28,32 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
         {
             if (start < 0)
             {
-                LogTo.Error("GetPresets start index is less than 0, ignoring.");
+                Plugin.Error("GetPresets start index is less than 0, ignoring.");
                 return;
             }
 
             var endIndex = start + numPresets;
 
-            if (endIndex > Plugin.PluginContext.PluginInfo.ProgramCount)
+            if (endIndex > Plugin.PluginInfo.ProgramCount)
             {
-                LogTo.Error(
-                    $"GetPresets between {start} and {endIndex} would exceed maximum program count of {Plugin.PluginContext.PluginInfo.ProgramCount}, ignoring.");
+                Plugin.Error(
+                    $"GetPresets between {start} and {endIndex} would exceed maximum program count of {Plugin.PluginInfo.ProgramCount}, ignoring.");
                 return;
             }
 
             for (var index = start; index < endIndex; index++)
             {
-                Plugin.PluginContext.PluginCommandStub.SetProgram(index);
+                RemoteVstService.SetProgram(Plugin.Guid, index);
 
                 var preset = new Preset
                 {
-                    PresetName = Plugin.PluginContext.PluginCommandStub.GetProgramName(),
+                    PresetName = RemoteVstService.GetCurrentProgramName(Plugin.Guid),
                     PresetBank = bank,
                     SourceFile = sourceFile + ":" + index,
                     Plugin = Plugin
                 };
 
-                await PresetDataStorer.PersistPreset(preset, Plugin.PluginContext.PluginCommandStub.GetChunk(false));
+                await PresetDataStorer.PersistPreset(preset, RemoteVstService.GetChunk(Plugin.Guid, false));
             }
         }
     }

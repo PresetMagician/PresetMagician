@@ -157,6 +157,7 @@
                 ItemsSource="{Binding Plugins}"
                 ScrollViewer.CanContentScroll="True"
                 SelectedItem="{Binding SelectedPlugin}"
+                SelectionChanged="VstPluginList_OnSelectionChanged"
                 dgx:DataGridFilter.IsAutoFilterEnabled="True"
                 dgx:Tools.ApplyInitialSorting="True"
                 dgx:DataGridFilter.FilterEvaluationDelay="0:0:0.1"
@@ -372,9 +373,14 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTextColumn
-                        Width="120"
+                        Width="60"
                         Binding="{Binding IsLoaded}"
                         Header="Loaded"
+                        IsReadOnly="True" />
+                    <DataGridTextColumn
+                        Width="60"
+                        Binding="{Binding IsEnabled}"
+                        Header="Enabled"
                         IsReadOnly="True" />
                     <DataGridTextColumn
                         Width="120"

@@ -5,9 +5,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Diagnostics;
 using System.Windows.Threading;
-using Orc.Controls;
 using Orchestra.Services;
 using PresetMagician.Services.EventArgs;
 using PresetMagician.ViewModels;
@@ -15,8 +13,6 @@ using SplashScreenService = PresetMagician.Services.SplashScreenService;
 
 namespace PresetMagician.Views
 {
-    using System.Windows;
-    using System.Windows.Media;
     using Catel.Windows;
 
     /// <summary>
@@ -42,9 +38,9 @@ namespace PresetMagician.Views
 
         private void OnFoobar(Object sender, StartupActionChangedEventArgs e)
         {
-            var x = (SplashScreenViewModel)this.ViewModel;
+            var x = (SplashScreenViewModel)ViewModel;
             x.Action = e.NewValue;
-            this.Dispatcher.Invoke(DispatcherPriority.Render, EmptyDelegate);
+            Dispatcher.Invoke(DispatcherPriority.Render, EmptyDelegate);
         }
 
         #endregion Constructors

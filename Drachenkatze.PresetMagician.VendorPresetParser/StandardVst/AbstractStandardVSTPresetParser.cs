@@ -7,6 +7,8 @@ using Anotar.Catel;
 using Drachenkatze.PresetMagician.Utils;
 using Drachenkatze.PresetMagician.VSTHost.VST;
 using Jacobi.Vst.Core;
+using Jacobi.Vst.Core.Deprecated;
+using Jacobi.Vst.Core.Plugin;
 using PresetMagician.Models;
 using PresetMagician.SharedModels;
 using SharedModels;
@@ -60,7 +62,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
 
                     if (ranges.Count == 0)
                     {
-                        presetCount += Plugin.PluginContext.PluginInfo.ProgramCount;
+                        presetCount += Plugin.PluginInfo.ProgramCount;
                     }
                     else
                     {
@@ -101,7 +103,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
 
                         if (ranges.Count == 0)
                         {
-                            await GetPresets(presetBank, 0, Plugin.PluginContext.PluginInfo.ProgramCount, bank.Path);
+                            await GetPresets(presetBank, 0, Plugin.PluginInfo.ProgramCount, bank.Path);
                         }
                         else
                         {
@@ -120,7 +122,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
         
         public override int GetNumPresets()
         {
-            return Plugin.PluginContext.PluginInfo.ProgramCount + GetAdditionalBanksPresetCount();
+            return Plugin.PluginInfo.ProgramCount + GetAdditionalBanksPresetCount();
         }
         
         public async Task DoScan()
@@ -138,25 +140,25 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
             {
                 return PresetSaveModes.None;
             }
-
-            if ((Plugin.PluginContext.PluginInfo.Flags & VstPluginFlags.ProgramChunks) == 0)
+            
+            if ((Plugin.PluginInfo.Flags & VstPluginFlags.ProgramChunks) == 0)
             {
                 return PresetSaveModes.None;
             }
 
-            if (Plugin.PluginContext.PluginInfo.ProgramCount > 1)
+            if (Plugin.PluginInfo.ProgramCount > 1)
             {
-                LogTo.Debug(Plugin.PluginName + ": Program count is greater than 1, checking for preset save mode");
+                Plugin.Debug(Plugin.PluginName + ": Program count is greater than 1, checking for preset save mode");
                 if (!AreChunksConsistent(false))
                 {
                     return PresetSaveModes.Fallback;
                 }
 
-                LogTo.Debug(Plugin.PluginName + ": bank chunks are consistent");
+                Plugin.Debug(Plugin.PluginName + ": bank chunks are consistent");
 
                 if (IsCurrentProgramStoredInBankChunk())
                 {
-                    LogTo.Debug(Plugin.PluginName + ": current program is stored in the bank chunk");
+                    Plugin.Debug(Plugin.PluginName + ": current program is stored in the bank chunk");
                     return PresetSaveModes.FullBank;
 
                     // Perfect, just put out the full bank chunk. Nothing to do here.
@@ -166,7 +168,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
                 // save the preset and restore the original program 0
                 if (AreChunksConsistent(true))
                 {
-                    LogTo.Debug(Plugin.PluginName + ": program chunks are consistent");
+                    Plugin.Debug(Plugin.PluginName + ": program chunks are consistent");
                     return PresetSaveModes.BankTrickery;
                 }
 
@@ -185,10 +187,10 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
          */
         public bool AreChunksConsistent(bool isPreset)
         {
-            LogTo.Debug(Plugin.PluginName + ": checking if chunks are consistent");
-            Plugin.PluginContext.PluginCommandStub.SetProgram(0);
+            Plugin.Debug(Plugin.PluginName + ": checking if chunks are consistent");
+            RemoteVstService.SetProgram(Plugin.Guid, 0);
 
-            var chunk = Plugin.PluginContext.PluginCommandStub.GetChunk(isPreset);
+            var chunk = RemoteVstService.GetChunk(Plugin.Guid, isPreset);
 
             if (chunk == null)
             {
@@ -198,12 +200,12 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
             string firstPresetHash =
                 HashUtils.getIxxHash(chunk);
 
-            LogTo.Debug(Plugin.PluginName + ": hash for program 0 is " + firstPresetHash);
+            Plugin.Debug(Plugin.PluginName + ": hash for program 0 is " + firstPresetHash);
 
             for (int i = 0; i < 10; i++)
             {
-                Plugin.PluginContext.PluginCommandStub.SetProgram(0);
-                chunk = Plugin.PluginContext.PluginCommandStub.GetChunk(isPreset);
+                RemoteVstService.SetProgram(Plugin.Guid, 0);
+                chunk = RemoteVstService.GetChunk(Plugin.Guid, isPreset);
 
                 if (chunk == null)
                 {
@@ -229,12 +231,12 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
 
         public bool IsCurrentProgramStoredInBankChunk()
         {
-            Plugin.PluginContext.PluginCommandStub.SetProgram(0);
-            var firstHash = HashUtils.getIxxHash(Plugin.PluginContext.PluginCommandStub.GetChunk(false));
+            RemoteVstService.SetProgram(Plugin.Guid, 0);
+            var firstHash = HashUtils.getIxxHash(RemoteVstService.GetChunk(Plugin.Guid, false));
 
-            Plugin.PluginContext.PluginCommandStub.SetProgram(1);
+            RemoteVstService.SetProgram(Plugin.Guid, 1);
             var secondHash =
-                HashUtils.getIxxHash(Plugin.PluginContext.PluginCommandStub.GetChunk(false));
+                HashUtils.getIxxHash(RemoteVstService.GetChunk(Plugin.Guid, false));
 
             if (firstHash != secondHash)
             {
@@ -262,14 +264,14 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
 
             if (!File.Exists(filePath))
             {
-                LogTo.Error($"Unable to load {filePath} because it doesn't exist");
+                Plugin.Error($"Unable to load {filePath} because it doesn't exist");
                 return LoadFxpResult.Error;
             }
 
 
-            if ((Plugin.PluginContext.PluginInfo.Flags & VstPluginFlags.ProgramChunks) == 0)
+            if ((Plugin.PluginInfo.Flags & VstPluginFlags.ProgramChunks) == 0)
             {
-                LogTo.Error($"Aborting because the plugin does not support ProgramChunks");
+                Plugin.Error($"Aborting because the plugin does not support ProgramChunks");
                 return LoadFxpResult.Error;
             }
 
@@ -280,15 +282,15 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
             if (fxp.ChunkMagic != "CcnK")
             {
                 // not a fxp or fxb file
-                LogTo.Error($"Cannot load {filePath} because it is not an fxp or fxb file");
+                Plugin.Error($"Cannot load {filePath} because it is not an fxp or fxb file");
                 return LoadFxpResult.Error;
             }
 
-            int pluginUniqueID = VstUtils.PluginIDStringToIDNumber(fxp.FxID);
-            int currentPluginID = Plugin.PluginContext.PluginInfo.PluginID;
+            int pluginUniqueID = VstUtils.PluginIdStringToIdNumber(fxp.FxID);
+            int currentPluginID = Plugin.PluginInfo.PluginID;
             if (pluginUniqueID != currentPluginID)
             {
-                LogTo.Error(
+                Plugin.Error(
                     $"Cannot load {filePath} because it is not meant for this plugin! FXP/FXB plugin ID: {pluginUniqueID}, Plugin ID: {currentPluginID}");
                 return LoadFxpResult.Error;
             }
@@ -309,7 +311,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
                     successResult = LoadFxpResult.Bank;
                     break;
                 default:
-                    LogTo.Error($"Cannot load {filePath} because the magic value {fxp.FxMagic} is unknown");
+                    Plugin.Error($"Cannot load {filePath} because the magic value {fxp.FxMagic} is unknown");
                     return LoadFxpResult.Error;
             }
             
@@ -321,10 +323,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
             // To restore the state at a later stage, the same data is passed
             // back to setChunk.
             var chunkData = fxp.ChunkDataByteArray;
-            Plugin.PluginContext.PluginCommandStub.BeginSetProgram();
             
-            Plugin.PluginContext.PluginCommandStub.SetProgram(0);
-            Plugin.PluginContext.PluginCommandStub.SetChunk(chunkData, usePreset);
+            RemoteVstService.SetProgram(Plugin.Guid, 0);
+            RemoteVstService.SetChunk(Plugin.Guid, chunkData, usePreset);
 
             return successResult;
         }

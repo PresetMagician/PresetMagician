@@ -8,6 +8,8 @@ using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.ServiceModel;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using CannedBytes.Midi.Message;
@@ -148,13 +150,12 @@ namespace PresetMagician.ViewModels
         /// </summary>
         private async Task OnDoSomethingExecuteAsync()
         {
-            
-
-
            
-        }
 
-        
+
+            
+            
+        }
 
         #endregion
     }

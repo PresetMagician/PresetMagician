@@ -1,52 +1,45 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
-using System.Threading;
 using Catel.Collections;
 using Drachenkatze.PresetMagician.NKSF.NKSF;
-using Drachenkatze.PresetMagician.VendorPresetParser;
 using Drachenkatze.PresetMagician.VSTHost.Properties;
 using Jacobi.Vst.Core;
 using Jacobi.Vst.Interop.Host;
 using MethodTimer;
 using NAudio.Wave;
-using PresetMagician.Models;
 using SharedModels;
 
-namespace Drachenkatze.PresetMagician.VSTHost.VST
+namespace PresetMagician.VstHost.VST
 {
-    public class VstPluginExport
+    public class NKSExport
     {
-        
         public string UserContentDirectory { get; set; }
 
-        public VstPluginExport(VstHost vstHost)
+        public NKSExport(VstHost vstHost)
         {
             VstHost = vstHost;
         }
 
         public VstHost VstHost { get; }
 
-      
-        public void ExportPresetNKSF(Plugin plugin, Preset preset, byte[] data)
-        {
-            var vst = plugin;
-            vst.PluginContext.PluginCommandStub.Open();
 
+        public void ExportNKSPreset(PresetExportInfo preset, byte[] data)
+        {
             var nksf = new NKSFRiff();
             var guid = Guid.NewGuid();
             string fileExtension;
 
-            nksf.kontaktSound.summaryInformation.summaryInformation.vendor = plugin.PluginVendor;
+            nksf.kontaktSound.summaryInformation.summaryInformation.vendor = preset.PluginVendor;
             nksf.kontaktSound.summaryInformation.summaryInformation.uuid = guid;
             nksf.kontaktSound.summaryInformation.summaryInformation.name = preset.PresetName;
 
-            if (plugin.PluginType == Plugin.PluginTypes.Instrument)
+            if (preset.PluginType == Plugin.PluginTypes.Instrument)
             {
                 nksf.kontaktSound.summaryInformation.summaryInformation.deviceType = "INST";
                 fileExtension = ".nksf";
-            } else if (plugin.PluginType == Plugin.PluginTypes.Effect)
+            }
+            else if (preset.PluginType == Plugin.PluginTypes.Effect)
             {
                 nksf.kontaktSound.summaryInformation.summaryInformation.deviceType = "FX";
                 fileExtension = ".nksfx";
@@ -56,25 +49,23 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                 throw new ArgumentException("Unknown device type");
             }
 
-            nksf.kontaktSound.summaryInformation.summaryInformation.bankChain.Add(plugin.PluginName);
-            
-            var bankPath = preset.PresetBank.GetBankPath();
-            bankPath.RemoveAt(0);
+            nksf.kontaktSound.summaryInformation.summaryInformation.bankChain.Add(preset.PluginName);
 
-            nksf.kontaktSound.summaryInformation.summaryInformation.bankChain.AddRange(bankPath);
+            nksf.kontaktSound.summaryInformation.summaryInformation.bankChain.AddRange(preset.BankPath);
 
             nksf.kontaktSound.summaryInformation.summaryInformation.Types = preset.Types;
             nksf.kontaktSound.summaryInformation.summaryInformation.Modes = preset.Modes;
             nksf.kontaktSound.summaryInformation.summaryInformation.author = preset.Author;
 
-            nksf.kontaktSound.summaryInformation.summaryInformation.comment = preset.Comment + Environment.NewLine + "Generated with PresetMagician";
-            nksf.kontaktSound.pluginId.pluginId.VSTMagic = plugin.PluginContext.PluginInfo.PluginID;
+            nksf.kontaktSound.summaryInformation.summaryInformation.comment =
+                preset.Comment + Environment.NewLine + "Generated with PresetMagician";
+            nksf.kontaktSound.pluginId.pluginId.VSTMagic = preset.PluginId;
             nksf.kontaktSound.pluginChunk.PresetData = data;
 
-            if (plugin.DefaultControllerAssignments != null)
+            if (preset.DefaultControllerAssignments != null)
             {
                 nksf.kontaktSound.controllerAssignments.controllerAssignments =
-                    plugin.DefaultControllerAssignments;
+                    preset.DefaultControllerAssignments;
             }
 
             var outputFilename = Path.Combine(GetUserContentDirectory(preset),
@@ -84,7 +75,7 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             fileStream2.Close();
         }
 
-        public string GetUserContentDirectory(Preset preset)
+        public string GetUserContentDirectory(PresetExportInfo preset)
         {
             string userContentDirectory;
             if (!Directory.Exists(UserContentDirectory))
@@ -98,8 +89,8 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                 userContentDirectory = UserContentDirectory;
             }
 
-            var bankDirectory = Path.Combine(userContentDirectory, GetNKSFPluginName(preset.Plugin.PluginName),
-                GetNKSFBankName(preset.PresetBank.BankName));
+            var bankDirectory = Path.Combine(userContentDirectory, GetNKSFPluginName(preset.PluginName),
+                GetNKSFBankName(preset.BankName));
             Directory.CreateDirectory(bankDirectory);
             return bankDirectory;
         }
@@ -136,9 +127,8 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             return presetName;
         }
 
-      
 
-        private string GetPreviewFilename(Preset vstPreset)
+        private string GetPreviewFilename(PresetExportInfo vstPreset)
         {
             var bankDirectory = GetUserContentDirectory(vstPreset);
 
@@ -192,17 +182,12 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
             process.WaitForExit();
             process.Close();
             process.Dispose();
-
         }
 
         [Time]
-        public bool ExportPresetAudioPreviewRealtime(Plugin plugin, Preset preset, byte[] data)
+        public void ExportPresetAudioPreviewRealtime(VstPlugin plugin, PresetExportInfo preset, byte[] data, int initialDelay)
         {
-            var blockSize = VstHost.BlockSize;
-            
-            var vst = plugin;
-
-            var ctx = vst.PluginContext;
+            var ctx = plugin.PluginContext;
 
             if ((ctx.PluginCommandStub.PluginContext.PluginInfo.Flags & VstPluginFlags.IsSynth) == 0)
             {
@@ -215,63 +200,50 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                 throw new NoRealtimeProcessingException();
             }
 
-            
-
             ctx.PluginCommandStub.SetChunk(data, false);
 
             var outputCount = ctx.PluginInfo.AudioOutputCount;
             var inputCount = ctx.PluginInfo.AudioInputCount;
-            
 
-            var tempFileName = GetPreviewFilename(preset)+".nksf.wav";
 
-            using (var inputMgr = new VstAudioBufferManager(inputCount, blockSize))
+            var tempFileName = GetPreviewFilename(preset) + ".nksf.wav";
+
+            using (var inputMgr = new VstAudioBufferManager(inputCount, VstHost.BlockSize))
             {
-                using (var outputMgr = new VstAudioBufferManager(outputCount, blockSize))
+                using (var outputMgr = new VstAudioBufferManager(outputCount, VstHost.BlockSize))
                 {
-                    
-
                     var outputBuffers = outputMgr.ToArray();
                     var inputBuffers = inputMgr.ToArray();
 
-                    var p = WaveFormat.CreateIeeeFloatWaveFormat(44100, 2);
+                    var p = WaveFormat.CreateIeeeFloatWaveFormat((int) VstHost.SampleRate, 2);
                     var targetLength = 6;
                     var noteOffSecond = 1;
-                    var loops = 44100 * targetLength / blockSize;
-                    var noteOffLoop = 44100 * noteOffSecond / blockSize;
-                                        
-                    var initialDelay = plugin.PresetParserAudioPreviewPreDelay;
+                    var loops = (int) VstHost.SampleRate * targetLength / VstHost.BlockSize;
+                    var noteOffLoop = (int) VstHost.SampleRate * noteOffSecond / VstHost.BlockSize;
 
-                    if (plugin.AudioPreviewPreDelay != 0)
-                    {
-                        initialDelay = plugin.AudioPreviewPreDelay;
-                    }
-                    
-                    Debug.WriteLine("Using initial delay of "+initialDelay);
-                    
                     var writer = new WaveFileWriter(tempFileName, p);
 
-                    
+
                     // Empty buffer
                     int k;
-                                
+
                     for (k = 0; k < initialDelay; k++)
                     {
                         ctx.PluginCommandStub.ProcessReplacing(inputBuffers, outputBuffers);
                     }
-                    
-                    VstHost.MIDI_NoteOn(vst, (byte) preset.PreviewNote.NoteNumber, 127);
 
-                    
+                    VstHost.MIDI_NoteOn(plugin, (byte) preset.PreviewNoteNumber, 127);
+
+
                     for (k = 0; k < loops; k++)
                     {
                         if (k == noteOffLoop)
                         {
-                            VstHost.MIDI_NoteOff(vst, (byte) preset.PreviewNote.NoteNumber, 127);
+                            VstHost.MIDI_NoteOff(plugin, (byte) preset.PreviewNoteNumber, 127);
                         }
 
                         ctx.PluginCommandStub.ProcessReplacing(inputBuffers, outputBuffers);
-                        for (var j = 0; j < blockSize; j++)
+                        for (var j = 0; j < VstHost.BlockSize; j++)
                         {
                             foreach (var t in outputBuffers)
                             {
@@ -284,9 +256,8 @@ namespace Drachenkatze.PresetMagician.VSTHost.VST
                 }
             }
 
-            ConvertToOGG(tempFileName, GetPreviewFilename(preset)+".nksf.ogg");
+            ConvertToOGG(tempFileName, GetPreviewFilename(preset) + ".nksf.ogg");
             File.Delete(tempFileName);
-            return true;
         }
     }
 }

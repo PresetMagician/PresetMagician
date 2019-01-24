@@ -145,6 +145,11 @@ namespace PresetMagician.Models
         public string ApplicationOperationLastOperation { get;set; }
         public bool ApplicationOperationCancelRequested { get; set; }
         #endregion
+        
+        #region VSTHost Workers
+        public int TotalWorkers { get; set; }
+        public int RunningWorkers { get; set; }
+        #endregion
 
 
     }

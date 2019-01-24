@@ -21,14 +21,14 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
 
         protected void ScanPresets(List<string> instruments)
         {
-            LogTo.Debug($"Attempting to load arturia presets using {GetDatabasePath()}");
+            Plugin.Debug($"Attempting to load arturia presets using {GetDatabasePath()}");
             try
             {
                 _db = new SQLiteConnection(GetDatabasePath());
             }
             catch (Exception e)
             {
-                LogTo.Debug(e.ToString);
+                Plugin.Debug(e.ToString());
                 return;
             }
 

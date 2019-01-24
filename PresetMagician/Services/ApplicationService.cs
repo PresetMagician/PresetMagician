@@ -8,6 +8,7 @@ using Catel;
 using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
+using PresetMagician.ProcessIsolation;
 using PresetMagician.Services.Interfaces;
 
 namespace PresetMagician.Services
@@ -19,6 +20,7 @@ namespace PresetMagician.Services
         private readonly IPleaseWaitService _pleaseWaitService;
         private string _lastUpdateStatus;
         private ILog _log;
+        public ProcessPool ProcessPool { get; }
 
         private readonly List<string> _applicationOperationErrors = new List<string>();
 
@@ -31,6 +33,15 @@ namespace PresetMagician.Services
             _pleaseWaitService = pleaseWaitService;
             _statusService = statusService;
             _runtimeConfigurationService = runtimeConfigurationService;
+            ProcessPool = new ProcessPool();
+            ProcessPool.ProcessWatcherUpdated += ProcessPoolOnProcessWatcherUpdated;
+        }
+
+        private void ProcessPoolOnProcessWatcherUpdated(object sender, System.EventArgs e)
+        {
+            _runtimeConfigurationService.ApplicationState.RunningWorkers = (from process in ProcessPool.Processes
+                where process.CurrentProcessState == IsolatedProcess.ProcessState.RUNNING select process).Count();
+            _runtimeConfigurationService.ApplicationState.TotalWorkers = ProcessPool.Processes.Count;
         }
 
         public CancellationTokenSource GetApplicationOperationCancellationSource()
@@ -44,7 +55,7 @@ namespace PresetMagician.Services
             var sanitizedCommandName = commandContainer.CommandName.Replace(".", "");
             var propertyName = $"Is{sanitizedCommandName}Running";
 
-            StartApplicationOperation((object)commandContainer, propertyName, operationDescription, totalItems);
+            StartApplicationOperation(commandContainer, propertyName, operationDescription, totalItems);
         }
 
         public void StartApplicationOperation(object o, string operationDescription,

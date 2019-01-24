@@ -18,8 +18,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
 
         public void ScanBanks()
         {
-            
-
             var settingsFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 @"AudioThing\Presets\FogConvolver\settings.ats");
 
@@ -30,7 +28,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
 
             if (pathsAttribute == null)
             {
-                LogTo.Error("The settings file does not contain bank paths.");
+                Plugin.Error("The settings file does not contain bank paths.");
                 return;
             }
 

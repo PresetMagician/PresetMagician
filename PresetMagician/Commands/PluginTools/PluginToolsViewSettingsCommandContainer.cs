@@ -2,15 +2,11 @@
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Catel;
-using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
-using Drachenkatze.PresetMagician.VSTHost.VST;
-using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.ViewModels;
 using SharedModels;
-using Xceed.Wpf.AvalonDock.Layout;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -18,7 +14,6 @@ namespace PresetMagician
     // ReSharper disable once UnusedMember.Global
     public class PluginToolsViewSettingsCommandContainer : CommandContainerBase
     {
-        private readonly IRuntimeConfigurationService _runtimeConfigurationService;
         private readonly IUIVisualizerService _uiVisualizerService;
         private readonly IVstService _vstService;
         private Plugin previouslySelectedPlugin;
