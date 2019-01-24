@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using CannedBytes.Midi.Message;
 using Catel;
 using Drachenkatze.PresetMagician.Utils;
 using InteractivePreGeneratedViews;
@@ -22,6 +23,8 @@ namespace SharedModels
         private const int PersistInterval = 400;
         public event EventHandler<PresetUpdatedEventArgs> PresetUpdated;
         public bool CompressPresetData { private get; set; }
+        public MidiNoteName PreviewNote { private get; set; }
+        
         private readonly List<(Preset preset, byte[] presetData)> presetDataList = new List<(Preset preset, byte[] presetData)>();
 
         public ApplicationDatabaseContext() : base(new SQLiteConnection(GetConnectionString()), true)
@@ -145,14 +148,13 @@ namespace SharedModels
             if (!preset.Plugin.PresetCache.ContainsKey((preset.Plugin.Id, preset.SourceFile)))
             {
                 preset.Plugin.Presets.Add(preset);
+                preset.PreviewNote = PreviewNote;
                 SavePresetData(preset, data);
             } else
             {
                 SavePresetData(preset.Plugin.PresetCache[(preset.Plugin.Id, preset.SourceFile)], data);
             }
             
-            
-
             persistPresetCount++;
             if (persistPresetCount > PersistInterval)
             {

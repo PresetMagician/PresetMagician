@@ -4,14 +4,13 @@ using JetBrains.Annotations;
 namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
 {
     [UsedImplicitly]
-    public class Arturia_B3: Arturia, IVendorPresetParser
+    public class Arturia_B3 : Arturia, IVendorPresetParser
     {
-        public override List<int> SupportedPlugins => new List<int> { 1416588887 };
+        public override List<int> SupportedPlugins => new List<int> {1416588887};
 
-        public void ScanBanks()
+        protected override List<string> GetInstrumentNames()
         {
-            var instruments = new List<string> {"B-3"};
-            ScanPresets(instruments);
+            return new List<string> {"B-3"};
         }
     }
 }

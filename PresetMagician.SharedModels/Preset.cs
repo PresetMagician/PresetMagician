@@ -113,6 +113,7 @@ namespace SharedModels
         public ObservableCollection<string> Modes { get; set; } = new ObservableCollection<string>();
         
         public string PresetHash { get; set; }
+        public string LastExportedPresetHash { get; set; }
         
      
     }
