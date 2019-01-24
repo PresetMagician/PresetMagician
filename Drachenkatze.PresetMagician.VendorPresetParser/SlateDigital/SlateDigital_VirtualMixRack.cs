@@ -43,13 +43,13 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
             var dataNode =
                 $"/package/archives/archive[@client_id='{_presetSectionName}-modules-preset']/section[@id='SlotPresets']/entry";
             
-            LogTo.Debug(dataNode);
+            Plugin.Debug(dataNode);
             var elements = source.XPathSelectElements(dataNode);
-            LogTo.Debug(elements.Count().ToString);
+            Plugin.Debug(elements.Count().ToString);
             
             foreach (var element in elements)
             {
-                LogTo.Debug(element.Attribute("value").Value);
+                Plugin.Debug(element.Attribute("value").Value);
             }
         }
     }

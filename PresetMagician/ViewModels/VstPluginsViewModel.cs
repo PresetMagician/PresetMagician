@@ -44,7 +44,14 @@ namespace PresetMagician.ViewModels
             serviceLocator.RegisterInstance(this);
 
             Plugins.CollectionChanged += PluginsOnCollectionChanged;
+            
+            _vstService.SelectedPluginChanged += VstServiceOnSelectedPluginChanged;
             Title = "VST Plugins";
+        }
+
+        private void VstServiceOnSelectedPluginChanged(object sender, EventArgs e)
+        {
+            RaisePropertyChanged(nameof(SelectedPlugin));
         }
 
         private void PluginsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

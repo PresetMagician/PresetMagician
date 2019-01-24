@@ -139,6 +139,7 @@ namespace PresetMagician.Services
             _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "EnablePlugins");
             _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "DisablePlugins");
             _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), nameof(Commands.PluginTools.ViewSettings));
+            _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), nameof(Commands.PluginTools.ViewErrors));
             _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "ShowPluginInfo");
             _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "ShowPluginEditor");
             _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "ShowPluginChunk");
@@ -176,7 +177,6 @@ namespace PresetMagician.Services
         private void InitDatabase()
         {
             ApplicationDatabaseContext.InitializeViewCache();
-            
         }
 
         [Time]

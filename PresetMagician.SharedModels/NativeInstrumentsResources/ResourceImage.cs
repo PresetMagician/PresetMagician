@@ -11,31 +11,8 @@ namespace SharedModels.NativeInstrumentsResources
 {
     public class ResourceImage : ModelBase
     {
-        private NativeInstrumentsResource.ResourceStates _resourceState;
-
-        public NativeInstrumentsResource.ResourceStates ResourceState
-        {
-            get => _resourceState;
-            set
-            {
-                switch (value)
-                {
-                    case NativeInstrumentsResource.ResourceStates.Empty:
-                    case NativeInstrumentsResource.ResourceStates.FromDisk:
-                        ShouldSaveImage = false;
-                        break;
-                    case NativeInstrumentsResource.ResourceStates.FromWeb:
-                    case NativeInstrumentsResource.ResourceStates.UserModified:
-                    case NativeInstrumentsResource.ResourceStates.AutomaticallyGenerated:
-                        ShouldSaveImage = true;
-                        break;
-                }
-
-                _resourceState = value;
-            }
-        }
-
-        public bool ShouldSaveImage { get; set; }
+        public ResourceState State { get; } = new ResourceState();
+       
 
         public ResourceImage(int width, int height, string fileName)
         {
@@ -46,14 +23,14 @@ namespace SharedModels.NativeInstrumentsResources
             Filename = fileName;
         }
 
-        public BitmapImage Image { get; set; } = new BitmapImage();
+        public BitmapImage Image { get; set; } = new BitmapImage(new Uri("pack://application:,,,/Resources/Images/empty.png"));
         public MemoryStream ImageStream { get; set; } = new MemoryStream();
         public Size TargetSize { get; set; }
         public string Filename { get; set; }
 
         public void ReplaceFromFile(string fileName, NativeInstrumentsResource.ResourceStates resourceState = NativeInstrumentsResource.ResourceStates.FromDisk)
         {
-            ResourceState = resourceState;
+            State.State = resourceState;
             ImageStream.SetLength(0);
 
             var bytes = File.ReadAllBytes(fileName);
@@ -70,7 +47,7 @@ namespace SharedModels.NativeInstrumentsResources
 
         public void ReplaceFromBase64(string base64, NativeInstrumentsResource.ResourceStates resourceState = NativeInstrumentsResource.ResourceStates.FromWeb)
         {
-            ResourceState = resourceState;
+            State.State = resourceState;
             ImageStream.SetLength(0);
 
             var bytes = Convert.FromBase64String(base64);
@@ -87,7 +64,7 @@ namespace SharedModels.NativeInstrumentsResources
 
         public void ReplaceFromStream(MemoryStream memoryStream, NativeInstrumentsResource.ResourceStates resourceState)
         {
-            ResourceState = resourceState;
+            State.State = resourceState;
             ImageStream.SetLength(0);
             memoryStream.Seek(0, SeekOrigin.Begin);
             memoryStream.CopyTo(ImageStream);
@@ -110,14 +87,14 @@ namespace SharedModels.NativeInstrumentsResources
         public void Save(string baseDirectory)
         {
             var fullFile = Path.Combine(baseDirectory, Filename);
-            if (!ShouldSaveImage)
+            if (!State.ShouldSave)
             {
-                LogTo.Debug($"Not saving with state {nameof(ResourceState)} for file {Filename} (full path {fullFile})");
+                LogTo.Debug($"Not saving with state {State.State.ToString()} for file {Filename} (full path {fullFile})");
                 return;
             }
 
             File.WriteAllBytes(fullFile, ImageStream.ToArray());
-            ResourceState = NativeInstrumentsResource.ResourceStates.FromDisk;
+            State.State = NativeInstrumentsResource.ResourceStates.FromDisk;
         }
 
         public void Load(string baseDirectory)

@@ -17,7 +17,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
             var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 @"Slate Digital\Virtual Tape Machines\Presets");
 
-            var parser = new SlateDigitalPresetParser(Plugin, "epf", Presets, "VTMs");
+            var parser = new SlateDigitalPresetParser(RemoteVstService, Plugin, "epf", Presets, "VTMs");
             parser.DoScan(RootBank, directory);
         }
     }

@@ -17,7 +17,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
             var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 @"Slate Digital\VerbSuite Classics\Presets");
 
-            var parser = new SlateDigitalPresetParser(Plugin, "epf", Presets, "VscP");
+            var parser = new SlateDigitalPresetParser(RemoteVstService, Plugin, "epf", Presets, "VscP");
             parser.DoScan(RootBank, directory);
         }
     }

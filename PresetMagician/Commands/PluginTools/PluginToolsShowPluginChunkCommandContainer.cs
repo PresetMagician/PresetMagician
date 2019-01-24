@@ -40,11 +40,28 @@ namespace PresetMagician
 
         protected override async Task ExecuteAsync(object parameter)
         {
+            var plugin = _vstService.SelectedPlugin;
+            
             if (!_vstService.SelectedPlugin.IsLoaded)
             {
-                _vstService.VstHost.LoadVST(_vstService.SelectedPlugin);
+                await _vstService.LoadVstInteractive(_vstService.SelectedPlugin);
             }
-            _vstService.SelectedPlugin.GetPresetChunk();
+
+            var bankChunk = _vstService.SelectedPlugin.RemoteVstService.GetChunk(_vstService.SelectedPlugin.Guid, false);
+            if (!(bankChunk is null))
+            {
+                plugin.ChunkBankMemoryStream.SetLength(0);
+                plugin.ChunkBankMemoryStream.Write(bankChunk, 0, bankChunk.Length);
+
+            }
+            
+            var presetChunk = _vstService.SelectedPlugin.RemoteVstService.GetChunk(_vstService.SelectedPlugin.Guid, true);
+            if (!(presetChunk is null))
+            {
+                plugin.ChunkBankMemoryStream.SetLength(0);
+                plugin.ChunkBankMemoryStream.Write(presetChunk, 0, presetChunk.Length);
+            }
+           
             await _uiVisualizerService.ShowDialogAsync<VstPluginChunkViewModel>(_vstService.SelectedPlugin);
         }
     }

@@ -100,124 +100,126 @@ namespace PresetMagician
 
             await TaskHelper.Run(async () =>
             {
-                foreach (var vst in pluginsToScan)
+                foreach (var plugin in pluginsToScan)
                 {
                     try
                     {
+                        _vstService.SelectedPlugin = plugin;
                         _applicationService.UpdateApplicationOperationStatus(
-                            pluginsToScan.IndexOf(vst),
-                            $"Scanning {vst.DllFilename}");
+                            pluginsToScan.IndexOf(plugin),
+                            $"Scanning {plugin.DllFilename}");
 
                         if (cancellationToken.IsCancellationRequested)
                         {
                             return;
                         }
 
-                        _logger.Debug($"Attempting to load {vst.DllFilename}");
-                        vst.IsScanning = true;
+                        plugin.Debug($"Attempting to load {plugin.DllFilename}");
+                        plugin.IsScanning = true;
                         _databaseService.Context.SaveChanges();
                         _databaseService.Context.CompressPresetData =
                             _runtimeConfigurationService.RuntimeConfiguration.CompressPresetData;
 
-                        _vstService.VstHost.LoadVST(vst);
+                        var remoteVstService = await _vstService.LoadVst(plugin);
 
-                        if (vst.IsLoaded)
+                        if (plugin.IsLoaded)
                         {
-                            _logger.Debug($"Loaded {vst.DllFilename}, attempting to find presetParser");
-
-                            VendorPresetParser.DeterminatePresetParser(vst);
-                            vst.PresetParser.PresetDataStorer = _databaseService.GetPresetDataStorer();
-
-                            if (vst.PresetParser.SupportsAdditionalBankFiles)
+                            await _dispatcherService.InvokeAsync(() =>
                             {
-                                vst.PresetParser.AdditionalBankFiles.Clear();
-                                vst.PresetParser.AdditionalBankFiles.AddRange(vst.AdditionalBankFiles);
+                                plugin.NativeInstrumentsResource.Load(plugin);
+                            });
+
+                            plugin.Debug($"Loaded {plugin.DllFilename}, attempting to find presetParser");
+
+                            VendorPresetParser.DeterminatePresetParser(plugin, remoteVstService);
+                            plugin.PresetParser.PresetDataStorer = _databaseService.GetPresetDataStorer();
+
+                            if (plugin.PresetParser.SupportsAdditionalBankFiles)
+                            {
+                                plugin.PresetParser.AdditionalBankFiles.Clear();
+                                plugin.PresetParser.AdditionalBankFiles.AddRange(plugin.AdditionalBankFiles);
                             }
 
-                            _currentPluginIndex = pluginsToScan.IndexOf(vst);
-                            _currentPlugin = vst;
+                            _currentPluginIndex = pluginsToScan.IndexOf(plugin);
+                            _currentPlugin = plugin;
 
-                            vst.Presets.CollectionChanged += PresetsOnCollectionChanged;
-                            _databaseService.Context.LoadPresetsForPlugin(vst);
-                            vst.Presets.CollectionChanged -= PresetsOnCollectionChanged;
+                            plugin.Presets.CollectionCountChanged += PresetsOnCollectionChanged;
+                            _databaseService.Context.LoadPresetsForPlugin(plugin);
+                            plugin.Presets.CollectionCountChanged -= PresetsOnCollectionChanged;
 
-                            
-                            _totalPresets = vst.PresetParser.GetNumPresets();
+
+                            _totalPresets = plugin.PresetParser.GetNumPresets();
                             _currentPresetIndex = 0;
 
                             _databaseService.Context.PresetUpdated += ContextOnPresetUpdated;
-                            
-                            var _itemsLock = new object();
-                            var _itemsLock2 = new object();
-                            
-                            _dispatcherService.Invoke(() =>
-                            {
-                                BindingOperations.EnableCollectionSynchronization(vst.Presets, _itemsLock);
-                                BindingOperations.EnableCollectionSynchronization(vst.RootBank.PresetBanks, _itemsLock2);
-                            });
-                            
 
-                            vst.PresetParser.Presets = vst.Presets;
-                            vst.PresetParser.RootBank = vst.RootBank.First();
-
-                            lock (_itemsLock)
-                            lock (_itemsLock2)
+                            using (plugin.Presets.SuspendChangeNotifications())
                             {
-                                vst.PresetParser.DoScan();
+                                using (plugin.Presets.SuspendChangeNotifications())
+                                {
+                                    plugin.PresetParser.Presets = plugin.Presets;
+                                    plugin.PresetParser.RootBank = plugin.RootBank.First();
+                                    plugin.PresetParser.RemoteVstService = remoteVstService;
+
+                                    await plugin.PresetParser.DoScan();
+                                }
                             }
                             
-
                             _databaseService.Context.PresetUpdated -= ContextOnPresetUpdated;
 
-                            vst.IsScanned = true;
-                            
+                            plugin.IsScanned = true;
 
-                            await _dispatcherService.InvokeAsync(async () =>
+                            if (_runtimeConfigurationService.RuntimeConfiguration.AutoCreateResources)
                             {
-                            vst.NativeInstrumentsResource.Load(vst);
+                                plugin.Debug(
+                                    $"Auto-generating resources for {plugin.DllFilename} - Opening Editor",
+                                    plugin.DllFilename);
+                                _applicationService.UpdateApplicationOperationStatus(
+                                    pluginsToScan.IndexOf(plugin),
+                                    $"Auto-generating resources for {plugin.DllFilename} - Opening Editor");
+                                if (_resourceGeneratorService.ShouldCreateScreenshot(plugin))
+                                {
+                                    remoteVstService.OpenEditorHidden(plugin.Guid);
+                                    await Task.Delay(1000);
+                                }
+                            }
+
+                            await _dispatcherService.InvokeAsync(() =>
+                            {
                                 if (_runtimeConfigurationService.RuntimeConfiguration.AutoCreateResources)
                                 {
-                                    _logger.Debug($"Auto-generating resources for {vst.DllFilename}");
+                                    plugin.Debug(
+                                        $"Auto-generating resources for {plugin.DllFilename} - Creating screenshot and applying magic");
                                     _applicationService.UpdateApplicationOperationStatus(
-                                        pluginsToScan.IndexOf(vst),
-                                        $"Auto-generating resources for {vst.DllFilename}");
+                                        pluginsToScan.IndexOf(plugin),
+                                        $"Auto-generating resources for {plugin.DllFilename} - Creating screenshot and applying magic");
 
-
-                                    await _resourceGeneratorService.AutoGenerateResources(vst);
+                                    _resourceGeneratorService.AutoGenerateResources(plugin, remoteVstService);
                                 }
-                                    });
-                                
+                            });
 
-                           
-                            
 
                             await _databaseService.Context.Flush();
 
-                            
-
-                            _logger.Debug($"Unloading {vst.DllFilename}");
-                            _vstService.VstHost.UnloadVST(vst);
-                            _logger.Debug($"Unloaded {vst.DllFilename}");
+                            plugin.Debug($"Unloading {plugin.DllFilename}");
+                            await _vstService.UnloadVst(plugin);
                         }
                         else
                         {
                             _applicationService.AddApplicationOperationError(
-                                $"Unable to analyze {vst.DllFilename} because of {vst.LoadException}");
-                            _logger.Debug(vst.LoadException.StackTrace);
+                                $"Unable to analyze {plugin.DllFilename} because of {plugin.LoadException}");
+                            plugin.Debug(plugin.LoadException.StackTrace);
                         }
                     }
                     catch (Exception e)
                     {
+                        plugin.OnLoadError(e);
                         _applicationService.AddApplicationOperationError(
-                            $"Unable to analyze {vst.DllFilename} because of {e.Message}");
-                        _logger.Debug(e.StackTrace);
-
-#if DEBUG
-                        throw;
-#endif
+                            $"Unable to analyze {plugin.DllFilename} because of {e.Message}");
+                        plugin.Debug(e.StackTrace);
                     }
 
-                    vst.IsScanning = false;
+                    plugin.IsScanning = false;
                     _databaseService.Context.SaveChanges();
                 }
             }, true);
@@ -267,7 +269,7 @@ namespace PresetMagician
             }
         }
 
-        private void PresetsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void PresetsOnCollectionChanged(object sender, EventArgs e)
         {
             updateThrottle++;
 

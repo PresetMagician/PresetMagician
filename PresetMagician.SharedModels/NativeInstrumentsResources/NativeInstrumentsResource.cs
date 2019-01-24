@@ -20,31 +20,10 @@ namespace PresetMagician.Models.NativeInstrumentsResources
         public Categories Categories { get; set; } = new Categories();
         public ShortNames ShortNames { get; set; } = new ShortNames();
         
-        private ResourceStates _resourceState;
-
-        public ResourceStates ResourceState
-        {
-            get => _resourceState;
-            set
-            {
-                switch (value)
-                {
-                    case ResourceStates.Empty:
-                    case ResourceStates.AutomaticallyGenerated:
-                    case ResourceStates.FromDisk:
-                        ShouldSave = false;
-                        break;
-                    case ResourceStates.FromWeb:
-                    case ResourceStates.UserModified:
-                        ShouldSave = true;
-                        break;
-                }
-
-                _resourceState = value;
-            }
-        }
+        public ResourceState ColorState { get; } = new ResourceState();
+        public ResourceState ShortNamesState { get; } = new ResourceState();
+        public ResourceState CategoriesState { get; } = new ResourceState();
         
-        public bool ShouldSave { get; set; }
 
         #region Images
 
@@ -120,30 +99,30 @@ namespace PresetMagician.Models.NativeInstrumentsResources
                 image.Save(ImagesDirectory);
             }
 
-            if (!ShouldSave)
-            {
-                LogTo.Debug($"Not saving metadata for {plugin.PluginName} with state {ResourceState.ToString()}");
-                return;
-            }
-          
-
             if (!Directory.Exists(ResourcesDirectory))
             {
                 Directory.CreateDirectory(ResourcesDirectory);
             }
 
-            
 
-            Color.VB_bgcolor = GetHexColor(Color.BackgroundColor);
-            File.WriteAllText(files["color"], JsonConvert.SerializeObject(Color));
 
-            File.WriteAllText(files["shortname"], JsonConvert.SerializeObject(ShortNames));
+            if (ColorState.ShouldSave)
+            {
+                Color.VB_bgcolor = GetHexColor(Color.BackgroundColor);
+                File.WriteAllText(files["color"], JsonConvert.SerializeObject(Color));
+                ColorState.State = ResourceStates.FromDisk;
+            }
+
+            if (ShortNamesState.ShouldSave)
+            {
+                File.WriteAllText(files["shortname"], JsonConvert.SerializeObject(ShortNames));
+                ShortNamesState.State = ResourceStates.FromDisk;
+            }
 
             try
             {
-                
-
                 File.WriteAllText(files["categories"], GetCategoriesJson());
+                CategoriesState.State = ResourceStates.FromDisk;
             }
             catch (Exception e)
             {
@@ -212,11 +191,13 @@ namespace PresetMagician.Models.NativeInstrumentsResources
         {
             Color.BackgroundColor =
                 (System.Windows.Media.Color) ColorConverter.ConvertFromString("#" + obj["bgColor"]);
+            ColorState.State = ResourceStates.FromWeb;
             
             ShortNames.VB_shortname = (string)obj["shortName_VB"];
             ShortNames.MKII_shortname = (string)obj["shortName_MKII"];
             ShortNames.MST_shortname = (string)obj["shortName_MST"];
             ShortNames.MIKRO_shortname = (string)obj["shortName_MIKRO"];
+            ShortNamesState.State = ResourceStates.FromWeb;
 
             VB_logo.ReplaceFromBase64((string) obj["image_VB_logo"]);
             VB_artwork.ReplaceFromBase64((string) obj["image_VB_artwork"]);
@@ -236,13 +217,12 @@ namespace PresetMagician.Models.NativeInstrumentsResources
                 Categories.CategoryNames.Add(new Category {Name = categoryString});
             }
 
-            ResourceState = ResourceStates.FromWeb;
-
-
+            CategoriesState.State = ResourceStates.FromWeb;
         }
+        
         public void Load(Plugin plugin)
         {
-            if (plugin == null || !plugin.IsScanned)
+            if (plugin == null || !plugin.IsLoaded)
             {
                 return;
             }
@@ -257,6 +237,7 @@ namespace PresetMagician.Models.NativeInstrumentsResources
 
                 Color.BackgroundColor =
                     (System.Windows.Media.Color) ColorConverter.ConvertFromString("#" + Color.VB_bgcolor);
+                ColorState.State = ResourceStates.FromDisk;
             }
             else
             {
@@ -267,6 +248,8 @@ namespace PresetMagician.Models.NativeInstrumentsResources
             {
                 ShortNames = JsonConvert.DeserializeObject<ShortNames>(
                     File.ReadAllText(files["shortname"]));
+                
+                ShortNamesState.State = ResourceStates.FromDisk;
             }
             else
             {
@@ -283,7 +266,6 @@ namespace PresetMagician.Models.NativeInstrumentsResources
                 Categories = JsonConvert.DeserializeObject<Categories>(
                     File.ReadAllText(files["categories"]));
 
-                
                 if (Categories.CategoryDB.Count == 1)
                 {
                     var categoryStrings = Categories.CategoryDB.First().Categories.ToArray();
@@ -303,6 +285,8 @@ namespace PresetMagician.Models.NativeInstrumentsResources
                     Categories.Vendor = plugin.PluginVendor;
                     Categories.Product = plugin.PluginName;
                 }
+                
+                CategoriesState.State = ResourceStates.FromDisk;
             }
             else
             {
@@ -321,8 +305,6 @@ namespace PresetMagician.Models.NativeInstrumentsResources
             foreach (var resourceImage in ResourceImages) {
                 resourceImage.Load(imagesDirectory);
             }
-
-            ResourceState = ResourceStates.FromDisk;
         }
 
         public bool HasChanges(Plugin plugin)
@@ -346,7 +328,7 @@ namespace PresetMagician.Models.NativeInstrumentsResources
 
             foreach (var image in ResourceImages)
             {
-                if (image.ShouldSaveImage)
+                if (image.State.ShouldSave)
                 {
                     return true;
                 }

@@ -39,17 +39,19 @@ namespace PresetMagician
 
         private void SetupExceptionHandling()
         {
+            #if !DEBUG 
             AppDomain.CurrentDomain.UnhandledException += NBug.Handler.UnhandledException;
             Current.DispatcherUnhandledException += NBug.Handler.DispatcherUnhandledException;
             TaskScheduler.UnobservedTaskException += NBug.Handler.UnobservedTaskException;
 
             NBug.Settings.CustomSubmissionEvent += Settings_CustomSubmissionEvent;
+            #endif
             
             #if DEBUG
-            AppDomain.CurrentDomain.FirstChanceException += (sender, eventArgs) =>
+           /* AppDomain.CurrentDomain.FirstChanceException += (sender, eventArgs) =>
             {
                 Debug.WriteLine(eventArgs.Exception.ToString());
-            };
+            };*/
             #endif
         }
 

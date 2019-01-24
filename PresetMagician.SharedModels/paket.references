@@ -1,6 +1,6 @@
 Catel.Core
 System.ValueTuple
-Anotar.Catel.Fody
+Anotar.Catel.Fody copy_local: false
 Catel.Fody
 Fody
 PropertyChanged.Fody copy_local: false

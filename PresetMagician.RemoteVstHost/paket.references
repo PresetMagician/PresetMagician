@@ -1,0 +1,4 @@
+Catel.Core
+Anotar.Catel.Fody copy_local: false
+Fody
+Newtonsoft.Json

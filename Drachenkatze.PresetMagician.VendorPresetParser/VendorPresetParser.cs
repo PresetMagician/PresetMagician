@@ -11,9 +11,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 {
     public static class VendorPresetParser
     {
-        private static IVendorPresetParser GetPresetHandler(Plugin vstPlugin)
+        private static IVendorPresetParser GetPresetHandler(Plugin vstPlugin, IRemoteVstService remoteVstService)
         {
-            LogTo.Debug("Resolving PresetHandler for plugin {0}", vstPlugin);
+            vstPlugin.Debug("Resolving PresetHandler for plugin {0}", vstPlugin);
 
             var type = typeof(IVendorPresetParser);
 
@@ -26,7 +26,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             foreach (var parser in types)
             {
                 IVendorPresetParser instance = (IVendorPresetParser) Activator.CreateInstance(parser);
-
+                instance.RemoteVstService = remoteVstService;
+                
                 if (instance.IsNullParser)
                 {
                     continue;
@@ -35,18 +36,19 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
                 instance.Plugin = vstPlugin;
                 if (instance.CanHandle())
                 {
-                    LogTo.Debug("Using PresetHandler {0} for plugin {1}", instance, vstPlugin);
+                    vstPlugin.Debug("Using PresetHandler {0} for plugin {1}", instance, vstPlugin);
+                    
                     return instance;
                 }
             }
 
-            LogTo.Debug("No PresetHandler found for plugin {0}, using NullPresetParser", vstPlugin);
+            vstPlugin.Debug("No PresetHandler found for plugin {0}, using NullPresetParser", vstPlugin);
             return new NullPresetParser();
         }
 
-        public static void DeterminatePresetParser(Plugin plugin)
+        public static void DeterminatePresetParser(Plugin plugin, IRemoteVstService remoteVstService)
         {
-            plugin.PresetParser = GetPresetHandler(plugin);
+            plugin.PresetParser = GetPresetHandler(plugin, remoteVstService);
 
             if (plugin.PresetParser == null)
             {

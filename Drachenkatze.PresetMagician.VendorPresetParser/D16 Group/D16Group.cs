@@ -20,7 +20,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
         
         protected void ProcessD16PKGArchive(string archiveName, PresetBank bank)
         {
-            LogTo.Debug($"ProcessD16PKGArchive {archiveName}");
+            Plugin.Debug($"ProcessD16PKGArchive {archiveName}");
             using (var archive = ZipFile.OpenRead(archiveName))
             {
                 var entry = archive.GetEntry("content");
@@ -49,7 +49,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
 
         protected void ProcessPresetDirectory(string presetDirectory, PresetBank bank)
         {
-            LogTo.Debug($"ProcessPresetDirectory {presetDirectory}");
+            Plugin.Debug($"ProcessPresetDirectory {presetDirectory}");
             var dirInfo = new DirectoryInfo(presetDirectory);
 
             

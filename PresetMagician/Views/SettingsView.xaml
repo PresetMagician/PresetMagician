@@ -93,7 +93,7 @@
                         
                         <!-- Auto-create resources -->
                         <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Top">
-                            <Label Content="Auto-Create NI Resources" />
+                            <Label Content="Auto-Create NI Resources" VerticalAlignment="Top" />
                             <iconPacks:PackIconFontAwesome Margin="0,0,10,0" VerticalAlignment="Top"
                                                            Kind="QuestionCircleSolid" ToolTipService.ShowDuration="12000">
                                 <iconPacks:PackIconFontAwesome.ToolTip>
@@ -115,7 +115,7 @@
                         </StackPanel>
                         
                         <StackPanel Orientation="Vertical" Grid.Row="3"
-                                    Grid.Column="1">
+                                    Grid.Column="1" VerticalAlignment="Top">
                             <CheckBox
                                 IsChecked="{Binding EditableConfiguration.AutoCreateResources}">
                                 <TextBlock Text="Automatically creates images, colors and other information"/>

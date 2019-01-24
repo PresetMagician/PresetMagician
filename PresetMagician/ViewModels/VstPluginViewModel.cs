@@ -39,10 +39,10 @@ namespace PresetMagician.ViewModels
         private readonly ILicenseService _licenseService;
         private readonly INativeInstrumentsResourceGeneratorService _resourceGeneratorService;
 
-       
 
         public VstPluginViewModel(Plugin plugin, IVstService vstService, IOpenFileService openFileService,
-            ISelectDirectoryService selectDirectoryService, ILicenseService licenseService, INativeInstrumentsResourceGeneratorService
+            ISelectDirectoryService selectDirectoryService, ILicenseService licenseService,
+            INativeInstrumentsResourceGeneratorService
                 resourceGeneratorService)
         {
             Argument.IsNotNull(() => vstService);
@@ -79,38 +79,38 @@ namespace PresetMagician.ViewModels
             SubmitResource = new TaskCommand(OnSubmitResourceExecute);
             QueryOnlineResources = new TaskCommand(OnQueryOnlineResourcesExecute);
             LoadSelectedOnlineResource = new TaskCommand(OnLoadSelectedOnlineResourceExecute);
-            
+
             GenerateResources = new TaskCommand(OnGenerateResourcesExecute);
-            
+
 
             Title = "Settings for " + Plugin.PluginName;
 
             GenerateControllerMappingModels();
         }
-        
+
         #region Properties
-        
+
         public ObservableCollection<OnlineResource> OnlineResources { get; set; } =
             new ObservableCollection<OnlineResource>();
 
         public OnlineResource SelectedOnlineResource { get; set; }
-        
+
         public ObservableCollection<ControllerAssignmentPage> ControllerAssignmentPages { get; set; } =
             new ObservableCollection<ControllerAssignmentPage>();
 
         public int CurrentControllerAssignmentPage { get; set; }
-        
-        
+
+
         public bool IsPluginSet => Plugin != null;
 
         public Plugin Plugin { get; protected set; }
-        
+
         #endregion
 
         #region Commands
-        
+
         #region LoadSelectedOnlineResource
-        
+
         public TaskCommand LoadSelectedOnlineResource { get; set; }
 
         private async Task OnLoadSelectedOnlineResourceExecute()
@@ -141,9 +141,11 @@ namespace PresetMagician.ViewModels
                 Log.Debug(e);
             }
         }
+
         #endregion
-        
+
         #region OpenNKSFile
+
         public TaskCommand OpenNKSFile { get; set; }
 
         private async Task OnOpenNKSFileExecute()
@@ -163,10 +165,11 @@ namespace PresetMagician.ViewModels
                 Log.Error(ex, "Failed to open file");
             }
         }
+
         #endregion
-        
+
         #region AddAdditionalPresetFiles
-        
+
         public TaskCommand AddAdditionalPresetFiles { get; set; }
 
         private async Task OnAddAdditionalPresetFilesExecute()
@@ -190,18 +193,21 @@ namespace PresetMagician.ViewModels
                 Log.Error(ex, "Failed to open file");
             }
         }
-        
+
         #endregion
+
         #endregion
 
         protected override async Task<bool> SaveAsync()
         {
-            if (Plugin.NativeInstrumentsResource.HasChanges(Plugin))
-            {
-                Plugin.NativeInstrumentsResource.ShouldSave = true;
-                Plugin.NativeInstrumentsResource.Save(Plugin);
-            }
-            
+            Plugin.NativeInstrumentsResource.ColorState.State = NativeInstrumentsResource.ResourceStates.UserModified;
+            Plugin.NativeInstrumentsResource.CategoriesState.State =
+                NativeInstrumentsResource.ResourceStates.UserModified;
+            Plugin.NativeInstrumentsResource.ShortNamesState.State =
+                NativeInstrumentsResource.ResourceStates.UserModified;
+            Plugin.NativeInstrumentsResource.Save(Plugin);
+
+
             try
             {
                 await _vstService.SavePlugins();
@@ -213,11 +219,6 @@ namespace PresetMagician.ViewModels
 
             return await base.SaveAsync();
         }
-
-        
-
-
-       
 
 
         private List<string> GetFiles(string path, List<string> patterns)
@@ -241,7 +242,6 @@ namespace PresetMagician.ViewModels
             return files;
         }
 
-        
 
         public TaskCommand AddAdditionalPresetFolder { get; set; }
 
@@ -320,7 +320,6 @@ namespace PresetMagician.ViewModels
                 {
                     Plugin.NativeInstrumentsResource.MST_artwork.ReplaceFromFile(_openFileService.FileName,
                         NativeInstrumentsResource.ResourceStates.UserModified);
-                 
                 }
             }
             catch (Exception ex)
@@ -376,16 +375,15 @@ namespace PresetMagician.ViewModels
         private async Task OnSubmitResourceExecute()
         {
             var niResource = Plugin.NativeInstrumentsResource;
-            
+
             List<string> categoryNames = new List<string>();
-            
+
             foreach (var category in niResource.Categories.CategoryNames)
             {
                 categoryNames.Add(category.Name);
             }
 
-            
-                        
+
             var resourceSubmission = JObject.FromObject(new
             {
                 email = _licenseService.GetCurrentLicense().Customer.Email,
@@ -436,7 +434,8 @@ namespace PresetMagician.ViewModels
             {
                 LogTo.Error($"Error submitting resource: {e.Message}");
                 LogTo.Debug(e.StackTrace);
-            }catch (Exception e)
+            }
+            catch (Exception e)
             {
                 LogTo.Error($"Error submitting resource: {e.Message}");
                 LogTo.Debug(e.StackTrace);
@@ -491,12 +490,14 @@ namespace PresetMagician.ViewModels
                 Log.Error(ex, "Failed to open file");
             }
         }
-        
+
         public TaskCommand GenerateResources { get; set; }
 
-        private async Task OnGenerateResourcesExecute ()
+        private async Task OnGenerateResourcesExecute()
         {
-            await _resourceGeneratorService.GenerateResources(Plugin);
+            var remoteVstService = await _vstService.LoadVst(Plugin);
+            _resourceGeneratorService.GenerateResources(Plugin, remoteVstService, true);
+            await _vstService.UnloadVst(Plugin);
         }
 
         private void AddBankFile(string path)
@@ -578,7 +579,6 @@ namespace PresetMagician.ViewModels
             {
                 foreach (var page in Plugin.DefaultControllerAssignments.controllerAssignments)
                 {
-                    
                     var controllerAssignmentPage = new ControllerAssignmentPage();
                     var titles = new List<string>();
                     foreach (var control in page)
@@ -618,8 +618,5 @@ namespace PresetMagician.ViewModels
             RaisePropertyChanged(nameof(ControllerAssignmentPages));
             CurrentControllerAssignmentPage = 0;
         }
-
-
-       
     }
 }

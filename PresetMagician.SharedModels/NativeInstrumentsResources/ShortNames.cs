@@ -2,7 +2,7 @@ using Catel.Data;
 
 namespace SharedModels.NativeInstrumentsResources
 {
-    public class ShortNames: ModelBase
+    public class ShortNames
     {
         public string MST_shortname { get; set; }
         public string MIKRO_shortname { get; set; }

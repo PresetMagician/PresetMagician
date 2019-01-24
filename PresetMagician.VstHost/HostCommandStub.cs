@@ -2,14 +2,18 @@
 using Jacobi.Vst.Core.Host;
 using Jacobi.Vst.Core;
 using System.Diagnostics;
+using System.Drawing;
 using Anotar.Catel;
 using Drachenkatze.PresetMagician.VSTHost.VST;
+using Jacobi.Vst.Core.Deprecated;
+using PresetMagician.VstHost.VST;
 
 namespace Drachenkatze.PresetMagician.VSTHost
 {
-    public class HostCommandStub : IVstHostCommandStub
+    public class HostCommandStub : IVstHostCommandStub, IVstHostCommandsDeprecated20
     {
         public string Directory;
+        public string PluginDll;
 
         public event EventHandler<PluginCalledEventArgs> PluginCalled;
 
@@ -38,16 +42,11 @@ namespace Drachenkatze.PresetMagician.VSTHost
             return false;
         }
 
-        public VstCanDoResult CanDo(VstHostCanDo cando)
-        {
-            RaisePluginCalled("CanDo");
-            return VstCanDoResult.Unknown;
-        }
-
+    
         public bool CloseFileSelector(VstFileSelect fileSelect)
         {
             RaisePluginCalled("CloseFileSelector");
-            throw new NotImplementedException();
+            return false;
         }
 
         public bool EndEdit(int index)
@@ -82,8 +81,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public VstHostLanguage GetLanguage()
         {
-            RaisePluginCalled("GetLanguage");
-            throw new NotImplementedException();
+            return VstHostLanguage.English;
         }
 
         public int GetOutputLatency()
@@ -100,7 +98,11 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public string GetProductString()
         {
-            //RaisePluginCalled("GetProductString");
+            if (PluginDll.ToLower() == "wavestation.dll")
+            {
+                return null;
+            }
+            
             return "PresetMagician";
         }
 
@@ -142,8 +144,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public int GetVendorVersion()
         {
-            RaisePluginCalled("GetVendorVersion");
-            return 2400;
+            return 1000;
         }
 
         public bool IoChanged()
@@ -168,7 +169,6 @@ namespace Drachenkatze.PresetMagician.VSTHost
         /// <inheritdoc />
         public bool SizeWindow(int width, int height)
         {
-            RaisePluginCalled("SizeWindow(" + width + ", " + height + ")");
             return false;
         }
 
@@ -190,7 +190,6 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public int GetVersion()
         {
-            RaisePluginCalled("GetVersion");
             return 2400;
         }
 
@@ -206,11 +205,135 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public VstCanDoResult CanDo(string cando)
         {
-            RaisePluginCalled("CanDo2 "+cando);
-            return VstCanDoResult.Unknown;
+            switch (cando)
+            {
+                case "NIMKPIVendorSpecificCallbacks":
+                case "sendVstEvents":
+                case "sendVstTimeInfo":
+                case "receiveVstEvents":
+                case "receiveVstTimeInfo":
+                case "acceptIOChanges":
+                    return VstCanDoResult.No;
+                    case "sizeWindow":
+                    return VstCanDoResult.Unknown;
+                default:
+#if DEBUG
+                    Debug.WriteLine(cando);
+                    throw new NotImplementedException("in CanDo with " + cando);
+#endif
+                    return VstCanDoResult.Unknown;
+            }
         }
 
         #endregion IVstHostCommands10 Members
+        
+        #region IVstHostCommands10Deprecated
+        
+        public bool PinConnected(int connectionIndex, bool output)
+        {
+            if (!output && PluginContext.PluginInfo != null && PluginContext.PluginInfo.AudioInputCount < 2)
+            {
+                return true;
+            }
+
+            if (connectionIndex < 2)
+            {
+                return false;
+            }
+
+            return true;
+        }
+        
+        #endregion
+        
+        #region IVstHostCommandsDeprecated20
+
+        public bool WantMidi()
+        {
+            return false;
+        }
+
+        public bool SetTime(VstTimeInfo timeInfo, VstTimeInfoFlags filterFlags)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int GetTempoAt(int sampleIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int GetAutomatableParameterCount()
+        {
+            throw new NotImplementedException();
+        }
+
+        public int GetParameterQuantization(int parameterIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool NeedIdle()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IntPtr GetPreviousPlugin(int pinIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IntPtr GetNextPlugin(int pinIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int WillReplaceOrAccumulate()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool SetOutputSampleRate(float sampleRate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public VstSpeakerArrangement GetOutputSpeakerArrangement()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool SetIcon(Icon icon)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IntPtr OpenWindow()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool CloseWindow(IntPtr wnd)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool EditFile(string xml)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetChunkFile()
+        {
+            throw new NotImplementedException();
+        }
+
+        public VstSpeakerArrangement GetInputSpeakerArrangement()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 
     /// <summary>

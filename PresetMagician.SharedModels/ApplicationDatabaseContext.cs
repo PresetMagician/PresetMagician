@@ -108,8 +108,12 @@ namespace SharedModels
             {
                 plugin.PresetCache.Add((plugin.Id, preset.SourceFile), preset);
             }
-            Entry(plugin).Collection(p => p.Presets).Query().Where(p => !p.IsDeleted).Load();
-           
+
+            using (plugin.Presets.SuspendChangeNotifications())
+            {
+                Entry(plugin).Collection(p => p.Presets).Query().Where(p => !p.IsDeleted).Load();
+            }
+
             foreach (var preset in plugin.Presets)
             {
                 plugin.PresetCache.Add((plugin.Id, preset.SourceFile), preset);

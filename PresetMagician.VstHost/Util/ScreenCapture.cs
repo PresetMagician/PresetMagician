@@ -3,11 +3,13 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Jacobi.Vst.Core.Host;
+using Host = PresetMagician.VstHost.VST.VstHost;
 using SharedModels;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
@@ -33,6 +35,11 @@ namespace PresetMagician.VstHost.Util
                 return null;
             }
 
+            if (wndRect.Width == 0 || wndRect.Height == 0)
+            {
+                return null;
+            }
+
             var window = new Window //make sure the window is invisible
             {
                 Width = wndRect.Width,
@@ -40,12 +47,14 @@ namespace PresetMagician.VstHost.Util
                 WindowStyle = WindowStyle.None,
                 ShowInTaskbar = false,
                 ShowActivated = false,
+                Left=0,
+                Top=0,
                 ResizeMode = ResizeMode.NoResize,
                 Margin = new Thickness(0),
                 SnapsToDevicePixels = true,
                 UseLayoutRounding = false,
                 SizeToContent = SizeToContent.Manual,
-                Opacity = 1,
+                Opacity = 0,
                 AllowsTransparency = true,
                 Background = new SolidColorBrush(Colors.Transparent)
             };
@@ -55,35 +64,52 @@ namespace PresetMagician.VstHost.Util
 
 
             int value = 1; // TRUE to disable
-            Debug.WriteLine(DwmSetWindowAttribute(helper.Handle,
+            DwmSetWindowAttribute(helper.Handle,
                 DWMWA_TRANSITIONS_FORCEDISABLED,
                 ref value,
-                Marshal.SizeOf(value)));
+                Marshal.SizeOf(value));
 
             window.Show();
-
             window.Dispatcher.Invoke(DispatcherPriority.ApplicationIdle, EmptyDelegate);
-            var s = new ScreenCapture();
 
             var success = pluginContext.PluginCommandStub.EditorOpen(helper.Handle);
 
+            
             if (!success)
             {
                 window.Visibility = Visibility.Hidden;
                 window.Hide();
                 window.Close();
+                return null;
             }
 
-            window.Dispatcher.Invoke(DispatcherPriority.ApplicationIdle, EmptyDelegate);
+
+            for (var i = 0; i < 10; i++)
+            {
+                pluginContext.PluginCommandStub.EditorIdle();
+                window.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(() => { Thread.Sleep(10); })).Wait();
+            }
+
+            if (pluginContext.PluginCommandStub.EditorGetRect(out Rectangle wndRect2))
+            {
+                window.Width = wndRect2.Width;
+                window.Height = wndRect2.Height;
+            }
+
+            for (var i = 0; i < 10; i++)
+            {
+                pluginContext.PluginCommandStub.EditorIdle();
+                window.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(() => { Thread.Sleep(10); })).Wait();
+            }
 
 
             var bmp = PrintWindow(helper.Handle);
+            pluginContext.PluginCommandStub.EditorClose();
             window.Visibility = Visibility.Hidden;
             window.Hide();
-
-            pluginContext.PluginCommandStub.EditorClose();
+            
             window.Close();
-
+            Thread.Sleep(500);
             return bmp;
         }
         

@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
 using Catel;
@@ -95,16 +97,25 @@ namespace PresetMagician
 
             await _dispatcherService.InvokeAsync(() =>
             {
-
                 foreach (var plugin in plugins)
                 {
-                    if (!vstPluginDLLFiles.Contains(plugin.DllPath))
+                    var isInDirectory = false;
+                    
+                    foreach (var vstDirectory in vstDirectories)
                     {
-                        plugin.IsPresent = false;
+                        if (plugin.DllPath.StartsWith(vstDirectory.Path))
+                        {
+                            isInDirectory = true;
+                        }
+                    }
+                    
+                    if (File.Exists(plugin.DllPath) && isInDirectory)
+                    {
+                        plugin.IsPresent = true;
                     }
                     else
                     {
-                        plugin.IsPresent = true;
+                        plugin.IsPresent = false;
                     }
                 }
                 

@@ -20,10 +20,10 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 
         public void H2PScanBanks(string dataDirectoryName, string productName, bool userPresets)
         {
-            LogTo.Debug(
+            Plugin.Debug(
                 $"Begin H2PScanBanks with dataDirectoryName {dataDirectoryName} product name {productName} and userPresets {userPresets}");
             var rootDirectory = GetPresetDirectory(dataDirectoryName, productName, userPresets);
-            LogTo.Debug($"Parsing PresetDirectory {rootDirectory}");
+            Plugin.Debug($"Parsing PresetDirectory {rootDirectory}");
 
             var directoryInfo = new DirectoryInfo(rootDirectory);
 
@@ -39,7 +39,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
             }
 
             RootBank.PresetBanks.Add(H2PScanBank(bankName, directoryInfo));
-            LogTo.Debug($"End H2PScanBanks");
+            Plugin.Debug($"End H2PScanBanks");
         }
 
         public PresetBank H2PScanBank(string name, DirectoryInfo directory)
@@ -51,7 +51,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 
             foreach (var file in directory.EnumerateFiles("*.h2p"))
             {
-                LogTo.Debug($"Parsing file {file.FullName}");
+                Plugin.Debug($"Parsing file {file.FullName}");
                 Preset preset = new Preset();
                 preset.PresetName = file.Name.Replace(".h2p", "");
                 preset.SetPlugin(Plugin);
@@ -153,7 +153,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
                 }
                 catch (ArgumentException)
                 {
-                    LogTo.Debug(
+                    Plugin.Debug(
                         $"Unable to add metadata for type {type} with value {value} because {type} already exists.");
                 }
             }
@@ -202,8 +202,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 
             if (dataDirectory == null)
             {
-                LogTo.Error("Unable to find the data directory, aborting.");
-                LogTo.Debug("Estimated shortcut directory name is " + shortCutDataDirectoryName);
+                Plugin.Error("Unable to find the data directory, aborting.");
+                Plugin.Debug("Estimated shortcut directory name is " + shortCutDataDirectoryName);
                 return;
             }
 
@@ -217,7 +217,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
             }
         }
 
-        public static bool IsShortcut(string path)
+        public bool IsShortcut(string path)
         {
             if (!File.Exists(path))
             {
@@ -241,8 +241,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
             }
             catch (IOException e)
             {
-                LogTo.Error("Error while trying to resolve the shortcut {0} because of {1} {2}", path, e.Message, e);
-                LogTo.Debug(e.StackTrace);
+                Plugin.Error("Error while trying to resolve the shortcut {0} because of {1} {2}", path, e.Message, e);
+                Plugin.Debug(e.StackTrace);
             }
 
             var shell = new Shell();
@@ -252,7 +252,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
             return folderItem.IsLink;
         }
 
-        public static string ResolveShortcutSquirrel(string path)
+        public string ResolveShortcutSquirrel(string path)
         {
             ShellLink shellLink;
 
@@ -269,14 +269,14 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
             }
             catch (IOException e)
             {
-                LogTo.Error("Error while trying to resolve the shortcut {0} because of {1} {2}", path, e.Message, e);
-                LogTo.Debug(e.StackTrace);
+                Plugin.Error("Error while trying to resolve the shortcut {0} because of {1} {2}", path, e.Message, e);
+                Plugin.Debug(e.StackTrace);
             }
 
             return null;
         }
 
-        public static string ResolveShortcut(string path)
+        public string ResolveShortcut(string path)
         {
             string targetPath;
 

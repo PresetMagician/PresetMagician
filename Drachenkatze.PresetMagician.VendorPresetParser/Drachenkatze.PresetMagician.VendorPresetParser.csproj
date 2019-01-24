@@ -422,6 +422,20 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
       <ItemGroup>
+        <Reference Include="System.Windows.Forms">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Catel.MVVM">
+          <HintPath>..\packages\Catel.MVVM\lib\net46\Catel.MVVM.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
         <Reference Include="DeltaCompressionDotNet">
           <HintPath>..\packages\DeltaCompressionDotNet\lib\net20\DeltaCompressionDotNet.dll</HintPath>
           <Private>True</Private>
@@ -434,6 +448,22 @@
         </Reference>
         <Reference Include="DeltaCompressionDotNet.PatchApi">
           <HintPath>..\packages\DeltaCompressionDotNet\lib\net20\DeltaCompressionDotNet.PatchApi.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="Microsoft.Expression.Interactions">
+          <HintPath>..\packages\Expression.Blend.Sdk.WPF\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="System.Windows.Interactivity">
+          <HintPath>..\packages\Expression.Blend.Sdk.WPF\lib\net45\System.Windows.Interactivity.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>

@@ -4,7 +4,7 @@ namespace Drachenkatze.PresetMagician.Utils
 {
     public static class VstUtils
     {
-        public static string PluginIDNumberToIDString(int pluginUniqueID)
+        public static string PluginIdNumberToIdString(int pluginUniqueID)
         {
             byte[] fxIdArray = BitConverter.GetBytes(pluginUniqueID);
             Array.Reverse(fxIdArray);
@@ -12,7 +12,7 @@ namespace Drachenkatze.PresetMagician.Utils
             return fxIdString;
         }
 
-        public static int PluginIDStringToIDNumber(string fxIdString)
+        public static int PluginIdStringToIdNumber(string fxIdString)
         {
             byte[] pluginUniqueIDArray = BinaryFile.StringToByteArray(fxIdString); // 58h8 = 946354229
             Array.Reverse(pluginUniqueIDArray);
