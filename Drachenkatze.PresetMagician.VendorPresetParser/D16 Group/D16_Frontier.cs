@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 using SharedModels;
 
@@ -18,17 +19,15 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
             1179807287
         };
 
-        public void ScanBanks()
+        public override int GetNumPresets()
         {
-            RootBank.PresetBanks.Add(GetUserPresets());
+           return ProcessPresetDirectory(GetUserBankPath(UserBankPath), RootBank.CreateRecursive(BankNameUser),
+                false).GetAwaiter().GetResult();
         }
-
-        private PresetBank GetUserPresets()
+        
+        public override async Task DoScan()
         {
-            var userBank = new PresetBank {BankName = BankNameUser};
-
-            ProcessPresetDirectory(GetUserBankPath(UserBankPath), userBank);
-            return userBank;
+            await ProcessPresetDirectory(GetUserBankPath(UserBankPath), RootBank.CreateRecursive(BankNameUser));
         }
     }
 }

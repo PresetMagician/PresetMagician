@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using JetBrains.Annotations;
+using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
 {
@@ -11,11 +12,20 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
     {
         public override List<int> SupportedPlugins => new List<int> {1954107457};
 
-
+        protected override List<(string directory, PresetBank presetBank)> GetParseDirectories()
+        {
+            return new List<(string, PresetBank)>
+            {
+                (Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    @"AudioThing\Presets\TypeA"), GetRootBank()),
+                (Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments),
+                    @"AudioThing\Presets\TypeA"), GetRootBank())
+            };
+        }
+        
         protected override string GetParseDirectory()
         {
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                @"AudioThing\Presets\TypeA");
+            throw new NotImplementedException();
         }
     }
 }

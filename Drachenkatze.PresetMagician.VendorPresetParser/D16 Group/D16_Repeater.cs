@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 using SharedModels;
 
@@ -16,30 +17,21 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
 
         public override List<int> SupportedPlugins => new List<int> {1380988728};
 
-        public void ScanBanks()
+        public override int GetNumPresets()
         {
-            RootBank.PresetBanks.Add(GetFactoryPresets());
-            RootBank.PresetBanks.Add(GetUserPresets());
+            var count = 0;
+            count += ProcessPresetDirectory(GetUserBankPath(UserBankPath), RootBank.CreateRecursive(BankNameUser),
+                false).GetAwaiter().GetResult();
+            count += ProcessD16PkgArchive(GetFactoryBankPath(FactoryBankPath),
+                RootBank.CreateRecursive(BankNameFactory), false).GetAwaiter().GetResult();
+            
+            return count;
         }
-
-        private PresetBank GetFactoryPresets()
+        
+        public override async Task DoScan()
         {
-            var factoryBank = new PresetBank
-            {
-                BankName = BankNameFactory
-            };
-
-
-            ProcessD16PKGArchive(GetFactoryBankPath(FactoryBankPath), factoryBank);
-            return factoryBank;
-        }
-
-        private PresetBank GetUserPresets()
-        {
-            var userBank = new PresetBank {BankName = BankNameUser};
-
-            ProcessPresetDirectory(GetUserBankPath(UserBankPath), userBank);
-            return userBank;
+            await ProcessPresetDirectory(GetUserBankPath(UserBankPath), RootBank.CreateRecursive(BankNameUser));
+            await ProcessD16PkgArchive(GetFactoryBankPath(FactoryBankPath), RootBank.CreateRecursive(BankNameFactory));
         }
     }
 }
