@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using JetBrains.Annotations;
+using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.ValhallaDSP
 {
@@ -21,9 +22,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.ValhallaDSP
         public override void Init()
         {
             DefaultModes.Add("Reverb");
-            
+
             base.Init();
         }
-       
     }
 }

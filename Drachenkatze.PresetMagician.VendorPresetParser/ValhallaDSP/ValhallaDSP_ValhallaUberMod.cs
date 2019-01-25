@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using JetBrains.Annotations;
+using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.ValhallaDSP
 {
@@ -21,15 +22,11 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.ValhallaDSP
         public override void Init()
         {
             base.Init();
-            BankLoadingNotes = $"Factory Presets are loaded from {GetParseDirectory()}. Sub-folders define the bank. User presets are " +
-                               "currently not supported, if you know where user presets are saved please let me know";
-            
-            DefaultModes.Add("Delay");
-            
-            
-        }
-        
-      
+            BankLoadingNotes =
+                $"Factory Presets are loaded from {GetParseDirectory()}. Sub-folders define the bank. User presets are " +
+                "currently not supported, if you know where user presets are saved please let me know";
 
+            DefaultModes.Add("Delay");
+        }
     }
 }

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Drachenkatze.PresetMagician.VendorPresetParser.Common;
 using JetBrains.Annotations;
+using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
 {
@@ -12,16 +12,13 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
     {
         public override List<int> SupportedPlugins => new List<int> {1448365427};
 
-       protected override string GetParseDirectory()
+        protected override string GetParseDirectory()
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 @"Slate Digital\Virtual Tape Machines\Presets");
         }
-       
-       
 
-       protected override string PresetSectionName { get; } =  "VTMs";
-       
-       
+
+        protected override string PresetSectionName { get; } = "VTMs";
     }
 }
