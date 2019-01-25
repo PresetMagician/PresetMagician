@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital;
 using JetBrains.Annotations;
+using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.Eiosis
 {
@@ -12,13 +13,12 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Eiosis
     {
         public override List<int> SupportedPlugins => new List<int> {1095070032};
 
-       protected override string GetParseDirectory()
+        protected override string GetParseDirectory()
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 @"Eiosis\AirEQ\Presets");
         }
 
-       protected override string PresetSectionName { get; } = "AEqP";
-       
+        protected override string PresetSectionName { get; } = "AEqP";
     }
 }
