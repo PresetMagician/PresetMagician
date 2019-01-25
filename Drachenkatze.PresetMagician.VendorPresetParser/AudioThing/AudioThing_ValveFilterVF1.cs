@@ -12,7 +12,11 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
     {
         public override List<int> SupportedPlugins => new List<int> {1449940582};
 
-
+        protected override PresetBank GetRootBank()
+        {
+            return RootBank.CreateRecursive(BankNameFactory);
+        }
+        
         protected override string GetParseDirectory()
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),

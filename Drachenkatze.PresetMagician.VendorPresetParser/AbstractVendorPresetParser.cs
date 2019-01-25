@@ -49,8 +49,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
         public virtual int GetNumPresets()
         {
-            var rand = new Random();
-            return rand.Next(3000);
+            return 99999;
             throw new NotImplementedException();
         }
 

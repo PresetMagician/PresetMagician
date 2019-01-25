@@ -5,6 +5,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using Anotar.Catel;
 using Catel.Collections;
@@ -18,8 +19,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
         protected abstract string XmlPluginName { get; }
         protected abstract string Extension { get; }
 
-        protected void ProcessD16PKGArchive(string archiveName, PresetBank bank)
+        protected async Task<int> ProcessD16PkgArchive(string archiveName, PresetBank bank, bool persist = true)
         {
+            int count = 0;
             Plugin.Debug($"ProcessD16PKGArchive {archiveName}");
             using (var archive = ZipFile.OpenRead(archiveName))
             {
@@ -36,31 +38,50 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
                         continue;
                     }
 
-                    var ms = new MemoryStream();
-                    presetEntry.Open().CopyTo(ms);
-                    ms.Seek(0, SeekOrigin.Begin);
+                    count++;
 
-                    var presetData = Encoding.UTF8.GetString(ms.ToArray());
+                    if (persist)
+                    {
+                        var ms = new MemoryStream();
+                        presetEntry.Open().CopyTo(ms);
+                        ms.Seek(0, SeekOrigin.Begin);
 
-                    Presets.Add(GetPreset(presetEntry.Name, presetData, bank));
+                        var presetData = Encoding.UTF8.GetString(ms.ToArray());
+
+                        var presetInfo = GetPreset(presetEntry.Name, presetData, bank);
+
+                        await PresetDataStorer.PersistPreset(presetInfo.preset, presetInfo.presetData);
+                    }
                 }
             }
+
+            return count;
         }
 
-        protected void ProcessPresetDirectory(string presetDirectory, PresetBank bank)
+        protected async Task<int> ProcessPresetDirectory(string presetDirectory, PresetBank bank, bool persist = true)
         {
+            int count = 0;
             Plugin.Debug($"ProcessPresetDirectory {presetDirectory}");
             var dirInfo = new DirectoryInfo(presetDirectory);
 
-
             foreach (var file in dirInfo.EnumerateFiles("*" + Extension))
             {
-                var presetData = File.ReadAllText(file.FullName);
-                Presets.Add(GetPreset(file.Name, presetData, bank));
+                count++;
+
+                if (persist)
+                {
+                    var presetData = File.ReadAllText(file.FullName);
+                    var presetInfo = GetPreset(file.Name, presetData, bank);
+
+                    await PresetDataStorer.PersistPreset(presetInfo.preset, presetInfo.presetData);
+                }
             }
+
+            return count;
         }
 
-        protected virtual Preset GetPreset(string name, string presetData, PresetBank presetBank)
+        protected virtual (Preset preset, byte[] presetData) GetPreset(string name, string presetData,
+            PresetBank presetBank)
         {
             var pluginState = new XElement("PluginState");
             pluginState.SetAttributeValue("application", XmlPluginName);
@@ -91,14 +112,12 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
 
 
             preset.PresetName = name.Replace(Extension, "");
-            preset.SetPlugin(Plugin);
+            preset.Plugin = Plugin;
             preset.PresetBank = presetBank;
 
             var ms = RecursiveVC2Parser.WriteVC2(pluginState.ToString());
 
-            preset.PresetData = ms.ToArray();
-
-            return preset;
+            return (preset, ms.ToArray());
         }
 
         protected virtual void PostProcessXML(XElement presetElement)

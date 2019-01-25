@@ -8,7 +8,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Eiosis
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
-    public class Eiosis_Deesser : SlateDigital.SlateDigitalPresetParser, IVendorPresetParser
+    public class Eiosis_Deesser : SlateDigitalPresetParser, IVendorPresetParser
     {
        public override List<int> SupportedPlugins => new List<int> {1160922195};
 

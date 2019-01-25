@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Xml.Linq;
-using Catel.Collections;
-using Drachenkatze.PresetMagician.VendorPresetParser.Common;
-using Drachenkatze.PresetMagician.VSTHost.VST;
-using PresetMagician.Models;
-using SharedModels;
+using JetBrains.Annotations;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group.PunchBox
+namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
 {
+    // ReSharper disable once InconsistentNaming
+    [UsedImplicitly]
     public class D16_PunchBox : D16Group, IVendorPresetParser
     {
         protected override string XmlPluginName { get; } = "PunchBox";
@@ -22,53 +15,47 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group.PunchBox
         private const string FactoryBankPath = @"D16 Group\PunchBox\Presets\Master.d16pkg";
         private const string UserBankPath = @"D16 Group\PunchBox\UserStore\Presets\Master";
 
-
-        private int PresetExportCount;
+        private int _presetExportCount;
 
         public override List<int> SupportedPlugins => new List<int> {1347306072};
 
-        public D16_PunchBox()
+        public override void Init()
         {
             DefaultModes.Add("Drums");
             DefaultModes.Add("Kick Drum");
+            base.Init();
         }
 
         public override string Remarks { get; set; } =
             "Due to a bug in PunchBox, the plugin needs to be reloaded after 60 exported presets. Export might pause for a few seconds.";
 
-        public void ScanBanks()
+        public override async Task DoScan()
         {
-            RootBank.PresetBanks.Add(GetFactoryPresets());
-            RootBank.PresetBanks.Add(GetUserPresets());
+            await ProcessPresetDirectory(GetUserBankPath(UserBankPath), RootBank.CreateRecursive(BankNameUser));
+            await ProcessD16PkgArchive(GetFactoryBankPath(FactoryBankPath), RootBank.CreateRecursive(BankNameFactory));
+        }
+
+        public override int GetNumPresets()
+        {
+            var count = 0;
+            count += ProcessPresetDirectory(GetUserBankPath(UserBankPath), RootBank.CreateRecursive(BankNameUser),
+                false).GetAwaiter().GetResult();
+            count += ProcessD16PkgArchive(GetFactoryBankPath(FactoryBankPath),
+                RootBank.CreateRecursive(BankNameFactory), false).GetAwaiter().GetResult();
+            
+            return count;
         }
 
         public override void OnAfterPresetExport()
         {
-            PresetExportCount++;
-            if (PresetExportCount <= 60)
+            _presetExportCount++;
+            if (_presetExportCount <= 60)
             {
                 return;
             }
 
-            PresetExportCount = 0;
+            _presetExportCount = 0;
             RemoteVstService.ReloadPlugin(Plugin.Guid);
-        }
-
-        private PresetBank GetUserPresets()
-        {
-            var userBank = new PresetBank {BankName = BankNameUser};
-
-            ProcessPresetDirectory(GetUserBankPath(UserBankPath), userBank);
-            return userBank;
-        }
-
-        private PresetBank GetFactoryPresets()
-        {
-            var factoryBank = new PresetBank {BankName = BankNameFactory};
-
-
-            ProcessD16PKGArchive(GetFactoryBankPath(FactoryBankPath), factoryBank);
-            return factoryBank;
         }
 
         protected override void PostProcessXML(XElement presetElement)

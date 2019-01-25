@@ -52,6 +52,12 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
         public async Task<int> DoScanInternal(PresetBank rootBank, string directory, bool persist=true)
         {
             int count = 0;
+
+            if (!Directory.Exists(directory))
+            {
+                Plugin.Log($"Directory {directory} does not exist, skipping");
+                return 0;
+            }
             var dirInfo = new DirectoryInfo(directory);
             var pattern = "*";
 

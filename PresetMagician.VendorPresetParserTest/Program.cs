@@ -74,7 +74,7 @@ namespace PresetMagician.VendorPresetParserTest
                 }
                 catch (Exception e)
                 {
-                    //testResult.Error = e.Message;
+                    testResult.Error = "Errored";
                 }
 
                 testResult.Presets = plugin.Presets.Count;
