@@ -84,7 +84,7 @@
     <Compile Include="VST\IPreset.cs" />
     <Compile Include="VST\IPresetBank.cs" />
     <Compile Include="VST\VstHelpers.cs" />
-    <Compile Include="VST\VstPlugin.cs" />
+    <Compile Include="VST\RemoteVstPlugin.cs" />
     <Compile Include="VST\VSTPluginExport.cs" />
     <Compile Include="VST\VstPathScanner.cs" />
     <Compile Include="VST\VstHost.cs" />

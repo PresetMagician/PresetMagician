@@ -173,14 +173,14 @@ namespace Drachenkatze.PresetMagician.VSTHost
         /// <inheritdoc />
         public bool SizeWindow(int width, int height)
         {
-            var plugin = PluginContext.Find<VstPlugin>("Plugin");
+            var plugin = PluginContext.Find<RemoteVstPlugin>("Plugin");
             plugin?.ResizeEditor(width, height);
             return true;
         }
 
         public bool UpdateDisplay()
         {
-            var plugin = PluginContext.Find<VstPlugin>("Plugin");
+            var plugin = PluginContext.Find<RemoteVstPlugin>("Plugin");
             plugin?.RedrawEditor();
 
             return true;

@@ -66,8 +66,6 @@
     <Compile Include="Interfaces\IPluginCommands.cs" />
     <Compile Include="IPresetDataStorer.cs" />
     <Compile Include="IVendorPresetParser.cs" />
-    <Compile Include="IVstHost.cs" />
-    <Compile Include="IVstPlugin.cs" />
     <Compile Include="MidiNoteName.cs" />
     <Compile Include="Migrations\BaseMigration.cs" />
     <Compile Include="Migrations\IMigration.cs" />

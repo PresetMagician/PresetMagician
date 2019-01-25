@@ -23,14 +23,14 @@ using Color = System.Windows.Media.Color;
 
 namespace PresetMagician.VstHost.VST
 {
-    public class VstPlugin
+    public class RemoteVstPlugin
     {
         private string _dllPath;
         private Timer _shutdownTimer;
         private VstHost _host;
         public bool BackgroundProcessing { get; set; }
 
-        public VstPlugin(VstHost host)
+        public RemoteVstPlugin(VstHost host)
         {
             _host = host;
         }
