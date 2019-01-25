@@ -24,7 +24,6 @@ namespace PresetMagician.VendorPresetParserTest
             var pluginTestDirectory = @"C:\Program Files\VSTPlugins";
             var testResults = new List<PluginTestResult>();
 
-            var plugins = VstUtils.EnumeratePlugins(pluginTestDirectory);
             var presetParserDictionary = VendorPresetParser.GetPresetHandlerList();
 
             ApplicationDatabaseContext.OverrideDbPath = Path.Combine(Directory.GetCurrentDirectory(), "test.sqlite3");
@@ -35,9 +34,8 @@ namespace PresetMagician.VendorPresetParserTest
             }
 
             Console.WriteLine(ApplicationDatabaseContext.OverrideDbPath);
-            var databaseService = new DatabaseService();
-            var vstService = new VstService(databaseService);
             var testData = ReadTestData();
+            var ignoredPlugins = ReadIgnoredPlugins();
 
             Console.WriteLine(testData);
 
@@ -70,11 +68,13 @@ namespace PresetMagician.VendorPresetParserTest
 
                 try
                 {
-                    presetParser.DoScan();
+                    presetParser.Init();
+                    testResult.ReportedPresets = presetParser.GetNumPresets();
+                    presetParser.DoScan().GetAwaiter().GetResult();
                 }
                 catch (Exception e)
                 {
-                    testResult.Error = e.Message;
+                    //testResult.Error = e.Message;
                 }
 
                 testResult.Presets = plugin.Presets.Count;
@@ -91,7 +91,7 @@ namespace PresetMagician.VendorPresetParserTest
                     if (testDataEntry != null)
                     {
                         if (preset.PresetName == testDataEntry.ProgramName &&
-                            preset.PresetHash == testDataEntry.Hash &&
+                            preset.PresetHash == testDataEntry.Hash.TrimEnd() &&
                             preset.BankPath == testDataEntry.BankPath)
                         {
                             foundPreset = true;
@@ -108,7 +108,8 @@ namespace PresetMagician.VendorPresetParserTest
                     testResult.RandomPresetSource = randomPreset.SourceFile;
                 }
 
-                if (foundPreset && plugin.Presets.Count > 5 && testResult.BankMissing < 2)
+                if ((foundPreset && plugin.Presets.Count > 5 && testResult.BankMissing < 2 && plugin.Presets.Count == testResult.ReportedPresets)
+                    || IsIgnored(ignoredPlugins, presetParser.PresetParserType, pluginId))
                 {
                     testResult.IsOK = true;
                 }
@@ -116,68 +117,19 @@ namespace PresetMagician.VendorPresetParserTest
 
                 testResults.Add(testResult);
             }
-            /*foreach (var pluginDll in plugins)
-            {
-                try
-                {
-                    
-                    Console.WriteLine(pluginDll);
-
-                    var remoteVstService = vstService.LoadVstInteractive(plugin).Result;
-                    VendorPresetParser.DeterminatePresetParser(plugin, remoteVstService);
-
-                    if (!plugin.PresetParser.GetSupportedPlugins().Contains(plugin.PluginId))
-                    {
-                        vstService.UnloadVst(plugin).Wait();
-                        continue;
-                    }
-                    plugin.PresetParser.PresetDataStorer = databaseService.GetPresetDataStorer();
-                    plugin.PresetParser.Presets = plugin.Presets;
-                    plugin.PresetParser.RootBank = plugin.RootBank.First();
-                    plugin.PresetParser.RemoteVstService = remoteVstService;
-
-                    plugin.PresetParser.DoScan().Wait();
-                    databaseService.GetPresetDataStorer().Flush().Wait();
-
-                    var testResult = new PluginTestResult();
-                    testResult.VendorPresetParser = plugin.PresetParser;
-                    testResult.PresetCount = plugin.Presets.Count;
-                    testResult.DllFilename = plugin.DllFilename;
-                    testResult.PluginId = plugin.PluginId;
-                    foreach (var preset in plugin.Presets)
-                    {
-                        if (preset.BankPath == "")
-                        {
-                            testResult.PresetsWithoutBankPath++;
-                        }
-                    }
-
-                    foreach (var i in plugin.PresetParser.GetSupportedPlugins())
-                    {
-                        if (presetParserDictionary.ContainsKey(i))
-                        {
-                            testResults.Add(testResult);
-                            presetParserDictionary.Remove(i);
-                        }
-                    }
-                    vstService.UnloadVst(plugin).Wait();
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                }
-
-            }*/
+           
 
             var consoleTable = ConsoleTable.From(from testRes in testResults
                 where testRes.IsOK == false
-                orderby testRes.Presets ascending 
+                orderby testRes.Presets 
                 select testRes);
 
             Console.WriteLine(consoleTable.ToMinimalString());
+            
+            Console.WriteLine("Stuff left: "+consoleTable.Rows.Count);
         }
 
-        public static IEnumerable<TestData> ReadTestData()
+        public static List<TestData> ReadTestData()
         {
             using (var reader = new StreamReader("testdata.csv"))
             using (var csv = new CsvReader(reader))
@@ -185,13 +137,30 @@ namespace PresetMagician.VendorPresetParserTest
                 return csv.GetRecords<TestData>().ToList();
             }
         }
+        
+        public static List<IgnoredPlugins> ReadIgnoredPlugins()
+        {
+            using (var reader = new StreamReader("ignoredplugins.csv"))
+            using (var csv = new CsvReader(reader))
+            {
+                return csv.GetRecords<IgnoredPlugins>().ToList();
+            }
+        }
 
-        public static TestData GetTestDataEntry(IEnumerable<TestData> testData, string presetParser, int pluginId)
+        public static TestData GetTestDataEntry(List<TestData> testData, string presetParser, int pluginId)
         {
             return (from testDataEntry in testData
                 where
                     testDataEntry.PluginId == pluginId && testDataEntry.PresetParser == presetParser
                 select testDataEntry).FirstOrDefault();
+        }
+        
+        public static bool IsIgnored(List<IgnoredPlugins> ignoredPlugins, string presetParser, int pluginId)
+        {
+            return (from testDataEntry in ignoredPlugins
+                where
+                    testDataEntry.PluginId == pluginId && testDataEntry.PresetParser == presetParser
+                select testDataEntry).Any();
         }
     }
 
@@ -212,6 +181,7 @@ namespace PresetMagician.VendorPresetParserTest
     class PluginTestResult
     {
         public int Presets { get; set; }
+        public int ReportedPresets { get; set; }
         public string VendorPresetParser { get; set; }
         public string Error { get; set; }
         public int PluginId { get; set; }
@@ -224,7 +194,7 @@ namespace PresetMagician.VendorPresetParserTest
         {
             get
             {
-                if (Presets > 5 && BankMissing < 2)
+                if (Presets > 5 && BankMissing < 2 && Presets == ReportedPresets)
                 {
                     return string.Join(",", new string[]
                     {
@@ -255,5 +225,12 @@ namespace PresetMagician.VendorPresetParserTest
         [Name("BankPath")] public string BankPath { get; set; }
 
         [Name("Hash")] public string Hash { get; set; }
+    }
+    
+    public class IgnoredPlugins
+    {
+        [Name("PresetParser")] public string PresetParser { get; set; }
+
+        [Name("PluginId")] public int PluginId { get; set; }
     }
 }

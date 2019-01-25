@@ -1,29 +1,57 @@
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
-using Anotar.Catel;
-using Drachenkatze.PresetMagician.VSTHost.VST;
-using PresetMagician.Models;
 using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
 {
-    public class RecursiveBankDirectoryParser
+    public abstract class RecursiveBankDirectoryParser: AbstractVendorPresetParser
     {
-        protected readonly string Extension;
-        protected readonly Plugin _plugin;
-        protected readonly IPresetDataStorer _presetDataStorer;
+        protected abstract string Extension { get; }
 
-        public RecursiveBankDirectoryParser(Plugin plugin, string extension, IPresetDataStorer presetDataStorer)
+        public override void Init()
         {
-            _plugin = plugin;
-            Extension = extension;
-            _presetDataStorer = presetDataStorer;
+            var directories = string.Join(",", (from dir in GetParseDirectories() select dir.directory));
+            BankLoadingNotes = $"Presets are loaded from {directories}. First sub-folder defines the bank.";
         }
 
-        public async Task DoScan(PresetBank rootBank, string directory)
+        protected virtual List<(string directory, PresetBank presetBank)> GetParseDirectories()
         {
+            return new List<(string, PresetBank)> {(GetParseDirectory(), GetRootBank())};
+        }
+        
+        protected abstract string GetParseDirectory();
+
+        protected virtual PresetBank GetRootBank()
+        {
+            return RootBank;
+        }
+
+        public override int GetNumPresets()
+        {
+            var count = 0;
+            foreach (var parseDirectory in GetParseDirectories())
+            {
+                count += DoScanInternal(parseDirectory.presetBank, parseDirectory.directory, false).GetAwaiter()
+                    .GetResult();
+            }
+
+            return count;
+        }
+        
+        public override async Task DoScan()
+        {
+            foreach (var parseDirectory in GetParseDirectories())
+            {
+                await DoScanInternal(parseDirectory.presetBank, parseDirectory.directory);
+            }
+        }
+
+        public async Task<int> DoScanInternal(PresetBank rootBank, string directory, bool persist=true)
+        {
+            int count = 0;
             var dirInfo = new DirectoryInfo(directory);
             var pattern = "*";
 
@@ -34,21 +62,26 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
 
             foreach (var file in dirInfo.EnumerateFiles(pattern))
             {
-                try
-                {
-                    var preset = new Preset {PresetName = file.Name.Replace("." + Extension, "")};
-                    preset.Plugin = _plugin;
-                    preset.SourceFile = file.FullName;
-                    preset.PresetBank = rootBank;
+                count++;
 
-                    var data = ProcessFile(file.FullName, preset);
-
-                    await _presetDataStorer.PersistPreset(preset, data);
-                }
-                catch (Exception e)
+                if (persist)
                 {
-                    _plugin.Error("Error processing preset {0} because of {1} {2}", file.FullName, e.Message, e);
-                    _plugin.Debug(e.StackTrace);
+                    try
+                    {
+                        var preset = new Preset {PresetName = file.Name.Replace("." + Extension, "")};
+                        preset.Plugin = Plugin;
+                        preset.SourceFile = file.FullName;
+                        preset.PresetBank = rootBank;
+
+                        var data = ProcessFile(file.FullName, preset);
+
+                        await PresetDataStorer.PersistPreset(preset, data);
+                    }
+                    catch (Exception e)
+                    {
+                        Plugin.Error("Error processing preset {0} because of {1} {2}", file.FullName, e.Message, e);
+                        Plugin.Debug(e.StackTrace);
+                    }
                 }
             }
 
@@ -56,8 +89,10 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
             {
                 var bank = rootBank.CreateRecursive(subDirectory.Name);
              
-                await DoScan(bank, subDirectory.FullName);
+                count += await DoScanInternal(bank, subDirectory.FullName, persist);
             }
+
+            return count;
         }
 
         protected virtual byte[] ProcessFile(string fileName, Preset preset)

@@ -13,7 +13,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
         public override List<int> SupportedPlugins => new List<int> {1165513842};
 
 
-        protected override string GetDataDirectory()
+        protected override string GetParseDirectory()
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 @"AudioThing\Presets\ValveExciter");

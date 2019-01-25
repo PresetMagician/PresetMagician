@@ -48,6 +48,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             {
                 IVendorPresetParser instance = (IVendorPresetParser) Activator.CreateInstance(parser);
                 instance.RemoteVstService = remoteVstService;
+                instance.Init();
 
                 if (instance.IsNullParser)
                 {

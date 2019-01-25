@@ -1,15 +1,16 @@
 using System;
-using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using System.Xml.Linq;
-using Anotar.Catel;
-using GSF;
 using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
 {
-    public class MeldaProduction : AbstractVendorPresetParser
+    public abstract class MeldaProduction : AbstractVendorPresetParser
     {
+        protected abstract string PresetFile { get; }
+        protected abstract string RootTag { get; }
+
         protected static readonly string ParseDirectory = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             @"MeldaProduction\");
@@ -18,7 +19,17 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
             Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
             @"MeldaProduction\");
 
-        public void ScanPresetXMLFile(string filename, string rootTag)
+        public override int GetNumPresets()
+        {
+            return ScanPresetXmlFile(PresetFile, RootTag, false).GetAwaiter().GetResult();
+        }
+
+        public override async Task DoScan()
+        {
+            await ScanPresetXmlFile(PresetFile, RootTag);
+        }
+
+        public async Task<int> ScanPresetXmlFile(string filename, string rootTag, bool persist = true)
         {
             var fullFilename = Path.Combine(ParseDirectory, filename);
 
@@ -31,18 +42,19 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
             {
                 Plugin.Error(
                     $"Error: Could not find {filename} in neither {ParseDirectory} nor {FallbackParseDirectory}");
-                return;
+                return 0;
             }
 
             var rootDocument = XDocument.Parse(File.ReadAllText(fullFilename));
 
             var rootElement = rootDocument.Element(rootTag);
 
-            ScanPresetXML(rootElement, RootBank);
+            return await ScanPresetXml(rootElement, RootBank.CreateRecursive("Factory"), persist);
         }
 
-        public void ScanPresetXML(XElement rootElement, PresetBank presetBank)
+        public async Task<int> ScanPresetXml(XElement rootElement, PresetBank presetBank, bool persist = true)
         {
+            int count = 0;
             var directories = rootElement.Elements("Directory");
 
             foreach (var directory in directories)
@@ -61,11 +73,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
                     }
                 }
 
-                var subBank = new PresetBank();
-                subBank.BankName = bankNameElement.Value;
-                ScanPresetXML(directory, subBank);
-
-                presetBank.PresetBanks.Add(subBank);
+                var subBank = presetBank.CreateRecursive(bankNameElement.Value);
+                count += await ScanPresetXml(directory, subBank, persist);
             }
 
             var presets = rootElement.Elements("preset");
@@ -86,17 +95,20 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
                     }
                 }
 
-                var preset = new Preset();
-                preset.PresetName = nameAttribute.Value;
-                preset.SetPlugin(Plugin);
-                preset.PresetBank = presetBank;
+                count++;
 
-                var base64 = presetElement.Value.Trim().Replace("-", "/").Replace("$", "");
+                if (persist)
+                {
+                    var preset = new Preset
+                        {PresetName = nameAttribute.Value, Plugin = Plugin, PresetBank = presetBank};
 
-                preset.PresetData = Convert.FromBase64String(base64);
+                    var base64 = presetElement.Value.Trim().Replace("-", "/").Replace("$", "");
 
-                Presets.Add(preset);
+                    await PresetDataStorer.PersistPreset(preset, Convert.FromBase64String(base64));
+                }
             }
+
+            return count;
         }
     }
 }

@@ -10,21 +10,17 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.ToguAudioLine
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
-    public class ToguAudioLine_TAlBassline101 : AbstractVendorPresetParser, IVendorPresetParser
+    public class ToguAudioLine_TAlBassline101 : RecursiveVC2Parser, IVendorPresetParser
     {
         public override List<int> SupportedPlugins => new List<int> {1648456497};
 
-        private static readonly string ParseDirectory = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            @"ToguAudioLine\TAL-BassLine-101\presets");
-
-        public override string BankLoadingNotes { get; set; } =
-            $"Presets are loaded from {ParseDirectory}. First sub-folder defines the bank.";
-
-        public override async Task DoScan()
+        protected override string Extension { get; } = "bassline";
+        protected override string GetParseDirectory()
         {
-            var parser = new VC2Parser(Plugin, "bassline", PresetDataStorer);
-            await parser.DoScan(RootBank, ParseDirectory);
+            return  Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                @"ToguAudioLine\TAL-BassLine-101\presets");
         }
+
     }
 }

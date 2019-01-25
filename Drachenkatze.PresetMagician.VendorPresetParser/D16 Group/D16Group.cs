@@ -94,7 +94,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
             preset.SetPlugin(Plugin);
             preset.PresetBank = presetBank;
 
-            var ms = VC2Parser.WriteVC2(pluginState.ToString());
+            var ms = RecursiveVC2Parser.WriteVC2(pluginState.ToString());
 
             preset.PresetData = ms.ToArray();
 

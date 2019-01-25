@@ -9,9 +9,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
     {
         public override List<int> SupportedPlugins => new List<int> {1296131409};
 
-        public void ScanBanks()
-        {
-            ScanPresetXMLFile("MFreeformEqualizerpresets.xml", "MFreeformEqualizerpresetspresets");
-        }
+        protected override string PresetFile { get; } =
+            "MFreeformEqualizerpresets.xml";
+
+        protected override string RootTag { get; } = "MFreeformEqualizerpresetspresets";
     }
 }

@@ -11,7 +11,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Audiority
     {
         public override List<int> SupportedPlugins => new List<int> {1231909489};
 
-        protected override string GetDataDirectory()
+        protected override string GetParseDirectory()
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments),
                 @"Audiority\Presets\Echoes T7E");

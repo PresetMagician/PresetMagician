@@ -12,16 +12,10 @@ using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
 {
-    public class VC2Parser : RecursiveBankDirectoryParser
+    public abstract class RecursiveVC2Parser : RecursiveBankDirectoryParser
     {
-        protected Regex XmlHeaderReplacerRegex;
-        protected Func<string, string> PreProcessXmlFunc = null;
-
-        public VC2Parser(Plugin plugin, string extension, IPresetDataStorer presetDataStorer) :
-            base(plugin, extension, presetDataStorer)
-        {
-            XmlHeaderReplacerRegex = new Regex(@"<\?xml.*?\?>", RegexOptions.Compiled);
-        }
+        protected static Regex XmlHeaderReplacerRegex = new Regex(@"<\?xml.*?\?>", RegexOptions.Compiled);
+        protected Func<string, string> PreProcessXmlFunc;
 
         public void SetPreProcessXmlFunction(Func<string, string> func)
         {

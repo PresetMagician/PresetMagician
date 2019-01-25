@@ -11,21 +11,19 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Xfer_Records
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
-    public class Xfer_Records_Serum : AbstractVendorPresetParser, IVendorPresetParser
+    public class Xfer_Records_Serum : RecursiveFXPDirectoryParser, IVendorPresetParser
     {
         public override List<int> SupportedPlugins => new List<int> {1483109208};
 
-       protected string GetDataDirectory()
+       protected override string GetParseDirectory()
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 @"Xfer\Serum Presets\Presets");
           
         }
+
+       protected override string Extension { get; } = "fxp";
+
        
-       public override async Task DoScan()
-       {
-           var parser = new RecursiveFXPDirectoryParser(Plugin, "fxp", PresetDataStorer);
-           await parser.DoScan(RootBank, GetDataDirectory());
-       }
     }
 }

@@ -9,21 +9,17 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.DmitrySches
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
-    public class DmitrySches_ThornCM : AbstractVendorPresetParser, IVendorPresetParser
+    public class DmitrySches_ThornCM : DmitrySchesPresetParser, IVendorPresetParser
     {
         public override List<int> SupportedPlugins => new List<int> {1416122947};
 
-        private static readonly string ParseDirectory = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-            @"Dmitry Sches\Thorn CM\Plug-In Presets");
-
-        public override string BankLoadingNotes { get; set; } =
-            $"Presets are loaded from {ParseDirectory}. First sub-folder defines the bank.";
-
-        public override async Task DoScan()
+        protected override string Extension { get; } = "thorn";
+        
+        protected override string GetParseDirectory()
         {
-            var vc2parser = new DmitrySchesPresetParser(Plugin, "thorn", PresetDataStorer);
-            await vc2parser.DoScan(RootBank, ParseDirectory);
+            return Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                @"Dmitry Sches\Thorn CM\Plug-In Presets");
         }
     }
 }

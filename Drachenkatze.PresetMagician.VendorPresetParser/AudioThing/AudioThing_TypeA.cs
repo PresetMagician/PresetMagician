@@ -12,7 +12,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
         public override List<int> SupportedPlugins => new List<int> {1954107457};
 
 
-        protected override string GetDataDirectory()
+        protected override string GetParseDirectory()
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 @"AudioThing\Presets\TypeA");

@@ -133,13 +133,15 @@ namespace PresetMagician.ProcessIsolation
         {
             var processStartInfo = new ProcessStartInfo("PresetMagician.RemoteVstHost.exe")
             {
-                CreateNoWindow = true, UseShellExecute = false, RedirectStandardOutput = true
+                CreateNoWindow = true, UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true
             };
 
             CurrentProcessState = ProcessState.STARTING;
             _process = Process.Start(processStartInfo);
             _process.BeginOutputReadLine();
+            _process.BeginErrorReadLine();
             _process.OutputDataReceived += ProcessOnOutputDataReceived;
+            _process.ErrorDataReceived += ProcessOnOutputDataReceived;
 
             var address = ProcessPool.BaseAddress + _process.Id;
             var binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.None)

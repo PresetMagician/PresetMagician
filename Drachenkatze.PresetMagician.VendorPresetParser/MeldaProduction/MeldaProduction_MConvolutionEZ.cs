@@ -9,9 +9,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
     {
         public override List<int> SupportedPlugins => new List<int> {1296262522};
 
-        public void ScanBanks()
-        {
-            ScanPresetXMLFile("MConvolutionEZpresets.xml", "MConvolutionEZpresets");
-        }
+        protected override string PresetFile { get; } = "MConvolutionEZpresets.xml";
+
+        protected override string RootTag { get; } = "MConvolutionEZpresets";
     }
 }

@@ -1,30 +1,24 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 using Drachenkatze.PresetMagician.VendorPresetParser.Common;
 using JetBrains.Annotations;
-using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.ToguAudioLine
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
-    public class ToguAudioLine_TAlMod : AbstractVendorPresetParser, IVendorPresetParser
+    public class ToguAudioLine_TAlMod : RecursiveVC2Parser, IVendorPresetParser
     {
         public override List<int> SupportedPlugins => new List<int> {1833919537};
 
-        private static readonly string ParseDirectory = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            @"ToguAudioLine\TAL-Mod\presets");
+        protected override string Extension { get; } = "talmod";
 
-        public override string BankLoadingNotes { get; set; } =
-            $"Presets are loaded from {ParseDirectory}. First sub-folder defines the bank.";
-
-        public override async Task DoScan()
+        protected override string GetParseDirectory()
         {
-            var parser = new VC2Parser(Plugin, "talmod", PresetDataStorer);
-            await parser.DoScan(RootBank, ParseDirectory);
+            return Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                @"ToguAudioLine\TAL-Mod\presets");
         }
     }
 }

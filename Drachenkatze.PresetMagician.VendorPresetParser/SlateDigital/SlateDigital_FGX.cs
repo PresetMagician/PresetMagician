@@ -14,31 +14,23 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
-    public class SlateDigital_FGX : AbstractVendorPresetParser, IVendorPresetParser
+    public class SlateDigital_FGX : RecursiveVC2Parser, IVendorPresetParser
     {
         public override List<int> SupportedPlugins => new List<int> {1179069784};
 
-        public override void Init()
-        {
-            BankLoadingNotes = $"Presets are loaded from {GetDataDirectory()}";
-        }
-        
-       protected string GetDataDirectory()
+        protected override string GetParseDirectory()
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 @"Slate Digital\FG-X Virtual Mastering Console\Presets");
-
-            
         }
-       
-       public override async Task DoScan()
-       {
-           var vc2parser = new VC2Parser(Plugin, "", PresetDataStorer);
-           vc2parser.SetPreProcessXmlFunction(PreProcessXML);
-           vc2parser.DoScan(RootBank, GetDataDirectory());
-           
-       }
-       
+
+        protected override string Extension { get; } = "";
+
+        public override void Init()
+        {
+            SetPreProcessXmlFunction(PreProcessXML);
+            base.Init();
+        }
 
         private string PreProcessXML(string data)
         {
@@ -56,7 +48,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
                 }
             }
 
-            Plugin.Debug(xmlPreset.ToString());
             return xmlPreset.ToString();
         }
     }
