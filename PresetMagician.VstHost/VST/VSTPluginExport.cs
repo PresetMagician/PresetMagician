@@ -185,7 +185,7 @@ namespace PresetMagician.VstHost.VST
         }
 
         [Time]
-        public void ExportPresetAudioPreviewRealtime(VstPlugin plugin, PresetExportInfo preset, byte[] data, int initialDelay)
+        public void ExportPresetAudioPreviewRealtime(RemoteVstPlugin plugin, PresetExportInfo preset, byte[] data, int initialDelay)
         {
             var ctx = plugin.PluginContext;
 

@@ -15,7 +15,7 @@ namespace PresetMagician.ProcessIsolation.Services
     public class RemoteVstService : IRemoteVstService
     {
         private static readonly VstHost.VST.VstHost _vstHost = new VstHost.VST.VstHost(true);
-        private readonly Dictionary<Guid, VstPlugin> _plugins = new Dictionary<Guid, VstPlugin>();
+        private readonly Dictionary<Guid, RemoteVstPlugin> _plugins = new Dictionary<Guid, RemoteVstPlugin>();
 
         public bool Ping()
         {
@@ -24,7 +24,7 @@ namespace PresetMagician.ProcessIsolation.Services
 
         public Guid LoadPlugin(string dllPath, bool backgroundProcessing = true)
         {
-            var plugin = new VstPlugin(_vstHost) {DllPath = dllPath, BackgroundProcessing = backgroundProcessing};
+            var plugin = new RemoteVstPlugin(_vstHost) {DllPath = dllPath, BackgroundProcessing = backgroundProcessing};
 
             var guid = Guid.NewGuid();
 
@@ -53,7 +53,7 @@ namespace PresetMagician.ProcessIsolation.Services
             _vstHost.ReloadPlugin(plugin);
         }
 
-        private VstPlugin GetPluginByGuid(Guid guid)
+        private RemoteVstPlugin GetPluginByGuid(Guid guid)
         {
             if (!_plugins.ContainsKey(guid))
             {

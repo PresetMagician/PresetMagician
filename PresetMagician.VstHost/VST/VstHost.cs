@@ -31,7 +31,7 @@ namespace PresetMagician.VstHost.VST
     {
     }
 
-    public class VstHost : IVstHost
+    public class VstHost 
     {
         private Timer _audioTimer;
         private Timer _guiTimer;
@@ -96,24 +96,24 @@ namespace PresetMagician.VstHost.VST
         public const int BlockSize = 512;
         public const float SampleRate = 44100f;
 
-        private static List<VstPlugin> _plugins = new List<VstPlugin>();
+        private static List<RemoteVstPlugin> _plugins = new List<RemoteVstPlugin>();
 
         public bool LoadVST(Plugin vst, int idleLoopCount = 1024)
         {
             throw new Exception("Dont use anymore");
         }
 
-        public bool LoadVst(VstPlugin vst)
+        public bool LoadVst(RemoteVstPlugin remoteVst)
         {
-            LoadVstInternal(vst);
+            LoadVstInternal(remoteVst);
 
-            if (vst.BackgroundProcessing)
+            if (remoteVst.BackgroundProcessing)
             {
                 lock (_audioTimer)
                 {
                     lock (_guiTimer)
                     {
-                        _plugins.Add(vst);
+                        _plugins.Add(remoteVst);
                     }
                 }
             }
@@ -121,23 +121,23 @@ namespace PresetMagician.VstHost.VST
             return true;
         }
 
-        public void ReloadPlugin(VstPlugin vst)
+        public void ReloadPlugin(RemoteVstPlugin remoteVst)
         {
-            UnloadVst(vst);
-            LoadVstInternal(vst);
+            UnloadVst(remoteVst);
+            LoadVstInternal(remoteVst);
         }
 
-        private static void LoadVstInternal(VstPlugin vst)
+        private static void LoadVstInternal(RemoteVstPlugin remoteVst)
         {
             var hostCommandStub = new NewHostCommandStub();
-            hostCommandStub.PluginDll = Path.GetFileName(vst.DllPath);
+            hostCommandStub.PluginDll = Path.GetFileName(remoteVst.DllPath);
 
             Debug.WriteLine($"{hostCommandStub.PluginDll}: Loading plugin");
-            var ctx = VstPluginContext.Create(vst.DllPath, hostCommandStub);
-            ctx.Set("Plugin", vst);
+            var ctx = VstPluginContext.Create(remoteVst.DllPath, hostCommandStub);
+            ctx.Set("Plugin", remoteVst);
 
-            vst.PluginContext = ctx;
-            ctx.Set("PluginPath", vst.DllPath);
+            remoteVst.PluginContext = ctx;
+            ctx.Set("PluginPath", remoteVst.DllPath);
             ctx.Set("HostCmdStub", hostCommandStub);
             Debug.WriteLine($"{hostCommandStub.PluginDll}: Opening plugin");
             ctx.PluginCommandStub.Open();
@@ -148,12 +148,12 @@ namespace PresetMagician.VstHost.VST
             ctx.PluginCommandStub.SetSampleRate(SampleRate);
 
             Debug.WriteLine($"{hostCommandStub.PluginDll}: Activating output");
-            vst.PluginContext.PluginCommandStub.MainsChanged(true);
+            remoteVst.PluginContext.PluginCommandStub.MainsChanged(true);
 
             Debug.WriteLine($"{hostCommandStub.PluginDll}: starting to process");
             ctx.PluginCommandStub.StartProcess();
             
-            Debug.WriteLine($"{vst.DllFilename}: adding to list");
+            Debug.WriteLine($"{remoteVst.DllFilename}: adding to list");
         }
 
         public static void IdleLoop(IVstPluginContext ctx, int loops)
@@ -177,7 +177,7 @@ namespace PresetMagician.VstHost.VST
             }
         }
 
-        private void MIDI(VstPlugin plugin, byte Cmd, byte Val1, byte Val2)
+        private void MIDI(RemoteVstPlugin plugin, byte Cmd, byte Val1, byte Val2)
         {
             /*
 			 * Just a small note on the code for setting up a midi event:
@@ -212,56 +212,56 @@ namespace PresetMagician.VstHost.VST
             plugin.PluginContext.PluginCommandStub.ProcessEvents(ve);
         }
 
-        public void MIDI_CC(VstPlugin plugin, byte Number, byte Value)
+        public void MIDI_CC(RemoteVstPlugin plugin, byte Number, byte Value)
         {
             byte Cmd = 0xB0;
             MIDI(plugin, Cmd, Number, Value);
         }
 
-        public void MIDI_NoteOff(VstPlugin plugin, byte Note, byte Velocity)
+        public void MIDI_NoteOff(RemoteVstPlugin plugin, byte Note, byte Velocity)
         {
             byte Cmd = 0x80;
             MIDI(plugin, Cmd, Note, Velocity);
         }
 
-        public void MIDI_NoteOn(VstPlugin plugin, byte Note, byte Velocity)
+        public void MIDI_NoteOn(RemoteVstPlugin plugin, byte Note, byte Velocity)
         {
             byte Cmd = 0x90;
             MIDI(plugin, Cmd, Note, Velocity);
         }
 
-        public void UnloadVst(VstPlugin vst)
+        public void UnloadVst(RemoteVstPlugin remoteVst)
         {
             lock (_audioTimer)
             {
                 lock (_guiTimer)
                 {
-                    if (vst.BackgroundProcessing)
+                    if (remoteVst.BackgroundProcessing)
                     {
-                        Debug.WriteLine($"{vst.DllFilename}: removing from list");
-                        _plugins.Remove(vst);
+                        Debug.WriteLine($"{remoteVst.DllFilename}: removing from list");
+                        _plugins.Remove(remoteVst);
                     }
 
 
-                    if (vst.IsEditorOpen)
+                    if (remoteVst.IsEditorOpen)
                     {
-                        Debug.WriteLine($"{vst.DllFilename}: closing editor in shutdown");
-                        Application.Current.Dispatcher.Invoke(() => { vst.CloseEditor(); });
+                        Debug.WriteLine($"{remoteVst.DllFilename}: closing editor in shutdown");
+                        Application.Current.Dispatcher.Invoke(() => { remoteVst.CloseEditor(); });
                     }
 
-                    Debug.WriteLine($"{vst.DllFilename}: stopping process");
-                    vst.PluginContext?.PluginCommandStub.StopProcess();
-                    Debug.WriteLine($"{vst.DllFilename}: turning off");
-                    vst.PluginContext?.PluginCommandStub.MainsChanged(false);
+                    Debug.WriteLine($"{remoteVst.DllFilename}: stopping process");
+                    remoteVst.PluginContext?.PluginCommandStub.StopProcess();
+                    Debug.WriteLine($"{remoteVst.DllFilename}: turning off");
+                    remoteVst.PluginContext?.PluginCommandStub.MainsChanged(false);
 
-                    Debug.WriteLine($"{vst.DllFilename}: starting shutdown");
-                    vst.PluginContext?.PluginCommandStub.Close();
-                    vst.PluginContext = null;
+                    Debug.WriteLine($"{remoteVst.DllFilename}: starting shutdown");
+                    remoteVst.PluginContext?.PluginCommandStub.Close();
+                    remoteVst.PluginContext = null;
                 }
             }
         }
 
-        public void DisposeVST(VstPlugin plugin)
+        public void DisposeVST(RemoteVstPlugin plugin)
         {
         }
     }
