@@ -10,21 +10,22 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.ToguAudioLine
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
-    public class ToguAudioLine_TalDubX : AbstractVendorPresetParser, IVendorPresetParser
+    public class ToguAudioLine_TalDubX : RecursiveVC2Parser, IVendorPresetParser
     {
         public override List<int> SupportedPlugins => new List<int> {1685414488};
 
-        private static readonly string ParseDirectory = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            @"ToguAudioLine\TAL-Dub-X\presets");
+        protected override string Extension { get; } = "taldub";
 
-        public override string BankLoadingNotes { get; set; } =
-            $"Presets are loaded from {ParseDirectory}. First sub-folder defines the bank.";
-
-        public override async Task DoScan()
+        protected override string GetParseDirectory()
         {
-            var parser = new VC2Parser(Plugin, "taldub", PresetDataStorer);
-            await parser.DoScan(RootBank.CreateRecursive(BankNameFactory), ParseDirectory);
+            return Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                @"ToguAudioLine\TAL-Dub-X\presets");
+        }
+
+        protected override PresetBank GetRootBank()
+        {
+            return RootBank.CreateRecursive(BankNameFactory);
         }
     }
 }

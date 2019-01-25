@@ -12,7 +12,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
         public override List<int> SupportedPlugins => new List<int> {1330934608};
 
 
-        protected override string GetDataDirectory()
+        protected override string GetParseDirectory()
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments),
                 @"AudioThing\Presets\OuterSpace");

@@ -9,9 +9,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
     {
         public override List<int> SupportedPlugins => new List<int> {1296131385};
 
-        public void ScanBanks()
-        {
-            ScanPresetXMLFile("MWaveShaperpresets.xml", "MWaveShaperpresets");
-        }
+        protected override string PresetFile { get; } = "MWaveShaperpresets.xml";
+
+        protected override string RootTag { get; } = "MWaveShaperpresets";
     }
 }

@@ -10,15 +10,15 @@ using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.DmitrySches
 {
-    public class DmitrySchesPresetParser : RecursiveBankDirectoryParser
+    public abstract class DmitrySchesPresetParser : RecursiveBankDirectoryParser
     {
         private byte[] _decodeBuffer;
         private const int DecodeBufferSize = 1024 * 1024 * 100;
 
-        public DmitrySchesPresetParser(Plugin plugin, string extension,
-           IPresetDataStorer presetDataStorer) : base(plugin, extension, presetDataStorer)
+        public override void Init()
         {
             _decodeBuffer = new byte[DecodeBufferSize];
+            base.Init();
         }
 
         protected override byte[] ProcessFile(string fileName, Preset preset)

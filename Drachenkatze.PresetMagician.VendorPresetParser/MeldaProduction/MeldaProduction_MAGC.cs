@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
@@ -9,9 +10,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
     {
         public override List<int> SupportedPlugins => new List<int> {1298229091};
 
-        public void ScanBanks()
-        {
-            ScanPresetXMLFile("MAGCpresets.xml", "MAGCpresets");
-        }
+        protected override string PresetFile { get; } = "MAGCpresets.xml";
+        protected override string RootTag { get; } = "MAGCpresets";
     }
 }

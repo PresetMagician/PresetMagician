@@ -11,7 +11,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.ValhallaDSP
     {
         public override List<int> SupportedPlugins => new List<int> {1969382770};
 
-        protected override string GetDataDirectory()
+        protected override string GetParseDirectory()
         {
             return Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
@@ -21,7 +21,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.ValhallaDSP
         public override void Init()
         {
             base.Init();
-            BankLoadingNotes = $"Factory Presets are loaded from {GetDataDirectory()}. Sub-folders define the bank. User presets are " +
+            BankLoadingNotes = $"Factory Presets are loaded from {GetParseDirectory()}. Sub-folders define the bank. User presets are " +
                                "currently not supported, if you know where user presets are saved please let me know";
             
             DefaultModes.Add("Delay");

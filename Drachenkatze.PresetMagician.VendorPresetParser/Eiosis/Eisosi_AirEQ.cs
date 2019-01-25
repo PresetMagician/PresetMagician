@@ -8,19 +8,17 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Eiosis
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
-    public class Eiosis_AirEQ : SlateDigital.SlateDigital, IVendorPresetParser
+    public class Eiosis_AirEQ : SlateDigital.SlateDigitalPresetParser, IVendorPresetParser
     {
         public override List<int> SupportedPlugins => new List<int> {1095070032};
 
-       protected override string GetDataDirectory()
+       protected override string GetParseDirectory()
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 @"Eiosis\AirEQ\Presets");
         }
 
-        protected override string GetPresetSectionName()
-       {
-           return "AEqP";
-       }
+       protected override string PresetSectionName { get; } = "AEqP";
+       
     }
 }

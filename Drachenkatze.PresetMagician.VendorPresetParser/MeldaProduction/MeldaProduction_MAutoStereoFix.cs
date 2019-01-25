@@ -9,9 +9,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
     {
         public override List<int> SupportedPlugins => new List<int> {1298232166};
 
-        public void ScanBanks()
-        {
-            ScanPresetXMLFile("MAutoStereoFixpresets.xml", "MAutoStereoFixpresets");
-        }
+        protected override string PresetFile { get; } = "MAutoStereoFixpresets.xml";
+
+        protected override string RootTag { get; } = "MAutoStereoFixpresets";
     }
 }

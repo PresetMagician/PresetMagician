@@ -12,30 +12,23 @@ using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
 {
-    public class SlateDigitalPresetParser : RecursiveBankDirectoryParser
+    public abstract class SlateDigitalPresetParser : RecursiveBankDirectoryParser
     {
-        private readonly string _presetSectionName;
-        private readonly IRemoteVstService _remoteVstService;
-
-        public SlateDigitalPresetParser(IRemoteVstService remoteVstService, Plugin plugin, string extension,
-            IPresetDataStorer presetDataStorer, string presetSectionName) : base(plugin, extension, presetDataStorer)
-        {
-            _remoteVstService = remoteVstService;
-            _presetSectionName = presetSectionName;
-        }
+        protected abstract string PresetSectionName { get; }
+        protected override string Extension { get; } = "epf";
 
         protected virtual void RetrievePresetData(XNode node, Preset preset)
         {
             preset.Comment = GetNodeValue(node,
-                $"string(/package/archives/archive[@client_id='{_presetSectionName}-preset']/section/entry[@id='Preset notes']/@value)");
+                $"string(/package/archives/archive[@client_id='{PresetSectionName}-preset']/section/entry[@id='Preset notes']/@value)");
             preset.Author = GetNodeValue(node,
-                $"string(/package/archives/archive[@client_id='{_presetSectionName}-preset']/section/entry[@id='Preset author']/@value)");
+                $"string(/package/archives/archive[@client_id='{PresetSectionName}-preset']/section/entry[@id='Preset author']/@value)");
         }
 
         protected override byte[] ProcessFile(string fileName, Preset preset)
         {
             var xmlPreset = XDocument.Load(fileName);
-            var chunk = _remoteVstService.GetChunk(_plugin.Guid, false);
+            var chunk = RemoteVstService.GetChunk(Plugin.Guid, false);
             var chunkXML = Encoding.UTF8.GetString(chunk);
 
             var actualPresetDocument = XDocument.Parse(chunkXML);
@@ -55,12 +48,12 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
         protected virtual void MigrateData(XNode source, XNode dest, Preset preset)
         {
             var dataNode =
-                $"/package/archives/archive[@client_id='{_presetSectionName}-preset']/section[@id='ParameterValues']/entry";
+                $"/package/archives/archive[@client_id='{PresetSectionName}-preset']/section[@id='ParameterValues']/entry";
 
             var nodes = source.XPathSelectElements(dataNode);
 
             var dataNode2 =
-                $"/package/archives/archive[@client_id='{_presetSectionName}-state']/section[@id='Slot0']";
+                $"/package/archives/archive[@client_id='{PresetSectionName}-state']/section[@id='Slot0']";
             var insertNode = dest.XPathSelectElement(dataNode2);
             insertNode.Elements().Remove();
             insertNode.Add(nodes);

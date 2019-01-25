@@ -9,9 +9,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
     {
         public override List<int> SupportedPlugins => new List<int> {1297380676};
 
-        public void ScanBanks()
-        {
-            ScanPresetXMLFile("MTurboDelaypresets.xml", "MTurboDelaypresets");
-        }
+        protected override string PresetFile { get; } = "MTurboDelaypresets.xml";
+
+        protected override string RootTag { get; } = "MTurboDelaypresets";
     }
 }

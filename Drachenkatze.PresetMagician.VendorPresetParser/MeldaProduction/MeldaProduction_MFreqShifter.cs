@@ -9,9 +9,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
     {
         public override List<int> SupportedPlugins => new List<int> {1296131398};
 
-        public void ScanBanks()
-        {
-            ScanPresetXMLFile("MFreqShifterpresets.xml", "MFreqShifterpresetspresets");
-        }
+        protected override string PresetFile { get; } = "MFreqShifterpresets.xml";
+
+        protected override string RootTag { get; } = "MFreqShifterpresetspresets";
     }
 }

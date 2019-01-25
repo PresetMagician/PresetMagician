@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Drachenkatze.PresetMagician.VendorPresetParser.Common;
 using JetBrains.Annotations;
+using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.Audiority
 {
@@ -13,16 +14,15 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Audiority
     {
         public override List<int> SupportedPlugins => new List<int> {1332836457};
 
-        protected override string GetDataDirectory()
+        protected override string GetParseDirectory()
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 @"Audiority\Presets\TS-1 Transient Shaper");
         }
-        
-        public override async Task DoScan()
+
+        protected override PresetBank GetRootBank()
         {
-            var vc2parser = new VC2Parser(Plugin, "aup", PresetDataStorer);
-            await vc2parser.DoScan(RootBank.CreateRecursive(BankNameFactory), GetDataDirectory());
+            return RootBank.CreateRecursive(BankNameFactory);
         }
     }
 }
