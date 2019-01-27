@@ -11,18 +11,12 @@ namespace Microsoft.DwayneNeed.Numerics
     {
         public Interval<T> Interval
         {
-            get
-            {
-                return _interval;
-            }
+            get { return _interval; }
         }
 
         public int Count
         {
-            get
-            {
-                return _values.Count;
-            }
+            get { return _values.Count; }
         }
 
         public T this[int index]
@@ -42,9 +36,9 @@ namespace Microsoft.DwayneNeed.Numerics
         {
             dynamic nValue = value;
 
-            for(int i = 0; i < _values.Count; i++)
+            for (int i = 0; i < _values.Count; i++)
             {
-                if(nValue == _values[i])
+                if (nValue == _values[i])
                 {
                     index = i;
                     return true;
@@ -101,7 +95,7 @@ namespace Microsoft.DwayneNeed.Numerics
                     // This is where we need to insert. 
                     _values.Insert(i, value);
 
-                    if(i == 0)
+                    if (i == 0)
                     {
                         _interval = new Interval<T>(_values[0], true, _values[_values.Count - 1], true);
                     }

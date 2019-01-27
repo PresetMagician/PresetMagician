@@ -36,9 +36,8 @@ namespace Drachenkatze.PresetMagician.Utils
 
         public BinaryFile(string filePath, ByteOrder byteOrder, bool createFile)
         {
-            
-                fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-            
+            fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+
 
             binaryReader = new BinaryReader(fs, Encoding.Default);
             this.byteOrder = byteOrder;
@@ -85,6 +84,7 @@ namespace Drachenkatze.PresetMagician.Utils
             {
                 position = memStream.Position;
             }
+
             return position;
         }
 
@@ -285,6 +285,7 @@ namespace Drachenkatze.PresetMagician.Utils
                 Array.Reverse(bytes);
                 binaryWriter.Write(bytes);
             }
+
             return true;
         }
 
@@ -300,6 +301,7 @@ namespace Drachenkatze.PresetMagician.Utils
                 Array.Reverse(bytes);
                 binaryWriter.Write(bytes);
             }
+
             return true;
         }
 
@@ -315,6 +317,7 @@ namespace Drachenkatze.PresetMagician.Utils
                 Array.Reverse(bytes);
                 binaryWriter.Write(bytes);
             }
+
             return true;
         }
 
@@ -330,6 +333,7 @@ namespace Drachenkatze.PresetMagician.Utils
                 Array.Reverse(bytes);
                 binaryWriter.Write(bytes);
             }
+
             return true;
         }
 
@@ -345,6 +349,7 @@ namespace Drachenkatze.PresetMagician.Utils
                 Array.Reverse(bytes);
                 binaryWriter.Write(bytes);
             }
+
             return true;
         }
 
@@ -360,6 +365,7 @@ namespace Drachenkatze.PresetMagician.Utils
                 Array.Reverse(bytes);
                 binaryWriter.Write(bytes);
             }
+
             return true;
         }
 
@@ -375,6 +381,7 @@ namespace Drachenkatze.PresetMagician.Utils
                 Array.Reverse(bytes);
                 binaryWriter.Write(bytes);
             }
+
             return true;
         }
 
@@ -390,6 +397,7 @@ namespace Drachenkatze.PresetMagician.Utils
                 Array.Reverse(bytes);
                 binaryWriter.Write(bytes);
             }
+
             return true;
         }
 
@@ -422,6 +430,7 @@ namespace Drachenkatze.PresetMagician.Utils
                 Array.Reverse(value);
                 binaryWriter.Write(value);
             }
+
             return true;
         }
 
@@ -436,6 +445,7 @@ namespace Drachenkatze.PresetMagician.Utils
                 Array.Reverse(value);
                 binaryWriter.Write(value);
             }
+
             return true;
         }
 
@@ -626,8 +636,9 @@ namespace Drachenkatze.PresetMagician.Utils
             var r = new byte[s.Length / 2];
             for (int i = 0; i < s.Length; i += 2)
             {
-                r[i / 2] = (byte)Convert.ToInt32(s.Substring(i, 2), 16);
+                r[i / 2] = (byte) Convert.ToInt32(s.Substring(i, 2), 16);
             }
+
             return r;
         }
 
@@ -647,7 +658,7 @@ namespace Drachenkatze.PresetMagician.Utils
             }
             else // Big-Endian
             {
-                var bClone = (byte[])b.Clone();
+                var bClone = (byte[]) b.Clone();
                 Array.Reverse(bClone);
                 return BitConverter.ToSingle(bClone, 0);
             }
@@ -669,7 +680,7 @@ namespace Drachenkatze.PresetMagician.Utils
             }
             else // Big-Endian
             {
-                var bClone = (byte[])b.Clone();
+                var bClone = (byte[]) b.Clone();
                 Array.Reverse(bClone);
                 return BitConverter.ToDouble(bClone, 0);
             }
@@ -691,7 +702,7 @@ namespace Drachenkatze.PresetMagician.Utils
             }
             else // Big-Endian
             {
-                var bClone = (byte[])b.Clone();
+                var bClone = (byte[]) b.Clone();
                 Array.Reverse(bClone);
                 return BitConverter.ToInt16(bClone, 0);
             }
@@ -713,7 +724,7 @@ namespace Drachenkatze.PresetMagician.Utils
             }
             else // Big-Endian
             {
-                var bClone = (byte[])b.Clone();
+                var bClone = (byte[]) b.Clone();
                 Array.Reverse(bClone);
                 return BitConverter.ToInt32(bClone, 0);
             }
@@ -735,7 +746,7 @@ namespace Drachenkatze.PresetMagician.Utils
             }
             else // Big-Endian
             {
-                var bClone = (byte[])b.Clone();
+                var bClone = (byte[]) b.Clone();
                 Array.Reverse(bClone);
                 return BitConverter.ToInt64(bClone, 0);
             }
@@ -757,7 +768,7 @@ namespace Drachenkatze.PresetMagician.Utils
             }
             else // Big-Endian
             {
-                var bClone = (byte[])b.Clone();
+                var bClone = (byte[]) b.Clone();
                 Array.Reverse(bClone);
                 return BitConverter.ToUInt16(bClone, 0);
             }
@@ -779,7 +790,7 @@ namespace Drachenkatze.PresetMagician.Utils
             }
             else // Big-Endian
             {
-                var bClone = (byte[])b.Clone();
+                var bClone = (byte[]) b.Clone();
                 Array.Reverse(bClone);
                 return BitConverter.ToUInt32(bClone, 0);
             }
@@ -801,7 +812,7 @@ namespace Drachenkatze.PresetMagician.Utils
             }
             else // Big-Endian
             {
-                var bClone = (byte[])b.Clone();
+                var bClone = (byte[]) b.Clone();
                 Array.Reverse(bClone);
                 return BitConverter.ToUInt64(bClone, 0);
             }
@@ -841,6 +852,7 @@ namespace Drachenkatze.PresetMagician.Utils
             {
                 if (i < charArray.Length) byteArray[i] = Convert.ToByte(charArray[i]);
             }
+
             return byteArray;
         }
 
@@ -866,6 +878,7 @@ namespace Drachenkatze.PresetMagician.Utils
             {
                 throw new ArgumentException("Passed string has more than 4 characters.", str);
             }
+
             return ByteArrayToInt32(StringToByteArray(str), byteOrder);
         }
 

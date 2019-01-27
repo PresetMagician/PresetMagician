@@ -5,16 +5,13 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Diagnostics;
+using System.Windows;
 using Catel;
 using Orchestra.Services;
 using PresetMagician.Services.EventArgs;
-using PresetMagician.ViewModels;
 
 namespace PresetMagician.Services
 {
-    using System.Windows;
-
     public class SplashScreenService : ISplashScreenService
     {
         private Views.SplashScreen _splashScreen;

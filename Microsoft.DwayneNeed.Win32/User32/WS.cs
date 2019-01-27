@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Microsoft.DwayneNeed.Win32.User32
 {
@@ -12,7 +9,7 @@ namespace Microsoft.DwayneNeed.Win32.User32
     public enum WS : int
     {
         OVERLAPPED = 00000000,
-        POPUP = unchecked((int)0x80000000),
+        POPUP = unchecked((int) 0x80000000),
         CHILD = 0x40000000,
         MINIMIZE = 0x20000000,
         VISIBLE = 0x10000000,

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Microsoft.DwayneNeed.Win32.Kernel32
+﻿namespace Microsoft.DwayneNeed.Win32.Kernel32
 {
     public enum Error : int
     {
@@ -16,7 +10,7 @@ namespace Microsoft.DwayneNeed.Win32.Kernel32
         /// <summary>
         /// Incorrect function.
         /// </summary>
-        INVALID_FUNCTION = 1,    // dderror
+        INVALID_FUNCTION = 1, // dderror
 
         /// <summary>
         /// The system cannot find the file specified.
@@ -51,7 +45,7 @@ namespace Microsoft.DwayneNeed.Win32.Kernel32
         /// <summary>
         /// Not enough storage is available to process this command.
         /// </summary>
-        NOT_ENOUGH_MEMORY = 8,    // dderror
+        NOT_ENOUGH_MEMORY = 8, // dderror
 
         /// <summary>
         /// The storage control block address is invalid.
@@ -227,7 +221,7 @@ namespace Microsoft.DwayneNeed.Win32.Kernel32
         /// <summary>
         /// The specified network resource or device is no longer available.
         /// </summary>
-        DEV_NOT_EXIST = 55,    // dderror
+        DEV_NOT_EXIST = 55, // dderror
 
         /// <summary>
         /// The network BIOS command limit has been reached.
@@ -347,7 +341,7 @@ namespace Microsoft.DwayneNeed.Win32.Kernel32
         /// <summary>
         /// The parameter is incorrect.
         /// </summary>
-        INVALID_PARAMETER = 87,    // dderror
+        INVALID_PARAMETER = 87, // dderror
 
         /// <summary>
         /// A write fault occurred on the network.
@@ -462,12 +456,12 @@ namespace Microsoft.DwayneNeed.Win32.Kernel32
         /// <summary>
         /// The data area passed to a system call is too small.
         /// </summary>
-        INSUFFICIENT_BUFFER = 122,    // dderror
+        INSUFFICIENT_BUFFER = 122, // dderror
 
         /// <summary>
         /// The filename, directory name, or volume label syntax is incorrect.
         /// </summary>
-        INVALID_NAME = 123,    // dderror
+        INVALID_NAME = 123, // dderror
 
         /// <summary>
         /// The system call level is not correct.
@@ -677,7 +671,7 @@ namespace Microsoft.DwayneNeed.Win32.Kernel32
         /// <summary>
         /// The requested resource is in use.
         /// </summary>
-        BUSY = 170,    // dderror
+        BUSY = 170, // dderror
 
         /// <summary>
         /// Device's command support detection is in progress.
@@ -922,7 +916,7 @@ namespace Microsoft.DwayneNeed.Win32.Kernel32
         /// <summary>
         /// More data is available.
         /// </summary>
-        MORE_DATA = 234,    // dderror
+        MORE_DATA = 234, // dderror
 
         /// <summary>
         /// The session was canceled.
@@ -942,7 +936,7 @@ namespace Microsoft.DwayneNeed.Win32.Kernel32
         /// <summary>
         /// The wait operation timed out.
         /// </summary>
-        WAIT_TIMEOUT = 258,    // dderror
+        WAIT_TIMEOUT = 258, // dderror
 
         /// <summary>
         /// No more data is available.
@@ -1464,7 +1458,7 @@ namespace Microsoft.DwayneNeed.Win32.Kernel32
         /// {Application Exit by CTRL+C}
         /// </summary> The application terminated as a result of a CTRL+C.
         //
-        CONTROL_C_EXIT = 572,    // winnt
+        CONTROL_C_EXIT = 572, // winnt
 
         /// <summary>
         /// {Missing System File}
@@ -1787,13 +1781,13 @@ namespace Microsoft.DwayneNeed.Win32.Kernel32
         /// {EXCEPTION}
         /// </summary> Multiple floating point faults.
         //
-        FLOAT_MULTIPLE_FAULTS = 630,    // winnt
+        FLOAT_MULTIPLE_FAULTS = 630, // winnt
 
         /// <summary>
         /// {EXCEPTION}
         /// </summary> Multiple floating point traps.
         //
-        FLOAT_MULTIPLE_TRAPS = 631,    // winnt
+        FLOAT_MULTIPLE_TRAPS = 631, // winnt
 
         /// <summary>
         /// The requested interface is not supported.
@@ -2048,7 +2042,7 @@ namespace Microsoft.DwayneNeed.Win32.Kernel32
         /// <summary>
         /// Debugger did not handle the exception.
         /// </summary>
-        DBG_EXCEPTION_NOT_HANDLED = 688,    // winnt
+        DBG_EXCEPTION_NOT_HANDLED = 688, // winnt
 
         /// <summary>
         /// Debugger will reply later.
@@ -2063,17 +2057,17 @@ namespace Microsoft.DwayneNeed.Win32.Kernel32
         /// <summary>
         /// Debugger terminated thread.
         /// </summary>
-        DBG_TERMINATE_THREAD = 691,    // winnt
+        DBG_TERMINATE_THREAD = 691, // winnt
 
         /// <summary>
         /// Debugger terminated process.
         /// </summary>
-        DBG_TERMINATE_PROCESS = 692,    // winnt
+        DBG_TERMINATE_PROCESS = 692, // winnt
 
         /// <summary>
         /// Debugger got control C.
         /// </summary>
-        DBG_CONTROL_C = 693,    // winnt
+        DBG_CONTROL_C = 693, // winnt
 
         /// <summary>
         /// Debugger printed exception on control C.
@@ -2088,12 +2082,12 @@ namespace Microsoft.DwayneNeed.Win32.Kernel32
         /// <summary>
         /// Debugger received control break.
         /// </summary>
-        DBG_CONTROL_BREAK = 696,    // winnt
+        DBG_CONTROL_BREAK = 696, // winnt
 
         /// <summary>
         /// Debugger command communication exception.
         /// </summary>
-        DBG_COMMAND_EXCEPTION = 697,    // winnt
+        DBG_COMMAND_EXCEPTION = 697, // winnt
 
         /// <summary>
         /// {Object Exists}
@@ -2123,7 +2117,7 @@ namespace Microsoft.DwayneNeed.Win32.Kernel32
         /// </summary> A virtual DOS machine (VDM) is loading, unloading, or moving an MS-DOS or Win16 program segment image.
         // An exception is raised so a debugger can load, unload or track symbols and breakpoints within these 16-bit segments.
         //
-        SEGMENT_NOTIFICATION = 702,    // winnt
+        SEGMENT_NOTIFICATION = 702, // winnt
 
         /// <summary>
         /// {Invalid Current Directory}
@@ -2304,7 +2298,7 @@ namespace Microsoft.DwayneNeed.Win32.Kernel32
         /// <summary>
         ///  ABANDONED_WAIT_0
         /// </summary>
-        ABANDONED_WAIT_0 = 735,    // winnt
+        ABANDONED_WAIT_0 = 735, // winnt
 
         /// <summary>
         ///  ABANDONED_WAIT_63
@@ -2314,7 +2308,7 @@ namespace Microsoft.DwayneNeed.Win32.Kernel32
         /// <summary>
         ///  USER_APC
         /// </summary>
-        USER_APC = 737,    // winnt
+        USER_APC = 737, // winnt
 
         /// <summary>
         ///  KERNEL_APC
@@ -2463,12 +2457,12 @@ namespace Microsoft.DwayneNeed.Win32.Kernel32
         /// <summary>
         /// Debugger handled exception
         /// </summary>
-        DBG_EXCEPTION_HANDLED = 766,    // winnt
+        DBG_EXCEPTION_HANDLED = 766, // winnt
 
         /// <summary>
         /// Debugger continued
         /// </summary>
-        DBG_CONTINUE = 767,    // winnt
+        DBG_CONTINUE = 767, // winnt
 
         /// <summary>
         /// An exception occurred in a user mode callback and the kernel callback frame should be removed.
@@ -2699,7 +2693,7 @@ namespace Microsoft.DwayneNeed.Win32.Kernel32
         /// <summary>
         /// Overlapped I/O operation is in progress.
         /// </summary>
-        IO_PENDING = 997,    // dderror
+        IO_PENDING = 997, // dderror
 
         /// <summary>
         /// Invalid access to memory location.
@@ -3248,7 +3242,7 @@ namespace Microsoft.DwayneNeed.Win32.Kernel32
         /// <summary>
         /// The indicated device requires reinitialization due to hardware errors.
         /// </summary>
-        DEVICE_REINITIALIZATION_NEEDED = 1164,    // dderror
+        DEVICE_REINITIALIZATION_NEEDED = 1164, // dderror
 
         /// <summary>
         /// The device has indicated that cleaning is required before further operations are attempted.
@@ -3573,7 +3567,7 @@ namespace Microsoft.DwayneNeed.Win32.Kernel32
         /// <summary>
         /// Continue with work in progress.
         /// </summary>
-        CONTINUE = 1246,    // dderror
+        CONTINUE = 1246, // dderror
 
         /// <summary>
         /// An attempt was made to perform an initialization operation when initialization has already been completed.
@@ -3583,7 +3577,7 @@ namespace Microsoft.DwayneNeed.Win32.Kernel32
         /// <summary>
         /// No more local devices.
         /// </summary>
-        NO_MORE_DEVICES = 1248,    // dderror
+        NO_MORE_DEVICES = 1248, // dderror
 
         /// <summary>
         /// The specified site does not exist.
@@ -3809,7 +3803,5 @@ namespace Microsoft.DwayneNeed.Win32.Kernel32
         /// A thread involved in this operation appears to be unresponsive.
         /// </summary>
         APP_HANG = 1298,
-
-
     }
 }

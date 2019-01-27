@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Input;
 using System.Windows;
+using System.Windows.Input;
 
 namespace Microsoft.DwayneNeed.Input
 {
@@ -13,9 +10,18 @@ namespace Microsoft.DwayneNeed.Input
     /// </summary>
     public class RoutedCommand<T> : RoutedCommand
     {
-        public RoutedCommand() { }
-        public RoutedCommand(string name, Type ownerType) : base(name, ownerType) { }
-        public RoutedCommand(string name, Type ownerType, InputGestureCollection inputGestures) : base(name, ownerType, inputGestures) { }
+        public RoutedCommand()
+        {
+        }
+
+        public RoutedCommand(string name, Type ownerType) : base(name, ownerType)
+        {
+        }
+
+        public RoutedCommand(string name, Type ownerType, InputGestureCollection inputGestures) : base(name, ownerType,
+            inputGestures)
+        {
+        }
 
         /// <summary>
         ///     Determines whether this command can execute on the specified

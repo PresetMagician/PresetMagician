@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 using Drachenkatze.PresetMagician.VendorPresetParser.Common;
 using JetBrains.Annotations;
 using SharedModels;
@@ -17,9 +16,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.ImageLine
 
         protected override string GetParseDirectory()
         {
-           return Path.Combine(
-               Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-               @"Image-Line\Toxic Biohazard\");
+            return Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                @"Image-Line\Toxic Biohazard\");
         }
     }
 }

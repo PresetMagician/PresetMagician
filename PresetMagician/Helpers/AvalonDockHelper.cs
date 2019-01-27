@@ -4,20 +4,18 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System;
+using System.Linq;
+using System.Windows;
+using Catel;
+using Catel.IoC;
+using Catel.MVVM;
+using Catel.MVVM.Views;
+using Xceed.Wpf.AvalonDock;
+using Xceed.Wpf.AvalonDock.Layout;
+
 namespace PresetMagician.Helpers
 {
-    using System;
-    using System.Linq;
-    using System.Windows;
-   
-    using Catel;
-    using Catel.IoC;
-    using Catel.MVVM;
-    using Catel.MVVM.Views;
-    using Xceed.Wpf.AvalonDock;
-    using Xceed.Wpf.AvalonDock.Layout;
-
-
     /// <summary>
     /// Helper class for avalon dock.
     /// </summary>
@@ -50,6 +48,7 @@ namespace PresetMagician.Helpers
         #endregion
 
         #region Methods
+
         /// <summary>
         /// Gets the document.
         /// </summary>
@@ -62,12 +61,12 @@ namespace PresetMagician.Helpers
             Argument.IsNotNull("viewType", viewType);
 
             return (from document in LayoutDocumentPane.Children
-                    where document is LayoutDocument && document.Content.GetType() == viewType &&
-                          TagHelper.AreTagsEqual(tag, ((IView)document.Content).Tag)
-                    select document).Cast<LayoutDocument>().FirstOrDefault();
+                where document is LayoutDocument && document.Content.GetType() == viewType &&
+                      TagHelper.AreTagsEqual(tag, ((IView) document.Content).Tag)
+                select document).Cast<LayoutDocument>().FirstOrDefault();
         }
 
-        public static LayoutDocument FindDocument<TService>(object tag=null)
+        public static LayoutDocument FindDocument<TService>(object tag = null)
         {
             var sl = ServiceLocator.Default;
             var viewModel = sl.ResolveType<TService>();
@@ -77,7 +76,8 @@ namespace PresetMagician.Helpers
             return AvalonDockHelper.FindDocument(viewType, tag);
         }
 
-        public static LayoutDocument CreateDocument<TService>(object tag = null, bool activateDocument = false, bool isClosable = false)
+        public static LayoutDocument CreateDocument<TService>(object tag = null, bool activateDocument = false,
+            bool isClosable = false)
         {
             var sl = ServiceLocator.Default;
             var viewModel = sl.ResolveType<TService>();
@@ -100,6 +100,7 @@ namespace PresetMagician.Helpers
 
             return document;
         }
+
         /// <summary>
         /// Activates the document in the docking manager, which makes it the active document.
         /// </summary>
@@ -128,7 +129,7 @@ namespace PresetMagician.Helpers
             Argument.IsNotNull("view", view);
 
             var layoutDocument = WrapViewInLayoutDocument(view, tag);
-            
+
             LayoutDocumentPane.Children.Add(layoutDocument);
 
             return layoutDocument;
@@ -149,9 +150,9 @@ namespace PresetMagician.Helpers
 
             layoutDocument.CanFloat = false;
             // TODO: Make bindable => automatic updates
-            layoutDocument.Title = ((IViewModel)view.DataContext).Title;
+            layoutDocument.Title = ((IViewModel) view.DataContext).Title;
             layoutDocument.Content = view;
-            
+
 
             view.Tag = tag;
 
@@ -175,6 +176,7 @@ namespace PresetMagician.Helpers
             //var region = RegionManager.Regions[(string)view.Tag];
             //region.Remove(sender);
         }
+
         #endregion
     }
 }

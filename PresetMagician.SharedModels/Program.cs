@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Data.Entity;
-using PresetMagician.Models;
-
 
 namespace SharedModels
 {

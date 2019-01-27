@@ -1,12 +1,6 @@
-﻿using Microsoft.DwayneNeed.Win32.Common;
-using Microsoft.DwayneNeed.Win32.Kernel32;
-using Microsoft.DwayneNeed.Win32.User32;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿using System;
 using System.Runtime.InteropServices;
-using System.Text;
+using Microsoft.DwayneNeed.Win32.User32;
 
 namespace Microsoft.DwayneNeed.Win32.Gdi32
 {
@@ -47,7 +41,7 @@ namespace Microsoft.DwayneNeed.Win32.Gdi32
             : base(hdc)
         {
         }
-        
+
         public static HDC CreateCompatibleDC(HDC hdc)
         {
             HDC value = null;
@@ -84,7 +78,7 @@ namespace Microsoft.DwayneNeed.Win32.Gdi32
 
         public HBRUSH SelectBrush(HBRUSH brush)
         {
-            return (HBRUSH)SelectObject(brush);
+            return (HBRUSH) SelectObject(brush);
         }
 
         public bool FillRect(ref RECT rect, HBRUSH brush)
@@ -94,10 +88,11 @@ namespace Microsoft.DwayneNeed.Win32.Gdi32
 
         public bool FillRect(ref RECT rect, COLOR color)
         {
-            return FillRect(this, ref rect, (int)color + 1);
+            return FillRect(this, ref rect, (int) color + 1);
         }
 
         #region PInvoke
+
         [DllImport("gdi32.dll", CharSet = CharSet.Auto)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool DeleteDC(HDC hdc);
@@ -118,6 +113,7 @@ namespace Microsoft.DwayneNeed.Win32.Gdi32
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool FillRect(HDC hDC, ref RECT lprc, int color);
+
         #endregion
     }
 }

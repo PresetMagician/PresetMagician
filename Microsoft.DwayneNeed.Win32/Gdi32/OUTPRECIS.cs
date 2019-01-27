@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Microsoft.DwayneNeed.Win32.Gdi32
+﻿namespace Microsoft.DwayneNeed.Win32.Gdi32
 {
     public enum OUTPRECIS : int
     {
         /// <summary>
         /// The default font mapper behavior.
         /// </summary>
-        DEFAULT  = 0,
+        DEFAULT = 0,
 
         /// <summary>
         /// This value is not used by the font mapper, but it is returned when raster fonts are enumerated.
@@ -20,8 +15,8 @@ namespace Microsoft.DwayneNeed.Win32.Gdi32
         /// <summary>
         /// Not used.
         /// </summary>
-        CHARACTER  = 2,
- 
+        CHARACTER = 2,
+
         /// <summary>
         /// This value is not used by the font mapper, but it is returned when TrueType, other outline-based fonts, and vector fonts are enumerated.
         /// </summary>
@@ -36,7 +31,7 @@ namespace Microsoft.DwayneNeed.Win32.Gdi32
         /// Instructs the font mapper to choose a Device font when the system contains multiple fonts with the same name.
         /// </summary>
         DEVICE = 5,
- 
+
         /// <summary>
         /// Instructs the font mapper to choose a raster font when the system contains multiple fonts with the same name.
         /// </summary>

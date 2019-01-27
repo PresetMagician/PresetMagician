@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-using Drachenkatze.PresetMagician.VendorPresetParser.Common;
-using SharedModels;
+﻿using Drachenkatze.PresetMagician.VendorPresetParser.Common;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
 {

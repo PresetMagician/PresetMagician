@@ -1,7 +1,7 @@
-﻿using GSF;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
+using GSF;
 
 namespace Drachenkatze.PresetMagician.NKSF.NKSF
 {
@@ -10,14 +10,15 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
         public const string RiffTypeID = "PCHK";
         public long Version;
         public byte[] PresetData;
-        public PluginChunk ()
+
+        public PluginChunk()
         {
             TypeID = RiffTypeID;
             Chunk = new byte[0];
             Version = 1;
             PresetData = new byte[0];
         }
-           
+
         public override void Read(Stream source)
         {
             base.ReadData(source, RiffTypeID);

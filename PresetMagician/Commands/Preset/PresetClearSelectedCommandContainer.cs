@@ -1,6 +1,5 @@
 ﻿using System.Collections.Specialized;
 using Catel;
-using Catel.Logging;
 using Catel.MVVM;
 using PresetMagician.Services.Interfaces;
 
@@ -19,7 +18,6 @@ namespace PresetMagician
 
             _vstService = vstService;
             _vstService.SelectedPresets.CollectionChanged += OnSelectedPresetListChanged;
-
         }
 
         protected override bool CanExecute(object parameter)

@@ -39,7 +39,8 @@ namespace PresetMagician
 
         protected override bool CanExecute(object parameter)
         {
-            return _vstService.SelectedPlugins.Count > 0 && _vstService.SelectedPlugin != null && _vstService.SelectedPlugin.IsScanned;
+            return _vstService.SelectedPlugins.Count > 0 && _vstService.SelectedPlugin != null &&
+                   _vstService.SelectedPlugin.IsScanned;
         }
 
         private void OnSelectedPluginsListChanged(object o, NotifyCollectionChangedEventArgs ev)

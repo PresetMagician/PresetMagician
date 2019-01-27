@@ -8,12 +8,10 @@ using SharedModels;
 
 namespace PresetMagician.Models.EventArgs
 {
-    using System;
-
     /// <summary>
     /// The configuration changed event args class.
     /// </summary>
-    public class PresetUpdatedEventArgs : EventArgs
+    public class PresetUpdatedEventArgs : System.EventArgs
     {
         public PresetUpdatedEventArgs(Preset preset)
         {

@@ -1,8 +1,4 @@
-﻿using System.Threading.Tasks;
-using Catel.IoC;
-using Catel.Logging;
-using Catel.MVVM;
-using Catel.Services;
+﻿using Catel.MVVM;
 using PresetMagician.Helpers;
 using PresetMagician.ViewModels;
 
@@ -17,10 +13,10 @@ namespace PresetMagician
         {
         }
 
-        protected override void Execute (object parameter)
+        protected override void Execute(object parameter)
         {
             AvalonDockHelper.ActivateDocument<PresetExportListViewModel>();
             base.Execute(parameter);
         }
     }
-}   
+}

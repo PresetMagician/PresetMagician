@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Microsoft.DwayneNeed.Numerics
 {
@@ -32,11 +29,11 @@ namespace Microsoft.DwayneNeed.Numerics
             IsMaxClosed = isMaxClosed;
         }
 
-        public T Min {get; private set;}
-        public bool IsMinClosed {get; private set;}
+        public T Min { get; private set; }
+        public bool IsMinClosed { get; private set; }
 
-        public T Max {get; private set;}
-        public bool IsMaxClosed {get; private set;}
+        public T Max { get; private set; }
+        public bool IsMaxClosed { get; private set; }
 
         public override string ToString()
         {

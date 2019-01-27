@@ -1,15 +1,12 @@
-using System.ComponentModel;
 using System.Threading.Tasks;
 using Catel;
 using Catel.MVVM;
 using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
-using MahApps.Metro.IconPacks;
-
 
 namespace PresetMagician.ViewModels
 {
-    public class SettingsViewModel: ViewModelBase
+    public class SettingsViewModel : ViewModelBase
     {
         public RuntimeConfiguration EditableConfiguration { get; private set; }
 
@@ -40,6 +37,5 @@ namespace PresetMagician.ViewModels
 
             return await base.SaveAsync();
         }
-      
     }
 }

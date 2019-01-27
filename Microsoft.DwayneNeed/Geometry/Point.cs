@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Microsoft.DwayneNeed.Geometry
 {
@@ -31,10 +30,7 @@ namespace Microsoft.DwayneNeed.Geometry
 
         public int Dimensions
         {
-            get
-            {
-                return _coordinates == null ? 0 : _coordinates.Length;
-            }
+            get { return _coordinates == null ? 0 : _coordinates.Length; }
         }
 
         public T GetCoordinate(int dimension)

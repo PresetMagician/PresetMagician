@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.InteropServices;
 
 namespace Microsoft.DwayneNeed.Numerics
@@ -45,62 +42,53 @@ namespace Microsoft.DwayneNeed.Numerics
             return new Binary64(value);
         }
 
-        public ulong Bits { get { return _bits; } }
-        
-        public double Value { get { return _value; } }
+        public ulong Bits
+        {
+            get { return _bits; }
+        }
+
+        public double Value
+        {
+            get { return _value; }
+        }
 
         public Sign Sign
         {
-            get
-            {
-                return new Sign((_bits & BITS_SIGN) != 0);
-            }
+            get { return new Sign((_bits & BITS_SIGN) != 0); }
         }
 
         public Binary64Exponent Exponent
         {
-            get
-            {
-                return new Binary64Exponent((uint)((_bits & BITS_EXPONENT) >> 52));
-            }
+            get { return new Binary64Exponent((uint) ((_bits & BITS_EXPONENT) >> 52)); }
         }
-        
+
         public Binary64Significand Significand
         {
-            get
-            {
-                return new Binary64Significand(_bits & BITS_SIGNIFICAND, (_bits & BITS_EXPONENT) == 0);
-            }
+            get { return new Binary64Significand(_bits & BITS_SIGNIFICAND, (_bits & BITS_EXPONENT) == 0); }
         }
 
         public bool IsInfinite
         {
-            get
-            {
-                return (_bits & BITS_EXPONENT) == BITS_EXPONENT && (_bits & BITS_SIGNIFICAND) == 0;
-            }
+            get { return (_bits & BITS_EXPONENT) == BITS_EXPONENT && (_bits & BITS_SIGNIFICAND) == 0; }
         }
 
         public bool IsNan
         {
-            get
-            {
-                return (_bits & BITS_EXPONENT) == BITS_EXPONENT && (_bits & BITS_SIGNIFICAND) != 0;
-            }
+            get { return (_bits & BITS_EXPONENT) == BITS_EXPONENT && (_bits & BITS_SIGNIFICAND) != 0; }
         }
 
         public Binary64 NextRepresentableValue(Binary64InsignificantBits insignificantBits)
         {
-            ulong lsb = (ulong)1 << (int)insignificantBits;
+            ulong lsb = (ulong) 1 << (int) insignificantBits;
             ulong mask = lsb - 1;
             ulong maxMask = BITS_MAX_POSITIVE ^ mask;
 
             // Only keep the significant bits, drop the sign.
             ulong nextBits = _bits & maxMask;
 
-            if(Sign.IsNegative)
+            if (Sign.IsNegative)
             {
-                if(nextBits != 0)
+                if (nextBits != 0)
                 {
                     // Some negative number getting smaller.
                     nextBits -= lsb;
@@ -113,7 +101,7 @@ namespace Microsoft.DwayneNeed.Numerics
             }
             else
             {
-                if(nextBits == maxMask)
+                if (nextBits == maxMask)
                 {
                     throw new InvalidOperationException();
                 }
@@ -127,7 +115,7 @@ namespace Microsoft.DwayneNeed.Numerics
 
         public Binary64 PreviousRepresentableValue(Binary64InsignificantBits insignificantBits)
         {
-            ulong lsb = (ulong)1 << (int)insignificantBits;
+            ulong lsb = (ulong) 1 << (int) insignificantBits;
             ulong mask = lsb - 1;
             ulong maxMask = BITS_MAX_POSITIVE ^ mask;
 
@@ -170,13 +158,13 @@ namespace Microsoft.DwayneNeed.Numerics
                 return new Binary64(this._bits);
             }
 
-            ulong lsb = (ulong)1 << (int)insignificantBits;
+            ulong lsb = (ulong) 1 << (int) insignificantBits;
             ulong mask = lsb - 1;
             ulong maxMask = BITS_MAX_POSITIVE ^ mask;
 
             // Only keep the significant bits, drop the sign.
             ulong bits = _bits & maxMask;
-            
+
             // Imlpement rounding by adding half of the maximum value that can
             // be represented by the insignificant bits, and then truncating.
             bits += (mask / 2);
@@ -209,16 +197,14 @@ namespace Microsoft.DwayneNeed.Numerics
             return new Binary64(bits);
         }
 
-        private const ulong BITS_SIGNIFICAND =  0x000FFFFFFFFFFFFF;
-        private const ulong BITS_EXPONENT =     0x7FF0000000000000;
-        private const ulong BITS_SIGN =         0x8000000000000000;
+        private const ulong BITS_SIGNIFICAND = 0x000FFFFFFFFFFFFF;
+        private const ulong BITS_EXPONENT = 0x7FF0000000000000;
+        private const ulong BITS_SIGN = 0x8000000000000000;
         private const ulong BITS_MAX_POSITIVE = 0x7FFFFFFFFFFFFFFF;
-        private const ulong BITS_MAX_NORMAL =   0x7FEFFFFFFFFFFFFF;
+        private const ulong BITS_MAX_NORMAL = 0x7FEFFFFFFFFFFFFF;
 
-        [FieldOffset(0)]
-        private ulong _bits;
+        [FieldOffset(0)] private ulong _bits;
 
-        [FieldOffset(0)]
-        private double _value;
+        [FieldOffset(0)] private double _value;
     }
 }

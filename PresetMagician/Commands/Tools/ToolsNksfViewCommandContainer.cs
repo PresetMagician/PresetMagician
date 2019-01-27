@@ -10,7 +10,8 @@ namespace PresetMagician
     {
         public ToolsNksfViewCommandContainer(ICommandManager commandManager, IUIVisualizerService uiVisualizerService,
             IViewModelFactory viewModelFactory)
-            : base(Commands.Tools.NksfView, nameof(NKSFViewModel), commandManager, uiVisualizerService, viewModelFactory)
+            : base(Commands.Tools.NksfView, nameof(NKSFViewModel), commandManager, uiVisualizerService,
+                viewModelFactory)
         {
         }
     }

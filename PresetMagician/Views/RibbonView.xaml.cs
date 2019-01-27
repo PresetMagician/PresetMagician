@@ -1,10 +1,7 @@
 ﻿using System.ComponentModel;
-using System.Diagnostics;
 using Catel;
-using Catel.IoC;
 using Orchestra;
 using PresetMagician.Services.Interfaces;
-using Xceed.Wpf.AvalonDock.Layout;
 
 namespace PresetMagician.Views
 {
@@ -19,11 +16,11 @@ namespace PresetMagician.Views
         public RibbonView(IRuntimeConfigurationService runtimeConfigurationService)
         {
             Argument.IsNotNull(() => runtimeConfigurationService);
-            
+
             InitializeComponent();
             ribbon.AddAboutButton();
 
-           
+
             _runtimeConfigurationService = runtimeConfigurationService;
 
             _runtimeConfigurationService.ApplicationState.PropertyChanged += ApplicationStateOnPropertyChanged;
@@ -36,7 +33,5 @@ namespace PresetMagician.Views
                 ribbon.SelectedTabIndex = _runtimeConfigurationService.ApplicationState.SelectedRibbonTabIndex;
             }
         }
-
-      
     }
 }

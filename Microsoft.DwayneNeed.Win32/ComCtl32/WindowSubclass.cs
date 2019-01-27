@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Runtime.InteropServices;
-using System.Runtime.ConstrainedExecution;
 using System.Diagnostics;
+using System.Runtime.ConstrainedExecution;
+using System.Runtime.InteropServices;
 using Microsoft.DwayneNeed.Win32.User32;
-using Microsoft.DwayneNeed.Win32.ComCtl32;
-using Microsoft.DwayneNeed.Win32;
 
 namespace Microsoft.DwayneNeed.Win32.ComCtl32
 {
@@ -65,16 +60,18 @@ namespace Microsoft.DwayneNeed.Win32.ComCtl32
 
         protected virtual void Dispose(bool disposing)
         {
-            if(_hwnd == null || !IsCorrectThread(_hwnd))
+            if (_hwnd == null || !IsCorrectThread(_hwnd))
             {
-                throw new InvalidOperationException("Dispose virtual should only be called by WindowSubclass once on the correct thread.");
+                throw new InvalidOperationException(
+                    "Dispose virtual should only be called by WindowSubclass once on the correct thread.");
             }
 
             NativeMethods.RemoveWindowSubclass(_hwnd, _wndproc, IntPtr.Zero);
             _hwnd = null;
         }
 
-        protected virtual IntPtr WndProcOverride(HWND hwnd, WM msg, IntPtr wParam, IntPtr lParam, IntPtr id, IntPtr data)
+        protected virtual IntPtr WndProcOverride(HWND hwnd, WM msg, IntPtr wParam, IntPtr lParam, IntPtr id,
+            IntPtr data)
         {
             // Call the next window proc in the subclass chain.
             return NativeMethods.DefSubclassProc(hwnd, msg, wParam, lParam);
@@ -82,10 +79,7 @@ namespace Microsoft.DwayneNeed.Win32.ComCtl32
 
         protected HWND Hwnd
         {
-            get
-            {
-                return _hwnd;
-            }
+            get { return _hwnd; }
         }
 
         private bool IsCorrectThread(HWND hwnd)
@@ -110,7 +104,8 @@ namespace Microsoft.DwayneNeed.Win32.ComCtl32
                 else
                 {
                     // Send a message to the right thread to dispose for us.
-                    NativeMethods.SendMessage(hwnd, _disposeMessage, _wndprocPtr, disposing ? new IntPtr(1) : IntPtr.Zero);
+                    NativeMethods.SendMessage(hwnd, _disposeMessage, _wndprocPtr,
+                        disposing ? new IntPtr(1) : IntPtr.Zero);
                 }
             }
         }
@@ -118,7 +113,7 @@ namespace Microsoft.DwayneNeed.Win32.ComCtl32
         private IntPtr WndProcStub(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, IntPtr id, IntPtr data)
         {
             HWND hwnd2 = new HWND(hwnd);
-            return WndProc(hwnd2, (WM)msg, wParam, lParam, id, data);
+            return WndProc(hwnd2, (WM) msg, wParam, lParam, id, data);
         }
 
         private IntPtr WndProc(HWND hwnd, WM msg, IntPtr wParam, IntPtr lParam, IntPtr id, IntPtr data)
@@ -155,4 +150,3 @@ namespace Microsoft.DwayneNeed.Win32.ComCtl32
         private static readonly WM _disposeMessage;
     }
 }
-

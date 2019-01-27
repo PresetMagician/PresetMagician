@@ -40,7 +40,6 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
 
         public override void WriteChunk()
         {
-            
         }
 
         public override void Write(Stream target)
@@ -55,10 +54,10 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
             byte[] buffer = new byte[m_headerLength];
 
             Buffer.BlockCopy(Encoding.ASCII.GetBytes(TypeID), 0, buffer, 0, 4);
-            
+
             kontaktSound.WriteChunk();
 
-            Buffer.BlockCopy(LittleEndian.GetBytes(kontaktSound.Chunk.Length+4), 0, buffer, 4, 4);
+            Buffer.BlockCopy(LittleEndian.GetBytes(kontaktSound.Chunk.Length + 4), 0, buffer, 4, 4);
             Buffer.BlockCopy(Encoding.ASCII.GetBytes(FileFormat), 0, buffer, 8, 4);
             target.Write(buffer, 0, 12);
         }
@@ -69,10 +68,7 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
 
         public string FileFormat
         {
-            get
-            {
-                return m_FileFormat;
-            }
+            get { return m_FileFormat; }
 
             set
             {

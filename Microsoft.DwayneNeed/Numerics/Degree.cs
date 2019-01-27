@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Microsoft.DwayneNeed.Numerics
 {
@@ -15,7 +12,7 @@ namespace Microsoft.DwayneNeed.Numerics
 
         public static Degree FromRadian(double radian)
         {
-            return (Degree)new Radian(radian);
+            return (Degree) new Radian(radian);
         }
 
         public static implicit operator double(Degree value)

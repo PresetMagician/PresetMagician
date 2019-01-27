@@ -21,7 +21,7 @@ namespace Drachenkatze.PresetMagician.Utils
             int pluginUniqueID = BitConverter.ToInt32(pluginUniqueIDArray, 0);
             return pluginUniqueID;
         }
-        
+
         public static List<string> EnumeratePlugins(string pluginDirectory)
         {
             var vstPlugins = new List<string>();

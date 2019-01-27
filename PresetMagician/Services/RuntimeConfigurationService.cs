@@ -1,17 +1,10 @@
 using System;
 using System.IO;
-using System.Linq;
-using Catel;
-using Catel.Collections;
-using Catel.IoC;
 using Catel.IO;
 using Catel.Logging;
 using Newtonsoft.Json;
 using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
-using Xceed.Wpf.AvalonDock;
-using Xceed.Wpf.AvalonDock.Layout;
-using Xceed.Wpf.AvalonDock.Layout.Serialization;
 using Path = Catel.IO.Path;
 
 namespace PresetMagician.Services
@@ -25,10 +18,10 @@ namespace PresetMagician.Services
         private static readonly string _defaultLocalConfigBackupFilePath =
             Path.Combine(Path.GetApplicationDataDirectory(ApplicationDataTarget.UserRoaming),
                 "configuration.backup.json");
-        
+
         private static readonly string _defaultLocalLayoutFilePath =
             Path.Combine(Path.GetApplicationDataDirectory(ApplicationDataTarget.UserRoaming), "layout.xml");
-        
+
         private readonly JsonSerializer _jsonSerializer;
         private readonly ILog _logger = LogManager.GetCurrentClassLogger();
 
@@ -60,12 +53,13 @@ namespace PresetMagician.Services
         {
             string output = JsonConvert.SerializeObject(EditableConfiguration);
 
-            using (RuntimeConfiguration.SuspendValidations()) {
+            using (RuntimeConfiguration.SuspendValidations())
+            {
                 RuntimeConfiguration.CachedPlugins.Clear();
                 RuntimeConfiguration.VstDirectories.Clear();
                 JsonConvert.PopulateObject(output, RuntimeConfiguration);
             }
-            
+
             SaveConfiguration();
         }
 
@@ -83,12 +77,14 @@ namespace PresetMagician.Services
                 using (var rd = new StreamReader(_defaultLocalConfigFilePath))
                 using (JsonReader jsonReader = new JsonTextReader(rd))
                 {
-                    using (RuntimeConfiguration.SuspendValidations()) {
+                    using (RuntimeConfiguration.SuspendValidations())
+                    {
                         RuntimeConfiguration.CachedPlugins.Clear();
                         RuntimeConfiguration.VstDirectories.Clear();
-                        _jsonSerializer.Populate(jsonReader,RuntimeConfiguration);
+                        _jsonSerializer.Populate(jsonReader, RuntimeConfiguration);
                     }
                 }
+
                 _logger.Debug("Configuration loaded");
             }
             catch (Exception e)
@@ -97,7 +93,7 @@ namespace PresetMagician.Services
             }
         }
 
-       
+
         public void Save()
         {
             SaveConfiguration();
@@ -111,7 +107,7 @@ namespace PresetMagician.Services
             {
                 File.Copy(_defaultLocalConfigFilePath, _defaultLocalConfigBackupFilePath);
             }
-            
+
             using (var sw = new StreamWriter(_defaultLocalConfigFilePath))
             using (JsonWriter jsonWriter = new JsonTextWriter(sw))
             {
@@ -119,7 +115,7 @@ namespace PresetMagician.Services
             }
         }
 
-        public bool IsConfigurationValueEqual (object left, object right)
+        public bool IsConfigurationValueEqual(object left, object right)
         {
             var leftJson = JsonConvert.SerializeObject(left);
             var rightJson = JsonConvert.SerializeObject(right);

@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Media.Media3D;
-using System.Windows.Threading;
-using System.Windows;
-using System.Windows.Media;
 using System.Diagnostics;
-using Microsoft.DwayneNeed.Media;
-using System.Windows.Markup;
+using System.Windows;
 using System.Windows.Controls;
-using Microsoft.DwayneNeed.Controls;
+using System.Windows.Markup;
+using System.Windows.Media;
+using System.Windows.Media.Media3D;
 using Microsoft.DwayneNeed.Extensions;
+using Microsoft.DwayneNeed.Media;
 
 namespace Microsoft.DwayneNeed.Shapes
 {
@@ -42,7 +37,7 @@ namespace Microsoft.DwayneNeed.Shapes
 
         public Shape3DMaterial FrontMaterial
         {
-            get { return (Shape3DMaterial)GetValue(FrontMaterialProperty); }
+            get { return (Shape3DMaterial) GetValue(FrontMaterialProperty); }
             set { SetValue(FrontMaterialProperty, value); }
         }
 
@@ -57,7 +52,7 @@ namespace Microsoft.DwayneNeed.Shapes
 
         public Shape3DMaterial BackMaterial
         {
-            get { return (Shape3DMaterial)GetValue(BackMaterialProperty); }
+            get { return (Shape3DMaterial) GetValue(BackMaterialProperty); }
             set { SetValue(BackMaterialProperty, value); }
         }
 
@@ -72,7 +67,7 @@ namespace Microsoft.DwayneNeed.Shapes
 
         public CacheScale CacheScale
         {
-            get { return (CacheScale)GetValue(CacheScaleProperty); }
+            get { return (CacheScale) GetValue(CacheScaleProperty); }
             set { SetValue(CacheScaleProperty, value); }
         }
 
@@ -87,7 +82,7 @@ namespace Microsoft.DwayneNeed.Shapes
 
         public double SurfaceWidth
         {
-            get { return (double)GetValue(SurfaceWidthProperty); }
+            get { return (double) GetValue(SurfaceWidthProperty); }
             set { SetValue(SurfaceWidthProperty, value); }
         }
 
@@ -102,7 +97,7 @@ namespace Microsoft.DwayneNeed.Shapes
 
         public double SurfaceHeight
         {
-            get { return (double)GetValue(SurfaceHeightProperty); }
+            get { return (double) GetValue(SurfaceHeightProperty); }
             set { SetValue(SurfaceHeightProperty, value); }
         }
 
@@ -117,7 +112,7 @@ namespace Microsoft.DwayneNeed.Shapes
 
         public Transform3D MeshTransform
         {
-            get { return (Transform3D)GetValue(MeshTransformProperty); }
+            get { return (Transform3D) GetValue(MeshTransformProperty); }
             set { SetValue(MeshTransformProperty, value); }
         }
 
@@ -182,7 +177,7 @@ namespace Microsoft.DwayneNeed.Shapes
             get
             {
                 int numChildren = 0;
-                
+
                 if (_frontChild != null)
                 {
                     numChildren++;
@@ -208,7 +203,7 @@ namespace Microsoft.DwayneNeed.Shapes
         /// </returns>
         protected override sealed Visual3D GetVisual3DChild(int index)
         {
-            if(index == 0)
+            if (index == 0)
             {
                 if (_frontChild != null)
                 {
@@ -232,8 +227,8 @@ namespace Microsoft.DwayneNeed.Shapes
 
         public UIElement GrabFrontChildElement()
         {
-            UIElement e = (UIElement)((Viewport2DVisual3D)_frontChild).Visual;
-            ((Viewport2DVisual3D)_frontChild).Visual = null;
+            UIElement e = (UIElement) ((Viewport2DVisual3D) _frontChild).Visual;
+            ((Viewport2DVisual3D) _frontChild).Visual = null;
             return e;
         }
 
@@ -241,7 +236,7 @@ namespace Microsoft.DwayneNeed.Shapes
         // properties that affect the model.
         protected static void OnPropertyChangedAffectsModel(Object sender, DependencyPropertyChangedEventArgs e)
         {
-            Shape3D _this = (Shape3D)sender;
+            Shape3D _this = (Shape3D) sender;
             _this.InvalidateModel();
         }
 
@@ -289,7 +284,7 @@ namespace Microsoft.DwayneNeed.Shapes
                 if (material.HasElement)
                 {
                     // We need a Viewport2DVisual3D to display an element.
-                    if(currentChild is Viewport2DVisual3D)
+                    if (currentChild is Viewport2DVisual3D)
                     {
                         newChild = currentChild;
                     }
@@ -318,12 +313,12 @@ namespace Microsoft.DwayneNeed.Shapes
                         RenderOptions.SetCachingHint(newChild, CachingHint.Unspecified);
 
                         // Remove any BitmapCache.
-                        ((Viewport2DVisual3D)newChild).CacheMode = null;
+                        ((Viewport2DVisual3D) newChild).CacheMode = null;
                     }
                     else if (cacheScale.IsAuto)
                     {
                         // Remove any BitmapCache.
-                        ((Viewport2DVisual3D)newChild).CacheMode = null;
+                        ((Viewport2DVisual3D) newChild).CacheMode = null;
 
                         // Specify VisualBrush caching with 2x min and max
                         // thresholds.
@@ -337,10 +332,10 @@ namespace Microsoft.DwayneNeed.Shapes
                         RenderOptions.SetCachingHint(newChild, CachingHint.Unspecified);
 
                         // Set a BitmapCache with the appropriate scale.
-                        BitmapCache bitmapCache = ((Viewport2DVisual3D)newChild).CacheMode as BitmapCache;
+                        BitmapCache bitmapCache = ((Viewport2DVisual3D) newChild).CacheMode as BitmapCache;
                         if (bitmapCache == null)
                         {
-                            ((Viewport2DVisual3D)newChild).CacheMode = new BitmapCache(cacheScale.Scale);
+                            ((Viewport2DVisual3D) newChild).CacheMode = new BitmapCache(cacheScale.Scale);
                         }
                         else
                         {
@@ -353,15 +348,15 @@ namespace Microsoft.DwayneNeed.Shapes
                     Debug.Assert(material.HasMaterial);
 
                     // We need a ModelVisual3D to display the material.
-                    if(currentChild is ModelVisual3D)
+                    if (currentChild is ModelVisual3D)
                     {
-                        Debug.Assert(((ModelVisual3D)currentChild).Content is GeometryModel3D);
+                        Debug.Assert(((ModelVisual3D) currentChild).Content is GeometryModel3D);
                         newChild = currentChild;
                     }
                     else
                     {
                         newChild = new ModelVisual3D();
-                        ((ModelVisual3D)newChild).Content = new GeometryModel3D();
+                        ((ModelVisual3D) newChild).Content = new GeometryModel3D();
                     }
                 }
             }
@@ -371,14 +366,14 @@ namespace Microsoft.DwayneNeed.Shapes
 
         private void UpdateChild(Visual3D child, MeshGeometry3D geometry, Shape3DMaterial material)
         {
-            if(material != null)
+            if (material != null)
             {
-                if(material.HasElement)
+                if (material.HasElement)
                 {
                     Viewport2DVisual3D viewport = (Viewport2DVisual3D) child;
                     viewport.Geometry = geometry;
                     viewport.Material = HostingMaterial;
-                    
+
                     // Set the size of the root element to the surface size.
                     Border border = (Border) viewport.Visual;
                     border.Width = SurfaceWidth;
@@ -398,8 +393,8 @@ namespace Microsoft.DwayneNeed.Shapes
                 else
                 {
                     Debug.Assert(material.HasMaterial);
-                
-                    GeometryModel3D model = (GeometryModel3D)((ModelVisual3D)child).Content;
+
+                    GeometryModel3D model = (GeometryModel3D) ((ModelVisual3D) child).Content;
                     model.Geometry = geometry;
                     model.Material = material.GetMaterial(this);
                 }
@@ -439,7 +434,7 @@ namespace Microsoft.DwayneNeed.Shapes
 
             // Make a copy of the triangle indices and wind them backwards.
             backMesh.TriangleIndices = new Int32Collection(frontMesh.TriangleIndices);
-            int numTriangles = backMesh.TriangleIndices.Count/3;
+            int numTriangles = backMesh.TriangleIndices.Count / 3;
             for (int iTriangle = 0; iTriangle < numTriangles; iTriangle++)
             {
                 int temp = backMesh.TriangleIndices[iTriangle * 3];
@@ -456,7 +451,7 @@ namespace Microsoft.DwayneNeed.Shapes
             }
 
             backMesh.Freeze();
-            return backMesh; 
+            return backMesh;
         }
 
         private Visual3D _frontChild;

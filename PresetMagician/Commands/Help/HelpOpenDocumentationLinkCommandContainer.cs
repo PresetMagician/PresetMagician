@@ -1,7 +1,5 @@
 ﻿using System.Diagnostics;
-using System.Threading.Tasks;
 using Catel.IoC;
-using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
 
@@ -18,7 +16,7 @@ namespace PresetMagician
         {
         }
 
-        protected override void Execute (object parameter)
+        protected override void Execute(object parameter)
         {
             base.Execute(parameter);
             Process.Start(Settings.Links.Documentation);

@@ -1,11 +1,9 @@
 ﻿using System;
-using Jacobi.Vst.Core.Host;
-using Jacobi.Vst.Core;
 using System.Diagnostics;
 using System.Drawing;
-using Anotar.Catel;
-using Drachenkatze.PresetMagician.VSTHost.VST;
+using Jacobi.Vst.Core;
 using Jacobi.Vst.Core.Deprecated;
+using Jacobi.Vst.Core.Host;
 using PresetMagician.VstHost.VST;
 
 namespace Drachenkatze.PresetMagician.VSTHost
@@ -42,7 +40,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
             return false;
         }
 
-    
+
         public bool CloseFileSelector(VstFileSelect fileSelect)
         {
             RaisePluginCalled("CloseFileSelector");
@@ -102,7 +100,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
             {
                 return null;
             }
-            
+
             return "PresetMagician";
         }
 
@@ -117,7 +115,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
         public VstTimeInfo GetTimeInfo(VstTimeInfoFlags filterFlags)
         {
             //RaisePluginCalled("GetTimeInfo");
-            
+
             vstTimeInfo.SamplePosition = 0.0;
             vstTimeInfo.SampleRate = 44100;
             vstTimeInfo.NanoSeconds = 0.0;
@@ -214,7 +212,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
                 case "receiveVstTimeInfo":
                 case "acceptIOChanges":
                     return VstCanDoResult.No;
-                    case "sizeWindow":
+                case "sizeWindow":
                     return VstCanDoResult.Unknown;
                 default:
 #if DEBUG
@@ -226,9 +224,9 @@ namespace Drachenkatze.PresetMagician.VSTHost
         }
 
         #endregion IVstHostCommands10 Members
-        
+
         #region IVstHostCommands10Deprecated
-        
+
         public bool PinConnected(int connectionIndex, bool output)
         {
             if (!output && PluginContext.PluginInfo != null && PluginContext.PluginInfo.AudioInputCount < 2)
@@ -243,9 +241,9 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
             return true;
         }
-        
+
         #endregion
-        
+
         #region IVstHostCommandsDeprecated20
 
         public bool WantMidi()

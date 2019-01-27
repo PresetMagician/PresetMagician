@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Controls;
-using System.Windows;
-using System.Runtime.InteropServices;
-using System.Windows.Navigation;
-using Microsoft.DwayneNeed.Interop;
 using System.Reflection;
-using Microsoft.DwayneNeed.Win32.User32;
-using Microsoft.DwayneNeed.Win32.ComCtl32;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Navigation;
 using Microsoft.DwayneNeed.Win32;
+using Microsoft.DwayneNeed.Win32.ComCtl32;
+using Microsoft.DwayneNeed.Win32.User32;
 
 namespace Microsoft.DwayneNeed.Extensions
 {
@@ -46,18 +41,19 @@ namespace Microsoft.DwayneNeed.Extensions
         ///     Attached property that is used to store the HwndHook used to
         ///     intercept the messages to the IE window.
         /// </summary>
-        private static readonly DependencyProperty SuppressEraseBackgroundWindowHookProperty = DependencyProperty.RegisterAttached(
-            "SuppressEraseBackgroundWindowHook",
-            typeof(IEWindowHook),
-            typeof(WebBrowserExtensions),
-            new FrameworkPropertyMetadata(null));
+        private static readonly DependencyProperty SuppressEraseBackgroundWindowHookProperty =
+            DependencyProperty.RegisterAttached(
+                "SuppressEraseBackgroundWindowHook",
+                typeof(IEWindowHook),
+                typeof(WebBrowserExtensions),
+                new FrameworkPropertyMetadata(null));
 
         /// <summary>
         ///     Attached property getter for the SuppressScriptErrors property.
         /// </summary>
         public static bool GetSuppressScriptErrors(WebBrowser webBrowser)
         {
-            return (bool)webBrowser.GetValue(SuppressScriptErrorsProperty);
+            return (bool) webBrowser.GetValue(SuppressScriptErrorsProperty);
         }
 
         /// <summary>
@@ -84,13 +80,15 @@ namespace Microsoft.DwayneNeed.Extensions
 
         private static bool TrySetSuppressScriptErrors(WebBrowser webBrowser, bool value)
         {
-            FieldInfo field = typeof(WebBrowser).GetField("_axIWebBrowser2", BindingFlags.Instance | BindingFlags.NonPublic);
+            FieldInfo field =
+                typeof(WebBrowser).GetField("_axIWebBrowser2", BindingFlags.Instance | BindingFlags.NonPublic);
             if (field != null)
             {
                 object axIWebBrowser2 = field.GetValue(webBrowser);
                 if (axIWebBrowser2 != null)
                 {
-                    axIWebBrowser2.GetType().InvokeMember("Silent", BindingFlags.SetProperty, null, axIWebBrowser2, new object[] { value });
+                    axIWebBrowser2.GetType().InvokeMember("Silent", BindingFlags.SetProperty, null, axIWebBrowser2,
+                        new object[] {value});
                     return true;
                 }
             }
@@ -110,7 +108,7 @@ namespace Microsoft.DwayneNeed.Extensions
         /// </returns>
         public static bool GetSuppressEraseBackground(DependencyObject element)
         {
-            return (bool)element.GetValue(SuppressEraseBackgroundProperty);
+            return (bool) element.GetValue(SuppressEraseBackgroundProperty);
         }
 
         /// <summary>
@@ -132,9 +130,9 @@ namespace Microsoft.DwayneNeed.Extensions
         {
             if (d is WebBrowser)
             {
-                WebBrowser webBrowser = (WebBrowser)d;
+                WebBrowser webBrowser = (WebBrowser) d;
 
-                bool newValue = (bool)e.NewValue;
+                bool newValue = (bool) e.NewValue;
                 if (newValue)
                 {
                     if (!TryHookWebBrowser(webBrowser))
@@ -148,11 +146,12 @@ namespace Microsoft.DwayneNeed.Extensions
                 {
                     // When no longer suppressing the WM_ERASEBKGND message,
                     // dispose our window hook.
-                    IEWindowHook hook = (IEWindowHook)webBrowser.GetValue(SuppressEraseBackgroundWindowHookProperty);
+                    IEWindowHook hook = (IEWindowHook) webBrowser.GetValue(SuppressEraseBackgroundWindowHookProperty);
                     if (hook != null)
                     {
                         hook.Dispose();
                     }
+
                     webBrowser.ClearValue(SuppressEraseBackgroundWindowHookProperty);
                 }
             }
@@ -183,7 +182,7 @@ namespace Microsoft.DwayneNeed.Extensions
         private static void WebBrowserLoadCompleted(object sender, NavigationEventArgs e)
         {
             // We only need to do this the first time. 
-            WebBrowser webBrowser = (WebBrowser)sender;
+            WebBrowser webBrowser = (WebBrowser) sender;
             webBrowser.LoadCompleted -= new LoadCompletedEventHandler(WebBrowserLoadCompleted);
 
             if (GetSuppressEraseBackground(webBrowser) && !TryHookWebBrowser(webBrowser))
@@ -216,7 +215,8 @@ namespace Microsoft.DwayneNeed.Extensions
             {
             }
 
-            protected override IntPtr WndProcOverride(HWND hwnd, WM msg, IntPtr wParam, IntPtr lParam, IntPtr id, IntPtr data)
+            protected override IntPtr WndProcOverride(HWND hwnd, WM msg, IntPtr wParam, IntPtr lParam, IntPtr id,
+                IntPtr data)
             {
                 // IE doesn't seem to really need to erase its background, since
                 // it will paint the entire window with the web page in WM_PAINT.

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using Drachenkatze.PresetMagician.Utils;
 using Drachenkatze.PresetMagician.VendorPresetParser.Common;
-using Drachenkatze.PresetMagician.VSTHost.VST;
 using GSF;
 using JetBrains.Annotations;
 using SharedModels;
@@ -51,6 +50,5 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.HumanoidSoundSystems
 
             return ms2.ToArray();
         }
-
     }
 }

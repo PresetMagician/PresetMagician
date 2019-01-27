@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Markup;
-using System.Windows;
-using System.Runtime.InteropServices;
-using System.Windows.Interop;
-using System.Windows.Input;
-using System.Diagnostics;
 using System.Collections;
+using System.Diagnostics;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Interop;
+using System.Windows.Markup;
 using System.Windows.Media;
 using Microsoft.DwayneNeed.Extensions;
-using Microsoft.DwayneNeed;
 using Microsoft.DwayneNeed.Win32.User32;
 
 namespace Microsoft.DwayneNeed.Interop
@@ -26,25 +21,28 @@ namespace Microsoft.DwayneNeed.Interop
     public class HwndSourceHost : HwndHostEx
     {
         #region Background
+
         public static readonly DependencyProperty BackgroundProperty = DependencyProperty.Register(
             /* Name:                 */ "Background",
             /* Value Type:           */ typeof(Brush),
             /* Owner Type:           */ typeof(HwndSourceHost),
             /* Metadata:             */ new FrameworkPropertyMetadata(
-            /*     Default Value:    */ null,
-            /*     Flags:            */ FrameworkPropertyMetadataOptions.AffectsRender));
+                /*     Default Value:    */ null,
+                /*     Flags:            */ FrameworkPropertyMetadataOptions.AffectsRender));
 
         /// <summary>
         ///     The brush to paint the background.
         /// </summary>
         public Brush Background
         {
-            get { return (Brush)GetValue(BackgroundProperty); }
+            get { return (Brush) GetValue(BackgroundProperty); }
             set { SetValue(BackgroundProperty, value); }
         }
+
         #endregion
 
         #region Child
+
         /// <summary>
         ///     The child of this HwndSourceHost.
         /// </summary>
@@ -53,20 +51,21 @@ namespace Microsoft.DwayneNeed.Interop
             /* Value Type:           */ typeof(FrameworkElement),
             /* Owner Type:           */ typeof(HwndSourceHost),
             /* Metadata:             */ new PropertyMetadata(
-            /*     Default Value:    */ null,
-            /*     Property Changed: */ (d, e) => ((HwndSourceHost)d).OnChildChanged(e)));
+                /*     Default Value:    */ null,
+                /*     Property Changed: */ (d, e) => ((HwndSourceHost) d).OnChildChanged(e)));
 
         public FrameworkElement Child
         {
-            get { return (FrameworkElement)GetValue(ChildProperty); }
+            get { return (FrameworkElement) GetValue(ChildProperty); }
             set { SetValue(ChildProperty, value); }
         }
+
         #endregion
 
         protected sealed override HWND BuildWindowOverride(HWND hwndParent)
         {
             HwndSourceParameters hwndSourceParameters = new HwndSourceParameters();
-            hwndSourceParameters.WindowStyle = (int)(WS.VISIBLE | WS.CHILD | WS.CLIPSIBLINGS | WS.CLIPCHILDREN);
+            hwndSourceParameters.WindowStyle = (int) (WS.VISIBLE | WS.CHILD | WS.CLIPSIBLINGS | WS.CLIPCHILDREN);
             hwndSourceParameters.ParentWindow = hwndParent.DangerousGetHandle();
 
             _hwndSource = new HwndSource(hwndSourceParameters);
@@ -102,7 +101,7 @@ namespace Microsoft.DwayneNeed.Interop
         {
             if (_hwndSource != null && _hwndSource.RootVisual != null)
             {
-                HwndSourceHostRoot root = (HwndSourceHostRoot)_hwndSource.RootVisual;
+                HwndSourceHostRoot root = (HwndSourceHostRoot) _hwndSource.RootVisual;
 
                 // We are a simple pass-through element.
                 root.Measure(constraint);
@@ -120,7 +119,7 @@ namespace Microsoft.DwayneNeed.Interop
         {
             if (_hwndSource != null && _hwndSource.RootVisual != null)
             {
-                UIElement root = (UIElement)_hwndSource.RootVisual;
+                UIElement root = (UIElement) _hwndSource.RootVisual;
 
                 // We are a simple pass-through element.
                 root.Arrange(new Rect(finalSize));
@@ -187,7 +186,7 @@ namespace Microsoft.DwayneNeed.Interop
         {
             if (_hwndSource != null)
             {
-                return ((IKeyboardInputSink)_hwndSource).HasFocusWithin();
+                return ((IKeyboardInputSink) _hwndSource).HasFocusWithin();
             }
             else
             {
@@ -200,7 +199,7 @@ namespace Microsoft.DwayneNeed.Interop
         {
             if (_hwndSource != null)
             {
-                return ((IKeyboardInputSink)_hwndSource).OnMnemonic(ref msg, modifiers);
+                return ((IKeyboardInputSink) _hwndSource).OnMnemonic(ref msg, modifiers);
             }
             else
             {
@@ -213,7 +212,7 @@ namespace Microsoft.DwayneNeed.Interop
         {
             if (_hwndSource != null)
             {
-                return ((IKeyboardInputSink)_hwndSource).TabInto(request);
+                return ((IKeyboardInputSink) _hwndSource).TabInto(request);
             }
             else
             {
@@ -226,13 +225,13 @@ namespace Microsoft.DwayneNeed.Interop
         {
             if (_hwndSource != null)
             {
-                HwndSourceHostRoot root = (HwndSourceHostRoot)_hwndSource.RootVisual;
+                HwndSourceHostRoot root = (HwndSourceHostRoot) _hwndSource.RootVisual;
 
                 Debug.Assert(root.IsLogicalParentEnabled);
                 root.IsLogicalParentEnabled = false;
                 try
                 {
-                    return ((IKeyboardInputSink)_hwndSource).TranslateAccelerator(ref msg, modifiers);
+                    return ((IKeyboardInputSink) _hwndSource).TranslateAccelerator(ref msg, modifiers);
                 }
                 finally
                 {
@@ -250,18 +249,19 @@ namespace Microsoft.DwayneNeed.Interop
         {
             if (_hwndSource != null)
             {
-                return ((IKeyboardInputSink)_hwndSource).TranslateChar(ref msg, modifiers);
+                return ((IKeyboardInputSink) _hwndSource).TranslateChar(ref msg, modifiers);
             }
             else
             {
                 return base.TranslateCharCore(ref msg, modifiers);
             }
         }
+
         #endregion
 
         private void OnChildChanged(DependencyPropertyChangedEventArgs e)
         {
-            FrameworkElement child = (FrameworkElement)e.NewValue;
+            FrameworkElement child = (FrameworkElement) e.NewValue;
             if (_hwndSource != null)
             {
                 SetRootVisual(child);
@@ -275,10 +275,10 @@ namespace Microsoft.DwayneNeed.Interop
             FrameworkElement child = arg as FrameworkElement;
             if (child == null && arg is Uri)
             {
-                child = (FrameworkElement)Application.LoadComponent((Uri)arg);
+                child = (FrameworkElement) Application.LoadComponent((Uri) arg);
             }
 
-            HwndSourceHostRoot root = (HwndSourceHostRoot)_hwndSource.RootVisual;
+            HwndSourceHostRoot root = (HwndSourceHostRoot) _hwndSource.RootVisual;
             root.Child = child;
 
             // Invalidate measure on this HwndHost so that we can remeasure

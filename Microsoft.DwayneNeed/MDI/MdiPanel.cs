@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -21,15 +20,15 @@ namespace Microsoft.DwayneNeed.MDI
             /* Value Type:        */ typeof(WindowState),
             /* Owner Type:        */ typeof(MdiPanel),
             /* Metadata:          */ new FrameworkPropertyMetadata(
-            /*     Default Value: */ WindowState.Normal,
-            /*     Options:       */ FrameworkPropertyMetadataOptions.AffectsParentMeasure));
+                /*     Default Value: */ WindowState.Normal,
+                /*     Options:       */ FrameworkPropertyMetadataOptions.AffectsParentMeasure));
 
         /// <summary>
         ///     A static getter for the WindowState attached property.
         /// </summary>
         public static WindowState GetWindowState(FrameworkElement e)
         {
-            return (WindowState)e.GetValue(WindowStateProperty);
+            return (WindowState) e.GetValue(WindowStateProperty);
         }
 
         /// <summary>
@@ -49,17 +48,17 @@ namespace Microsoft.DwayneNeed.MDI
             /* Value Type:           */ typeof(Rect),
             /* Owner Type:           */ typeof(MdiPanel),
             /* Metadata:             */ new FrameworkPropertyMetadata(
-            /*     Default Value:    */ new Rect(),
-            /*     Options:          */ FrameworkPropertyMetadataOptions.AffectsParentMeasure,
-            /*     Changed Callback: */ (PropertyChangedCallback) OnWindowRectChanged,
-            /*     Coerce Callback:  */ CoerceWindowRect));
+                /*     Default Value:    */ new Rect(),
+                /*     Options:          */ FrameworkPropertyMetadataOptions.AffectsParentMeasure,
+                /*     Changed Callback: */ (PropertyChangedCallback) OnWindowRectChanged,
+                /*     Coerce Callback:  */ CoerceWindowRect));
 
         /// <summary>
         ///     A static getter for the WindowRect attached property.
         /// </summary>
         public static Rect GetWindowRect(FrameworkElement e)
         {
-            return (Rect)e.GetValue(WindowRectProperty);
+            return (Rect) e.GetValue(WindowRectProperty);
         }
 
         /// <summary>
@@ -76,12 +75,14 @@ namespace Microsoft.DwayneNeed.MDI
             /* Handler Type:        */ typeof(RoutedPropertyChangedEventHandler<Rect>),
             /* Owner Type:          */ typeof(MdiPanel));
 
-        public static void AddWindowRectChangedHandler(MdiWindow window, RoutedPropertyChangedEventHandler<Rect> handler)
+        public static void AddWindowRectChangedHandler(MdiWindow window,
+            RoutedPropertyChangedEventHandler<Rect> handler)
         {
             window.AddHandler(WindowRectChangedEvent, handler);
         }
 
-        public static void RemoveWindowRectChangedHandler(MdiWindow window, RoutedPropertyChangedEventHandler<Rect> handler)
+        public static void RemoveWindowRectChangedHandler(MdiWindow window,
+            RoutedPropertyChangedEventHandler<Rect> handler)
         {
             window.RemoveHandler(WindowRectChangedEvent, handler);
         }
@@ -95,8 +96,8 @@ namespace Microsoft.DwayneNeed.MDI
             /* Value Type:           */ typeof(Rect),
             /* Owner Type:           */ typeof(MdiPanel),
             /* Metadata:             */ new FrameworkPropertyMetadata(
-            /*     Default Value:    */ new Rect(0, 0, 0, 0),
-            /*     Changed Callback: */ (s, e) => ((MdiPanel)s).OnExtentsChanged(e)));
+                /*     Default Value:    */ new Rect(0, 0, 0, 0),
+                /*     Changed Callback: */ (s, e) => ((MdiPanel) s).OnExtentsChanged(e)));
 
         /// <summary>
         ///     An read-only dependency property indicating the bounds of
@@ -109,7 +110,7 @@ namespace Microsoft.DwayneNeed.MDI
         /// </summary>
         public Rect Extents
         {
-            get { return (Rect)GetValue(ExtentsProperty); }
+            get { return (Rect) GetValue(ExtentsProperty); }
             private set { SetValue(ExtentsPropertyKey, value); }
         }
 
@@ -125,17 +126,17 @@ namespace Microsoft.DwayneNeed.MDI
             /* Value Type:           */ typeof(Point),
             /* Owner Type:           */ typeof(MdiPanel),
             /* Metadata:             */ new FrameworkPropertyMetadata(
-            /*     Default Value:    */ new Point(0, 0),
-            /*     Options:          */ FrameworkPropertyMetadataOptions.AffectsArrange,
-            /*     Changed Callback: */ (s, e) => ((MdiPanel)s).OnViewportOriginChanged(e),
-            /*     Coerce Callback:  */ (d, bv) => ((MdiPanel)d).CoerceViewportOrigin(bv)));
+                /*     Default Value:    */ new Point(0, 0),
+                /*     Options:          */ FrameworkPropertyMetadataOptions.AffectsArrange,
+                /*     Changed Callback: */ (s, e) => ((MdiPanel) s).OnViewportOriginChanged(e),
+                /*     Coerce Callback:  */ (d, bv) => ((MdiPanel) d).CoerceViewportOrigin(bv)));
 
         /// <summary>
         ///     The origin of the coordinate space of the panel.
         /// </summary>
         public Point ViewportOrigin
         {
-            get { return (Point)GetValue(ViewportOriginProperty); }
+            get { return (Point) GetValue(ViewportOriginProperty); }
             set { SetValue(ViewportOriginProperty, value); }
         }
 
@@ -148,8 +149,8 @@ namespace Microsoft.DwayneNeed.MDI
             /* Value Type:           */ typeof(Rect),
             /* Owner Type:           */ typeof(MdiPanel),
             /* Metadata:             */ new FrameworkPropertyMetadata(
-            /*     Default Value:    */ new Rect(),
-            /*     Options:          */ FrameworkPropertyMetadataOptions.AffectsParentMeasure));
+                /*     Default Value:    */ new Rect(),
+                /*     Options:          */ FrameworkPropertyMetadataOptions.AffectsParentMeasure));
 
         /// <summary>
         ///     Determine the desired size of this panel within the specified constraints.
@@ -306,7 +307,7 @@ namespace Microsoft.DwayneNeed.MDI
 
                     case WindowState.Normal:
                     default:
-                        Rect windowRect = (Rect)child.GetValue(MdiPanel.BaseWindowRectPropertyKey.DependencyProperty);
+                        Rect windowRect = (Rect) child.GetValue(MdiPanel.BaseWindowRectPropertyKey.DependencyProperty);
 
                         // Respect minimum size.
                         windowRect.Width = Math.Max(windowRect.Width, child.MinWidth);
@@ -357,7 +358,7 @@ namespace Microsoft.DwayneNeed.MDI
         {
             MdiPanel panel = VisualTreeHelper.GetParent(d) as MdiPanel;
             FrameworkElement child = d as FrameworkElement;
-            Rect windowRect = (Rect)baseValue;
+            Rect windowRect = (Rect) baseValue;
 
             if (panel != null && d != null)
             {
@@ -382,7 +383,7 @@ namespace Microsoft.DwayneNeed.MDI
             // When the extents change, re-coerce the viewport origin.
             // We actually set the local value to avoid the origin getting
             // left behind.
-            ViewportOrigin = (Point)CoerceViewportOrigin(ViewportOrigin);
+            ViewportOrigin = (Point) CoerceViewportOrigin(ViewportOrigin);
 
             // The scroll owner needs to know that scrolling information has
             // changed.
@@ -394,7 +395,7 @@ namespace Microsoft.DwayneNeed.MDI
 
         private object CoerceViewportOrigin(object baseValue)
         {
-            Point viewportOrigin = (Point)baseValue;
+            Point viewportOrigin = (Point) baseValue;
 
             viewportOrigin.X = Math.Min(Math.Max(viewportOrigin.X, Extents.Left), Extents.Right - ViewportWidth);
             viewportOrigin.Y = Math.Min(Math.Max(viewportOrigin.Y, Extents.Top), Extents.Bottom - ViewportHeight);
@@ -421,34 +422,22 @@ namespace Microsoft.DwayneNeed.MDI
 
         public double ExtentWidth
         {
-            get
-            {
-                return Extents.Width;
-            }
+            get { return Extents.Width; }
         }
 
         public double ExtentHeight
         {
-            get
-            {
-                return Extents.Height;
-            }
+            get { return Extents.Height; }
         }
 
         public double HorizontalOffset
         {
-            get
-            {
-                return ViewportOrigin.X - Extents.Left;
-            }
+            get { return ViewportOrigin.X - Extents.Left; }
         }
 
         public double VerticalOffset
         {
-            get
-            {
-                return ViewportOrigin.Y - Extents.Top;
-            }
+            get { return ViewportOrigin.Y - Extents.Top; }
         }
 
         public void LineLeft()
@@ -514,7 +503,7 @@ namespace Microsoft.DwayneNeed.MDI
         public Rect MakeVisible(Visual visual, Rect rectangle)
         {
             // Translate the rect from the specified visual up to this panel.
-            rectangle = ((UIElement)visual).TransformElementToElement(rectangle, this);
+            rectangle = ((UIElement) visual).TransformElementToElement(rectangle, this);
 
             // Translate the rect into the extents coordinates.
             rectangle.Offset(new Vector(ViewportOrigin.X, ViewportOrigin.Y));
@@ -524,6 +513,7 @@ namespace Microsoft.DwayneNeed.MDI
             {
                 viewportOrigin.X = rectangle.Right - ViewportWidth;
             }
+
             if (rectangle.Left < viewportOrigin.X)
             {
                 viewportOrigin.X = rectangle.Left;
@@ -533,6 +523,7 @@ namespace Microsoft.DwayneNeed.MDI
             {
                 viewportOrigin.Y = rectangle.Bottom - ViewportHeight;
             }
+
             if (rectangle.Top < viewportOrigin.Y)
             {
                 viewportOrigin.Y = rectangle.Top;
@@ -560,9 +551,11 @@ namespace Microsoft.DwayneNeed.MDI
         private static void OnWindowRectChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             MdiWindow window = d as MdiWindow;
-            if(window != null)
+            if (window != null)
             {
-                RoutedPropertyChangedEventArgs<Rect> args = new RoutedPropertyChangedEventArgs<Rect>((Rect)e.OldValue, (Rect)e.NewValue, WindowRectChangedEvent);
+                RoutedPropertyChangedEventArgs<Rect> args =
+                    new RoutedPropertyChangedEventArgs<Rect>((Rect) e.OldValue, (Rect) e.NewValue,
+                        WindowRectChangedEvent);
                 window.RaiseEvent(args);
             }
         }

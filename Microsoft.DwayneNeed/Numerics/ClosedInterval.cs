@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Microsoft.DwayneNeed.Numerics
 {
@@ -31,6 +28,5 @@ namespace Microsoft.DwayneNeed.Numerics
                 Min,
                 Max);
         }
-
     }
 }

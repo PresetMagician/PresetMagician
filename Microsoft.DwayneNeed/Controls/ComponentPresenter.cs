@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Collections;
 using System.Windows;
 using System.Windows.Media;
-using System.Collections;
 
 namespace Microsoft.DwayneNeed.Controls
 {
@@ -18,15 +15,15 @@ namespace Microsoft.DwayneNeed.Controls
             /* Value Type:           */ typeof(Uri),
             /* Owner Type:           */ typeof(ComponentPresenter),
             /* Metadata:             */ new FrameworkPropertyMetadata(
-            /*     Default Value:    */ null,
-            /*     Changed Callback: */ (s, e) => ((ComponentPresenter)s).OnSourceChanged(e)));
+                /*     Default Value:    */ null,
+                /*     Changed Callback: */ (s, e) => ((ComponentPresenter) s).OnSourceChanged(e)));
 
         /// <summary>
         ///     The source Uri of the component to present.
         /// </summary>
         public Uri Source
         {
-            get { return (Uri)GetValue(SourceProperty); }
+            get { return (Uri) GetValue(SourceProperty); }
             set { SetValue(SourceProperty, value); }
         }
 
@@ -39,6 +36,7 @@ namespace Microsoft.DwayneNeed.Controls
             {
                 throw new ArgumentOutOfRangeException("index");
             }
+
             return _component;
         }
 
@@ -53,6 +51,7 @@ namespace Microsoft.DwayneNeed.Controls
                 {
                     return 1;
                 }
+
                 return 0;
             }
         }

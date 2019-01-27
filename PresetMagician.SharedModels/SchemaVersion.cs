@@ -4,7 +4,6 @@ namespace SharedModels
 {
     public class SchemaVersion
     {
-        [Key]
-        public string Version { get; set; }
+        [Key] public string Version { get; set; }
     }
 }

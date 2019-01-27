@@ -15,7 +15,8 @@ namespace PresetMagician
         private readonly IVstService _vstService;
         private readonly IUIVisualizerService _uiVisualizerService;
 
-        public PluginToolsShowPluginInfoCommandContainer(ICommandManager commandManager, IVstService vstService, IUIVisualizerService uiVisualizerService)
+        public PluginToolsShowPluginInfoCommandContainer(ICommandManager commandManager, IVstService vstService,
+            IUIVisualizerService uiVisualizerService)
             : base(Commands.PluginTools.ShowPluginInfo, commandManager)
         {
             Argument.IsNotNull(() => vstService);

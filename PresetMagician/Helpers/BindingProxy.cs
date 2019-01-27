@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace PresetMagician.Helpers
@@ -18,7 +14,7 @@ namespace PresetMagician.Helpers
 
         public object Data
         {
-            get { return (object)GetValue(DataProperty); }
+            get { return (object) GetValue(DataProperty); }
             set { SetValue(DataProperty, value); }
         }
 

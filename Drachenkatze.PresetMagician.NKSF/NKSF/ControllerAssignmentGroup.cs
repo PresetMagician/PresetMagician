@@ -1,9 +1,5 @@
-﻿using MessagePack;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
+using MessagePack;
 
 namespace Drachenkatze.PresetMagician.NKSF.NKSF
 {
@@ -12,7 +8,7 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
     {
         public ObservableCollection<ControllerAssignment> controllerAssignments;
 
-        public ControllerAssignmentGroup ()
+        public ControllerAssignmentGroup()
         {
             controllerAssignments = new ObservableCollection<ControllerAssignment>();
         }

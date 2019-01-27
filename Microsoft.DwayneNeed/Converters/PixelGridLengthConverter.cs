@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Data;
-using System.Windows;
 using System.Globalization;
+using System.Windows;
+using System.Windows.Data;
 
 namespace Microsoft.DwayneNeed.Converters
 {
@@ -13,12 +10,12 @@ namespace Microsoft.DwayneNeed.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return new GridLength((double)value, GridUnitType.Pixel);
+            return new GridLength((double) value, GridUnitType.Pixel);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ((GridLength)value).Value;
+            return ((GridLength) value).Value;
         }
     }
 }

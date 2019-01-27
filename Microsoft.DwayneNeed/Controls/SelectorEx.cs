@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Controls.Primitives;
+﻿using System.Collections.Specialized;
 using System.Windows;
-using System.Collections.Specialized;
+using System.Windows.Controls.Primitives;
 
 namespace Microsoft.DwayneNeed.Controls
 {
@@ -17,7 +13,8 @@ namespace Microsoft.DwayneNeed.Controls
     {
         public SelectorEx()
         {
-            ((INotifyCollectionChanged)Items).CollectionChanged += new NotifyCollectionChangedEventHandler(OnItemsCollectionChanged);
+            ((INotifyCollectionChanged) Items).CollectionChanged +=
+                new NotifyCollectionChangedEventHandler(OnItemsCollectionChanged);
         }
 
         /// <summary>
@@ -56,7 +53,7 @@ namespace Microsoft.DwayneNeed.Controls
         /// </remarks>
         public new TContainer ContainerFromElement(DependencyObject element)
         {
-            return (TContainer)base.ContainerFromElement(element);
+            return (TContainer) base.ContainerFromElement(element);
         }
 
         /// <summary>
@@ -69,7 +66,7 @@ namespace Microsoft.DwayneNeed.Controls
         /// </remarks>
         protected sealed override void ClearContainerForItemOverride(DependencyObject element, object item)
         {
-            TContainer container = (TContainer)element;
+            TContainer container = (TContainer) element;
             ClearContainerForItemOverride(container, item);
             OnContainerRemoved(container);
         }
@@ -96,7 +93,7 @@ namespace Microsoft.DwayneNeed.Controls
         /// </remarks>
         protected sealed override void PrepareContainerForItemOverride(DependencyObject element, object item)
         {
-            PrepareContainerForItemOverride((TContainer)element, item);
+            PrepareContainerForItemOverride((TContainer) element, item);
         }
 
         /// <summary>
@@ -108,7 +105,7 @@ namespace Microsoft.DwayneNeed.Controls
         /// </remarks>
         protected virtual void PrepareContainerForItemOverride(TContainer container, object item)
         {
-            base.PrepareContainerForItemOverride((DependencyObject)container, item);
+            base.PrepareContainerForItemOverride((DependencyObject) container, item);
         }
 
         /// <summary>
@@ -120,7 +117,7 @@ namespace Microsoft.DwayneNeed.Controls
         /// </remarks>
         protected sealed override bool ShouldApplyItemContainerStyle(DependencyObject container, object item)
         {
-            return ShouldApplyItemContainerStyle((TContainer)container, item);
+            return ShouldApplyItemContainerStyle((TContainer) container, item);
         }
 
         /// <summary>
@@ -163,61 +160,61 @@ namespace Microsoft.DwayneNeed.Controls
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Reset:
-                    {
-                        OnContainersReset();
+                {
+                    OnContainersReset();
 
-                        foreach (object item in Items)
+                    foreach (object item in Items)
+                    {
+                        if (IsItemItsOwnContainerOverride(item))
                         {
-                            if (IsItemItsOwnContainerOverride(item))
-                            {
-                                OnContainerAdded((TContainer)item);
-                            }
+                            OnContainerAdded((TContainer) item);
                         }
                     }
+                }
                     break;
 
                 case NotifyCollectionChangedAction.Add:
+                {
+                    foreach (object item in e.NewItems)
                     {
-                        foreach (object item in e.NewItems)
+                        if (IsItemItsOwnContainerOverride(item))
                         {
-                            if (IsItemItsOwnContainerOverride(item))
-                            {
-                                OnContainerAdded((TContainer)item);
-                            }
+                            OnContainerAdded((TContainer) item);
                         }
                     }
+                }
                     break;
 
                 case NotifyCollectionChangedAction.Replace:
+                {
+                    foreach (object item in e.OldItems)
                     {
-                        foreach (object item in e.OldItems)
+                        if (IsItemItsOwnContainerOverride(item))
                         {
-                            if (IsItemItsOwnContainerOverride(item))
-                            {
-                                OnContainerRemoved((TContainer)item);
-                            }
-                        }
-
-                        foreach (object item in e.NewItems)
-                        {
-                            if (IsItemItsOwnContainerOverride(item))
-                            {
-                                OnContainerAdded((TContainer)item);
-                            }
+                            OnContainerRemoved((TContainer) item);
                         }
                     }
+
+                    foreach (object item in e.NewItems)
+                    {
+                        if (IsItemItsOwnContainerOverride(item))
+                        {
+                            OnContainerAdded((TContainer) item);
+                        }
+                    }
+                }
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
+                {
+                    foreach (object item in e.OldItems)
                     {
-                        foreach (object item in e.OldItems)
+                        if (IsItemItsOwnContainerOverride(item))
                         {
-                            if (IsItemItsOwnContainerOverride(item))
-                            {
-                                OnContainerRemoved((TContainer)item);
-                            }
+                            OnContainerRemoved((TContainer) item);
                         }
                     }
+                }
                     break;
             }
         }

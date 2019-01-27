@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Runtime.InteropServices;
 using Microsoft.DwayneNeed.Win32.User32;
-using Microsoft.DwayneNeed.Win32;
 
 namespace Microsoft.DwayneNeed.Win32.ComCtl32
 {
@@ -17,9 +12,11 @@ namespace Microsoft.DwayneNeed.Win32.ComCtl32
     /// </remarks>
     public class StrongHWND : HWND
     {
-        public static StrongHWND CreateWindowEx(WS_EX dwExStyle, string lpClassName, string lpWindowName, WS dwStyle, int x, int y, int nWidth, int nHeight, HWND hWndParent, IntPtr hMenu, IntPtr hInstance, IntPtr lpParam)
+        public static StrongHWND CreateWindowEx(WS_EX dwExStyle, string lpClassName, string lpWindowName, WS dwStyle,
+            int x, int y, int nWidth, int nHeight, HWND hWndParent, IntPtr hMenu, IntPtr hInstance, IntPtr lpParam)
         {
-            HWND hwnd = NativeMethods.CreateWindowEx(dwExStyle, lpClassName, lpWindowName, dwStyle, x, y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam);
+            HWND hwnd = NativeMethods.CreateWindowEx(dwExStyle, lpClassName, lpWindowName, dwStyle, x, y, nWidth,
+                nHeight, hWndParent, hMenu, hInstance, lpParam);
 
             return new StrongHWND(hwnd.DangerousGetHandle());
         }

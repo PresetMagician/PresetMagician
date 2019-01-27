@@ -22,7 +22,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
                     @"AudioThing\Presets\TypeA"), GetRootBank())
             };
         }
-        
+
         protected override string GetParseDirectory()
         {
             throw new NotImplementedException();

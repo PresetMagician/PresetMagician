@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Markup;
 using System.Windows;
+using System.Windows.Markup;
 using System.Windows.Media;
 
 namespace Microsoft.DwayneNeed.Controls
@@ -16,10 +14,7 @@ namespace Microsoft.DwayneNeed.Controls
     {
         public T Child
         {
-            get
-            {
-                return _child;
-            }
+            get { return _child; }
 
             set
             {
@@ -51,10 +46,7 @@ namespace Microsoft.DwayneNeed.Controls
 
         protected override int VisualChildrenCount
         {
-            get
-            {
-                return _child != null ? 1 : 0;
-            }
+            get { return _child != null ? 1 : 0; }
         }
 
         private T _child;

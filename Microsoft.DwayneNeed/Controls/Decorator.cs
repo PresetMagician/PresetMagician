@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Media;
@@ -16,12 +13,12 @@ namespace Microsoft.DwayneNeed.Controls
             /* Value Type:           */ typeof(FrameworkElement),
             /* Owner Type:           */ typeof(Decorator<T>),
             /* Metadata:             */ new PropertyMetadata(
-            /*     Default Value:    */ null,
-            /*     Property Changed: */ (d, e) => ((Decorator<T>)d).OnChildChanged(e)));
+                /*     Default Value:    */ null,
+                /*     Property Changed: */ (d, e) => ((Decorator<T>) d).OnChildChanged(e)));
 
         public T Child
         {
-            get { return (T)GetValue(ChildProperty); }
+            get { return (T) GetValue(ChildProperty); }
             set { SetValue(ChildProperty, value); }
         }
 
@@ -64,10 +61,7 @@ namespace Microsoft.DwayneNeed.Controls
 
         protected override int VisualChildrenCount
         {
-            get
-            {
-                return (Child != null) ? 1 : 0;
-            }
+            get { return (Child != null) ? 1 : 0; }
         }
 
         protected override Visual GetVisualChild(int index)
@@ -77,6 +71,7 @@ namespace Microsoft.DwayneNeed.Controls
             {
                 throw new ArgumentOutOfRangeException("index");
             }
+
             return child;
         }
 
@@ -88,6 +83,7 @@ namespace Microsoft.DwayneNeed.Controls
                 child.Measure(constraint);
                 return child.DesiredSize;
             }
+
             return new Size();
         }
 
@@ -98,6 +94,7 @@ namespace Microsoft.DwayneNeed.Controls
             {
                 child.Arrange(new Rect(arrangeSize));
             }
+
             return arrangeSize;
         }
     }

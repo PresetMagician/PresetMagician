@@ -32,7 +32,8 @@ namespace PresetMagician.Controls
 
             BorderThicknessProperty.OverrideMetadata(typeof(RibbonDataWindow),
                 new FrameworkPropertyMetadata(new Thickness(1)));
-            WindowStyleProperty.OverrideMetadata(typeof(RibbonDataWindow), new FrameworkPropertyMetadata(WindowStyle.None));
+            WindowStyleProperty.OverrideMetadata(typeof(RibbonDataWindow),
+                new FrameworkPropertyMetadata(WindowStyle.None));
         }
 
         public RibbonDataWindow()

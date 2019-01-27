@@ -7,7 +7,6 @@ using Catel;
 using Catel.Collections;
 using Catel.MVVM;
 using Catel.Services;
-using Drachenkatze.PresetMagician.VendorPresetParser;
 using PresetMagician.Models;
 using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
@@ -88,12 +87,12 @@ namespace PresetMagician
                     hs.ExceptWith(_vstService.PresetExportList);
 
                     _vstService.PresetExportList.AddItems(hs.ToList());
-                    
+
                     addedPresets += hs.Count;
                     totalPresets += plugin.Presets.Count;
                 }
             });
-            
+
             if (listExceeded)
             {
                 MessageBox.Show(

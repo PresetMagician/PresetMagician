@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 
 namespace Microsoft.DwayneNeed.Extensions
 {
@@ -15,6 +11,7 @@ namespace Microsoft.DwayneNeed.Extensions
             {
                 rect.Width = constraint.Width;
             }
+
             if (rect.Height > constraint.Height)
             {
                 rect.Height = constraint.Height;
@@ -25,14 +22,17 @@ namespace Microsoft.DwayneNeed.Extensions
             {
                 rect.X = constraint.Left;
             }
+
             if (rect.Right > constraint.Right)
             {
                 rect.X = constraint.Right - rect.Width;
             }
+
             if (rect.Top < constraint.Top)
             {
                 rect.Y = constraint.Top;
             }
+
             if (rect.Bottom > constraint.Bottom)
             {
                 rect.Y = constraint.Bottom - rect.Height;

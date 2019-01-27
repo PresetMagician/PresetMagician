@@ -12,7 +12,6 @@ using Newtonsoft.Json;
 using Portable.Licensing;
 using Portable.Licensing.Validation;
 using PresetMagician.Properties;
-using PresetMagician.Services.EventArgs;
 using Path = Catel.IO.Path;
 
 namespace PresetMagician.Services
@@ -56,8 +55,6 @@ namespace PresetMagician.Services
                 {
                     return presetExportLimit;
                 }
-                
-                
             }
 
             return _defaultTrialPresetExportLimit;
@@ -105,7 +102,7 @@ namespace PresetMagician.Services
             CurrentLicense = ValidatingLicense;
             ValidLicense = true;
             LicenseChanged.SafeInvoke(this);
-            
+
 
             return updateLicense;
         }
@@ -121,7 +118,7 @@ namespace PresetMagician.Services
                     CurrentLicense = ValidatingLicense;
                     ValidLicense = true;
                     LicenseChanged.SafeInvoke(this);
-                    
+
                     return true;
                 }
             }

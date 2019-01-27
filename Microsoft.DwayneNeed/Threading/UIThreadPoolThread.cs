@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Windows.Threading;
-using Microsoft.DwayneNeed.Controls;
-using System.Windows.Media;
 
 namespace Microsoft.DwayneNeed.Threading
 {

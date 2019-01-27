@@ -31,6 +31,7 @@ namespace Microsoft.DwayneNeed.Media.Imaging
                 {
                     disposable.Dispose();
                 }
+
                 Source = null;
             }
 
@@ -100,29 +101,31 @@ namespace Microsoft.DwayneNeed.Media.Imaging
         /// </remarks>
         protected override void CopyCore(CustomBitmap original, bool useCurrentValue, bool willBeFrozen)
         {
-            ChainedBitmap originalChainedBitmap = (ChainedBitmap)original;
+            ChainedBitmap originalChainedBitmap = (ChainedBitmap) original;
             if (originalChainedBitmap._formatConverter != null)
             {
                 if (useCurrentValue)
                 {
                     if (willBeFrozen)
                     {
-                        _formatConverter = (FormatConvertedBitmap)originalChainedBitmap._formatConverter.GetCurrentValueAsFrozen();
+                        _formatConverter =
+                            (FormatConvertedBitmap) originalChainedBitmap._formatConverter.GetCurrentValueAsFrozen();
                     }
                     else
                     {
-                        _formatConverter = (FormatConvertedBitmap)originalChainedBitmap._formatConverter.CloneCurrentValue();
+                        _formatConverter =
+                            (FormatConvertedBitmap) originalChainedBitmap._formatConverter.CloneCurrentValue();
                     }
                 }
                 else
                 {
                     if (willBeFrozen)
                     {
-                        _formatConverter = (FormatConvertedBitmap)originalChainedBitmap._formatConverter.GetAsFrozen();
+                        _formatConverter = (FormatConvertedBitmap) originalChainedBitmap._formatConverter.GetAsFrozen();
                     }
                     else
                     {
-                        _formatConverter = (FormatConvertedBitmap)originalChainedBitmap._formatConverter.Clone();
+                        _formatConverter = (FormatConvertedBitmap) originalChainedBitmap._formatConverter.Clone();
                     }
                 }
             }
@@ -136,25 +139,19 @@ namespace Microsoft.DwayneNeed.Media.Imaging
         ///     The DependencyProperty for the Source property.
         /// </summary>
         public static readonly DependencyProperty SourceProperty =
-              DependencyProperty.Register("Source",
-                               typeof(BitmapSource),
-                               typeof(ChainedBitmap),
-                               new FrameworkPropertyMetadata(OnSourcePropertyChanged));
+            DependencyProperty.Register("Source",
+                typeof(BitmapSource),
+                typeof(ChainedBitmap),
+                new FrameworkPropertyMetadata(OnSourcePropertyChanged));
 
         /// <summary>
         ///     The BitmapSource to chain.
         /// </summary>
         public BitmapSource Source
         {
-            get
-            {
-                return (BitmapSource)GetValue(SourceProperty);
-            }
+            get { return (BitmapSource) GetValue(SourceProperty); }
 
-            set
-            {
-                SetValue(SourceProperty, value);
-            }
+            set { SetValue(SourceProperty, value); }
         }
 
         protected virtual void OnSourcePropertyChanged(DependencyPropertyChangedEventArgs e)
@@ -182,7 +179,7 @@ namespace Microsoft.DwayneNeed.Media.Imaging
 
         private static void OnSourcePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ChainedBitmap chainedBitmap = (ChainedBitmap)d;
+            ChainedBitmap chainedBitmap = (ChainedBitmap) d;
             chainedBitmap.OnSourcePropertyChanged(e);
         }
 

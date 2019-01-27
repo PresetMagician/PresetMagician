@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Microsoft.DwayneNeed.Win32.User32
+﻿namespace Microsoft.DwayneNeed.Win32.User32
 {
     public enum VK : int
     {
         LBUTTON = 0x01,
         RBUTTON = 0x02,
         CANCEL = 0x03,
-        MBUTTON = 0x04,    /* NOT contiguous with L & RBUTTON */
-        XBUTTON1 = 0x05,    /* NOT contiguous with L & RBUTTON */
-        XBUTTON2 = 0x06,    /* NOT contiguous with L & RBUTTON */
+        MBUTTON = 0x04, /* NOT contiguous with L & RBUTTON */
+        XBUTTON1 = 0x05, /* NOT contiguous with L & RBUTTON */
+        XBUTTON2 = 0x06, /* NOT contiguous with L & RBUTTON */
         BACK = 0x08,
         TAB = 0x09,
         CLEAR = 0x0C,
@@ -23,7 +18,7 @@ namespace Microsoft.DwayneNeed.Win32.User32
         PAUSE = 0x13,
         CAPITAL = 0x14,
         KANA = 0x15,
-        HANGEUL = 0x15,  /* old name - should be here for compatibility */
+        HANGEUL = 0x15, /* old name - should be here for compatibility */
         HANGUL = 0x15,
         JUNJA = 0x17,
         FINAL = 0x18,
@@ -132,18 +127,18 @@ namespace Microsoft.DwayneNeed.Win32.User32
         F24 = 0x87,
         NUMLOCK = 0x90,
         SCROLL = 0x91,
-        OEM_NEC_EQUAL = 0x92,  // '=' key on numpad
-        OEM_FJ_JISHO = 0x92,  // 'Dictionary' key
-        OEM_FJ_MASSHOU = 0x93,  // 'Unregister word' key
-        OEM_FJ_TOUROKU = 0x94,  // 'Register word' key
-        OEM_FJ_LOYA = 0x95,  // 'Left OYAYUBI' key
-        OEM_FJ_ROYA = 0x96,  // 'Right OYAYUBI' key
-        LSHIFT = 0xA0,  // Used only as parameters to GetAsyncKeyState() and GetKeyState().
-        RSHIFT = 0xA1,  // Used only as parameters to GetAsyncKeyState() and GetKeyState().
-        LCONTROL = 0xA2,  // Used only as parameters to GetAsyncKeyState() and GetKeyState().
-        RCONTROL = 0xA3,  // Used only as parameters to GetAsyncKeyState() and GetKeyState().
-        LMENU = 0xA4,  // Used only as parameters to GetAsyncKeyState() and GetKeyState().
-        RMENU = 0xA5,  // Used only as parameters to GetAsyncKeyState() and GetKeyState().
+        OEM_NEC_EQUAL = 0x92, // '=' key on numpad
+        OEM_FJ_JISHO = 0x92, // 'Dictionary' key
+        OEM_FJ_MASSHOU = 0x93, // 'Unregister word' key
+        OEM_FJ_TOUROKU = 0x94, // 'Register word' key
+        OEM_FJ_LOYA = 0x95, // 'Left OYAYUBI' key
+        OEM_FJ_ROYA = 0x96, // 'Right OYAYUBI' key
+        LSHIFT = 0xA0, // Used only as parameters to GetAsyncKeyState() and GetKeyState().
+        RSHIFT = 0xA1, // Used only as parameters to GetAsyncKeyState() and GetKeyState().
+        LCONTROL = 0xA2, // Used only as parameters to GetAsyncKeyState() and GetKeyState().
+        RCONTROL = 0xA3, // Used only as parameters to GetAsyncKeyState() and GetKeyState().
+        LMENU = 0xA4, // Used only as parameters to GetAsyncKeyState() and GetKeyState().
+        RMENU = 0xA5, // Used only as parameters to GetAsyncKeyState() and GetKeyState().
         BROWSER_BACK = 0xA6,
         BROWSER_FORWARD = 0xA7,
         BROWSER_REFRESH = 0xA8,
@@ -162,22 +157,22 @@ namespace Microsoft.DwayneNeed.Win32.User32
         LAUNCH_MEDIA_SELECT = 0xB5,
         LAUNCH_APP1 = 0xB6,
         LAUNCH_APP2 = 0xB7,
-        OEM_1 = 0xBA,   // ';:' for US
-        OEM_PLUS = 0xBB,   // '+' any country
-        OEM_COMMA = 0xBC,   // ',' any country
-        OEM_MINUS = 0xBD,   // '-' any country
-        OEM_PERIOD = 0xBE,   // '.' any country
-        OEM_2 = 0xBF,   // '/?' for US
-        OEM_3 = 0xC0,   // '`~' for US
-        OEM_4 = 0xDB,  //  '[{' for US
-        OEM_5 = 0xDC,  //  '\|' for US
-        OEM_6 = 0xDD,  //  ']}' for US
-        OEM_7 = 0xDE,  //  ''"' for US
+        OEM_1 = 0xBA, // ';:' for US
+        OEM_PLUS = 0xBB, // '+' any country
+        OEM_COMMA = 0xBC, // ',' any country
+        OEM_MINUS = 0xBD, // '-' any country
+        OEM_PERIOD = 0xBE, // '.' any country
+        OEM_2 = 0xBF, // '/?' for US
+        OEM_3 = 0xC0, // '`~' for US
+        OEM_4 = 0xDB, //  '[{' for US
+        OEM_5 = 0xDC, //  '\|' for US
+        OEM_6 = 0xDD, //  ']}' for US
+        OEM_7 = 0xDE, //  ''"' for US
         OEM_8 = 0xDF,
-        OEM_AX = 0xE1,  //  'AX' key on Japanese AX kbd
-        OEM_102 = 0xE2,  //  "<>" or "\|" on RT 102-key kbd.
-        ICO_HELP = 0xE3,  //  Help key on ICO
-        ICO_00 = 0xE4,  //  00 key on ICO
+        OEM_AX = 0xE1, //  'AX' key on Japanese AX kbd
+        OEM_102 = 0xE2, //  "<>" or "\|" on RT 102-key kbd.
+        ICO_HELP = 0xE3, //  Help key on ICO
+        ICO_00 = 0xE4, //  00 key on ICO
         PROCESSKEY = 0xE5,
         ICO_CLEAR = 0xE6,
         PACKET = 0xE7,

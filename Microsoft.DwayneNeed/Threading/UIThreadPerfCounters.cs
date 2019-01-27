@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.ComponentModel;
-using System.Windows.Media;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
-using Microsoft.DwayneNeed.Interop;
-using Microsoft.DwayneNeed.Win32.Kernel32;
+using System.Windows.Media;
 using Microsoft.DwayneNeed.Win32;
+using Microsoft.DwayneNeed.Win32.Kernel32;
 
 namespace Microsoft.DwayneNeed.Threading
 {
@@ -22,8 +20,9 @@ namespace Microsoft.DwayneNeed.Threading
             NativeMethods.GetSystemInfo(ref sysinfo);
             _numberOfProcessors = (int) sysinfo.dwNumberOfProcessors;
 
-            var prop = DesignerProperties.IsInDesignModeProperty; 
-            bool isInDesignMode = (bool) DependencyPropertyDescriptor.FromProperty(prop, typeof(FrameworkElement)).Metadata.DefaultValue;
+            var prop = DesignerProperties.IsInDesignModeProperty;
+            bool isInDesignMode = (bool) DependencyPropertyDescriptor.FromProperty(prop, typeof(FrameworkElement))
+                .Metadata.DefaultValue;
             if (!isInDesignMode)
             {
                 CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);
@@ -31,26 +30,17 @@ namespace Microsoft.DwayneNeed.Threading
         }
 
         private int _numberOfProcessors;
+
         public int NumberOfProcessors
         {
-            get
-            {
-                return _numberOfProcessors;
-            }
+            get { return _numberOfProcessors; }
 
-            private set
-            {
-                _numberOfProcessors = value;
-            }
-
+            private set { _numberOfProcessors = value; }
         }
 
         public int NumberOfSamples
         {
-            get
-            {
-                return _samples.Count();
-            }
+            get { return _samples.Count(); }
 
             set
             {
@@ -74,6 +64,7 @@ namespace Microsoft.DwayneNeed.Threading
         }
 
         private double _fps;
+
         public double FPS
         {
             get { return _fps; }
@@ -93,6 +84,7 @@ namespace Microsoft.DwayneNeed.Threading
         }
 
         private long _processCycleTime;
+
         public long ProcessCycleTime
         {
             get { return _processCycleTime; }
@@ -114,6 +106,7 @@ namespace Microsoft.DwayneNeed.Threading
         }
 
         private long _idleCycleTime;
+
         public long IdleCycleTime
         {
             get { return _idleCycleTime; }
@@ -163,7 +156,7 @@ namespace Microsoft.DwayneNeed.Threading
                 return total > 0 ? IdleCycleTime / (double) total : 0;
             }
         }
-        
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void CompositionTarget_Rendering(object sender, EventArgs e)
@@ -173,12 +166,12 @@ namespace Microsoft.DwayneNeed.Threading
             if (renderingEventArgs.RenderingTime > _lastRenderingTime)
             {
                 _lastRenderingTime = renderingEventArgs.RenderingTime;
-                
+
                 int frameCount = 1;
-                
+
                 Int64 processCycleTime = 0;
                 NativeMethods.QueryProcessCycleTime(new IntPtr(-1), ref processCycleTime);
-                
+
                 Int64[] idleCycleTimes = new Int64[_numberOfProcessors];
                 int sizeIdleCycleTimes = _numberOfProcessors * Marshal.SizeOf(typeof(Int64));
                 NativeMethods.QueryIdleProcessorCycleTime(ref sizeIdleCycleTimes, idleCycleTimes);
@@ -219,7 +212,7 @@ namespace Microsoft.DwayneNeed.Threading
                         startProcessCycleTime = sample.ProcessCycleTime;
                         startIdleCycleTime = sample.IdleCycleTime;
                     }
-                    else if(sample.SampleTime < start)
+                    else if (sample.SampleTime < start)
                     {
                         start = sample.SampleTime;
                         startProcessCycleTime = sample.ProcessCycleTime;

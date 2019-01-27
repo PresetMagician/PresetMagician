@@ -32,19 +32,23 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
         public override void DeserializeMessagePack(byte[] buffer)
         {
             Debug.WriteLine(MessagePackSerializer.ToJson(buffer));
-            try {
-            summaryInformation = MessagePackSerializer.Deserialize<SummaryInformation>(buffer);
-            
-            
-            Debug.WriteLine(summaryInformation.author);
-            Debug.WriteLine(summaryInformation.comment);
-            Debug.WriteLine(summaryInformation.deviceType);
-            Debug.WriteLine(summaryInformation.name);
-            Debug.WriteLine(summaryInformation.uuid);
-            Debug.WriteLine(summaryInformation.vendor);
-            Debug.WriteLine(summaryInformation.bankChain.Count);
-            Debug.WriteLine(summaryInformation.bankChain[0]);
-            } catch (Exception) {}
+            try
+            {
+                summaryInformation = MessagePackSerializer.Deserialize<SummaryInformation>(buffer);
+
+
+                Debug.WriteLine(summaryInformation.author);
+                Debug.WriteLine(summaryInformation.comment);
+                Debug.WriteLine(summaryInformation.deviceType);
+                Debug.WriteLine(summaryInformation.name);
+                Debug.WriteLine(summaryInformation.uuid);
+                Debug.WriteLine(summaryInformation.vendor);
+                Debug.WriteLine(summaryInformation.bankChain.Count);
+                Debug.WriteLine(summaryInformation.bankChain[0]);
+            }
+            catch (Exception)
+            {
+            }
         }
 
         public string getJSON()
@@ -64,10 +68,7 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
 
         public override string ChunkDescription
         {
-            get
-            {
-                return "Native Instruments Summary Information";
-            }
+            get { return "Native Instruments Summary Information"; }
         }
     }
 }

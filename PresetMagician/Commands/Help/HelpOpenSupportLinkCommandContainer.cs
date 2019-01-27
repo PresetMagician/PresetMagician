@@ -1,9 +1,6 @@
 ﻿using System.Diagnostics;
-using System.Threading.Tasks;
-using Catel.IoC;
 using Catel.Logging;
 using Catel.MVVM;
-using Catel.Services;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -16,10 +13,9 @@ namespace PresetMagician
         public HelpOpenSupportLinkCommandContainer(ICommandManager commandManager)
             : base(Commands.Help.OpenSupportLink, commandManager)
         {
-            
         }
 
-        protected override void Execute (object parameter)
+        protected override void Execute(object parameter)
         {
             base.Execute(parameter);
             Process.Start(Settings.Links.Support);

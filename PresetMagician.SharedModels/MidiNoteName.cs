@@ -1,21 +1,19 @@
-﻿using Catel;
+﻿using System;
+using System.Globalization;
+using Catel;
 using Catel.Data;
 
 namespace CannedBytes.Midi.Message
 {
-    using System;
-    using System.Diagnostics.Contracts;
-    using System.Globalization;
-
     /// <summary>
     /// A class that helps in generating a name for a note number.
     /// </summary>
-    public class MidiNoteName: ObservableObject
+    public class MidiNoteName : ObservableObject
     {
         /// <summary>
         /// Contains all the names of all the notes (in one octave).
         /// </summary>
-        private static readonly string[] NoteNames = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
+        private static readonly string[] NoteNames = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
 
         /// <summary>12 notes in one octave.</summary>
         private const int NoteCount = 12;
@@ -78,7 +76,6 @@ namespace CannedBytes.Midi.Message
 
                 CompileFullNoteName();
             }
-
         }
 
         /// <summary>
@@ -100,7 +97,6 @@ namespace CannedBytes.Midi.Message
         {
             fullNoteName = NoteName + Octave.ToString(CultureInfo.InvariantCulture);
             RaisePropertyChanged(nameof(FullNoteName));
-
         }
 
         /// <summary>
@@ -142,10 +138,7 @@ namespace CannedBytes.Midi.Message
         /// </summary>
         public int NoteNumber
         {
-            get
-            {
-                return this.noteNumber;
-            }
+            get { return this.noteNumber; }
 
             set
             {
@@ -181,10 +174,7 @@ namespace CannedBytes.Midi.Message
         /// </summary>
         public string NoteName
         {
-            get
-            {
-                return this.noteName;
-            }
+            get { return this.noteName; }
 
             set
             {
@@ -203,10 +193,7 @@ namespace CannedBytes.Midi.Message
         /// </summary>
         public int Octave
         {
-            get
-            {
-                return octave;
-            }
+            get { return octave; }
 
             set
             {
@@ -230,10 +217,7 @@ namespace CannedBytes.Midi.Message
         /// An octave offset of -2 is also common.</remarks>
         public int OctaveOffset
         {
-            get
-            {
-                return octaveOffset;
-            }
+            get { return octaveOffset; }
 
             set
             {

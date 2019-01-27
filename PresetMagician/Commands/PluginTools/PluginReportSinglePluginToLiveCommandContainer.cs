@@ -2,7 +2,6 @@
 using System.Linq;
 using Catel.Logging;
 using Catel.MVVM;
-using PresetMagician.Models;
 using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
 using SharedModels;
@@ -15,14 +14,15 @@ namespace PresetMagician
     {
         protected override ILog _log { get; set; } = LogManager.GetCurrentClassLogger();
 
-        public PluginToolsReportSinglePluginToLiveCommandContainer(ICommandManager commandManager, IVstService vstService,
+        public PluginToolsReportSinglePluginToLiveCommandContainer(ICommandManager commandManager,
+            IVstService vstService,
             ILicenseService licenseService, IApplicationService applicationService,
-            IRuntimeConfigurationService runtimeConfigurationService) : base(Commands.PluginTools.ReportSinglePluginToLive, commandManager, vstService, licenseService,
+            IRuntimeConfigurationService runtimeConfigurationService) : base(
+            Commands.PluginTools.ReportSinglePluginToLive, commandManager, vstService, licenseService,
             applicationService, runtimeConfigurationService)
         {
-            
         }
-        
+
         protected override bool CanExecute(object parameter)
         {
             return true;

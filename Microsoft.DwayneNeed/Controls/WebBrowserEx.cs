@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Controls;
 using System.Windows;
-using System.Windows.Media;
+using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Media;
 using Microsoft.DwayneNeed.Extensions;
 using Microsoft.DwayneNeed.Interop;
 
@@ -54,15 +51,9 @@ namespace Microsoft.DwayneNeed.Controls
         /// </summary>
         public CopyBitsBehavior CopyBitsBehavior
         {
-            get
-            {
-                return (CopyBitsBehavior)GetValue(CopyBitsBehaviorProperty);
-            }
+            get { return (CopyBitsBehavior) GetValue(CopyBitsBehaviorProperty); }
 
-            set
-            {
-                SetValue(CopyBitsBehaviorProperty, value);
-            }
+            set { SetValue(CopyBitsBehaviorProperty, value); }
         }
 
         /// <summary>
@@ -70,15 +61,9 @@ namespace Microsoft.DwayneNeed.Controls
         /// </summary>
         public bool SuppressScriptErrors
         {
-            get
-            {
-                return (bool)GetValue(SuppressScriptErrorsProperty);
-            }
+            get { return (bool) GetValue(SuppressScriptErrorsProperty); }
 
-            set
-            {
-                SetValue(SuppressScriptErrorsProperty, value);
-            }
+            set { SetValue(SuppressScriptErrorsProperty, value); }
         }
 
         /// <summary>
@@ -86,29 +71,21 @@ namespace Microsoft.DwayneNeed.Controls
         /// </summary>
         public bool SuppressEraseBackground
         {
-            get
-            {
-                return (bool)GetValue(SuppressEraseBackgroundProperty);
-            }
+            get { return (bool) GetValue(SuppressEraseBackgroundProperty); }
 
-            set
-            {
-                SetValue(SuppressEraseBackgroundProperty, value);
-            }
+            set { SetValue(SuppressEraseBackgroundProperty, value); }
         }
 
         public WebBrowser WebBrowser
         {
-            get
-            {
-                return _webBrowser;
-            }
+            get { return _webBrowser; }
         }
 
         static WebBrowserEx()
         {
             // Look up the style for this control by using its type as its key.
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(WebBrowserEx), new FrameworkPropertyMetadata(typeof(WebBrowserEx)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(WebBrowserEx),
+                new FrameworkPropertyMetadata(typeof(WebBrowserEx)));
         }
 
         public WebBrowserEx()
@@ -138,15 +115,13 @@ namespace Microsoft.DwayneNeed.Controls
             Binding bindingSuppressEraseBackground = new Binding("SuppressEraseBackground");
             bindingSuppressEraseBackground.Source = this;
             bindingSuppressEraseBackground.Mode = BindingMode.TwoWay;
-            _webBrowser.SetBinding(WebBrowserExtensions.SuppressEraseBackgroundProperty, bindingSuppressEraseBackground);
+            _webBrowser.SetBinding(WebBrowserExtensions.SuppressEraseBackgroundProperty,
+                bindingSuppressEraseBackground);
         }
 
         protected override int VisualChildrenCount
         {
-            get
-            {
-                return 1;
-            }
+            get { return 1; }
         }
 
         protected override Visual GetVisualChild(int index)

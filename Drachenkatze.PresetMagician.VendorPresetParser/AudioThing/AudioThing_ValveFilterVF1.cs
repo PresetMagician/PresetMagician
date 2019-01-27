@@ -16,7 +16,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
         {
             return RootBank.CreateRecursive(BankNameFactory);
         }
-        
+
         protected override string GetParseDirectory()
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),

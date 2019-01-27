@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Microsoft.DwayneNeed.Numerics;
 
 namespace Microsoft.DwayneNeed.Geometry
 {
@@ -32,10 +30,10 @@ namespace Microsoft.DwayneNeed.Geometry
         {
             T nZero = default(T);
 
-            foreach(T extent in extents)
+            foreach (T extent in extents)
             {
                 dynamic nExtent = extent;
-                if(nExtent < nZero)
+                if (nExtent < nZero)
                 {
                     throw new InvalidOperationException("Size extents may not be negative.");
                 }
@@ -46,10 +44,7 @@ namespace Microsoft.DwayneNeed.Geometry
 
         public int Dimensions
         {
-            get
-            {
-                return _extents == null ? 0 : _extents.Length;
-            }
+            get { return _extents == null ? 0 : _extents.Length; }
         }
 
         public T GetExtent(int dimension)

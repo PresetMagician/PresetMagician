@@ -10,5 +10,4 @@
         public byte Red;
         public byte Alpha;
     }
-
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Microsoft.DwayneNeed.Win32.Gdi32
+﻿namespace Microsoft.DwayneNeed.Win32.Gdi32
 {
     public enum QUALITY : int
     {
@@ -42,7 +37,7 @@ namespace Microsoft.DwayneNeed.Win32.Gdi32
         /// size of the font is not too small or too large.
         /// </summary>
         ANTIALIASED = 4,
- 
+
         /// <summary>
         /// If set, text is rendered (when possible) using ClearType antialiasing method. See Remarks for more information.
         /// </summary>

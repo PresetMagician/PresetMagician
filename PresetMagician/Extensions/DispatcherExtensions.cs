@@ -1,20 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace PresetMagician.Extensions
 {
-    using System;
-    using System.Windows.Threading;
-
     /// <summary>
     /// Class with extension methods for <see cref="Dispatcher"/> and <see cref="DispatcherObject"/>.
     /// </summary>
     internal static class DispatcherExtensions
     {
-        public static void RunInDispatcherAsync(this DispatcherObject dispatcher, Action action, DispatcherPriority priority = DispatcherPriority.Normal)
+        public static void RunInDispatcherAsync(this DispatcherObject dispatcher, Action action,
+            DispatcherPriority priority = DispatcherPriority.Normal)
         {
             if (dispatcher == null)
             {
@@ -25,7 +20,8 @@ namespace PresetMagician.Extensions
             dispatcher.Dispatcher.RunInDispatcherAsync(action, priority);
         }
 
-        public static void RunInDispatcherAsync(this Dispatcher dispatcher, Action action, DispatcherPriority priority = DispatcherPriority.Normal)
+        public static void RunInDispatcherAsync(this Dispatcher dispatcher, Action action,
+            DispatcherPriority priority = DispatcherPriority.Normal)
         {
             if (dispatcher == null)
             {
@@ -37,7 +33,8 @@ namespace PresetMagician.Extensions
             }
         }
 
-        public static void RunInDispatcher(this DispatcherObject dispatcher, Action action, DispatcherPriority priority = DispatcherPriority.Normal)
+        public static void RunInDispatcher(this DispatcherObject dispatcher, Action action,
+            DispatcherPriority priority = DispatcherPriority.Normal)
         {
             if (dispatcher == null)
             {
@@ -48,7 +45,8 @@ namespace PresetMagician.Extensions
             dispatcher.Dispatcher.RunInDispatcher(action, priority);
         }
 
-        public static void RunInDispatcher(this Dispatcher dispatcher, Action action, DispatcherPriority priority = DispatcherPriority.Normal)
+        public static void RunInDispatcher(this Dispatcher dispatcher, Action action,
+            DispatcherPriority priority = DispatcherPriority.Normal)
         {
             if (dispatcher == null
                 || dispatcher.CheckAccess())

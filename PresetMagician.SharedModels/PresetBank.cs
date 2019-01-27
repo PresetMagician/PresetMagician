@@ -1,15 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Diagnostics;
 using System.Linq;
 using Catel.Collections;
 using Catel.Data;
 
 namespace SharedModels
 {
-    
-
     public class PresetBank : ObservableObject
     {
         public string BankName { get; set; }
@@ -19,7 +15,7 @@ namespace SharedModels
         {
             PresetBanks = new FastObservableCollection<PresetBank>();
 
-            PresetBanks.CollectionChanged += delegate(object sender, NotifyCollectionChangedEventArgs e)                    
+            PresetBanks.CollectionChanged += delegate(object sender, NotifyCollectionChangedEventArgs e)
             {
                 if (e.Action == NotifyCollectionChangedAction.Add)
                 {
@@ -37,19 +33,18 @@ namespace SharedModels
             return PresetBanks.First();
         }
 
-        public List<string> GetBankPath ()
+        public List<string> GetBankPath()
         {
-           
-                List<string> bankPaths = new List<string>();
+            List<string> bankPaths = new List<string>();
 
-                if (ParentBank != null && ParentBank.ParentBank != null)
-                {
-                    bankPaths.AddRange(ParentBank.GetBankPath());
-                }
+            if (ParentBank != null && ParentBank.ParentBank != null)
+            {
+                bankPaths.AddRange(ParentBank.GetBankPath());
+            }
 
-                bankPaths.Add(BankName);
+            bankPaths.Add(BankName);
 
-                return bankPaths;
+            return bankPaths;
         }
 
         public string BankPath
@@ -66,7 +61,7 @@ namespace SharedModels
         {
             var bankParts = bankPath.Split('/').ToList();
             PresetBank foundBank = null;
-            
+
             foreach (var presetBank in PresetBanks)
             {
                 if (presetBank.BankName == bankParts.First())
@@ -81,12 +76,12 @@ namespace SharedModels
                 foundBank = new PresetBank(bankParts.First());
                 PresetBanks.Add(foundBank);
             }
-            
+
             bankParts.RemoveAt(0);
 
             if (bankParts.Count > 0)
             {
-                return foundBank.CreateRecursive(string.Join<string>("/", bankParts));    
+                return foundBank.CreateRecursive(string.Join<string>("/", bankParts));
             }
 
             return foundBank;

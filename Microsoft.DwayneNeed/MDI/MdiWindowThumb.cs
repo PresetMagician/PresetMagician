@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Windows;
 using System.Windows.Controls.Primitives;
-using System.Windows;
 using System.Windows.Input;
 
 namespace Microsoft.DwayneNeed.MDI
@@ -18,15 +14,15 @@ namespace Microsoft.DwayneNeed.MDI
             /* Value Type:           */ typeof(MdiWindowEdge),
             /* Owner Type:           */ typeof(MdiWindowThumb),
             /* Metadata:             */ new FrameworkPropertyMetadata(
-            /*     Default Value:    */ MdiWindowEdge.None,
-            /*     Change Callback:  */ (s, e) => ((MdiWindowThumb)s).OnInteractiveEdgesChanged(e)));
+                /*     Default Value:    */ MdiWindowEdge.None,
+                /*     Change Callback:  */ (s, e) => ((MdiWindowThumb) s).OnInteractiveEdgesChanged(e)));
 
         /// <summary>
         ///     The edge that the thumb should interact with.
         /// </summary>
         public MdiWindowEdge InteractiveEdges
         {
-            get { return (MdiWindowEdge)GetValue(InteractiveEdgesProperty); }
+            get { return (MdiWindowEdge) GetValue(InteractiveEdgesProperty); }
             set { SetValue(InteractiveEdgesProperty, value); }
         }
 
@@ -38,33 +34,38 @@ namespace Microsoft.DwayneNeed.MDI
             /* Value Type:           */ typeof(RoutedCommand),
             /* Owner Type:           */ typeof(MdiWindowThumb),
             /* Metadata:             */ new FrameworkPropertyMetadata(
-            /*     Default Value:    */ null));
+                /*     Default Value:    */ null));
 
         /// <summary>
         ///     The command to raise when the thumb is double clicked.
         /// </summary>
         public RoutedCommand DoubleClickCommand
         {
-            get { return (RoutedCommand)GetValue(DoubleClickCommandProperty); }
+            get { return (RoutedCommand) GetValue(DoubleClickCommandProperty); }
             set { SetValue(DoubleClickCommandProperty, value); }
         }
 
         static MdiWindowThumb()
         {
             // Look up the style for this control by using its type as its key.
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(MdiWindowThumb), new FrameworkPropertyMetadata(typeof(MdiWindowThumb)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(MdiWindowThumb),
+                new FrameworkPropertyMetadata(typeof(MdiWindowThumb)));
 
             EventManager.RegisterClassHandler(
                 typeof(MdiWindowThumb),
                 Thumb.DragDeltaEvent,
-                (DragDeltaEventHandler)((s, e) => ((MdiWindowThumb)s).OnDragDelta(e)));
+                (DragDeltaEventHandler) ((s, e) => ((MdiWindowThumb) s).OnDragDelta(e)));
 
             FrameworkElement.CursorProperty.OverrideMetadata(
                 /* Type:                 */ typeof(MdiWindowThumb),
                 /* Metadata:             */ new FrameworkPropertyMetadata(
-                /*     Default Value:    */ Cursors.Arrow,
-                /*     Changed Callback: */ (PropertyChangedCallback)delegate(DependencyObject d, DependencyPropertyChangedEventArgs e) { return; },
-                /*     Coerce Callback:  */ (d, v) => ((MdiWindowThumb)d).OnCoerceCursor(v)));
+                    /*     Default Value:    */ Cursors.Arrow,
+                    /*     Changed Callback: */
+                    (PropertyChangedCallback) delegate(DependencyObject d, DependencyPropertyChangedEventArgs e)
+                    {
+                        return;
+                    },
+                    /*     Coerce Callback:  */ (d, v) => ((MdiWindowThumb) d).OnCoerceCursor(v)));
         }
 
         protected override void OnMouseDoubleClick(MouseButtonEventArgs e)
@@ -93,7 +94,7 @@ namespace Microsoft.DwayneNeed.MDI
 
         private object OnCoerceCursor(object baseValue)
         {
-            Cursor cursor = (Cursor)baseValue;
+            Cursor cursor = (Cursor) baseValue;
 
             // Only coerce the default value.
             ValueSource vs = DependencyPropertyHelper.GetValueSource(this, FrameworkElement.CursorProperty);

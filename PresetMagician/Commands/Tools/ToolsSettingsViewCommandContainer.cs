@@ -1,9 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Catel.IoC;
-using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
-using PresetMagician.Helpers;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.ViewModels;
 
@@ -15,8 +12,11 @@ namespace PresetMagician
     {
         private readonly IRuntimeConfigurationService _runtimeConfigurationService;
 
-        public ToolsSettingsViewCommandContainer(IRuntimeConfigurationService runtimeConfigurationService,ICommandManager commandManager, IUIVisualizerService uiVisualizerService, IViewModelFactory viewModelFactory)
-            : base(Commands.Tools.SettingsView, nameof(SettingsViewModel),commandManager, uiVisualizerService, viewModelFactory)
+        public ToolsSettingsViewCommandContainer(IRuntimeConfigurationService runtimeConfigurationService,
+            ICommandManager commandManager, IUIVisualizerService uiVisualizerService,
+            IViewModelFactory viewModelFactory)
+            : base(Commands.Tools.SettingsView, nameof(SettingsViewModel), commandManager, uiVisualizerService,
+                viewModelFactory)
         {
             _runtimeConfigurationService = runtimeConfigurationService;
         }

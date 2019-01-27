@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Microsoft.DwayneNeed.Win32.Kernel32
 {
@@ -16,6 +13,6 @@ namespace Microsoft.DwayneNeed.Win32.Kernel32
         COMMIT = 0x8000000,
         NOCACHE = 0x10000000,
         WRITECOMBINE = 0x40000000,
-        LARGE_PAGES = unchecked((int)0x80000000)
+        LARGE_PAGES = unchecked((int) 0x80000000)
     }
 }

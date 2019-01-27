@@ -6,12 +6,10 @@
 
 namespace PresetMagician.Services.EventArgs
 {
-    using System;
-
     /// <summary>
     /// The configuration changed event args class.
     /// </summary>
-    public class StartupActionChangedEventArgs : EventArgs
+    public class StartupActionChangedEventArgs : System.EventArgs
     {
         public StartupActionChangedEventArgs(string newValue)
         {

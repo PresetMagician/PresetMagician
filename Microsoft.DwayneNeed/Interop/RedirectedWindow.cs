@@ -1,21 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Interop;
-using System.Windows;
-using Microsoft.DwayneNeed.Extensions;
 using System.Diagnostics;
-using System.Windows.Media.Imaging;
+using System.Runtime.InteropServices;
+using System.Windows.Interop;
 using System.Windows.Media;
-using System.Windows.Threading;
-using System.ComponentModel;
-using Microsoft.DwayneNeed;
-using Microsoft.DwayneNeed.Win32.User32;
+using System.Windows.Media.Imaging;
+using Microsoft.DwayneNeed.Win32;
 using Microsoft.DwayneNeed.Win32.Gdi32;
 using Microsoft.DwayneNeed.Win32.Kernel32;
-using Microsoft.DwayneNeed.Win32;
-using System.Runtime.InteropServices;
+using Microsoft.DwayneNeed.Win32.User32;
 
 namespace Microsoft.DwayneNeed.Interop
 {
@@ -26,21 +18,17 @@ namespace Microsoft.DwayneNeed.Interop
         /// </summary>
         public byte Alpha
         {
-            get
-            {
-                return _alpha;
-            }
+            get { return _alpha; }
 
             set
             {
-                if(value != _alpha)
+                if (value != _alpha)
                 {
                     _alpha = value;
 
                     SetLayeredWindowAttributes(_alpha);
                 }
             }
-
         }
 
         /// <summary>
@@ -48,19 +36,16 @@ namespace Microsoft.DwayneNeed.Interop
         /// </summary>
         public bool IsHitTestable
         {
-            get
-            {
-                return _isHitTestable;
-            }
+            get { return _isHitTestable; }
 
             set
             {
-                if(value != _isHitTestable)
+                if (value != _isHitTestable)
                 {
                     _isHitTestable = value;
 
                     WS_EX exStyle = (WS_EX) NativeMethods.GetWindowLong(Handle, GWL.EXSTYLE);
-                    if(_isHitTestable)
+                    if (_isHitTestable)
                     {
                         exStyle &= ~WS_EX.TRANSPARENT;
                     }
@@ -68,6 +53,7 @@ namespace Microsoft.DwayneNeed.Interop
                     {
                         exStyle |= WS_EX.TRANSPARENT;
                     }
+
                     NativeMethods.SetWindowLong(Handle, GWL.EXSTYLE, (int) exStyle);
                 }
             }
@@ -182,7 +168,7 @@ namespace Microsoft.DwayneNeed.Interop
                 PAGE.READWRITE,
                 SEC.NONE,
                 0,
-                (uint)size,
+                (uint) size,
                 null);
 
 
@@ -195,7 +181,7 @@ namespace Microsoft.DwayneNeed.Interop
             bmi.biCompression = BI.RGB;
 
             IntPtr hdcScreen = NativeMethods.GetDC(HWND.NULL);
-            
+
             _hBitmap = NativeMethods.CreateDIBSection(
                 hdcScreen,
                 ref bmi,

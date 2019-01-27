@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Microsoft.DwayneNeed.Win32.Kernel32
+﻿namespace Microsoft.DwayneNeed.Win32.Kernel32
 {
     public enum PAGE : int
     {

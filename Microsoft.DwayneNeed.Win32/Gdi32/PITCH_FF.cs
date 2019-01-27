@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Microsoft.DwayneNeed.Win32.Gdi32
+﻿namespace Microsoft.DwayneNeed.Win32.Gdi32
 {
     /// <summary>
     /// A union of a PITCH and a FF value.
@@ -12,7 +7,7 @@ namespace Microsoft.DwayneNeed.Win32.Gdi32
     {
         public PITCH_FF(PITCH pitch = PITCH.DEFAULT, FF family = FF.DONTCARE)
         {
-            _value = (int)pitch | (int)family;
+            _value = (int) pitch | (int) family;
         }
 
         public static implicit operator PITCH_FF(PITCH pitch)
@@ -27,10 +22,7 @@ namespace Microsoft.DwayneNeed.Win32.Gdi32
 
         public int Value
         {
-            get
-            {
-                return _value;
-            }
+            get { return _value; }
         }
 
         private int _value;

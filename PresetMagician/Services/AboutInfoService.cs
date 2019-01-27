@@ -1,10 +1,8 @@
-using System;
 using Orchestra.Models;
 using Orchestra.Services;
 
 namespace PresetMagician.Services
 {
-
     internal class AboutInfoService : IAboutInfoService
     {
         public AboutInfo GetAboutInfo()

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Microsoft.DwayneNeed.Numerics;
 
 namespace Microsoft.DwayneNeed.Geometry
 {
@@ -21,7 +19,7 @@ namespace Microsoft.DwayneNeed.Geometry
     public struct Vector<T> : IVector<T>
     {
         public Vector(params T[] deltas)
-            : this((IEnumerable<T>)deltas)
+            : this((IEnumerable<T>) deltas)
         {
         }
 
@@ -32,10 +30,7 @@ namespace Microsoft.DwayneNeed.Geometry
 
         public int Dimensions
         {
-            get
-            {
-                return _deltas == null ? 0 : _deltas.Length;
-            }
+            get { return _deltas == null ? 0 : _deltas.Length; }
         }
 
         public T GetDelta(int dimension)

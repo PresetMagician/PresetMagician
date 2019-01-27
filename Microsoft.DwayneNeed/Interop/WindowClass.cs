@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.ComponentModel;
-using System.Runtime.InteropServices;
 using System.Diagnostics;
-using Microsoft.DwayneNeed.Win32.User32;
-using Microsoft.DwayneNeed.Win32.ComCtl32;
+using System.Runtime.InteropServices;
 using Microsoft.DwayneNeed.Win32;
+using Microsoft.DwayneNeed.Win32.ComCtl32;
+using Microsoft.DwayneNeed.Win32.User32;
 
 namespace Microsoft.DwayneNeed.Interop
 {
@@ -24,97 +21,58 @@ namespace Microsoft.DwayneNeed.Interop
 
         public string Name
         {
-            get
-            {
-                return _wcex.lpszClassName;
-            }
+            get { return _wcex.lpszClassName; }
         }
 
         public bool EnableDoubleClickMessages
         {
-            get
-            {
-                return (_wcex.style & CS.DBLCLKS) == CS.DBLCLKS;
-            }
+            get { return (_wcex.style & CS.DBLCLKS) == CS.DBLCLKS; }
 
-            set
-            {
-                _wcex.style |= CS.DBLCLKS;
-            }
+            set { _wcex.style |= CS.DBLCLKS; }
         }
 
         public bool RedrawWindowOnVerticalChange
         {
-            get
-            {
-                return (_wcex.style & CS.VREDRAW) == CS.VREDRAW;
-            }
+            get { return (_wcex.style & CS.VREDRAW) == CS.VREDRAW; }
 
-            set
-            {
-                _wcex.style |= CS.VREDRAW;
-            }
+            set { _wcex.style |= CS.VREDRAW; }
         }
 
         public bool RedrawWindowOnHorizontalChange
         {
-            get
-            {
-                return (_wcex.style & CS.HREDRAW) == CS.HREDRAW;
-            }
+            get { return (_wcex.style & CS.HREDRAW) == CS.HREDRAW; }
 
-            set
-            {
-                _wcex.style |= CS.HREDRAW;
-            }
+            set { _wcex.style |= CS.HREDRAW; }
         }
 
         public bool CacheBackgroundBitmap
         {
-            get
-            {
-                return (_wcex.style & CS.SAVEBITS) == CS.SAVEBITS;
-            }
+            get { return (_wcex.style & CS.SAVEBITS) == CS.SAVEBITS; }
 
-            set
-            {
-                _wcex.style |= CS.SAVEBITS;
-            }
+            set { _wcex.style |= CS.SAVEBITS; }
         }
 
         public bool UseParentClippingRect
         {
-            get
-            {
-                return (_wcex.style & CS.PARENTDC) == CS.PARENTDC;
-            }
+            get { return (_wcex.style & CS.PARENTDC) == CS.PARENTDC; }
 
-            set
-            {
-                _wcex.style |= CS.PARENTDC;
-            }
+            set { _wcex.style |= CS.PARENTDC; }
         }
 
         public bool EnableDropShadow
         {
-            get
-            {
-                return (_wcex.style & CS.DROPSHADOW) == CS.DROPSHADOW;
-            }
+            get { return (_wcex.style & CS.DROPSHADOW) == CS.DROPSHADOW; }
 
-            set
-            {
-                _wcex.style |= CS.DROPSHADOW;
-            }
+            set { _wcex.style |= CS.DROPSHADOW; }
         }
 
         public WindowClassType Type
         {
             get
             {
-                return (_wcex.style & CS.GLOBALCLASS) == CS.GLOBALCLASS ? 
-                    WindowClassType.ApplicationGlobal : 
-                    WindowClassType.ApplicationLocal;
+                return (_wcex.style & CS.GLOBALCLASS) == CS.GLOBALCLASS
+                    ? WindowClassType.ApplicationGlobal
+                    : WindowClassType.ApplicationLocal;
             }
 
             set
@@ -181,27 +139,7 @@ namespace Microsoft.DwayneNeed.Interop
 
         public int ExtraClassBytes
         {
-            get
-            {
-                return _wcex.cbClsExtra;
-            }
-
-            set
-            {
-                if(value < 0)
-                {
-                    throw new ArgumentOutOfRangeException();
-                }
-                _wcex.cbClsExtra = value;
-            }
-        }
-
-        public int ExtraWindowBytes
-        {
-            get
-            {
-                return _wcex.cbWndExtra;
-            }
+            get { return _wcex.cbClsExtra; }
 
             set
             {
@@ -209,21 +147,31 @@ namespace Microsoft.DwayneNeed.Interop
                 {
                     throw new ArgumentOutOfRangeException();
                 }
+
+                _wcex.cbClsExtra = value;
+            }
+        }
+
+        public int ExtraWindowBytes
+        {
+            get { return _wcex.cbWndExtra; }
+
+            set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentOutOfRangeException();
+                }
+
                 _wcex.cbWndExtra = value;
             }
         }
 
         public IntPtr Background
         {
-            get
-            {
-                return _wcex.hbrBackground;
-            }
+            get { return _wcex.hbrBackground; }
 
-            set
-            {
-                _wcex.hbrBackground = value;
-            }
+            set { _wcex.hbrBackground = value; }
         }
 
         public void BeginInit()
@@ -262,7 +210,7 @@ namespace Microsoft.DwayneNeed.Interop
         {
             GCHandle gcHandle = new GCHandle();
             IntPtr lpCreateParam = IntPtr.Zero;
-            if(windowParams.Tag != null)
+            if (windowParams.Tag != null)
             {
                 gcHandle = GCHandle.Alloc(windowParams.Tag);
                 lpCreateParam = GCHandle.ToIntPtr(gcHandle);
@@ -311,8 +259,7 @@ namespace Microsoft.DwayneNeed.Interop
         private bool? _initializationState;
         private WNDCLASSEX _wcex;
         private short _atom;
-        
-        [ThreadStatic]
-        private TWindow _createdWindow;
+
+        [ThreadStatic] private TWindow _createdWindow;
     }
 }

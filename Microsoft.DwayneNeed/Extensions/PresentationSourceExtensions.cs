@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Media;
 
@@ -13,7 +10,8 @@ namespace Microsoft.DwayneNeed.Extensions
         ///     Convert a point from "client" coordinate space of a window into
         ///     the coordinate space of the specified element of the same window.
         /// </summary>
-        public static Point TransformClientToDescendant(this PresentationSource presentationSource, Point point, Visual descendant)
+        public static Point TransformClientToDescendant(this PresentationSource presentationSource, Point point,
+            Visual descendant)
         {
             Point pt = TransformClientToRoot(presentationSource, point);
             return presentationSource.RootVisual.TransformToDescendant(descendant).Transform(pt);
@@ -24,7 +22,8 @@ namespace Microsoft.DwayneNeed.Extensions
         ///     into the coordinate space of the specified element of the same
         ///     window.
         /// </summary>
-        public static Rect TransformClientToDescendant(this PresentationSource presentationSource, Rect rect, Visual descendant)
+        public static Rect TransformClientToDescendant(this PresentationSource presentationSource, Rect rect,
+            Visual descendant)
         {
             // Transform all 4 corners.  Since a rectangle is convex, it will
             // remain convex under affine transforms.
@@ -45,7 +44,8 @@ namespace Microsoft.DwayneNeed.Extensions
         ///     Convert a point from the coordinate space of the specified
         ///     element into the "client" coordinate space of the window.
         /// </summary>
-        public static Point TransformDescendantToClient(this PresentationSource presentationSource, Point point, Visual descendant)
+        public static Point TransformDescendantToClient(this PresentationSource presentationSource, Point point,
+            Visual descendant)
         {
             Point pt = descendant.TransformToAncestor(presentationSource.RootVisual).Transform(point);
             return TransformRootToClient(presentationSource, pt);
@@ -55,7 +55,8 @@ namespace Microsoft.DwayneNeed.Extensions
         ///     Convert a rectangle from the coordinate space of the specified
         ///     element into the "client" coordinate space of the window.
         /// </summary>
-        public static Rect TransformDescendantToClient(this PresentationSource presentationSource, Rect rect, Visual descendant)
+        public static Rect TransformDescendantToClient(this PresentationSource presentationSource, Rect rect,
+            Visual descendant)
         {
             // Transform all 4 corners.  Since a rectangle is convex, it will
             // remain convex under affine transforms.

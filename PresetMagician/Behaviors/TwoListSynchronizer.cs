@@ -40,7 +40,8 @@ namespace PresetMagician.Behaviors
         {
         }
 
-        private delegate void ChangeListAction(IList list, NotifyCollectionChangedEventArgs e, Converter<object, object> converter);
+        private delegate void ChangeListAction(IList list, NotifyCollectionChangedEventArgs e,
+            Converter<object, object> converter);
 
         /// <summary>
         /// Starts synchronizing the lists.
@@ -172,7 +173,8 @@ namespace PresetMagician.Behaviors
             AddItems(list, e, converter);
         }
 
-        private void PerformActionOnAllLists(ChangeListAction action, IList sourceList, NotifyCollectionChangedEventArgs collectionChangedArgs)
+        private void PerformActionOnAllLists(ChangeListAction action, IList sourceList,
+            NotifyCollectionChangedEventArgs collectionChangedArgs)
         {
             if (sourceList == _masterList)
             {
@@ -184,7 +186,8 @@ namespace PresetMagician.Behaviors
             }
         }
 
-        private void PerformActionOnList(IList list, ChangeListAction action, NotifyCollectionChangedEventArgs collectionChangedArgs, Converter<object, object> converter)
+        private void PerformActionOnList(IList list, ChangeListAction action,
+            NotifyCollectionChangedEventArgs collectionChangedArgs, Converter<object, object> converter)
         {
             StopListeningForChangeEvents(list);
             action(list, collectionChangedArgs, converter);
@@ -225,7 +228,8 @@ namespace PresetMagician.Behaviors
 
         private bool TargetAndMasterCollectionsAreEqual()
         {
-            return _masterList.Cast<object>().SequenceEqual(_targetList.Cast<object>().Select(item => ConvertFromTargetToMaster(item)));
+            return _masterList.Cast<object>()
+                .SequenceEqual(_targetList.Cast<object>().Select(item => ConvertFromTargetToMaster(item)));
         }
 
         /// <summary>
@@ -243,8 +247,6 @@ namespace PresetMagician.Behaviors
                 SetListValuesFromSource(_targetList, _masterList, ConvertFromTargetToMaster);
             }
         }
-
-
 
 
         /// <summary>

@@ -1,7 +1,4 @@
-using System.Collections.ObjectModel;
 using Drachenkatze.PresetMagician.Utils;
-using Drachenkatze.PresetMagician.VSTHost.VST;
-using PresetMagician.Models;
 using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.Common

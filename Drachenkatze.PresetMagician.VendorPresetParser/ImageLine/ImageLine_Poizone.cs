@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 using Drachenkatze.PresetMagician.VendorPresetParser.Common;
 using JetBrains.Annotations;
 using SharedModels;
@@ -15,12 +14,12 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.ImageLine
         public override List<int> SupportedPlugins => new List<int> {1398896471};
 
         protected override string Extension { get; } = "fxp";
+
         protected override string GetParseDirectory()
         {
             return Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 @"Image-Line\PoiZone\");
-
         }
     }
 }

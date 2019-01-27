@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Media.Media3D;
 using System.Windows;
-using System.Windows.Markup;
-using Microsoft.DwayneNeed.Media;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Media3D;
 using Microsoft.DwayneNeed.Extensions;
+using Microsoft.DwayneNeed.Media;
 using Microsoft.DwayneNeed.Numerics;
 
 namespace Microsoft.DwayneNeed.Shapes
@@ -54,7 +51,7 @@ namespace Microsoft.DwayneNeed.Shapes
 
         public double MinU
         {
-            get { return (double)GetValue(MinUProperty); }
+            get { return (double) GetValue(MinUProperty); }
             set { SetValue(MinUProperty, value); }
         }
 
@@ -63,11 +60,11 @@ namespace Microsoft.DwayneNeed.Shapes
                 "MaxU",
                 typeof(double),
                 typeof(ParametricShape3D),
-                new PropertyMetadata(Math.PI*2, new PropertyChangedCallback(OnPropertyChangedAffectsModel)));
+                new PropertyMetadata(Math.PI * 2, new PropertyChangedCallback(OnPropertyChangedAffectsModel)));
 
         public double MaxU
         {
-            get { return (double)GetValue(MaxUProperty); }
+            get { return (double) GetValue(MaxUProperty); }
             set { SetValue(MaxUProperty, value); }
         }
 
@@ -80,7 +77,7 @@ namespace Microsoft.DwayneNeed.Shapes
 
         public int DivU
         {
-            get { return (int)GetValue(DivUProperty); }
+            get { return (int) GetValue(DivUProperty); }
             set { SetValue(DivUProperty, value); }
         }
 
@@ -93,7 +90,7 @@ namespace Microsoft.DwayneNeed.Shapes
 
         public double MinV
         {
-            get { return (double)GetValue(MinVProperty); }
+            get { return (double) GetValue(MinVProperty); }
             set { SetValue(MinVProperty, value); }
         }
 
@@ -106,7 +103,7 @@ namespace Microsoft.DwayneNeed.Shapes
 
         public double MaxV
         {
-            get { return (double)GetValue(MaxVProperty); }
+            get { return (double) GetValue(MaxVProperty); }
             set { SetValue(MaxVProperty, value); }
         }
 
@@ -119,7 +116,7 @@ namespace Microsoft.DwayneNeed.Shapes
 
         public int DivV
         {
-            get { return (int)GetValue(DivVProperty); }
+            get { return (int) GetValue(DivVProperty); }
             set { SetValue(DivVProperty, value); }
         }
 
@@ -136,10 +133,10 @@ namespace Microsoft.DwayneNeed.Shapes
 
             double spanU = (maxU - minU);
             double spanV = (maxV - minV);
-            int stride = divU+1;
+            int stride = divU + 1;
 
             MeshGeometry3D mesh = new MeshGeometry3D();
-            
+
             // Create memoized wrappers for each of the u and v divisions.
             // This is a massive performance improvement in time complexity.
             List<MemoizeMath> uDivisions = new List<MemoizeMath>();
@@ -157,12 +154,12 @@ namespace Microsoft.DwayneNeed.Shapes
             }
 
             // Iterate through the (u,v) space and sample the parametric surface.
-            foreach(MemoizeMath v in vDivisions)
+            foreach (MemoizeMath v in vDivisions)
             {
-                foreach(MemoizeMath u in uDivisions)
+                foreach (MemoizeMath u in uDivisions)
                 {
                     // Project the (u,v) points into 3D space.
-                    Point3D position = Project(u,v);
+                    Point3D position = Project(u, v);
                     mesh.Positions.Add(position);
                 }
             }
@@ -173,8 +170,8 @@ namespace Microsoft.DwayneNeed.Shapes
             {
                 for (int iU = 0; iU <= divU; iU++)
                 {
-                    double tu = iU/(double)divU;
-                    double tv = iV/(double)divV;
+                    double tu = iU / (double) divU;
+                    double tv = iV / (double) divV;
                     mesh.TextureCoordinates.Add(new Point(tu, tv));
                 }
             }
@@ -199,8 +196,9 @@ namespace Microsoft.DwayneNeed.Shapes
                     maxQuadHeight = Math.Max(vStep.Length, maxQuadHeight);
 
                     // Process each quad in the (u,v) grid into two triangles.
-                    var quad = new Tuple<int, int, int, int>(iPosition, iPosition + stride, iPosition + stride + 1, iPosition + 1);
-                    Tuple<int,int,int> tri1, tri2;
+                    var quad = new Tuple<int, int, int, int>(iPosition, iPosition + stride, iPosition + stride + 1,
+                        iPosition + 1);
+                    Tuple<int, int, int> tri1, tri2;
                     GetTrianglesFromQuad(quad, isNWSE, out tri1, out tri2);
 
                     mesh.TriangleIndices.Add(tri1);
@@ -232,7 +230,8 @@ namespace Microsoft.DwayneNeed.Shapes
             return mesh;
         }
 
-        private static void GetTrianglesFromQuad(Tuple<int, int, int, int> quad, bool isNWSE, out Tuple<int, int, int> tri1, out Tuple<int, int, int> tri2)
+        private static void GetTrianglesFromQuad(Tuple<int, int, int, int> quad, bool isNWSE,
+            out Tuple<int, int, int> tri1, out Tuple<int, int, int> tri2)
         {
             if (isNWSE)
             {
@@ -245,15 +244,16 @@ namespace Microsoft.DwayneNeed.Shapes
                 tri2 = new Tuple<int, int, int>(quad.Item2, quad.Item3, quad.Item4);
             }
         }
+
         private static UIElement GetDefaultFrontMaterial(Shape3D shape)
         {
-            ParametricShape3D _this = (ParametricShape3D)shape;
+            ParametricShape3D _this = (ParametricShape3D) shape;
             return _this.GetDefaultMaterial(true);
         }
 
         private static UIElement GetDefaultBackMaterial(Shape3D shape)
         {
-            ParametricShape3D _this = (ParametricShape3D)shape;
+            ParametricShape3D _this = (ParametricShape3D) shape;
             return _this.GetDefaultMaterial(false);
         }
 

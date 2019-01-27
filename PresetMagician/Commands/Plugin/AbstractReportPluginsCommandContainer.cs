@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Net;
@@ -6,11 +7,9 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Catel;
+using Catel.Data;
 using Catel.Logging;
 using Catel.MVVM;
-using System.Collections.Specialized;
-using System.IO;
-using Catel.Data;
 using Newtonsoft.Json.Linq;
 using Orchestra;
 using PresetMagician.Models;

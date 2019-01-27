@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Microsoft.DwayneNeed.Win32.Common
 {
@@ -37,7 +33,7 @@ namespace Microsoft.DwayneNeed.Win32.Common
                 throw new InvalidOperationException("Calling thread does not have access to this handle.");
             }
         }
-        
+
         /// <summary>
         /// Constructor for derived classes to control whether or not the
         /// handle is owned.
@@ -50,10 +46,7 @@ namespace Microsoft.DwayneNeed.Win32.Common
 
         public override bool IsInvalid
         {
-            get
-            {
-                return handle == IntPtr.Zero;
-            }
+            get { return handle == IntPtr.Zero; }
         }
 
         protected sealed override bool ReleaseHandle()

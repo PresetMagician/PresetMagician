@@ -10,7 +10,7 @@ namespace PresetMagician.ViewModels
             Plugin = plugin;
             Title = "Plugin Info for " + Plugin.PluginName;
         }
-        
+
         public Plugin Plugin { get; protected set; }
     }
 }

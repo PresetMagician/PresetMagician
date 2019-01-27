@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Microsoft.DwayneNeed.Numerics
 {
@@ -26,9 +23,20 @@ namespace Microsoft.DwayneNeed.Numerics
             _exponent = exponent;
         }
 
-        public uint UnbiasedValue { get { return _exponent; } }
-        public int BiasedValue { get { return (int)_exponent - (int)Bias; } }
-        public Sign Sign { get { return new Sign(_exponent < Bias); } }
+        public uint UnbiasedValue
+        {
+            get { return _exponent; }
+        }
+
+        public int BiasedValue
+        {
+            get { return (int) _exponent - (int) Bias; }
+        }
+
+        public Sign Sign
+        {
+            get { return new Sign(_exponent < Bias); }
+        }
 
         public const uint Bias = 1023;
 

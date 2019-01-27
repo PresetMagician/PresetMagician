@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Microsoft.DwayneNeed.Threading
 {
@@ -13,9 +10,9 @@ namespace Microsoft.DwayneNeed.Threading
     internal class UIThreadPerfSample
     {
         public UIThreadPerfSample(TimeSpan sampleTime,
-                                  int frameCount,
-                                  Int64 processCycleTime,
-                                  Int64 idleCycleTime)
+            int frameCount,
+            Int64 processCycleTime,
+            Int64 idleCycleTime)
         {
             SampleTime = sampleTime;
             FrameCount = frameCount;

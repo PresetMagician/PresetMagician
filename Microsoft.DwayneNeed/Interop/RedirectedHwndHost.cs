@@ -1,41 +1,35 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Interop;
-using System.ComponentModel;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Input;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Windows.Threading;
-using Microsoft.DwayneNeed.Win32.User32;
-using Microsoft.DwayneNeed.Win32.ComCtl32;
 using Microsoft.DwayneNeed.Extensions;
-using Microsoft.DwayneNeed.Win32.Gdi32;
 using Microsoft.DwayneNeed.Win32;
+using Microsoft.DwayneNeed.Win32.ComCtl32;
+using Microsoft.DwayneNeed.Win32.User32;
 
 namespace Microsoft.DwayneNeed.Interop
 {
     public class RedirectedHwndHost : FrameworkElement, IDisposable, IKeyboardInputSink
     {
         #region RedirectionVisibility
+
         public static readonly DependencyProperty RedirectionVisibilityProperty = DependencyProperty.Register(
             /* Name:                 */ "RedirectionVisibility",
             /* Value Type:           */ typeof(RedirectionVisibility),
             /* Owner Type:           */ typeof(RedirectedHwndHost),
             /* Metadata:             */ new FrameworkPropertyMetadata(
-            /*     Default Value:    */ RedirectionVisibility.Hidden,
-            /*     Property Changed: */ (d, e) => ((RedirectedHwndHost)d).OnRedirectionVisibilityChanged(e)));
+                /*     Default Value:    */ RedirectionVisibility.Hidden,
+                /*     Property Changed: */ (d, e) => ((RedirectedHwndHost) d).OnRedirectionVisibilityChanged(e)));
 
         /// <summary>
         ///     The visibility of the redirection surface.
         /// </summary>
         public RedirectionVisibility RedirectionVisibility
         {
-            get { return (RedirectionVisibility)GetValue(RedirectionVisibilityProperty); }
+            get { return (RedirectionVisibility) GetValue(RedirectionVisibilityProperty); }
             set { SetValue(RedirectionVisibilityProperty, value); }
         }
 
@@ -43,22 +37,25 @@ namespace Microsoft.DwayneNeed.Interop
         {
             UpdateRedirectedWindowSettings(RedirectionVisibility, false);
         }
+
         #endregion
+
         #region IsOutputRedirectionEnabled
+
         public static readonly DependencyProperty IsOutputRedirectionEnabledProperty = DependencyProperty.Register(
             /* Name:                 */ "IsOutputRedirectionEnabled",
             /* Value Type:           */ typeof(bool),
             /* Owner Type:           */ typeof(RedirectedHwndHost),
             /* Metadata:             */ new FrameworkPropertyMetadata(
-            /*     Default Value:    */ false,
-            /*     Property Changed: */ (d,e)=>((RedirectedHwndHost)d).OnIsOutputRedirectionEnabledChanged(e)));
+                /*     Default Value:    */ false,
+                /*     Property Changed: */ (d, e) => ((RedirectedHwndHost) d).OnIsOutputRedirectionEnabledChanged(e)));
 
         /// <summary>
         ///     Whether or not output redirection is enabled.
         /// </summary>
         public bool IsOutputRedirectionEnabled
         {
-            get { return (bool)GetValue(IsOutputRedirectionEnabledProperty); }
+            get { return (bool) GetValue(IsOutputRedirectionEnabledProperty); }
             set { SetValue(IsOutputRedirectionEnabledProperty, value); }
         }
 
@@ -66,91 +63,104 @@ namespace Microsoft.DwayneNeed.Interop
         {
             _outputRedirectionTimer.IsEnabled = (bool) e.NewValue;
         }
+
         #endregion
+
         #region OutputRedirectionPeriod
+
         public static readonly DependencyProperty OutputRedirectionPeriodProperty = DependencyProperty.Register(
             /* Name:                 */ "OutputRedirectionPeriod",
             /* Value Type:           */ typeof(TimeSpan),
             /* Owner Type:           */ typeof(RedirectedHwndHost),
             /* Metadata:             */ new FrameworkPropertyMetadata(
-            /*     Default Value:    */ TimeSpan.FromMilliseconds(30),
-            /*     Property Changed: */ (d,e)=>((RedirectedHwndHost)d).OnOutputRedirectionPeriodChanged(e)));
+                /*     Default Value:    */ TimeSpan.FromMilliseconds(30),
+                /*     Property Changed: */ (d, e) => ((RedirectedHwndHost) d).OnOutputRedirectionPeriodChanged(e)));
 
         /// <summary>
         ///     The period of time to update the output redirection.
         /// </summary>
         public TimeSpan OutputRedirectionPeriod
         {
-            get { return (TimeSpan)GetValue(OutputRedirectionPeriodProperty); }
+            get { return (TimeSpan) GetValue(OutputRedirectionPeriodProperty); }
             set { SetValue(OutputRedirectionPeriodProperty, value); }
         }
 
         private void OnOutputRedirectionPeriodChanged(DependencyPropertyChangedEventArgs e)
         {
-            _outputRedirectionTimer.Interval = (TimeSpan)e.NewValue;
+            _outputRedirectionTimer.Interval = (TimeSpan) e.NewValue;
         }
+
         #endregion
+
         #region IsInputRedirectionEnabled
+
         public static readonly DependencyProperty IsInputRedirectionEnabledProperty = DependencyProperty.Register(
             /* Name:                 */ "IsInputRedirectionEnabled",
             /* Value Type:           */ typeof(bool),
             /* Owner Type:           */ typeof(RedirectedHwndHost),
             /* Metadata:             */ new FrameworkPropertyMetadata(
-            /*     Default Value:    */ false,
-            /*     Property Changed: */ (d, e) => ((RedirectedHwndHost)d).OnIsInputRedirectionEnabledChanged(e)));
+                /*     Default Value:    */ false,
+                /*     Property Changed: */ (d, e) => ((RedirectedHwndHost) d).OnIsInputRedirectionEnabledChanged(e)));
 
         /// <summary>
         ///     Whether or not input redirection is enabled.
         /// </summary>
         public bool IsInputRedirectionEnabled
         {
-            get { return (bool)GetValue(IsInputRedirectionEnabledProperty); }
+            get { return (bool) GetValue(IsInputRedirectionEnabledProperty); }
             set { SetValue(IsInputRedirectionEnabledProperty, value); }
         }
 
         private void OnIsInputRedirectionEnabledChanged(DependencyPropertyChangedEventArgs e)
         {
-            _inputRedirectionTimer.IsEnabled = (bool)e.NewValue;
+            _inputRedirectionTimer.IsEnabled = (bool) e.NewValue;
         }
+
         #endregion
+
         #region InputRedirectionPeriod
+
         public static readonly DependencyProperty InputRedirectionPeriodProperty = DependencyProperty.Register(
             /* Name:                 */ "InputRedirectionPeriod",
             /* Value Type:           */ typeof(TimeSpan),
             /* Owner Type:           */ typeof(RedirectedHwndHost),
             /* Metadata:             */ new FrameworkPropertyMetadata(
-            /*     Default Value:    */ TimeSpan.FromMilliseconds(30),
-            /*     Property Changed: */ (d, e) => ((RedirectedHwndHost)d).OnInputRedirectionPeriodChanged(e)));
+                /*     Default Value:    */ TimeSpan.FromMilliseconds(30),
+                /*     Property Changed: */ (d, e) => ((RedirectedHwndHost) d).OnInputRedirectionPeriodChanged(e)));
 
         /// <summary>
         ///     The period of time to update the input redirection.
         /// </summary>
         public TimeSpan InputRedirectionPeriod
         {
-            get { return (TimeSpan)GetValue(InputRedirectionPeriodProperty); }
+            get { return (TimeSpan) GetValue(InputRedirectionPeriodProperty); }
             set { SetValue(InputRedirectionPeriodProperty, value); }
         }
 
         private void OnInputRedirectionPeriodChanged(DependencyPropertyChangedEventArgs e)
         {
-            _inputRedirectionTimer.Interval = (TimeSpan)e.NewValue;
+            _inputRedirectionTimer.Interval = (TimeSpan) e.NewValue;
         }
+
         #endregion
 
         #region CurrentHwndSource
+
         public static readonly DependencyPropertyKey CurrentHwndSourcePropertyKey = DependencyProperty.RegisterReadOnly(
             "CurrentHwndSource",
             typeof(HwndSource),
             typeof(RedirectedHwndHost),
-            new PropertyMetadata(null, (d, e) => ((RedirectedHwndHost)d).OnCurrentHwndSourceChanged(e)));
+            new PropertyMetadata(null, (d, e) => ((RedirectedHwndHost) d).OnCurrentHwndSourceChanged(e)));
 
-        public static readonly DependencyProperty CurrentHwndSourceProperty = CurrentHwndSourcePropertyKey.DependencyProperty;
+        public static readonly DependencyProperty CurrentHwndSourceProperty =
+            CurrentHwndSourcePropertyKey.DependencyProperty;
 
         public HwndSource CurrentHwndSource
         {
-            get { return (HwndSource)GetValue(CurrentHwndSourceProperty); }
+            get { return (HwndSource) GetValue(CurrentHwndSourceProperty); }
             private set { SetValue(CurrentHwndSourcePropertyKey, value); }
         }
+
         #endregion
 
         static RedirectedHwndHost()
@@ -164,7 +174,7 @@ namespace Microsoft.DwayneNeed.Interop
 
         public RedirectedHwndHost()
         {
-            PresentationSource.AddSourceChangedHandler(this, (s, e) => CurrentHwndSource = (HwndSource)e.NewSource);
+            PresentationSource.AddSourceChangedHandler(this, (s, e) => CurrentHwndSource = (HwndSource) e.NewSource);
             Loaded += new RoutedEventHandler(OnLoaded);
 
             _inputRedirectionTimer = new DispatcherTimer(DispatcherPriority.Input);
@@ -186,9 +196,10 @@ namespace Microsoft.DwayneNeed.Interop
         ///     create the child window, the handle is exposed through this
         ///     property.
         /// </remarks>
-        public HWND Handle {get; private set;}
+        public HWND Handle { get; private set; }
 
         #region IDisposable
+
         public void Dispose()
         {
             Dispose(true);
@@ -199,7 +210,7 @@ namespace Microsoft.DwayneNeed.Interop
             GC.SuppressFinalize(this);
         }
 
-        public bool IsDisposed {get; private set;}
+        public bool IsDisposed { get; private set; }
 
         protected virtual void Dispose(bool disposing)
         {
@@ -235,6 +246,7 @@ namespace Microsoft.DwayneNeed.Interop
                 throw new ObjectDisposedException(this.GetType().ToString());
             }
         }
+
         #endregion
 
         protected virtual void OnCurrentHwndSourceChanged(DependencyPropertyChangedEventArgs e)
@@ -242,10 +254,10 @@ namespace Microsoft.DwayneNeed.Interop
             Initialize();
 
             // Unregister the old keyboard input site.
-            IKeyboardInputSite keyboardInputSite = ((IKeyboardInputSink)this).KeyboardInputSite;
+            IKeyboardInputSite keyboardInputSite = ((IKeyboardInputSink) this).KeyboardInputSite;
             if (keyboardInputSite != null)
             {
-                ((IKeyboardInputSink)this).KeyboardInputSite = null;
+                ((IKeyboardInputSink) this).KeyboardInputSite = null;
                 keyboardInputSite.Unregister();
             }
 
@@ -254,7 +266,7 @@ namespace Microsoft.DwayneNeed.Interop
             IKeyboardInputSink sink = CurrentHwndSource;
             if (sink != null)
             {
-                ((IKeyboardInputSink)this).KeyboardInputSite = sink.RegisterKeyboardInputSink(this);
+                ((IKeyboardInputSink) this).KeyboardInputSite = sink.RegisterKeyboardInputSink(this);
             }
 
             // Set the owner of the RedirectedWindow to our CurrentHwndSource.
@@ -262,7 +274,9 @@ namespace Microsoft.DwayneNeed.Interop
             if (CurrentHwndSource != null)
             {
                 HWND hwndSource = new HWND(CurrentHwndSource.Handle);
-                HWND hwndRoot = hwndSource; // User32NativeMethods.GetAncestor(hwndSource, GA.ROOT); // need to get the top-level window?
+                HWND
+                    hwndRoot =
+                        hwndSource; // User32NativeMethods.GetAncestor(hwndSource, GA.ROOT); // need to get the top-level window?
                 NativeMethods.SetWindowLongPtr(
                     _redirectedWindow.Handle,
                     GWL.HWNDPARENT,
@@ -416,7 +430,8 @@ namespace Microsoft.DwayneNeed.Interop
 
                     default:
                     case RedirectionVisibility.Hidden:
-                        _redirectedWindow.Alpha = (byte)1; // Not *quite* invisible, which is important so we can still capture content.
+                        _redirectedWindow.Alpha =
+                            (byte) 1; // Not *quite* invisible, which is important so we can still capture content.
                         _redirectedWindow.IsHitTestable = isMouseOver;
                         break;
                 }
@@ -452,7 +467,7 @@ namespace Microsoft.DwayneNeed.Interop
                         pt = currentHwndSource.TransformClientToRoot(pt);
                         pt = currentHwndSource.RootVisual.TransformToDescendant(this).Transform(pt);
 
-                        ptClient = new POINT { x = (int)Math.Round(pt.X), y = (int)Math.Round(pt.Y) };
+                        ptClient = new POINT {x = (int) Math.Round(pt.X), y = (int) Math.Round(pt.Y)};
                     }
                 }
                 else
@@ -464,7 +479,8 @@ namespace Microsoft.DwayneNeed.Interop
                     Point pt = new Point(xScreen, yScreen);
                     pt = currentHwndSource.TransformScreenToClient(pt);
                     pt = currentHwndSource.TransformClientToRoot(pt);
-                    RedirectedHwndHost hit = ((UIElement)currentHwndSource.RootVisual).InputHitTest(pt) as RedirectedHwndHost;
+                    RedirectedHwndHost hit =
+                        ((UIElement) currentHwndSource.RootVisual).InputHitTest(pt) as RedirectedHwndHost;
 
                     if (hit == this)
                     {
@@ -472,7 +488,7 @@ namespace Microsoft.DwayneNeed.Interop
                         // RedirectedHwndHost element.
                         var xfrm = currentHwndSource.RootVisual.TransformToDescendant(hit);
                         pt = xfrm.Transform(pt);
-                        ptClient = new POINT { x = (int)Math.Round(pt.X), y = (int)Math.Round(pt.Y) };
+                        ptClient = new POINT {x = (int) Math.Round(pt.X), y = (int) Math.Round(pt.Y)};
                     }
                 }
             }
@@ -491,6 +507,7 @@ namespace Microsoft.DwayneNeed.Interop
         }
 
         #region IKeyboardInputSink
+
         bool IKeyboardInputSink.HasFocusWithin()
         {
             return HasFocusWithinCore();
@@ -553,6 +570,7 @@ namespace Microsoft.DwayneNeed.Interop
         {
             return false;
         }
+
         #endregion
 
         private static WindowClass<RedirectedWindow> _redirectionWindowFactory;

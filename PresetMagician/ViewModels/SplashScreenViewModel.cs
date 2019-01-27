@@ -4,16 +4,15 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System;
+using System.Threading.Tasks;
+using Catel;
+using Catel.MVVM;
+using Catel.Services;
 using Orchestra.Services;
 
 namespace PresetMagician.ViewModels
 {
-    using Catel;
-    using Catel.MVVM;
-    using Catel.Services;
-    using System;
-    using System.Threading.Tasks;
-
     /// <summary>
     /// The splash screen view model.
     /// </summary>

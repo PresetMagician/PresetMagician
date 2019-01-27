@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 
 namespace Drachenkatze.PresetMagician.Utils
 {
@@ -68,36 +67,105 @@ namespace Drachenkatze.PresetMagician.Utils
 		} fxSet;
 		 */
 
-        private string chunkMagic;      // 'CcnK'
-        private int byteSize;           // of this chunk, excl. magic + byteSize
-        private string fxMagic;         // 'FxCk', 'FxBk', 'FBCh' or 'FPCh'
+        private string chunkMagic; // 'CcnK'
+        private int byteSize; // of this chunk, excl. magic + byteSize
+        private string fxMagic; // 'FxCk', 'FxBk', 'FBCh' or 'FPCh'
         private int version;
         private string fxID;
         private int fxVersion;
-        private int numPrograms;        // FPCh = numProgams
-        private int numParameters;      // FxCk = numParams
-        private float[] parameters;     // FxCk = float[numParameters]
-        private string name;            // if FPCh
-        private string future;          // if FBCh
+        private int numPrograms; // FPCh = numProgams
+        private int numParameters; // FxCk = numParams
+        private float[] parameters; // FxCk = float[numParameters]
+        private string name; // if FPCh
+        private string future; // if FBCh
         private int chunkSize;
 
         private string chunkData;
         private byte[] chunkDataByteArray;
 
-        public string ChunkMagic { get { return chunkMagic; } set { chunkMagic = value; } }
-        public int ByteSize { get { return byteSize; } set { byteSize = value; } }
-        public string FxMagic { get { return fxMagic; } set { fxMagic = value; } }
-        public int Version { get { return version; } set { version = value; } }
-        public string FxID { get { return fxID; } set { fxID = value; } }
-        public int FxVersion { get { return fxVersion; } set { fxVersion = value; } }
-        public int ProgramCount { get { return numPrograms; } set { numPrograms = value; } }
-        public int ParameterCount { get { return numParameters; } set { numParameters = value; } }
-        public float[] Parameters { get { return parameters; } set { parameters = value; } }
-        public string Name { get { return name; } set { name = value; } }
-        public string Future { get { return future; } set { future = value; } }
-        public int ChunkSize { get { return chunkSize; } set { chunkSize = value; } }
-        public string ChunkData { get { return chunkData; } set { chunkData = value; } }
-        public byte[] ChunkDataByteArray { get { return chunkDataByteArray; } set { chunkDataByteArray = value; } }
+        public string ChunkMagic
+        {
+            get { return chunkMagic; }
+            set { chunkMagic = value; }
+        }
+
+        public int ByteSize
+        {
+            get { return byteSize; }
+            set { byteSize = value; }
+        }
+
+        public string FxMagic
+        {
+            get { return fxMagic; }
+            set { fxMagic = value; }
+        }
+
+        public int Version
+        {
+            get { return version; }
+            set { version = value; }
+        }
+
+        public string FxID
+        {
+            get { return fxID; }
+            set { fxID = value; }
+        }
+
+        public int FxVersion
+        {
+            get { return fxVersion; }
+            set { fxVersion = value; }
+        }
+
+        public int ProgramCount
+        {
+            get { return numPrograms; }
+            set { numPrograms = value; }
+        }
+
+        public int ParameterCount
+        {
+            get { return numParameters; }
+            set { numParameters = value; }
+        }
+
+        public float[] Parameters
+        {
+            get { return parameters; }
+            set { parameters = value; }
+        }
+
+        public string Name
+        {
+            get { return name; }
+            set { name = value; }
+        }
+
+        public string Future
+        {
+            get { return future; }
+            set { future = value; }
+        }
+
+        public int ChunkSize
+        {
+            get { return chunkSize; }
+            set { chunkSize = value; }
+        }
+
+        public string ChunkData
+        {
+            get { return chunkData; }
+            set { chunkData = value; }
+        }
+
+        public byte[] ChunkDataByteArray
+        {
+            get { return chunkDataByteArray; }
+            set { chunkDataByteArray = value; }
+        }
 
         // default constructor
         public FXP()
@@ -123,7 +191,7 @@ namespace Drachenkatze.PresetMagician.Utils
 
             Console.Out.WriteLine("Writing FXP to {0} ...", filePath);
 
-            bf.Write(ChunkMagic);                           // chunkMagic, 4
+            bf.Write(ChunkMagic); // chunkMagic, 4
 
             // check what preset type we are saving
             if (FxMagic == "FBCh")
@@ -131,37 +199,36 @@ namespace Drachenkatze.PresetMagician.Utils
                 // Bank with Chunk Data
                 ByteSize = 152 + ChunkSize;
 
-                bf.Write(ByteSize);                         // byteSize = 4
-                bf.Write(FxMagic);                          // fxMagic, 4
-                bf.Write(Version);                          // version, 4
-                bf.Write(FxID);                             // fxID, 4
-                bf.Write(FxVersion);                        // fxVersion, 4
-                bf.Write(ProgramCount);                     // numPrograms, 4
-                bf.Write(Future, 128);                      // future, 128
-                bf.Write(ChunkSize);                        // chunkSize, 4
+                bf.Write(ByteSize); // byteSize = 4
+                bf.Write(FxMagic); // fxMagic, 4
+                bf.Write(Version); // version, 4
+                bf.Write(FxID); // fxID, 4
+                bf.Write(FxVersion); // fxVersion, 4
+                bf.Write(ProgramCount); // numPrograms, 4
+                bf.Write(Future, 128); // future, 128
+                bf.Write(ChunkSize); // chunkSize, 4
 
-              
-                    // Even though the main FXP is BigEndian format the preset chunk is saved in LittleEndian format
-                    bf.Write(chunkDataByteArray, BinaryFile.ByteOrder.LittleEndian);
+
+                // Even though the main FXP is BigEndian format the preset chunk is saved in LittleEndian format
+                bf.Write(chunkDataByteArray, BinaryFile.ByteOrder.LittleEndian);
             }
             else if (FxMagic == "FPCh")
             {
                 // Preset with Chunk Data
                 ByteSize = 52 + ChunkSize;
 
-                bf.Write(ByteSize);                         // byteSize = 4
-                bf.Write(FxMagic);                          // fxMagic, 4
-                bf.Write(Version);                          // version, 4
-                bf.Write(FxID);                             // fxID, 4
-                bf.Write(FxVersion);                        // fxVersion, 4
-                bf.Write(ProgramCount);                     // numPrograms, 4
-                bf.Write(Name, 28);                         // name, 28
-                bf.Write(ChunkSize);                        // chunkSize, 4
+                bf.Write(ByteSize); // byteSize = 4
+                bf.Write(FxMagic); // fxMagic, 4
+                bf.Write(Version); // version, 4
+                bf.Write(FxID); // fxID, 4
+                bf.Write(FxVersion); // fxVersion, 4
+                bf.Write(ProgramCount); // numPrograms, 4
+                bf.Write(Name, 28); // name, 28
+                bf.Write(ChunkSize); // chunkSize, 4
 
-               
-                    // Even though the main FXP is BigEndian format the preset chunk is saved in LittleEndian format
-                    bf.Write(chunkDataByteArray, BinaryFile.ByteOrder.LittleEndian);
-               
+
+                // Even though the main FXP is BigEndian format the preset chunk is saved in LittleEndian format
+                bf.Write(chunkDataByteArray, BinaryFile.ByteOrder.LittleEndian);
             }
             else if (FxMagic == "FxCk")
             {
@@ -169,18 +236,18 @@ namespace Drachenkatze.PresetMagician.Utils
                 // Bank with Chunk Data
                 ByteSize = 48 + (4 * ParameterCount);
 
-                bf.Write(ByteSize);                         // byteSize = 4
-                bf.Write(FxMagic);                          // fxMagic, 4
-                bf.Write(Version);                          // version, 4
-                bf.Write(FxID);                             // fxID, 4
-                bf.Write(FxVersion);                        // fxVersion, 4
-                bf.Write(ParameterCount);                   // numParameters, 4
-                bf.Write(Name, 28);                         // name, 28
+                bf.Write(ByteSize); // byteSize = 4
+                bf.Write(FxMagic); // fxMagic, 4
+                bf.Write(Version); // version, 4
+                bf.Write(FxID); // fxID, 4
+                bf.Write(FxVersion); // fxVersion, 4
+                bf.Write(ParameterCount); // numParameters, 4
+                bf.Write(Name, 28); // name, 28
 
                 // variable no. of parameters
                 for (int i = 0; i < ParameterCount; i++)
                 {
-                    bf.Write((float)Parameters[i]);
+                    bf.Write((float) Parameters[i]);
                 }
             }
 

@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
-using Catel.MVVM;
 using System.IO;
+using System.Threading.Tasks;
 using Catel;
 using Catel.Logging;
+using Catel.MVVM;
 using Catel.Services;
-using Orc.FileSystem;
-using System.Threading.Tasks;
-using Catel.IoC;
 using Drachenkatze.PresetMagician.NKSF.NKSF;
 using Newtonsoft.Json;
-using Orchestra.Services;
 
 namespace PresetMagician.ViewModels
 {
@@ -33,16 +30,15 @@ namespace PresetMagician.ViewModels
         public NKSFViewModel(IOpenFileService openFileService)
         {
             Argument.IsNotNull(() => openFileService);
-            
+
 
             _openFileService = openFileService;
-           
+
 
             Title = "NKSF Viewer";
 
             OpenNKSFFile = new TaskCommand(OnOpenNKSFFileExecute);
             OpenWithHxD = new TaskCommand(OnOpenWithHxDExecute);
-            
         }
 
         #region Commands
@@ -90,28 +86,24 @@ namespace PresetMagician.ViewModels
 
             Log.Debug("Parse Complete");
         }
-        
+
         public TaskCommand OpenWithHxD { get; set; }
 
-        private async Task OnOpenWithHxDExecute ()
+        private async Task OnOpenWithHxDExecute()
         {
-            
             var tempFile = Path.GetTempFileName();
             File.WriteAllBytes(tempFile, PluginChunk.ToArray());
-          
+
             var process = new Process
             {
                 StartInfo =
                 {
                     FileName = @"C:\Program Files\HxD\HxD.exe",
                     Arguments = tempFile
-                    
                 }
             };
 
             process.Start();
-
-
         }
 
         #endregion Commands

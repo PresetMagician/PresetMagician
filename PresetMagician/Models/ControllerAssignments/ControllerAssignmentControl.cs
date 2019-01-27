@@ -2,7 +2,7 @@ using Drachenkatze.PresetMagician.NKSF.NKSF;
 
 namespace PresetMagician.Models.ControllerAssignments
 {
-    public class ControllerAssignmentControl: ControllerAssignment
+    public class ControllerAssignmentControl : ControllerAssignment
     {
         public ControllerAssignmentControl(ControllerAssignment baseObject)
         {
@@ -12,7 +12,7 @@ namespace PresetMagician.Models.ControllerAssignments
             vflag = baseObject.vflag;
             section = baseObject.section;
         }
-        
+
         public bool LastSectionItem { get; set; }
     }
 }

@@ -21,14 +21,16 @@ namespace PresetMagician.Models
         [JsonProperty] public bool ExportWithAudioPreviews { get; set; } = true;
 
         [JsonProperty] public bool CompressPresetData { get; set; } = true;
-        
+
         [JsonProperty] public bool AutoCreateResources { get; set; }
-        
-        [JsonProperty] public int DefaultPreviewMidiNoteNumber {
+
+        [JsonProperty]
+        public int DefaultPreviewMidiNoteNumber
+        {
             get { return DefaultPreviewMidiNote.NoteNumber; }
             set { DefaultPreviewMidiNote.NoteNumber = value; }
         }
-        
+
         public MidiNoteName DefaultPreviewMidiNote { get; set; } = new MidiNoteName("C3");
 
         [JsonProperty]

@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows;
 
 namespace Microsoft.DwayneNeed.Threading
 {
     public class UIThreadPoolDataGridTemplateColumn : DataGridTemplateColumn
     {
-        public string PropertyName {get;set;}
+        public string PropertyName { get; set; }
 
         protected override FrameworkElement GenerateElement(DataGridCell cell, object dataItem)
         {

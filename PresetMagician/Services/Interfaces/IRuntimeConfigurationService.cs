@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using PresetMagician.Models;
 
 namespace PresetMagician.Services.Interfaces
@@ -6,14 +5,17 @@ namespace PresetMagician.Services.Interfaces
     public interface IRuntimeConfigurationService
     {
         #region Methods
+
         void Load();
         void Save();
         void LoadConfiguration();
-        
+
         void SaveConfiguration();
+
         #endregion
-        
+
         #region Fields
+
         RuntimeConfiguration RuntimeConfiguration { get; }
         ApplicationState ApplicationState { get; }
         RuntimeConfiguration EditableConfiguration { get; }

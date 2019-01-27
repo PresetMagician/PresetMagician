@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
+﻿using System.Runtime.InteropServices;
 
 namespace Microsoft.DwayneNeed.Win32.User32
 {
@@ -17,16 +13,12 @@ namespace Microsoft.DwayneNeed.Win32.User32
     [StructLayout(LayoutKind.Explicit)]
     public struct INPUT
     {
-        [FieldOffset(0)]
-        public INPUTTYPE type;
+        [FieldOffset(0)] public INPUTTYPE type;
 
-        [FieldOffset(4)]
-        public MOUSEINPUT mouseInput;
+        [FieldOffset(4)] public MOUSEINPUT mouseInput;
 
-        [FieldOffset(4)]
-        public KEYBDINPUT keyboardInput;
+        [FieldOffset(4)] public KEYBDINPUT keyboardInput;
 
-        [FieldOffset(4)]
-        public HARDWAREINPUT hardwareInput;
-    } ;
+        [FieldOffset(4)] public HARDWAREINPUT hardwareInput;
+    };
 }

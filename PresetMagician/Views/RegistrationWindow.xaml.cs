@@ -1,8 +1,4 @@
 using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using Catel;
-using Catel.Services;
 using Catel.Windows;
 using PresetMagician.ViewModels;
 
@@ -13,14 +9,13 @@ namespace PresetMagician.Views
         public RegistrationWindow() : this(null)
         {
         }
-        
+
         public RegistrationWindow(RegistrationViewModel viewModel)
             : base(viewModel, DataWindowMode.Custom)
         {
             InitializeComponent();
 
             viewModel.LicenseUpdated += OnLicenseUpdated;
-
         }
 
         private void OnLicenseUpdated(object o, EventArgs e)

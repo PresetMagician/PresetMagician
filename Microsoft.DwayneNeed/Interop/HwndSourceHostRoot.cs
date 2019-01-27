@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Controls;
 using System.Windows;
-using System.Windows.Media;
+using System.Windows.Controls;
 
 namespace Microsoft.DwayneNeed.Interop
 {
@@ -15,11 +11,12 @@ namespace Microsoft.DwayneNeed.Interop
     public class HwndSourceHostRoot : Decorator
     {
         public static readonly DependencyProperty IsLogicalParentEnabledProperty =
-            DependencyProperty.Register("IsLogicalParentEnabled", typeof(bool), typeof(HwndSourceHostRoot), new UIPropertyMetadata(true));
+            DependencyProperty.Register("IsLogicalParentEnabled", typeof(bool), typeof(HwndSourceHostRoot),
+                new UIPropertyMetadata(true));
 
         public bool IsLogicalParentEnabled
         {
-            get { return (bool)GetValue(IsLogicalParentEnabledProperty); }
+            get { return (bool) GetValue(IsLogicalParentEnabledProperty); }
             set { SetValue(IsLogicalParentEnabledProperty, value); }
         }
 

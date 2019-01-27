@@ -13,19 +13,20 @@ namespace Drachenkatze.PresetMagician.Utils
             char[] HexChars = "0123456789ABCDEF".ToCharArray();
 
             int firstHexColumn =
-                  8                   // 8 characters for the address
-                + 3;                  // 3 spaces
+                8 // 8 characters for the address
+                + 3; // 3 spaces
 
             int firstCharColumn = firstHexColumn
-                + bytesPerLine * 3       // - 2 digit for the hexadecimal value and 1 space
-                + (bytesPerLine - 1) / 8 // - 1 extra space every 8 characters from the 9th
-                + 2;                  // 2 spaces 
+                                  + bytesPerLine * 3 // - 2 digit for the hexadecimal value and 1 space
+                                  + (bytesPerLine - 1) / 8 // - 1 extra space every 8 characters from the 9th
+                                  + 2; // 2 spaces 
 
             int lineLength = firstCharColumn
-                + bytesPerLine           // - characters to show the ascii value
-                + Environment.NewLine.Length; // Carriage return and line feed (should normally be 2)
+                             + bytesPerLine // - characters to show the ascii value
+                             + Environment.NewLine.Length; // Carriage return and line feed (should normally be 2)
 
-            char[] line = (new String(' ', lineLength - Environment.NewLine.Length) + Environment.NewLine).ToCharArray();
+            char[] line = (new String(' ', lineLength - Environment.NewLine.Length) + Environment.NewLine)
+                .ToCharArray();
             int expectedLines = (bytesLength + bytesPerLine - 1) / bytesPerLine;
             StringBuilder result = new StringBuilder(expectedLines * lineLength);
 
@@ -57,13 +58,16 @@ namespace Drachenkatze.PresetMagician.Utils
                         byte b = bytes[i + j];
                         line[hexColumn] = HexChars[(b >> 4) & 0xF];
                         line[hexColumn + 1] = HexChars[b & 0xF];
-                        line[charColumn] = (b < 32 ? '·' : (char)b);
+                        line[charColumn] = (b < 32 ? '·' : (char) b);
                     }
+
                     hexColumn += 3;
                     charColumn++;
                 }
+
                 result.Append(line);
             }
+
             return result.ToString();
         }
     }

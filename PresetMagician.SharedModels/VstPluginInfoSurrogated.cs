@@ -1,11 +1,9 @@
-using System;
 using System.Runtime.Serialization;
 using Jacobi.Vst.Core;
-using Jacobi.Vst.Core.Plugin;
 
 namespace SharedModels
 {
-    [DataContract]  
+    [DataContract]
     public class VstPluginInfoSurrogate
     {
         /// <summary>
@@ -13,13 +11,13 @@ namespace SharedModels
         /// </summary>
         [DataMember]
         public string StringFlags { get; set; }
-        
+
         public VstPluginFlags Flags { get; set; }
 
         /// <summary>
         /// The number of programs the plugin supports.
         /// </summary>
-        [DataMember] 
+        [DataMember]
         public int ProgramCount { get; set; }
 
         /// <summary>
