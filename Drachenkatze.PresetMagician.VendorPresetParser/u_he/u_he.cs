@@ -223,8 +223,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
                 return false;
             }
 
-            var directory = Path.GetDirectoryName(path);
-            var file = Path.GetFileName(path);
             ShellLink shellLink;
             try
             {
@@ -245,11 +243,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
                 PluginInstance.Plugin.Logger.Debug(e.StackTrace);
             }
 
-            var shell = new Shell();
-            var folder = shell.NameSpace(directory);
-            var folderItem = folder.ParseName(file);
-
-            return folderItem.IsLink;
+            return false;
         }
 
         public string ResolveShortcutSquirrel(string path)

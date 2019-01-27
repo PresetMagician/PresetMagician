@@ -7,6 +7,7 @@ using System.Windows;
 using Drachenkatze.PresetMagician.VSTHost;
 using Jacobi.Vst.Core;
 using Jacobi.Vst.Core.Host;
+using Jacobi.Vst.Interop.Host;
 
 namespace PresetMagician.VstHost.VST
 {

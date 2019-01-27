@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\PropertyChanged.Fody\build\PropertyChanged.Fody.props" Condition="Exists('..\packages\PropertyChanged.Fody\build\PropertyChanged.Fody.props')" Label="Paket" />
-    <Import Project="..\packages\MethodTimer.Fody\build\MethodTimer.Fody.props" Condition="Exists('..\packages\MethodTimer.Fody\build\MethodTimer.Fody.props')" Label="Paket"/>
+    <Import Project="..\packages\MethodTimer.Fody\build\MethodTimer.Fody.props" Condition="Exists('..\packages\MethodTimer.Fody\build\MethodTimer.Fody.props')" Label="Paket" />
   <Import Project="..\packages\Anotar.Catel.Fody\build\Anotar.Catel.Fody.props" Condition="Exists('..\packages\Anotar.Catel.Fody\build\Anotar.Catel.Fody.props')" Label="Paket" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Import Project="..\Packages.props" />
@@ -68,23 +68,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="HostCommandStub.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Util\Check.cs" />
-    <Compile Include="Util\Properties.cs" />
-    <None Include="Util\RecordableMixerStream32.cs" />
-    <None Include="Util\Wave24To16Stream.cs" />
-    <None Include="Util\Wave32To16Stream.cs" />
-    <None Include="Util\WaveChannel16To32.cs" />
-    <None Include="Util\WaveChannel24To32.cs" />
-    <None Include="Util\WaveChannel32To32.cs" />
     <Compile Include="Util\ScreenCapture.cs" />
-    <Compile Include="VST\EventArgs\VstPluginLoadErrorEventArgs.cs" />
-    <Compile Include="VST\IBankFile.cs" />
-    <Compile Include="VST\IPluginConfiguration.cs" />
-    <Compile Include="VST\IPreset.cs" />
-    <Compile Include="VST\IPresetBank.cs" />
-    <Compile Include="VST\VstHelpers.cs" />
     <Compile Include="VST\RemoteVstPlugin.cs" />
     <Compile Include="VST\VSTPluginExport.cs" />
     <Compile Include="VST\VstPathScanner.cs" />
@@ -373,4 +358,5 @@
     </When>
   </Choose>
   <Import Project="..\packages\Fody\build\Fody.targets" Condition="Exists('..\packages\Fody\build\Fody.targets')" Label="Paket" />
+    <Import Project="..\common\ExtraCleanup.targets" />
 </Project>

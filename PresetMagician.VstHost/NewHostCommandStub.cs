@@ -17,7 +17,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
         {
         }
 
-        public event EventHandler<PluginCalledEventArgs> PluginCalled;
+        public event EventHandler<NewPluginCalledEventArgs> PluginCalled;
 
         private void RaisePluginCalled(string message)
         {

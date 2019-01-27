@@ -5,6 +5,7 @@ using Catel.Collections;
 using Drachenkatze.PresetMagician.NKSF.NKSF;
 using Drachenkatze.PresetMagician.VSTHost.Properties;
 using Jacobi.Vst.Core;
+using Jacobi.Vst.Interop.Host;
 using MethodTimer;
 using NAudio.Wave;
 using SharedModels;
