@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Catel.Logging;
 using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
 {
-    public abstract class RecursiveBankDirectoryParser: AbstractVendorPresetParser
+    public abstract class RecursiveBankDirectoryParser : AbstractVendorPresetParser
     {
         protected abstract string Extension { get; }
 
@@ -21,7 +22,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
         {
             return new List<(string, PresetBank)> {(GetParseDirectory(), GetRootBank())};
         }
-        
+
         protected abstract string GetParseDirectory();
 
         protected virtual PresetBank GetRootBank()
@@ -40,7 +41,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
 
             return count;
         }
-        
+
         public override async Task DoScan()
         {
             foreach (var parseDirectory in GetParseDirectories())
@@ -49,15 +50,16 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
             }
         }
 
-        public async Task<int> DoScanInternal(PresetBank rootBank, string directory, bool persist=true)
+        public async Task<int> DoScanInternal(PresetBank rootBank, string directory, bool persist = true)
         {
             int count = 0;
 
             if (!Directory.Exists(directory))
             {
-                Plugin.Log($"Directory {directory} does not exist, skipping");
+                PluginInstance.Plugin.Logger.Info($"Directory {directory} does not exist, skipping");
                 return 0;
             }
+
             var dirInfo = new DirectoryInfo(directory);
             var pattern = "*";
 
@@ -74,10 +76,13 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
                 {
                     try
                     {
-                        var preset = new Preset {PresetName = file.Name.Replace("." + Extension, "")};
-                        preset.Plugin = Plugin;
-                        preset.SourceFile = file.FullName;
-                        preset.PresetBank = rootBank;
+                        var preset = new Preset
+                        {
+                            PresetName = file.Name.Replace("." + Extension, ""),
+                            Plugin = PluginInstance.Plugin,
+                            SourceFile = file.FullName,
+                            PresetBank = rootBank
+                        };
 
                         var data = ProcessFile(file.FullName, preset);
 
@@ -85,8 +90,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
                     }
                     catch (Exception e)
                     {
-                        Plugin.Error("Error processing preset {0} because of {1} {2}", file.FullName, e.Message, e);
-                        Plugin.Debug(e.StackTrace);
+                        PluginInstance.Plugin.Logger.Error("Error processing preset {0} because of {1}", file.FullName,
+                            e.Message);
+                        PluginInstance.Plugin.Logger.Debug(e);
                     }
                 }
             }
@@ -94,7 +100,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
             foreach (var subDirectory in dirInfo.EnumerateDirectories())
             {
                 var bank = rootBank.CreateRecursive(subDirectory.Name);
-             
+
                 count += await DoScanInternal(bank, subDirectory.FullName, persist);
             }
 

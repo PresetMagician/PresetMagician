@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Specialized;
+﻿using System.Collections.Specialized;
 using System.Threading.Tasks;
 using Catel;
 using Catel.MVVM;
 using Catel.Services;
 using PresetMagician.Services.Interfaces;
-using PresetMagician.ViewModels;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -42,9 +40,11 @@ namespace PresetMagician
 
         protected override async Task ExecuteAsync(object parameter)
         {
-            if (!_vstService.SelectedPlugin.IsLoaded)
+            var pluginInstance = _vstService.GetInteractivePluginInstance(_vstService.SelectedPlugin);
+
+            if (!pluginInstance.IsLoaded)
             {
-                await _vstService.LoadVstInteractive(_vstService.SelectedPlugin);
+                await pluginInstance.LoadPlugin();
             }
         }
     }

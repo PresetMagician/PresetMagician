@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Catel.Collections;
+using Catel.Logging;
 using GSF;
 using SharedModels;
 using SQLite;
@@ -39,7 +40,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
                 return;
             }
 
-            Plugin.Debug($"Attempting to load arturia presets using {GetDatabasePath()}");
+            PluginInstance.Plugin.Logger.Debug($"Attempting to load arturia presets using {GetDatabasePath()}");
             _db = new SQLiteConnection(GetDatabasePath());
         }
 
@@ -68,7 +69,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
                         PresetName = presetData.Preset.name,
                         Author = presetData.SoundDesigner.name,
                         Comment = presetData.Preset.comment,
-                        Plugin = Plugin
+                        Plugin = PluginInstance.Plugin
                     };
 
                     var types = new ObservableCollection<string> {presetData.Type.name};
@@ -77,9 +78,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
 
                     var characteristics = GetPresetCharacteristics(presetData.Preset);
 
-
                     preset.Modes.AddRange((from c in characteristics select c.name).ToList());
-                    preset.SetPlugin(Plugin);
 
                     var fileName = presetData.Preset.file_path.Replace('/', '\\');
                     var content = File.ReadAllBytes(fileName);

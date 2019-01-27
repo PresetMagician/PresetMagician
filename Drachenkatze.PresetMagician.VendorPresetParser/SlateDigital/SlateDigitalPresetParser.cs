@@ -1,13 +1,8 @@
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
-using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
-using Anotar.Catel;
 using Drachenkatze.PresetMagician.VendorPresetParser.Common;
-using Drachenkatze.PresetMagician.VSTHost.VST;
-using PresetMagician.Models;
 using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
@@ -17,7 +12,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
         protected abstract string PresetSectionName { get; }
         protected override string Extension { get; } = "epf";
 
-        protected virtual void RetrievePresetData(XNode node, Preset preset)
+        public override bool RequiresLoadedPlugin { get; } = true;
+
+        private void RetrievePresetData(XNode node, Preset preset)
         {
             preset.Comment = GetNodeValue(node,
                 $"string(/package/archives/archive[@client_id='{PresetSectionName}-preset']/section/entry[@id='Preset notes']/@value)");
@@ -28,7 +25,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
         protected override byte[] ProcessFile(string fileName, Preset preset)
         {
             var xmlPreset = XDocument.Load(fileName);
-            var chunk = RemoteVstService.GetChunk(Plugin.Guid, false);
+            var chunk = PluginInstance.GetChunk(false);
             var chunkXML = Encoding.UTF8.GetString(chunk);
 
             var actualPresetDocument = XDocument.Parse(chunkXML);
@@ -37,7 +34,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
 
             MigrateData(xmlPreset, actualPresetDocument, preset);
 
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             using (TextWriter writer = new StringWriter(builder))
             {
                 actualPresetDocument.Save(writer);
@@ -45,7 +42,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
             }
         }
 
-        protected virtual void MigrateData(XNode source, XNode dest, Preset preset)
+        private void MigrateData(XNode source, XNode dest, Preset preset)
         {
             var dataNode =
                 $"/package/archives/archive[@client_id='{PresetSectionName}-preset']/section[@id='ParameterValues']/entry";

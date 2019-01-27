@@ -2,7 +2,6 @@
 using Catel.IoC;
 using Orchestra.Services;
 using PresetMagician.Views;
-using Xceed.Wpf.AvalonDock.Layout;
 
 namespace PresetMagician.Services
 {
@@ -13,7 +12,6 @@ namespace PresetMagician.Services
         public FrameworkElement GetRibbon()
         {
             return ServiceLocator.Default.ResolveType<RibbonView>();
-            
         }
 
         public FrameworkElement GetMainView()

@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
-using System.Windows;
 using Catel;
 using Catel.Logging;
 using Catel.MVVM;
@@ -14,8 +11,6 @@ using Catel.Services;
 using Catel.Threading;
 using Drachenkatze.PresetMagician.Utils;
 using PresetMagician.Extensions;
-using PresetMagician.Models;
-using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
 using SharedModels;
 
@@ -35,7 +30,8 @@ namespace PresetMagician
 
         public PluginRefreshPluginsCommandContainer(ICommandManager commandManager,
             IVstService vstService, IRuntimeConfigurationService runtimeConfigurationService,
-            IApplicationService applicationService, IDispatcherService dispatcherService, IMessageService messageService)
+            IApplicationService applicationService, IDispatcherService dispatcherService,
+            IMessageService messageService)
             : base(Commands.Plugin.RefreshPlugins, commandManager)
         {
             Argument.IsNotNull(() => runtimeConfigurationService);
@@ -84,7 +80,8 @@ namespace PresetMagician
                     }
                     catch (Exception e)
                     {
-                        _applicationService.AddApplicationOperationError($"Unable to scan {i.Path} because of {e.Message}");
+                        _applicationService.AddApplicationOperationError(
+                            $"Unable to scan {i.Path} because of {e.Message}");
                     }
 
                     if (dllFiles.Count > 0)
@@ -95,13 +92,21 @@ namespace PresetMagician
             }, true, cancellationToken);
 
             var plugins = _vstService.Plugins;
+            _applicationService.StopApplicationOperation("VST directory scan completed.");
+            _applicationService.StartApplicationOperation(this, "Verifying plugins",
+                plugins.Count);
 
-            await _dispatcherService.InvokeAsync(() =>
+            await TaskHelper.Run(() =>
             {
                 foreach (var plugin in plugins)
                 {
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        return;
+                    }
+
                     var isInDirectory = false;
-                    
+
                     foreach (var vstDirectory in vstDirectories)
                     {
                         if (plugin.DllPath.StartsWith(vstDirectory.Path))
@@ -109,18 +114,32 @@ namespace PresetMagician
                             isInDirectory = true;
                         }
                     }
-                    
+
                     if (File.Exists(plugin.DllPath) && isInDirectory)
                     {
                         plugin.IsPresent = true;
+
+                        _applicationService.UpdateApplicationOperationStatus(
+                            plugins.IndexOf(plugin),
+                            $"Verifying {plugin.DllPath}");
+
+                        var remotePluginInstance = _vstService.GetRemotePluginInstance(plugin).Result;
+                        if (plugin.DllHash != remotePluginInstance.GetPluginHash())
+                        {
+                            plugin.Invalidate();
+                        }
+
+                        _dispatcherService.Invoke(() => { plugin.NativeInstrumentsResource.Load(plugin); });
                     }
                     else
                     {
                         plugin.IsPresent = false;
                     }
                 }
-                
+            }, true, cancellationToken);
 
+            await _dispatcherService.InvokeAsync(() =>
+            {
                 foreach (var dllPath in vstPluginDLLFiles)
                 {
                     var foundPlugin = (from plugin in plugins where plugin.DllPath == dllPath select plugin)
@@ -136,9 +155,8 @@ namespace PresetMagician
                         plugins.Add(plugin);
                     }
                 }
-                
-                
             });
+
 
             var crashedPlugin = (from plugin in plugins where plugin.IsScanning select plugin).FirstOrDefault();
 
@@ -157,9 +175,9 @@ namespace PresetMagician
 
                 crashedPlugin.IsScanning = false;
             }
-            
+
             await _vstService.SavePlugins();
-            
+
             if (cancellationToken.IsCancellationRequested)
             {
                 _applicationService.StopApplicationOperation("VST directory scan aborted.");

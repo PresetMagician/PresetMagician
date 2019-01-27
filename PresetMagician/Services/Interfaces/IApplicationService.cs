@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using Catel.MVVM;
 
@@ -13,9 +12,14 @@ namespace PresetMagician.Services.Interfaces
         void UpdateApplicationOperationStatus(int currentItem, string statusText);
         void StopApplicationOperation(string finalMessage);
         CancellationTokenSource GetApplicationOperationCancellationSource();
-        void StartApplicationOperation(CommandContainerBase commandContainer, string operationDescription, int totalItems);
+
+        void StartApplicationOperation(CommandContainerBase commandContainer, string operationDescription,
+            int totalItems);
+
         List<string> GetApplicationOperationErrors();
         void ClearLastOperationErrors();
         void ReportStatus(string statusText);
+        void StartProcessPool();
+        void ShutdownProcessPool();
     }
 }

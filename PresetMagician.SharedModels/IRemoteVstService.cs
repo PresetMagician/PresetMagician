@@ -9,11 +9,14 @@ namespace SharedModels
     public interface IRemoteVstService
     {
         [OperationContract]
-        Guid LoadPlugin (string dllPath, bool backgroundProcessing = true);
+        Guid RegisterPlugin(string dllPath, bool backgroundProcessing = true);
+
+        [OperationContract]
+        void LoadPlugin(Guid guid);
 
         [OperationContract]
         bool OpenEditorHidden(Guid pluginGuid);
-        
+
         [OperationContract]
         void CloseEditor(Guid pluginGuid);
 
@@ -22,7 +25,7 @@ namespace SharedModels
 
         [OperationContract]
         void ReloadPlugin(Guid guid);
-        
+
         [OperationContract]
         void UnloadPlugin(Guid guid);
 
@@ -31,35 +34,39 @@ namespace SharedModels
 
         [OperationContract]
         string GetPluginName(Guid pluginGuid);
-        
+
         [OperationContract]
         List<PluginInfoItem> GetPluginInfoItems(Guid pluginGuid);
-        
+
         [OperationContract]
         string GetPluginVendor(Guid pluginGuid);
-        
+
         [OperationContract]
         VstPluginInfoSurrogate GetPluginInfo(Guid pluginGuid);
-        
+
         [OperationContract]
         void SetProgram(Guid pluginGuid, int program);
-        
+
         [OperationContract]
         byte[] GetChunk(Guid pluginGuid, bool isPreset);
-        
+
         [OperationContract]
         void SetChunk(Guid pluginGuid, byte[] data, bool isPreset);
-        
+
         [OperationContract]
         string GetCurrentProgramName(Guid pluginGuid);
-        
+
         [OperationContract]
-        void ExportNksAudioPreview(Guid pluginGuid, PresetExportInfo preset, byte[] presetData, string userContentDirectory, int initialDelay);
-        
+        void ExportNksAudioPreview(Guid pluginGuid, PresetExportInfo preset, byte[] presetData,
+            string userContentDirectory, int initialDelay);
+
         [OperationContract]
         void ExportNks(Guid pluginGuid, PresetExportInfo preset, byte[] presetData, string userContentDirectory);
 
         [OperationContract]
         bool OpenEditor(Guid pluginGuid);
+
+        [OperationContract]
+        string GetPluginHash(Guid guid);
     }
 }

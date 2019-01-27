@@ -1,21 +1,12 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Timers;
 using System.Windows;
-using System.Windows.Threading;
 using Drachenkatze.PresetMagician.VSTHost;
-using Drachenkatze.PresetMagician.VSTHost.VST;
 using Jacobi.Vst.Core;
 using Jacobi.Vst.Core.Host;
-using Jacobi.Vst.Interop.Host;
-using MethodTimer;
-using PresetMagician.VstHost.Util;
-using SharedModels;
 
 namespace PresetMagician.VstHost.VST
 {
@@ -31,7 +22,7 @@ namespace PresetMagician.VstHost.VST
     {
     }
 
-    public class VstHost 
+    public class VstHost
     {
         private Timer _audioTimer;
         private Timer _guiTimer;
@@ -90,20 +81,13 @@ namespace PresetMagician.VstHost.VST
         /// </summary>
         /// <param name="pluginDirectory"></param>
         /// <returns></returns>
-        
-
-
         public const int BlockSize = 512;
+
         public const float SampleRate = 44100f;
 
         private static List<RemoteVstPlugin> _plugins = new List<RemoteVstPlugin>();
 
-        public bool LoadVST(Plugin vst, int idleLoopCount = 1024)
-        {
-            throw new Exception("Dont use anymore");
-        }
-
-        public bool LoadVst(RemoteVstPlugin remoteVst)
+        public void LoadVst(RemoteVstPlugin remoteVst)
         {
             LoadVstInternal(remoteVst);
 
@@ -117,8 +101,6 @@ namespace PresetMagician.VstHost.VST
                     }
                 }
             }
-
-            return true;
         }
 
         public void ReloadPlugin(RemoteVstPlugin remoteVst)
@@ -152,7 +134,7 @@ namespace PresetMagician.VstHost.VST
 
             Debug.WriteLine($"{hostCommandStub.PluginDll}: starting to process");
             ctx.PluginCommandStub.StartProcess();
-            
+
             Debug.WriteLine($"{remoteVst.DllFilename}: adding to list");
         }
 

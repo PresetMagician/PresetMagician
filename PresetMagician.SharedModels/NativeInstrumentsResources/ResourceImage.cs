@@ -1,18 +1,17 @@
 using System;
+using System.Drawing;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
 using Anotar.Catel;
 using Catel.Data;
 using PresetMagician.Models.NativeInstrumentsResources;
-using Size = System.Drawing.Size;
 
 namespace SharedModels.NativeInstrumentsResources
 {
     public class ResourceImage : ModelBase
     {
         public ResourceState State { get; } = new ResourceState();
-       
+
 
         public ResourceImage(int width, int height, string fileName)
         {
@@ -23,13 +22,16 @@ namespace SharedModels.NativeInstrumentsResources
             Filename = fileName;
         }
 
-      
-        public BitmapImage Image { get; set; } = new BitmapImage(new Uri("pack://application:,,,/PresetMagician.SharedModels;component/Resources/Images/empty.png"));
+
+        public BitmapImage Image { get; set; } = new BitmapImage(
+            new Uri("pack://application:,,,/PresetMagician.SharedModels;component/Resources/Images/empty.png"));
+
         public MemoryStream ImageStream { get; set; } = new MemoryStream();
         public Size TargetSize { get; set; }
         public string Filename { get; set; }
 
-        public void ReplaceFromFile(string fileName, NativeInstrumentsResource.ResourceStates resourceState = NativeInstrumentsResource.ResourceStates.FromDisk)
+        public void ReplaceFromFile(string fileName,
+            NativeInstrumentsResource.ResourceStates resourceState = NativeInstrumentsResource.ResourceStates.FromDisk)
         {
             State.State = resourceState;
             ImageStream.SetLength(0);
@@ -38,15 +40,18 @@ namespace SharedModels.NativeInstrumentsResources
             ImageStream.Write(bytes, 0, bytes.Length);
             ImageStream.Seek(0, SeekOrigin.Begin);
 
-            Image = new BitmapImage();
-            Image.BeginInit();
-            Image.BaseUri = null;
-            Image.StreamSource = ImageStream;
-            Image.EndInit();
-            Image.Freeze();
+            var tmpImage = new BitmapImage();
+            tmpImage.BeginInit();
+            tmpImage.BaseUri = null;
+            tmpImage.StreamSource = ImageStream;
+            tmpImage.EndInit();
+            tmpImage.Freeze();
+
+            Image = tmpImage;
         }
 
-        public void ReplaceFromBase64(string base64, NativeInstrumentsResource.ResourceStates resourceState = NativeInstrumentsResource.ResourceStates.FromWeb)
+        public void ReplaceFromBase64(string base64,
+            NativeInstrumentsResource.ResourceStates resourceState = NativeInstrumentsResource.ResourceStates.FromWeb)
         {
             State.State = resourceState;
             ImageStream.SetLength(0);
@@ -55,12 +60,14 @@ namespace SharedModels.NativeInstrumentsResources
             ImageStream.Write(bytes, 0, bytes.Length);
             ImageStream.Seek(0, SeekOrigin.Begin);
 
-            Image = new BitmapImage();
-            Image.BeginInit();
-            Image.BaseUri = null;
-            Image.StreamSource = ImageStream;
-            Image.EndInit();
-            Image.Freeze();
+            var tmpImage = new BitmapImage();
+            tmpImage.BeginInit();
+            tmpImage.BaseUri = null;
+            tmpImage.StreamSource = ImageStream;
+            tmpImage.EndInit();
+            tmpImage.Freeze();
+
+            Image = tmpImage;
         }
 
         public void ReplaceFromStream(MemoryStream memoryStream, NativeInstrumentsResource.ResourceStates resourceState)
@@ -72,12 +79,14 @@ namespace SharedModels.NativeInstrumentsResources
 
             ImageStream.Seek(0, SeekOrigin.Begin);
 
-            Image = new BitmapImage();
-            Image.BeginInit();
-            Image.BaseUri = null;
-            Image.StreamSource = ImageStream;
-            Image.EndInit();
-            Image.Freeze();
+            var tmpImage = new BitmapImage();
+            tmpImage.BeginInit();
+            tmpImage.BaseUri = null;
+            tmpImage.StreamSource = ImageStream;
+            tmpImage.EndInit();
+            tmpImage.Freeze();
+
+            Image = tmpImage;
         }
 
         public string ToBase64()
@@ -90,7 +99,8 @@ namespace SharedModels.NativeInstrumentsResources
             var fullFile = Path.Combine(baseDirectory, Filename);
             if (!State.ShouldSave)
             {
-                LogTo.Debug($"Not saving with state {State.State.ToString()} for file {Filename} (full path {fullFile})");
+                LogTo.Debug(
+                    $"Not saving with state {State.State.ToString()} for file {Filename} (full path {fullFile})");
                 return;
             }
 

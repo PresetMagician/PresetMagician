@@ -2,21 +2,20 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics;
 using CannedBytes.Midi.Message;
-using Catel.Data;
-using Drachenkatze.PresetMagician.Utils;
 
 namespace SharedModels
 {
-    public class Preset 
+    public class Preset
     {
-        
         [Key] public string PresetId { get; set; } = Guid.NewGuid().ToString();
 
-        [Index("Foo", IsUnique = true)]
         [ForeignKey("Plugin")]
+        [Index("UniquePreset", IsUnique = true)]
         public int PluginId { get; set; }
+
+        public int VstPluginId { get; set; }
+
 
         public Plugin Plugin
         {
@@ -31,18 +30,18 @@ namespace SharedModels
                     _bankPath = null;
                 }
 
+                VstPluginId = value.PluginId;
             }
-
         }
 
         private Plugin _plugin;
-        
+
         public bool IsDeleted { get; set; }
-        
+
         public DateTime? LastExported { get; set; }
 
-        
-        public void SetPlugin (Plugin vst)
+
+        public void SetPlugin(Plugin vst)
         {
             Plugin = vst;
         }
@@ -52,11 +51,10 @@ namespace SharedModels
             PreviewNote = new MidiNoteName("C5");
         }
 
-        [NotMapped]
-        public PresetBank PresetBank { get; set; }
+        [NotMapped] public PresetBank PresetBank { get; set; }
 
         private string _bankPath;
-        
+
         public string BankPath
         {
             get
@@ -65,7 +63,7 @@ namespace SharedModels
                 {
                     return PresetBank.BankPath;
                 }
-                  
+
                 return "";
             }
             set
@@ -76,7 +74,7 @@ namespace SharedModels
                 }
                 else
                 {
-                    _bankPath = value; 
+                    _bankPath = value;
                 }
             }
         }
@@ -84,8 +82,8 @@ namespace SharedModels
         [NotMapped]
         public byte[] PresetData
         {
-            get { throw new NotImplementedException();}
-            set { throw new NotImplementedException();}
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
         }
 
         public int PresetSize { get; set; }
@@ -93,8 +91,7 @@ namespace SharedModels
 
         public string PresetName { get; set; }
 
-        [NotMapped]
-        public MidiNoteName PreviewNote { get; set; }
+        [NotMapped] public MidiNoteName PreviewNote { get; set; }
 
         public int PreviewNoteNumber
         {
@@ -102,19 +99,18 @@ namespace SharedModels
             set { PreviewNote.NoteNumber = value; }
         }
 
-        public string Author { get;set; }
-        public string Comment { get;set; }
+        public string Author { get; set; }
+        public string Comment { get; set; }
 
-        [Index("Foo", IsUnique = true)]
+        [Index("UniquePreset", IsUnique = true)]
         public string SourceFile { get; set; }
-        
-        public ObservableCollection<ObservableCollection<string>> Types { get; set; } = new ObservableCollection<ObservableCollection<string>>();
+
+        public ObservableCollection<ObservableCollection<string>> Types { get; set; } =
+            new ObservableCollection<ObservableCollection<string>>();
 
         public ObservableCollection<string> Modes { get; set; } = new ObservableCollection<string>();
-        
+
         public string PresetHash { get; set; }
         public string LastExportedPresetHash { get; set; }
-        
-     
     }
 }

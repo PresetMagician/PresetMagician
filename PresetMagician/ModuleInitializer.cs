@@ -1,8 +1,8 @@
-﻿using System.Diagnostics;
-using System.Net;
+﻿using System;
 using Catel.IoC;
 using Orchestra;
 using Orchestra.Services;
+using PresetMagician;
 using PresetMagician.Services;
 
 /// <summary>
@@ -16,13 +16,16 @@ public static class ModuleInitializer
     /// </summary>
     public static void Initialize()
     {
+        Program.startTime = DateTime.Now;
+
         var serviceLocator = ServiceLocator.Default;
 
         serviceLocator.RegisterType<ISplashScreenService, PresetMagician.Services.SplashScreenService>();
         serviceLocator.RegisterType<IRibbonService, RibbonService>();
         serviceLocator.RegisterType<IApplicationInitializationService, ApplicationInitializationService>();
 
-        InitializeThirdPartyNotices();
+        //InitializeThirdPartyNotices();
+
         // ***** IMPORTANT NOTE *****
         //
         // Only register the shell services in the ModuleInitializer. All other types must be registered
@@ -70,13 +73,6 @@ public static class ModuleInitializer
         );
 
         thirdPartyNoticesService.Add(new ResourceBasedThirdPartyNotice(
-            "Orc.LicenseManager",
-            "https://github.com/WildGums/Orc.LicenseManager",
-            "PresetMagician",
-            "Resources.ThirdPartyNotices.Orc.LicenseManager.txt")
-        );
-
-        thirdPartyNoticesService.Add(new ResourceBasedThirdPartyNotice(
             "Fody, PropertyChanged.Fody, MethodTimer.Fody, ModuleInit.Fody, LoadAssembliesOnStartup.Fody",
             "https://github.com/Fody",
             "PresetMagician",
@@ -103,14 +99,14 @@ public static class ModuleInitializer
             "PresetMagician",
             "Resources.ThirdPartyNotices.Catel.Fody.txt")
         );
-        
+
         thirdPartyNoticesService.Add(new ResourceBasedThirdPartyNotice(
             "Extended.Wpf.Toolkit",
             "https://github.com/xceedsoftware/wpftoolkit",
             "PresetMagician",
             "Resources.ThirdPartyNotices.Extended.Wpf.Toolkit.txt")
         );
-        
+
         thirdPartyNoticesService.Add(new ResourceBasedThirdPartyNotice(
             "Dirkster.AvalonDock.Themes.VS2013",
             "https://github.com/Dirkster99/AvalonDock",

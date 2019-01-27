@@ -1,11 +1,9 @@
 ﻿using System;
-using Jacobi.Vst.Core.Host;
-using Jacobi.Vst.Core;
 using System.Diagnostics;
 using System.Drawing;
-using Anotar.Catel;
-using Drachenkatze.PresetMagician.VSTHost.VST;
+using Jacobi.Vst.Core;
 using Jacobi.Vst.Core.Deprecated;
+using Jacobi.Vst.Core.Host;
 using PresetMagician.VstHost.VST;
 
 namespace Drachenkatze.PresetMagician.VSTHost
@@ -97,7 +95,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
         public VstProcessLevels GetProcessLevel()
         {
             //RaisePluginCalled("GetProcessLevel");
-            return Jacobi.Vst.Core.VstProcessLevels.Realtime;
+            return VstProcessLevels.Realtime;
         }
 
         public string GetProductString()
@@ -116,7 +114,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
             return 44100f;
         }
 
-        private Jacobi.Vst.Core.VstTimeInfo vstTimeInfo = new Jacobi.Vst.Core.VstTimeInfo();
+        private VstTimeInfo vstTimeInfo = new VstTimeInfo();
 
         public VstTimeInfo GetTimeInfo(VstTimeInfoFlags filterFlags)
         {
@@ -133,7 +131,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
             vstTimeInfo.TimeSignatureNumerator = 4;
             vstTimeInfo.TimeSignatureDenominator = 4;
             vstTimeInfo.SmpteOffset = 0;
-            vstTimeInfo.SmpteFrameRate = new Jacobi.Vst.Core.VstSmpteFrameRate();
+            vstTimeInfo.SmpteFrameRate = new VstSmpteFrameRate();
             vstTimeInfo.SamplesToNearestClock = 0;
             vstTimeInfo.Flags = 0;
 
@@ -158,7 +156,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
         }
 
         /// <inheritdoc />
-        public bool OpenFileSelector(Jacobi.Vst.Core.VstFileSelect fileSelect)
+        public bool OpenFileSelector(VstFileSelect fileSelect)
         {
             RaisePluginCalled("OpenFileSelector(" + fileSelect.Command + ")");
             return false;
@@ -220,7 +218,15 @@ namespace Drachenkatze.PresetMagician.VSTHost
                 case "sendVstTimeInfo":
                 case "receiveVstEvents":
                 case "reportConnectionChanges":
+                case "asyncProcessing":
+                case "offline":
+                case "supplyIdle":
+                case "supportShell":
+                case "openFileSelector":
+                case "editFile":
+                case "closeFileSelector":
                 case "receiveVstTimeInfo":
+                case "receiveVstMidiEvent":
                 case "acceptIOChanges":
                     return VstCanDoResult.No;
                 case "sendVstMidiEvent":

@@ -1,19 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
-using Drachenkatze.PresetMagician.Utils;
-using Drachenkatze.PresetMagician.VendorPresetParser;
-using PresetMagician.ProcessIsolation;
-using PresetMagician.Services;
-using PresetMagician.Collections;
-using SharedModels;
 using System.Linq;
 using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration.Attributes;
+using Drachenkatze.PresetMagician.Utils;
+using Drachenkatze.PresetMagician.VendorPresetParser;
+using PresetMagician.ProcessIsolation;
+using PresetMagician.ProcessIsolation.Services;
+using SharedModels;
 
 namespace PresetMagician.VendorPresetParserTest
 {
@@ -55,8 +52,11 @@ namespace PresetMagician.VendorPresetParserTest
                 Console.WriteLine(presetParser.PresetParserType);
 
                 var plugin = new Plugin {PluginId = pluginId};
+                var remoteInstance = new RemotePluginInstance(plugin, new RemoteVstService());
+
+
                 presetParser.PresetDataStorer = new NullPresetStorer();
-                presetParser.Plugin = plugin;
+                presetParser.PluginInstance = remoteInstance;
                 presetParser.RootBank = plugin.RootBank.First();
                 presetParser.Presets = new ObservableCollection<Preset>();
 
@@ -108,7 +108,8 @@ namespace PresetMagician.VendorPresetParserTest
                     testResult.RandomPresetSource = randomPreset.SourceFile;
                 }
 
-                if ((foundPreset && plugin.Presets.Count > 5 && testResult.BankMissing < 2 && plugin.Presets.Count == testResult.ReportedPresets)
+                if ((foundPreset && plugin.Presets.Count > 5 && testResult.BankMissing < 2 &&
+                     plugin.Presets.Count == testResult.ReportedPresets)
                     || IsIgnored(ignoredPlugins, presetParser.PresetParserType, pluginId))
                 {
                     testResult.IsOK = true;
@@ -117,16 +118,16 @@ namespace PresetMagician.VendorPresetParserTest
 
                 testResults.Add(testResult);
             }
-           
+
 
             var consoleTable = ConsoleTable.From(from testRes in testResults
                 where testRes.IsOK == false
-                orderby testRes.Presets 
+                orderby testRes.Presets
                 select testRes);
 
             Console.WriteLine(consoleTable.ToMinimalString());
-            
-            Console.WriteLine("Stuff left: "+consoleTable.Rows.Count);
+
+            Console.WriteLine("Stuff left: " + consoleTable.Rows.Count);
         }
 
         public static List<TestData> ReadTestData()
@@ -137,7 +138,7 @@ namespace PresetMagician.VendorPresetParserTest
                 return csv.GetRecords<TestData>().ToList();
             }
         }
-        
+
         public static List<IgnoredPlugins> ReadIgnoredPlugins()
         {
             using (var reader = new StreamReader("ignoredplugins.csv"))
@@ -154,7 +155,7 @@ namespace PresetMagician.VendorPresetParserTest
                     testDataEntry.PluginId == pluginId && testDataEntry.PresetParser == presetParser
                 select testDataEntry).FirstOrDefault();
         }
-        
+
         public static bool IsIgnored(List<IgnoredPlugins> ignoredPlugins, string presetParser, int pluginId)
         {
             return (from testDataEntry in ignoredPlugins
@@ -226,7 +227,7 @@ namespace PresetMagician.VendorPresetParserTest
 
         [Name("Hash")] public string Hash { get; set; }
     }
-    
+
     public class IgnoredPlugins
     {
         [Name("PresetParser")] public string PresetParser { get; set; }

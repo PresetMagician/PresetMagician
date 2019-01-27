@@ -1,37 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
+﻿using System.Collections.Specialized;
 using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.ServiceModel;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using CannedBytes.Midi.Message;
 using Catel;
 using Catel.IoC;
 using Catel.MVVM;
 using Catel.Reflection;
 using Catel.Services;
-using ColorThiefDotNet;
 using Orchestra.Services;
 using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.Views;
-using SharedModels.NativeInstrumentsResources;
-using Color = System.Drawing.Color;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using Drachenkatze.PresetMagician.Utils;
-using Brushes = System.Drawing.Brushes;
-using ColorConverter = System.Drawing.ColorConverter;
-using Pen = System.Drawing.Pen;
-using Size = System.Drawing.Size;
 
 namespace PresetMagician.ViewModels
 {
@@ -150,11 +129,7 @@ namespace PresetMagician.ViewModels
         /// </summary>
         private async Task OnDoSomethingExecuteAsync()
         {
-           
-
-
-            
-            
+            Process.GetCurrentProcess().Kill();
         }
 
         #endregion

@@ -16,10 +16,8 @@ using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
 using Drachenkatze.PresetMagician.NKSF.NKSF;
-using Drachenkatze.PresetMagician.VSTHost.VST;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using PresetMagician.Models;
 using PresetMagician.Models.ControllerAssignments;
 using PresetMagician.Models.NativeInstrumentsResources;
 using PresetMagician.Services;
@@ -495,9 +493,12 @@ namespace PresetMagician.ViewModels
 
         private async Task OnGenerateResourcesExecute()
         {
-            var remoteVstService = await _vstService.LoadVst(Plugin);
-            _resourceGeneratorService.GenerateResources(Plugin, remoteVstService, true);
-            await _vstService.UnloadVst(Plugin);
+            var remotePluginInstance = await _vstService.GetRemotePluginInstance(Plugin);
+            remotePluginInstance.LoadPlugin();
+            remotePluginInstance.OpenEditorHidden();
+            await Task.Delay(1000);
+            _resourceGeneratorService.GenerateResources(remotePluginInstance, true);
+            remotePluginInstance.UnloadPlugin();
         }
 
         private void AddBankFile(string path)

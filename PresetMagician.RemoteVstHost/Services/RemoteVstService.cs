@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
 using System.ServiceModel;
+using Drachenkatze.PresetMagician.Utils;
 using Newtonsoft.Json;
 using PresetMagician.Models;
 using PresetMagician.VstHost.VST;
@@ -19,26 +20,42 @@ namespace PresetMagician.ProcessIsolation.Services
 
         public bool Ping()
         {
+            App.Ping();
             return true;
         }
 
-        public Guid LoadPlugin(string dllPath, bool backgroundProcessing = true)
+        public Guid RegisterPlugin(string dllPath, bool backgroundProcessing = true)
         {
             var plugin = new RemoteVstPlugin(_vstHost) {DllPath = dllPath, BackgroundProcessing = backgroundProcessing};
-
             var guid = Guid.NewGuid();
+            _plugins.Add(guid, plugin);
+
+            return guid;
+        }
+
+        public string GetPluginHash(Guid guid)
+        {
+            var plugin = GetPluginByGuid(guid);
+            if (File.Exists(plugin.DllPath))
+            {
+                return HashUtils.getIxxHash(File.ReadAllBytes(plugin.DllPath));
+            }
+
+            return null;
+        }
+
+        public void LoadPlugin(Guid guid)
+        {
+            var plugin = GetPluginByGuid(guid);
 
             try
             {
                 _vstHost.LoadVst(plugin);
-                _plugins.Add(guid, plugin);
             }
             catch (Exception e)
             {
                 throw new FaultException(e.Message);
             }
-
-            return guid;
         }
 
         public void UnloadPlugin(Guid guid)
@@ -46,7 +63,7 @@ namespace PresetMagician.ProcessIsolation.Services
             var plugin = GetPluginByGuid(guid);
             _vstHost.UnloadVst(plugin);
         }
-        
+
         public void ReloadPlugin(Guid guid)
         {
             var plugin = GetPluginByGuid(guid);
@@ -68,7 +85,7 @@ namespace PresetMagician.ProcessIsolation.Services
             var plugin = GetPluginByGuid(pluginGuid);
             return plugin.OpenEditorHidden();
         }
-        
+
         public bool OpenEditor(Guid pluginGuid)
         {
             var plugin = GetPluginByGuid(pluginGuid);
@@ -164,7 +181,7 @@ namespace PresetMagician.ProcessIsolation.Services
             var plugin = GetPluginByGuid(pluginGuid);
             plugin.PluginContext.PluginCommandStub.SetProgram(program);
         }
-        
+
         public string GetCurrentProgramName(Guid pluginGuid)
         {
             var plugin = GetPluginByGuid(pluginGuid);
@@ -183,13 +200,14 @@ namespace PresetMagician.ProcessIsolation.Services
             plugin.PluginContext.PluginCommandStub.SetChunk(data, isPreset);
         }
 
-        public void ExportNksAudioPreview(Guid pluginGuid, PresetExportInfo preset, byte[] presetData, string userContentDirectory, int initialDelay)
+        public void ExportNksAudioPreview(Guid pluginGuid, PresetExportInfo preset, byte[] presetData,
+            string userContentDirectory, int initialDelay)
         {
             var plugin = GetPluginByGuid(pluginGuid);
             var exporter = new NKSExport(_vstHost) {UserContentDirectory = userContentDirectory};
             exporter.ExportPresetAudioPreviewRealtime(plugin, preset, presetData, initialDelay);
         }
-        
+
         public void ExportNks(Guid pluginGuid, PresetExportInfo preset, byte[] presetData, string userContentDirectory)
         {
             var exporter = new NKSExport(_vstHost) {UserContentDirectory = userContentDirectory};

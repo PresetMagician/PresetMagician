@@ -4,8 +4,6 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using Catel;
 using Catel.IoC;
@@ -16,7 +14,6 @@ using Catel.Threading;
 using MethodTimer;
 using Orc.Squirrel;
 using Orchestra.Services;
-using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.ViewModels;
 using SharedModels;
@@ -40,7 +37,8 @@ namespace PresetMagician.Services
         #region Constructors
 
         public ApplicationInitializationService(IServiceLocator serviceLocator,
-            ICommandManager commandManager, IUIVisualizerService uiVisualizerService, IViewModelFactory viewModelFactory)
+            ICommandManager commandManager, IUIVisualizerService uiVisualizerService,
+            IViewModelFactory viewModelFactory)
         {
             Argument.IsNotNull(() => serviceLocator);
             Argument.IsNotNull(() => commandManager);
@@ -53,11 +51,9 @@ namespace PresetMagician.Services
             _viewModelFactory = viewModelFactory;
 
             _splashScreenService = serviceLocator.ResolveType<ISplashScreenService>() as SplashScreenService;
-            
-            _splashScreenService.Action = "Initializing database…";
-            InitDatabase();
-            _squirrelResult = new SquirrelResult();
 
+
+            _squirrelResult = new SquirrelResult();
         }
 
         #endregion Constructors
@@ -69,27 +65,32 @@ namespace PresetMagician.Services
         {
             // Non-async first
             RegisterTypes();
+            _splashScreenService.Action = "Initializing database…";
+            InitDatabase();
+
+            _splashScreenService.Action = "Initializing commands…";
             InitializeCommands();
         }
-        
+
         [Time]
         public override async Task InitializeBeforeShowingShellAsync()
         {
             _splashScreenService.Action = "Loading configuration…";
             LoadConfiguration();
+            ServiceLocator.Default.ResolveType<IApplicationService>().StartProcessPool();
         }
 
         [Time]
         public override async Task InitializeAfterShowingShellAsync()
         {
             var serviceLocator = ServiceLocator.Default;
-            var licenseService = serviceLocator.ResolveType<ILicenseService>(); 
-            if (!licenseService.CheckLicense()) {
+            var licenseService = serviceLocator.ResolveType<ILicenseService>();
+            if (!licenseService.CheckLicense())
+            {
                 StartRegistration();
             }
 
-            await TaskHelper.Run(() =>
-                { _commandManager.ExecuteCommand(Commands.Plugin.RefreshPlugins); },true);
+            await TaskHelper.Run(() => { _commandManager.ExecuteCommand(Commands.Plugin.RefreshPlugins); }, true);
             await base.InitializeAfterShowingShellAsync();
             await CheckForUpdatesAsync();
         }
@@ -112,7 +113,6 @@ namespace PresetMagician.Services
                 Settings.Application.AutomaticUpdates.CheckForUpdatesDefaultValue);
 
             _squirrelResult = await updateService.CheckForUpdatesAsync(new SquirrelContext());
-            
         }
 
         public SquirrelResult getSquirrel()
@@ -127,10 +127,12 @@ namespace PresetMagician.Services
             _commandManager.CreateCommandWithGesture(typeof(Commands.Application), "ClearLastOperationErrors");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Application), "ApplyConfiguration");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Application), "NotImplemented");
-            
+
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "ScanPlugins");
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), nameof(Commands.Plugin.ScanSelectedPlugins));
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), nameof(Commands.Plugin.ScanSelectedPlugin));
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin),
+                nameof(Commands.Plugin.ScanSelectedPlugins));
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin),
+                nameof(Commands.Plugin.ScanSelectedPlugin));
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "RefreshPlugins");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "AllToPresetExportList");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "SelectedToPresetExportList");
@@ -138,41 +140,43 @@ namespace PresetMagician.Services
 
             _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "EnablePlugins");
             _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "DisablePlugins");
-            _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), nameof(Commands.PluginTools.ViewSettings));
-            _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), nameof(Commands.PluginTools.ViewErrors));
+            _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools),
+                nameof(Commands.PluginTools.ViewSettings));
+            _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools),
+                nameof(Commands.PluginTools.ViewErrors));
             _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "ShowPluginInfo");
             _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "ShowPluginEditor");
             _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "ShowPluginChunk");
             _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "LoadPlugin");
             _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "UnloadPlugin");
-            _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), nameof(Commands.PluginTools.ReportSinglePluginToLive));
+            _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools),
+                nameof(Commands.PluginTools.ReportSinglePluginToLive));
 
             _commandManager.CreateCommandWithGesture(typeof(Commands.Preset), "ActivatePresetView");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Preset), "Export");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Preset), "ClearList");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Preset), nameof(Commands.Preset.ClearSelected));
             _commandManager.CreateCommandWithGesture(typeof(Commands.Preset), nameof(Commands.Preset.ApplyMidiNote));
-            
-            _commandManager.CreateCommandWithGesture(typeof(Commands.PresetTools), nameof(Commands.PresetTools.ShowPresetData));
+
+            _commandManager.CreateCommandWithGesture(typeof(Commands.PresetTools),
+                nameof(Commands.PresetTools.ShowPresetData));
 
             _commandManager.CreateCommandWithGesture(typeof(Commands.Tools), "NksfView");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Tools), "SettingsView");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Tools), nameof(Commands.Tools.UpdateLicense));
-            
+
             _commandManager.CreateCommandWithGesture(typeof(Commands.Help), "OpenSupportLink");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Help), "OpenChatLink");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Help), "OpenDocumentationLink");
-
-            
         }
-        
+
         [Time]
         private void LoadConfiguration()
         {
             var runtimeConfigurationService = _serviceLocator.ResolveType<IRuntimeConfigurationService>();
             runtimeConfigurationService.Load();
         }
-        
+
         [Time]
         private void InitDatabase()
         {
@@ -191,7 +195,8 @@ namespace PresetMagician.Services
             serviceLocator.RegisterType<IVstService, VstService>();
             serviceLocator.RegisterType<IApplicationService, ApplicationService>();
             serviceLocator.RegisterType<IDatabaseService, DatabaseService>();
-            serviceLocator.RegisterType<INativeInstrumentsResourceGeneratorService, NativeInstrumentsResourceGeneratorService>();
+            serviceLocator
+                .RegisterType<INativeInstrumentsResourceGeneratorService, NativeInstrumentsResourceGeneratorService>();
         }
 
         #endregion Methods

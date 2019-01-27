@@ -13,6 +13,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
         protected override string XmlPluginName { get; } = "PunchBox";
         protected override string Extension { get; } = ".pbprs";
 
+        public override bool RequiresLoadedPlugin { get; } = true;
+
         private const string FactoryBankPath = @"D16 Group\PunchBox\Presets\Master.d16pkg";
         private const string UserBankPath = @"D16 Group\PunchBox\UserStore\Presets\Master";
 
@@ -56,7 +58,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
             }
 
             _presetExportCount = 0;
-            RemoteVstService.ReloadPlugin(Plugin.Guid);
+            PluginInstance.ReloadPlugin();
         }
 
         protected override void PostProcessXML(XElement presetElement)

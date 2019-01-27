@@ -95,8 +95,7 @@
         </ItemsControl>
         <xctk:BusyIndicator
             Grid.Row="0"
-            IsBusy="{Binding ApplicationState.IsPluginListBusy, Mode=OneWay}"
-            Visibility="{Binding HasPlugins, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay, FallbackValue=Visible}">
+            IsBusy="{Binding ApplicationState.IsPluginListBusy, Mode=OneWay}">
 
             <xctk:BusyIndicator.BusyContentTemplate>
                 <DataTemplate>
@@ -149,6 +148,7 @@
 
 
             <DataGrid
+                Visibility="{Binding HasPlugins, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay, FallbackValue=Visible}"
                 x:Name="VstPluginList"
                 behaviors:MultiSelectBehavior.SynchronizedSelectedItems="{Binding SelectedPlugins}"
                 AutoGenerateColumns="False"
@@ -346,7 +346,7 @@
                                                         <Condition Binding="{Binding IsScanned, Mode=OneWay}" Value="False" />
                                                         <Condition Binding="{Binding LoadError, Mode=OneWay}" Value="True" />
                                                     </MultiDataTrigger.Conditions>
-                                                    <Setter Property="ToolTip" Value="Error loading plugin" />
+                                                    <Setter Property="ToolTip" Value="{Binding LoadErrorMessage}" />
                                                 </MultiDataTrigger>
                                                 <MultiDataTrigger>
                                                     <MultiDataTrigger.Conditions>
@@ -385,7 +385,7 @@
                     <DataGridTextColumn
                         Width="120"
                         Binding="{Binding PresetParser.PresetParserType}"
-                        Header="Export Module"
+                        Header="Preset Parser"
                         IsReadOnly="True" />
                     
                     <DataGridTextColumn

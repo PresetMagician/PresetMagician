@@ -1,22 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.HashFunction.xxHash;
-using System.Security.Cryptography;
-using System.Data.HashFunction;
+﻿using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
+using Standart.Hash.xxHash;
 
 namespace Drachenkatze.PresetMagician.Utils
 {
     public class HashUtils
     {
-        private static readonly IxxHash _xxHash = xxHashFactory.Instance.Create();
-
         public static string getIxxHash(byte[] input)
         {
-            return _xxHash.ComputeHash(input).AsBase64String();
+            return xxHash64.ComputeHash(input, input.Length).ToString();
         }
-        public static string getFormattedSHA256Hash (string input)
+
+        public static string getFormattedSHA256Hash(string input)
         {
             return FormatHash(GetHash(SHA256.Create(), input));
         }
@@ -38,7 +33,7 @@ namespace Drachenkatze.PresetMagician.Utils
             return hashAlgorithm.ComputeHash(input);
         }
 
-        public static string FormatHash (byte[] data)
+        public static string FormatHash(byte[] data)
         {
             var sBuilder = new StringBuilder();
 
@@ -49,6 +44,5 @@ namespace Drachenkatze.PresetMagician.Utils
 
             return sBuilder.ToString();
         }
-
-     }
+    }
 }

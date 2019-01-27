@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Drachenkatze.PresetMagician.Utils</RootNamespace>
     <AssemblyName>Drachenkatze.PresetMagician.Utils</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+      <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="BinaryFile.cs" />
     <Compile Include="ConsoleTables.cs" />
+      <Compile Include="DebugMonitor.cs"/>
     <Compile Include="FXP.cs" />
     <Compile Include="HashUtils.cs" />
     <Compile Include="HexDump.cs" />
@@ -50,10 +51,10 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\.paket\paket.targets" />
   <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
-        <Reference Include="System.Data.HashFunction.Core">
-          <HintPath>..\packages\System.Data.HashFunction.Core\lib\net45\System.Data.HashFunction.Core.dll</HintPath>
+          <Reference Include="Standart.Hash.xxHash">
+              <HintPath>..\packages\Standart.Hash.xxHash\lib\netstandard2.0\Standart.Hash.xxHash.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -61,10 +62,10 @@
     </When>
   </Choose>
   <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
-        <Reference Include="System.Data.HashFunction.Interfaces">
-          <HintPath>..\packages\System.Data.HashFunction.Interfaces\lib\net45\System.Data.HashFunction.Interfaces.dll</HintPath>
+          <Reference Include="System.Buffers">
+              <HintPath>..\packages\System.Buffers\lib\netstandard2.0\System.Buffers.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -72,10 +73,13 @@
     </When>
   </Choose>
   <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
-        <Reference Include="System.Data.HashFunction.xxHash">
-          <HintPath>..\packages\System.Data.HashFunction.xxHash\lib\net45\System.Data.HashFunction.xxHash.dll</HintPath>
+          <Reference Include="mscorlib">
+              <Paket>True</Paket>
+          </Reference>
+          <Reference Include="System.IO">
+              <HintPath>..\packages\System.IO\lib\net462\System.IO.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -83,12 +87,50 @@
     </When>
   </Choose>
   <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+          <ItemGroup>
+              <Reference Include="System.Memory">
+                  <HintPath>..\packages\System.Memory\lib\netstandard2.0\System.Memory.dll</HintPath>
+                  <Private>True</Private>
+                  <Paket>True</Paket>
+              </Reference>
+          </ItemGroup>
+      </When>
+  </Choose>
+    <Choose>
+        <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
         <Reference Include="System.Numerics">
-          <Paket>True</Paket>
+            <Paket>True</Paket>
         </Reference>
+          <Reference Include="System.Numerics.Vectors">
+              <HintPath>..\packages\System.Numerics.Vectors\lib\net46\System.Numerics.Vectors.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+          </Reference>
       </ItemGroup>
-    </When>
-  </Choose>
+        </When>
+    </Choose>
+    <Choose>
+        <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+            <ItemGroup>
+                <Reference Include="System.Runtime.CompilerServices.Unsafe">
+                    <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+                    <Private>True</Private>
+                    <Paket>True</Paket>
+                </Reference>
+            </ItemGroup>
+        </When>
+    </Choose>
+    <Choose>
+        <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+            <ItemGroup>
+                <Reference Include="System.Threading.Tasks.Extensions">
+                    <HintPath>..\packages\System.Threading.Tasks.Extensions\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
+                    <Private>True</Private>
+                    <Paket>True</Paket>
+                </Reference>
+            </ItemGroup>
+        </When>
+    </Choose>
 </Project>

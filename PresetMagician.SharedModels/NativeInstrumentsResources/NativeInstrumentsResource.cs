@@ -19,11 +19,11 @@ namespace PresetMagician.Models.NativeInstrumentsResources
         public Color Color { get; set; } = new Color();
         public Categories Categories { get; set; } = new Categories();
         public ShortNames ShortNames { get; set; } = new ShortNames();
-        
+
         public ResourceState ColorState { get; } = new ResourceState();
         public ResourceState ShortNamesState { get; } = new ResourceState();
         public ResourceState CategoriesState { get; } = new ResourceState();
-        
+
 
         #region Images
 
@@ -35,8 +35,9 @@ namespace PresetMagician.Models.NativeInstrumentsResources
         public ResourceImage OSO_logo { get; } = new ResourceImage(417, 65, "OSO_logo.png");
 
         public List<ResourceImage> ResourceImages { get; } = new List<ResourceImage>();
+
         #endregion
-        
+
         public static string GetNativeInstrumentsResourcesDirectory()
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments),
@@ -88,12 +89,12 @@ namespace PresetMagician.Models.NativeInstrumentsResources
             var files = GetFiles(plugin);
             var ResourcesDirectory = GetDistDatabaseDirectory(plugin);
             var ImagesDirectory = GetImageDirectory(plugin);
-            
+
             if (!Directory.Exists(ImagesDirectory))
             {
                 Directory.CreateDirectory(ImagesDirectory);
             }
-            
+
             foreach (var image in ResourceImages)
             {
                 image.Save(ImagesDirectory);
@@ -103,7 +104,6 @@ namespace PresetMagician.Models.NativeInstrumentsResources
             {
                 Directory.CreateDirectory(ResourcesDirectory);
             }
-
 
 
             if (ColorState.ShouldSave)
@@ -137,7 +137,7 @@ namespace PresetMagician.Models.NativeInstrumentsResources
                 {
                     CreateMetaFile(plugin, "dist_database", metaFile);
                 }
-                
+
                 var imageMetaFile = Path.Combine(ImagesDirectory, plugin.PluginName.ToLower() + ".meta");
                 if (!File.Exists(imageMetaFile))
                 {
@@ -149,9 +149,6 @@ namespace PresetMagician.Models.NativeInstrumentsResources
                 LogTo.Error($"Error occured while saving metadata: {e.Message}");
                 LogTo.Debug(e.StackTrace);
             }
-
-            
-
         }
 
         private static void CreateMetaFile(Plugin plugin, string dbType, string outputFile)
@@ -192,11 +189,11 @@ namespace PresetMagician.Models.NativeInstrumentsResources
             Color.BackgroundColor =
                 (System.Windows.Media.Color) ColorConverter.ConvertFromString("#" + obj["bgColor"]);
             ColorState.State = ResourceStates.FromWeb;
-            
-            ShortNames.VB_shortname = (string)obj["shortName_VB"];
-            ShortNames.MKII_shortname = (string)obj["shortName_MKII"];
-            ShortNames.MST_shortname = (string)obj["shortName_MST"];
-            ShortNames.MIKRO_shortname = (string)obj["shortName_MIKRO"];
+
+            ShortNames.VB_shortname = (string) obj["shortName_VB"];
+            ShortNames.MKII_shortname = (string) obj["shortName_MKII"];
+            ShortNames.MST_shortname = (string) obj["shortName_MST"];
+            ShortNames.MIKRO_shortname = (string) obj["shortName_MIKRO"];
             ShortNamesState.State = ResourceStates.FromWeb;
 
             VB_logo.ReplaceFromBase64((string) obj["image_VB_logo"]);
@@ -205,13 +202,12 @@ namespace PresetMagician.Models.NativeInstrumentsResources
             MST_artwork.ReplaceFromBase64((string) obj["image_MST_artwork"]);
             MST_plugin.ReplaceFromBase64((string) obj["image_MST_plugin"]);
             OSO_logo.ReplaceFromBase64((string) obj["image_OSO_logo"]);
-            
-           
+
 
             var categoryStrings = ((string) obj["categories"]).Split(',').ToList();
-            
+
             Categories.CategoryNames.Clear();
-            
+
             foreach (var categoryString in categoryStrings)
             {
                 Categories.CategoryNames.Add(new Category {Name = categoryString});
@@ -219,10 +215,10 @@ namespace PresetMagician.Models.NativeInstrumentsResources
 
             CategoriesState.State = ResourceStates.FromWeb;
         }
-        
+
         public void Load(Plugin plugin)
         {
-            if (plugin == null || !plugin.IsLoaded)
+            if (plugin == null || !(plugin.IsScanned || plugin.IsLoaded))
             {
                 return;
             }
@@ -248,7 +244,7 @@ namespace PresetMagician.Models.NativeInstrumentsResources
             {
                 ShortNames = JsonConvert.DeserializeObject<ShortNames>(
                     File.ReadAllText(files["shortname"]));
-                
+
                 ShortNamesState.State = ResourceStates.FromDisk;
             }
             else
@@ -258,7 +254,7 @@ namespace PresetMagician.Models.NativeInstrumentsResources
                 ShortNames.MIKRO_shortname = plugin.PluginName;
                 ShortNames.MST_shortname = plugin.PluginName;
             }
-            
+
             Categories.CategoryNames.Clear();
 
             if (File.Exists(files["categories"]))
@@ -285,7 +281,7 @@ namespace PresetMagician.Models.NativeInstrumentsResources
                     Categories.Vendor = plugin.PluginVendor;
                     Categories.Product = plugin.PluginName;
                 }
-                
+
                 CategoriesState.State = ResourceStates.FromDisk;
             }
             else
@@ -301,8 +297,9 @@ namespace PresetMagician.Models.NativeInstrumentsResources
             }
 
             var imagesDirectory = GetImageDirectory(plugin);
-            
-            foreach (var resourceImage in ResourceImages) {
+
+            foreach (var resourceImage in ResourceImages)
+            {
                 resourceImage.Load(imagesDirectory);
             }
         }
@@ -318,13 +315,13 @@ namespace PresetMagician.Models.NativeInstrumentsResources
             }
 
             foreach (var categoryName in originalResources.Categories.CategoryNames)
+            {
+                if (!(from cat in Categories.CategoryNames where cat.Name == categoryName.Name select cat).Any())
                 {
-                    if (!(from cat in Categories.CategoryNames where cat.Name == categoryName.Name select cat).Any())
-                    {
-                        return true;
-                    }
+                    return true;
                 }
-         
+            }
+
 
             foreach (var image in ResourceImages)
             {

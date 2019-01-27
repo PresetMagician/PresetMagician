@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using Anotar.Catel;
-using PresetMagician.Models;
+using Catel.Logging;
 using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser
@@ -14,71 +12,87 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         public static Dictionary<int, IVendorPresetParser> GetPresetHandlerList()
         {
             var pluginHandlers = new Dictionary<int, IVendorPresetParser>();
-            var type = typeof(IVendorPresetParser);
-            
-            var currentAssembly = Assembly.GetExecutingAssembly();
 
-            var types = currentAssembly.GetTypes()
-                .Where(p => p.GetInterfaces().Contains(type));
 
-            foreach (var parser in types)
+            foreach (var parser in GetPresetParsers())
             {
-                IVendorPresetParser instance = (IVendorPresetParser) Activator.CreateInstance(parser);
-                foreach (var pluginId in instance.GetSupportedPlugins())
+                foreach (var pluginId in parser.GetSupportedPlugins())
                 {
-                    pluginHandlers.Add(pluginId, instance);
+                    pluginHandlers.Add(pluginId, parser);
                 }
             }
 
             return pluginHandlers;
         }
-        private static IVendorPresetParser GetPresetHandler(Plugin vstPlugin, IRemoteVstService remoteVstService)
-        {
-            vstPlugin.Debug("Resolving PresetHandler for plugin {0}", vstPlugin);
 
-            var type = typeof(IVendorPresetParser);
+        private static List<IVendorPresetParser> _presetParsers;
+
+        public static List<IVendorPresetParser> GetPresetParsers()
+        {
+            if (_presetParsers != null)
+            {
+                return _presetParsers;
+            }
+
+            _presetParsers = new List<IVendorPresetParser>();
+
+            var interfaceType = typeof(IVendorPresetParser);
 
             var currentAssembly = Assembly.GetExecutingAssembly();
 
             var types = currentAssembly.GetTypes()
-                .Where(p => p.GetInterfaces().Contains(type));
-
+                .Where(p => p.GetInterfaces().Contains(interfaceType));
 
             foreach (var parser in types)
             {
                 IVendorPresetParser instance = (IVendorPresetParser) Activator.CreateInstance(parser);
-                instance.RemoteVstService = remoteVstService;
-                instance.Init();
+                _presetParsers.Add(instance);
+            }
 
-                if (instance.IsNullParser)
+            return _presetParsers;
+        }
+
+        private static IVendorPresetParser GetPresetHandler(IRemotePluginInstance pluginInstance)
+        {
+            pluginInstance.Plugin.Logger.Debug("Resolving Preset Parser");
+
+            var orderedPresetParsers = GetPresetParsers().OrderBy(p => p.RequiresLoadedPlugin).ToList();
+
+
+            foreach (var parser in orderedPresetParsers)
+            {
+                parser.Init();
+
+                if (parser.IsNullParser)
                 {
                     continue;
                 }
 
-                instance.Plugin = vstPlugin;
-                if (instance.CanHandle())
+                parser.PluginInstance = pluginInstance;
+                if (parser.CanHandle())
                 {
-                    vstPlugin.Debug("Using PresetHandler {0} for plugin {1}", instance, vstPlugin);
+                    pluginInstance.Plugin.Logger.Debug("Using PresetHandler {0} for plugin {1}",
+                        parser.PresetParserType);
 
-                    return instance;
+                    return parser;
                 }
             }
 
-            vstPlugin.Debug("No PresetHandler found for plugin {0}, using NullPresetParser", vstPlugin);
+            pluginInstance.Plugin.Logger.Debug("No PresetHandler found, using NullPresetParser");
             return new NullPresetParser();
         }
 
-        public static void DeterminatePresetParser(Plugin plugin, IRemoteVstService remoteVstService)
+        public static void DeterminatePresetParser(IRemotePluginInstance pluginInstance)
         {
-            plugin.PresetParser = GetPresetHandler(plugin, remoteVstService);
+            pluginInstance.Plugin.PresetParser = GetPresetHandler(pluginInstance);
 
-            if (plugin.PresetParser == null)
+            if (pluginInstance.Plugin.PresetParser == null)
             {
-                plugin.IsSupported = false;
+                pluginInstance.Plugin.IsSupported = false;
             }
             else
             {
-                plugin.IsSupported = !plugin.PresetParser.IsNullParser;
+                pluginInstance.Plugin.IsSupported = !pluginInstance.Plugin.PresetParser.IsNullParser;
             }
         }
     }

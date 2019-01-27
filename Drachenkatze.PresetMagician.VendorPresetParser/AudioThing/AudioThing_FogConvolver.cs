@@ -42,7 +42,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
 
             if (pathsAttribute == null)
             {
-                Plugin.Error("The settings file does not contain bank paths.");
+                PluginInstance.Plugin.Error("The settings file does not contain bank paths.");
                 return dirs;
             }
 

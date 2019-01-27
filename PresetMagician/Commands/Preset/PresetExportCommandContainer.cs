@@ -1,19 +1,12 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Catel;
-using Catel.IoC;
 using Catel.Logging;
 using Catel.MVVM;
-using Catel.Services;
 using Catel.Threading;
-using Drachenkatze.PresetMagician.VSTHost.VST;
-using PresetMagician.Helpers;
-using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
-using PresetMagician.ViewModels;
 using SharedModels;
 
 // ReSharper disable once CheckNamespace
@@ -28,7 +21,8 @@ namespace PresetMagician
         private readonly IApplicationService _applicationService;
         private readonly IRuntimeConfigurationService _runtimeConfigurationService;
 
-        public PresetExportCommandContainer(ICommandManager commandManager, IVstService vstService,IApplicationService applicationService,
+        public PresetExportCommandContainer(ICommandManager commandManager, IVstService vstService,
+            IApplicationService applicationService,
             IRuntimeConfigurationService runtimeConfigurationService)
             : base(Commands.Preset.Export, commandManager)
         {
@@ -45,12 +39,13 @@ namespace PresetMagician
         protected override async Task ExecuteAsync(object parameter)
         {
             var pluginPresets = from item in _vstService.PresetExportList
-                group item by item.Plugin into pluginGroup
+                group item by item.Plugin
+                into pluginGroup
                 let first = pluginGroup.First()
                 select new
                 {
                     Plugin = first.Plugin,
-                    Presets = pluginGroup.Select(gi => new { Preset = gi })
+                    Presets = pluginGroup.Select(gi => new {Preset = gi})
                 };
 
             int totalPresets = _vstService.PresetExportList.Count;
@@ -81,7 +76,9 @@ namespace PresetMagician
                     // Create a temporary plugin so that we don't overwrite the plugin info in the list
                     var tempPlugin = new Plugin {DllPath = plugin.DllPath};
 
-                    var remoteVstService = await _vstService.LoadVst(plugin, false);
+                    var remotePluginInstance = await _vstService.GetRemotePluginInstance(plugin);
+
+                    await remotePluginInstance.LoadPlugin();
 
                     foreach (var preset in pluginPreset.Presets)
                     {
@@ -94,29 +91,28 @@ namespace PresetMagician
                         {
                             return;
                         }
-                        
+
                         var presetData = _vstService.GetPresetData(preset.Preset);
                         var presetExportInfo = new PresetExportInfo(preset.Preset);
                         if (_runtimeConfigurationService.RuntimeConfiguration.ExportWithAudioPreviews &&
                             plugin.PluginType == Plugin.PluginTypes.Instrument)
                         {
-                            
-                            remoteVstService.ExportNksAudioPreview(tempPlugin.Guid, presetExportInfo, presetData, exportDirectory, preset.Preset.Plugin.GetAudioPreviewDelay());
+                            remotePluginInstance.ExportNksAudioPreview(presetExportInfo, presetData, exportDirectory,
+                                preset.Preset.Plugin.GetAudioPreviewDelay());
                         }
-                        
-                        remoteVstService.ExportNks(tempPlugin.Guid, presetExportInfo, presetData, exportDirectory);
-                        
+
+                        remotePluginInstance.ExportNks(presetExportInfo, presetData, exportDirectory);
+
                         plugin.PresetParser.OnAfterPresetExport();
                         preset.Preset.LastExported = DateTime.Now;
                     }
 
-                    await _vstService.UnloadVst(tempPlugin);
+                    remotePluginInstance.UnloadPlugin();
                     await _vstService.SavePlugins();
                 }
             });
 
             _applicationService.StopApplicationOperation("Export completed");
-       
         }
     }
-}   
+}

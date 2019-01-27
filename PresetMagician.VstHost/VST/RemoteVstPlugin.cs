@@ -1,25 +1,20 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Timers;
 using System.Windows;
 using System.Windows.Interop;
-using System.Windows.Media;
 using System.Windows.Threading;
 using Catel.IO;
 using Drachenkatze.PresetMagician.Utils;
 using Jacobi.Vst.Core;
 using Jacobi.Vst.Core.Host;
-using Jacobi.Vst.Interop.Host;
-using Microsoft.DwayneNeed.Interop;
-using Microsoft.DwayneNeed.MDI;
+using Microsoft.DwayneNeed.Win32;
+using Microsoft.DwayneNeed.Win32.User32;
 using PresetMagician.Models;
 using PresetMagician.VstHost.Util;
-using SharedModels;
 using Brushes = System.Windows.Media.Brushes;
-using Color = System.Windows.Media.Color;
 
 namespace PresetMagician.VstHost.VST
 {
@@ -34,11 +29,13 @@ namespace PresetMagician.VstHost.VST
         {
             _host = host;
         }
-        
+
         public string DllPath
         {
             get { return _dllPath; }
-            set { DllFilename = Path.GetFileName(value);
+            set
+            {
+                DllFilename = Path.GetFileName(value);
                 _dllPath = value;
             }
         }
@@ -49,7 +46,7 @@ namespace PresetMagician.VstHost.VST
 
         private Window _editorWindow;
         private WindowInteropHelper _editorWindowHelper;
-        
+
         private const int DWMWA_TRANSITIONS_FORCEDISABLED = 3;
 
         [DllImport("dwmapi.dll", PreserveSig = true)]
@@ -66,7 +63,7 @@ namespace PresetMagician.VstHost.VST
             {
                 return false;
             }
-          
+
             _editorWindow = new PluginWindow //make sure the window is invisible
             {
                 Width = wndRect.Width,
@@ -84,16 +81,12 @@ namespace PresetMagician.VstHost.VST
                 AllowsTransparency = true,
                 Opacity = 0,
                 Background = Brushes.Transparent
-                
             };
 
             _editorWindowHelper = new WindowInteropHelper(_editorWindow);
             _editorWindowHelper.EnsureHandle();
-           
+
             _editorWindow.Show();
-           
-            
-            
 
 
             int value = 1; // TRUE to disable
@@ -101,15 +94,24 @@ namespace PresetMagician.VstHost.VST
                 DWMWA_TRANSITIONS_FORCEDISABLED,
                 ref value,
                 Marshal.SizeOf(value));
-            
+
             var success = PluginContext.PluginCommandStub.EditorOpen(_editorWindowHelper.Handle);
+            var handle = new HWND(_editorWindowHelper.Handle);
+            NativeMethods.SetWindowPos(
+                handle,
+                HWND.BOTTOM,
+                0,
+                0,
+                0,
+                0,
+                SWP.NOMOVE | SWP.NOSIZE);
 
             if (!success)
             {
                 _editorWindow.Close();
                 return false;
             }
-            
+
             if (PluginContext.PluginCommandStub.EditorGetRect(out Rectangle wndRect2))
             {
                 if (wndRect2.Width != 0 && wndRect2.Height != 0)
@@ -122,8 +124,8 @@ namespace PresetMagician.VstHost.VST
             IsEditorOpen = true;
             return true;
         }
-        
-         public bool OpenEditor()
+
+        public bool OpenEditor()
         {
             if (!PluginContext.PluginCommandStub.EditorGetRect(out Rectangle wndRect))
             {
@@ -134,27 +136,25 @@ namespace PresetMagician.VstHost.VST
             {
                 return false;
             }
-          
-            _editorWindow = new PluginWindow //make sure the window is invisible
+
+            _editorWindow = new PluginWindow(wndRect.Width, wndRect.Height) //make sure the window is invisible
             {
-                Width = wndRect.Width,
-                Height = wndRect.Height,
                 ShowInTaskbar = true,
                 ShowActivated = true,
-                Title = "Plugin Editor: "+PluginContext.PluginCommandStub.GetEffectName(),
+                Title = "Plugin Editor: " + PluginContext.PluginCommandStub.GetEffectName(),
                 ResizeMode = ResizeMode.NoResize,
                 Margin = new Thickness(0),
                 SnapsToDevicePixels = true,
                 UseLayoutRounding = false,
                 Topmost = true,
-                SizeToContent = SizeToContent.Manual                
+                SizeToContent = SizeToContent.WidthAndHeight,
             };
 
             _editorWindowHelper = new WindowInteropHelper(_editorWindow);
             _editorWindowHelper.EnsureHandle();
-           
+
             _editorWindow.Show();
-           
+
             var success = PluginContext.PluginCommandStub.EditorOpen(_editorWindowHelper.Handle);
 
             if (!success)
@@ -162,7 +162,7 @@ namespace PresetMagician.VstHost.VST
                 _editorWindow.Close();
                 return false;
             }
-            
+
             if (PluginContext.PluginCommandStub.EditorGetRect(out Rectangle wndRect2))
             {
                 if (wndRect2.Width != 0 && wndRect2.Height != 0)
@@ -185,7 +185,6 @@ namespace PresetMagician.VstHost.VST
                     _editorWindow.Width = width;
                     _editorWindow.Height = height;
                 }));
-
             }
         }
 
@@ -193,10 +192,8 @@ namespace PresetMagician.VstHost.VST
         {
             if (IsEditorOpen)
             {
-                _editorWindow.Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() =>
-                    {
-                        _editorWindow.InvalidateVisual();
-                    }));
+                _editorWindow.Dispatcher.BeginInvoke(DispatcherPriority.Render,
+                    new Action(() => { _editorWindow.InvalidateVisual(); }));
             }
         }
 
@@ -204,19 +201,19 @@ namespace PresetMagician.VstHost.VST
         {
             return !IsEditorOpen ? null : ScreenCapture.PrintWindow(_editorWindowHelper.Handle);
         }
-        
+
         public void CloseEditor()
         {
             if (!IsEditorOpen)
             {
                 return;
             }
-            
+
             PluginContext.PluginCommandStub.EditorClose();
             _editorWindow.Close();
             IsEditorOpen = false;
         }
-        
+
         public List<PluginInfoItem> GetPluginInfoItems(IVstPluginContext pluginContext)
         {
             var _pluginInfoItems = new List<PluginInfoItem>();
