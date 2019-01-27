@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Microsoft.DwayneNeed.Numerics;
 
 namespace Microsoft.DwayneNeed.Geometry
@@ -39,7 +38,7 @@ namespace Microsoft.DwayneNeed.Geometry
             }
 
             _intervals = new Interval<T>[dimensions];
-            for(int dimension = 0; dimension < dimensions; dimension++)
+            for (int dimension = 0; dimension < dimensions; dimension++)
             {
                 dynamic start = point.GetCoordinate(dimension);
                 dynamic end = start + vector.GetDelta(dimension);
@@ -65,10 +64,7 @@ namespace Microsoft.DwayneNeed.Geometry
 
         public int Dimensions
         {
-            get
-            {
-                return _intervals == null ? 0 : _intervals.Length;
-            }
+            get { return _intervals == null ? 0 : _intervals.Length; }
         }
 
         public Interval<T> GetInterval(int dimension)

@@ -10,8 +10,7 @@
     </PriorityBinding>
 
     <!--  Default Row Style  -->
-    <Style x:Key="DefaultRowStyle" TargetType="{x:Type DataGridRow}">
-    </Style>
+    <Style x:Key="DefaultRowStyle" TargetType="{x:Type DataGridRow}" />
 
     <!--  Default ColumnHeaderGripperStyle  -->
     <Style x:Key="ColumnHeaderGripperStyle" TargetType="{x:Type Thumb}">

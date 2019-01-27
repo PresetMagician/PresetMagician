@@ -58,10 +58,7 @@ namespace Microsoft.DwayneNeed.Media.Imaging
         /// </remarks>
         public override BitmapPalette Palette
         {
-            get
-            {
-                return null;
-            }
+            get { return null; }
         }
 
         #endregion BitmapSource Properties
@@ -108,10 +105,10 @@ namespace Microsoft.DwayneNeed.Media.Imaging
                 // array has already been pinned.
                 unsafe
                 {
-                    byte* pBytes = (byte*)buffer.ToPointer();
+                    byte* pBytes = (byte*) buffer.ToPointer();
                     for (int y = 0; y < sourceRect.Height; y++)
                     {
-                        Bgra32Pixel* pPixel = (Bgra32Pixel*)pBytes;
+                        Bgra32Pixel* pPixel = (Bgra32Pixel*) pBytes;
 
                         for (int x = 0; x < sourceRect.Width; x++)
                         {
@@ -122,9 +119,9 @@ namespace Microsoft.DwayneNeed.Media.Imaging
                             float blue = c.ScB;
 
                             Color cSepia = Color.FromScRgb(1.0f,
-                                                           red * 0.393f + green * 0.769f + blue * 0.189f,
-                                                           red * 0.349f + green * 0.686f + blue * 0.168f,
-                                                           red * 0.272f + green * 0.534f + blue * 0.131f);
+                                red * 0.393f + green * 0.769f + blue * 0.189f,
+                                red * 0.349f + green * 0.686f + blue * 0.168f,
+                                red * 0.272f + green * 0.534f + blue * 0.131f);
 
 
                             // Write sRGB (non-linear) since it is implied by

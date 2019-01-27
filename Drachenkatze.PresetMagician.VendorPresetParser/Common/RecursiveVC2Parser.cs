@@ -1,13 +1,8 @@
 using System;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Xml;
-using Anotar.Catel;
-using Drachenkatze.PresetMagician.VSTHost.VST;
 using GSF;
-using PresetMagician.Models;
 using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.Common

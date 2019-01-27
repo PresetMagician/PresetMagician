@@ -1,8 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Windows;
-using System.Windows.Controls.Primitives;
 using System.Windows.Controls;
-using System;
+using System.Windows.Controls.Primitives;
 
 namespace PresetMagician.Behaviors
 {
@@ -128,7 +128,6 @@ namespace PresetMagician.Behaviors
                     throw new InvalidOperationException("Target object has no SelectedItems property to bind.");
                 }
             }
-
         }
     }
 }

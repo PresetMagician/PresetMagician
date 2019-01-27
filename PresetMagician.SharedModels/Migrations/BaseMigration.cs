@@ -1,11 +1,5 @@
-using System;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.SqlClient;
-using System.Data.SQLite;
-using System.Diagnostics;
 using System.Linq;
-using Catel.Linq;
 
 namespace PresetMagician.Migrations
 {
@@ -19,7 +13,7 @@ namespace PresetMagician.Migrations
         {
             var results =
                 Database.SqlQuery<TablePragmaResults>(
-                    "PRAGMA table_info("+tableName+")").ToArray();
+                    "PRAGMA table_info(" + tableName + ")").ToArray();
 
             foreach (var result in results)
             {
@@ -31,7 +25,7 @@ namespace PresetMagician.Migrations
 
             return false;
         }
-        
+
         internal class TablePragmaResults
         {
             public int cid { get; set; }

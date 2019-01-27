@@ -8,15 +8,15 @@ namespace PresetMagician.Services
         IPresetDataStorer GetPresetDataStorer();
     }
 
-    public class DatabaseService: IDatabaseService
+    public class DatabaseService : IDatabaseService
     {
         private readonly ApplicationDatabaseContext _dbContext;
-        
+
         public DatabaseService()
         {
             _dbContext = new ApplicationDatabaseContext();
         }
-        
+
         public ApplicationDatabaseContext Context
         {
             get { return _dbContext; }

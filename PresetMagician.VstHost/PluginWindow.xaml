@@ -12,7 +12,5 @@
                          AirspaceMode="Redirect"
                          Background="Transparent"
                          IsInputRedirectionEnabled="False"
-                         IsOutputRedirectionEnabled="False">
-        
-    </interop1:AirspaceDecorator>
+                         IsOutputRedirectionEnabled="False" />
 </Window>

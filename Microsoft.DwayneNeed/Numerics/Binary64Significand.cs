@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Microsoft.DwayneNeed.Numerics
 {
@@ -13,7 +10,7 @@ namespace Microsoft.DwayneNeed.Numerics
         public Binary64Significand(ulong value, bool isSubNormal) : this()
         {
             // Only 52 bits can be specified.
-            ulong mask = ((ulong)1 << 52) - 1;
+            ulong mask = ((ulong) 1 << 52) - 1;
             if ((value & ~mask) != 0)
             {
                 throw new ArgumentOutOfRangeException("significand");
@@ -23,21 +20,21 @@ namespace Microsoft.DwayneNeed.Numerics
             IsSubnormal = isSubNormal;
         }
 
-        public ulong Value { get; private set;}
+        public ulong Value { get; private set; }
         public bool IsSubnormal { get; private set; }
 
         public double Fraction
         {
             get
             {
-                ulong denominator = (ulong)1 << 52;
+                ulong denominator = (ulong) 1 << 52;
                 ulong numerator = Value;
                 if (!IsSubnormal)
                 {
                     numerator += denominator;
                 }
 
-                return (double)numerator / (double)denominator;
+                return (double) numerator / (double) denominator;
             }
         }
     }

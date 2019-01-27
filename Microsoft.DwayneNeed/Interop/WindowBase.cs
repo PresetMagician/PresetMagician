@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Threading;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Media;
-using System.Windows;
-using Microsoft.DwayneNeed.Win32.User32;
-using Microsoft.DwayneNeed.Win32.ComCtl32;
 using Microsoft.DwayneNeed.Win32;
+using Microsoft.DwayneNeed.Win32.ComCtl32;
+using Microsoft.DwayneNeed.Win32.User32;
 
 namespace Microsoft.DwayneNeed.Interop
 {
@@ -50,10 +45,7 @@ namespace Microsoft.DwayneNeed.Interop
 
         public HWND Handle
         {
-            get
-            {
-                return _hwnd;
-            }
+            get { return _hwnd; }
         }
 
         protected virtual void Initialize()
@@ -116,7 +108,7 @@ namespace Microsoft.DwayneNeed.Interop
             {
                 case WindowShowState.Default:
                     return NativeMethods.ShowWindow(_hwnd, SW.SHOWDEFAULT);
-                
+
                 case WindowShowState.Current:
                     return NativeMethods.ShowWindow(_hwnd, activate ? SW.SHOW : SW.SHOWNA);
 
@@ -170,7 +162,7 @@ namespace Microsoft.DwayneNeed.Interop
         {
             Debug.Assert(hwnd == _hwnd.DangerousGetHandle());
 
-            return OnMessage((WM)message, wParam, lParam);
+            return OnMessage((WM) message, wParam, lParam);
         }
 
         private HWND _hwnd; // Will be a StrongHWND after TransferHandleOwnership

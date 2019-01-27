@@ -10,7 +10,7 @@ namespace PresetMagician.ViewModels
             Plugin = plugin;
             Title = "Plugin Errors for " + Plugin.DllFilename;
         }
-        
+
         public Plugin Plugin { get; protected set; }
     }
 }

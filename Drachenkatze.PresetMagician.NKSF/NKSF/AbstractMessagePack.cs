@@ -36,7 +36,7 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
             byte[] tmpChunk = SerializeMessagePack();
 
             Chunk = new byte[tmpChunk.Length + 4];
-            ms.Write(LittleEndian.GetBytes(Version),0,4);
+            ms.Write(LittleEndian.GetBytes(Version), 0, 4);
             ms.Write(tmpChunk, 0, tmpChunk.Length);
             Chunk = ms.ToArray();
             ChunkSize = Chunk.Length;

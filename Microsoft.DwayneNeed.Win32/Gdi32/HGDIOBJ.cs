@@ -1,12 +1,6 @@
-﻿using Microsoft.DwayneNeed.Win32.Common;
-using Microsoft.DwayneNeed.Win32.Kernel32;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿using System;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.DwayneNeed.Win32.Common;
 
 namespace Microsoft.DwayneNeed.Win32.Gdi32
 {
@@ -41,13 +35,11 @@ namespace Microsoft.DwayneNeed.Win32.Gdi32
         /// </summary>
         public OBJ ObjectType
         {
-            get
-            {
-                return GetObjectType(this);
-            }
+            get { return GetObjectType(this); }
         }
 
         #region PInvoke
+
         [DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern OBJ GetObjectType(HGDIOBJ hObject);
 
@@ -58,6 +50,5 @@ namespace Microsoft.DwayneNeed.Win32.Gdi32
         private static extern bool DeleteObject(IntPtr hObject);
 
         #endregion
-
     }
 }

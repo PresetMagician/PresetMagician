@@ -5,7 +5,6 @@ using Catel.Collections;
 using Drachenkatze.PresetMagician.NKSF.NKSF;
 using Drachenkatze.PresetMagician.VSTHost.Properties;
 using Jacobi.Vst.Core;
-using Jacobi.Vst.Interop.Host;
 using MethodTimer;
 using NAudio.Wave;
 using SharedModels;
@@ -185,7 +184,8 @@ namespace PresetMagician.VstHost.VST
         }
 
         [Time]
-        public void ExportPresetAudioPreviewRealtime(RemoteVstPlugin plugin, PresetExportInfo preset, byte[] data, int initialDelay)
+        public void ExportPresetAudioPreviewRealtime(RemoteVstPlugin plugin, PresetExportInfo preset, byte[] data,
+            int initialDelay)
         {
             var ctx = plugin.PluginContext;
 

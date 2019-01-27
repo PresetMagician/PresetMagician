@@ -24,10 +24,10 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
                 false).GetAwaiter().GetResult();
             count += ProcessD16PkgArchive(GetFactoryBankPath(FactoryBankPath),
                 RootBank.CreateRecursive(BankNameFactory), false).GetAwaiter().GetResult();
-            
+
             return count;
         }
-        
+
         public override async Task DoScan()
         {
             await ProcessPresetDirectory(GetUserBankPath(UserBankPath), RootBank.CreateRecursive(BankNameUser));

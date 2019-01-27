@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Microsoft.DwayneNeed.Win32.Gdi32
+﻿namespace Microsoft.DwayneNeed.Win32.Gdi32
 {
     public enum COLOR : int
     {
@@ -155,7 +150,7 @@ namespace Microsoft.DwayneNeed.Win32.Gdi32
         /// facing the light source).
         /// </summary>
         HIGHLIGHT3D = 20,
- 
+
         /// <summary>
         /// Highlight color for three-dimensional display elements (for edges facing
         /// the light source).
@@ -199,7 +194,7 @@ namespace Microsoft.DwayneNeed.Win32.Gdi32
         /// determine whether the gradient effect is enabled.
         /// </summary>
         GRADIENTACTIVECAPTION = 27,
-        
+
         /// <summary>
         /// Right side color in the color gradient of an inactive window's
         /// title bar. INACTIVECAPTION specifies the left side color.
@@ -214,8 +209,8 @@ namespace Microsoft.DwayneNeed.Win32.Gdi32
         /// <remarks>
         /// Windows 2000:  This value is not supported.
         /// </remarks>
-        MENUHILIGHT = 29, 
- 
+        MENUHILIGHT = 29,
+
         /// <summary>
         /// The background color for the menu bar when menus appear as flat
         /// menus (see SystemParametersInfo). However, MENU continues to
@@ -224,6 +219,6 @@ namespace Microsoft.DwayneNeed.Win32.Gdi32
         /// <remarks>
         /// Windows 2000:  This value is not supported.
         /// </remarks>
-        MENUBAR = 30, 
+        MENUBAR = 30,
     }
 }

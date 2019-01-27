@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 namespace Microsoft.DwayneNeed.Win32.User32
 {
@@ -14,8 +10,15 @@ namespace Microsoft.DwayneNeed.Win32.User32
         public int right;
         public int bottom;
 
-        public int width { get { return right - left; } }
-        public int height { get { return bottom - top; } }
+        public int width
+        {
+            get { return right - left; }
+        }
+
+        public int height
+        {
+            get { return bottom - top; }
+        }
 
         public override string ToString()
         {

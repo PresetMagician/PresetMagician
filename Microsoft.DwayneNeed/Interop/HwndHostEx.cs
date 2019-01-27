@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Windows.Interop;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Interop;
 using Microsoft.DwayneNeed.Extensions;
-using Microsoft.DwayneNeed.Win32.User32;
-using System.Diagnostics;
 using Microsoft.DwayneNeed.Win32;
+using Microsoft.DwayneNeed.Win32.User32;
 
 namespace Microsoft.DwayneNeed.Interop
 {
@@ -21,8 +21,9 @@ namespace Microsoft.DwayneNeed.Interop
         /// <remarks>
         ///     Real implementation is HwndHostExtensions.CopyBitsBehaviorProperty
         /// </remarks>
-        public static readonly DependencyProperty CopyBitsBehaviorProperty = HwndHostExtensions.CopyBitsBehaviorProperty.AddOwner(typeof(HwndHostEx));
-        
+        public static readonly DependencyProperty CopyBitsBehaviorProperty =
+            HwndHostExtensions.CopyBitsBehaviorProperty.AddOwner(typeof(HwndHostEx));
+
         /// <summary>
         ///     The behavior for handling of the SWP_NOCOPYBITS flag during
         ///     moving or sizing operations.
@@ -40,7 +41,8 @@ namespace Microsoft.DwayneNeed.Interop
         /// <remarks>
         ///     Real implementation is HwndHostExtensions.RaiseMouseActivateCommandProperty
         /// </remarks>
-        public static readonly DependencyProperty RaiseMouseActivateCommandProperty = HwndHostExtensions.RaiseMouseActivateCommandProperty;
+        public static readonly DependencyProperty RaiseMouseActivateCommandProperty =
+            HwndHostExtensions.RaiseMouseActivateCommandProperty;
 
         /// <summary>
         ///     Specifies whether or not a HwndHostCommands.MouseActivate
@@ -48,7 +50,7 @@ namespace Microsoft.DwayneNeed.Interop
         /// </summary>
         public bool RaiseMouseActivateCommand
         {
-            get { return (bool)GetValue(RaiseMouseActivateCommandProperty); }
+            get { return (bool) GetValue(RaiseMouseActivateCommandProperty); }
             set { SetValue(RaiseMouseActivateCommandProperty, value); }
         }
 
@@ -80,7 +82,7 @@ namespace Microsoft.DwayneNeed.Interop
 
         public bool AsyncUpdateWindowPos
         {
-            get { return (bool)GetValue(AsyncUpdateWindowPosProperty); }
+            get { return (bool) GetValue(AsyncUpdateWindowPosProperty); }
             set { SetValue(AsyncUpdateWindowPosProperty, value); }
         }
 
@@ -100,7 +102,7 @@ namespace Microsoft.DwayneNeed.Interop
         {
             HWND hwndChild = new HWND(hwnd.Handle);
             Debug.Assert(hwndChild == _hwndChild); // Equivalency, not reference equality.
-            
+
             DestroyWindowOverride(_hwndChild);
 
             // Release our reference to the child HWND.  Note that we do not
@@ -108,7 +110,7 @@ namespace Microsoft.DwayneNeed.Interop
             // DestroyWindowOverride decide what to do with it.
             _hwndChild = null;
         }
-               
+
         /// <summary>
         ///     Default implementation of BuildWindowOverride, which just
         ///     creates a simple "STATIC" HWND.  This is almost certainly not
@@ -151,7 +153,7 @@ namespace Microsoft.DwayneNeed.Interop
             try
             {
                 _messageHandled = true;
-                IntPtr result = WndProcOverride(_hwndChild, (WM)msg, wParam, lParam);
+                IntPtr result = WndProcOverride(_hwndChild, (WM) msg, wParam, lParam);
 
                 handled = _messageHandled;
                 return result;
@@ -202,16 +204,14 @@ namespace Microsoft.DwayneNeed.Interop
             {
                 if (callAsync)
                 {
-                    Dispatcher.BeginInvoke((Action)delegate
-                    {
-                        base.OnWindowPositionChanged(rcBoundingBox);
-                    });
+                    Dispatcher.BeginInvoke((Action) delegate { base.OnWindowPositionChanged(rcBoundingBox); });
                 }
                 else
                 {
                     base.OnWindowPositionChanged(rcBoundingBox);
                 }
             }
+
             _lastWindowPosChanged = rcBoundingBox;
         }
 

@@ -14,8 +14,8 @@ namespace Drachenkatze.PresetMagician.Utils
         public ConsoleTableOptions Options { get; protected set; }
 
         public ConsoleTable(params string[] columns)
-            :this(new ConsoleTableOptions { Columns = new List<string>(columns) })
-        {          
+            : this(new ConsoleTableOptions {Columns = new List<string>(columns)})
+        {
         }
 
         public ConsoleTable(ConsoleTableOptions options)
@@ -53,10 +53,11 @@ namespace Drachenkatze.PresetMagician.Utils
             var table = new ConsoleTable();
 
             var columns = GetColumns<T>();
-                
+
             table.AddColumn(columns);
 
-            foreach (var propertyValues in values.Select(value => columns.Select(column => GetColumnValue<T>(value, column) )))
+            foreach (var propertyValues in values.Select(value =>
+                columns.Select(column => GetColumnValue<T>(value, column))))
                 table.AddRow(propertyValues.ToArray());
 
             return table;
@@ -71,8 +72,8 @@ namespace Drachenkatze.PresetMagician.Utils
 
             // create the string format with padding
             var format = Enumerable.Range(0, Columns.Count)
-                .Select(i => " | {" + i + ",-" + columnLengths[i] + "}")
-                .Aggregate((s, a) => s + a) + " |";
+                             .Select(i => " | {" + i + ",-" + columnLengths[i] + "}")
+                             .Aggregate((s, a) => s + a) + " |";
 
             // find the longest formatted line
             var maxRowLength = Math.Max(0, Rows.Any() ? Rows.Max(row => string.Format(format, row).Length) : 0);
@@ -171,6 +172,7 @@ namespace Drachenkatze.PresetMagician.Utils
                 builder.AppendLine(dividerPlus);
                 builder.AppendLine(row);
             }
+
             builder.AppendLine(dividerPlus);
 
             return builder.ToString();
@@ -180,8 +182,8 @@ namespace Drachenkatze.PresetMagician.Utils
         {
             var delimiterStr = delimiter == char.MinValue ? string.Empty : delimiter.ToString();
             var format = (Enumerable.Range(0, Columns.Count)
-                .Select(i => " "+ delimiterStr + " {" + i + ",-" + columnLengths[i] + "}")
-                .Aggregate((s, a) => s + a) + " " + delimiterStr).Trim();
+                              .Select(i => " " + delimiterStr + " {" + i + ",-" + columnLengths[i] + "}")
+                              .Aggregate((s, a) => s + a) + " " + delimiterStr).Trim();
             return format;
         }
 
@@ -189,7 +191,7 @@ namespace Drachenkatze.PresetMagician.Utils
         {
             var columnLengths = Columns
                 .Select((t, i) => Rows.Select(x => x[i])
-                    .Union(new[] { Columns[i] })
+                    .Union(new[] {Columns[i]})
                     .Where(x => x != null)
                     .Select(x => x.ToString().Length).Max())
                 .ToList();
@@ -218,7 +220,7 @@ namespace Drachenkatze.PresetMagician.Utils
         }
 
         private static IEnumerable<string> GetColumns<T>()
-        {  
+        {
             return typeof(T).GetProperties().Select(x => x.Name).ToArray();
         }
 

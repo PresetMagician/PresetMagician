@@ -13,32 +13,23 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
             FX = 1
         }
 
-        [Key("author")]
-        public String author;
+        [Key("author")] public String author;
 
-        [Key("comment")]
-        public String comment;
+        [Key("comment")] public String comment;
 
-        [Key("deviceType")]
-        public String deviceType;
+        [Key("deviceType")] public String deviceType;
 
-        [Key("name")]
-        public String name;
+        [Key("name")] public String name;
 
-        [Key("uuid")]
-        public Guid uuid;
+        [Key("uuid")] public Guid uuid;
 
-        [Key("vendor")]
-        public String vendor;
+        [Key("vendor")] public String vendor;
 
-        [Key("bankchain")]
-        public ObservableCollection<String> bankChain;
+        [Key("bankchain")] public ObservableCollection<String> bankChain;
 
-        [Key("types")]
-        public ObservableCollection<ObservableCollection<String>> Types { get; set; }
-    
-        [Key("modes")]
-        public ObservableCollection<String> Modes { get; set; }
+        [Key("types")] public ObservableCollection<ObservableCollection<String>> Types { get; set; }
+
+        [Key("modes")] public ObservableCollection<String> Modes { get; set; }
 
         public SummaryInformation()
         {

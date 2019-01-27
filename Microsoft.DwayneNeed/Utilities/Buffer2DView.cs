@@ -1,11 +1,7 @@
-﻿using Microsoft.DwayneNeed.Numerics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Microsoft.DwayneNeed.Numerics;
 
 namespace Microsoft.DwayneNeed.Utilities
 {
@@ -15,7 +11,7 @@ namespace Microsoft.DwayneNeed.Utilities
         {
             _buffer = buffer;
         }
-        
+
         public Buffer2DView(Buffer2D<T> buffer, Int32Rect bounds)
         {
             _buffer = new Buffer2D<T>(buffer, bounds);
@@ -31,11 +27,23 @@ namespace Microsoft.DwayneNeed.Utilities
             return _buffer.CompareBits(srcBuffer, srcRect, dstPoint);
         }
 
-        public T this[int x, int y] { get { return _buffer[x,y]; } }
-        public int Width { get { return _buffer.Width; } }
-        public int Height { get { return _buffer.Height; } }
+        public T this[int x, int y]
+        {
+            get { return _buffer[x, y]; }
+        }
 
-        public BitmapSource CreateBitmapSource(double dpiX, double dpiY, PixelFormat pixelFormat, BitmapPalette bitmapPalette)
+        public int Width
+        {
+            get { return _buffer.Width; }
+        }
+
+        public int Height
+        {
+            get { return _buffer.Height; }
+        }
+
+        public BitmapSource CreateBitmapSource(double dpiX, double dpiY, PixelFormat pixelFormat,
+            BitmapPalette bitmapPalette)
         {
             return _buffer.CreateBitmapSource(dpiX, dpiY, pixelFormat, bitmapPalette);
         }

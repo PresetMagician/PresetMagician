@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Microsoft.DwayneNeed.Geometry
+﻿namespace Microsoft.DwayneNeed.Geometry
 {
     /// <summary>
     ///     A generic interface for q 3-dimensional point. 

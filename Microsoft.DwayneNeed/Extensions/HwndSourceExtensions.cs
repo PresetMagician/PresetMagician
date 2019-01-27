@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Interop;
+﻿using System.Diagnostics;
 using System.Windows;
-using Microsoft.DwayneNeed.Interop;
-using System.Diagnostics;
-using Microsoft.DwayneNeed.Win32.User32;
+using System.Windows.Interop;
 using Microsoft.DwayneNeed.Win32;
+using Microsoft.DwayneNeed.Win32.User32;
 
 namespace Microsoft.DwayneNeed.Extensions
 {
@@ -61,8 +56,8 @@ namespace Microsoft.DwayneNeed.Extensions
             HWND hwnd = new HWND(hwndSource.Handle);
 
             POINT pt = new POINT();
-            pt.x = (int)point.X;
-            pt.y = (int)point.Y;
+            pt.x = (int) point.X;
+            pt.y = (int) point.Y;
 
             NativeMethods.ScreenToClient(hwnd, ref pt);
 
@@ -78,18 +73,19 @@ namespace Microsoft.DwayneNeed.Extensions
             HWND hwnd = new HWND(hwndSource.Handle);
 
             POINT ptUpperLeft = new POINT();
-            ptUpperLeft.x = (int)rect.Left;
-            ptUpperLeft.y = (int)rect.Top;
+            ptUpperLeft.x = (int) rect.Left;
+            ptUpperLeft.y = (int) rect.Top;
 
             NativeMethods.ScreenToClient(hwnd, ref ptUpperLeft);
 
             POINT ptLowerRight = new POINT();
-            ptLowerRight.x = (int)rect.Right;
-            ptLowerRight.y = (int)rect.Bottom;
+            ptLowerRight.x = (int) rect.Right;
+            ptLowerRight.y = (int) rect.Bottom;
 
             NativeMethods.ScreenToClient(hwnd, ref ptLowerRight);
 
-            return new Rect(ptUpperLeft.x, ptUpperLeft.y, ptLowerRight.x - ptUpperLeft.x, ptLowerRight.y - ptUpperLeft.y);
+            return new Rect(ptUpperLeft.x, ptUpperLeft.y, ptLowerRight.x - ptUpperLeft.x,
+                ptLowerRight.y - ptUpperLeft.y);
         }
 
         /// <summary>
@@ -101,8 +97,8 @@ namespace Microsoft.DwayneNeed.Extensions
             HWND hwnd = new HWND(hwndSource.Handle);
 
             POINT pt = new POINT();
-            pt.x = (int)point.X;
-            pt.y = (int)point.Y;
+            pt.x = (int) point.X;
+            pt.y = (int) point.Y;
 
             NativeMethods.ClientToScreen(hwnd, ref pt);
 
@@ -118,18 +114,19 @@ namespace Microsoft.DwayneNeed.Extensions
             HWND hwnd = new HWND(hwndSource.Handle);
 
             POINT ptUpperLeft = new POINT();
-            ptUpperLeft.x = (int)rect.Left;
-            ptUpperLeft.y = (int)rect.Top;
+            ptUpperLeft.x = (int) rect.Left;
+            ptUpperLeft.y = (int) rect.Top;
 
             NativeMethods.ClientToScreen(hwnd, ref ptUpperLeft);
 
             POINT ptLowerRight = new POINT();
-            ptLowerRight.x = (int)rect.Right;
-            ptLowerRight.y = (int)rect.Bottom;
+            ptLowerRight.x = (int) rect.Right;
+            ptLowerRight.y = (int) rect.Bottom;
 
             NativeMethods.ClientToScreen(hwnd, ref ptLowerRight);
 
-            return new Rect(ptUpperLeft.x, ptUpperLeft.y, ptLowerRight.x - ptUpperLeft.x, ptLowerRight.y - ptUpperLeft.y);
+            return new Rect(ptUpperLeft.x, ptUpperLeft.y, ptLowerRight.x - ptUpperLeft.x,
+                ptLowerRight.y - ptUpperLeft.y);
         }
     }
 }

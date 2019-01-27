@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
@@ -20,13 +17,13 @@ namespace Microsoft.DwayneNeed.Controls
             /* Value Type:           */ typeof(int),
             /* Owner Type:           */ typeof(ColorGrid),
             /* Metadata:             */ new FrameworkPropertyMetadata(
-            /*     Default Value:    */ 1,
-            /*     Flags:            */ FrameworkPropertyMetadataOptions.AffectsMeasure,
-            /*     Property Changed: */ (d, e) => ((ColorGrid)d).NumberOfCells_PropertyChanged(e)));
+                /*     Default Value:    */ 1,
+                /*     Flags:            */ FrameworkPropertyMetadataOptions.AffectsMeasure,
+                /*     Property Changed: */ (d, e) => ((ColorGrid) d).NumberOfCells_PropertyChanged(e)));
 
         public int NumberOfCells
         {
-            get { return (int)GetValue(NumberOfCellsProperty); }
+            get { return (int) GetValue(NumberOfCellsProperty); }
             set { SetValue(NumberOfCellsProperty, value); }
         }
 
@@ -37,7 +34,7 @@ namespace Microsoft.DwayneNeed.Controls
                 base.RemoveVisualChild(_uniformGrid);
             }
 
-            int newValue = (int)e.NewValue;
+            int newValue = (int) e.NewValue;
             _uniformGrid = BuildColorGrid(newValue);
 
             if (_uniformGrid != null)
@@ -53,7 +50,8 @@ namespace Microsoft.DwayneNeed.Controls
             UniformGrid grid = new UniformGrid();
             for (int i = 0; i < numberOfCells; i++)
             {
-                Color color = Color.FromScRgb(1.0f, (float)r.NextDouble(), (float)r.NextDouble(), (float)r.NextDouble());
+                Color color = Color.FromScRgb(1.0f, (float) r.NextDouble(), (float) r.NextDouble(),
+                    (float) r.NextDouble());
                 SolidColorBrush fill = new SolidColorBrush(color);
                 fill.Freeze();
 
@@ -68,10 +66,7 @@ namespace Microsoft.DwayneNeed.Controls
 
         protected override int VisualChildrenCount
         {
-            get
-            {
-                return (_uniformGrid != null) ? 1 : 0;
-            }
+            get { return (_uniformGrid != null) ? 1 : 0; }
         }
 
         protected override Visual GetVisualChild(int index)
@@ -80,6 +75,7 @@ namespace Microsoft.DwayneNeed.Controls
             {
                 throw new ArgumentOutOfRangeException("index");
             }
+
             return _uniformGrid;
         }
 
@@ -90,6 +86,7 @@ namespace Microsoft.DwayneNeed.Controls
                 _uniformGrid.Measure(constraint);
                 return _uniformGrid.DesiredSize;
             }
+
             return new Size();
         }
 
@@ -99,6 +96,7 @@ namespace Microsoft.DwayneNeed.Controls
             {
                 _uniformGrid.Arrange(new Rect(arrangeSize));
             }
+
             return arrangeSize;
         }
 

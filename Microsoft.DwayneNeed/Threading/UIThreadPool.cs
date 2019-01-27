@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.DwayneNeed.Controls;
-using System.Windows.Media;
-using System.Windows.Threading;
-using System.Threading;
 using System.Diagnostics;
+using System.Threading;
+using System.Windows.Threading;
 
 namespace Microsoft.DwayneNeed.Threading
 {
@@ -28,10 +24,7 @@ namespace Microsoft.DwayneNeed.Threading
         /// </remarks>
         public static int MinThreads
         {
-            get
-            {
-                return _minThreads;
-            }
+            get { return _minThreads; }
 
             set
             {
@@ -59,10 +52,7 @@ namespace Microsoft.DwayneNeed.Threading
         /// </remarks>
         public static int MaxThreads
         {
-            get
-            {
-                return _maxThreads;
-            }
+            get { return _maxThreads; }
 
             set
             {
@@ -106,12 +96,12 @@ namespace Microsoft.DwayneNeed.Threading
                 // If no threads exist, or if the thread already has a
                 // reference, and we are allowed to have more threads, get a
                 // new thread.
-                if((dispatcher == null || _poolThreads[dispatcher].Item2 > 0) && _numThreads < _maxThreads)
+                if ((dispatcher == null || _poolThreads[dispatcher].Item2 > 0) && _numThreads < _maxThreads)
                 {
                     // Before making a new thread from scratch, look to see
                     // if we can reuse one currently excluded from the pool.
                     dispatcher = GetLeastReferencedThread(false);
-                    if(dispatcher == null)
+                    if (dispatcher == null)
                     {
                         // If we still need a thread, make one.
                         dispatcher = AddNewThreadToPool();
@@ -140,12 +130,12 @@ namespace Microsoft.DwayneNeed.Threading
         /// </remarks>
         internal static void IncrementThread(Dispatcher dispatcher)
         {
-            lock(_guard)
+            lock (_guard)
             {
                 Debug.Assert(_poolThreads.ContainsKey(dispatcher));
 
                 int refCount = _poolThreads[dispatcher].Item2;
-                _poolThreads[dispatcher] = new Tuple<bool, int>(true, refCount+1);
+                _poolThreads[dispatcher] = new Tuple<bool, int>(true, refCount + 1);
             }
         }
 
@@ -174,7 +164,7 @@ namespace Microsoft.DwayneNeed.Threading
                 {
                     RemoveThreadFromPool(dispatcher);
                 }
-                else if(refCount == 0 && !inPool)
+                else if (refCount == 0 && !inPool)
                 {
                     DestroyWorkerThread(dispatcher);
                 }
@@ -313,7 +303,7 @@ namespace Microsoft.DwayneNeed.Threading
             // Force the creation of the Dispatcher for this thread, and then
             // signal that we are running.
             Dispatcher d = Dispatcher.CurrentDispatcher;
-            ((AutoResetEvent)parameter).Set();
+            ((AutoResetEvent) parameter).Set();
 
             // Run a dispatcher for this UIThreadPool thread.
             // This is the central processing loop for WPF.
@@ -328,6 +318,7 @@ namespace Microsoft.DwayneNeed.Threading
         private static int _maxThreads;
         private static int _numThreads;
 
-        private static Dictionary<Dispatcher, Tuple<bool, int>> _poolThreads = new Dictionary<Dispatcher,Tuple<bool,int>>();
+        private static Dictionary<Dispatcher, Tuple<bool, int>> _poolThreads =
+            new Dictionary<Dispatcher, Tuple<bool, int>>();
     }
 }

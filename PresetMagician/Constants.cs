@@ -19,7 +19,7 @@ namespace PresetMagician
 #else
             private static readonly string _site = "presetmagician.com";
             private static readonly string _protocol = "https://";
-            #endif
+#endif
 
             public static readonly string Documentation = $"https://presetmagician.gitbook.io/help/";
             public static readonly string Support = $"{_masterProtocol}{_supportSite}/support";
@@ -108,7 +108,7 @@ namespace PresetMagician
             public const string ClearSelected = "Preset.ClearSelected";
             public const string ApplyMidiNote = "Preset.ApplyMidiNote";
         }
-        
+
         public static class PresetTools
         {
             public const string ShowPresetData = "PresetTools.ShowPresetData";

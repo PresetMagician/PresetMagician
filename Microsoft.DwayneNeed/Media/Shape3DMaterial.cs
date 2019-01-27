@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Media.Media3D;
 using System.Windows;
+using System.Windows.Media.Media3D;
 using Microsoft.DwayneNeed.Shapes;
-using System.ComponentModel;
 
 namespace Microsoft.DwayneNeed.Media
 {
@@ -52,18 +48,12 @@ namespace Microsoft.DwayneNeed.Media
 
         public bool HasMaterial
         {
-            get
-            {
-                return _getMaterial != null;
-            }
+            get { return _getMaterial != null; }
         }
 
         public bool HasElement
         {
-            get
-            {
-                return _getElement != null;
-            }
+            get { return _getElement != null; }
         }
 
         public Material GetMaterial(Shape3D shape)
@@ -72,6 +62,7 @@ namespace Microsoft.DwayneNeed.Media
             {
                 return _getMaterial(shape);
             }
+
             return null;
         }
 
@@ -81,6 +72,7 @@ namespace Microsoft.DwayneNeed.Media
             {
                 return _getElement(shape);
             }
+
             return null;
         }
 

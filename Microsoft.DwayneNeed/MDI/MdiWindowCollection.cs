@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Media;
 using Microsoft.DwayneNeed.Interop;
-using Microsoft.DwayneNeed.Win32.User32;
 using Microsoft.DwayneNeed.Win32;
+using Microsoft.DwayneNeed.Win32.User32;
 
 namespace Microsoft.DwayneNeed.MDI
 {
@@ -28,8 +24,8 @@ namespace Microsoft.DwayneNeed.MDI
                     if (Items[newIndex] == window)
                     {
                         foundSelf = true;
-
                     }
+
                     if (MdiPanel.GetWindowState(Items[newIndex]) != WindowState.Minimized)
                     {
                         break;

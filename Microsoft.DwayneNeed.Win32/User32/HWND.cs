@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.InteropServices;
 
 namespace Microsoft.DwayneNeed.Win32.User32
@@ -80,7 +77,7 @@ namespace Microsoft.DwayneNeed.Win32.User32
             SetHandle(hwnd);
         }
 
-        public static HWND NULL {get; private set;}
+        public static HWND NULL { get; private set; }
         public static HWND BROADCAST { get; private set; }
         public static HWND MESSAGE { get; private set; }
         public static HWND DESKTOP { get; private set; }

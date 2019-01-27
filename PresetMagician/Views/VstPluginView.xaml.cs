@@ -1,6 +1,4 @@
-﻿using PresetMagician.ViewModels;
-
-namespace PresetMagician.Views
+﻿namespace PresetMagician.Views
 {
     public partial class VstPluginView
     {

@@ -49,10 +49,7 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
 
         public override string ChunkDescription
         {
-            get
-            {
-                return "Native Instruments Plugin ID";
-            }
+            get { return "Native Instruments Plugin ID"; }
         }
     }
 }

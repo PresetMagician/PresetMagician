@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Catel;
-using Catel.Collections;
 using Catel.MVVM;
 using Catel.Threading;
-using PresetMagician.Extensions;
-using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
 
 // ReSharper disable once CheckNamespace
@@ -27,17 +21,17 @@ namespace PresetMagician
             Argument.IsNotNull(() => runtimeConfigurationService);
             _runtimeConfigurationService = runtimeConfigurationService;
             _commandManager = commandManager;
-
         }
 
         protected override async Task ExecuteAsync(object parameter)
         {
             var currentConfiguration = _runtimeConfigurationService.RuntimeConfiguration;
-                var newConfiguration = _runtimeConfigurationService.EditableConfiguration;
+            var newConfiguration = _runtimeConfigurationService.EditableConfiguration;
 
             List<string> commandsList = new List<string>();
 
-            if (!_runtimeConfigurationService.IsConfigurationValueEqual(currentConfiguration.VstDirectories, newConfiguration.VstDirectories))
+            if (!_runtimeConfigurationService.IsConfigurationValueEqual(currentConfiguration.VstDirectories,
+                newConfiguration.VstDirectories))
             {
                 commandsList.Add(Commands.Plugin.RefreshPlugins);
             }
@@ -51,9 +45,6 @@ namespace PresetMagician
                     _commandManager.ExecuteCommand(command);
                 }
             }, true);
-
-
-
         }
     }
 }

@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PresetMagician.Services
 {
-    class ApplicationAlreadyBusyException: ApplicationException
+    class ApplicationAlreadyBusyException : ApplicationException
     {
         private static string PrefixMessage(string message)
         {
@@ -15,7 +11,6 @@ namespace PresetMagician.Services
 
         public ApplicationAlreadyBusyException(string message) : base(PrefixMessage(message))
         {
-            
         }
     }
 }

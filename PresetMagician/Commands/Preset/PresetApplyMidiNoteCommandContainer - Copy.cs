@@ -1,7 +1,5 @@
 ﻿using System.Collections.Specialized;
-using System.Diagnostics;
 using Catel;
-using Catel.Logging;
 using Catel.MVVM;
 using PresetMagician.Services.Interfaces;
 
@@ -20,7 +18,6 @@ namespace PresetMagician
 
             _vstService = vstService;
             _vstService.SelectedPresets.CollectionChanged += OnSelectedPresetListChanged;
-
         }
 
         protected override bool CanExecute(object parameter)
@@ -37,7 +34,7 @@ namespace PresetMagician
         {
             foreach (var preset in _vstService.SelectedPresets)
             {
-                preset.PreviewNote.FullNoteName = (string)parameter;
+                preset.PreviewNote.FullNoteName = (string) parameter;
             }
         }
     }

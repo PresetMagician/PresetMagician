@@ -19,7 +19,7 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
             cv.autoname = false;
             cv.vflag = false;
             controllerAssignments = new ControllerAssignments();
-            controllerAssignments.controllerAssignments.Add(new List<ControllerAssignment> { cv });
+            controllerAssignments.controllerAssignments.Add(new List<ControllerAssignment> {cv});
         }
 
         public override void Read(Stream source)
@@ -55,10 +55,7 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
 
         public override string ChunkDescription
         {
-            get
-            {
-                return "Native Instruments Controller Assignments";
-            }
+            get { return "Native Instruments Controller Assignments"; }
         }
     }
 }

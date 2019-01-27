@@ -1,8 +1,6 @@
-using System.Diagnostics;
-
 namespace PresetMagician.Migrations
 {
-    public class Migration20191501: BaseMigration
+    public class Migration20191501 : BaseMigration
     {
         public override void Up()
         {
@@ -10,7 +8,6 @@ namespace PresetMagician.Migrations
             {
                 Database.ExecuteSqlCommand("ALTER TABLE `Presets` ADD COLUMN `LastExported` DATETIME");
             }
-
         }
     }
 }

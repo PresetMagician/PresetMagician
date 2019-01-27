@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.DwayneNeed.Controls;
-using System.Windows.Media;
 using System.Windows;
-using System.Windows.Threading;
 using System.Windows.Markup;
-using System.Windows.Controls;
-using System.Windows.Data;
+using System.Windows.Media;
+using System.Windows.Threading;
+using Microsoft.DwayneNeed.Controls;
 
 namespace Microsoft.DwayneNeed.Threading
 {
@@ -20,16 +15,18 @@ namespace Microsoft.DwayneNeed.Threading
     {
         public static readonly DependencyProperty ContentProperty =
             DependencyProperty.Register("Content",
-                                        typeof(DataTemplate),
-                                        typeof(UIThreadPoolRoot),
-                                        new UIPropertyMetadata(null, OnContentChangedThunk));
+                typeof(DataTemplate),
+                typeof(UIThreadPoolRoot),
+                new UIPropertyMetadata(null, OnContentChangedThunk));
 
         public static readonly DependencyProperty PropertyNameProperty =
-            DependencyProperty.Register("PropertyName", typeof(string), typeof(UIThreadPoolRoot), new UIPropertyMetadata(null, OnPropertyNameChangedThunk));
+            DependencyProperty.Register("PropertyName", typeof(string), typeof(UIThreadPoolRoot),
+                new UIPropertyMetadata(null, OnPropertyNameChangedThunk));
 
         static UIThreadPoolRoot()
         {
-            DataContextProperty.OverrideMetadata(typeof(UIThreadPoolRoot), new FrameworkPropertyMetadata(OnDataContextChangedThunk));
+            DataContextProperty.OverrideMetadata(typeof(UIThreadPoolRoot),
+                new FrameworkPropertyMetadata(OnDataContextChangedThunk));
         }
 
         public UIThreadPoolRoot()
@@ -43,7 +40,7 @@ namespace Microsoft.DwayneNeed.Threading
 
             _threadPoolThread = UIThreadPool.AcquireThread();
 
-            _threadPoolThread.Dispatcher.Invoke((Action)delegate
+            _threadPoolThread.Dispatcher.Invoke((Action) delegate
             {
                 _root = new VisualTargetPresentationSource(child);
                 _root.SizeChanged += VisualTargetSizeChanged;
@@ -56,14 +53,14 @@ namespace Microsoft.DwayneNeed.Threading
 
         public DataTemplate Content
         {
-            get { return (DataTemplate)GetValue(ContentProperty); }
+            get { return (DataTemplate) GetValue(ContentProperty); }
             set { SetValue(ContentProperty, value); }
         }
 
         // HACK!  Called on UI thread
         public string PropertyName
         {
-            get { return (string)GetValue(PropertyNameProperty); }
+            get { return (string) GetValue(PropertyNameProperty); }
             set { SetValue(PropertyNameProperty, value); }
         }
 
@@ -96,10 +93,7 @@ namespace Microsoft.DwayneNeed.Threading
             var dataContext = e.NewValue;
 
             // Asynchronously pass to worker thread.
-            _root.Dispatcher.BeginInvoke((Action)delegate
-            {
-                _root.DataContext = dataContext;
-            });
+            _root.Dispatcher.BeginInvoke((Action) delegate { _root.DataContext = dataContext; });
         }
 
         // Called by UI thread
@@ -108,7 +102,7 @@ namespace Microsoft.DwayneNeed.Threading
             var propertyName = e.NewValue as string;
 
             // Asynchronously pass to worker thread.
-            _root.Dispatcher.BeginInvoke((Action)delegate
+            _root.Dispatcher.BeginInvoke((Action) delegate
             {
                 // HACK
                 _root.PropertyName = propertyName;
@@ -146,7 +140,7 @@ namespace Microsoft.DwayneNeed.Threading
             this.Dispatcher.BeginInvoke((DispatcherOperationCallback)
                 delegate(object parameter)
                 {
-                    UpdateSize((Size)parameter);
+                    UpdateSize((Size) parameter);
                     return null;
                 },
                 newSize);

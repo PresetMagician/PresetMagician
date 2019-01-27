@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Microsoft.DwayneNeed.Media
+﻿namespace Microsoft.DwayneNeed.Media
 {
     public class CacheScale
     {
@@ -21,24 +16,18 @@ namespace Microsoft.DwayneNeed.Media
         }
 
         public CacheScale(double scale)
-            : this((double?)scale)
+            : this((double?) scale)
         {
         }
 
         public bool IsAuto
         {
-            get
-            {
-                return !_scale.HasValue;
-            }
+            get { return !_scale.HasValue; }
         }
 
         public double Scale
         {
-            get
-            {
-                return _scale.Value;
-            }
+            get { return _scale.Value; }
         }
 
         private CacheScale(double? scale)

@@ -58,10 +58,7 @@ namespace Microsoft.DwayneNeed.Media.Imaging
         /// </remarks>
         public override BitmapPalette Palette
         {
-            get
-            {
-                return null;
-            }
+            get { return null; }
         }
 
         #endregion BitmapSource Properties
@@ -108,10 +105,10 @@ namespace Microsoft.DwayneNeed.Media.Imaging
                 // array has already been pinned.
                 unsafe
                 {
-                    byte* pBytes = (byte*)buffer.ToPointer();
+                    byte* pBytes = (byte*) buffer.ToPointer();
                     for (int y = 0; y < sourceRect.Height; y++)
                     {
-                        Bgra32Pixel* pPixel = (Bgra32Pixel*)pBytes;
+                        Bgra32Pixel* pPixel = (Bgra32Pixel*) pBytes;
 
                         for (int x = 0; x < sourceRect.Width; x++)
                         {

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Microsoft.DwayneNeed.Win32.Gdi32
+﻿namespace Microsoft.DwayneNeed.Win32.Gdi32
 {
     public enum ROP : int
     {
@@ -22,7 +17,7 @@ namespace Microsoft.DwayneNeed.Win32.Gdi32
         DSTINVERT = 0x00550009, // dest = (NOT dest)
         BLACKNESS = 0x00000042, // dest = BLACK
         WHITENESS = 0x00FF0062, // dest = WHITE
-        NOMIRRORBITMAP = unchecked((int)0x80000000), // Do not Mirror the bitmap in this call
+        NOMIRRORBITMAP = unchecked((int) 0x80000000), // Do not Mirror the bitmap in this call
         CAPTUREBLT = 0x40000000, // Include layered windows
     }
 }

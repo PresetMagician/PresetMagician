@@ -1,18 +1,16 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Anotar.Catel;
-using PresetMagician.Models;
 using SharedModels;
 
 namespace PresetMagician.SharedModels
 {
-    public class BankFile 
+    public class BankFile
     {
-        [Key]
-        public int BankId { get; set; }
+        [Key] public int BankId { get; set; }
         public Plugin Plugin { get; set; }
-        
-        public string Path { get; set; } 
+
+        public string Path { get; set; }
         public string BankName { get; set; }
         public string ProgramRange { get; set; }
 
@@ -24,6 +22,7 @@ namespace PresetMagician.SharedModels
             {
                 return ranges;
             }
+
             var trimmedProgramRange = ProgramRange.Trim();
 
             if (trimmedProgramRange == "")
@@ -62,21 +61,21 @@ namespace PresetMagician.SharedModels
                         LogTo.Warning($"Cannot parse range specification {trimmedRangeToParse}, ignoring.");
                         continue;
                     }
-                    
-                    if (int.TryParse(rangeSpecs[0].Trim(), out var num1) && int.TryParse(rangeSpecs[1].Trim(), out var num2))
+
+                    if (int.TryParse(rangeSpecs[0].Trim(), out var num1) &&
+                        int.TryParse(rangeSpecs[1].Trim(), out var num2))
                     {
-                        ranges.Add((num1, num2-num1+1));
+                        ranges.Add((num1, num2 - num1 + 1));
                     }
                     else
                     {
                         LogTo.Warning($"Cannot parse range specification {trimmedRangeToParse}, ignoring.");
                         continue;
                     }
-                    
                 }
             }
 
             return ranges;
         }
     }
-} 
+}

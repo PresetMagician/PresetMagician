@@ -4,7 +4,8 @@ namespace SharedModels.NativeInstrumentsResources
 {
     public class ResourceState
     {
-        private NativeInstrumentsResource.ResourceStates _resourceState = NativeInstrumentsResource.ResourceStates.Empty;
+        private NativeInstrumentsResource.ResourceStates
+            _resourceState = NativeInstrumentsResource.ResourceStates.Empty;
 
         public NativeInstrumentsResource.ResourceStates State
         {

@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.InteropServices;
-using Microsoft.DwayneNeed.Win32.User32;
+using System.Text;
+using Microsoft.DwayneNeed.Win32.ComCtl32;
+using Microsoft.DwayneNeed.Win32.DwmApi;
 using Microsoft.DwayneNeed.Win32.Gdi32;
 using Microsoft.DwayneNeed.Win32.Kernel32;
-using Microsoft.DwayneNeed.Win32.DwmApi;
 using Microsoft.DwayneNeed.Win32.UrlMon;
-using Microsoft.DwayneNeed.Win32.ComCtl32;
+using Microsoft.DwayneNeed.Win32.User32;
 
 namespace Microsoft.DwayneNeed.Win32
 {
@@ -19,7 +17,8 @@ namespace Microsoft.DwayneNeed.Win32
     public static class NativeMethods
     {
         [DllImport("comctl32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        public static extern bool GetWindowSubclass(HWND hWnd, SUBCLASSPROC pfnSubclass, IntPtr uIdSubclass, ref IntPtr pdwRefData);
+        public static extern bool GetWindowSubclass(HWND hWnd, SUBCLASSPROC pfnSubclass, IntPtr uIdSubclass,
+            ref IntPtr pdwRefData);
 
         [DllImport("comctl32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern bool SetWindowSubclass(HWND hwnd, SUBCLASSPROC callback, IntPtr id, IntPtr data);
@@ -55,14 +54,16 @@ namespace Microsoft.DwayneNeed.Win32
         public static extern IntPtr SelectObject(IntPtr hdc, IntPtr hgdiobj);
 
         [DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        public static extern IntPtr CreateDIBSection(IntPtr hdc, [In] ref BITMAPINFO pbmi, DIB iUsage, out IntPtr ppvBits, IntPtr hSection, uint dwOffset);
+        public static extern IntPtr CreateDIBSection(IntPtr hdc, [In] ref BITMAPINFO pbmi, DIB iUsage,
+            out IntPtr ppvBits, IntPtr hSection, uint dwOffset);
 
         [DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern IntPtr GetStockObject(int stockObject);
 
         // TODO: HDC
         [DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        public static extern bool BitBlt(IntPtr hdcDest, int nXDest, int nYDest, int nWidth, int nHeight, IntPtr hdcSrc, int nXSrc, int nYSrc, ROP dwRop);
+        public static extern bool BitBlt(IntPtr hdcDest, int nXDest, int nYDest, int nWidth, int nHeight, IntPtr hdcSrc,
+            int nXSrc, int nYSrc, ROP dwRop);
 
         [DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern bool SetBkColor(IntPtr hdcDest, COLORREF crColor);
@@ -123,20 +124,24 @@ namespace Microsoft.DwayneNeed.Win32
         // TODO: HANDLE
         // TODO: SECURITY_ATTRIBUTES
         [DllImport("kernel32.dll", EntryPoint = "CreateFileMapping", SetLastError = true)]
-        private static extern IntPtr _CreateFileMapping(IntPtr hFile, IntPtr lpFileMappingAttributes, int flProtect, uint dwMaximumSizeHigh, uint dwMaximumSizeLow, string lpName);
+        private static extern IntPtr _CreateFileMapping(IntPtr hFile, IntPtr lpFileMappingAttributes, int flProtect,
+            uint dwMaximumSizeHigh, uint dwMaximumSizeLow, string lpName);
 
-        public static IntPtr CreateFileMapping(PAGE pageProtect, SEC secProtect, uint dwMaximumSizeHigh, uint dwMaximumSizeLow, string lpName)
+        public static IntPtr CreateFileMapping(PAGE pageProtect, SEC secProtect, uint dwMaximumSizeHigh,
+            uint dwMaximumSizeLow, string lpName)
         {
             // This is a messy function to wrap.
             // GetLastError returns ERROR_ALREADY_EXISTS if the mapping already exists, and the handle is returned.
             // not all PAGE and SEC combos are legit
 
             IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1); // SafeFileHandle.Invalid?
-            return _CreateFileMapping(INVALID_HANDLE_VALUE, IntPtr.Zero, (int)pageProtect | (int)secProtect, dwMaximumSizeHigh, dwMaximumSizeLow, lpName);
+            return _CreateFileMapping(INVALID_HANDLE_VALUE, IntPtr.Zero, (int) pageProtect | (int) secProtect,
+                dwMaximumSizeHigh, dwMaximumSizeLow, lpName);
         }
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern IntPtr MapViewOfFile(IntPtr hFileMappingObject, uint dwDesiredAccess, uint dwFileOffsetHigh, uint dwFileOffsetLow, uint dwNumberOfBytesToMap);
+        public static extern IntPtr MapViewOfFile(IntPtr hFileMappingObject, uint dwDesiredAccess,
+            uint dwFileOffsetHigh, uint dwFileOffsetLow, uint dwNumberOfBytesToMap);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool UnmapViewOfFile(IntPtr lpBaseAddress);
@@ -173,9 +178,11 @@ namespace Microsoft.DwayneNeed.Win32
 
         [DllImport("urlmon.dll", CharSet = CharSet.Auto, PreserveSig = true)]
         [return: MarshalAs(UnmanagedType.Error)]
-        public static extern int CoInternetSetFeatureEnabled(INTERNETFEATURELIST featureEntry, SET_FEATURE flags, bool enable);
+        public static extern int CoInternetSetFeatureEnabled(INTERNETFEATURELIST featureEntry, SET_FEATURE flags,
+            bool enable);
 
         #region Window Class Functions
+
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern bool GetClassInfoEx(IntPtr hinst, string lpszClass, ref WNDCLASSEX lpwcx);
 
@@ -282,6 +289,7 @@ namespace Microsoft.DwayneNeed.Win32
         #endregion
 
         #region Message Functions
+
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern WM RegisterWindowMessage(string messageName);
 
@@ -297,17 +305,21 @@ namespace Microsoft.DwayneNeed.Win32
         #endregion
 
         #region Timer Functions
+
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern bool KillTimer(HWND hwnd, IntPtr uIDEvent);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        public static extern IntPtr SetCoalescableTimer(HWND hwnd, IntPtr nIDEvent, int uElapse, TIMERPROC lpTimerFunc, int uToleranceDelay);
+        public static extern IntPtr SetCoalescableTimer(HWND hwnd, IntPtr nIDEvent, int uElapse, TIMERPROC lpTimerFunc,
+            int uToleranceDelay);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern IntPtr SetTimer(HWND hWnd, IntPtr nIDEvent, int uElapse, TIMERPROC lpTimerFunc);
+
         #endregion
 
         #region Window Functions
+
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern bool DestroyWindow(HWND hwnd);
 
@@ -316,7 +328,8 @@ namespace Microsoft.DwayneNeed.Win32
         // TODO: HMENU
         // TODO: object lparam
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        public static extern HWND CreateWindowEx(WS_EX dwExStyle, string lpClassName, string lpWindowName, WS dwStyle, int x, int y, int nWidth, int nHeight, HWND hWndParent, IntPtr hMenu, IntPtr hInstance, IntPtr lpParam);
+        public static extern HWND CreateWindowEx(WS_EX dwExStyle, string lpClassName, string lpWindowName, WS dwStyle,
+            int x, int y, int nWidth, int nHeight, HWND hWndParent, IntPtr hMenu, IntPtr hInstance, IntPtr lpParam);
 
         // TODO: COLORREF
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
@@ -357,11 +370,14 @@ namespace Microsoft.DwayneNeed.Win32
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern IntPtr GetSysColorBrush(COLOR nIndex);
+
         #endregion
 
         #region Window Procedure Functions
+
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        public static extern IntPtr CallWindowProc(WNDPROC lpPrevWndFunc, HWND hWnd, int Msg, IntPtr wParam, IntPtr lParam);
+        public static extern IntPtr CallWindowProc(WNDPROC lpPrevWndFunc, HWND hWnd, int Msg, IntPtr wParam,
+            IntPtr lParam);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern IntPtr DefWindowProc(HWND hWnd, WM Msg, IntPtr wParam, IntPtr lParam);
@@ -370,11 +386,13 @@ namespace Microsoft.DwayneNeed.Win32
         public static extern bool IsChild(HWND hWndParent, HWND hwnd);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        public static extern bool SetWindowPos(HWND hwnd, HWND hWndInsertAfter, int X, int Y, int cx, int cy, SWP uFlags);
+        public static extern bool SetWindowPos(HWND hwnd, HWND hWndInsertAfter, int X, int Y, int cx, int cy,
+            SWP uFlags);
 
         #endregion
 
         #region Painting and Drawing Functions
+
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern int DrawText(IntPtr hDC, string lpString, int nCount, ref RECT lpRect, DT uFormat);
 
@@ -382,17 +400,21 @@ namespace Microsoft.DwayneNeed.Win32
         // TODO: optional RECT
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern bool RedrawWindow(HWND hwnd, IntPtr lprcUpdate, IntPtr hrgnUpdate, RDW flags);
+
         #endregion
 
         #region Coordinate Space and Transformation Functions
+
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern bool ScreenToClient(HWND hwnd, ref POINT lpPoint);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern bool ClientToScreen(HWND hwnd, ref POINT lpPoint);
+
         #endregion
 
         #region Keyboard Input Functions
+
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern HWND GetFocus();
 
@@ -405,6 +427,7 @@ namespace Microsoft.DwayneNeed.Win32
         #endregion
 
         #region Device Context Functions
+
         //TODO: HDC
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern IntPtr GetDC(HWND hWnd);
@@ -412,11 +435,14 @@ namespace Microsoft.DwayneNeed.Win32
         //TODO: HDC
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern bool ReleaseDC(HWND hWnd, IntPtr hDC);
+
         #endregion
 
         #region Mouse Input Functions
+
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern HWND GetCapture();
+
         #endregion
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
@@ -424,6 +450,5 @@ namespace Microsoft.DwayneNeed.Win32
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern int SendInput(int nInput, [MarshalAs(UnmanagedType.LPArray)] INPUT[] pInputs, int cbSize);
-
     }
 }

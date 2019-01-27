@@ -1,18 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Microsoft.DwayneNeed.Extensions;
 using System.Diagnostics;
+using System.Windows;
+using System.Windows.Input;
+using Microsoft.DwayneNeed.Extensions;
 
 namespace Microsoft.DwayneNeed.MDI
 {
@@ -20,43 +10,43 @@ namespace Microsoft.DwayneNeed.MDI
     {
         static MdiFloater()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(MdiFloater), new FrameworkPropertyMetadata(typeof(MdiFloater)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(MdiFloater),
+                new FrameworkPropertyMetadata(typeof(MdiFloater)));
 
             CommandManager.RegisterClassCommandBinding(
                 /* Type:            */ typeof(MdiFloater),
                 /* Command Binding: */ new CommandBinding(
-                /*     Command:     */ MdiCommands.AdjustWindowRect,
-                /*     Execute:     */ (s, e) => ((MdiFloater)s).ExecuteAdjustWindowRect(e),
-                /*     CanExecute:  */ (s, e) => ((MdiFloater)s).CanExecuteAdjustWindowRect(e)));
+                    /*     Command:     */ MdiCommands.AdjustWindowRect,
+                    /*     Execute:     */ (s, e) => ((MdiFloater) s).ExecuteAdjustWindowRect(e),
+                    /*     CanExecute:  */ (s, e) => ((MdiFloater) s).CanExecuteAdjustWindowRect(e)));
 
             CommandManager.RegisterClassCommandBinding(
                 /* Type:            */ typeof(MdiFloater),
                 /* Command Binding: */ new CommandBinding(
-                /*     Command:     */ MdiCommands.MaximizeWindow,
-                /*     Execute:     */ (s, e) => ((MdiFloater)s).ExecuteMaximizeWindow(e),
-                /*     CanExecute:  */ (s, e) => ((MdiFloater)s).CanExecuteMaximizeWindow(e)));
+                    /*     Command:     */ MdiCommands.MaximizeWindow,
+                    /*     Execute:     */ (s, e) => ((MdiFloater) s).ExecuteMaximizeWindow(e),
+                    /*     CanExecute:  */ (s, e) => ((MdiFloater) s).CanExecuteMaximizeWindow(e)));
 
             CommandManager.RegisterClassCommandBinding(
                 /* Type:            */ typeof(MdiFloater),
                 /* Command Binding: */ new CommandBinding(
-                /*     Command:     */ MdiCommands.MinimizeWindow,
-                /*     Execute:     */ (s, e) => ((MdiFloater)s).ExecuteMinimizeWindow(e),
-                /*     CanExecute:  */ (s, e) => ((MdiFloater)s).CanExecuteMinimizeWindow(e)));
+                    /*     Command:     */ MdiCommands.MinimizeWindow,
+                    /*     Execute:     */ (s, e) => ((MdiFloater) s).ExecuteMinimizeWindow(e),
+                    /*     CanExecute:  */ (s, e) => ((MdiFloater) s).CanExecuteMinimizeWindow(e)));
 
             CommandManager.RegisterClassCommandBinding(
                 /* Type:            */ typeof(MdiFloater),
                 /* Command Binding: */ new CommandBinding(
-                /*     Command:     */ MdiCommands.RestoreWindow,
-                /*     Execute:     */ (s, e) => ((MdiFloater)s).ExecuteRestoreWindow(e),
-                /*     CanExecute:  */ (s, e) => ((MdiFloater)s).CanExecuteRestoreWindow(e)));
+                    /*     Command:     */ MdiCommands.RestoreWindow,
+                    /*     Execute:     */ (s, e) => ((MdiFloater) s).ExecuteRestoreWindow(e),
+                    /*     CanExecute:  */ (s, e) => ((MdiFloater) s).CanExecuteRestoreWindow(e)));
 
             CommandManager.RegisterClassCommandBinding(
                 /* Type:            */ typeof(MdiFloater),
                 /* Command Binding: */ new CommandBinding(
-                /*     Command:     */ MdiCommands.CloseWindow,
-                /*     Execute:     */ (s, e) => ((MdiFloater)s).ExecuteCloseWindow(e),
-                /*     CanExecute:  */ (s, e) => ((MdiFloater)s).CanExecuteCloseWindow(e)));
-
+                    /*     Command:     */ MdiCommands.CloseWindow,
+                    /*     Execute:     */ (s, e) => ((MdiFloater) s).ExecuteCloseWindow(e),
+                    /*     CanExecute:  */ (s, e) => ((MdiFloater) s).CanExecuteCloseWindow(e)));
         }
 
         /// <summary>
@@ -91,6 +81,7 @@ namespace Microsoft.DwayneNeed.MDI
                     screenRect.X += constrainedDelta;
                     screenRect.Width -= constrainedDelta;
                 }
+
                 if ((interactiveEdges & MdiWindowEdge.Right) != 0)
                 {
                     // Can't size smaller than the minimum size.
@@ -98,6 +89,7 @@ namespace Microsoft.DwayneNeed.MDI
 
                     screenRect.Width += constrainedDelta;
                 }
+
                 if ((interactiveEdges & MdiWindowEdge.Top) != 0)
                 {
                     // Can't size smaller than the minimum size.
@@ -106,6 +98,7 @@ namespace Microsoft.DwayneNeed.MDI
                     screenRect.Y += constrainedDelta;
                     screenRect.Height -= constrainedDelta;
                 }
+
                 if ((interactiveEdges & MdiWindowEdge.Bottom) != 0)
                 {
                     // Can't size smaller than the minimum size.
@@ -121,6 +114,7 @@ namespace Microsoft.DwayneNeed.MDI
                 {
                     screenRect.X = screenRect.Right - window.MinWidth;
                 }
+
                 screenRect.Width = window.MinWidth;
             }
 
@@ -130,6 +124,7 @@ namespace Microsoft.DwayneNeed.MDI
                 {
                     screenRect.Y = screenRect.Bottom - window.MinHeight;
                 }
+
                 screenRect.Height = window.MinHeight;
             }
 
@@ -219,8 +214,8 @@ namespace Microsoft.DwayneNeed.MDI
         /// </summary>
         private void ExecuteAdjustWindowRect(ExecutedRoutedEventArgs e)
         {
-            UIElement originalSource = (UIElement)e.OriginalSource;
-            AdjustWindowRectParameter swp = (AdjustWindowRectParameter)e.Parameter;
+            UIElement originalSource = (UIElement) e.OriginalSource;
+            AdjustWindowRectParameter swp = (AdjustWindowRectParameter) e.Parameter;
 
             MdiWindow window = Content as MdiWindow;
             Debug.Assert(window != null && MdiPanel.GetWindowState(window) == WindowState.Normal);

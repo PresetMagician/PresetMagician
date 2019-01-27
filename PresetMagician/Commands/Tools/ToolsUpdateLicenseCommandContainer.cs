@@ -3,14 +3,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Catel;
-using Catel.IoC;
-using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
-using PresetMagician.Helpers;
 using PresetMagician.Services;
-using PresetMagician.Services.Interfaces;
-using PresetMagician.ViewModels;
 using Syroot.Windows.IO;
 
 // ReSharper disable once CheckNamespace
@@ -22,8 +17,9 @@ namespace PresetMagician
         private readonly IOpenFileService _openFileService;
         private readonly ILicenseService _licenseService;
         private readonly IMessageService _messageService;
-        
-        public ToolsUpdateLicenseCommandContainer(IOpenFileService openFileService, ILicenseService licenseService, IMessageService messageService,ICommandManager commandManager)
+
+        public ToolsUpdateLicenseCommandContainer(IOpenFileService openFileService, ILicenseService licenseService,
+            IMessageService messageService, ICommandManager commandManager)
             : base(Commands.Tools.UpdateLicense, commandManager)
         {
             Argument.IsNotNull(() => openFileService);
@@ -42,7 +38,7 @@ namespace PresetMagician
             _openFileService.InitialDirectory = downloadsPath;
             _openFileService.Filter = "License Files (*.lic)|*.lic";
             _openFileService.FilterIndex = 1;
-            
+
             if (await _openFileService.DetermineFileAsync())
             {
                 //Get the path of specified file
@@ -53,11 +49,11 @@ namespace PresetMagician
                 if (validationErrors.Any())
                 {
                     Collection<string> errors = new Collection<string>();
-                    
-                    errors.Add("The License is not valid!"+Environment.NewLine);
+
+                    errors.Add("The License is not valid!" + Environment.NewLine);
                     foreach (var validationError in validationErrors)
                     {
-                        errors.Add($"{validationError.Message}"); 
+                        errors.Add($"{validationError.Message}");
                     }
 
                     await _messageService.ShowErrorAsync(String.Join(Environment.NewLine, errors));

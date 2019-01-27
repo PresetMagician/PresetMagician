@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.DwayneNeed.Win32.User32;
-using Microsoft.DwayneNeed.Win32;
+﻿using Microsoft.DwayneNeed.Win32.User32;
 
 namespace Microsoft.DwayneNeed.Win32.ComCtl32
 {
     internal class StrongHWNDSubclass : WindowSubclass
     {
-        
         public StrongHWNDSubclass(StrongHWND strongHwnd) : base(new HWND(strongHwnd.DangerousGetHandle()))
         {
             // Note that we passed a new "weak" HWND handle to the base class.

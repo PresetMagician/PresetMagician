@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media;
-using System.Windows.Controls;
 using System.Windows.Media.Media3D;
 
 namespace Microsoft.DwayneNeed.Controls
@@ -17,14 +12,14 @@ namespace Microsoft.DwayneNeed.Controls
     class MeshTextureCoordinateVisualizer : FrameworkElement
     {
         public static readonly DependencyProperty MyPropertyProperty =
-            DependencyProperty.Register("Mesh", 
-                                        typeof(MeshGeometry3D),
-                                        typeof(MeshTextureCoordinateVisualizer),
-                                        new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender));
+            DependencyProperty.Register("Mesh",
+                typeof(MeshGeometry3D),
+                typeof(MeshTextureCoordinateVisualizer),
+                new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender));
 
         public MeshGeometry3D Mesh
         {
-            get { return (MeshGeometry3D)GetValue(MyPropertyProperty); }
+            get { return (MeshGeometry3D) GetValue(MyPropertyProperty); }
             set { SetValue(MyPropertyProperty, value); }
         }
 
@@ -48,24 +43,25 @@ namespace Microsoft.DwayneNeed.Controls
             {
                 Pen pen = new Pen(Brushes.Black, 1.0);
 
-                int numTriangles = mesh.TriangleIndices.Count/3;
+                int numTriangles = mesh.TriangleIndices.Count / 3;
 
-                for(int i = 0; i < numTriangles; i++)
+                for (int i = 0; i < numTriangles; i++)
                 {
                     DrawTriangle(drawingContext,
-                                 pen,
-                                 mesh.TextureCoordinates[mesh.TriangleIndices[i * 3]],
-                                 mesh.TextureCoordinates[mesh.TriangleIndices[i * 3 + 1]],
-                                 mesh.TextureCoordinates[mesh.TriangleIndices[i * 3 + 2]],
-                                 width,
-                                 height);
+                        pen,
+                        mesh.TextureCoordinates[mesh.TriangleIndices[i * 3]],
+                        mesh.TextureCoordinates[mesh.TriangleIndices[i * 3 + 1]],
+                        mesh.TextureCoordinates[mesh.TriangleIndices[i * 3 + 2]],
+                        width,
+                        height);
                 }
             }
 
             base.OnRender(drawingContext);
         }
 
-        private static void DrawTriangle(DrawingContext drawingContext, Pen pen, Point a, Point b, Point c, double width, double height)
+        private static void DrawTriangle(DrawingContext drawingContext, Pen pen, Point a, Point b, Point c,
+            double width, double height)
         {
             Point ta = new Point(a.X * width, a.Y * height);
             Point tb = new Point(b.X * width, b.Y * height);

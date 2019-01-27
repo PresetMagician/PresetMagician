@@ -10,7 +10,7 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
     {
         private const int m_length = 8;
 
-        public RIFFBase ()
+        public RIFFBase()
         {
             Chunk = new byte[0];
         }
@@ -73,7 +73,7 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
             }
         }
 
-        public MemoryStream getData ()
+        public MemoryStream getData()
         {
             MemoryStream target = new MemoryStream();
 

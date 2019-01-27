@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Microsoft.DwayneNeed.Win32.Kernel32
+﻿namespace Microsoft.DwayneNeed.Win32.Kernel32
 {
     public enum MEM : int
     {
@@ -21,6 +16,6 @@ namespace Microsoft.DwayneNeed.Win32.Kernel32
         ROTATE = 0x800000,
         IMAGE = 0x1000000,
         LARGE_PAGES = 0x20000000,
-        FOUR_MB_PAGES = unchecked((int)0x80000000) // slight rename because it can't start with a digit
+        FOUR_MB_PAGES = unchecked((int) 0x80000000) // slight rename because it can't start with a digit
     }
 }

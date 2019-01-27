@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.DwayneNeed.Interop;
 using System.Windows;
 using System.Windows.Interop;
-using Microsoft.DwayneNeed.Win32.User32;
-using Microsoft.DwayneNeed.Win32.ComCtl32;
+using Microsoft.DwayneNeed.Interop;
 using Microsoft.DwayneNeed.Win32;
+using Microsoft.DwayneNeed.Win32.ComCtl32;
+using Microsoft.DwayneNeed.Win32.User32;
 
 namespace Microsoft.DwayneNeed.Extensions
 {
@@ -31,13 +28,14 @@ namespace Microsoft.DwayneNeed.Extensions
         ///     whether or not a HwndHostCommands.MouseActivate command is
         ///     raised in response to WM_MOUSEACTIVATE.
         /// </summary>
-        public static readonly DependencyProperty RaiseMouseActivateCommandProperty = DependencyProperty.RegisterAttached(
-            "RaiseMouseActivateCommand",
-            typeof(bool),
-            typeof(HwndHostExtensions),
-            new FrameworkPropertyMetadata(
-                false,
-                new PropertyChangedCallback(OnRaiseMouseActivateCommandChanged)));
+        public static readonly DependencyProperty RaiseMouseActivateCommandProperty =
+            DependencyProperty.RegisterAttached(
+                "RaiseMouseActivateCommand",
+                typeof(bool),
+                typeof(HwndHostExtensions),
+                new FrameworkPropertyMetadata(
+                    false,
+                    new PropertyChangedCallback(OnRaiseMouseActivateCommandChanged)));
 
         /// <summary>
         ///     Attached property that is used to store the HwndHook used to
@@ -66,7 +64,7 @@ namespace Microsoft.DwayneNeed.Extensions
         /// </summary>
         public static CopyBitsBehavior GetCopyBitsBehavior(this HwndHost @this)
         {
-            return (CopyBitsBehavior)@this.GetValue(CopyBitsBehaviorProperty);
+            return (CopyBitsBehavior) @this.GetValue(CopyBitsBehaviorProperty);
         }
 
         /// <summary>
@@ -84,7 +82,7 @@ namespace Microsoft.DwayneNeed.Extensions
             if (hwndHost != null)
             {
                 CopyBitsBehavior newValue = (CopyBitsBehavior) e.NewValue;
-                if(newValue != CopyBitsBehavior.Default)
+                if (newValue != CopyBitsBehavior.Default)
                 {
                     AddWndProcUsage(hwndHost);
                 }
@@ -100,7 +98,7 @@ namespace Microsoft.DwayneNeed.Extensions
         /// </summary>
         public static bool GetRaiseMouseActivateCommand(this HwndHost @this)
         {
-            return (bool)@this.GetValue(RaiseMouseActivateCommandProperty);
+            return (bool) @this.GetValue(RaiseMouseActivateCommandProperty);
         }
 
         /// <summary>
@@ -117,7 +115,7 @@ namespace Microsoft.DwayneNeed.Extensions
 
             if (hwndHost != null)
             {
-                bool newValue = (bool)e.NewValue;
+                bool newValue = (bool) e.NewValue;
                 if (newValue)
                 {
                     AddWndProcUsage(hwndHost);
@@ -135,12 +133,12 @@ namespace Microsoft.DwayneNeed.Extensions
             refCount++;
             hwndHost.SetValue(WindowHookRefCountProperty, refCount);
 
-            if(refCount == 1)
+            if (refCount == 1)
             {
                 if (!TryHookWndProc(hwndHost))
                 {
                     // Try again later, when the HwndHost is loaded.
-                    hwndHost.Loaded += (s, e) => TryHookWndProc((HwndHost)s);
+                    hwndHost.Loaded += (s, e) => TryHookWndProc((HwndHost) s);
                 }
             }
         }
@@ -172,7 +170,8 @@ namespace Microsoft.DwayneNeed.Extensions
 
             if (refCount == 0)
             {
-                HwndHostExtensionsWindowHook hook = (HwndHostExtensionsWindowHook) hwndHost.GetValue(WindowHookProperty);
+                HwndHostExtensionsWindowHook
+                    hook = (HwndHostExtensionsWindowHook) hwndHost.GetValue(WindowHookProperty);
                 hook.Dispose();
                 hwndHost.ClearValue(WindowHookProperty);
             }
@@ -191,7 +190,8 @@ namespace Microsoft.DwayneNeed.Extensions
                 _hwndHost = hwndHost;
             }
 
-            protected override IntPtr WndProcOverride(HWND hwnd, WM msg, IntPtr wParam, IntPtr lParam, IntPtr id, IntPtr data)
+            protected override IntPtr WndProcOverride(HWND hwnd, WM msg, IntPtr wParam, IntPtr lParam, IntPtr id,
+                IntPtr data)
             {
                 IntPtr? result = null;
 
@@ -199,11 +199,11 @@ namespace Microsoft.DwayneNeed.Extensions
                 {
                     unsafe
                     {
-                        WINDOWPOS* pWindowPos = (WINDOWPOS*)lParam;
+                        WINDOWPOS* pWindowPos = (WINDOWPOS*) lParam;
 
                         CopyBitsBehavior copyBitsBehavior = _hwndHost.GetCopyBitsBehavior();
 
-                        switch(copyBitsBehavior)
+                        switch (copyBitsBehavior)
                         {
                             case CopyBitsBehavior.AlwaysCopyBits:
                                 pWindowPos->flags &= ~SWP.NOCOPYBITS;
@@ -216,6 +216,7 @@ namespace Microsoft.DwayneNeed.Extensions
                                     NativeMethods.PostMessage(hwnd, _redrawMessage, IntPtr.Zero, IntPtr.Zero);
                                     _redrawMessagePosted = true;
                                 }
+
                                 break;
 
                             case CopyBitsBehavior.NeverCopyBits:
@@ -232,7 +233,7 @@ namespace Microsoft.DwayneNeed.Extensions
                 else if (msg == _redrawMessage)
                 {
                     _redrawMessagePosted = false;
-                    
+
                     // Invalidate the window that moved, because it might have copied garbage
                     // due to WPF rendering through DX on a different thread.
                     NativeMethods.RedrawWindow(hwnd, IntPtr.Zero, IntPtr.Zero, RDW.INVALIDATE | RDW.ALLCHILDREN);
@@ -254,19 +255,19 @@ namespace Microsoft.DwayneNeed.Extensions
                         {
                             if (parameter.Activate == false && parameter.EatMessage == false)
                             {
-                                result = new IntPtr((int)MA.NOACTIVATE);
+                                result = new IntPtr((int) MA.NOACTIVATE);
                             }
                             else if (parameter.Activate == false && parameter.EatMessage == true)
                             {
-                                result = new IntPtr((int)MA.NOACTIVATEANDEAT);
+                                result = new IntPtr((int) MA.NOACTIVATEANDEAT);
                             }
                             else if (parameter.Activate == true && parameter.EatMessage == false)
                             {
-                                result = new IntPtr((int)MA.ACTIVATE);
+                                result = new IntPtr((int) MA.ACTIVATE);
                             }
                             else // if(parameter.Activate == true && parameter.EatMessage == true)
                             {
-                                result = new IntPtr((int)MA.ACTIVATEANDEAT);
+                                result = new IntPtr((int) MA.ACTIVATEANDEAT);
                             }
                         }
                     }

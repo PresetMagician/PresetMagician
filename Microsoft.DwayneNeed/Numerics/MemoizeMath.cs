@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Microsoft.DwayneNeed.Numerics
 {
@@ -13,7 +10,7 @@ namespace Microsoft.DwayneNeed.Numerics
             Value = value;
         }
 
-        public double Value {get; private set;}
+        public double Value { get; private set; }
 
         public double Abs
         {
@@ -27,6 +24,7 @@ namespace Microsoft.DwayneNeed.Numerics
                 return _abs.Value;
             }
         }
+
         double? _abs;
 
         public double ACos
@@ -41,6 +39,7 @@ namespace Microsoft.DwayneNeed.Numerics
                 return _acos.Value;
             }
         }
+
         double? _acos;
 
         public double ASin
@@ -55,6 +54,7 @@ namespace Microsoft.DwayneNeed.Numerics
                 return _asin.Value;
             }
         }
+
         double? _asin;
 
         public double ATan
@@ -69,6 +69,7 @@ namespace Microsoft.DwayneNeed.Numerics
                 return _atan.Value;
             }
         }
+
         double? _atan;
 
         public double Ceiling
@@ -83,6 +84,7 @@ namespace Microsoft.DwayneNeed.Numerics
                 return _ceiling.Value;
             }
         }
+
         double? _ceiling;
 
         public double Cos
@@ -97,6 +99,7 @@ namespace Microsoft.DwayneNeed.Numerics
                 return _cos.Value;
             }
         }
+
         double? _cos;
 
         public double CosH
@@ -111,6 +114,7 @@ namespace Microsoft.DwayneNeed.Numerics
                 return _cosh.Value;
             }
         }
+
         double? _cosh;
 
         public double Exp
@@ -125,6 +129,7 @@ namespace Microsoft.DwayneNeed.Numerics
                 return _exp.Value;
             }
         }
+
         double? _exp;
 
         public double Floor
@@ -139,6 +144,7 @@ namespace Microsoft.DwayneNeed.Numerics
                 return _floor.Value;
             }
         }
+
         double? _floor;
 
         public double Log10
@@ -153,6 +159,7 @@ namespace Microsoft.DwayneNeed.Numerics
                 return _log10.Value;
             }
         }
+
         double? _log10;
 
         public int Sign
@@ -167,6 +174,7 @@ namespace Microsoft.DwayneNeed.Numerics
                 return _sign.Value;
             }
         }
+
         int? _sign;
 
         public double Sin
@@ -181,6 +189,7 @@ namespace Microsoft.DwayneNeed.Numerics
                 return _sin.Value;
             }
         }
+
         double? _sin;
 
         public double SinH
@@ -195,6 +204,7 @@ namespace Microsoft.DwayneNeed.Numerics
                 return _sinh.Value;
             }
         }
+
         double? _sinh;
 
         public double Sqrt
@@ -209,6 +219,7 @@ namespace Microsoft.DwayneNeed.Numerics
                 return _sqrt.Value;
             }
         }
+
         double? _sqrt;
 
         public double Tan
@@ -223,6 +234,7 @@ namespace Microsoft.DwayneNeed.Numerics
                 return _tan.Value;
             }
         }
+
         double? _tan;
 
         public double TanH
@@ -237,6 +249,7 @@ namespace Microsoft.DwayneNeed.Numerics
                 return _tanh.Value;
             }
         }
+
         double? _tanh;
     }
 }

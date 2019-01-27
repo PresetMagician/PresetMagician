@@ -18,7 +18,8 @@ namespace PresetMagician.ViewModels
         #region Constructors
 
         public StatusBarViewModel(IUpdateService updateService,
-            IApplicationInitializationService applicationInitializationService, ILicenseService licenseService, IRuntimeConfigurationService runtimeConfigurationService)
+            IApplicationInitializationService applicationInitializationService, ILicenseService licenseService,
+            IRuntimeConfigurationService runtimeConfigurationService)
         {
             Argument.IsNotNull(() => updateService);
             Argument.IsNotNull(() => applicationInitializationService);
@@ -31,7 +32,7 @@ namespace PresetMagician.ViewModels
 
             _licenseService.LicenseChanged += OnLicenseChanged;
             ApplicationState = runtimeConfigurationService.ApplicationState;
-            
+
             InstallUpdate = new TaskCommand(OnInstallUpdateExecute);
         }
 
@@ -56,13 +57,13 @@ namespace PresetMagician.ViewModels
 
         public ApplicationState ApplicationState { get; private set; }
 
-        public TaskCommand InstallUpdate  { get; set; }
+        public TaskCommand InstallUpdate { get; set; }
 
-        private async Task OnInstallUpdateExecute ()
+        private async Task OnInstallUpdateExecute()
         {
             await _updateService.InstallAvailableUpdatesAsync(new SquirrelContext());
         }
-        
+
         public string LicensedTo
         {
             get
@@ -74,8 +75,8 @@ namespace PresetMagician.ViewModels
                         return $"Licensed to: {_licenseService.GetCurrentLicense().Customer.Name} " +
                                $"(Expires {_licenseService.GetCurrentLicense().Expiration.ToShortDateString()})";
                     }
+
                     return "Licensed to: " + _licenseService.GetCurrentLicense().Customer.Name;
-                    
                 }
 
                 return "Not Licensed";
@@ -101,21 +102,18 @@ namespace PresetMagician.ViewModels
                         {
                             licenseTooltipItems.Add(
                                 $"Maximum preset exports: {_licenseService.getPresetExportLimit().ToString()}");
-
                         }
-                        
                     }
                     else
                     {
                         licenseTooltipItems.Add(
                             $"License Type: Full");
                     }
-                    
+
                     licenseTooltipItems.Add(
                         $"System Code: {LicenseService.SystemCodeInfo.getSystemInfo()}");
 
                     return String.Join(Environment.NewLine, licenseTooltipItems);
-
                 }
                 else
                 {

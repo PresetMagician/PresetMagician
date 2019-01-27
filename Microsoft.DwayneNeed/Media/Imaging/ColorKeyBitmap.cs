@@ -25,28 +25,22 @@ namespace Microsoft.DwayneNeed.Media.Imaging
         ///     The DependencyProperty for the TransparentColor property.
         /// </summary>
         public static readonly DependencyProperty TransparentColorProperty =
-              DependencyProperty.Register("TransparentColor",
-                               typeof(Color?),
-                               typeof(ColorKeyBitmap),
-                               new FrameworkPropertyMetadata(
-                                   null,
-                                   null,
-                                   null));
+            DependencyProperty.Register("TransparentColor",
+                typeof(Color?),
+                typeof(ColorKeyBitmap),
+                new FrameworkPropertyMetadata(
+                    null,
+                    null,
+                    null));
 
         /// <summary>
         ///     The color to make transparent.
         /// </summary>
         public Color? TransparentColor
         {
-            get
-            {
-                return (Color?)GetValue(TransparentColorProperty);
-            }
+            get { return (Color?) GetValue(TransparentColorProperty); }
 
-            set
-            {
-                SetValue(TransparentColorProperty, value);
-            }
+            set { SetValue(TransparentColorProperty, value); }
         }
 
         #endregion TransparentColor
@@ -61,10 +55,7 @@ namespace Microsoft.DwayneNeed.Media.Imaging
         /// </remarks>
         public sealed override PixelFormat Format
         {
-            get
-            {
-                return PixelFormats.Bgra32;
-            }
+            get { return PixelFormats.Bgra32; }
         }
 
         /// <summary>
@@ -76,10 +67,7 @@ namespace Microsoft.DwayneNeed.Media.Imaging
         /// </remarks>
         public override BitmapPalette Palette
         {
-            get
-            {
-                return null;
-            }
+            get { return null; }
         }
 
         #endregion BitmapSource Properties
@@ -128,10 +116,10 @@ namespace Microsoft.DwayneNeed.Media.Imaging
                         {
                             base.CopyPixelsCore(new Int32Rect(0, 0, 1, 1), 4, 4, new IntPtr(pFirstPixel));
 
-                            Bgra32Pixel* pBgraPixel = (Bgra32Pixel*)pFirstPixel;
+                            Bgra32Pixel* pBgraPixel = (Bgra32Pixel*) pFirstPixel;
                             transparentColor = Color.FromRgb(pBgraPixel->Red,
-                                                             pBgraPixel->Green,
-                                                             pBgraPixel->Blue);
+                                pBgraPixel->Green,
+                                pBgraPixel->Blue);
                         }
                     }
                 }
@@ -149,10 +137,10 @@ namespace Microsoft.DwayneNeed.Media.Imaging
                 // array has already been pinned.
                 unsafe
                 {
-                    byte* pBytes = (byte*)buffer.ToPointer();
+                    byte* pBytes = (byte*) buffer.ToPointer();
                     for (int y = 0; y < sourceRect.Height; y++)
                     {
-                        Bgra32Pixel* pPixel = (Bgra32Pixel*)pBytes;
+                        Bgra32Pixel* pPixel = (Bgra32Pixel*) pBytes;
 
                         for (int x = 0; x < sourceRect.Width; x++)
                         {

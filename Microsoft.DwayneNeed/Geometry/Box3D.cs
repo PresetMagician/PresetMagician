@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.DwayneNeed.Numerics;
+﻿using Microsoft.DwayneNeed.Numerics;
 
 namespace Microsoft.DwayneNeed.Geometry
 {

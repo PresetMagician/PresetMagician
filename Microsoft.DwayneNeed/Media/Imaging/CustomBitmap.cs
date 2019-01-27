@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Runtime.InteropServices;
-using System.Reflection;
 
 namespace Microsoft.DwayneNeed.Media.Imaging
 {
@@ -26,7 +26,7 @@ namespace Microsoft.DwayneNeed.Media.Imaging
         /// </remarks>
         protected override Freezable CreateInstanceCore()
         {
-            return (Freezable)Activator.CreateInstance(this.GetType());
+            return (Freezable) Activator.CreateInstance(this.GetType());
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace Microsoft.DwayneNeed.Media.Imaging
         {
             base.CloneCore(source);
 
-            CustomBitmap customBitmapSource = (CustomBitmap)source;
+            CustomBitmap customBitmapSource = (CustomBitmap) source;
             CopyCore(customBitmapSource, /*useCurrentValue*/ false, /*willBeFrozen*/ false);
         }
 
@@ -73,7 +73,7 @@ namespace Microsoft.DwayneNeed.Media.Imaging
         {
             base.CloneCurrentValueCore(source);
 
-            CustomBitmap customBitmapSource = (CustomBitmap)source;
+            CustomBitmap customBitmapSource = (CustomBitmap) source;
             CopyCore(customBitmapSource, /*useCurrentValue*/ true, /*willBeFrozen*/ false);
         }
 
@@ -96,7 +96,7 @@ namespace Microsoft.DwayneNeed.Media.Imaging
         {
             base.GetAsFrozenCore(source);
 
-            CustomBitmap customBitmapSource = (CustomBitmap)source;
+            CustomBitmap customBitmapSource = (CustomBitmap) source;
             CopyCore(customBitmapSource, /*useCurrentValue*/ false, /*willBeFrozen*/ true);
         }
 
@@ -120,7 +120,7 @@ namespace Microsoft.DwayneNeed.Media.Imaging
         {
             base.GetCurrentValueAsFrozenCore(source);
 
-            CustomBitmap customBitmapSource = (CustomBitmap)source;
+            CustomBitmap customBitmapSource = (CustomBitmap) source;
             CopyCore(customBitmapSource, /*useCurrentValue*/ true, /*willBeFrozen*/ true);
         }
 
@@ -159,10 +159,7 @@ namespace Microsoft.DwayneNeed.Media.Imaging
         /// </remarks>
         public override double DpiX
         {
-            get
-            {
-                return 96.0;
-            }
+            get { return 96.0; }
         }
 
         /// <summary>
@@ -173,10 +170,7 @@ namespace Microsoft.DwayneNeed.Media.Imaging
         /// </remarks>
         public override double DpiY
         {
-            get
-            {
-                return (double)96.0;
-            }
+            get { return (double) 96.0; }
         }
 
         /// <summary>
@@ -187,10 +181,7 @@ namespace Microsoft.DwayneNeed.Media.Imaging
         /// </remarks>
         public override PixelFormat Format
         {
-            get
-            {
-                return PixelFormats.Bgr32;
-            }
+            get { return PixelFormats.Bgr32; }
         }
 
         /// <summary>
@@ -201,10 +192,7 @@ namespace Microsoft.DwayneNeed.Media.Imaging
         /// </remarks>
         public override int PixelWidth
         {
-            get
-            {
-                return 0;
-            }
+            get { return 0; }
         }
 
         /// <summary>
@@ -215,10 +203,7 @@ namespace Microsoft.DwayneNeed.Media.Imaging
         /// </remarks>
         public override int PixelHeight
         {
-            get
-            {
-                return 0;
-            }
+            get { return 0; }
         }
 
         /// <summary>
@@ -229,10 +214,7 @@ namespace Microsoft.DwayneNeed.Media.Imaging
         /// </remarks>
         public override BitmapPalette Palette
         {
-            get
-            {
-                return null;
-            }
+            get { return null; }
         }
 
         #endregion BitmapSource Properties
@@ -312,7 +294,7 @@ namespace Microsoft.DwayneNeed.Media.Imaging
                 {
                     // Adjust the buffer and bufferSize to account for the offset.
                     IntPtr buffer = arrayHandle.AddrOfPinnedObject();
-                    buffer = new IntPtr(((long)buffer) + (long)offsetInBytes);
+                    buffer = new IntPtr(((long) buffer) + (long) offsetInBytes);
                     bufferSize -= offsetInBytes;
 
                     CopyPixels(sourceRect, buffer, bufferSize, stride);
@@ -396,7 +378,7 @@ namespace Microsoft.DwayneNeed.Media.Imaging
                     throw new ArgumentOutOfRangeException("stride");
                 }
 
-                uint minStrideInBits = (uint)(sourceRect.Width * Format.BitsPerPixel);
+                uint minStrideInBits = (uint) (sourceRect.Width * Format.BitsPerPixel);
                 uint minStrideInBytes = ((minStrideInBits + 7) / 8);
                 if (stride < minStrideInBytes)
                 {
@@ -408,7 +390,7 @@ namespace Microsoft.DwayneNeed.Media.Imaging
                     throw new ArgumentOutOfRangeException("bufferSize");
                 }
 
-                uint minBufferSize = (uint)((sourceRect.Height - 1) * stride) + minStrideInBytes;
+                uint minBufferSize = (uint) ((sourceRect.Height - 1) * stride) + minStrideInBytes;
                 if (bufferSize < minBufferSize)
                 {
                     throw new ArgumentOutOfRangeException("bufferSize");
@@ -476,9 +458,9 @@ namespace Microsoft.DwayneNeed.Media.Imaging
         ///     On output, will contain the type of the elements in the array.
         /// </param>
         private void ValidateArrayAndGetInfo(Array pixels,
-                                             out int elementSize,
-                                             out int sourceBufferSize,
-                                             out Type elementType)
+            out int elementSize,
+            out int sourceBufferSize,
+            out Type elementType)
         {
             //
             // Assure that a valid pixels Array was provided.
@@ -504,7 +486,6 @@ namespace Microsoft.DwayneNeed.Media.Imaging
                         elementType = exemplar.GetType();
                     }
                 }
-
             }
             else if (pixels.Rank == 2)
             {
@@ -528,6 +509,7 @@ namespace Microsoft.DwayneNeed.Media.Imaging
                 throw new ArgumentException("pixels");
             }
         }
+
         #endregion BitmapSource CopyPixels
 
         #region BitmapSource Download
@@ -541,10 +523,7 @@ namespace Microsoft.DwayneNeed.Media.Imaging
         /// </remarks>
         public override bool IsDownloading
         {
-            get
-            {
-                return false;
-            }
+            get { return false; }
         }
 
         /// <summary>
@@ -556,15 +535,9 @@ namespace Microsoft.DwayneNeed.Media.Imaging
         /// </remarks>
         public override event EventHandler DownloadCompleted
         {
-            add
-            {
-                _downloadCompleted += value;
-            }
+            add { _downloadCompleted += value; }
 
-            remove
-            {
-                _downloadCompleted -= value;
-            }
+            remove { _downloadCompleted -= value; }
         }
 
         /// <summary>
@@ -591,15 +564,9 @@ namespace Microsoft.DwayneNeed.Media.Imaging
         /// </remarks>
         public override event EventHandler<DownloadProgressEventArgs> DownloadProgress
         {
-            add
-            {
-                _downloadProgress += value;
-            }
+            add { _downloadProgress += value; }
 
-            remove
-            {
-                _downloadProgress -= value;
-            }
+            remove { _downloadProgress -= value; }
         }
 
         /// <summary>
@@ -626,15 +593,9 @@ namespace Microsoft.DwayneNeed.Media.Imaging
         /// </remarks>
         public override event EventHandler<ExceptionEventArgs> DownloadFailed
         {
-            add
-            {
-                _downloadFailed += value;
-            }
+            add { _downloadFailed += value; }
 
-            remove
-            {
-                _downloadFailed -= value;
-            }
+            remove { _downloadFailed -= value; }
         }
 
         /// <summary>
@@ -665,15 +626,9 @@ namespace Microsoft.DwayneNeed.Media.Imaging
         /// </remarks>
         public override event EventHandler<ExceptionEventArgs> DecodeFailed
         {
-            add
-            {
-                _decodeFailed += value;
-            }
+            add { _decodeFailed += value; }
 
-            remove
-            {
-                _decodeFailed -= value;
-            }
+            remove { _decodeFailed -= value; }
         }
 
         /// <summary>
@@ -736,6 +691,7 @@ namespace Microsoft.DwayneNeed.Media.Imaging
                 }
             }
         }
+
         #endregion
     }
 }

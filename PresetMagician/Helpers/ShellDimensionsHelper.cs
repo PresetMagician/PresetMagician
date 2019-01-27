@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Windows;
 
 namespace PresetMagician.Helpers
 {
-    using System.Windows;
-
     internal static class ShellDimensionsHelper
     {
         public static void ApplyDimensions(Window window, FrameworkElement mainView)

@@ -6,6 +6,7 @@
 
 using System;
 using System.Windows.Threading;
+using Catel.Windows;
 using Orchestra.Services;
 using PresetMagician.Services.EventArgs;
 using PresetMagician.ViewModels;
@@ -13,8 +14,6 @@ using SplashScreenService = PresetMagician.Services.SplashScreenService;
 
 namespace PresetMagician.Views
 {
-    using Catel.Windows;
-
     /// <summary>
     /// Interaction logic for SplashScreen.xaml
     /// </summary>
@@ -30,7 +29,7 @@ namespace PresetMagician.Views
         {
             InitializeComponent();
 
-            var x = (SplashScreenService)splashScreenService;
+            var x = (SplashScreenService) splashScreenService;
             x.ActionChanged += OnFoobar;
         }
 
@@ -38,7 +37,7 @@ namespace PresetMagician.Views
 
         private void OnFoobar(Object sender, StartupActionChangedEventArgs e)
         {
-            var x = (SplashScreenViewModel)ViewModel;
+            var x = (SplashScreenViewModel) ViewModel;
             x.Action = e.NewValue;
             Dispatcher.Invoke(DispatcherPriority.Render, EmptyDelegate);
         }

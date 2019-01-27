@@ -5,7 +5,8 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-using System.Diagnostics;
+using Catel.IoC;
+using Catel.Windows;
 using Orchestra;
 using Orchestra.Services;
 using Orchestra.Views;
@@ -14,9 +15,6 @@ using PresetMagician.Services.Interfaces;
 
 namespace PresetMagician.Views
 {
-    using Catel.IoC;
-    using Catel.Windows;
-    using Services;
     /// <summary>
     /// Interaction logic for ShellWindow.xaml.
     /// </summary>

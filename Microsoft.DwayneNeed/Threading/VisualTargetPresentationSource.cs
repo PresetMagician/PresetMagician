@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
-using System.Windows.Media;
-using System.Windows.Data;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Media;
 
 namespace Microsoft.DwayneNeed.Threading
 {
@@ -35,10 +33,7 @@ namespace Microsoft.DwayneNeed.Threading
 
         public override Visual RootVisual
         {
-            get
-            {
-                return _visualTarget.RootVisual;
-            }
+            get { return _visualTarget.RootVisual; }
 
             set
             {
@@ -57,7 +52,7 @@ namespace Microsoft.DwayneNeed.Threading
                 {
                     rootFE.SizeChanged += new SizeChangedEventHandler(root_SizeChanged);
                     rootFE.DataContext = _dataContext;
-                    
+
                     // HACK!
                     if (_propertyName != null)
                     {
@@ -84,7 +79,7 @@ namespace Microsoft.DwayneNeed.Threading
 
         public object DataContext
         {
-            get {return _dataContext;}
+            get { return _dataContext; }
             set
             {
                 _dataContext = value;

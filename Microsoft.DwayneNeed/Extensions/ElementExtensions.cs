@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
-using System.Windows.Media;
 using System.Windows.Interop;
-using Microsoft.DwayneNeed.Extensions;
+using System.Windows.Media;
 
 namespace Microsoft.DwayneNeed.Extensions
 {
@@ -25,7 +21,7 @@ namespace Microsoft.DwayneNeed.Extensions
             HwndSource hwndSource = PresentationSource.FromVisual(@this) as HwndSource;
             if (hwndSource != null)
             {
-                HwndTarget hwndTarget = (HwndTarget)hwndSource.CompositionTarget;
+                HwndTarget hwndTarget = (HwndTarget) hwndSource.CompositionTarget;
 
                 isSoftwareRendering = hwndTarget.RenderMode == RenderMode.SoftwareOnly ||
                                       (System.Windows.Media.RenderCapability.Tier >> 16) == 0;
@@ -43,26 +39,27 @@ namespace Microsoft.DwayneNeed.Extensions
                 DependencyObject p = VisualTreeHelper.GetParent(e);
                 if (p == null && e is FrameworkElement)
                 {
-                    p = ((FrameworkElement)e).Parent;
+                    p = ((FrameworkElement) e).Parent;
                 }
+
                 e = p;
             } while (!(e is T) && e != null);
 
-            return (T)e;
+            return (T) e;
         }
 
         public static Rect TransformElementToElement(this UIElement @this, Rect rect, UIElement target)
         {
             // Find the HwndSource for this element and use it to transform
             // the rectangle up into screen coordinates.
-            HwndSource hwndSource = (HwndSource)PresentationSource.FromVisual(@this);
+            HwndSource hwndSource = (HwndSource) PresentationSource.FromVisual(@this);
             rect = hwndSource.TransformDescendantToClient(rect, @this);
             rect = hwndSource.TransformClientToScreen(rect);
 
             // Find the HwndSource for the target element and use it to
             // transform the rectangle from screen coordinates down to the
             // target elemnent.
-            HwndSource targetHwndSource = (HwndSource)PresentationSource.FromVisual(target);
+            HwndSource targetHwndSource = (HwndSource) PresentationSource.FromVisual(target);
             rect = targetHwndSource.TransformScreenToClient(rect);
             rect = targetHwndSource.TransformClientToDescendant(rect, target);
 
@@ -73,14 +70,14 @@ namespace Microsoft.DwayneNeed.Extensions
         {
             // Find the HwndSource for this element and use it to transform
             // the point up into screen coordinates.
-            HwndSource hwndSource = (HwndSource)PresentationSource.FromVisual(@this);
+            HwndSource hwndSource = (HwndSource) PresentationSource.FromVisual(@this);
             pt = hwndSource.TransformDescendantToClient(pt, @this);
             pt = hwndSource.TransformClientToScreen(pt);
 
             // Find the HwndSource for the target element and use it to
             // transform the rectangle from screen coordinates down to the
             // target elemnent.
-            HwndSource targetHwndSource = (HwndSource)PresentationSource.FromVisual(target);
+            HwndSource targetHwndSource = (HwndSource) PresentationSource.FromVisual(target);
             pt = targetHwndSource.TransformScreenToClient(pt);
             pt = targetHwndSource.TransformClientToDescendant(pt, target);
 
@@ -104,7 +101,7 @@ namespace Microsoft.DwayneNeed.Extensions
                 {
                     if (child is IDisposable)
                     {
-                        ((IDisposable)child).Dispose();
+                        ((IDisposable) child).Dispose();
 
                         // Don't descend into the visual tree of an element we
                         // just disposed.  We rely on the element to properly

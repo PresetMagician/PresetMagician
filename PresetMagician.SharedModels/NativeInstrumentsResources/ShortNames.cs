@@ -1,5 +1,3 @@
-using Catel.Data;
-
 namespace SharedModels.NativeInstrumentsResources
 {
     public class ShortNames

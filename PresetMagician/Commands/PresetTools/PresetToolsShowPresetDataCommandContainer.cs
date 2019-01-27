@@ -15,7 +15,8 @@ namespace PresetMagician
         private readonly IVstService _vstService;
         private readonly IUIVisualizerService _uiVisualizerService;
 
-        public PresetToolsShowPresetDataCommandContainer(ICommandManager commandManager, IVstService vstService, IUIVisualizerService uiVisualizerService)
+        public PresetToolsShowPresetDataCommandContainer(ICommandManager commandManager, IVstService vstService,
+            IUIVisualizerService uiVisualizerService)
             : base(Commands.PresetTools.ShowPresetData, commandManager)
         {
             Argument.IsNotNull(() => vstService);
@@ -40,7 +41,6 @@ namespace PresetMagician
 
         protected override async Task ExecuteAsync(object parameter)
         {
-           
             await _uiVisualizerService.ShowDialogAsync<PresetDataViewModel>(_vstService.SelectedExportPreset);
         }
     }

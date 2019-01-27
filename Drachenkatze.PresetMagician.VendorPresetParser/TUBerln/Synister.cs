@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 using Drachenkatze.PresetMagician.VendorPresetParser.Common;
 using SharedModels;
 
@@ -11,11 +10,11 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.TUBerln
     {
         public override List<int> SupportedPlugins => new List<int> {1298748272};
         protected override string Extension { get; } = "xml";
+
         protected override string GetParseDirectory()
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments),
                 @"Synister");
-            
         }
 
         protected override PresetBank GetRootBank()

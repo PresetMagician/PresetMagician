@@ -1,17 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Input;
-using Microsoft.DwayneNeed.Controls;
-using System.Windows;
-using System.Windows.Controls.Primitives;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Windows.Media;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
-using Microsoft.DwayneNeed.Extensions;
+using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
+using Microsoft.DwayneNeed.Controls;
+using Microsoft.DwayneNeed.Extensions;
 using Microsoft.DwayneNeed.Interop;
 
 namespace Microsoft.DwayneNeed.MDI
@@ -19,12 +17,13 @@ namespace Microsoft.DwayneNeed.MDI
     public class MdiView : SelectorEx<MdiWindow>
     {
         #region ContentAirspaceMode
+
         public static readonly DependencyProperty ContentAirspaceModeProperty = DependencyProperty.Register(
             /* Name:                */ "ContentAirspaceMode",
             /* Value Type:          */ typeof(AirspaceMode),
             /* Owner Type:          */ typeof(MdiView),
             /* Metadata:            */ new FrameworkPropertyMetadata(
-            /*     Default Value:   */ AirspaceMode.None));
+                /*     Default Value:   */ AirspaceMode.None));
 
         /// <summary>
         ///     Whether or not the content should be clipped.
@@ -34,17 +33,20 @@ namespace Microsoft.DwayneNeed.MDI
         /// </remarks>
         public AirspaceMode ContentAirspaceMode
         {
-            get { return (AirspaceMode)GetValue(ContentAirspaceModeProperty); }
+            get { return (AirspaceMode) GetValue(ContentAirspaceModeProperty); }
             set { SetValue(ContentAirspaceModeProperty, value); }
         }
+
         #endregion
+
         #region ContentClippingBackground
+
         public static readonly DependencyProperty ContentClippingBackgroundProperty = DependencyProperty.Register(
             /* Name:                 */ "ContentClippingBackground",
             /* Value Type:           */ typeof(Brush),
             /* Owner Type:           */ typeof(MdiView),
             /* Metadata:             */ new FrameworkPropertyMetadata(
-            /*     Default Value:    */ null));
+                /*     Default Value:    */ null));
 
         /// <summary>
         ///     The brush to paint the background when the airspace mode is
@@ -52,17 +54,20 @@ namespace Microsoft.DwayneNeed.MDI
         /// </summary>
         public Brush ContentClippingBackground
         {
-            get { return (Brush)GetValue(ContentClippingBackgroundProperty); }
+            get { return (Brush) GetValue(ContentClippingBackgroundProperty); }
             set { SetValue(ContentClippingBackgroundProperty, value); }
         }
+
         #endregion
+
         #region ContentClippingCopyBitsBehavior
+
         public static readonly DependencyProperty ContentClippingCopyBitsBehaviorProperty = DependencyProperty.Register(
             /* Name:                 */ "ContentClippingCopyBitsBehavior",
             /* Value Type:           */ typeof(CopyBitsBehavior),
             /* Owner Type:           */ typeof(MdiView),
             /* Metadata:             */ new FrameworkPropertyMetadata(
-            /*     Default Value:    */ CopyBitsBehavior.Default));
+                /*     Default Value:    */ CopyBitsBehavior.Default));
 
         /// <summary>
         ///     The behavior of copying bits when the airspace mode is set to
@@ -70,97 +75,116 @@ namespace Microsoft.DwayneNeed.MDI
         /// </summary>
         public CopyBitsBehavior ContentClippingCopyBitsBehavior
         {
-            get { return (CopyBitsBehavior)GetValue(ContentClippingCopyBitsBehaviorProperty); }
+            get { return (CopyBitsBehavior) GetValue(ContentClippingCopyBitsBehaviorProperty); }
             set { SetValue(ContentClippingCopyBitsBehaviorProperty, value); }
         }
+
         #endregion
+
         #region ContentRedirectionVisibility
+
         public static readonly DependencyProperty ContentRedirectionVisibilityProperty = DependencyProperty.Register(
             /* Name:                 */ "ContentRedirectionVisibility",
             /* Value Type:           */ typeof(RedirectionVisibility),
             /* Owner Type:           */ typeof(MdiView),
             /* Metadata:             */ new FrameworkPropertyMetadata(
-            /*     Default Value:    */ RedirectionVisibility.Hidden));
+                /*     Default Value:    */ RedirectionVisibility.Hidden));
 
         /// <summary>
         ///     The visibility of the redirection surface.
         /// </summary>
         public RedirectionVisibility ContentRedirectionVisibility
         {
-            get { return (RedirectionVisibility)GetValue(ContentRedirectionVisibilityProperty); }
+            get { return (RedirectionVisibility) GetValue(ContentRedirectionVisibilityProperty); }
             set { SetValue(ContentRedirectionVisibilityProperty, value); }
         }
+
         #endregion
+
         #region ContentIsOutputRedirectionEnabled
-        public static readonly DependencyProperty ContentIsOutputRedirectionEnabledProperty = DependencyProperty.Register(
-            /* Name:                 */ "ContentIsOutputRedirectionEnabled",
-            /* Value Type:           */ typeof(bool),
-            /* Owner Type:           */ typeof(MdiView),
-            /* Metadata:             */ new FrameworkPropertyMetadata(
-            /*     Default Value:    */ false));
+
+        public static readonly DependencyProperty ContentIsOutputRedirectionEnabledProperty =
+            DependencyProperty.Register(
+                /* Name:                 */ "ContentIsOutputRedirectionEnabled",
+                /* Value Type:           */ typeof(bool),
+                /* Owner Type:           */ typeof(MdiView),
+                /* Metadata:             */ new FrameworkPropertyMetadata(
+                    /*     Default Value:    */ false));
 
         /// <summary>
         ///     Whether or not output redirection is enabled.
         /// </summary>
         public bool ContentIsOutputRedirectionEnabled
         {
-            get { return (bool)GetValue(ContentIsOutputRedirectionEnabledProperty); }
+            get { return (bool) GetValue(ContentIsOutputRedirectionEnabledProperty); }
             set { SetValue(ContentIsOutputRedirectionEnabledProperty, value); }
         }
+
         #endregion
+
         #region ContentOutputRedirectionPeriod
+
         public static readonly DependencyProperty ContentOutputRedirectionPeriodProperty = DependencyProperty.Register(
             /* Name:                 */ "ContentOutputRedirectionPeriod",
             /* Value Type:           */ typeof(TimeSpan),
             /* Owner Type:           */ typeof(MdiView),
             /* Metadata:             */ new FrameworkPropertyMetadata(
-            /*     Default Value:    */ TimeSpan.FromMilliseconds(30)));
+                /*     Default Value:    */ TimeSpan.FromMilliseconds(30)));
 
         /// <summary>
         ///     The period of time to update the output redirection.
         /// </summary>
         public TimeSpan ContentOutputRedirectionPeriod
         {
-            get { return (TimeSpan)GetValue(ContentOutputRedirectionPeriodProperty); }
+            get { return (TimeSpan) GetValue(ContentOutputRedirectionPeriodProperty); }
             set { SetValue(ContentOutputRedirectionPeriodProperty, value); }
         }
+
         #endregion
+
         #region ContentIsInputRedirectionEnabled
-        public static readonly DependencyProperty ContentIsInputRedirectionEnabledProperty = DependencyProperty.Register(
-            /* Name:                 */ "ContentIsInputRedirectionEnabled",
-            /* Value Type:           */ typeof(bool),
-            /* Owner Type:           */ typeof(MdiView),
-            /* Metadata:             */ new FrameworkPropertyMetadata(
-            /*     Default Value:    */ false));
+
+        public static readonly DependencyProperty ContentIsInputRedirectionEnabledProperty =
+            DependencyProperty.Register(
+                /* Name:                 */ "ContentIsInputRedirectionEnabled",
+                /* Value Type:           */ typeof(bool),
+                /* Owner Type:           */ typeof(MdiView),
+                /* Metadata:             */ new FrameworkPropertyMetadata(
+                    /*     Default Value:    */ false));
 
         /// <summary>
         ///     Whether or not input redirection is enabled.
         /// </summary>
         public bool ContentIsInputRedirectionEnabled
         {
-            get { return (bool)GetValue(ContentIsInputRedirectionEnabledProperty); }
+            get { return (bool) GetValue(ContentIsInputRedirectionEnabledProperty); }
             set { SetValue(ContentIsInputRedirectionEnabledProperty, value); }
         }
+
         #endregion
+
         #region ContentInputRedirectionPeriod
+
         public static readonly DependencyProperty ContentInputRedirectionPeriodProperty = DependencyProperty.Register(
             /* Name:                 */ "ContentInputRedirectionPeriod",
             /* Value Type:           */ typeof(TimeSpan),
             /* Owner Type:           */ typeof(MdiView),
             /* Metadata:             */ new FrameworkPropertyMetadata(
-            /*     Default Value:    */ TimeSpan.FromMilliseconds(30)));
+                /*     Default Value:    */ TimeSpan.FromMilliseconds(30)));
 
         /// <summary>
         ///     The period of time to update the input redirection.
         /// </summary>
         public TimeSpan ContentInputRedirectionPeriod
         {
-            get { return (TimeSpan)GetValue(ContentInputRedirectionPeriodProperty); }
+            get { return (TimeSpan) GetValue(ContentInputRedirectionPeriodProperty); }
             set { SetValue(ContentInputRedirectionPeriodProperty, value); }
         }
+
         #endregion
 
         #region EnableSnapping
+
         /// <summary>
         ///     A dependency property indicating whether or not the window
         ///     rect of a window in the view should be snapped to the
@@ -171,7 +195,7 @@ namespace Microsoft.DwayneNeed.MDI
             /* Value Type:        */ typeof(bool),
             /* Owner Type:        */ typeof(MdiView),
             /* Metadata:          */ new FrameworkPropertyMetadata(
-            /*     Default Value: */ false));
+                /*     Default Value: */ false));
 
         /// <summary>
         ///     Whether or not the window rect of a window in the view
@@ -180,11 +204,14 @@ namespace Microsoft.DwayneNeed.MDI
         /// </summary>
         public bool EnableSnapping
         {
-            get { return (bool)GetValue(EnableSnappingProperty); }
+            get { return (bool) GetValue(EnableSnappingProperty); }
             set { SetValue(EnableSnappingProperty, value); }
         }
+
         #endregion
+
         #region SnapThreshold
+
         /// <summary>
         ///     A dependency property indicating the threshold to use when
         ///     snapping the window rect of a window in the view.
@@ -194,7 +221,7 @@ namespace Microsoft.DwayneNeed.MDI
             /* Value Type:          */ typeof(double),
             /* Owner Type:          */ typeof(MdiView),
             /* Metadata:            */ new FrameworkPropertyMetadata(
-            /*     Default Value:   */ 10.0));
+                /*     Default Value:   */ 10.0));
 
         /// <summary>
         ///     The threshold to use when snapping the window rect of a
@@ -202,9 +229,10 @@ namespace Microsoft.DwayneNeed.MDI
         /// </summary>
         public double SnapThreshold
         {
-            get { return (double)GetValue(SnapThresholdProperty); }
+            get { return (double) GetValue(SnapThresholdProperty); }
             set { SetValue(SnapThresholdProperty, value); }
         }
+
         #endregion
 
         static MdiView()
@@ -215,118 +243,118 @@ namespace Microsoft.DwayneNeed.MDI
             Selector.SelectedItemProperty.OverrideMetadata(
                 /* Type:                 */ typeof(MdiView),
                 /* Metadata:             */ new FrameworkPropertyMetadata(
-                /*     Changed Callback: */ (s, e) => ((MdiView)s).OnSelectedItemChanged(e),
-                /*     Coerce Callback:  */ (d, bv) => ((MdiView)d).OnCoerceSelectedItem(bv)));
+                    /*     Changed Callback: */ (s, e) => ((MdiView) s).OnSelectedItemChanged(e),
+                    /*     Coerce Callback:  */ (d, bv) => ((MdiView) d).OnCoerceSelectedItem(bv)));
 
             CommandManager.RegisterClassCommandBinding(
                 /* Type:            */ typeof(MdiView),
                 /* Command Binding: */ new CommandBinding(
-                /*     Command:     */ MdiCommands.MaximizeWindow,
-                /*     Execute:     */ (s, e) => ((MdiView)s).ExecuteMaximizeWindow(e),
-                /*     CanExecute:  */ (s, e) => ((MdiView)s).CanExecuteMaximizeWindow(e)));
+                    /*     Command:     */ MdiCommands.MaximizeWindow,
+                    /*     Execute:     */ (s, e) => ((MdiView) s).ExecuteMaximizeWindow(e),
+                    /*     CanExecute:  */ (s, e) => ((MdiView) s).CanExecuteMaximizeWindow(e)));
 
             CommandManager.RegisterClassCommandBinding(
                 /* Type:            */ typeof(MdiView),
                 /* Command Binding: */ new CommandBinding(
-                /*     Command:     */ MdiCommands.MinimizeWindow,
-                /*     Execute:     */ (s, e) => ((MdiView)s).ExecuteMinimizeWindow(e),
-                /*     CanExecute:  */ (s, e) => ((MdiView)s).CanExecuteMinimizeWindow(e)));
+                    /*     Command:     */ MdiCommands.MinimizeWindow,
+                    /*     Execute:     */ (s, e) => ((MdiView) s).ExecuteMinimizeWindow(e),
+                    /*     CanExecute:  */ (s, e) => ((MdiView) s).CanExecuteMinimizeWindow(e)));
 
             CommandManager.RegisterClassCommandBinding(
                 /* Type:            */ typeof(MdiView),
                 /* Command Binding: */ new CommandBinding(
-                /*     Command:     */ MdiCommands.RestoreWindow,
-                /*     Execute:     */ (s, e) => ((MdiView)s).ExecuteRestoreWindow(e),
-                /*     CanExecute:  */ (s, e) => ((MdiView)s).CanExecuteRestoreWindow(e)));
+                    /*     Command:     */ MdiCommands.RestoreWindow,
+                    /*     Execute:     */ (s, e) => ((MdiView) s).ExecuteRestoreWindow(e),
+                    /*     CanExecute:  */ (s, e) => ((MdiView) s).CanExecuteRestoreWindow(e)));
 
             CommandManager.RegisterClassCommandBinding(
                 /* Type:            */ typeof(MdiView),
                 /* Command Binding: */ new CommandBinding(
-                /*     Command:     */ MdiCommands.CloseWindow,
-                /*     Execute:     */ (s, e) => ((MdiView)s).ExecuteCloseWindow(e),
-                /*     CanExecute:  */ (s, e) => ((MdiView)s).CanExecuteCloseWindow(e)));
+                    /*     Command:     */ MdiCommands.CloseWindow,
+                    /*     Execute:     */ (s, e) => ((MdiView) s).ExecuteCloseWindow(e),
+                    /*     CanExecute:  */ (s, e) => ((MdiView) s).CanExecuteCloseWindow(e)));
 
             CommandManager.RegisterClassCommandBinding(
                 /* Type:            */ typeof(MdiView),
                 /* Command Binding: */ new CommandBinding(
-                /*     Command:     */ MdiCommands.AdjustWindowRect,
-                /*     Execute:     */ (s, e) => ((MdiView)s).ExecuteAdjustWindowRect(e),
-                /*     CanExecute:  */ (s, e) => ((MdiView)s).CanExecuteAdjustWindowRect(e)));
+                    /*     Command:     */ MdiCommands.AdjustWindowRect,
+                    /*     Execute:     */ (s, e) => ((MdiView) s).ExecuteAdjustWindowRect(e),
+                    /*     CanExecute:  */ (s, e) => ((MdiView) s).CanExecuteAdjustWindowRect(e)));
 
             CommandManager.RegisterClassCommandBinding(
                 /* Type:            */ typeof(MdiView),
                 /* Command Binding: */ new CommandBinding(
-                /*     Command:     */ MdiCommands.ActivateWindow,
-                /*     Execute:     */ (s, e) => ((MdiView)s).ExecuteActivateWindow(e),
-                /*     CanExecute:  */ (s, e) => ((MdiView)s).CanExecuteActivateWindow(e)));
+                    /*     Command:     */ MdiCommands.ActivateWindow,
+                    /*     Execute:     */ (s, e) => ((MdiView) s).ExecuteActivateWindow(e),
+                    /*     CanExecute:  */ (s, e) => ((MdiView) s).CanExecuteActivateWindow(e)));
 
             CommandManager.RegisterClassCommandBinding(
                 /* Type:            */ typeof(MdiView),
                 /* Command Binding: */ new CommandBinding(
-                /*     Command:     */ MdiCommands.ActivateNextWindow,
-                /*     Execute:     */ (s, e) => ((MdiView)s).ExecuteActivateNextWindow(e),
-                /*     CanExecute:  */ (s, e) => ((MdiView)s).CanExecuteCommandThatRequiresMoreThanOneWindow(e)));
+                    /*     Command:     */ MdiCommands.ActivateNextWindow,
+                    /*     Execute:     */ (s, e) => ((MdiView) s).ExecuteActivateNextWindow(e),
+                    /*     CanExecute:  */ (s, e) => ((MdiView) s).CanExecuteCommandThatRequiresMoreThanOneWindow(e)));
 
             CommandManager.RegisterClassInputBinding(
                 /* Type:            */ typeof(MdiView),
                 /* Input Binding:   */ new InputBinding(
-                /*     Command:     */ MdiCommands.ActivateNextWindow,
-                /*     Gesture:     */ new KeyGesture(Key.Tab, ModifierKeys.Control)));
+                    /*     Command:     */ MdiCommands.ActivateNextWindow,
+                    /*     Gesture:     */ new KeyGesture(Key.Tab, ModifierKeys.Control)));
 
             CommandManager.RegisterClassInputBinding(
                 /* Type:            */ typeof(MdiView),
                 /* Input Binding:   */ new InputBinding(
-                /*     Command:     */ MdiCommands.ActivatePreviousWindow,
-                /*     Gesture:     */ new KeyGesture(Key.Tab, ModifierKeys.Control | ModifierKeys.Shift)));
+                    /*     Command:     */ MdiCommands.ActivatePreviousWindow,
+                    /*     Gesture:     */ new KeyGesture(Key.Tab, ModifierKeys.Control | ModifierKeys.Shift)));
 
             CommandManager.RegisterClassCommandBinding(
                 /* Type:            */ typeof(MdiView),
                 /* Command Binding: */ new CommandBinding(
-                /*     Command:     */ MdiCommands.ActivatePreviousWindow,
-                /*     Execute:     */ (s, e) => ((MdiView)s).ExecuteActivatePreviousWindow(e),
-                /*     CanExecute:  */ (s, e) => ((MdiView)s).CanExecuteCommandThatRequiresMoreThanOneWindow(e)));
+                    /*     Command:     */ MdiCommands.ActivatePreviousWindow,
+                    /*     Execute:     */ (s, e) => ((MdiView) s).ExecuteActivatePreviousWindow(e),
+                    /*     CanExecute:  */ (s, e) => ((MdiView) s).CanExecuteCommandThatRequiresMoreThanOneWindow(e)));
 
             CommandManager.RegisterClassCommandBinding(
                 /* Type:            */ typeof(MdiView),
                 /* Command Binding: */ new CommandBinding(
-                /*     Command:     */ MdiCommands.TileWindows,
-                /*     Execute:     */ (s, e) => ((MdiView)s).ExecuteTileWindows(e),
-                /*     CanExecute:  */ (s, e) => ((MdiView)s).CanExecuteCommandThatRequiresMoreThanOneWindow(e)));
+                    /*     Command:     */ MdiCommands.TileWindows,
+                    /*     Execute:     */ (s, e) => ((MdiView) s).ExecuteTileWindows(e),
+                    /*     CanExecute:  */ (s, e) => ((MdiView) s).CanExecuteCommandThatRequiresMoreThanOneWindow(e)));
 
             CommandManager.RegisterClassCommandBinding(
                 /* Type:            */ typeof(MdiView),
                 /* Command Binding: */ new CommandBinding(
-                /*     Command:     */ MdiCommands.CascadeWindows,
-                /*     Execute:     */ (s, e) => ((MdiView)s).ExecuteCascadeWindows(e),
-                /*     CanExecute:  */ (s, e) => ((MdiView)s).CanExecuteCommandThatRequiresMoreThanOneWindow(e)));
+                    /*     Command:     */ MdiCommands.CascadeWindows,
+                    /*     Execute:     */ (s, e) => ((MdiView) s).ExecuteCascadeWindows(e),
+                    /*     CanExecute:  */ (s, e) => ((MdiView) s).CanExecuteCommandThatRequiresMoreThanOneWindow(e)));
 
             CommandManager.RegisterClassCommandBinding(
                 /* Type:            */ typeof(MdiView),
                 /* Command Binding: */ new CommandBinding(
-                /*     Command:     */ MdiCommands.MinimizeAllWindows,
-                /*     Execute:     */ (s, e) => ((MdiView)s).ExecuteMinimizeAllWindows(e),
-                /*     CanExecute:  */ (s, e) => ((MdiView)s).CanExecuteMinimizeAllWindows(e)));
+                    /*     Command:     */ MdiCommands.MinimizeAllWindows,
+                    /*     Execute:     */ (s, e) => ((MdiView) s).ExecuteMinimizeAllWindows(e),
+                    /*     CanExecute:  */ (s, e) => ((MdiView) s).CanExecuteMinimizeAllWindows(e)));
 
             CommandManager.RegisterClassCommandBinding(
                 /* Type:            */ typeof(MdiView),
                 /* Command Binding: */ new CommandBinding(
-                /*     Command:     */ MdiCommands.MaximizeAllWindows,
-                /*     Execute:     */ (s, e) => ((MdiView)s).ExecuteMaximizeAllWindows(e),
-                /*     CanExecute:  */ (s, e) => ((MdiView)s).CanExecuteMaximizeAllWindows(e)));
+                    /*     Command:     */ MdiCommands.MaximizeAllWindows,
+                    /*     Execute:     */ (s, e) => ((MdiView) s).ExecuteMaximizeAllWindows(e),
+                    /*     CanExecute:  */ (s, e) => ((MdiView) s).CanExecuteMaximizeAllWindows(e)));
 
             CommandManager.RegisterClassCommandBinding(
                 /* Type:            */ typeof(MdiView),
                 /* Command Binding: */ new CommandBinding(
-                /*     Command:     */ MdiCommands.RestoreAllWindows,
-                /*     Execute:     */ (s, e) => ((MdiView)s).ExecuteRestoreAllWindows(e),
-                /*     CanExecute:  */ (s, e) => ((MdiView)s).CanExecuteRestoreAllWindows(e)));
+                    /*     Command:     */ MdiCommands.RestoreAllWindows,
+                    /*     Execute:     */ (s, e) => ((MdiView) s).ExecuteRestoreAllWindows(e),
+                    /*     CanExecute:  */ (s, e) => ((MdiView) s).CanExecuteRestoreAllWindows(e)));
 
             CommandManager.RegisterClassCommandBinding(
                 /* Type:            */ typeof(MdiView),
                 /* Command Binding: */ new CommandBinding(
-                /*     Command:     */ MdiCommands.FloatWindow,
-                /*     Execute:     */ (s, e) => ((MdiView)s).ExecuteFloatWindow(e),
-                /*     CanExecute:  */ (s, e) => ((MdiView)s).CanExecuteFloatWindow(e)));
+                    /*     Command:     */ MdiCommands.FloatWindow,
+                    /*     Execute:     */ (s, e) => ((MdiView) s).ExecuteFloatWindow(e),
+                    /*     CanExecute:  */ (s, e) => ((MdiView) s).CanExecuteFloatWindow(e)));
         }
 
         /// <summary>
@@ -370,7 +398,7 @@ namespace Microsoft.DwayneNeed.MDI
         /// </summary>
         public void AdjustWindowRect(MdiWindow window, Vector delta, MdiWindowEdge interactiveEdges)
         {
-            MdiPanel panel = (MdiPanel)VisualTreeHelper.GetParent(window);
+            MdiPanel panel = (MdiPanel) VisualTreeHelper.GetParent(window);
             ScrollViewer contentScrollViewer = GetTemplateChild("PART_ContentScrollViewer") as ScrollViewer;
 
             Rect panelBounds = panel.Extents;
@@ -396,7 +424,8 @@ namespace Microsoft.DwayneNeed.MDI
                     ScrollViewer.GetVerticalScrollBarVisibility(contentScrollViewer) == ScrollBarVisibility.Disabled)
                 {
                     // Can't extend off the bottom.
-                    proposedWindowRect.Y = Math.Min(proposedWindowRect.Y, panelBounds.Bottom - proposedWindowRect.Height);
+                    proposedWindowRect.Y =
+                        Math.Min(proposedWindowRect.Y, panelBounds.Bottom - proposedWindowRect.Height);
 
                     // Can't extend off the top.
                     proposedWindowRect.Y = Math.Max(proposedWindowRect.Y, panelBounds.Top);
@@ -417,6 +446,7 @@ namespace Microsoft.DwayneNeed.MDI
                     proposedWindowRect.X += constrainedDelta;
                     proposedWindowRect.Width -= constrainedDelta;
                 }
+
                 if ((interactiveEdges & MdiWindowEdge.Right) != 0)
                 {
                     // Can't size smaller than the minimum size.
@@ -429,6 +459,7 @@ namespace Microsoft.DwayneNeed.MDI
 
                     proposedWindowRect.Width += constrainedDelta;
                 }
+
                 if ((interactiveEdges & MdiWindowEdge.Top) != 0)
                 {
                     // Can't size smaller than the minimum size.
@@ -442,6 +473,7 @@ namespace Microsoft.DwayneNeed.MDI
                     proposedWindowRect.Y += constrainedDelta;
                     proposedWindowRect.Height -= constrainedDelta;
                 }
+
                 if ((interactiveEdges & MdiWindowEdge.Bottom) != 0)
                 {
                     // Can't size smaller than the minimum size.
@@ -540,6 +572,7 @@ namespace Microsoft.DwayneNeed.MDI
                 {
                     proposedWindowRect.X = proposedWindowRect.Right - window.MinWidth;
                 }
+
                 proposedWindowRect.Width = window.MinWidth;
             }
 
@@ -549,6 +582,7 @@ namespace Microsoft.DwayneNeed.MDI
                 {
                     proposedWindowRect.Y = proposedWindowRect.Bottom - window.MinHeight;
                 }
+
                 proposedWindowRect.Height = window.MinHeight;
             }
 
@@ -618,6 +652,7 @@ namespace Microsoft.DwayneNeed.MDI
             {
                 throw new ArgumentNullException("window");
             }
+
             if (window.View != this)
             {
                 throw new ArgumentException("Window does not belong to this view.", "window");
@@ -677,8 +712,9 @@ namespace Microsoft.DwayneNeed.MDI
                     {
                         candidateIndex += count;
                     }
+
                     object candidateItem = Items[candidateIndex];
-                    MdiWindow candidateWindow = (MdiWindow)ItemContainerGenerator.ContainerFromItem(candidateItem);
+                    MdiWindow candidateWindow = (MdiWindow) ItemContainerGenerator.ContainerFromItem(candidateItem);
 
                     if (MdiPanel.GetWindowState(candidateWindow) != WindowState.Minimized)
                     {
@@ -702,7 +738,7 @@ namespace Microsoft.DwayneNeed.MDI
                 for (int i = 1; i < count; i++)
                 {
                     object candidateItem = Items[(currentIndex + i) % count];
-                    MdiWindow candidateWindow = (MdiWindow)ItemContainerGenerator.ContainerFromItem(candidateItem);
+                    MdiWindow candidateWindow = (MdiWindow) ItemContainerGenerator.ContainerFromItem(candidateItem);
 
                     if (MdiPanel.GetWindowState(candidateWindow) != WindowState.Minimized)
                     {
@@ -757,6 +793,7 @@ namespace Microsoft.DwayneNeed.MDI
             {
                 throw new ArgumentNullException("window");
             }
+
             if (window.View != this)
             {
                 throw new ArgumentException("Window does not belong to this view.", "window");
@@ -765,7 +802,7 @@ namespace Microsoft.DwayneNeed.MDI
             // Get the current window rect, relative to the MdiPanel, and
             // transform it into screen coordinates.  
             HwndSource hwndSource = PresentationSource.FromVisual(window) as HwndSource;
-            MdiPanel panel = (MdiPanel)VisualTreeHelper.GetParent(window);
+            MdiPanel panel = (MdiPanel) VisualTreeHelper.GetParent(window);
             Rect panelRect = MdiPanel.GetWindowRect(window);
             Rect clientRect = hwndSource.TransformDescendantToClient(panelRect, panel);
             Rect screenRect = hwndSource.TransformClientToScreen(clientRect);
@@ -800,10 +837,10 @@ namespace Microsoft.DwayneNeed.MDI
             {
                 RestoreAllWindows();
 
-                MdiPanel panel = (MdiPanel)VisualTreeHelper.GetParent(_windows[0]);
+                MdiPanel panel = (MdiPanel) VisualTreeHelper.GetParent(_windows[0]);
 
-                int cols = (int)Math.Ceiling(Math.Sqrt(_windows.Count));
-                int rows = (int)Math.Ceiling((double)_windows.Count / cols);
+                int cols = (int) Math.Ceiling(Math.Sqrt(_windows.Count));
+                int rows = (int) Math.Ceiling((double) _windows.Count / cols);
                 Point position = new Point();
                 Size size = new Size(panel.RenderSize.Width / cols, panel.RenderSize.Height / rows);
 
@@ -832,7 +869,7 @@ namespace Microsoft.DwayneNeed.MDI
         {
             if (_windows.Count > 1)
             {
-                MdiPanel panel = (MdiPanel)VisualTreeHelper.GetParent(_windows[0]);
+                MdiPanel panel = (MdiPanel) VisualTreeHelper.GetParent(_windows[0]);
 
                 Point position = new Point();
                 Size size = new Size(panel.RenderSize.Width / 2, panel.RenderSize.Height / 2);
@@ -864,7 +901,7 @@ namespace Microsoft.DwayneNeed.MDI
 
             // This virtual is called before the container is fully connected,
             // so we defer the coercion until later.
-            Dispatcher.BeginInvoke((Action)(() => CoerceValue(SelectedItemProperty)));
+            Dispatcher.BeginInvoke((Action) (() => CoerceValue(SelectedItemProperty)));
         }
 
         /// <summary>
@@ -890,7 +927,7 @@ namespace Microsoft.DwayneNeed.MDI
         /// </summary>
         private void ExecuteMaximizeWindow(ExecutedRoutedEventArgs e)
         {
-            MdiWindow window = ContainerFromElement((DependencyObject)e.OriginalSource);
+            MdiWindow window = ContainerFromElement((DependencyObject) e.OriginalSource);
             Debug.Assert(window != null && MdiPanel.GetWindowState(window) != WindowState.Maximized);
 
             MaximizeWindow(window);
@@ -901,7 +938,7 @@ namespace Microsoft.DwayneNeed.MDI
         /// </summary>
         private void CanExecuteMaximizeWindow(CanExecuteRoutedEventArgs e)
         {
-            MdiWindow window = ContainerFromElement((DependencyObject)e.OriginalSource);
+            MdiWindow window = ContainerFromElement((DependencyObject) e.OriginalSource);
             e.CanExecute = (window != null && MdiPanel.GetWindowState(window) != WindowState.Maximized);
         }
 
@@ -910,7 +947,7 @@ namespace Microsoft.DwayneNeed.MDI
         /// </summary>
         private void ExecuteMinimizeWindow(ExecutedRoutedEventArgs e)
         {
-            MdiWindow window = ContainerFromElement((DependencyObject)e.OriginalSource);
+            MdiWindow window = ContainerFromElement((DependencyObject) e.OriginalSource);
             Debug.Assert(window != null && MdiPanel.GetWindowState(window) != WindowState.Minimized);
 
             MinimizeWindow(window);
@@ -921,7 +958,7 @@ namespace Microsoft.DwayneNeed.MDI
         /// </summary>
         private void CanExecuteMinimizeWindow(CanExecuteRoutedEventArgs e)
         {
-            MdiWindow window = ContainerFromElement((DependencyObject)e.OriginalSource);
+            MdiWindow window = ContainerFromElement((DependencyObject) e.OriginalSource);
             e.CanExecute = (window != null && MdiPanel.GetWindowState(window) != WindowState.Minimized);
         }
 
@@ -930,7 +967,7 @@ namespace Microsoft.DwayneNeed.MDI
         /// </summary>
         private void ExecuteRestoreWindow(ExecutedRoutedEventArgs e)
         {
-            MdiWindow window = ContainerFromElement((DependencyObject)e.OriginalSource);
+            MdiWindow window = ContainerFromElement((DependencyObject) e.OriginalSource);
             Debug.Assert(window != null && MdiPanel.GetWindowState(window) != WindowState.Normal);
 
             RestoreWindow(window);
@@ -941,7 +978,7 @@ namespace Microsoft.DwayneNeed.MDI
         /// </summary>
         private void CanExecuteRestoreWindow(CanExecuteRoutedEventArgs e)
         {
-            MdiWindow window = ContainerFromElement((DependencyObject)e.OriginalSource);
+            MdiWindow window = ContainerFromElement((DependencyObject) e.OriginalSource);
             e.CanExecute = (window != null && MdiPanel.GetWindowState(window) != WindowState.Normal);
         }
 
@@ -950,7 +987,7 @@ namespace Microsoft.DwayneNeed.MDI
         /// </summary>
         private void ExecuteCloseWindow(ExecutedRoutedEventArgs e)
         {
-            MdiWindow window = ContainerFromElement((DependencyObject)e.OriginalSource);
+            MdiWindow window = ContainerFromElement((DependencyObject) e.OriginalSource);
             Debug.Assert(window != null && ItemsSource == null && Items != null);
 
             CloseWindow(window);
@@ -965,7 +1002,7 @@ namespace Microsoft.DwayneNeed.MDI
         /// </remarks>
         private void CanExecuteCloseWindow(CanExecuteRoutedEventArgs e)
         {
-            MdiWindow window = ContainerFromElement((DependencyObject)e.OriginalSource);
+            MdiWindow window = ContainerFromElement((DependencyObject) e.OriginalSource);
             e.CanExecute = (window != null && ItemsSource == null && Items != null);
         }
 
@@ -974,7 +1011,7 @@ namespace Microsoft.DwayneNeed.MDI
         /// </summary>
         private void ExecuteActivateWindow(ExecutedRoutedEventArgs e)
         {
-            MdiWindow window = ContainerFromElement((DependencyObject)e.OriginalSource);
+            MdiWindow window = ContainerFromElement((DependencyObject) e.OriginalSource);
             ActivateWindow(window);
         }
 
@@ -1007,13 +1044,13 @@ namespace Microsoft.DwayneNeed.MDI
         /// </summary>
         private void ExecuteAdjustWindowRect(ExecutedRoutedEventArgs e)
         {
-            UIElement originalSource = (UIElement)e.OriginalSource;
-            AdjustWindowRectParameter swp = (AdjustWindowRectParameter)e.Parameter;
+            UIElement originalSource = (UIElement) e.OriginalSource;
+            AdjustWindowRectParameter swp = (AdjustWindowRectParameter) e.Parameter;
 
             MdiWindow window = ContainerFromElement(originalSource);
             Debug.Assert(window != null && MdiPanel.GetWindowState(window) == WindowState.Normal);
 
-            MdiPanel panel = (MdiPanel)VisualTreeHelper.GetParent(window);
+            MdiPanel panel = (MdiPanel) VisualTreeHelper.GetParent(window);
             Vector delta = originalSource.TransformElementToElement(swp.Delta, panel);
 
             AdjustWindowRect(window, delta, swp.InteractiveEdges);
@@ -1024,7 +1061,7 @@ namespace Microsoft.DwayneNeed.MDI
         /// </summary>
         private void CanExecuteAdjustWindowRect(CanExecuteRoutedEventArgs e)
         {
-            MdiWindow window = ContainerFromElement((DependencyObject)e.OriginalSource);
+            MdiWindow window = ContainerFromElement((DependencyObject) e.OriginalSource);
             e.CanExecute = (window != null && MdiPanel.GetWindowState(window) == WindowState.Normal);
         }
 
@@ -1110,7 +1147,7 @@ namespace Microsoft.DwayneNeed.MDI
         /// </summary>
         private void ExecuteFloatWindow(ExecutedRoutedEventArgs e)
         {
-            MdiWindow window = ContainerFromElement((DependencyObject)e.OriginalSource);
+            MdiWindow window = ContainerFromElement((DependencyObject) e.OriginalSource);
             Debug.Assert(window != null && MdiPanel.GetWindowState(window) == WindowState.Normal);
 
             FloatWindow(window);
@@ -1121,7 +1158,7 @@ namespace Microsoft.DwayneNeed.MDI
         /// </summary>
         private void CanExecuteFloatWindow(CanExecuteRoutedEventArgs e)
         {
-            MdiWindow window = ContainerFromElement((DependencyObject)e.OriginalSource);
+            MdiWindow window = ContainerFromElement((DependencyObject) e.OriginalSource);
             e.CanExecute = (window != null && MdiPanel.GetWindowState(window) == WindowState.Normal);
         }
 
@@ -1130,11 +1167,17 @@ namespace Microsoft.DwayneNeed.MDI
             foreach (MdiWindow otherWindow in _windows)
             {
                 // Skip the window itself.
-                if (otherWindow == window) { continue; }
+                if (otherWindow == window)
+                {
+                    continue;
+                }
 
                 // Skip any child that is not in the normal state.
                 WindowState windowState = MdiPanel.GetWindowState(otherWindow);
-                if (windowState != WindowState.Normal) { continue; }
+                if (windowState != WindowState.Normal)
+                {
+                    continue;
+                }
 
                 Rect windowRect = MdiPanel.GetWindowRect(otherWindow);
                 if (Math.Abs(windowRect.Top - y) < SnapThreshold)
@@ -1159,11 +1202,17 @@ namespace Microsoft.DwayneNeed.MDI
             foreach (MdiWindow otherWindow in _windows)
             {
                 // Skip the window itself.
-                if (otherWindow == window) { continue; }
+                if (otherWindow == window)
+                {
+                    continue;
+                }
 
                 // Skip any child that is not in the normal state.
                 WindowState windowState = MdiPanel.GetWindowState(otherWindow);
-                if (windowState != WindowState.Normal) { continue; }
+                if (windowState != WindowState.Normal)
+                {
+                    continue;
+                }
 
                 Rect windowRect = MdiPanel.GetWindowRect(otherWindow);
                 if (Math.Abs(windowRect.Left - x) < SnapThreshold)
@@ -1189,7 +1238,7 @@ namespace Microsoft.DwayneNeed.MDI
             MdiWindow selectedWindow = null;
             if (selectedItem != null)
             {
-                selectedWindow = (MdiWindow)ItemContainerGenerator.ContainerFromItem(selectedItem);
+                selectedWindow = (MdiWindow) ItemContainerGenerator.ContainerFromItem(selectedItem);
                 if (selectedWindow != null && MdiPanel.GetWindowState(selectedWindow) == WindowState.Minimized)
                 {
                     selectedWindow = null;
@@ -1199,7 +1248,8 @@ namespace Microsoft.DwayneNeed.MDI
             // If selection is not valid, or null, try to select a non-minimized window.
             if (selectedWindow == null)
             {
-                selectedWindow = _windows.Where((w) => MdiPanel.GetWindowState(w) != WindowState.Minimized).LastOrDefault();
+                selectedWindow = _windows.Where((w) => MdiPanel.GetWindowState(w) != WindowState.Minimized)
+                    .LastOrDefault();
             }
 
             if (selectedWindow != null)
@@ -1220,7 +1270,7 @@ namespace Microsoft.DwayneNeed.MDI
             object selection = e.NewValue;
             if (selection != null)
             {
-                MdiWindow window = (MdiWindow)ItemContainerGenerator.ContainerFromItem(e.NewValue);
+                MdiWindow window = (MdiWindow) ItemContainerGenerator.ContainerFromItem(e.NewValue);
 
                 // Bring the newly activated window to the front.
                 _windows.BringToFront(window, MdiPanel.GetWindowState(window));

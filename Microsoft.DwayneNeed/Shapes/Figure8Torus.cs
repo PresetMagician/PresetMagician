@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Media.Media3D;
 using System.Windows;
+using System.Windows.Media.Media3D;
 using Microsoft.DwayneNeed.Numerics;
 
 namespace Microsoft.DwayneNeed.Shapes
@@ -31,7 +28,7 @@ namespace Microsoft.DwayneNeed.Shapes
 
         public double A
         {
-            get { return (double)GetValue(AProperty); }
+            get { return (double) GetValue(AProperty); }
             set { SetValue(AProperty, value); }
         }
 

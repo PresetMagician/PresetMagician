@@ -1,11 +1,8 @@
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using Drachenkatze.PresetMagician.VendorPresetParser.Common;
-using Drachenkatze.PresetMagician.VSTHost.VST;
 using GSF.Collections;
 using ICSharpCode.SharpZipLib.Zip.Compression;
-using PresetMagician.Models;
 using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.DmitrySches

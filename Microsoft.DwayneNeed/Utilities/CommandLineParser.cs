@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace Microsoft.DwayneNeed.Utilities
 {
@@ -56,7 +54,7 @@ namespace Microsoft.DwayneNeed.Utilities
                 // process the command line
                 foreach (var arg in args)
                 {
-                    var split = arg.Split(new[] { '=' }, 2);
+                    var split = arg.Split(new[] {'='}, 2);
 
                     string argName = split[0];
                     string argValue = split.Length == 2 ? split[1] : null;
@@ -67,13 +65,14 @@ namespace Microsoft.DwayneNeed.Utilities
 
                         if (paramBinding.HasBeenSet)
                         {
-                            throw new CommandLineParameterException(String.Format("Argument '{0}' has already been specified.", argName));
+                            throw new CommandLineParameterException(
+                                String.Format("Argument '{0}' has already been specified.", argName));
                         }
 
                         if (argValue != null)
                         {
-                            object value = paramBinding.ParserMethod.Invoke(null, new object[] { argValue });
-                            paramBinding.PropertyInfo.GetSetMethod().Invoke(null, new object[] { value });
+                            object value = paramBinding.ParserMethod.Invoke(null, new object[] {argValue});
+                            paramBinding.PropertyInfo.GetSetMethod().Invoke(null, new object[] {value});
                             paramBinding.HasBeenSet = true;
                         }
                         else
@@ -81,20 +80,21 @@ namespace Microsoft.DwayneNeed.Utilities
                             if (paramBinding.PropertyInfo.PropertyType == typeof(bool))
                             {
                                 // Set the boolean property to true.
-                                paramBinding.PropertyInfo.GetSetMethod().Invoke(null, new object[] { true });
+                                paramBinding.PropertyInfo.GetSetMethod().Invoke(null, new object[] {true});
                                 paramBinding.HasBeenSet = true;
                             }
                             else
                             {
                                 // Only boolean properties can be specified without a value.
-                                throw new CommandLineParameterException(String.Format("Argument '{0}' must provide a value.", argName));
+                                throw new CommandLineParameterException(
+                                    String.Format("Argument '{0}' must provide a value.", argName));
                             }
                         }
-
                     }
                     else
                     {
-                        throw new CommandLineParameterException(String.Format("Argument '{0}' was not expected.", argName));
+                        throw new CommandLineParameterException(String.Format("Argument '{0}' was not expected.",
+                            argName));
                     }
                 }
 
@@ -103,7 +103,8 @@ namespace Microsoft.DwayneNeed.Utilities
                 {
                     if (!paramBinding.HasBeenSet && paramBinding.Attribute.IsRequired)
                     {
-                        throw new CommandLineParameterException(String.Format("Argument '{0}' is required.", paramBinding.Attribute.Name));
+                        throw new CommandLineParameterException(String.Format("Argument '{0}' is required.",
+                            paramBinding.Attribute.Name));
                     }
                 }
             }
@@ -130,7 +131,9 @@ namespace Microsoft.DwayneNeed.Utilities
 
             foreach (var paramBinding in bindings.Values)
             {
-                string shortDescription = String.IsNullOrWhiteSpace(paramBinding.Attribute.ShortDescription) ? "value" : paramBinding.Attribute.ShortDescription;
+                string shortDescription = String.IsNullOrWhiteSpace(paramBinding.Attribute.ShortDescription)
+                    ? "value"
+                    : paramBinding.Attribute.ShortDescription;
                 string valueAssignment = String.Format("=<{0}>", shortDescription);
 
                 string possiblyOptionalValueAssignement = valueAssignment;
@@ -139,7 +142,8 @@ namespace Microsoft.DwayneNeed.Utilities
                     possiblyOptionalValueAssignement = String.Format("[{0}]", valueAssignment);
                 }
 
-                string argumentAssignment = String.Format("{0}{1}", paramBinding.Attribute.Name, possiblyOptionalValueAssignement);
+                string argumentAssignment =
+                    String.Format("{0}{1}", paramBinding.Attribute.Name, possiblyOptionalValueAssignement);
                 string possiblyOptionalArgumentAssignment = argumentAssignment;
                 if (!paramBinding.Attribute.IsRequired)
                 {
@@ -164,20 +168,30 @@ namespace Microsoft.DwayneNeed.Utilities
             Dictionary<string, ParamBinding> bindings = new Dictionary<string, ParamBinding>();
 
             // Iterate over all of the public writable static properties.
-            foreach (var property in typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.SetProperty))
+            foreach (var property in typeof(T).GetProperties(
+                BindingFlags.Public | BindingFlags.Static | BindingFlags.SetProperty))
             {
                 // Look up the CommandLineAttribute for the property.
-                var attribute = Attribute.GetCustomAttribute(property, typeof(CommandLineParameterAttribute)) as CommandLineParameterAttribute;
+                var attribute =
+                    Attribute.GetCustomAttribute(property, typeof(CommandLineParameterAttribute)) as
+                        CommandLineParameterAttribute;
                 if (attribute != null)
                 {
                     // Find the parse method for the property's type.
-                    var parser = property.PropertyType.GetMethod("Parse", BindingFlags.Static | BindingFlags.Public, null, new Type[] { typeof(string) }, null);
+                    var parser = property.PropertyType.GetMethod("Parse", BindingFlags.Static | BindingFlags.Public,
+                        null, new Type[] {typeof(string)}, null);
                     if (parser == null)
                     {
-                        throw new InvalidOperationException(String.Format("Unable to locate Parse method for type '{0}' for argument '{1}'.", property.PropertyType.Name, attribute.Name));
+                        throw new InvalidOperationException(String.Format(
+                            "Unable to locate Parse method for type '{0}' for argument '{1}'.",
+                            property.PropertyType.Name, attribute.Name));
                     }
 
-                    bindings.Add(attribute.Name, new ParamBinding { HasBeenSet = false, Attribute = attribute, PropertyInfo = property, ParserMethod = parser });
+                    bindings.Add(attribute.Name,
+                        new ParamBinding
+                        {
+                            HasBeenSet = false, Attribute = attribute, PropertyInfo = property, ParserMethod = parser
+                        });
                 }
             }
 

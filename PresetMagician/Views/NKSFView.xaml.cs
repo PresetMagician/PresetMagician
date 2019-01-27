@@ -1,11 +1,6 @@
 ﻿using System.ComponentModel;
-using System.Windows;
 using Be.Windows.Forms;
-using Catel.Data;
-using Catel.IoC;
-using Catel.IO;
 using Catel.Windows;
-using Orchestra.Services;
 using PresetMagician.ViewModels;
 
 namespace PresetMagician.Views
@@ -29,7 +24,6 @@ namespace PresetMagician.Views
 
             viewModel.PropertyChanged += ViewModel_PropertyChanged;
             InitializeComponent();
-
         }
 
         private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -40,9 +34,7 @@ namespace PresetMagician.Views
 
                 var provider = new DynamicByteProvider(s.PluginChunk.ToArray());
                 PluginChunkControl.ByteProvider = provider;
-
             }
         }
-
     }
 }

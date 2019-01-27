@@ -3,8 +3,6 @@ using Catel.Collections;
 using Catel.IoC;
 using Catel.Logging;
 using Catel.MVVM;
-using Catel.Services;
-using Drachenkatze.PresetMagician.VendorPresetParser;
 using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
 using SharedModels;
@@ -16,7 +14,7 @@ namespace PresetMagician.ViewModels
         private readonly ILog _logger = LogManager.GetCurrentClassLogger();
         private readonly IVstService _vstService;
 
-        public PresetExportListViewModel(ICustomStatusService statusService, 
+        public PresetExportListViewModel(ICustomStatusService statusService,
             IRuntimeConfigurationService runtimeConfigurationService, IServiceLocator serviceLocator,
             IVstService vstService)
         {
@@ -27,7 +25,7 @@ namespace PresetMagician.ViewModels
             PresetExportList = vstService.PresetExportList;
             ApplicationState = runtimeConfigurationService.ApplicationState;
             serviceLocator.RegisterInstance(this);
-            
+
             SelectedPresets = vstService.SelectedPresets;
 
             Title = "Preset Export List";

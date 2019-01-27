@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Runtime.InteropServices;
 
 namespace Microsoft.DwayneNeed.Numerics
 {
@@ -81,7 +78,7 @@ namespace Microsoft.DwayneNeed.Numerics
             Binary64 a = new Binary64(_value);
             Binary64 b = new Binary64(other._value);
 
-            if(a.IsNan || b.IsNan)
+            if (a.IsNan || b.IsNan)
             {
                 throw new ArithmeticException("CompareTo cannot accept Nans.");
             }
@@ -108,11 +105,11 @@ namespace Microsoft.DwayneNeed.Numerics
         {
             if (other is double)
             {
-                return Equals((Double42)(double)other);
+                return Equals((Double42) (double) other);
             }
             else if (other is Double42)
             {
-                return Equals((Double42)other);
+                return Equals((Double42) other);
             }
             else
             {

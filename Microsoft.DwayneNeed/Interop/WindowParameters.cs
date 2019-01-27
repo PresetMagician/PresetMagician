@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using Microsoft.DwayneNeed.Win32.User32;
 
@@ -24,10 +21,7 @@ namespace Microsoft.DwayneNeed.Interop
                 return _parent ?? HWND.NULL;
             }
 
-            set
-            {
-                _parent = value;
-            }
+            set { _parent = value; }
         }
 
         HWND _parent;

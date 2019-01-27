@@ -1,12 +1,7 @@
-using System;
-using System.Diagnostics;
 using System.Windows;
-using System.Windows.Media;
-using Catel.IoC;
-using Orchestra;
-using Orchestra.Services;
 using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 using ThemeHelper2 = Catel.ThemeHelper;
+
 namespace PresetMagician.Views
 {
     /// <summary>
@@ -29,12 +24,6 @@ namespace PresetMagician.Views
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-
-
-            
-
-
-
         }
     }
 }

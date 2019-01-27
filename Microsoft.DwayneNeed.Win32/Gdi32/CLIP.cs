@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Microsoft.DwayneNeed.Win32.Gdi32
+﻿namespace Microsoft.DwayneNeed.Win32.Gdi32
 {
     public enum CLIP : int
     {
@@ -44,7 +39,7 @@ namespace Microsoft.DwayneNeed.Win32.Gdi32
         /// after Windows Server 2003.
         /// </summary>
         DFA_DISABLE = (4 << 4),
-        
+
         /// <summary>
         /// You must specify this flag to use an embedded read-only font.
         /// </summary>
