@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System;
+using System.Security.Cryptography;
 using System.Text;
 using Standart.Hash.xxHash;
 
@@ -8,7 +9,11 @@ namespace Drachenkatze.PresetMagician.Utils
     {
         public static string getIxxHash(byte[] input)
         {
-            return xxHash64.ComputeHash(input, input.Length).ToString();
+            
+            var hashnum =  xxHash32.ComputeHash(input, input.Length);
+            var byteArray = BitConverter.GetBytes(hashnum);
+
+            return Convert.ToBase64String(byteArray);
         }
 
         public static string getFormattedSHA256Hash(string input)

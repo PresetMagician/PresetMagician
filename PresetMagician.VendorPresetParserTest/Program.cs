@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.ServiceModel;
+using System.Text;
 using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration.Attributes;
 using Drachenkatze.PresetMagician.Utils;
 using Drachenkatze.PresetMagician.VendorPresetParser;
+using PresetMagician.Models;
 using PresetMagician.ProcessIsolation;
 using PresetMagician.ProcessIsolation.Services;
+using PresetMagician.VstHost.VST;
 using SharedModels;
 
 namespace PresetMagician.VendorPresetParserTest
@@ -49,10 +53,18 @@ namespace PresetMagician.VendorPresetParserTest
                     continue;
                 }
 
+                if (IsIgnored(ignoredPlugins, presetParser.PresetParserType, pluginId))
+                {
+                    continue;
+                }
+
                 Console.WriteLine(presetParser.PresetParserType);
 
                 var plugin = new Plugin {PluginId = pluginId};
-                var remoteInstance = new RemotePluginInstance(plugin, new RemoteVstService());
+
+                var stubProcess = new StubIsolatedProcess();
+                
+                var remoteInstance = new RemotePluginInstance(stubProcess, plugin);
 
 
                 presetParser.PresetDataStorer = new NullPresetStorer();
@@ -108,9 +120,8 @@ namespace PresetMagician.VendorPresetParserTest
                     testResult.RandomPresetSource = randomPreset.SourceFile;
                 }
 
-                if ((foundPreset && plugin.Presets.Count > 5 && testResult.BankMissing < 2 &&
+                if (foundPreset && plugin.Presets.Count > 5 && testResult.BankMissing < 2 &&
                      plugin.Presets.Count == testResult.ReportedPresets)
-                    || IsIgnored(ignoredPlugins, presetParser.PresetParserType, pluginId))
                 {
                     testResult.IsOK = true;
                 }
@@ -165,7 +176,130 @@ namespace PresetMagician.VendorPresetParserTest
         }
     }
 
+    class StubIsolatedProcess : IIsolatedProcess
+    {
+        public void Kill()
+        {
+            
+        }
 
+        public IRemoteVstService GetVstService()
+        {
+            return new StubRemoteVstService();
+           
+        }
+    }
+    
+     public class StubRemoteVstService : IRemoteVstService
+     {
+
+         public bool Ping()
+         {
+             return true;
+         }
+ 
+         public Guid RegisterPlugin(string dllPath, bool backgroundProcessing = true)
+         {
+             var guid = Guid.NewGuid();
+             return guid;
+         }
+ 
+         public string GetPluginHash(Guid guid)
+         {
+             return null;
+         }
+ 
+         public void LoadPlugin(Guid guid)
+         {
+            
+         }
+ 
+         public void UnloadPlugin(Guid guid)
+         {
+            
+         }
+ 
+         public void ReloadPlugin(Guid guid)
+         {
+            
+         }
+ 
+         private RemoteVstPlugin GetPluginByGuid(Guid guid)
+         {
+             return null;
+         }
+ 
+         public bool OpenEditorHidden(Guid pluginGuid)
+         {
+             return true;
+         }
+ 
+         public bool OpenEditor(Guid pluginGuid)
+         {
+             return true;
+         }
+ 
+         public void CloseEditor(Guid pluginGuid)
+         {
+           
+         }
+ 
+         public byte[] CreateScreenshot(Guid pluginGuid)
+         {
+             return null;
+         }
+ 
+         public string GetPluginName(Guid pluginGuid)
+         {
+             return null;
+         }
+ 
+         public string GetPluginVendor(Guid pluginGuid)
+         {
+             return null;
+         }
+ 
+         public List<PluginInfoItem> GetPluginInfoItems(Guid pluginGuid)
+         {
+             return null;
+         }
+ 
+         public VstPluginInfoSurrogate GetPluginInfo(Guid pluginGuid)
+         {
+             return null;
+         }
+ 
+         public void SetProgram(Guid pluginGuid, int program)
+         {
+            
+         }
+ 
+         public string GetCurrentProgramName(Guid pluginGuid)
+         {
+             return null;
+         }
+ 
+         public byte[] GetChunk(Guid pluginGuid, bool isPreset)
+         {
+             return Encoding.UTF8.GetBytes("foo");
+         }
+ 
+         public void SetChunk(Guid pluginGuid, byte[] data, bool isPreset)
+         {
+    
+         }
+ 
+         public void ExportNksAudioPreview(Guid pluginGuid, PresetExportInfo preset, byte[] presetData,
+             string userContentDirectory, int initialDelay)
+         {
+
+         }
+ 
+         public void ExportNks(Guid pluginGuid, PresetExportInfo preset, byte[] presetData, string userContentDirectory)
+         {
+          
+         }
+     }
     class NullPresetStorer : IPresetDataStorer
     {
         public async Task PersistPreset(Preset preset, byte[] data)

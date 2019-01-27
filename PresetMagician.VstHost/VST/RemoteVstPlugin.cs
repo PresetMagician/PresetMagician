@@ -10,6 +10,7 @@ using Catel.IO;
 using Drachenkatze.PresetMagician.Utils;
 using Jacobi.Vst.Core;
 using Jacobi.Vst.Core.Host;
+using Jacobi.Vst.Interop.Host;
 using Microsoft.DwayneNeed.Win32;
 using Microsoft.DwayneNeed.Win32.User32;
 using PresetMagician.Models;

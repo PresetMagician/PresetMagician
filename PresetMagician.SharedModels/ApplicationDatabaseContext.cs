@@ -134,6 +134,11 @@ namespace SharedModels
             Configuration.AutoDetectChangesEnabled = true;
         }
 
+        public void DisableSaveForPlugin(Plugin plugin)
+        {
+            Entry(plugin).State = EntityState.Unchanged;
+        }
+
 
         private void SavePresetData(Preset preset, byte[] data)
         {

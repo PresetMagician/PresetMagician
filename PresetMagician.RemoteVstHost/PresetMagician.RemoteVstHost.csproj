@@ -314,4 +314,5 @@
         </When>
     </Choose>
   <Import Project="..\packages\Fody\build\Fody.targets" Condition="Exists('..\packages\Fody\build\Fody.targets')" Label="Paket" />
+    <Import Project="..\common\ExtraCleanup.targets"/>
 </Project>

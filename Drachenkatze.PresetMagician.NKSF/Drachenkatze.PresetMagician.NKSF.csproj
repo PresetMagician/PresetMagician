@@ -139,4 +139,5 @@
       </ItemGroup>
     </When>
   </Choose>
+  <Import Project="..\common\ExtraCleanup.targets"/>
 </Project>

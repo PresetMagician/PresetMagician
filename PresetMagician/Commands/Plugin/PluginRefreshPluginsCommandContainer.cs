@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data.Entity;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,6 +13,7 @@ using Catel.Services;
 using Catel.Threading;
 using Drachenkatze.PresetMagician.Utils;
 using PresetMagician.Extensions;
+using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
 using SharedModels;
 
@@ -27,11 +30,12 @@ namespace PresetMagician
         private readonly IVstService _vstService;
         private readonly IDispatcherService _dispatcherService;
         private readonly IMessageService _messageService;
+        private readonly IDatabaseService _databaseService;
 
         public PluginRefreshPluginsCommandContainer(ICommandManager commandManager,
             IVstService vstService, IRuntimeConfigurationService runtimeConfigurationService,
             IApplicationService applicationService, IDispatcherService dispatcherService,
-            IMessageService messageService)
+            IMessageService messageService, IDatabaseService databaseService)
             : base(Commands.Plugin.RefreshPlugins, commandManager)
         {
             Argument.IsNotNull(() => runtimeConfigurationService);
@@ -39,12 +43,14 @@ namespace PresetMagician
             Argument.IsNotNull(() => applicationService);
             Argument.IsNotNull(() => dispatcherService);
             Argument.IsNotNull(() => messageService);
-
+            Argument.IsNotNull(() => databaseService);
+            
             _runtimeConfigurationService = runtimeConfigurationService;
             _dispatcherService = dispatcherService;
             _vstService = vstService;
             _applicationService = applicationService;
             _messageService = messageService;
+            _databaseService = databaseService;
         }
 
         protected override async Task ExecuteAsync(object parameter)
@@ -151,8 +157,14 @@ namespace PresetMagician
                         {
                             DllPath = dllPath
                         };
+                        
+                        //Debug.WriteLine(_databaseService.Context.Entry(plugin).State);
 
                         plugins.Add(plugin);
+
+                        //_databaseService.Context.Entry(plugin).State = EntityState.Detached;
+                        Debug.WriteLine(_databaseService.Context.Entry(plugin).State);
+
                     }
                 }
             });
