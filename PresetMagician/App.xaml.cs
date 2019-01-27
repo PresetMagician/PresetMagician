@@ -4,13 +4,10 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Media;
 using Catel.IoC;
 using Catel.IO;
 using Catel.Logging;
@@ -19,8 +16,6 @@ using NBug.Events;
 using Orchestra.Services;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.Views;
-using PresetMagician;
-using PresetMagician.Services;
 using Win32Mapi;
 using MessageBox = System.Windows.MessageBox;
 using Path = System.IO.Path;
@@ -39,20 +34,13 @@ namespace PresetMagician
 
         private void SetupExceptionHandling()
         {
-            #if !DEBUG 
+#if !DEBUG
             AppDomain.CurrentDomain.UnhandledException += NBug.Handler.UnhandledException;
             Current.DispatcherUnhandledException += NBug.Handler.DispatcherUnhandledException;
             TaskScheduler.UnobservedTaskException += NBug.Handler.UnobservedTaskException;
 
             NBug.Settings.CustomSubmissionEvent += Settings_CustomSubmissionEvent;
-            #endif
-            
-            #if DEBUG
-           /* AppDomain.CurrentDomain.FirstChanceException += (sender, eventArgs) =>
-            {
-                Debug.WriteLine(eventArgs.Exception.ToString());
-            };*/
-            #endif
+#endif
         }
 
         protected override async void OnStartup(StartupEventArgs e)
@@ -83,7 +71,7 @@ namespace PresetMagician
             {
                 LogManager.GetCurrentClassLogger().Error("Tried to rotate the log file, but it failed.");
                 LogManager.GetCurrentClassLogger().Error(exception);
-                  MessageBox.Show(
+                MessageBox.Show(
                     $"Unable to rotate the log file {fileLogListener.FilePath}. Please verify that you have access to that file. " +
                     $"We will continue, but no logging will be available. Additional information: {Environment.NewLine}{Environment.NewLine}{exception}",
                     "Log File Error",
@@ -91,7 +79,11 @@ namespace PresetMagician
                     MessageBoxImage.Error);
             }
 
-            
+#if DEBUG
+            //DebugMonitor.Start();
+            //DebugMonitor.OnOutputDebugString += delegate(int pid, string text) { LogManager.GetCurrentClassLogger().Debug($"{pid} {text.TrimEnd( Environment.NewLine.ToCharArray())}"); };
+#endif
+
             NBug.Settings.AdditionalReportFiles.Add(fileLogListener.FilePath);
 
             await StartShell();
@@ -115,7 +107,6 @@ namespace PresetMagician
 
             var firstLogEntries = System.Text.Encoding.UTF8.GetString(result);
 
-            
 
             if (firstLogEntries.Length >= readlength)
             {
@@ -126,7 +117,7 @@ namespace PresetMagician
                 if (separatorPosition == 24)
                 {
                     // Separator position found, probably valid time entry
-                    var dateTimeEntry = firstLogEntries.Substring(0, separatorPosition - 1).Replace(":","-");
+                    var dateTimeEntry = firstLogEntries.Substring(0, separatorPosition - 1).Replace(":", "-");
 
                     var trimmedFilePath = filePath.Replace(".log", " ");
                     trimmedFilePath += dateTimeEntry + ".log";
@@ -139,7 +130,6 @@ namespace PresetMagician
 
             fileStream.Flush();
             fileStream.SetLength(0);
-            
         }
 
         private async Task StartShell()
@@ -168,9 +158,9 @@ namespace PresetMagician
 
         protected override void OnExit(ExitEventArgs e)
         {
-            Debug.WriteLine("In OnExit");
             var serviceLocator = ServiceLocator.Default;
             serviceLocator.ResolveType<IRuntimeConfigurationService>().Save();
+            serviceLocator.ResolveType<IApplicationService>().ShutdownProcessPool();
             base.OnExit(e);
         }
 
@@ -204,13 +194,14 @@ namespace PresetMagician
                     "</code></pre>").ToArray());
             if (!mapi.Send("PresetMagician Crash: " + e.Exception.Message, noteText))
             {
-                var crashesDir = Catel.IO.Path.Combine(Catel.IO.Path.GetApplicationDataDirectory(ApplicationDataTarget.UserRoaming),
+                var crashesDir = Catel.IO.Path.Combine(
+                    Catel.IO.Path.GetApplicationDataDirectory(ApplicationDataTarget.UserRoaming),
                     @"Crashes\", Guid.NewGuid().ToString());
 
                 Directory.CreateDirectory(crashesDir);
                 File.Copy(tempZip, Path.Combine(crashesDir, "DiagnosticData.zip"));
 
-                File.WriteAllText (Path.Combine(crashesDir, "ErrorDescription.txt"),noteText);
+                File.WriteAllText(Path.Combine(crashesDir, "ErrorDescription.txt"), noteText);
 
                 File.WriteAllText(Path.Combine(crashesDir, "0 Send all files in this directory to.txt"), "");
                 File.WriteAllText(Path.Combine(crashesDir, $"1 {Settings.Links.SupportEmail}.txt"), "");

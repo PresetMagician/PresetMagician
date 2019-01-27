@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
@@ -10,12 +9,11 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using Jacobi.Vst.Core.Host;
 using Host = PresetMagician.VstHost.VST.VstHost;
-using SharedModels;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace PresetMagician.VstHost.Util
 {
-   /// <summary>
+    /// <summary>
     /// Provides functions to capture the entire screen, or a particular window, and save it to a file.
     /// </summary>
     public class ScreenCapture
@@ -26,10 +24,9 @@ namespace PresetMagician.VstHost.Util
 
         [DllImport("dwmapi.dll", PreserveSig = true)]
         private static extern int DwmSetWindowAttribute(IntPtr hWnd, int attr, ref int value, int attrLen);
-        
+
         public static Bitmap CaptureVstScreenshot(IVstPluginContext pluginContext)
         {
-           
             if (!pluginContext.PluginCommandStub.EditorGetRect(out Rectangle wndRect))
             {
                 return null;
@@ -47,8 +44,8 @@ namespace PresetMagician.VstHost.Util
                 WindowStyle = WindowStyle.None,
                 ShowInTaskbar = false,
                 ShowActivated = false,
-                Left=0,
-                Top=0,
+                Left = 0,
+                Top = 0,
                 ResizeMode = ResizeMode.NoResize,
                 Margin = new Thickness(0),
                 SnapsToDevicePixels = true,
@@ -74,7 +71,7 @@ namespace PresetMagician.VstHost.Util
 
             var success = pluginContext.PluginCommandStub.EditorOpen(helper.Handle);
 
-            
+
             if (!success)
             {
                 window.Visibility = Visibility.Hidden;
@@ -87,7 +84,8 @@ namespace PresetMagician.VstHost.Util
             for (var i = 0; i < 10; i++)
             {
                 pluginContext.PluginCommandStub.EditorIdle();
-                window.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(() => { Thread.Sleep(10); })).Wait();
+                window.Dispatcher
+                    .BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(() => { Thread.Sleep(10); })).Wait();
             }
 
             if (pluginContext.PluginCommandStub.EditorGetRect(out Rectangle wndRect2))
@@ -99,7 +97,8 @@ namespace PresetMagician.VstHost.Util
             for (var i = 0; i < 10; i++)
             {
                 pluginContext.PluginCommandStub.EditorIdle();
-                window.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(() => { Thread.Sleep(10); })).Wait();
+                window.Dispatcher
+                    .BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(() => { Thread.Sleep(10); })).Wait();
             }
 
 
@@ -107,12 +106,12 @@ namespace PresetMagician.VstHost.Util
             pluginContext.PluginCommandStub.EditorClose();
             window.Visibility = Visibility.Hidden;
             window.Hide();
-            
+
             window.Close();
             Thread.Sleep(500);
             return bmp;
         }
-        
+
         /// <summary>
         /// Creates an Image object containing a screen shot of the entire desktop
         /// </summary>
@@ -121,6 +120,7 @@ namespace PresetMagician.VstHost.Util
         {
             return CaptureWindow(User32.GetDesktopWindow());
         }
+
         /// <summary>
         /// Creates an Image object containing a screen shot of a specific window
         /// </summary>
@@ -155,6 +155,7 @@ namespace PresetMagician.VstHost.Util
             GDI32.DeleteObject(hBitmap);
             return img;
         }
+
         /// <summary>
         /// Captures a screen shot of a specific window, and saves it to a file
         /// </summary>
@@ -166,6 +167,7 @@ namespace PresetMagician.VstHost.Util
             Image img = CaptureWindow(handle);
             img.Save(filename, format);
         }
+
         /// <summary>
         /// Captures a screen shot of the entire desktop, and saves it to a file
         /// </summary>
@@ -176,29 +178,26 @@ namespace PresetMagician.VstHost.Util
             Image img = CaptureScreen();
             img.Save(filename, format);
         }
-        
-        
 
-        public static Bitmap PrintWindow(IntPtr hwnd)    
-        {       
+
+        public static Bitmap PrintWindow(IntPtr hwnd)
+        {
             User32.RECT rc = new User32.RECT();
             User32.GetWindowRect(hwnd, ref rc);
 
             int width = rc.right - rc.left;
             int height = rc.bottom - rc.top;
-            
-            Bitmap bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);        
-            Graphics gfxBmp = Graphics.FromImage(bmp);        
-            IntPtr hdcBitmap = gfxBmp.GetHdc();        
 
-            var y = User32.PrintWindow(hwnd, hdcBitmap, 0);
+            Bitmap bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+            Graphics gfxBmp = Graphics.FromImage(bmp);
+            IntPtr hdcBitmap = gfxBmp.GetHdc();
 
-            Debug.WriteLine(y);
+            User32.PrintWindow(hwnd, hdcBitmap, 0);
 
-            gfxBmp.ReleaseHdc(hdcBitmap);               
-            gfxBmp.Dispose(); 
+            gfxBmp.ReleaseHdc(hdcBitmap);
+            gfxBmp.Dispose();
 
-            return bmp;   
+            return bmp;
         }
 
         /// <summary>
@@ -206,21 +205,26 @@ namespace PresetMagician.VstHost.Util
         /// </summary>
         private class GDI32
         {
-
             public const int SRCCOPY = 0x00CC0020; // BitBlt dwRop parameter
+
             [DllImport("gdi32.dll")]
             public static extern bool BitBlt(IntPtr hObject, int nXDest, int nYDest,
                 int nWidth, int nHeight, IntPtr hObjectSource,
                 int nXSrc, int nYSrc, int dwRop);
+
             [DllImport("gdi32.dll")]
             public static extern IntPtr CreateCompatibleBitmap(IntPtr hDC, int nWidth,
                 int nHeight);
+
             [DllImport("gdi32.dll")]
             public static extern IntPtr CreateCompatibleDC(IntPtr hDC);
+
             [DllImport("gdi32.dll")]
             public static extern bool DeleteDC(IntPtr hDC);
+
             [DllImport("gdi32.dll")]
             public static extern bool DeleteObject(IntPtr hObject);
+
             [DllImport("gdi32.dll")]
             public static extern IntPtr SelectObject(IntPtr hDC, IntPtr hObject);
         }
@@ -233,6 +237,7 @@ namespace PresetMagician.VstHost.Util
             public const int GWL_EXSTYLE = -20;
             public const int WS_EX_LAYERED = 0x00080000;
             public const int LWA_ALPHA = 0x00000002;
+
             [StructLayout(LayoutKind.Sequential)]
             public struct RECT
             {
@@ -241,28 +246,31 @@ namespace PresetMagician.VstHost.Util
                 public int right;
                 public int bottom;
             }
+
             [DllImport("user32.dll")]
             public static extern IntPtr GetDesktopWindow();
+
             [DllImport("user32.dll")]
             public static extern IntPtr GetWindowDC(IntPtr hWnd);
+
             [DllImport("user32.dll")]
             public static extern IntPtr ReleaseDC(IntPtr hWnd, IntPtr hDC);
+
             [DllImport("user32.dll")]
             public static extern IntPtr GetWindowRect(IntPtr hWnd, ref RECT rect);
-            
+
             [DllImport("user32.dll")]
             public static extern bool PrintWindow(IntPtr hWnd, IntPtr hdcBlt, int nFlags);
-            [DllImport("user32.dll", EntryPoint="GetWindowLongPtr")]
+
+            [DllImport("user32.dll", EntryPoint = "GetWindowLongPtr")]
             public static extern IntPtr GetWindowLongPtr(IntPtr hWnd, int nIndex);
 
 
-            [DllImport("user32.dll", EntryPoint="SetWindowLongPtr")]
+            [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr")]
             public static extern IntPtr SetWindowLongPtr64(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
 
             [DllImport("user32.dll")]
             public static extern bool SetLayeredWindowAttributes(IntPtr hwnd, uint crKey, byte bAlpha, uint dwFlags);
-            
-            
         }
     }
 }

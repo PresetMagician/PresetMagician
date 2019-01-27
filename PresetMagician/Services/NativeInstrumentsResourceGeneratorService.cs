@@ -1,28 +1,18 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
-using Catel;
-using Catel.Threading;
 using ColorThiefDotNet;
 using MethodTimer;
-using PresetMagician.Helpers;
 using PresetMagician.Models.NativeInstrumentsResources;
 using PresetMagician.Services.Interfaces;
-using PresetMagician.VstHost.Util;
 using SharedModels;
 using SharedModels.NativeInstrumentsResources;
 using Brushes = System.Windows.Media.Brushes;
@@ -36,11 +26,11 @@ namespace PresetMagician.Services
     public class NativeInstrumentsResourceGeneratorService : INativeInstrumentsResourceGeneratorService
     {
         [Time]
-        public void AutoGenerateResources(Plugin plugin, IRemoteVstService remoteVstService)
+        public void AutoGenerateResources(IRemotePluginInstance pluginInstance)
         {
             var generate = false;
             var imagesToSave = new List<ResourceImage>();
-            foreach (var img in plugin.NativeInstrumentsResource.ResourceImages)
+            foreach (var img in pluginInstance.Plugin.NativeInstrumentsResource.ResourceImages)
             {
                 if (img.State.State != NativeInstrumentsResource.ResourceStates.Empty)
                 {
@@ -51,31 +41,32 @@ namespace PresetMagician.Services
                 imagesToSave.Add(img);
             }
 
-            var previousCategoriesState = plugin.NativeInstrumentsResource.CategoriesState.State;
-            var previousColorState = plugin.NativeInstrumentsResource.ColorState.State;
-            var previousShortNameState = plugin.NativeInstrumentsResource.ShortNamesState.State;
+            var previousCategoriesState = pluginInstance.Plugin.NativeInstrumentsResource.CategoriesState.State;
+            var previousColorState = pluginInstance.Plugin.NativeInstrumentsResource.ColorState.State;
+            var previousShortNameState = pluginInstance.Plugin.NativeInstrumentsResource.ShortNamesState.State;
 
-            if (plugin.NativeInstrumentsResource.CategoriesState.State ==
+            if (pluginInstance.Plugin.NativeInstrumentsResource.CategoriesState.State ==
                 NativeInstrumentsResource.ResourceStates.Empty ||
-                plugin.NativeInstrumentsResource.ShortNamesState.State ==
-                NativeInstrumentsResource.ResourceStates.Empty || plugin.NativeInstrumentsResource.ColorState.State ==
+                pluginInstance.Plugin.NativeInstrumentsResource.ShortNamesState.State ==
+                NativeInstrumentsResource.ResourceStates.Empty ||
+                pluginInstance.Plugin.NativeInstrumentsResource.ColorState.State ==
                 NativeInstrumentsResource.ResourceStates.Empty || generate)
             {
-                GenerateResources(plugin, remoteVstService);
+                GenerateResources(pluginInstance);
 
                 if (previousCategoriesState == NativeInstrumentsResource.ResourceStates.Empty)
                 {
-                    plugin.NativeInstrumentsResource.CategoriesState.ShouldSave = true;
+                    pluginInstance.Plugin.NativeInstrumentsResource.CategoriesState.ShouldSave = true;
                 }
 
                 if (previousColorState == NativeInstrumentsResource.ResourceStates.Empty)
                 {
-                    plugin.NativeInstrumentsResource.ColorState.ShouldSave = true;
+                    pluginInstance.Plugin.NativeInstrumentsResource.ColorState.ShouldSave = true;
                 }
 
                 if (previousShortNameState == NativeInstrumentsResource.ResourceStates.Empty)
                 {
-                    plugin.NativeInstrumentsResource.ShortNamesState.ShouldSave = true;
+                    pluginInstance.Plugin.NativeInstrumentsResource.ShortNamesState.ShouldSave = true;
                 }
 
                 foreach (var img in imagesToSave)
@@ -86,21 +77,21 @@ namespace PresetMagician.Services
                     }
                 }
 
-                plugin.NativeInstrumentsResource.Save(plugin);
+                pluginInstance.Plugin.NativeInstrumentsResource.Save(pluginInstance.Plugin);
             }
         }
 
-        public bool ShouldCreateScreenshot(Plugin plugin)
+        public bool ShouldCreateScreenshot(IRemotePluginInstance pluginInstance)
         {
             var shouldCreateScreenshot = false;
-            
-            var niResource = plugin.NativeInstrumentsResource;
-            
+
+            var niResource = pluginInstance.Plugin.NativeInstrumentsResource;
+
             if (niResource.ColorState.State == NativeInstrumentsResource.ResourceStates.Empty)
             {
                 shouldCreateScreenshot = true;
             }
-            
+
             foreach (var img in niResource.ResourceImages)
             {
                 if (img.State.State == NativeInstrumentsResource.ResourceStates.Empty)
@@ -113,32 +104,32 @@ namespace PresetMagician.Services
         }
 
         [Time]
-        public void GenerateResources(Plugin plugin, IRemoteVstService remoteVstService, bool force = false)
+        public void GenerateResources(IRemotePluginInstance pluginInstance, bool force = false)
         {
             Image bmp;
-            var niResource = plugin.NativeInstrumentsResource;
+            var niResource = pluginInstance.Plugin.NativeInstrumentsResource;
 
-            if (!ShouldCreateScreenshot(plugin) && !force)
+            if (!ShouldCreateScreenshot(pluginInstance) && !force)
             {
                 return;
             }
-            
-            var data = remoteVstService.CreateScreenshot(plugin.Guid);
+
+            var data = pluginInstance.CreateScreenshot();
 
             if (data != null)
             {
                 var ms = new MemoryStream();
                 ms.Write(data, 0, data.Length);
                 ms.Seek(0, SeekOrigin.Begin);
-                bmp = Bitmap.FromStream(ms);
+                bmp = Image.FromStream(ms);
             }
             else
             {
                 return;
             }
 
-            var pluginName = plugin.PluginName;
-            var pluginVendor = plugin.PluginVendor;
+            var pluginName = pluginInstance.Plugin.PluginName;
+            var pluginVendor = pluginInstance.Plugin.PluginVendor;
 
             niResource.VB_artwork.ReplaceFromStream(GetScaledBitmap(bmp, niResource.VB_artwork.TargetSize),
                 NativeInstrumentsResource.ResourceStates.AutomaticallyGenerated);
@@ -312,14 +303,29 @@ namespace PresetMagician.Services
 
 
             var bestColor = orderedColors.FirstOrDefault();
-            return (Color) ColorConverter.ConvertFromString(
-                bestColor.ColorCode);
+
+            var resultColor = Colors.Transparent;
+
+            if (bestColor == null)
+            {
+                return resultColor;
+            }
+
+            var colorCode = bestColor.ColorCode;
+
+            var convertedColor = ColorConverter.ConvertFromString(colorCode);
+            if (convertedColor != null)
+            {
+                resultColor = (Color) convertedColor;
+            }
+
+            return resultColor;
         }
 
         private class PluginColor
         {
             public double Weight { get; set; }
-            public string ColorCode { get; set; }
+            public string ColorCode { get; set; } = "";
         }
 
         [Time]

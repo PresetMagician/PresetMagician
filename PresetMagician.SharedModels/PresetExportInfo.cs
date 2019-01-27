@@ -3,12 +3,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using Catel.Collections;
-using Catel.Linq;
 using Drachenkatze.PresetMagician.NKSF.NKSF;
 
 namespace SharedModels
 {
-   
     [DataContract]
     public class PresetExportInfo
     {
@@ -16,7 +14,7 @@ namespace SharedModels
         {
             PluginName = preset.Plugin.PluginName;
             PluginVendor = preset.Plugin.PluginVendor;
-            PluginId = preset.PluginId;
+            PluginId = preset.Plugin.PluginId;
             PluginType = preset.Plugin.PluginType;
             BankPath = preset.PresetBank.GetBankPath().ToList();
             BankPath.RemoveFirst();
@@ -29,33 +27,24 @@ namespace SharedModels
             Types = preset.Types;
             Modes = preset.Modes;
         }
-        
+
+        [DataMember] public string PluginName { get; set; }
+        [DataMember] public string PluginVendor { get; set; }
+        [DataMember] public int PluginId { get; set; }
+        [DataMember] public Plugin.PluginTypes PluginType { get; set; }
+        [DataMember] public List<string> BankPath { get; set; }
+        [DataMember] public string BankName { get; set; }
+        [DataMember] public string PresetName { get; set; }
+        [DataMember] public int PreviewNoteNumber { get; set; }
+        [DataMember] public ControllerAssignments DefaultControllerAssignments { get; set; }
+
+        [DataMember] public string Author { get; set; }
+        [DataMember] public string Comment { get; set; }
+
         [DataMember]
-        public string PluginName { get;set; }
-        [DataMember]
-        public string PluginVendor { get;set; }
-        [DataMember]
-        public int PluginId{ get;set; }
-        [DataMember]
-        public Plugin.PluginTypes PluginType{ get;set; }
-        [DataMember]
-        public List<string> BankPath { get; set; }
-        [DataMember]
-        public string BankName { get; set; }
-        [DataMember]
-        public string PresetName { get;set; }
-        [DataMember]
-        public int PreviewNoteNumber { get; set; }
-        [DataMember]
-        public ControllerAssignments DefaultControllerAssignments { get; set; }
-        
-        [DataMember]
-        public string Author { get;set; }
-        [DataMember]
-        public string Comment { get;set; }
-        [DataMember]
-        public ObservableCollection<ObservableCollection<string>> Types { get; set; } = new ObservableCollection<ObservableCollection<string>>();
-        [DataMember]
-        public ObservableCollection<string> Modes { get; set; } = new ObservableCollection<string>();
+        public ObservableCollection<ObservableCollection<string>> Types { get; set; } =
+            new ObservableCollection<ObservableCollection<string>>();
+
+        [DataMember] public ObservableCollection<string> Modes { get; set; } = new ObservableCollection<string>();
     }
 }

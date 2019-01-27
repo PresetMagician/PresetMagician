@@ -1,6 +1,5 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Anotar.Catel;
+﻿using System.Threading.Tasks;
+using Catel.Logging;
 using JetBrains.Annotations;
 using MethodTimer;
 using SharedModels;
@@ -12,7 +11,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
     {
         public override bool CanHandle()
         {
-            return DeterminateVSTPresetSaveMode() == PresetSaveModes.FullBank;
+            return DeterminateVstPresetSaveMode() == PresetSaveModes.FullBank;
         }
 
 
@@ -20,7 +19,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
         {
             var factoryBank = FindOrCreateBank(BankNameFactory);
 
-            await GetPresets(factoryBank, 0, Plugin.PluginInfo.ProgramCount, "Builtin");
+            await GetPresets(factoryBank, 0, PluginInstance.Plugin.PluginInfo.ProgramCount, "Builtin");
         }
 
         [Time]
@@ -28,32 +27,32 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
         {
             if (start < 0)
             {
-                Plugin.Error("GetPresets start index is less than 0, ignoring.");
+                PluginInstance.Plugin.Logger.Error("GetPresets start index is less than 0, ignoring.");
                 return;
             }
 
             var endIndex = start + numPresets;
 
-            if (endIndex > Plugin.PluginInfo.ProgramCount)
+            if (endIndex > PluginInstance.Plugin.PluginInfo.ProgramCount)
             {
-                Plugin.Error(
-                    $"GetPresets between {start} and {endIndex} would exceed maximum program count of {Plugin.PluginInfo.ProgramCount}, ignoring.");
+                PluginInstance.Plugin.Logger.Error(
+                    $"GetPresets between {start} and {endIndex} would exceed maximum program count of {PluginInstance.Plugin.PluginInfo.ProgramCount}, ignoring.");
                 return;
             }
 
             for (var index = start; index < endIndex; index++)
             {
-                RemoteVstService.SetProgram(Plugin.Guid, index);
+                PluginInstance.SetProgram(index);
 
                 var preset = new Preset
                 {
-                    PresetName = RemoteVstService.GetCurrentProgramName(Plugin.Guid),
+                    PresetName = PluginInstance.GetCurrentProgramName(),
                     PresetBank = bank,
                     SourceFile = sourceFile + ":" + index,
-                    Plugin = Plugin
+                    Plugin = PluginInstance.Plugin
                 };
 
-                await PresetDataStorer.PersistPreset(preset, RemoteVstService.GetChunk(Plugin.Guid, false));
+                await PresetDataStorer.PersistPreset(preset, PluginInstance.GetChunk(false));
             }
         }
     }

@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Timers;
@@ -20,22 +18,47 @@ namespace PresetMagician.ProcessIsolation
         private static IsolatedProcess _currentProcess;
         private const int MAX_PROCESSES = 4;
         public event EventHandler ProcessWatcherUpdated;
-        
-        public static ObservableCollection<IsolatedProcess> Processes = new ObservableCollection<IsolatedProcess>();
-        private Timer _processWatcher;
+
+        public static readonly ObservableCollection<IsolatedProcess> Processes =
+            new ObservableCollection<IsolatedProcess>();
+
+        private readonly Timer _processWatcher;
+        private bool _poolRunning;
 
         public ProcessPool()
         {
-            _processWatcher = new Timer(1000);
-            _processWatcher.AutoReset = false;
+            _processWatcher = new Timer(1000) {AutoReset = false};
             _processWatcher.Elapsed += ProcessWatcherOnElapsed;
-            _processWatcher.Start();
+        }
 
-            CreateProcesses();
+        public void StartPool()
+        {
+            _poolRunning = true;
+            _processWatcher.Start();
+        }
+
+        public void StopPool()
+        {
+            lock (Processes)
+            {
+                _poolRunning = false;
+                _processWatcher.Stop();
+                foreach (var process in Processes.ToArray())
+                {
+                    process.Kill();
+                }
+
+                Processes.Clear();
+            }
         }
 
         private void ProcessWatcherOnElapsed(object sender, ElapsedEventArgs e)
         {
+            if (!_poolRunning)
+            {
+                return;
+            }
+
             CreateProcesses();
             ProcessWatcherUpdated.SafeInvoke(this);
             _processWatcher.Start();
@@ -47,7 +70,8 @@ namespace PresetMagician.ProcessIsolation
             {
                 foreach (var process in Processes.ToArray())
                 {
-                    if (process.CurrentProcessState == IsolatedProcess.ProcessState.EXITED || process.CurrentProcessState == IsolatedProcess.ProcessState.KILLED)
+                    if (process.CurrentProcessState == IsolatedProcess.ProcessState.EXITED ||
+                        process.CurrentProcessState == IsolatedProcess.ProcessState.KILLED)
                     {
                         Processes.Remove(process);
                     }
@@ -91,7 +115,6 @@ namespace PresetMagician.ProcessIsolation
 
             await Task.Delay(TimeSpan.FromMilliseconds(500));
             return false;
-
         }
 
         public static async Task<IRemoteVstService> GetRemoteVstService()
@@ -107,13 +130,32 @@ namespace PresetMagician.ProcessIsolation
             throw new Exception("Unable to find a running VST service");
         }
 
+        public static async Task<IRemotePluginInstance> GetRemotePluginInstance(Plugin plugin)
+        {
+            for (var i = 0; i < 10; i++)
+            {
+                if (await EnsureCurrentProcess())
+                {
+                    return _currentProcess.GetRemotePluginInstance(plugin);
+                }
+            }
+
+            throw new Exception("Unable to find a running VST service");
+        }
+
         public static void KillRemotevstService()
         {
             _currentProcess.Kill();
         }
     }
 
-    public class IsolatedProcess
+    public interface IIsolatedProcess
+    {
+        void Kill();
+        IRemoteVstService GetVstService();
+    }
+
+    public class IsolatedProcess : IIsolatedProcess
     {
         public enum ProcessState
         {
@@ -133,7 +175,8 @@ namespace PresetMagician.ProcessIsolation
         {
             var processStartInfo = new ProcessStartInfo("PresetMagician.RemoteVstHost.exe")
             {
-                CreateNoWindow = true, UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true
+                CreateNoWindow = true, UseShellExecute = false, RedirectStandardOutput = true,
+                RedirectStandardError = true
             };
 
             CurrentProcessState = ProcessState.STARTING;
@@ -157,11 +200,13 @@ namespace PresetMagician.ProcessIsolation
 
             _vstService = ChannelFactory<IRemoteVstService>.CreateChannel(binding, ep);
 
-            ((IClientChannel)_vstService).Faulted += OnFaulted;
-            ((IClientChannel)_vstService).Closed += OnFaulted;
-            
+            ((IClientChannel) _vstService).Faulted += OnFaulted;
+            ((IClientChannel) _vstService).Closed += OnFaulted;
+            ((IClientChannel) _vstService).Closing += OnFaulted;
+
             _process.EnableRaisingEvents = true;
             _process.Exited += ProcessOnExited;
+
 
             _startupTimer = new Timer();
             _startupTimer.Elapsed += StartupTimerOnElapsed;
@@ -178,22 +223,26 @@ namespace PresetMagician.ProcessIsolation
                 {
                     return;
                 }
+
                 await Task.Delay(TimeSpan.FromMilliseconds(500));
             }
-            
+
             throw new Exception("Unable to find a running VST host process");
-        } 
+        }
 
         private void OnFaulted(object sender, EventArgs e)
         {
+            _startupTimer.Stop();
             CurrentProcessState = ProcessState.KILLED;
-            ((IClientChannel)_vstService).Abort();
             Kill();
         }
 
         private void ProcessOnOutputDataReceived(object sender, DataReceivedEventArgs e)
         {
-            LogTo.Debug($"Plugin host worker {Pid}: "+e.Data);
+            if (!string.IsNullOrEmpty(e.Data))
+            {
+                LogTo.Debug($"Plugin host worker {Pid}: " + e.Data);
+            }
         }
 
         public IRemoteVstService GetVstService()
@@ -201,26 +250,56 @@ namespace PresetMagician.ProcessIsolation
             return _vstService;
         }
 
+        public IRemotePluginInstance GetRemotePluginInstance(Plugin plugin)
+        {
+            return new RemotePluginInstance(this, plugin);
+        }
+
         private void StartupTimerOnElapsed(object sender, ElapsedEventArgs e)
         {
-            _vstService.Ping();
-            CurrentProcessState = ProcessState.RUNNING;
+            if (CurrentProcessState == ProcessState.EXITED || CurrentProcessState == ProcessState.KILLED)
+            {
+                return;
+            }
+
+            try
+            {
+                _vstService.Ping();
+                CurrentProcessState = ProcessState.RUNNING;
+                _startupTimer.Interval = 10000;
+                _startupTimer.Start();
+            }
+            catch (Exception ex) when (ex is CommunicationException cex)
+            {
+                Kill();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
         }
 
         private void ProcessOnExited(object sender, EventArgs e)
         {
+            _startupTimer.Stop();
+            ((IClientChannel) _vstService).Abort();
             CurrentProcessState = ProcessState.EXITED;
         }
 
         public void Kill()
         {
+            ((IClientChannel) _vstService).Abort();
+            _startupTimer.Stop();
+
             if (!_process.HasExited)
             {
-                _process.Kill();
                 CurrentProcessState = ProcessState.KILLED;
+                _process.Kill();
+            }
+            else
+            {
+                CurrentProcessState = ProcessState.EXITED;
             }
         }
-
-      
     }
 }

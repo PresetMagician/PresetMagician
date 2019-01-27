@@ -25,8 +25,9 @@ namespace SharedModels
         public bool CompressPresetData { private get; set; }
         public MidiNoteName PreviewNote { private get; set; }
         public static string OverrideDbPath;
-        
-        private readonly List<(Preset preset, byte[] presetData)> presetDataList = new List<(Preset preset, byte[] presetData)>();
+
+        private readonly List<(Preset preset, byte[] presetData)> presetDataList =
+            new List<(Preset preset, byte[] presetData)>();
 
         public ApplicationDatabaseContext() : base(new SQLiteConnection(GetConnectionString()), true)
         {
@@ -52,7 +53,6 @@ namespace SharedModels
             Database.SetInitializer(sqliteConnectionInitializer);
         }
 
-        
 
         private static string GetDatabasePath(string dbPath = null)
         {
@@ -60,11 +60,11 @@ namespace SharedModels
             {
                 return dbPath;
             }
-            
+
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                 @"Drachenkatze\PresetMagician\PresetMagician.sqlite3");
         }
-        
+
         private static string GetViewCachePath()
         {
             var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -74,22 +74,24 @@ namespace SharedModels
             {
                 Directory.CreateDirectory(directory);
             }
+
             return Path.Combine(directory, "ViewCache.xml");
         }
 
         public static string GetConnectionString()
         {
-            
             var cs = new SQLiteConnectionStringBuilder()
-                { DataSource = GetDatabasePath(OverrideDbPath), ForeignKeys = false, SyncMode = SynchronizationModes.Off, CacheSize = -10240 };
+            {
+                DataSource = GetDatabasePath(OverrideDbPath), ForeignKeys = false, SyncMode = SynchronizationModes.Off,
+                CacheSize = -10240
+            };
 
             return cs.ConnectionString;
         }
 
         public static ApplicationDatabaseContext Create()
         {
-           
-                return new ApplicationDatabaseContext();
+            return new ApplicationDatabaseContext();
         }
 
         public static void InitializeViewCache()
@@ -109,8 +111,11 @@ namespace SharedModels
         {
             Configuration.AutoDetectChangesEnabled = false;
             plugin.PresetCache.Clear();
-            var deletedPresets = (from deletedPreset in Presets where deletedPreset.Plugin.Id == plugin.Id && deletedPreset.IsDeleted select deletedPreset).AsNoTracking().ToList();
-            
+            var deletedPresets =
+                (from deletedPreset in Presets
+                    where deletedPreset.Plugin.Id == plugin.Id && deletedPreset.IsDeleted
+                    select deletedPreset).AsNoTracking().ToList();
+
             foreach (var preset in deletedPresets)
             {
                 plugin.PresetCache.Add((plugin.Id, preset.SourceFile), preset);
@@ -145,6 +150,12 @@ namespace SharedModels
 
         public async Task PersistPreset(Preset preset, byte[] data)
         {
+            if (preset.Plugin == null || string.IsNullOrEmpty(preset.SourceFile))
+            {
+                throw new ArgumentException(
+                    "The presets plugin must be set and the source file must not be null or empty");
+            }
+
             Configuration.AutoDetectChangesEnabled = false;
 
             PresetUpdated.SafeInvoke(this, new PresetUpdatedEventArgs(preset));
@@ -154,11 +165,13 @@ namespace SharedModels
                 preset.Plugin.Presets.Add(preset);
                 preset.PreviewNote = PreviewNote;
                 SavePresetData(preset, data);
-            } else
+                preset.Plugin.PresetCache.Add((preset.Plugin.Id, preset.SourceFile), preset);
+            }
+            else
             {
                 SavePresetData(preset.Plugin.PresetCache[(preset.Plugin.Id, preset.SourceFile)], data);
             }
-            
+
             persistPresetCount++;
             if (persistPresetCount > PersistInterval)
             {
@@ -174,6 +187,7 @@ namespace SharedModels
                 return tempContext.PresetDataStorage.Find(preset.PresetId).PresetData;
             }
         }
+
         public async Task Flush()
         {
             using (var tempContext = Create())
@@ -197,19 +211,28 @@ namespace SharedModels
                     if (existingPresetData.IsCompressed)
                     {
                         preset.PresetCompressedSize = existingPresetData.CompressedPresetData.Length;
-                    } else
+                    }
+                    else
                     {
                         preset.PresetCompressedSize = preset.PresetSize;
                     }
-
-
                 }
+
                 await tempContext.SaveChangesAsync();
                 presetDataList.Clear();
             }
 
             Configuration.AutoDetectChangesEnabled = true;
-            await SaveChangesAsync();
+            try
+            {
+                //Database.Log = delegate(string s) { LogTo.Debug(s);  };
+                await SaveChangesAsync();
+                //Database.Log = null;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+            }
         }
 
         public void Migrate()
@@ -228,24 +251,26 @@ namespace SharedModels
                 {
                     continue;
                 }
-                var migrationExecuted = (from schemaVersion in SchemaVersions where schemaVersion.Version == migration.Name select schemaVersion).Any();
+
+                var migrationExecuted = (from schemaVersion in SchemaVersions
+                    where schemaVersion.Version == migration.Name
+                    select schemaVersion).Any();
 
                 if (migrationExecuted)
                 {
                     continue;
                 }
-                
+
                 BaseMigration instance = (BaseMigration) Activator.CreateInstance(migration);
                 instance.Database = Database;
                 instance.Up();
-                
+
                 var executedMigration = new SchemaVersion();
                 executedMigration.Version = migration.Name;
                 //SchemaVersions.Add(executedMigration);
             }
 
             SaveChanges();
-
         }
 
         public DbSet<Plugin> Plugins { get; set; }

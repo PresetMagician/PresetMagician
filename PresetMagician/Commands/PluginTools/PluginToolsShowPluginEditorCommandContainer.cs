@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Specialized;
+﻿using System.Collections.Specialized;
 using System.Threading.Tasks;
 using Catel;
 using Catel.MVVM;
 using Catel.Services;
 using PresetMagician.Services.Interfaces;
-using PresetMagician.ViewModels;
-using PresetMagician.Views;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -17,7 +14,8 @@ namespace PresetMagician
         private readonly IVstService _vstService;
         private readonly IUIVisualizerService _uiVisualizerService;
 
-        public PluginToolsShowPluginEditorCommandContainer(ICommandManager commandManager, IVstService vstService, IUIVisualizerService uiVisualizerService)
+        public PluginToolsShowPluginEditorCommandContainer(ICommandManager commandManager, IVstService vstService,
+            IUIVisualizerService uiVisualizerService)
             : base(Commands.PluginTools.ShowPluginEditor, commandManager)
         {
             Argument.IsNotNull(() => vstService);
@@ -42,12 +40,14 @@ namespace PresetMagician
 
         protected override async Task ExecuteAsync(object parameter)
         {
-            if (!_vstService.SelectedPlugin.IsLoaded)
+            var pluginInstance = _vstService.GetInteractivePluginInstance(_vstService.SelectedPlugin);
+
+            if (!pluginInstance.IsLoaded)
             {
-                await _vstService.LoadVstInteractive(_vstService.SelectedPlugin);
+                await pluginInstance.LoadPlugin();
             }
 
-            _vstService.SelectedPlugin.RemoteVstService.OpenEditor(_vstService.SelectedPlugin.Guid);
+            pluginInstance.OpenEditor();
         }
     }
 }

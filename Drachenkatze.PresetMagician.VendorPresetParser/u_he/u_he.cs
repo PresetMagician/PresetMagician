@@ -5,25 +5,24 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using Anotar.Catel;
 using Catel.Collections;
+using Catel.Logging;
 using SharedModels;
-using Shell32;
 using Squirrel.Shell;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 {
     public abstract class u_he : AbstractVendorPresetParser
     {
-        private Regex parsingRegex = new Regex(@"^(?<type>.*):(\r\n|\r|\n)'(?<value>.*)'",
+        private readonly Regex parsingRegex = new Regex(@"^(?<type>.*):(\r\n|\r|\n)'(?<value>.*)'",
             RegexOptions.Multiline | RegexOptions.Compiled);
 
-        public void H2PScanBanks(string dataDirectoryName, string productName, bool userPresets)
+        protected void H2PScanBanks(string dataDirectoryName, string productName, bool userPresets)
         {
-            Plugin.Debug(
+            PluginInstance.Plugin.Logger.Debug(
                 $"Begin H2PScanBanks with dataDirectoryName {dataDirectoryName} product name {productName} and userPresets {userPresets}");
             var rootDirectory = GetPresetDirectory(dataDirectoryName, productName, userPresets);
-            Plugin.Debug($"Parsing PresetDirectory {rootDirectory}");
+            PluginInstance.Plugin.Logger.Debug($"Parsing PresetDirectory {rootDirectory}");
 
             var directoryInfo = new DirectoryInfo(rootDirectory);
 
@@ -39,10 +38,10 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
             }
 
             RootBank.PresetBanks.Add(H2PScanBank(bankName, directoryInfo));
-            Plugin.Debug($"End H2PScanBanks");
+            PluginInstance.Plugin.Logger.Debug($"End H2PScanBanks");
         }
 
-        public PresetBank H2PScanBank(string name, DirectoryInfo directory)
+        private PresetBank H2PScanBank(string name, DirectoryInfo directory)
         {
             PresetBank bank = new PresetBank
             {
@@ -51,11 +50,11 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 
             foreach (var file in directory.EnumerateFiles("*.h2p"))
             {
-                Plugin.Debug($"Parsing file {file.FullName}");
-                Preset preset = new Preset();
-                preset.PresetName = file.Name.Replace(".h2p", "");
-                preset.SetPlugin(Plugin);
-                preset.PresetBank = bank;
+                PluginInstance.Plugin.Logger.Debug($"Parsing file {file.FullName}");
+                Preset preset = new Preset
+                {
+                    PresetName = file.Name.Replace(".h2p", ""), Plugin = PluginInstance.Plugin, PresetBank = bank
+                };
 
                 var fs = file.OpenRead();
 
@@ -153,7 +152,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
                 }
                 catch (ArgumentException)
                 {
-                    Plugin.Debug(
+                    PluginInstance.Plugin.Logger.Debug(
                         $"Unable to add metadata for type {type} with value {value} because {type} already exists.");
                 }
             }
@@ -163,7 +162,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 
         public string getDataDirectory(string dataDirectoryName)
         {
-            var vstPluginsPath = Path.GetDirectoryName(Plugin.DllPath);
+            var vstPluginsPath = Path.GetDirectoryName(PluginInstance.Plugin.DllPath);
 
             return Path.Combine(vstPluginsPath, dataDirectoryName);
         }
@@ -202,8 +201,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 
             if (dataDirectory == null)
             {
-                Plugin.Error("Unable to find the data directory, aborting.");
-                Plugin.Debug("Estimated shortcut directory name is " + shortCutDataDirectoryName);
+                PluginInstance.Plugin.Logger.Error("Unable to find the data directory, aborting.");
+                PluginInstance.Plugin.Logger.Debug("Estimated shortcut directory name is " + shortCutDataDirectoryName);
                 return;
             }
 
@@ -241,8 +240,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
             }
             catch (IOException e)
             {
-                Plugin.Error("Error while trying to resolve the shortcut {0} because of {1} {2}", path, e.Message, e);
-                Plugin.Debug(e.StackTrace);
+                PluginInstance.Plugin.Logger.Error("Error while trying to resolve the shortcut {0} because of {1} {2}",
+                    path, e.Message, e);
+                PluginInstance.Plugin.Logger.Debug(e.StackTrace);
             }
 
             var shell = new Shell();
@@ -269,8 +269,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
             }
             catch (IOException e)
             {
-                Plugin.Error("Error while trying to resolve the shortcut {0} because of {1} {2}", path, e.Message, e);
-                Plugin.Debug(e.StackTrace);
+                PluginInstance.Plugin.Logger.Error("Error while trying to resolve the shortcut {0} because of {1} {2}",
+                    path, e.Message, e);
+                PluginInstance.Plugin.Logger.Debug(e.StackTrace);
             }
 
             return null;

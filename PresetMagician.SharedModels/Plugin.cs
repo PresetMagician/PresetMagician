@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.IO;
 using Catel.Data;
+using Catel.Logging;
 using Drachenkatze.PresetMagician.NKSF.NKSF;
 using Newtonsoft.Json;
 using PresetMagician.Collections;
@@ -16,9 +17,9 @@ using Path = Catel.IO.Path;
 
 namespace SharedModels
 {
-    public class Plugin : ObservableObject
+    public class Plugin : ObservableObject, IPlugin
     {
-        private int CollectionChangedCounter;
+        private int _collectionChangedCounter;
 
         public enum PluginTypes
         {
@@ -26,11 +27,6 @@ namespace SharedModels
             Instrument,
             Unknown
         }
-
-        public Dictionary<(int, string), Preset> PresetCache = new Dictionary<(int, string), Preset>();
-
-        [NotMapped] public IRemoteVstService RemoteVstService { get; set; }
-        [NotMapped] public bool PooledRemoteVstService { get; set; }
 
         #region Methods
 
@@ -42,11 +38,33 @@ namespace SharedModels
 
         private void PresetsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (CollectionChangedCounter != Presets.Count)
+            if (_collectionChangedCounter != Presets.Count)
             {
-                CollectionChangedCounter = Presets.Count;
+                _collectionChangedCounter = Presets.Count;
                 RaisePropertyChanged(nameof(NumPresets));
             }
+        }
+
+        public int GetAudioPreviewDelay()
+        {
+            if (AudioPreviewPreDelay != 0)
+            {
+                return AudioPreviewPreDelay;
+            }
+
+            return PresetParserAudioPreviewPreDelay;
+        }
+
+
+        public void Invalidate()
+        {
+            IsScanned = false;
+            IsSupported = false;
+            PluginType = PluginTypes.Unknown;
+            PluginName = "";
+            PluginVendor = "";
+            PluginId = 0;
+            PluginInfo = null;
         }
 
         public void SetPresetChunk(byte[] data, bool isPreset)
@@ -95,9 +113,24 @@ namespace SharedModels
         public void OnLoadError(Exception e)
         {
             LoadError = true;
-            Debug(e.ToString());
+            Error(e.ToString());
+            Debug(e.StackTrace);
             LoadErrorMessage = e.ToString();
-            LoadException = e;
+        }
+
+        public void Log(string messageFormat, params object[] args)
+        {
+            LogList.Add(string.Format(messageFormat, args));
+        }
+
+        public void Debug(string messageFormat, params object[] args)
+        {
+            LogList.Add(string.Format(messageFormat, args));
+        }
+
+        public void Error(string messageFormat, params object[] args)
+        {
+            LogList.Add(string.Format(messageFormat, args));
         }
 
         #endregion
@@ -127,18 +160,43 @@ namespace SharedModels
 
         #region Properties
 
-        [NotMapped] public Guid Guid { get; set; }
+        /// <summary>
+        /// The plugin ID for storage in the database
+        /// </summary>
+        [Key]
+        public int Id { get; set; }
 
-        [NotMapped] public bool LoadError { get; private set; }
-
-        [NotMapped] public Exception LoadException { get; private set; }
+        /// <summary>
+        /// Defines if the plugin had a load error
+        /// </summary>
+        [NotMapped]
+        public bool LoadError { get; private set; }
 
         [NotMapped] public MemoryStream ChunkPresetMemoryStream { get; } = new MemoryStream();
         [NotMapped] public MemoryStream ChunkBankMemoryStream { get; } = new MemoryStream();
 
         [NotMapped] public VstPluginInfoSurrogate PluginInfo { get; set; }
 
-        [Key] public int Id { get; set; }
+        public string SerializedPluginInfo
+        {
+            get => JsonConvert.SerializeObject(PluginInfo);
+            set
+            {
+                try
+                {
+                    PluginInfo = JsonConvert.DeserializeObject<VstPluginInfoSurrogate>(value);
+                }
+                catch (JsonReaderException e)
+                {
+                    Log(e.Message);
+                }
+            }
+        }
+
+        public string DllHash { get; set; }
+
+        public Dictionary<(int, string), Preset> PresetCache = new Dictionary<(int, string), Preset>();
+
 
         /// <summary>
         /// Defines the full path to the plugin DLL
@@ -176,15 +234,6 @@ namespace SharedModels
 
         public int AudioPreviewPreDelay { get; set; }
 
-        public int GetAudioPreviewDelay()
-        {
-            if (AudioPreviewPreDelay != 0)
-            {
-                return AudioPreviewPreDelay;
-            }
-
-            return PresetParserAudioPreviewPreDelay;
-        }
 
         [NotMapped] public ControllerAssignments DefaultControllerAssignments { get; set; }
 
@@ -202,6 +251,13 @@ namespace SharedModels
 
         public ICollection<Mode> DefaultModes { get; set; } = new HashSet<Mode>();
 
+        public string Logs
+        {
+            get { return string.Join(Environment.NewLine, LogList); }
+        }
+
+        public List<string> LogList = new List<string>();
+
         public PluginTypes PluginType { get; set; } = PluginTypes.Unknown;
 
         public string PluginTypeDescription => PluginType.ToString();
@@ -218,38 +274,24 @@ namespace SharedModels
 
         [NotMapped] public IVendorPresetParser PresetParser { get; set; }
 
-        [NotMapped] public bool IsScanned { get; set; }
+        /// <summary>
+        /// Defines if the plugin is scanned
+        /// </summary>
+        public bool IsScanned { get; set; }
 
         [NotMapped] public bool IsLoaded { get; set; }
 
 
-        [NotMapped] public bool IsSupported { get; set; }
+        /// <summary>
+        /// Defines if the plugin is supported
+        /// </summary>
+        public bool IsSupported { get; set; }
+
+        public ILog Logger { get; }
 
         [NotMapped]
         public NativeInstrumentsResource NativeInstrumentsResource { get; set; } = new NativeInstrumentsResource();
 
         #endregion
-
-        public string Logs
-        {
-            get { return string.Join(Environment.NewLine, LogList); }
-        }
-
-        public List<string> LogList = new List<string>();
-
-        public void Log(string messageFormat, params object[] args)
-        {
-            LogList.Add(string.Format(messageFormat, args));
-        }
-
-        public void Debug(string messageFormat, params object[] args)
-        {
-            LogList.Add(string.Format(messageFormat, args));
-        }
-
-        public void Error(string messageFormat, params object[] args)
-        {
-            LogList.Add(string.Format(messageFormat, args));
-        }
     }
 }

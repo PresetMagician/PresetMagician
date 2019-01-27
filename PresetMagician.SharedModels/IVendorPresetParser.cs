@@ -9,10 +9,13 @@ namespace SharedModels
     {
         PresetBank RootBank { get; set; }
         ObservableCollection<Preset> Presets { get; set; }
-        Plugin Plugin { get; set; }
+        IRemotePluginInstance PluginInstance { get; set; }
         int AudioPreviewPreDelay { get; set; }
 
+        bool RequiresLoadedPlugin { get; }
+
         bool SupportsAdditionalBankFiles { get; set; }
+
         List<BankFile> AdditionalBankFiles { get; }
 
         string Remarks { get; set; }
@@ -29,7 +32,7 @@ namespace SharedModels
         ObservableCollection<string> DefaultModes { get; set; }
 
         IPresetDataStorer PresetDataStorer { get; set; }
-        IRemoteVstService RemoteVstService { get; set; }
+
         List<int> GetSupportedPlugins();
         void ScanBanks();
         Task DoScan();

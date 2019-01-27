@@ -28,3 +28,4 @@ DataGridExtensions
 EntityFramework
 System.Data.SQLite
 ksemenenko.ColorThief
+Costura.Fody copy_local: false

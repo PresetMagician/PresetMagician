@@ -3,22 +3,18 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Data;
 using Catel;
-using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
 using Catel.Threading;
+using Catel.Windows;
 using Drachenkatze.PresetMagician.VendorPresetParser;
-using NuGet;
 using PresetMagician.Models;
 using PresetMagician.Models.EventArgs;
-using PresetMagician.Models.NativeInstrumentsResources;
 using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
 using SharedModels;
@@ -29,8 +25,6 @@ namespace PresetMagician
     // ReSharper disable once UnusedMember.Global
     public abstract class AbstractScanPluginsCommandContainer : CommandContainerBase
     {
-        private static readonly ILog _logger = LogManager.GetCurrentClassLogger();
-
         protected readonly IRuntimeConfigurationService _runtimeConfigurationService;
         protected readonly IVstService _vstService;
         protected readonly IApplicationService _applicationService;
@@ -98,6 +92,7 @@ namespace PresetMagician
 
             var cancellationToken = _applicationService.GetApplicationOperationCancellationSource().Token;
 
+            _databaseService.Context.PresetUpdated += ContextOnPresetUpdated;
             await TaskHelper.Run(async () =>
             {
                 foreach (var plugin in pluginsToScan)
@@ -122,9 +117,11 @@ namespace PresetMagician
                         _databaseService.Context.PreviewNote =
                             _runtimeConfigurationService.RuntimeConfiguration.DefaultPreviewMidiNote;
 
-                        var remoteVstService = await _vstService.LoadVst(plugin);
+                        var remotePluginInstance = await _vstService.GetRemotePluginInstance(plugin);
 
-                        if (plugin.IsLoaded)
+                        await remotePluginInstance.LoadPlugin();
+
+                        if (remotePluginInstance.IsLoaded)
                         {
                             await _dispatcherService.InvokeAsync(() =>
                             {
@@ -133,7 +130,7 @@ namespace PresetMagician
 
                             plugin.Debug($"Loaded {plugin.DllFilename}, attempting to find presetParser");
 
-                            VendorPresetParser.DeterminatePresetParser(plugin, remoteVstService);
+                            VendorPresetParser.DeterminatePresetParser(remotePluginInstance);
                             plugin.PresetParser.PresetDataStorer = _databaseService.GetPresetDataStorer();
 
                             if (plugin.PresetParser.SupportsAdditionalBankFiles)
@@ -150,24 +147,19 @@ namespace PresetMagician
                             plugin.Presets.CollectionCountChanged -= PresetsOnCollectionChanged;
 
 
-                            _totalPresets = plugin.PresetParser.GetNumPresets();
-                            _currentPresetIndex = 0;
-
-                            _databaseService.Context.PresetUpdated += ContextOnPresetUpdated;
-
                             using (plugin.Presets.SuspendChangeNotifications())
                             {
                                 using (plugin.Presets.SuspendChangeNotifications())
                                 {
                                     plugin.PresetParser.Presets = plugin.Presets;
                                     plugin.PresetParser.RootBank = plugin.RootBank.First();
-                                    plugin.PresetParser.RemoteVstService = remoteVstService;
+
+                                    _totalPresets = plugin.PresetParser.GetNumPresets();
+                                    _currentPresetIndex = 0;
 
                                     await plugin.PresetParser.DoScan();
                                 }
                             }
-                            
-                            _databaseService.Context.PresetUpdated -= ContextOnPresetUpdated;
 
                             plugin.IsScanned = true;
 
@@ -179,9 +171,10 @@ namespace PresetMagician
                                 _applicationService.UpdateApplicationOperationStatus(
                                     pluginsToScan.IndexOf(plugin),
                                     $"Auto-generating resources for {plugin.DllFilename} - Opening Editor");
-                                if (_resourceGeneratorService.ShouldCreateScreenshot(plugin))
+                                if (_resourceGeneratorService.ShouldCreateScreenshot(remotePluginInstance))
                                 {
-                                    remoteVstService.OpenEditorHidden(plugin.Guid);
+                                    remotePluginInstance.OpenEditorHidden();
+                                    _dispatcherService.Invoke(() => Application.Current.MainWindow.BringWindowToTop());
                                     await Task.Delay(1000);
                                 }
                             }
@@ -196,7 +189,7 @@ namespace PresetMagician
                                         pluginsToScan.IndexOf(plugin),
                                         $"Auto-generating resources for {plugin.DllFilename} - Creating screenshot and applying magic");
 
-                                    _resourceGeneratorService.AutoGenerateResources(plugin, remoteVstService);
+                                    _resourceGeneratorService.AutoGenerateResources(remotePluginInstance);
                                 }
                             });
 
@@ -204,13 +197,13 @@ namespace PresetMagician
                             await _databaseService.Context.Flush();
 
                             plugin.Debug($"Unloading {plugin.DllFilename}");
-                            await _vstService.UnloadVst(plugin);
+                            remotePluginInstance.UnloadPlugin();
+                            remotePluginInstance.KillHost();
                         }
                         else
                         {
                             _applicationService.AddApplicationOperationError(
-                                $"Unable to analyze {plugin.DllFilename} because of {plugin.LoadException}");
-                            plugin.Debug(plugin.LoadException.StackTrace);
+                                $"Unable to analyze {plugin.DllFilename} because of {plugin.LoadErrorMessage}");
                         }
                     }
                     catch (Exception e)
@@ -227,6 +220,7 @@ namespace PresetMagician
             }, true);
 
             await _databaseService.Context.SaveChangesAsync();
+            _databaseService.Context.PresetUpdated -= ContextOnPresetUpdated;
 
             if (cancellationToken.IsCancellationRequested)
             {
@@ -262,6 +256,12 @@ namespace PresetMagician
             updateThrottle++;
             _currentPresetIndex++;
 
+            if (_currentPresetIndex > _totalPresets)
+            {
+                Debug.WriteLine(
+                    $"{e.NewValue.Plugin.PluginName}: Got called with {e.NewValue.PresetName} index {_currentPresetIndex} of {_totalPresets}");
+            }
+
             if (updateThrottle > 10)
             {
                 _applicationService.UpdateApplicationOperationStatus(
@@ -275,14 +275,16 @@ namespace PresetMagician
         {
             updateThrottle++;
 
-            if (updateThrottle > 10)
+            if (updateThrottle <= 10)
             {
-                var collection = sender as ObservableCollection<Preset>;
-                _applicationService.UpdateApplicationOperationStatus(
-                    _currentPluginIndex,
-                    $"Pre-loading presets from database for {_currentPlugin.PluginName}: Preset #{collection.Count}");
-                updateThrottle = 0;
+                return;
             }
+
+            var collection = sender as ObservableCollection<Preset>;
+            _applicationService.UpdateApplicationOperationStatus(
+                _currentPluginIndex,
+                $"Pre-loading presets from database for {_currentPlugin.PluginName}: Preset #{collection.Count}");
+            updateThrottle = 0;
         }
     }
 }

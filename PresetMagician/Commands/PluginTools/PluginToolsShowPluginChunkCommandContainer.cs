@@ -15,7 +15,8 @@ namespace PresetMagician
         private readonly IVstService _vstService;
         private readonly IUIVisualizerService _uiVisualizerService;
 
-        public PluginToolsShowPluginChunkCommandContainer(ICommandManager commandManager, IVstService vstService, IUIVisualizerService uiVisualizerService)
+        public PluginToolsShowPluginChunkCommandContainer(ICommandManager commandManager, IVstService vstService,
+            IUIVisualizerService uiVisualizerService)
             : base(Commands.PluginTools.ShowPluginChunk, commandManager)
         {
             Argument.IsNotNull(() => vstService);
@@ -40,28 +41,28 @@ namespace PresetMagician
 
         protected override async Task ExecuteAsync(object parameter)
         {
-            var plugin = _vstService.SelectedPlugin;
-            
-            if (!_vstService.SelectedPlugin.IsLoaded)
+            var pluginInstance = _vstService.GetInteractivePluginInstance(_vstService.SelectedPlugin);
+
+            if (!pluginInstance.IsLoaded)
             {
-                await _vstService.LoadVstInteractive(_vstService.SelectedPlugin);
+                await pluginInstance.LoadPlugin();
             }
 
-            var bankChunk = _vstService.SelectedPlugin.RemoteVstService.GetChunk(_vstService.SelectedPlugin.Guid, false);
+
+            var bankChunk = pluginInstance.GetChunk(false);
             if (!(bankChunk is null))
             {
-                plugin.ChunkBankMemoryStream.SetLength(0);
-                plugin.ChunkBankMemoryStream.Write(bankChunk, 0, bankChunk.Length);
-
+                pluginInstance.Plugin.ChunkBankMemoryStream.SetLength(0);
+                pluginInstance.Plugin.ChunkBankMemoryStream.Write(bankChunk, 0, bankChunk.Length);
             }
-            
-            var presetChunk = _vstService.SelectedPlugin.RemoteVstService.GetChunk(_vstService.SelectedPlugin.Guid, true);
+
+            var presetChunk = pluginInstance.GetChunk(false);
             if (!(presetChunk is null))
             {
-                plugin.ChunkBankMemoryStream.SetLength(0);
-                plugin.ChunkBankMemoryStream.Write(presetChunk, 0, presetChunk.Length);
+                pluginInstance.Plugin.ChunkBankMemoryStream.SetLength(0);
+                pluginInstance.Plugin.ChunkBankMemoryStream.Write(presetChunk, 0, presetChunk.Length);
             }
-           
+
             await _uiVisualizerService.ShowDialogAsync<VstPluginChunkViewModel>(_vstService.SelectedPlugin);
         }
     }

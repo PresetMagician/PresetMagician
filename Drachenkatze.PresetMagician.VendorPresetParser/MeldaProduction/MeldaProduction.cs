@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Catel.Logging;
 using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
@@ -40,7 +41,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
 
             if (!File.Exists(fullFilename))
             {
-                Plugin.Error(
+                PluginInstance.Plugin.Logger.Error(
                     $"Error: Could not find {filename} in neither {ParseDirectory} nor {FallbackParseDirectory}");
                 return 0;
             }
@@ -49,10 +50,11 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
 
             var rootElement = rootDocument.Element(rootTag);
 
-            return await ScanPresetXml(rootElement, RootBank.CreateRecursive("Factory"), persist);
+            return await ScanPresetXml(rootElement, fullFilename, RootBank.CreateRecursive("Factory"), persist);
         }
 
-        public async Task<int> ScanPresetXml(XElement rootElement, PresetBank presetBank, bool persist = true)
+        public async Task<int> ScanPresetXml(XElement rootElement, string fileName, PresetBank presetBank,
+            bool persist = true)
         {
             int count = 0;
             var directories = rootElement.Elements("Directory");
@@ -67,14 +69,13 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
 
                     if (bankNameElement == null)
                     {
-                        Plugin.Error("A bankNameElement has no name attribute.");
-                        Plugin.Debug(directory.ToString());
+                        PluginInstance.Plugin.Logger.Debug("A bankNameElement has no name attribute.");
                         continue;
                     }
                 }
 
                 var subBank = presetBank.CreateRecursive(bankNameElement.Value);
-                count += await ScanPresetXml(directory, subBank, persist);
+                count += await ScanPresetXml(directory, fileName, subBank, persist);
             }
 
             var presets = rootElement.Elements("preset");
@@ -89,8 +90,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
 
                     if (nameAttribute == null)
                     {
-                        Plugin.Error("A presetElement has no name attribute.");
-                        Plugin.Debug(presetElement.ToString());
+                        PluginInstance.Plugin.Logger.Error("A presetElement has no name attribute.");
                         continue;
                     }
                 }
@@ -100,7 +100,10 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
                 if (persist)
                 {
                     var preset = new Preset
-                        {PresetName = nameAttribute.Value, Plugin = Plugin, PresetBank = presetBank};
+                    {
+                        PresetName = nameAttribute.Value, Plugin = PluginInstance.Plugin, PresetBank = presetBank,
+                        SourceFile = fileName + ":" + presetBank.BankPath + "/" + nameAttribute.Value
+                    };
 
                     var base64 = presetElement.Value.Trim().Replace("-", "/").Replace("$", "");
 

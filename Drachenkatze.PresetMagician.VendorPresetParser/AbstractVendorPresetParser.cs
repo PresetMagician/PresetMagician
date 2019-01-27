@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using Drachenkatze.PresetMagician.VSTHost.VST;
-using Jacobi.Vst.Core;
-using PresetMagician.Models;
 using PresetMagician.SharedModels;
 using SharedModels;
 
@@ -18,8 +15,11 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         public virtual bool SupportsAdditionalBankFiles { get; set; } = false;
         public virtual List<BankFile> AdditionalBankFiles { get; } = null;
 
-        public Plugin Plugin { get; set; }
+        public IRemotePluginInstance PluginInstance { get; set; }
+
         public virtual List<int> SupportedPlugins => new List<int>();
+
+        public virtual bool RequiresLoadedPlugin { get; } = false;
 
         public List<int> GetSupportedPlugins()
         {
@@ -42,7 +42,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         public ObservableCollection<string> DefaultModes { get; set; } = new ObservableCollection<string>();
 
         public ObservableCollection<Preset> Presets { get; set; } = new ObservableCollection<Preset>();
-        public IRemoteVstService RemoteVstService { get; set; }
 
         public virtual string BankLoadingNotes { get; set; }
         public IPresetDataStorer PresetDataStorer { get; set; }
@@ -69,7 +68,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
         public virtual bool CanHandle()
         {
-            if (SupportedPlugins.Contains(Plugin.PluginId))
+            if (SupportedPlugins.Contains(PluginInstance.Plugin.PluginId))
             {
                 return true;
             }

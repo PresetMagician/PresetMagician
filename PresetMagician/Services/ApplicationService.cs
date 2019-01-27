@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Catel;
 using Catel.Logging;
 using Catel.MVVM;
@@ -24,7 +22,8 @@ namespace PresetMagician.Services
 
         private readonly List<string> _applicationOperationErrors = new List<string>();
 
-        public ApplicationService(IRuntimeConfigurationService runtimeConfigurationService,ICustomStatusService statusService, IPleaseWaitService pleaseWaitService)
+        public ApplicationService(IRuntimeConfigurationService runtimeConfigurationService,
+            ICustomStatusService statusService, IPleaseWaitService pleaseWaitService)
         {
             Argument.IsNotNull(() => runtimeConfigurationService);
             Argument.IsNotNull(() => statusService);
@@ -40,8 +39,19 @@ namespace PresetMagician.Services
         private void ProcessPoolOnProcessWatcherUpdated(object sender, System.EventArgs e)
         {
             _runtimeConfigurationService.ApplicationState.RunningWorkers = (from process in ProcessPool.Processes
-                where process.CurrentProcessState == IsolatedProcess.ProcessState.RUNNING select process).Count();
+                where process.CurrentProcessState == IsolatedProcess.ProcessState.RUNNING
+                select process).Count();
             _runtimeConfigurationService.ApplicationState.TotalWorkers = ProcessPool.Processes.Count;
+        }
+
+        public void StartProcessPool()
+        {
+            ProcessPool.StartPool();
+        }
+
+        public void ShutdownProcessPool()
+        {
+            ProcessPool.StopPool();
         }
 
         public CancellationTokenSource GetApplicationOperationCancellationSource()
@@ -50,7 +60,8 @@ namespace PresetMagician.Services
             return appState.ApplicationBusyCancellationTokenSource;
         }
 
-        public void StartApplicationOperation(CommandContainerBase commandContainer, string operationDescription, int totalItems)
+        public void StartApplicationOperation(CommandContainerBase commandContainer, string operationDescription,
+            int totalItems)
         {
             var sanitizedCommandName = commandContainer.CommandName.Replace(".", "");
             var propertyName = $"Is{sanitizedCommandName}Running";
@@ -64,7 +75,8 @@ namespace PresetMagician.Services
             StartApplicationOperation(o, null, operationDescription, totalItems);
         }
 
-        public void StartApplicationOperation(object o, string targetPropertyName, string operationDescription, int totalItems)
+        public void StartApplicationOperation(object o, string targetPropertyName, string operationDescription,
+            int totalItems)
         {
             var appState = _runtimeConfigurationService.ApplicationState;
 
@@ -87,6 +99,7 @@ namespace PresetMagician.Services
             appState.ApplicationOperationCancelRequested = false;
             appState.ApplicationBusyCancellationTokenSource = new CancellationTokenSource();
             appState.ApplicationBusyTotalItems = totalItems;
+            appState.ApplicationBusyCurrentItem = 0;
             appState.ApplicationBusyOperationDescription = operationDescription;
             appState.ApplicationBusyStatusText = "";
             appState.IsApplicationBusy = true;
@@ -105,8 +118,8 @@ namespace PresetMagician.Services
             catch (Exception e) when (e is ArgumentNullException || e is NullReferenceException)
             {
                 throw new ArgumentException(
-                    $"Property {appState.ApplicationOperationStatePropertyName} is not defined or not accessible on "+
-                    $"{appState.GetType().FullName}, but was passed by targetPropertyName. "+
+                    $"Property {appState.ApplicationOperationStatePropertyName} is not defined or not accessible on " +
+                    $"{appState.GetType().FullName}, but was passed by targetPropertyName. " +
                     "Maybe you relied on the CommandContainer auto-wiring and forgot to implement it.",
                     e);
             }
@@ -136,7 +149,8 @@ namespace PresetMagician.Services
             var appState = _runtimeConfigurationService.ApplicationState;
             appState.ApplicationBusyStatusText = statusText;
 
-            var progressText = string.Format("({1} / {2}) {0}", statusText, currentItem, appState.ApplicationBusyTotalItems);
+            var progressText = string.Format("({1} / {2}) {0}", statusText, currentItem,
+                appState.ApplicationBusyTotalItems);
             appState.ApplicationBusyCurrentItem = currentItem;
 
             if (progressText == _lastUpdateStatus)
@@ -164,15 +178,16 @@ namespace PresetMagician.Services
             appState.ApplicationOperationLastErrorsAsText = null;
             appState.ApplicationOperationLastOperationHadErrors = false;
         }
+
         public void StopApplicationOperation(string finalMessage)
         {
             var appState = _runtimeConfigurationService.ApplicationState;
             SetApplicationStateProperty(false);
             appState.IsApplicationBusy = false;
             _pleaseWaitService.Hide();
-            
+
             var lastErrors = GetApplicationOperationErrors();
-            
+
             appState.ApplicationOperationLastOperation = appState.ApplicationBusyOperationDescription;
             appState.ApplicationOperationLastErrors = lastErrors;
             appState.ApplicationOperationLastErrorsAsText = String.Join(Environment.NewLine, lastErrors);
@@ -183,7 +198,8 @@ namespace PresetMagician.Services
             if (lastErrors.Count > 0)
             {
                 statusMessage = $"{finalMessage} (with errors)";
-                _log.Warning($"Finished operation \"{appState.ApplicationBusyOperationDescription}\" (with errors, see log)");
+                _log.Warning(
+                    $"Finished operation \"{appState.ApplicationBusyOperationDescription}\" (with errors, see log)");
             }
             else
             {

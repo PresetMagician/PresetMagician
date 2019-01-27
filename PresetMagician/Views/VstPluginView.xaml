@@ -5,7 +5,6 @@
     xmlns:catel="http://schemas.catelproject.com"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:sharedModels="clr-namespace:Drachenkatze.PresetMagician.VendorPresetParser;assembly=PresetMagician.SharedModels"
     xmlns:viewModels="clr-namespace:PresetMagician.ViewModels"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:controls="clr-namespace:PresetMagician.Controls"
@@ -159,7 +158,7 @@
                 <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
                     <StackPanel.Style>
                     <Style TargetType="{x:Type StackPanel}">
-                        <Setter Property="Visibility" Value="Collapsed"></Setter>
+                        <Setter Property="Visibility" Value="Collapsed" />
                         <Style.Triggers>
                             <DataTrigger
                                 Binding="{Binding Plugin.PresetParser.SupportsAdditionalBankFiles}"
@@ -175,7 +174,7 @@
                 <Grid Grid.Row="1" Grid.Column="1">
                     <Grid.Style>
                         <Style TargetType="{x:Type Grid}">
-                            <Setter Property="Visibility" Value="Collapsed"></Setter>
+                            <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
                                 <DataTrigger
                                     Binding="{Binding Plugin.PresetParser.SupportsAdditionalBankFiles}"
@@ -279,7 +278,7 @@
                 <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Top">
                     <StackPanel.Style>
                         <Style TargetType="{x:Type StackPanel}">
-                            <Setter Property="Visibility" Value="Collapsed"></Setter>
+                            <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
                                 <DataTrigger
                                     Binding="{Binding Plugin.PresetParser.SupportsAdditionalBankFiles}"
@@ -295,7 +294,7 @@
                 <TextBox Grid.Row="2" Grid.Column="1" IsReadOnly="True" Text="{Binding Plugin.PresetParser.BankLoadingNotes}" TextWrapping="Wrap">
                     <TextBox.Style>
                         <Style TargetType="{x:Type TextBox}">
-                            <Setter Property="Visibility" Value="Collapsed"></Setter>
+                            <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
                                 <DataTrigger
                                     Binding="{Binding Plugin.PresetParser.SupportsAdditionalBankFiles}"
@@ -451,12 +450,12 @@
                     <TabItem Header="Maschine Studio/MK3/S49/S61/S88">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"></RowDefinition>
-                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <GroupBox Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Header="Logo">
                                 <WrapPanel Orientation="Vertical">
@@ -503,7 +502,7 @@
                 </TabControl>
 
                  <DockPanel Grid.Row="3" Grid.ColumnSpan="2" Grid.Column="0" VerticalAlignment="Bottom">
-                     <Label Content="Online Resources:"></Label>
+                     <Label Content="Online Resources:" />
                      <Button
                          HorizontalAlignment="Left"
                          VerticalAlignment="Stretch"
@@ -515,9 +514,9 @@
                          <ComboBox.ItemTemplate>
                              <DataTemplate>
                                  <StackPanel Orientation="Horizontal">
-                                     <TextBlock Text="{Binding DataContext.Plugin.PluginName, RelativeSource={RelativeSource AncestorType=catel:DataWindow}}"></TextBlock>
-                                     <TextBlock Text="by"></TextBlock>
-                                     <TextBlock Text="{Binding author}"></TextBlock>
+                                     <TextBlock Text="{Binding DataContext.Plugin.PluginName, RelativeSource={RelativeSource AncestorType=catel:DataWindow}}" />
+                                     <TextBlock Text="by" />
+                                     <TextBlock Text="{Binding author}" />
                                  </StackPanel>
                              </DataTemplate>
                          </ComboBox.ItemTemplate>
