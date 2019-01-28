@@ -31,7 +31,7 @@ namespace PresetMagician
         protected override List<Plugin> GetPluginsToReport()
         {
             return (from plugin in _vstService.SelectedPlugins
-                where plugin.IsScanned
+                where plugin.IsAnalyzed
                 select plugin).ToList();
         }
 

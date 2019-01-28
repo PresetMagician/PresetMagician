@@ -218,7 +218,7 @@ namespace PresetMagician.Models.NativeInstrumentsResources
 
         public void Load(Plugin plugin)
         {
-            if (plugin == null || !(plugin.IsScanned || plugin.IsLoaded))
+            if (plugin == null || !plugin.HasMetadata)
             {
                 return;
             }

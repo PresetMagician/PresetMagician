@@ -52,7 +52,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
                     Plugin = PluginInstance.Plugin
                 };
 
-                await PresetDataStorer.PersistPreset(preset, PluginInstance.GetChunk(false));
+                await DataPersistence.PersistPreset(preset, PluginInstance.GetChunk(false));
             }
         }
     }

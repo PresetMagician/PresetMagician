@@ -15,6 +15,7 @@ using PresetMagician.ProcessIsolation;
 using PresetMagician.ProcessIsolation.Services;
 using PresetMagician.VstHost.VST;
 using SharedModels;
+using Type = SharedModels.Type;
 
 namespace PresetMagician.VendorPresetParserTest
 {
@@ -58,16 +59,23 @@ namespace PresetMagician.VendorPresetParserTest
                     continue;
                 }
 
-                Console.WriteLine(presetParser.PresetParserType);
+                Console.Write(presetParser.PresetParserType + ": ");
+                
+                var start = DateTime.Now;
 
-                var plugin = new Plugin {PluginId = pluginId};
+                var pluginLocation = new PluginLocation
+                {
+                    DllPath = @"C:\Program Files\VstPlugins\Foobar.dll", IsPresent = true
+                };
+
+                var plugin = new Plugin {PluginId = pluginId, PluginLocation = pluginLocation};
 
                 var stubProcess = new StubIsolatedProcess();
                 
                 var remoteInstance = new RemotePluginInstance(stubProcess, plugin);
 
 
-                presetParser.PresetDataStorer = new NullPresetStorer();
+                presetParser.DataPersistence = new NullPresetPersistence();
                 presetParser.PluginInstance = remoteInstance;
                 presetParser.RootBank = plugin.RootBank.First();
                 presetParser.Presets = new ObservableCollection<Preset>();
@@ -78,11 +86,18 @@ namespace PresetMagician.VendorPresetParserTest
                     PluginId = plugin.PluginId
                 };
 
+                double timeForNumPresets = 0;
+                double timeForDoScan = 0;
+                double totalTime = 0;
                 try
                 {
                     presetParser.Init();
                     testResult.ReportedPresets = presetParser.GetNumPresets();
+                    timeForNumPresets = (DateTime.Now - start).TotalSeconds;
+                    start = DateTime.Now;
                     presetParser.DoScan().GetAwaiter().GetResult();
+                    timeForDoScan = (DateTime.Now - start).TotalSeconds;
+                    totalTime = timeForNumPresets + timeForDoScan;
                 }
                 catch (Exception e)
                 {
@@ -90,6 +105,10 @@ namespace PresetMagician.VendorPresetParserTest
                 }
 
                 testResult.Presets = plugin.Presets.Count;
+
+                
+                // ReSharper disable once LocalizableElement
+                Console.WriteLine($"{testResult.Presets} parsed in {totalTime}s (DoScan {timeForDoScan}s NumPresets {timeForNumPresets}s");
 
                 var testDataEntry = GetTestDataEntry(testData, presetParser.PresetParserType, pluginId);
                 var foundPreset = false;
@@ -117,7 +136,7 @@ namespace PresetMagician.VendorPresetParserTest
                     testResult.RndHash = randomPreset.PresetHash;
                     testResult.RndPresetName = randomPreset.PresetName;
                     testResult.RndBankPath = randomPreset.BankPath;
-                    testResult.RandomPresetSource = randomPreset.SourceFile;
+                    //testResult.RandomPresetSource = randomPreset.SourceFile;
                 }
 
                 if (foundPreset && plugin.Presets.Count > 5 && testResult.BankMissing < 2 &&
@@ -192,6 +211,20 @@ namespace PresetMagician.VendorPresetParserTest
     
      public class StubRemoteVstService : IRemoteVstService
      {
+         public int GetPluginVendorVersion(Guid pluginGuid)
+         {
+             return 0;
+         }
+
+         public string GetPluginProductString(Guid pluginGuid)
+         {
+             return null;
+         }
+
+         public string GetEffectivePluginName(Guid pluginGuid)
+         {
+             return null;
+         }
 
          public bool Ping()
          {
@@ -300,16 +333,30 @@ namespace PresetMagician.VendorPresetParserTest
           
          }
      }
-    class NullPresetStorer : IPresetDataStorer
+    internal class NullPresetPersistence : IDataPersistence
     {
+#pragma warning disable 1998
         public async Task PersistPreset(Preset preset, byte[] data)
+#pragma warning restore 1998
         {
             preset.Plugin.Presets.Add(preset);
             preset.PresetHash = HashUtils.getIxxHash(data);
         }
 
+#pragma warning disable 1998
         public async Task Flush()
+#pragma warning restore 1998
         {
+        }
+
+        public Type GetOrCreateType(string typeName, string subTypeName = "")
+        {
+            return new Type();
+        }
+
+        public Mode GetOrCreateMode(string modeName)
+        {
+            return new Mode();
         }
     }
 

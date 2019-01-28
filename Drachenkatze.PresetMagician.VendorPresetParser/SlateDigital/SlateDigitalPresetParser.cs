@@ -1,5 +1,6 @@
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using Drachenkatze.PresetMagician.VendorPresetParser.Common;
@@ -12,8 +13,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
         protected abstract string PresetSectionName { get; }
         protected override string Extension { get; } = "epf";
 
-        public override bool RequiresLoadedPlugin { get; } = true;
-
         private void RetrievePresetData(XNode node, Preset preset)
         {
             preset.Comment = GetNodeValue(node,
@@ -22,13 +21,19 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
                 $"string(/package/archives/archive[@client_id='{PresetSectionName}-preset']/section/entry[@id='Preset author']/@value)");
         }
 
+        public override async Task DoScan()
+        {
+            await PluginInstance.LoadPlugin();
+            await base.DoScan();
+        }
+
         protected override byte[] ProcessFile(string fileName, Preset preset)
         {
             var xmlPreset = XDocument.Load(fileName);
             var chunk = PluginInstance.GetChunk(false);
-            var chunkXML = Encoding.UTF8.GetString(chunk);
+            var chunkXml = Encoding.UTF8.GetString(chunk);
 
-            var actualPresetDocument = XDocument.Parse(chunkXML);
+            var actualPresetDocument = XDocument.Parse(chunkXml);
 
             RetrievePresetData(xmlPreset, preset);
 

@@ -7,12 +7,10 @@ namespace SharedModels
 {
     public interface IPlugin
     {
-        string DllHash { get; set; }
-
         /// <summary>
         /// Defines the full path to the plugin DLL
         /// </summary>
-        string DllPath { get; set; }
+        string DllPath { get; }
 
         Plugin.PluginTypes PluginType { get; set; }
         int PluginId { get; set; }
@@ -23,7 +21,7 @@ namespace SharedModels
         /// <summary>
         /// Gets or sets the table collection.
         /// </summary>
-        List<PluginInfoItem> PluginInfoItems { get; }
+        List<PluginInfoItem> PluginCapabilities { get; }
 
         IVendorPresetParser PresetParser { get; set; }
 
@@ -32,7 +30,8 @@ namespace SharedModels
         /// </summary>
         bool IsSupported { get; set; }
 
-        ILog Logger { get; }
+        PluginLogger Logger { get; }
+        string CanonicalDllFilename { get; }
 
         void OnLoadError(Exception e);
     }

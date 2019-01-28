@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Catel.Logging;
+using MethodTimer;
 using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser
@@ -52,11 +53,12 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             return _presetParsers;
         }
 
+        [Time]
         private static IVendorPresetParser GetPresetHandler(IRemotePluginInstance pluginInstance)
         {
             pluginInstance.Plugin.Logger.Debug("Resolving Preset Parser");
 
-            var orderedPresetParsers = GetPresetParsers().OrderBy(p => p.RequiresLoadedPlugin).ToList();
+            var orderedPresetParsers = GetPresetParsers().ToList();
 
 
             foreach (var parser in orderedPresetParsers)
@@ -69,9 +71,10 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
                 }
 
                 parser.PluginInstance = pluginInstance;
+
                 if (parser.CanHandle())
                 {
-                    pluginInstance.Plugin.Logger.Debug("Using PresetHandler {0} for plugin {1}",
+                    pluginInstance.Plugin.Logger.Debug("Using PresetHandler {0}",
                         parser.PresetParserType);
 
                     return parser;

@@ -73,7 +73,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
                 else
                 {
                     PresetHashes.Add(hash);
-                    await PresetDataStorer.PersistPreset(vstPreset, presetData);
+                    await DataPersistence.PersistPreset(vstPreset, presetData);
                 }
             }
         }

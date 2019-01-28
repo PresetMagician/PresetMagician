@@ -22,7 +22,7 @@
             x:Name="PluginProperties"
             Grid.Row="0"
             AutoGenerateColumns="False"
-            ItemsSource="{Binding Plugin.PluginInfoItems}">
+            ItemsSource="{Binding Plugin.PluginCapabilities}">
             <DataGrid.Columns>
                 <DataGridTextColumn
                     Width="Auto"

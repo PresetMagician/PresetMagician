@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\PropertyChanged.Fody\build\PropertyChanged.Fody.props" Condition="Exists('..\packages\PropertyChanged.Fody\build\PropertyChanged.Fody.props')" Label="Paket" />
-    <Import Project="..\packages\Catel.Fody\build\Catel.Fody.props" Condition="Exists('..\packages\Catel.Fody\build\Catel.Fody.props')" Label="Paket"/>
+    <Import Project="..\packages\Catel.Fody\build\Catel.Fody.props" Condition="Exists('..\packages\Catel.Fody\build\Catel.Fody.props')" Label="Paket" />
   <Import Project="..\packages\Anotar.Catel.Fody\build\Anotar.Catel.Fody.props" Condition="Exists('..\packages\Anotar.Catel.Fody\build\Anotar.Catel.Fody.props')" Label="Paket" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -60,11 +60,12 @@
     <Compile Include="BankFile.cs" />
     <Compile Include="Collections\ProgressFastObservableCollection.cs" />
     <Compile Include="EventArgs\PresetUpdatedEventArgs.cs" />
-      <Compile Include="IPlugin.cs"/>
+      <Compile Include="IPlugin.cs" />
+      <Compile Include="IRemoteFileService.cs" />
     <Compile Include="IRemoteVstService.cs" />
     <Compile Include="Interfaces\IPluginCommands.cs" />
-    <Compile Include="IPresetDataStorer.cs" />
-      <Compile Include="IRemotePluginInstance.cs"/>
+    <Compile Include="IDataPersistence.cs" />
+      <Compile Include="IRemotePluginInstance.cs" />
     <Compile Include="IVendorPresetParser.cs" />
     <Compile Include="MidiNoteName.cs" />
     <Compile Include="Migrations\BaseMigration.cs" />
@@ -82,6 +83,8 @@
     <Compile Include="NativeInstrumentsResources\ShortNames.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="PluginInfoItem.cs" />
+    <Compile Include="PluginLocation.cs" />
+    <Compile Include="PluginLogger.cs" />
     <Compile Include="Preset.cs" />
     <Compile Include="PresetBank.cs" />
     <Compile Include="PresetDataStorage.cs" />
@@ -486,5 +489,5 @@
   </Choose>
   <Import Project="..\packages\Fody\build\Fody.targets" Condition="Exists('..\packages\Fody\build\Fody.targets')" Label="Paket" />
   <Import Project="..\packages\System.Data.SQLite.Core\build\$(__paket__System_Data_SQLite_Core_targets).targets" Condition="Exists('..\packages\System.Data.SQLite.Core\build\$(__paket__System_Data_SQLite_Core_targets).targets')" Label="Paket" />
-    <Import Project="..\common\ExtraCleanup.targets"/>
+    <Import Project="..\common\ExtraCleanup.targets" />
 </Project>

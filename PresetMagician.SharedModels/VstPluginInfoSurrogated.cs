@@ -1,5 +1,6 @@
 using System.Runtime.Serialization;
 using Jacobi.Vst.Core;
+using Newtonsoft.Json;
 
 namespace SharedModels
 {
@@ -10,7 +11,14 @@ namespace SharedModels
         /// Plugin flags.
         /// </summary>
         [DataMember]
-        public string StringFlags { get; set; }
+        public string StringFlags {
+            get { return JsonConvert.SerializeObject(Flags); }
+            set
+            {
+                Flags = JsonConvert.DeserializeObject<VstPluginFlags>(value);
+            }
+            
+        }
 
         public VstPluginFlags Flags { get; set; }
 

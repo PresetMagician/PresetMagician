@@ -16,7 +16,7 @@ namespace PresetMagician.ProcessIsolation
         public static string BaseAddress = "net.pipe://localhost/presetmagician/vstService/";
 
         private static IsolatedProcess _currentProcess;
-        private const int MAX_PROCESSES = 4;
+        private const int MAX_PROCESSES = 8;
         public event EventHandler ProcessWatcherUpdated;
 
         public static readonly ObservableCollection<IsolatedProcess> Processes =
@@ -142,6 +142,19 @@ namespace PresetMagician.ProcessIsolation
 
             throw new Exception("Unable to find a running VST service");
         }
+        
+        public static async Task<IRemoteFileService> GetRemoteFileService()
+        {
+            for (var i = 0; i < 10; i++)
+            {
+                if (await EnsureCurrentProcess())
+                {
+                    return _currentProcess.GetFileService();
+                }
+            }
+
+            throw new Exception("Unable to find a running VST service");
+        }
 
         public static void KillRemotevstService()
         {
@@ -169,6 +182,7 @@ namespace PresetMagician.ProcessIsolation
         private Timer _startupTimer;
         private Process _process;
         private readonly IRemoteVstService _vstService;
+        private readonly IRemoteFileService _remoteFileService;
         public ProcessState CurrentProcessState { get; private set; }
 
         public IsolatedProcess()
@@ -203,6 +217,12 @@ namespace PresetMagician.ProcessIsolation
             ((IClientChannel) _vstService).Faulted += OnFaulted;
             ((IClientChannel) _vstService).Closed += OnFaulted;
             ((IClientChannel) _vstService).Closing += OnFaulted;
+            
+            _remoteFileService = ChannelFactory<IRemoteFileService>.CreateChannel(binding, ep);
+
+            ((IClientChannel) _remoteFileService).Faulted += OnFaulted;
+            ((IClientChannel) _remoteFileService).Closed += OnFaulted;
+            ((IClientChannel) _remoteFileService).Closing += OnFaulted;
 
             _process.EnableRaisingEvents = true;
             _process.Exited += ProcessOnExited;
@@ -248,6 +268,11 @@ namespace PresetMagician.ProcessIsolation
         public IRemoteVstService GetVstService()
         {
             return _vstService;
+        }
+        
+        public IRemoteFileService GetFileService()
+        {
+            return _remoteFileService;
         }
 
         public IRemotePluginInstance GetRemotePluginInstance(Plugin plugin)

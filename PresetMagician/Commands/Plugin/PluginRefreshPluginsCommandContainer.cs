@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data.Entity;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Anotar.Catel;
 using Catel;
 using Catel.Logging;
 using Catel.MVVM;
@@ -13,6 +11,7 @@ using Catel.Services;
 using Catel.Threading;
 using Drachenkatze.PresetMagician.Utils;
 using PresetMagician.Extensions;
+using PresetMagician.ProcessIsolation;
 using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
 using SharedModels;
@@ -44,7 +43,7 @@ namespace PresetMagician
             Argument.IsNotNull(() => dispatcherService);
             Argument.IsNotNull(() => messageService);
             Argument.IsNotNull(() => databaseService);
-            
+
             _runtimeConfigurationService = runtimeConfigurationService;
             _dispatcherService = dispatcherService;
             _vstService = vstService;
@@ -102,6 +101,10 @@ namespace PresetMagician
             _applicationService.StartApplicationOperation(this, "Verifying plugins",
                 plugins.Count);
 
+            var pluginsToAdd = new List<Plugin>();
+
+            var remoteFileService = ProcessPool.GetRemoteFileService().Result;
+
             await TaskHelper.Run(() =>
             {
                 foreach (var plugin in plugins)
@@ -111,66 +114,125 @@ namespace PresetMagician
                         return;
                     }
 
-                    var isInDirectory = false;
-
-                    foreach (var vstDirectory in vstDirectories)
+                    if (plugin.PluginLocation != null)
                     {
-                        if (plugin.DllPath.StartsWith(vstDirectory.Path))
-                        {
-                            isInDirectory = true;
-                        }
-                    }
-
-                    if (File.Exists(plugin.DllPath) && isInDirectory)
-                    {
-                        plugin.IsPresent = true;
-
                         _applicationService.UpdateApplicationOperationStatus(
                             plugins.IndexOf(plugin),
-                            $"Verifying {plugin.DllPath}");
+                            $"Verifying {plugin.PluginLocation.DllPath}");
 
-                        var remotePluginInstance = _vstService.GetRemotePluginInstance(plugin).Result;
-                        if (plugin.DllHash != remotePluginInstance.GetPluginHash())
+                        if (remoteFileService.Exists(plugin.PluginLocation.DllPath))
                         {
-                            plugin.Invalidate();
-                        }
+                            var currentHash = remoteFileService.GetHash(plugin.PluginLocation.DllPath);
 
-                        _dispatcherService.Invoke(() => { plugin.NativeInstrumentsResource.Load(plugin); });
+                            if (plugin.PluginLocation.DllHash !=
+                                currentHash)
+
+                            {
+                                // Plugin DLL has changed. That could mean:
+                                // - New Version
+                                // - Completely different plugin
+                                // In any case, we need to create a new plugin waiting to be scanned. After scanning,
+                                // the plugin location can be appended to this plugin again.
+
+                                var newPlugin = new Plugin
+                                {
+                                    PluginLocation = new PluginLocation
+                                    {
+                                        DllPath = plugin.PluginLocation.DllPath,
+                                        DllHash = currentHash,
+                                        IsPresent = true
+                                    }
+                                };
+
+                                plugin.PluginLocation.IsPresent = false;
+                                plugin.PluginLocation = null;
+                                pluginsToAdd.Add(newPlugin);
+                            }
+                            else
+                            {
+                                plugin.PluginLocation.IsPresent = true;
+                            }
+                        }
+                        else
+                        {
+                            // Plugin dll is missing
+                            plugin.PluginLocation.IsPresent = false;
+                            plugin.PluginLocation = null;
+                        }
                     }
-                    else
-                    {
-                        plugin.IsPresent = false;
-                    }
+
+
+                    _dispatcherService.Invoke(() => { plugin.NativeInstrumentsResource.Load(plugin); });
                 }
             }, true, cancellationToken);
 
-            await _dispatcherService.InvokeAsync(() =>
+            foreach (var plugin in pluginsToAdd)
+            {
+                _dispatcherService.Invoke(() => { plugins.Add(plugin); });
+            }
+
+            await TaskHelper.Run(() =>
             {
                 foreach (var dllPath in vstPluginDLLFiles)
                 {
-                    var foundPlugin = (from plugin in plugins where plugin.DllPath == dllPath select plugin)
+                    var foundPlugin = (from plugin in plugins
+                            where plugin.PluginLocation != null && plugin.PluginLocation.DllPath == dllPath
+                            select plugin)
                         .FirstOrDefault();
 
                     if (foundPlugin == null)
                     {
-                        var plugin = new Plugin
+                        var hash = remoteFileService.GetHash(dllPath);
+                        var pluginLocation = _databaseService.Context.GetPluginLocation(dllPath, hash);
+
+                        if (pluginLocation != null)
                         {
-                            DllPath = dllPath
-                        };
+                            pluginLocation.IsPresent = true;
+                            // Got a previously missing plugin locaton. Re-assign it to the plugin
+                            var lostPlugin = (from plugin in plugins
+                                    where plugin.PluginLocation == null && plugin.PluginId == pluginLocation.PluginId &&
+                                          plugin.HasMetadata
+                                    select plugin)
+                                .FirstOrDefault();
+
+                            if (lostPlugin != null)
+                            {
+                                LogTo.Debug(
+                                    $"Automatically connecting {pluginLocation.DllPath} to plugin {lostPlugin.PluginName} because the plugin has lost its dll, but could match it via the metadata");
+                                lostPlugin.PluginLocation = pluginLocation;
+                                continue;
+                            }
+
+                            var lostPluginByLastKnownGoodPath = (from plugin in plugins
+                                    where plugin.LastKnownGoodDllPath == dllPath
+                                    select plugin)
+                                .FirstOrDefault();
+
+                            if (lostPluginByLastKnownGoodPath != null)
+                            {
+                                lostPluginByLastKnownGoodPath.PluginLocation = pluginLocation;
+                                continue;
+                            }
+                        }
+
+                        // All failed, create new plugin
+                        var newPlugin = new Plugin
+                            {
+                                PluginLocation = new PluginLocation
+                                {
+                                    DllPath = dllPath, DllHash = hash, IsPresent = true
+                                }
+                            };
+                        _dispatcherService.Invoke(() => {plugins.Add(newPlugin);});
                         
-                        //Debug.WriteLine(_databaseService.Context.Entry(plugin).State);
-
-                        plugins.Add(plugin);
-
-                        //_databaseService.Context.Entry(plugin).State = EntityState.Detached;
-                        Debug.WriteLine(_databaseService.Context.Entry(plugin).State);
-
+                            
+                        
                     }
                 }
-            });
+            }, true);
 
 
-            var crashedPlugin = (from plugin in plugins where plugin.IsScanning select plugin).FirstOrDefault();
+            var crashedPlugin = (from plugin in plugins where plugin.IsAnalyzing select plugin).FirstOrDefault();
 
             if (crashedPlugin != null)
             {
@@ -185,7 +247,7 @@ namespace PresetMagician
                     crashedPlugin.IsEnabled = false;
                 }
 
-                crashedPlugin.IsScanning = false;
+                crashedPlugin.IsAnalyzing = false;
             }
 
             await _vstService.SavePlugins();

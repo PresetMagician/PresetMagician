@@ -31,24 +31,34 @@ namespace PresetMagician.ProcessIsolation
 
         public async Task LoadPlugin()
         {
+            if (IsLoaded)
+            {
+                return;
+            }
+            
             try
             {
                 _remoteVstService.LoadPlugin(_guid);
-                Plugin.PluginName = _remoteVstService.GetPluginName(_guid);
+                Plugin.PluginName = _remoteVstService.GetEffectivePluginName(_guid);
                 Plugin.PluginVendor = _remoteVstService.GetPluginVendor(_guid);
                 Plugin.PluginInfo = _remoteVstService.GetPluginInfo(_guid);
-                Plugin.PluginInfo.Flags =
-                    JsonConvert.DeserializeObject<VstPluginFlags>(Plugin.PluginInfo.StringFlags);
                 Plugin.PluginId = Plugin.PluginInfo.PluginID;
-                Plugin.DllHash = _remoteVstService.GetPluginHash(_guid);
+                Plugin.PluginLocation.PluginId = Plugin.PluginId;
+                Plugin.PluginLocation.DllHash = _remoteVstService.GetPluginHash(_guid);
+                Plugin.PluginLocation.PluginName = _remoteVstService.GetPluginName(_guid);
+                Plugin.PluginLocation.PluginVendor = Plugin.PluginVendor;
+                Plugin.PluginLocation.PluginProduct = _remoteVstService.GetPluginProductString(_guid);
+                Plugin.PluginLocation.VendorVersion = _remoteVstService.GetPluginVendorVersion(_guid).ToString();
+                
 
                 Plugin.PluginType = Plugin.PluginInfo.Flags.HasFlag(VstPluginFlags.IsSynth)
                     ? Plugin.PluginTypes.Instrument
                     : Plugin.PluginTypes.Effect;
 
-                Plugin.PluginInfoItems.Clear();
-                Plugin.PluginInfoItems.AddRange(_remoteVstService.GetPluginInfoItems(_guid));
+                Plugin.PluginCapabilities.Clear();
+                Plugin.PluginCapabilities.AddRange(_remoteVstService.GetPluginInfoItems(_guid));
                 IsLoaded = true;
+                Plugin.HasMetadata = true;
             }
             catch (Exception e)
             {
@@ -83,8 +93,11 @@ namespace PresetMagician.ProcessIsolation
 
         public void UnloadPlugin()
         {
-            _remoteVstService.UnloadPlugin(_guid);
-            IsLoaded = false;
+            if (IsLoaded)
+            {
+                _remoteVstService.UnloadPlugin(_guid);
+                IsLoaded = false;
+            }
         }
 
         public string GetPluginName()

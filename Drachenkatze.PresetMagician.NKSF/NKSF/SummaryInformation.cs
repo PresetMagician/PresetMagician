@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using MessagePack;
 
@@ -27,15 +28,15 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
 
         [Key("bankchain")] public ObservableCollection<String> bankChain;
 
-        [Key("types")] public ObservableCollection<ObservableCollection<String>> Types { get; set; }
+        [Key("types")] public List<List<String>> Types { get; set; }
 
-        [Key("modes")] public ObservableCollection<String> Modes { get; set; }
+        [Key("modes")] public List<String> Modes { get; set; }
 
         public SummaryInformation()
         {
             bankChain = new ObservableCollection<String>();
-            Types = new ObservableCollection<ObservableCollection<string>>();
-            Modes = new ObservableCollection<string>();
+            Types = new List<List<string>>();
+            Modes = new List<string>();
             uuid = Guid.NewGuid();
             author = null;
             comment = null;

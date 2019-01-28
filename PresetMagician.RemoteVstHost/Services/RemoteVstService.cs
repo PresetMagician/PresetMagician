@@ -13,7 +13,7 @@ namespace PresetMagician.ProcessIsolation.Services
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Single,
         UseSynchronizationContext = true, IncludeExceptionDetailInFaults = true)]
-    public class RemoteVstService : IRemoteVstService
+    public partial class RemoteVstService : IRemoteVstService
      {
          private static readonly VstHost.VST.VstHost _vstHost = new VstHost.VST.VstHost(true);
          private readonly Dictionary<Guid, RemoteVstPlugin> _plugins = new Dictionary<Guid, RemoteVstPlugin>();
@@ -114,13 +114,19 @@ namespace PresetMagician.ProcessIsolation.Services
  
              return ms.ToArray();
          }
- 
+
          public string GetPluginName(Guid pluginGuid)
+         {
+             var plugin = GetPluginByGuid(pluginGuid);
+
+             return plugin.PluginContext.PluginCommandStub.GetEffectName();
+         }
+
+         public string GetEffectivePluginName(Guid pluginGuid)
          {
              var plugin = GetPluginByGuid(pluginGuid);
  
              var pluginName = plugin.PluginContext.PluginCommandStub.GetEffectName();
- 
  
              if (string.IsNullOrEmpty(pluginName))
              {
@@ -134,6 +140,18 @@ namespace PresetMagician.ProcessIsolation.Services
              }
  
              return pluginName;
+         }
+
+         public int GetPluginVendorVersion(Guid pluginGuid)
+         {
+             var plugin = GetPluginByGuid(pluginGuid);
+             return plugin.PluginContext.PluginCommandStub.GetVendorVersion();
+         }
+         
+         public string GetPluginProductString(Guid pluginGuid)
+         {
+             var plugin = GetPluginByGuid(pluginGuid);
+             return plugin.PluginContext.PluginCommandStub.GetProductString();
          }
  
          public string GetPluginVendor(Guid pluginGuid)
@@ -163,7 +181,7 @@ namespace PresetMagician.ProcessIsolation.Services
  
              var vstInfo = new VstPluginInfoSurrogate
              {
-                 StringFlags = JsonConvert.SerializeObject(plugin.PluginContext.PluginInfo.Flags),
+                 Flags = plugin.PluginContext.PluginInfo.Flags,
                  PluginID = plugin.PluginContext.PluginInfo.PluginID,
                  InitialDelay = plugin.PluginContext.PluginInfo.InitialDelay,
                  ProgramCount = plugin.PluginContext.PluginInfo.ProgramCount,

@@ -19,8 +19,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
         public virtual List<int> SupportedPlugins => new List<int>();
 
-        public virtual bool RequiresLoadedPlugin { get; } = false;
-
         public List<int> GetSupportedPlugins()
         {
             return SupportedPlugins;
@@ -44,7 +42,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         public ObservableCollection<Preset> Presets { get; set; } = new ObservableCollection<Preset>();
 
         public virtual string BankLoadingNotes { get; set; }
-        public IPresetDataStorer PresetDataStorer { get; set; }
+        public IDataPersistence DataPersistence { get; set; }
 
         public virtual int GetNumPresets()
         {
@@ -68,12 +66,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
         public virtual bool CanHandle()
         {
-            if (SupportedPlugins.Contains(PluginInstance.Plugin.PluginId))
-            {
-                return true;
-            }
-
-            return false;
+            return SupportedPlugins.Contains(PluginInstance.Plugin.PluginId);
         }
 
         public virtual void OnAfterPresetExport()

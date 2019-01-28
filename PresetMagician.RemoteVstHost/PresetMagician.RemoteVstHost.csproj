@@ -87,7 +87,8 @@
     </Compile>
     <Compile Include="ProcessPool.cs" />
     <Compile Include="Program.cs" />
-      <Compile Include="RemotePluginInstance.cs"/>
+      <Compile Include="RemotePluginInstance.cs" />
+      <Compile Include="Services\RemoteFileService.cs" />
     <Compile Include="Services\RemoteVstService.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -314,5 +315,5 @@
         </When>
     </Choose>
   <Import Project="..\packages\Fody\build\Fody.targets" Condition="Exists('..\packages\Fody\build\Fody.targets')" Label="Paket" />
-    <Import Project="..\common\ExtraCleanup.targets"/>
+    <Import Project="..\common\ExtraCleanup.targets" />
 </Project>

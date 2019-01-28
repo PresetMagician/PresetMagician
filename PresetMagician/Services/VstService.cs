@@ -5,9 +5,11 @@ using System.Data.Entity;
 using System.Threading.Tasks;
 using Catel;
 using Catel.Collections;
+using MethodTimer;
 using PresetMagician.ProcessIsolation;
 using PresetMagician.Services.Interfaces;
 using SharedModels;
+using Type = SharedModels.Type;
 
 namespace PresetMagician.Services
 {
@@ -24,7 +26,7 @@ namespace PresetMagician.Services
             Argument.IsNotNull(() => databaseService);
 
             _databaseService = databaseService;
-            _databaseService.Context.Plugins.Include(plugin => plugin.AdditionalBankFiles).Load();
+            _databaseService.Context.Plugins.Include(plugin => plugin.AdditionalBankFiles).Include(plugin => plugin.PluginLocation).Load();
             Plugins = _databaseService.Context.Plugins.Local;
         }
 
@@ -60,7 +62,6 @@ namespace PresetMagician.Services
 
         public FastObservableCollection<Preset> SelectedPresets { get; } = new FastObservableCollection<Preset>();
         public FastObservableCollection<Preset> PresetExportList { get; } = new FastObservableCollection<Preset>();
-
 
         #region SelectedPlugin
 

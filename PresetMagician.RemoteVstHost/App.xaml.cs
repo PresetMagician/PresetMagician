@@ -28,6 +28,7 @@ namespace PresetMagician.ProcessIsolation
             var dummyWin = new Window();
             Current.MainWindow = dummyWin;
             _serviceHost.AddServiceEndpoint(typeof(IRemoteVstService), binding, address);
+            _serviceHost.AddServiceEndpoint(typeof(IRemoteFileService), binding, address);
             _serviceHost.Open();
             _serviceHost.Faulted += ServiceHostOnFaulted;
 

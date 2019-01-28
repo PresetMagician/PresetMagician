@@ -11,11 +11,11 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         {
         }
 
-        public async Task DoScan()
+        public override async Task DoScan()
         {
         }
 
-        public virtual int GetNumPresets()
+        public override int GetNumPresets()
         {
             return 0;
         }

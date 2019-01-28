@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -105,10 +106,10 @@ namespace SharedModels
         [Index("UniquePreset", IsUnique = true)]
         public string SourceFile { get; set; }
 
-        public ObservableCollection<ObservableCollection<string>> Types { get; set; } =
-            new ObservableCollection<ObservableCollection<string>>();
+        public ObservableCollection<Type> Types { get; set; } =
+            new ObservableCollection<Type>();
 
-        public ObservableCollection<string> Modes { get; set; } = new ObservableCollection<string>();
+        public ObservableCollection<Mode> Modes { get; set; } = new ObservableCollection<Mode>();
 
         public string PresetHash { get; set; }
         public string LastExportedPresetHash { get; set; }

@@ -12,7 +12,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
     public abstract class AbstractStandardVstPresetParser : AbstractVendorPresetParser
     {
         protected readonly List<string> PresetHashes = new List<string>();
-        public override bool RequiresLoadedPlugin { get; } = true;
+
         public override bool SupportsAdditionalBankFiles { get; set; } = true;
         public override List<BankFile> AdditionalBankFiles { get; } = new List<BankFile>();
 
@@ -117,11 +117,13 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
 
         public override int GetNumPresets()
         {
+            PluginInstance.LoadPlugin().Wait();
             return PluginInstance.Plugin.PluginInfo.ProgramCount + GetAdditionalBanksPresetCount();
         }
 
         public override async Task DoScan()
         {
+            await PluginInstance.LoadPlugin();
             await GetFactoryPresets();
             await ParseAdditionalBanks();
         }
@@ -143,6 +145,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
 
             if (PluginInstance.Plugin.PluginInfo.ProgramCount > 1)
             {
+                PluginInstance.LoadPlugin().Wait();
                 PluginInstance.Plugin.Logger.Debug(PluginInstance.Plugin.PluginName +
                                                    ": Program count is greater than 1, checking for preset save mode");
                 if (!AreChunksConsistent(false))

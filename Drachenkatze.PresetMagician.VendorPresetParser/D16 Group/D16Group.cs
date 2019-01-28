@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Catel.Collections;
 using Catel.Logging;
 using Drachenkatze.PresetMagician.VendorPresetParser.Common;
 using SharedModels;
@@ -20,7 +19,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
 
         protected async Task<int> ProcessD16PkgArchive(string archiveName, PresetBank bank, bool persist = true)
         {
-            int count = 0;
+            var count = 0;
             PluginInstance.Plugin.Logger.Debug($"ProcessD16PKGArchive {archiveName}");
             using (var archive = ZipFile.OpenRead(archiveName))
             {
@@ -49,7 +48,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
 
                         var presetInfo = GetPreset(presetEntry.Name, presetData, bank);
                         presetInfo.preset.SourceFile = archiveName + ":" + presetEntry.Name;
-                        await PresetDataStorer.PersistPreset(presetInfo.preset, presetInfo.presetData);
+                        await DataPersistence.PersistPreset(presetInfo.preset, presetInfo.presetData);
                     }
                 }
             }
@@ -72,7 +71,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
                     var presetData = File.ReadAllText(file.FullName);
                     var presetInfo = GetPreset(file.Name, presetData, bank);
                     presetInfo.preset.SourceFile = file.FullName;
-                    await PresetDataStorer.PersistPreset(presetInfo.preset, presetInfo.presetData);
+                    await DataPersistence.PersistPreset(presetInfo.preset, presetInfo.presetData);
                 }
             }
 
@@ -103,7 +102,12 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
 
             if (!(tagsAttribute is null))
             {
-                preset.Modes.AddRange(GetModes(tagsAttribute.Value));
+                var modes = GetModes(tagsAttribute.Value);
+
+                foreach (var modeName in modes)
+                {
+                    preset.Modes.Add(DataPersistence.GetOrCreateMode(modeName));
+                }
             }
 
             presetElement.SetAttributeValue("tags", null);
@@ -118,7 +122,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
             return (preset, ms.ToArray());
         }
 
-        protected virtual void PostProcessXML(XElement presetElement)
+        protected virtual void PostProcessXml(XElement presetElement)
         {
         }
 
