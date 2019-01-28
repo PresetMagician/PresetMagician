@@ -1,16 +1,19 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using JetBrains.Annotations;
 using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 {
+    // ReSharper disable once InconsistentNaming
+    [UsedImplicitly]
     internal class u_he_Zebra2 : u_he, IVendorPresetParser
     {
         public override List<int> SupportedPlugins => new List<int> {1397572658};
 
-        public void ScanBanks()
+        protected override string GetProductName()
         {
-            H2PScanBanks("Zebra2.data", "Zebra2", false);
-            H2PScanBanks("Zebra2.data", "Zebra2", true);
+            return "Zebra2";
         }
     }
 }

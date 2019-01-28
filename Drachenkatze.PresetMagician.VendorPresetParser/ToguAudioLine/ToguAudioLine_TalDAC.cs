@@ -20,7 +20,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.ToguAudioLine
             return Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                 @"ToguAudioLine\TAL-Dac\presets");
-            ;
         }
 
         protected override PresetBank GetRootBank()

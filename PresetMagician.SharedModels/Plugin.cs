@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.IO;
+using Anotar.Catel;
 using Catel.Data;
 using Catel.Logging;
 using Drachenkatze.PresetMagician.NKSF.NKSF;
@@ -34,6 +36,7 @@ namespace SharedModels
         {
             Presets.CollectionChanged += PresetsOnCollectionChanged;
             RootBank.PresetBanks.Add(new PresetBank());
+            Logger = new PluginLogger();
         }
 
         private void PresetsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -58,52 +61,8 @@ namespace SharedModels
 
         public void Invalidate()
         {
-            IsScanned = false;
-            IsSupported = false;
-            PluginType = PluginTypes.Unknown;
-            PluginName = "";
-            PluginVendor = "";
-            PluginId = 0;
-            PluginInfo = null;
+            IsAnalyzed = false;
         }
-
-        public void SetPresetChunk(byte[] data, bool isPreset)
-        {
-            throw new Exception("Obsolete");
-            // todo obsolete
-            //PluginContext.PluginCommandStub.SetChunk(data, isPreset);
-        }
-
-        public void GetPresetChunk()
-        {
-            throw new Exception("Obsolete");
-            // todo obsolete
-            /*var data = PluginContext.PluginCommandStub.GetChunk(true);
-
-            if (!(data is null))
-            {
-                ChunkPresetMemoryStream.SetLength(0);
-                ChunkPresetMemoryStream.Write(data, 0, data.Length);
-
-                RaisePropertyChanged(nameof(ChunkPresetMemoryStream));
-            }
-
-            data = PluginContext.PluginCommandStub.GetChunk(false);
-
-            if (!(data is null))
-            {
-                ChunkBankMemoryStream.SetLength(0);
-                ChunkBankMemoryStream.Write(data, 0, data.Length);
-
-                RaisePropertyChanged(nameof(ChunkBankMemoryStream));
-            }*/
-        }
-
-        public void OnLoaded()
-        {
-            throw new Exception("Should not be used anymore!");
-        }
-
 
         public override string ToString()
         {
@@ -120,17 +79,17 @@ namespace SharedModels
 
         public void Log(string messageFormat, params object[] args)
         {
-            LogList.Add(string.Format(messageFormat, args));
+            Logger.Debug(messageFormat);
         }
 
         public void Debug(string messageFormat, params object[] args)
         {
-            LogList.Add(string.Format(messageFormat, args));
+            Logger.Debug(messageFormat);
         }
 
         public void Error(string messageFormat, params object[] args)
         {
-            LogList.Add(string.Format(messageFormat, args));
+            Logger.Debug(messageFormat);
         }
 
         #endregion
@@ -141,7 +100,26 @@ namespace SharedModels
         /// Gets or sets the table collection.
         /// </summary>
         [NotMapped]
-        public List<PluginInfoItem> PluginInfoItems { get; } = new List<PluginInfoItem>();
+        public List<PluginInfoItem> PluginCapabilities { get; } = new List<PluginInfoItem>();
+
+        [Column("PluginCapabilities")]
+        public string SerializedPluginCapabilities
+        {
+            get => JsonConvert.SerializeObject(PluginCapabilities);
+            set
+            {
+                try
+                {
+                    var capabilities = JsonConvert.DeserializeObject<List<PluginInfoItem>>(value);
+                    PluginCapabilities.Clear();
+                    PluginCapabilities.AddRange(capabilities);
+                }
+                catch (JsonReaderException e)
+                {
+                    Log(e.Message);
+                }
+            }
+        }
 
         #region PresetBanks property
 
@@ -166,6 +144,32 @@ namespace SharedModels
         [Key]
         public int Id { get; set; }
 
+        private PluginLocation _pluginLocation;
+
+        public PluginLocation PluginLocation
+        {
+            get { return _pluginLocation; }
+            set
+            {
+                if (_pluginLocation != null)
+                {
+                    _pluginLocation.PropertyChanged -= PluginLocationOnPropertyChanged;
+                }
+                _pluginLocation = value;
+                if (_pluginLocation != null)
+                {
+                    _pluginLocation.PropertyChanged += PluginLocationOnPropertyChanged;
+                }
+
+                RaisePropertyChanged(nameof(PluginLocation));
+            }
+        }
+
+        private void PluginLocationOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            RaisePropertyChanged(nameof(PluginLocation));
+        }
+
         /// <summary>
         /// Defines if the plugin had a load error
         /// </summary>
@@ -177,6 +181,7 @@ namespace SharedModels
 
         [NotMapped] public VstPluginInfoSurrogate PluginInfo { get; set; }
 
+        [Column("PluginInfo")]
         public string SerializedPluginInfo
         {
             get => JsonConvert.SerializeObject(PluginInfo);
@@ -193,16 +198,29 @@ namespace SharedModels
             }
         }
 
-        public string DllHash { get; set; }
-
         public Dictionary<(int, string), Preset> PresetCache = new Dictionary<(int, string), Preset>();
 
 
         /// <summary>
         /// Defines the full path to the plugin DLL
         /// </summary>
-        [Index(IsUnique = true)]
-        public string DllPath { get; set; }
+        public string DllPath => PluginLocation?.DllPath;
+
+        private string _lastKnownGoodDllPath;
+        public string LastKnownGoodDllPath
+        {
+            get
+            {
+                if (PluginLocation != null && PluginLocation.IsPresent)
+                {
+                    _lastKnownGoodDllPath = PluginLocation.DllPath;
+                }
+
+                return _lastKnownGoodDllPath;
+            }
+            set => _lastKnownGoodDllPath = value;
+        }
+
 
         /// <summary>
         /// Returns the DLL directory in which the DLL is located
@@ -214,6 +232,9 @@ namespace SharedModels
         /// </summary>
         public string DllFilename => string.IsNullOrEmpty(DllPath) ? null : Path.GetFileName(DllPath);
 
+        public string CanonicalDllFilename =>
+            string.IsNullOrEmpty(DllPath) ? "Plugin DLL is missing. Last known dll path: " + LastKnownGoodDllPath: Path.GetFileName(DllPath);
+
         /// <summary>
         /// Defines if the current plugin is enabled
         /// </summary>
@@ -223,13 +244,14 @@ namespace SharedModels
         /// Defines if the current plugin is being scanned.
         /// This flag is used to detect crashes
         /// </summary>
-        public bool IsScanning { get; set; }
+        public bool IsAnalyzing { get; set; }
 
         /// <summary>
         /// Defines if the plugin DLL is present.
         /// A plugin is present if it's DLL Path exists and it is contained within the configured paths
         /// </summary>
-        public bool IsPresent { get; set; } = true;
+        [NotMapped]
+        public bool IsPresent => PluginLocation != null && PluginLocation.IsPresent;
 
 
         public int AudioPreviewPreDelay { get; set; }
@@ -237,6 +259,7 @@ namespace SharedModels
 
         [NotMapped] public ControllerAssignments DefaultControllerAssignments { get; set; }
 
+        [Column("DefaultControllerAssignments")]
         // ReSharper disable once UnusedMember.Global
         public string SerializedDefaultControllerAssignments
         {
@@ -247,16 +270,15 @@ namespace SharedModels
         public bool IsReported { get; set; }
         public ObservableCollection<BankFile> AdditionalBankFiles { get; } = new ObservableCollection<BankFile>();
 
+
         public ICollection<Type> DefaultTypes { get; set; } = new HashSet<Type>();
 
         public ICollection<Mode> DefaultModes { get; set; } = new HashSet<Mode>();
 
         public string Logs
         {
-            get { return string.Join(Environment.NewLine, LogList); }
+            get { return string.Join(Environment.NewLine, Logger.LogList); }
         }
-
-        public List<string> LogList = new List<string>();
 
         public PluginTypes PluginType { get; set; } = PluginTypes.Unknown;
 
@@ -275,9 +297,11 @@ namespace SharedModels
         [NotMapped] public IVendorPresetParser PresetParser { get; set; }
 
         /// <summary>
-        /// Defines if the plugin is scanned
+        /// Defines if the plugin is or was scanned
         /// </summary>
-        public bool IsScanned { get; set; }
+        public bool IsAnalyzed { get; set; }
+
+        public bool HasMetadata { get; set; }
 
         [NotMapped] public bool IsLoaded { get; set; }
 
@@ -287,7 +311,7 @@ namespace SharedModels
         /// </summary>
         public bool IsSupported { get; set; }
 
-        public ILog Logger { get; }
+        public PluginLogger Logger { get; }
 
         [NotMapped]
         public NativeInstrumentsResource NativeInstrumentsResource { get; set; } = new NativeInstrumentsResource();

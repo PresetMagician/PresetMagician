@@ -17,7 +17,7 @@ using SQLite.CodeFirst;
 
 namespace SharedModels
 {
-    public class ApplicationDatabaseContext : DbContext, IPresetDataStorer
+    public class ApplicationDatabaseContext : DbContext, IDataPersistence
     {
         private int persistPresetCount;
         private const int PersistInterval = 400;
@@ -46,9 +46,19 @@ namespace SharedModels
             var sqliteConnectionInitializer =
                 new SqliteCreateDatabaseIfNotExists<ApplicationDatabaseContext>(modelBuilder);
 
-            modelBuilder.Entity<Plugin>();
-            modelBuilder.Entity<Preset>();
+            modelBuilder.Entity<Plugin>().HasMany(p => p.DefaultModes).WithMany(q => q.Plugins).Map(mc =>
+                mc.MapLeftKey("PluginId").MapRightKey("ModeId").ToTable("PluginModes"));
+            modelBuilder.Entity<Plugin>().HasMany(p => p.DefaultTypes).WithMany(q => q.Plugins).Map(mc =>
+                mc.MapLeftKey("PluginId").MapRightKey("TypeId").ToTable("PluginTypes"));
+
+            modelBuilder.Entity<Preset>().HasMany(p => p.Types).WithMany(q => q.Presets).Map(mc =>
+                mc.MapLeftKey("PresetId").MapRightKey("TypeId").ToTable("PresetTypes"));
+
+            modelBuilder.Entity<Preset>().HasMany(p => p.Modes).WithMany(q => q.Presets).Map(mc =>
+                mc.MapLeftKey("PresetId").MapRightKey("ModeId").ToTable("PresetModes"));
+
             modelBuilder.Entity<PresetDataStorage>();
+            modelBuilder.Entity<PluginLocation>();
             modelBuilder.Entity<SchemaVersion>();
             Database.SetInitializer(sqliteConnectionInitializer);
         }
@@ -132,6 +142,14 @@ namespace SharedModels
             }
 
             Configuration.AutoDetectChangesEnabled = true;
+        }
+
+        public bool HasPresets(Plugin plugin)
+        {
+            using (var tempContext = Create())
+            {
+                return tempContext.Presets.Any();
+            }
         }
 
         public void DisableSaveForPlugin(Plugin plugin)
@@ -278,8 +296,59 @@ namespace SharedModels
             SaveChanges();
         }
 
+        public Type GetOrCreateType(string typeName, string subTypeName)
+        {
+            var type = (from st in Types
+                where st.Name == typeName && st.SubTypeName == subTypeName
+                select st).FirstOrDefault();
+
+            if (type == null)
+            {
+                type = new Type();
+                type.Name = typeName;
+                type.SubTypeName = subTypeName;
+                Types.Add(type);
+            }
+
+            SaveChanges();
+
+            return type;
+        }
+
+        public Mode GetOrCreateMode(string modeName)
+        {
+            var mode = (from st in Modes
+                where st.Name == modeName
+                select st).FirstOrDefault();
+
+            if (mode == null)
+            {
+                mode = new Mode();
+                mode.Name = modeName;
+                Modes.Add(mode);
+            }
+
+            SaveChanges();
+
+            return mode;
+        }
+
+        public PluginLocation GetPluginLocation(string dllPath, string hash)
+        {
+            return (from st in PluginLocations
+                where st.DllHash == hash &&
+                      st.DllPath == dllPath
+                select st).FirstOrDefault();
+        }
+
         public DbSet<Plugin> Plugins { get; set; }
         public DbSet<Preset> Presets { get; set; }
+
+        public DbSet<PluginLocation> PluginLocations { get; set; }
+
+        public DbSet<Type> Types { get; set; }
+
+        public DbSet<Mode> Modes { get; set; }
         public DbSet<SchemaVersion> SchemaVersions { get; set; }
         public DbSet<PresetDataStorage> PresetDataStorage { get; set; }
     }

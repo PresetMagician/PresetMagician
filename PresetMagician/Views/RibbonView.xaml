@@ -94,6 +94,7 @@
                         VerticalAlignment="Center"
                         Command="{catel:CommandManagerBinding Plugin.RefreshPlugins}"
                         Header="Refresh Plugin List"
+                        ToolTip="Scans the configured VST folders for new and updated plugin files"
                         Icon="{iconPacks:Modern Kind=Refresh}"
                         Size="Middle" />
                 </fluent:RibbonGroupBox>

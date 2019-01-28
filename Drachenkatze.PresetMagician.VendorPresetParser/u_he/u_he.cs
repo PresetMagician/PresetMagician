@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
+using System.Threading.Tasks;
 using Catel.Collections;
 using Catel.Logging;
 using SharedModels;
 using Squirrel.Shell;
+using Type = SharedModels.Type;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 {
@@ -17,52 +17,94 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
         private readonly Regex parsingRegex = new Regex(@"^(?<type>.*):(\r\n|\r|\n)'(?<value>.*)'",
             RegexOptions.Multiline | RegexOptions.Compiled);
 
-        protected void H2PScanBanks(string dataDirectoryName, string productName, bool userPresets)
+        public override void Init()
+        {
+            var factoryPath = GetPresetDirectory(GetDataDirectoryName(), GetProductName(), false);
+            var userPath = GetPresetDirectory(GetDataDirectoryName(), GetProductName(), false);
+            BankLoadingNotes =
+                $"Factory Presets are loaded from {factoryPath}, User Presets are loaded from {userPath}. " +
+                "Sub-folders define the bank.";
+            base.Init();
+        }
+
+        public override int GetNumPresets()
+        {
+
+            var count = H2PScanBanks(GetDataDirectoryName(), GetProductName(), false, false).GetAwaiter().GetResult();
+            count += H2PScanBanks(GetDataDirectoryName(), GetProductName(), false, false).GetAwaiter().GetResult();
+
+            return count;
+        }
+        
+        public override async Task DoScan()
+        {
+            await H2PScanBanks(GetDataDirectoryName(), GetProductName(), false, true);
+            await H2PScanBanks(GetDataDirectoryName(), GetProductName(), false, true);
+        }
+
+        protected abstract string GetProductName();
+
+        protected virtual string GetDataDirectoryName()
+        {
+            return GetProductName() + ".data";
+        }
+        
+        protected async Task<int> H2PScanBanks(string dataDirectoryName, string productName, bool userPresets, bool persist)
         {
             PluginInstance.Plugin.Logger.Debug(
                 $"Begin H2PScanBanks with dataDirectoryName {dataDirectoryName} product name {productName} and userPresets {userPresets}");
+            
             var rootDirectory = GetPresetDirectory(dataDirectoryName, productName, userPresets);
             PluginInstance.Plugin.Logger.Debug($"Parsing PresetDirectory {rootDirectory}");
 
             var directoryInfo = new DirectoryInfo(rootDirectory);
 
-            var bankName = "Factory Bank";
-            if (userPresets)
-            {
-                bankName = "User Bank";
-            }
-
             if (!directoryInfo.Exists)
             {
-                return;
+                PluginInstance.Plugin.Logger.Debug($"Directory {rootDirectory} does not exist");
+                return 0;
             }
 
-            RootBank.PresetBanks.Add(H2PScanBank(bankName, directoryInfo));
+            var bankName = BankNameFactory;
+            if (userPresets)
+            {
+                bankName = BankNameUser;
+            }
+
+
+            var bank = RootBank.CreateRecursive(bankName);
+            var count = await H2PScanBank(bank, directoryInfo, persist);
             PluginInstance.Plugin.Logger.Debug($"End H2PScanBanks");
+
+            return count;
         }
 
-        private PresetBank H2PScanBank(string name, DirectoryInfo directory)
+        private async Task<int> H2PScanBank(PresetBank bank, DirectoryInfo directory, bool persist)
         {
-            PresetBank bank = new PresetBank
-            {
-                BankName = name
-            };
-
+            var count = 0;
+            
             foreach (var file in directory.EnumerateFiles("*.h2p"))
             {
-                PluginInstance.Plugin.Logger.Debug($"Parsing file {file.FullName}");
-                Preset preset = new Preset
+                count++;
+                if (!persist)
                 {
-                    PresetName = file.Name.Replace(".h2p", ""), Plugin = PluginInstance.Plugin, PresetBank = bank
+                    continue;
+                }
+                PluginInstance.Plugin.Logger.Debug($"Parsing file {file.FullName}");
+                
+                var preset = new Preset
+                {
+                    PresetName = file.Name.Replace(".h2p", ""), Plugin = PluginInstance.Plugin, PresetBank = bank,
+                    SourceFile = file.FullName
                 };
 
                 var fs = file.OpenRead();
 
-                preset.PresetData = new byte[fs.Length];
-                fs.Read(preset.PresetData, 0, (int) fs.Length);
+                var presetData = new byte[fs.Length];
+                fs.Read(presetData, 0, (int) fs.Length);
                 fs.Close();
 
-                var metadata = ExtractMetadata(Encoding.UTF8.GetString(preset.PresetData));
+                var metadata = ExtractMetadata(Encoding.UTF8.GetString(presetData));
 
                 if (metadata.ContainsKey("Author"))
                 {
@@ -85,59 +127,66 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 
                 if (metadata.ContainsKey("Categories") && metadata["Categories"].Length > 0)
                 {
-                    preset.Types = ExtractTypes(metadata["Categories"]);
+                    preset.Types.AddRange(ExtractTypes(metadata["Categories"]));
                 }
 
                 if (metadata.ContainsKey("Features") && metadata["Features"].Length > 0)
                 {
-                    ExtractModes(preset.Modes, metadata["Features"]);
+                    preset.Modes.AddRange(ExtractModes(metadata["Features"]));
                 }
 
                 if (metadata.ContainsKey("Character") && metadata["Character"].Length > 0)
                 {
-                    ExtractModes(preset.Modes, metadata["Character"]);
+                    preset.Modes.AddRange(ExtractModes(metadata["Character"]));
                 }
 
-                Presets.Add(preset);
+                await DataPersistence.PersistPreset(preset, presetData);
             }
 
             foreach (var subDirectory in directory.EnumerateDirectories("*", SearchOption.TopDirectoryOnly))
             {
-                bank.PresetBanks.Add(H2PScanBank(subDirectory.Name, subDirectory));
+                var subBank = bank.CreateRecursive(subDirectory.Name);
+                count += await H2PScanBank(subBank, subDirectory, persist);
             }
 
-            return bank;
+            return count;
         }
 
-        public ObservableCollection<ObservableCollection<string>> ExtractTypes(string types)
+        private IEnumerable<Type> ExtractTypes(string typesString)
         {
-            ObservableCollection<ObservableCollection<string>> typeCollection =
-                new ObservableCollection<ObservableCollection<string>>();
-            var splitTypes = types.Split(',');
+            var types = new List<Type>();
+            var splitTypes = typesString.Split(',');
 
             foreach (var splitType in splitTypes)
             {
-                var coll = new ObservableCollection<string>();
-
-                coll.AddRange(splitType.Trim().Split(':'));
-
-                typeCollection.Add(coll);
+                var splitTypes2 = splitType.Trim().Split(':');
+                if (splitTypes2.Length == 1)
+                {
+                    types.Add(DataPersistence.GetOrCreateType(splitTypes2[0]));
+                }
+                else if (splitTypes.Length > 1)
+                {
+                    types.Add(DataPersistence.GetOrCreateType(splitTypes2[0], splitTypes2[1]));
+                }
             }
 
-            return typeCollection;
+            return types;
         }
 
-        public void ExtractModes(ObservableCollection<string> modeCollection, string modes)
+        private List<Mode> ExtractModes(string modesString)
         {
-            var splitModes = modes.Split(',');
+            var modes = new List<Mode>();
+            var splitModes = modesString.Split(',');
 
             foreach (var splitMode in splitModes)
             {
-                modeCollection.Add(splitMode.Trim());
+                modes.Add(DataPersistence.GetOrCreateMode(splitMode.Trim()));
             }
+
+            return modes;
         }
 
-        public Dictionary<string, string> ExtractMetadata(string presetData)
+        private Dictionary<string, string> ExtractMetadata(string presetData)
         {
             Dictionary<string, string> result = new Dictionary<string, string>();
 
@@ -160,73 +209,51 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
             return result;
         }
 
-        public string getDataDirectory(string dataDirectoryName)
+        private string GetDataDirectory(string dataDirectoryName)
         {
             var vstPluginsPath = Path.GetDirectoryName(PluginInstance.Plugin.DllPath);
 
             return Path.Combine(vstPluginsPath, dataDirectoryName);
         }
 
-        public string GetPresetDirectory(string dataDirectoryName, string productName, bool userPresets)
+        private string GetPresetDirectory(string dataDirectoryName, string productName, bool userPresets)
         {
-            object[] args = {getDataDirectory(dataDirectoryName), productName, userPresets};
-
-            Thread staThread = new Thread(GetPresetDirectorySTA);
-            staThread.SetApartmentState(ApartmentState.STA);
-            staThread.Start(args);
-            staThread.Join();
-
-            return (string) args[0];
-        }
-
-        public void GetPresetDirectorySTA(object param)
-        {
-            object[] args = (object[]) param;
-            string dataDirectoryName = (string) args[0];
-            string productName = (string) args[1];
-            bool userPresets = (bool) args[2];
-
-            var shortCutDataDirectoryName = getDataDirectory(dataDirectoryName + ".lnk");
+            dataDirectoryName = GetDataDirectory(dataDirectoryName);
+            
+            var shortCutDataDirectoryName = dataDirectoryName + ".lnk";
 
             string dataDirectory;
 
             if (IsShortcut(shortCutDataDirectoryName))
             {
-                dataDirectory = ResolveShortcut(getDataDirectory(shortCutDataDirectoryName));
+                dataDirectory = ResolveShortcut(shortCutDataDirectoryName);
             }
             else
             {
-                dataDirectory = getDataDirectory(dataDirectoryName);
+                dataDirectory = dataDirectoryName;
             }
 
-            if (dataDirectory == null)
+            if (dataDirectory != null)
             {
-                PluginInstance.Plugin.Logger.Error("Unable to find the data directory, aborting.");
-                PluginInstance.Plugin.Logger.Debug("Estimated shortcut directory name is " + shortCutDataDirectoryName);
-                return;
+                return Path.Combine(dataDirectory, userPresets ? "UserPresets" : "Presets", productName);
             }
 
-            if (userPresets)
-            {
-                args[0] = Path.Combine(dataDirectory, "UserPresets", productName);
-            }
-            else
-            {
-                args[0] = Path.Combine(dataDirectory, "Presets", productName);
-            }
+            PluginInstance.Plugin.Logger.Error("Unable to find the data directory, aborting.");
+            PluginInstance.Plugin.Logger.Debug("Estimated shortcut directory name is " + shortCutDataDirectoryName);
+            return null;
+
         }
 
-        public bool IsShortcut(string path)
+        private bool IsShortcut(string path)
         {
             if (!File.Exists(path))
             {
                 return false;
             }
 
-            ShellLink shellLink;
             try
             {
-                shellLink = new ShellLink(path);
+                var shellLink = new ShellLink(path);
 
                 if (shellLink.Target.Length > 0 && Directory.Exists(shellLink.Target))
                 {
@@ -246,13 +273,11 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
             return false;
         }
 
-        public string ResolveShortcutSquirrel(string path)
+        private string ResolveShortcutSquirrel(string path)
         {
-            ShellLink shellLink;
-
             try
             {
-                shellLink = new ShellLink(path);
+                var shellLink = new ShellLink(path);
 
                 if (shellLink.Target.Length > 0 && Directory.Exists(shellLink.Target))
                 {
@@ -271,24 +296,16 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
             return null;
         }
 
-        public string ResolveShortcut(string path)
+        private string ResolveShortcut(string path)
         {
-            string targetPath;
-
-
             if (!IsShortcut(path))
             {
                 return string.Empty;
             }
 
-            targetPath = ResolveShortcutSquirrel(path);
+            var targetPath = ResolveShortcutSquirrel(path);
 
-            if (targetPath != null)
-            {
-                return targetPath;
-            }
-
-            return null;
+            return targetPath;
         }
     }
 }

@@ -86,7 +86,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
 
                         var data = ProcessFile(file.FullName, preset);
 
-                        await PresetDataStorer.PersistPreset(preset, data);
+                        await DataPersistence.PersistPreset(preset, data);
                     }
                     catch (Exception e)
                     {

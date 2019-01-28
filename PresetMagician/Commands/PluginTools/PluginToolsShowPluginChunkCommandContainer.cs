@@ -63,7 +63,7 @@ namespace PresetMagician
                 pluginInstance.Plugin.ChunkBankMemoryStream.Write(presetChunk, 0, presetChunk.Length);
             }
 
-            await _uiVisualizerService.ShowDialogAsync<VstPluginChunkViewModel>(_vstService.SelectedPlugin);
+            await _uiVisualizerService.ShowDialogAsync<VstPluginChunkViewModel>(pluginInstance);
         }
     }
 }

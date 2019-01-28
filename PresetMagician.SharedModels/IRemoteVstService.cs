@@ -68,5 +68,13 @@ namespace SharedModels
 
         [OperationContract]
         string GetPluginHash(Guid guid);
+
+        [OperationContract]
+        int GetPluginVendorVersion(Guid pluginGuid);
+        [OperationContract]
+        string GetPluginProductString(Guid pluginGuid);
+
+        [OperationContract]
+        string GetEffectivePluginName(Guid pluginGuid);
     }
 }

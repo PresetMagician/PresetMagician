@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Catel.Collections;
 using Catel.Logging;
 using GSF;
 using SharedModels;
@@ -72,13 +70,15 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
                         Plugin = PluginInstance.Plugin
                     };
 
-                    var types = new ObservableCollection<string> {presetData.Type.name};
-
-                    preset.Types.Add(types);
+                    preset.Types.Add(DataPersistence.GetOrCreateType(presetData.Type.name));
 
                     var characteristics = GetPresetCharacteristics(presetData.Preset);
+                    var characteristicsNames = (from c in characteristics select c.name).ToList();
 
-                    preset.Modes.AddRange((from c in characteristics select c.name).ToList());
+                    foreach (var name in characteristicsNames)
+                    {
+                        preset.Modes.Add(DataPersistence.GetOrCreateMode(name));
+                    }
 
                     var fileName = presetData.Preset.file_path.Replace('/', '\\');
                     var content = File.ReadAllBytes(fileName);
@@ -97,7 +97,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
                     ms.Write(content, 0, content.Length);
 
                     preset.SourceFile = fileName;
-                    await PresetDataStorer.PersistPreset(preset, ms.ToArray());
+                    await DataPersistence.PersistPreset(preset, ms.ToArray());
                 }
             }
 

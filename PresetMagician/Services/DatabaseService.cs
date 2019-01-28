@@ -5,7 +5,7 @@ namespace PresetMagician.Services
     public interface IDatabaseService
     {
         ApplicationDatabaseContext Context { get; }
-        IPresetDataStorer GetPresetDataStorer();
+        IDataPersistence GetPresetDataStorer();
     }
 
     public class DatabaseService : IDatabaseService
@@ -22,7 +22,7 @@ namespace PresetMagician.Services
             get { return _dbContext; }
         }
 
-        public IPresetDataStorer GetPresetDataStorer()
+        public IDataPersistence GetPresetDataStorer()
         {
             return _dbContext;
         }

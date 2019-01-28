@@ -89,17 +89,21 @@ namespace PresetMagician.Services
             {
                 StartRegistration();
             }
-
-            await TaskHelper.Run(() => { _commandManager.ExecuteCommand(Commands.Plugin.RefreshPlugins); }, true);
+            
             await base.InitializeAfterShowingShellAsync();
-            await CheckForUpdatesAsync();
+
+            TaskHelper.Run(() =>
+            {
+                CheckForUpdatesAsync();
+                _commandManager.ExecuteCommand(Commands.Plugin.RefreshPlugins);
+            });
         }
 
         private async void StartRegistration()
         {
             var viewModel = _viewModelFactory.CreateViewModel(typeof(RegistrationViewModel), null);
 
-            await _uiVisualizerService.ShowDialogAsync(viewModel);
+            _uiVisualizerService.ShowDialogAsync(viewModel);
         }
 
         [Time]

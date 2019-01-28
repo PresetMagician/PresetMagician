@@ -55,7 +55,7 @@
             Grid.Column="1"
             IsReadOnly="True"
             IsReadOnlyCaretVisible="True"
-            Text="{Binding SummaryInformation}"
+            Text="{Binding SummaryInformation,Mode=OneWay}"
             TextWrapping="Wrap"
             VerticalScrollBarVisibility="Auto" />
         <TextBox
@@ -63,7 +63,7 @@
             Grid.Column="1"
             IsReadOnly="True"
             IsReadOnlyCaretVisible="True"
-            Text="{Binding ControllerAssignments}"
+            Text="{Binding ControllerAssignments,Mode=OneWay}"
             TextWrapping="Wrap"
             VerticalScrollBarVisibility="Auto" />
         <TextBox
@@ -71,7 +71,7 @@
             Grid.Column="1"
             IsReadOnly="True"
             IsReadOnlyCaretVisible="True"
-            Text="{Binding PluginId}"
+            Text="{Binding PluginId, Mode=OneWay}"
             TextWrapping="Wrap"
             VerticalScrollBarVisibility="Auto" />
 

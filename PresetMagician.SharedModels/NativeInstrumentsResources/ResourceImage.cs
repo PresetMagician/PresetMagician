@@ -20,11 +20,14 @@ namespace SharedModels.NativeInstrumentsResources
             targetSize.Height = height;
             TargetSize = targetSize;
             Filename = fileName;
+            var bitmapImage = new BitmapImage(
+                new Uri("pack://application:,,,/PresetMagician.SharedModels;component/Resources/Images/empty.png"));
+            bitmapImage.Freeze();
+            Image = bitmapImage;
         }
 
 
-        public BitmapImage Image { get; set; } = new BitmapImage(
-            new Uri("pack://application:,,,/PresetMagician.SharedModels;component/Resources/Images/empty.png"));
+        public BitmapImage Image { get; set; } 
 
         public MemoryStream ImageStream { get; set; } = new MemoryStream();
         public Size TargetSize { get; set; }

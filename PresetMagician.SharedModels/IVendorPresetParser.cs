@@ -12,8 +12,6 @@ namespace SharedModels
         IRemotePluginInstance PluginInstance { get; set; }
         int AudioPreviewPreDelay { get; set; }
 
-        bool RequiresLoadedPlugin { get; }
-
         bool SupportsAdditionalBankFiles { get; set; }
 
         List<BankFile> AdditionalBankFiles { get; }
@@ -31,7 +29,7 @@ namespace SharedModels
         ObservableCollection<ObservableCollection<string>> DefaultTypes { get; set; }
         ObservableCollection<string> DefaultModes { get; set; }
 
-        IPresetDataStorer PresetDataStorer { get; set; }
+        IDataPersistence DataPersistence { get; set; }
 
         List<int> GetSupportedPlugins();
         void ScanBanks();

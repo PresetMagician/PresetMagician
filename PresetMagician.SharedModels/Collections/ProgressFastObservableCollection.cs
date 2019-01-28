@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using Catel;
 using Catel.Collections;
@@ -8,6 +10,18 @@ namespace PresetMagician.Collections
     public class ProgressFastObservableCollection<T> : FastObservableCollection<T>
     {
         private int _initialCount;
+
+        public ProgressFastObservableCollection()
+        {
+        }
+
+        public ProgressFastObservableCollection(IEnumerable<T> collection) : base(collection)
+        {
+        }
+
+        public ProgressFastObservableCollection(IEnumerable collection) : base(collection)
+        {
+        }
 
         public virtual event EventHandler CollectionCountChanged;
 

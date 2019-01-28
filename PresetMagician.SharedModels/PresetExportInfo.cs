@@ -24,8 +24,17 @@ namespace SharedModels
             DefaultControllerAssignments = preset.Plugin.DefaultControllerAssignments;
             Author = preset.Author;
             Comment = preset.Comment;
-            Types = preset.Types;
-            Modes = preset.Modes;
+
+
+            foreach (var type in preset.Types)
+            {
+                Types.Add(new List<string> {type.Name, type.SubTypeName});
+            }
+
+            foreach (var mode in preset.Modes)
+            {
+                Modes.Add(mode.Name);
+            }
         }
 
         [DataMember] public string PluginName { get; set; }
@@ -42,9 +51,9 @@ namespace SharedModels
         [DataMember] public string Comment { get; set; }
 
         [DataMember]
-        public ObservableCollection<ObservableCollection<string>> Types { get; set; } =
-            new ObservableCollection<ObservableCollection<string>>();
+        public List<List<string>> Types { get; set; } =
+            new List<List<string>>();
 
-        [DataMember] public ObservableCollection<string> Modes { get; set; } = new ObservableCollection<string>();
+        [DataMember] public List<string> Modes { get; set; } = new List<string>();
     }
 }

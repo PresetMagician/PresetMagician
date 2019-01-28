@@ -693,14 +693,14 @@
                     <MultiDataTrigger>
                         <MultiDataTrigger.Conditions>
                             <Condition Binding="{Binding IsPluginSet, Mode=OneWay}" Value="True" />
-                            <Condition Binding="{Binding Plugin.IsScanned, Mode=OneWay}" Value="True" />
+                            <Condition Binding="{Binding Plugin.IsAnalyzed, Mode=OneWay}" Value="True" />
                         </MultiDataTrigger.Conditions>
                         <Setter Property="Template" Value="{StaticResource PluginTabControl}" />
                     </MultiDataTrigger>
                     <MultiDataTrigger>
                         <MultiDataTrigger.Conditions>
                             <Condition Binding="{Binding IsPluginSet, Mode=OneWay}" Value="True" />
-                            <Condition Binding="{Binding Plugin.IsScanned, Mode=OneWay}" Value="False" />
+                            <Condition Binding="{Binding Plugin.IsAnalyzed, Mode=OneWay}" Value="False" />
                         </MultiDataTrigger.Conditions>
 
                         <Setter Property="Template" Value="{StaticResource PluginNotScanned}" />

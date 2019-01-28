@@ -107,7 +107,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
 
                     var base64 = presetElement.Value.Trim().Replace("-", "/").Replace("$", "");
 
-                    await PresetDataStorer.PersistPreset(preset, Convert.FromBase64String(base64));
+                    await DataPersistence.PersistPreset(preset, Convert.FromBase64String(base64));
                 }
             }
 
