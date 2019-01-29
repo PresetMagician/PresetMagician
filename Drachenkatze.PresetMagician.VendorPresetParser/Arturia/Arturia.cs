@@ -28,7 +28,10 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
             var instruments = GetInstrumentNames();
             var instrumentList = GetInstruments(instruments);
 
-            return GetPresets(instrumentList).Count();
+            var numPresets = GetPresets(instrumentList).Count();
+            _db.Close();
+            _db = null;
+            return numPresets;
         }
 
         private void InitDb()
@@ -102,6 +105,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
             }
 
             _db.Close();
+            _db = null;
         }
 
         private IEnumerable<(ArturiaModels.Preset Preset, ArturiaModels.SoundDesigner SoundDesigner, ArturiaModels.Pack
