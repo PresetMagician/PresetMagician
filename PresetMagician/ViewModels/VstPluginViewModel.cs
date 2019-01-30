@@ -12,6 +12,8 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using Anotar.Catel;
 using Catel;
+using Catel.Collections;
+using Catel.Fody;
 using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
@@ -83,6 +85,8 @@ namespace PresetMagician.ViewModels
 
             Title = "Settings for " + Plugin.PluginName;
 
+            Debug.WriteLine(plugin.DefaultControllerAssignments);
+            Debug.WriteLine(DefaultControllerAssignments);
             GenerateControllerMappingModels();
         }
 
@@ -101,8 +105,19 @@ namespace PresetMagician.ViewModels
 
         public bool IsPluginSet => Plugin != null;
 
+        [Model]
+        [Expose("AudioPreviewPreDelay")]
         public Plugin Plugin { get; protected set; }
 
+        [ViewModelToModel("Plugin")]
+        public ControllerAssignments DefaultControllerAssignments { get; set; }
+        
+        [ViewModelToModel("Plugin")]
+        public NativeInstrumentsResource NativeInstrumentsResource { get; set; }
+        
+        [ViewModelToModel("Plugin")]
+        public FastObservableCollection<BankFile> AdditionalBankFiles { get; set; }
+        
         #endregion
 
         #region Commands
@@ -130,7 +145,7 @@ namespace PresetMagician.ViewModels
                     var part = await response.Content.ReadAsStringAsync();
                     var data = JObject.Parse(part);
 
-                    Plugin.NativeInstrumentsResource.LoadFromJObject(data);
+                    NativeInstrumentsResource.LoadFromJObject(data);
                 }
             }
             catch (HttpRequestException e)
@@ -198,14 +213,6 @@ namespace PresetMagician.ViewModels
 
         protected override async Task<bool> SaveAsync()
         {
-            Plugin.NativeInstrumentsResource.ColorState.State = NativeInstrumentsResource.ResourceStates.UserModified;
-            Plugin.NativeInstrumentsResource.CategoriesState.State =
-                NativeInstrumentsResource.ResourceStates.UserModified;
-            Plugin.NativeInstrumentsResource.ShortNamesState.State =
-                NativeInstrumentsResource.ResourceStates.UserModified;
-            Plugin.NativeInstrumentsResource.Save(Plugin);
-
-
             try
             {
                 await _vstService.SavePlugins();
@@ -214,8 +221,17 @@ namespace PresetMagician.ViewModels
             {
                 Debug.WriteLine(e);
             }
+            
+            var result = await base.SaveAsync();
+            
+            NativeInstrumentsResource.ColorState.State = NativeInstrumentsResource.ResourceStates.UserModified;
+            NativeInstrumentsResource.CategoriesState.State =
+                NativeInstrumentsResource.ResourceStates.UserModified;
+            NativeInstrumentsResource.ShortNamesState.State =
+                NativeInstrumentsResource.ResourceStates.UserModified;
+            NativeInstrumentsResource.Save(Plugin);
 
-            return await base.SaveAsync();
+            return result;
         }
 
 
@@ -274,7 +290,7 @@ namespace PresetMagician.ViewModels
 
                 if (await _openFileService.DetermineFileAsync())
                 {
-                    Plugin.NativeInstrumentsResource.VB_logo.ReplaceFromFile(_openFileService.FileName,
+                    NativeInstrumentsResource.VB_logo.ReplaceFromFile(_openFileService.FileName,
                         NativeInstrumentsResource.ResourceStates.UserModified);
                 }
             }
@@ -295,7 +311,7 @@ namespace PresetMagician.ViewModels
 
                 if (await _openFileService.DetermineFileAsync())
                 {
-                    Plugin.NativeInstrumentsResource.VB_artwork.ReplaceFromFile(_openFileService.FileName,
+                    NativeInstrumentsResource.VB_artwork.ReplaceFromFile(_openFileService.FileName,
                         NativeInstrumentsResource.ResourceStates.UserModified);
                 }
             }
@@ -316,7 +332,7 @@ namespace PresetMagician.ViewModels
 
                 if (await _openFileService.DetermineFileAsync())
                 {
-                    Plugin.NativeInstrumentsResource.MST_artwork.ReplaceFromFile(_openFileService.FileName,
+                    NativeInstrumentsResource.MST_artwork.ReplaceFromFile(_openFileService.FileName,
                         NativeInstrumentsResource.ResourceStates.UserModified);
                 }
             }
@@ -337,7 +353,7 @@ namespace PresetMagician.ViewModels
 
                 if (await _openFileService.DetermineFileAsync())
                 {
-                    Plugin.NativeInstrumentsResource.MST_logo.ReplaceFromFile(_openFileService.FileName,
+                    NativeInstrumentsResource.MST_logo.ReplaceFromFile(_openFileService.FileName,
                         NativeInstrumentsResource.ResourceStates.UserModified);
                 }
             }
@@ -358,7 +374,7 @@ namespace PresetMagician.ViewModels
 
                 if (await _openFileService.DetermineFileAsync())
                 {
-                    Plugin.NativeInstrumentsResource.MST_plugin.ReplaceFromFile(_openFileService.FileName,
+                    NativeInstrumentsResource.MST_plugin.ReplaceFromFile(_openFileService.FileName,
                         NativeInstrumentsResource.ResourceStates.UserModified);
                 }
             }
@@ -372,7 +388,7 @@ namespace PresetMagician.ViewModels
 
         private async Task OnSubmitResourceExecute()
         {
-            var niResource = Plugin.NativeInstrumentsResource;
+            var niResource = NativeInstrumentsResource;
 
             List<string> categoryNames = new List<string>();
 
@@ -479,7 +495,7 @@ namespace PresetMagician.ViewModels
 
                 if (await _openFileService.DetermineFileAsync())
                 {
-                    Plugin.NativeInstrumentsResource.OSO_logo.ReplaceFromFile(_openFileService.FileName,
+                    NativeInstrumentsResource.OSO_logo.ReplaceFromFile(_openFileService.FileName,
                         NativeInstrumentsResource.ResourceStates.UserModified);
                 }
             }
@@ -494,7 +510,7 @@ namespace PresetMagician.ViewModels
         private async Task OnGenerateResourcesExecute()
         {
             var remotePluginInstance = await _vstService.GetRemotePluginInstance(Plugin);
-            remotePluginInstance.LoadPlugin();
+            await remotePluginInstance.LoadPlugin();
             remotePluginInstance.OpenEditorHidden();
             await Task.Delay(1000);
             _resourceGeneratorService.GenerateResources(remotePluginInstance, true);
@@ -503,7 +519,7 @@ namespace PresetMagician.ViewModels
 
         private void AddBankFile(string path)
         {
-            if ((from bankFile in Plugin.AdditionalBankFiles where bankFile.Path == path select bankFile)
+            if ((from bankFile in AdditionalBankFiles where bankFile.Path == path select bankFile)
                 .Any())
             {
                 return;
@@ -511,7 +527,7 @@ namespace PresetMagician.ViewModels
 
             var bankName = Path.GetExtension(path) == ".fxp" ? "User Presets" : Path.GetFileNameWithoutExtension(path);
 
-            Plugin.AdditionalBankFiles.Add(new BankFile {Path = path, BankName = bankName});
+            AdditionalBankFiles.Add(new BankFile {Path = path, BankName = bankName});
         }
 
         public Command<object> RemoveAdditionalBankFiles { get; set; }
@@ -522,7 +538,7 @@ namespace PresetMagician.ViewModels
 
             foreach (var folder in folders.ToList())
             {
-                Plugin.AdditionalBankFiles.Remove(folder);
+                AdditionalBankFiles.Remove(folder);
             }
         }
 
@@ -534,7 +550,7 @@ namespace PresetMagician.ViewModels
 
             foreach (var category in categories.ToList())
             {
-                Plugin.NativeInstrumentsResource.Categories.CategoryNames.Remove(category);
+                NativeInstrumentsResource.Categories.CategoryNames.Remove(category);
             }
         }
 
@@ -542,14 +558,15 @@ namespace PresetMagician.ViewModels
 
         private void OnAddCategoryExecute()
         {
-            Plugin.NativeInstrumentsResource.Categories.CategoryNames.Add(new Category {Name = "New Category"});
+            NativeInstrumentsResource.Categories.CategoryNames.Add(new Category {Name = "New Category"});
         }
 
         public TaskCommand ClearMappings { get; set; }
 
         private async Task OnClearMappingsExecute()
         {
-            Plugin.DefaultControllerAssignments = null;
+            
+            DefaultControllerAssignments = null;
             GenerateControllerMappingModels();
         }
 
@@ -560,7 +577,7 @@ namespace PresetMagician.ViewModels
                 NKSFRiff n = new NKSFRiff();
                 n.Read(fileStream);
 
-                Plugin.DefaultControllerAssignments =
+                DefaultControllerAssignments =
                     n.kontaktSound.controllerAssignments.controllerAssignments;
             }
 
@@ -576,9 +593,9 @@ namespace PresetMagician.ViewModels
 
             var controllerAssignmentPages = new ObservableCollection<ControllerAssignmentPage>();
 
-            if (Plugin.DefaultControllerAssignments != null)
+            if (DefaultControllerAssignments != null)
             {
-                foreach (var page in Plugin.DefaultControllerAssignments.controllerAssignments)
+                foreach (var page in DefaultControllerAssignments.controllerAssignments)
                 {
                     var controllerAssignmentPage = new ControllerAssignmentPage();
                     var titles = new List<string>();
@@ -586,7 +603,7 @@ namespace PresetMagician.ViewModels
                     {
                         var newControl = new ControllerAssignmentControl(control);
 
-                        if (control.section != null)
+                        if (!string.IsNullOrEmpty(control.section))
                         {
                             titles.Add(control.section);
                         }
@@ -603,7 +620,7 @@ namespace PresetMagician.ViewModels
                     if (titles.Count == 0)
                     {
                         controllerAssignmentPage.Title =
-                            $"Page {Plugin.DefaultControllerAssignments.controllerAssignments.IndexOf(page)}";
+                            $"Page {DefaultControllerAssignments.controllerAssignments.IndexOf(page)}";
                     }
                     else
                     {

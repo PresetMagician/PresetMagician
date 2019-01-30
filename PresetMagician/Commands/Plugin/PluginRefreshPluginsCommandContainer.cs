@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Anotar.Catel;
@@ -11,6 +12,7 @@ using Catel.Services;
 using Catel.Threading;
 using Drachenkatze.PresetMagician.Utils;
 using PresetMagician.Extensions;
+using PresetMagician.Models;
 using PresetMagician.ProcessIsolation;
 using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
@@ -20,12 +22,9 @@ using SharedModels;
 namespace PresetMagician
 {
     // ReSharper disable once UnusedMember.Global
-    public class PluginRefreshPluginsCommandContainer : CommandContainerBase
+    public class PluginRefreshPluginsCommandContainer : ApplicationNotBusyCommandContainer
     {
-        private static readonly ILog _logger = LogManager.GetCurrentClassLogger();
-
         private readonly IApplicationService _applicationService;
-        private readonly IRuntimeConfigurationService _runtimeConfigurationService;
         private readonly IVstService _vstService;
         private readonly IDispatcherService _dispatcherService;
         private readonly IMessageService _messageService;
@@ -35,16 +34,14 @@ namespace PresetMagician
             IVstService vstService, IRuntimeConfigurationService runtimeConfigurationService,
             IApplicationService applicationService, IDispatcherService dispatcherService,
             IMessageService messageService, IDatabaseService databaseService)
-            : base(Commands.Plugin.RefreshPlugins, commandManager)
+            : base(Commands.Plugin.RefreshPlugins, commandManager, runtimeConfigurationService)
         {
-            Argument.IsNotNull(() => runtimeConfigurationService);
             Argument.IsNotNull(() => vstService);
             Argument.IsNotNull(() => applicationService);
             Argument.IsNotNull(() => dispatcherService);
             Argument.IsNotNull(() => messageService);
             Argument.IsNotNull(() => databaseService);
 
-            _runtimeConfigurationService = runtimeConfigurationService;
             _dispatcherService = dispatcherService;
             _vstService = vstService;
             _applicationService = applicationService;

@@ -9,27 +9,24 @@ using PresetMagician.Services.Interfaces;
 namespace PresetMagician
 {
     // ReSharper disable once UnusedMember.Global
-    public class PluginToolsUnloadPluginCommandContainer : CommandContainerBase
+    public class PluginToolsUnloadPluginCommandContainer : ApplicationNotBusyCommandContainer
     {
-        private readonly IUIVisualizerService _uiVisualizerService;
         private readonly IVstService _vstService;
 
         public PluginToolsUnloadPluginCommandContainer(ICommandManager commandManager, IVstService vstService,
-            IUIVisualizerService uiVisualizerService)
-            : base(Commands.PluginTools.UnloadPlugin, commandManager)
+            IRuntimeConfigurationService runtimeConfigurationService)
+            : base(Commands.PluginTools.UnloadPlugin, commandManager, runtimeConfigurationService)
         {
             Argument.IsNotNull(() => vstService);
-            Argument.IsNotNull(() => uiVisualizerService);
 
             _vstService = vstService;
-            _uiVisualizerService = uiVisualizerService;
 
             _vstService.SelectedPlugins.CollectionChanged += OnSelectedPluginsListChanged;
         }
 
         protected override bool CanExecute(object parameter)
         {
-            return _vstService.SelectedPlugins.Count == 1;
+            return base.CanExecute(parameter) && _vstService.SelectedPlugins.Count == 1;
         }
 
         private void OnSelectedPluginsListChanged(object o, NotifyCollectionChangedEventArgs ev)

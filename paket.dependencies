@@ -54,3 +54,5 @@ nuget ksemenenko.ColorThief
 nuget CsvHelper
 nuget Costura.Fody
 nuget Standart.Hash.xxHash
+nuget Orc.EntityFramework6
+nuget Castle.Core

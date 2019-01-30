@@ -23,13 +23,9 @@ namespace PresetMagician.VstHost.VST
     {
         private string _dllPath;
         private Timer _shutdownTimer;
-        private VstHost _host;
         public bool BackgroundProcessing { get; set; }
 
-        public RemoteVstPlugin(VstHost host)
-        {
-            _host = host;
-        }
+     
 
         public string DllPath
         {
@@ -44,6 +40,7 @@ namespace PresetMagician.VstHost.VST
         public string DllFilename { get; set; } = "";
         public VstPluginContext PluginContext { get; set; }
         public bool IsEditorOpen { get; set; }
+        public bool IsLoaded { get; set; }
 
         private Window _editorWindow;
         private WindowInteropHelper _editorWindowHelper;

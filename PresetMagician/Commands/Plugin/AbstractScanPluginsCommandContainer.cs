@@ -26,9 +26,8 @@ using SharedModels;
 namespace PresetMagician
 {
     // ReSharper disable once UnusedMember.Global
-    public abstract class AbstractScanPluginsCommandContainer : CommandContainerBase
+    public abstract class AbstractScanPluginsCommandContainer : ApplicationNotBusyCommandContainer
     {
-        protected readonly IRuntimeConfigurationService _runtimeConfigurationService;
         protected readonly IVstService _vstService;
         protected readonly IApplicationService _applicationService;
         protected readonly IDispatcherService _dispatcherService;
@@ -46,16 +45,14 @@ namespace PresetMagician
             IApplicationService applicationService,
             IDispatcherService dispatcherService,
             IDatabaseService databaseService, INativeInstrumentsResourceGeneratorService resourceGeneratorService)
-            : base(command, commandManager)
+            : base(command, commandManager, runtimeConfigurationService)
         {
-            Argument.IsNotNull(() => runtimeConfigurationService);
             Argument.IsNotNull(() => vstService);
             Argument.IsNotNull(() => applicationService);
             Argument.IsNotNull(() => dispatcherService);
             Argument.IsNotNull(() => databaseService);
             Argument.IsNotNull(() => resourceGeneratorService);
 
-            _runtimeConfigurationService = runtimeConfigurationService;
             _vstService = vstService;
             _applicationService = applicationService;
             _dispatcherService = dispatcherService;
@@ -64,7 +61,6 @@ namespace PresetMagician
             _resourceGeneratorService = resourceGeneratorService;
 
             _vstService.Plugins.CollectionChanged += OnPluginsListChanged;
-            _runtimeConfigurationService.ApplicationState.PropertyChanged += OnAllowPluginScanChanged;
         }
 
         protected abstract List<Plugin> GetPluginsToScan();
@@ -72,13 +68,7 @@ namespace PresetMagician
 
         protected override bool CanExecute(object parameter)
         {
-            return _vstService.Plugins.Count > 0 &&
-                   _runtimeConfigurationService.ApplicationState.AllowPluginScan;
-        }
-
-        protected void OnAllowPluginScanChanged(object o, PropertyChangedEventArgs ev)
-        {
-            if (ev.PropertyName == nameof(ApplicationState.AllowPluginScan)) InvalidateCommand();
+            return base.CanExecute(parameter) && _vstService.Plugins.Count > 0;
         }
 
         protected void OnPluginsListChanged(object o, NotifyCollectionChangedEventArgs ev)
@@ -88,6 +78,7 @@ namespace PresetMagician
 
         protected override async Task ExecuteAsync(object parameter)
         {
+            var pluginsToScan = GetPluginsToScan();
             var cancellationToken = _applicationService.GetApplicationOperationCancellationSource().Token;
 
             var pluginsToRemove = new List<Plugin>();
@@ -169,10 +160,15 @@ namespace PresetMagician
                 foreach (var plugin in pluginsToRemove)
                 {
                     _vstService.Plugins.Remove(plugin);
+
+                    if (pluginsToScan.Contains(plugin))
+                    {
+                        pluginsToScan.Remove(plugin);
+                    }
                 }
             });
 
-            var pluginsToScan = GetPluginsToScan();
+            
 
             _applicationService.StartApplicationOperation(this, "Analyzing VST plugins",
                 pluginsToScan.Count);
@@ -269,7 +265,10 @@ namespace PresetMagician
                             _applicationService.UpdateApplicationOperationStatus(
                                 pluginsToScan.IndexOf(plugin),
                                 $"Auto-generating resources for {plugin.DllFilename} - Opening Editor");
-
+                            if (!remotePluginInstance.IsLoaded)
+                            {
+                                await remotePluginInstance.LoadPlugin();
+                            }
                             remotePluginInstance.OpenEditorHidden();
                             _dispatcherService.Invoke(() => Application.Current.MainWindow.BringWindowToTop());
                             await Task.Delay(1000);

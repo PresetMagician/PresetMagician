@@ -10,10 +10,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 {
     public static class VendorPresetParser
     {
-        public static Dictionary<int, IVendorPresetParser> GetPresetHandlerList()
+        public static Dictionary<int, IVendorPresetParser> GetPresetHandlerListByPlugin()
         {
             var pluginHandlers = new Dictionary<int, IVendorPresetParser>();
-
 
             foreach (var parser in GetPresetParsers())
             {
@@ -26,16 +25,16 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             return pluginHandlers;
         }
 
-        private static List<IVendorPresetParser> _presetParsers;
+        private static List<IVendorPresetParser> _presetParsersCache;
 
         public static List<IVendorPresetParser> GetPresetParsers()
         {
-            if (_presetParsers != null)
+            if (_presetParsersCache != null)
             {
-                return _presetParsers;
+                return _presetParsersCache;
             }
 
-            _presetParsers = new List<IVendorPresetParser>();
+            _presetParsersCache = new List<IVendorPresetParser>();
 
             var interfaceType = typeof(IVendorPresetParser);
 
@@ -46,11 +45,11 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
             foreach (var parser in types)
             {
-                IVendorPresetParser instance = (IVendorPresetParser) Activator.CreateInstance(parser);
-                _presetParsers.Add(instance);
+                var instance = (IVendorPresetParser) Activator.CreateInstance(parser);
+                _presetParsersCache.Add(instance);
             }
 
-            return _presetParsers;
+            return _presetParsersCache;
         }
 
         [Time]
@@ -58,11 +57,27 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         {
             pluginInstance.Plugin.Logger.Debug("Resolving Preset Parser");
 
-            var orderedPresetParsers = GetPresetParsers().ToList();
+            var list = GetPresetHandlerListByPlugin();
+            if (list.ContainsKey(pluginInstance.Plugin.PluginId))
+            {
+                var directlyFoundParser = list[pluginInstance.Plugin.PluginId];
+                directlyFoundParser.PluginInstance = pluginInstance;
+                directlyFoundParser.Init();
+                
+                if (directlyFoundParser.CanHandle())
+                {
+                    pluginInstance.Plugin.Logger.Debug("Directly found PresetHandler {0}",
+                        directlyFoundParser.PresetParserType);
 
+                    return directlyFoundParser;
+                }
+            }
+            
+            var orderedPresetParsers = GetPresetParsers();
 
             foreach (var parser in orderedPresetParsers)
             {
+                parser.PluginInstance = pluginInstance;
                 parser.Init();
 
                 if (parser.IsNullParser)
@@ -70,15 +85,15 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
                     continue;
                 }
 
-                parser.PluginInstance = pluginInstance;
-
-                if (parser.CanHandle())
+                if (!parser.CanHandle())
                 {
-                    pluginInstance.Plugin.Logger.Debug("Using PresetHandler {0}",
-                        parser.PresetParserType);
-
-                    return parser;
+                    continue;
                 }
+
+                pluginInstance.Plugin.Logger.Debug("Using PresetHandler {0}",
+                    parser.PresetParserType);
+
+                return parser;
             }
 
             pluginInstance.Plugin.Logger.Debug("No PresetHandler found, using NullPresetParser");

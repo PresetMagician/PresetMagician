@@ -6,21 +6,22 @@ using Catel;
 using Catel.MVVM;
 using Catel.Services;
 using PresetMagician.Services;
+using PresetMagician.Services.Interfaces;
 using Syroot.Windows.IO;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
 {
     // ReSharper disable once UnusedMember.Global
-    public class ToolsUpdateLicenseCommandContainer : CommandContainerBase
+    public class ToolsUpdateLicenseCommandContainer : ApplicationNotBusyCommandContainer
     {
         private readonly IOpenFileService _openFileService;
         private readonly ILicenseService _licenseService;
         private readonly IMessageService _messageService;
 
         public ToolsUpdateLicenseCommandContainer(IOpenFileService openFileService, ILicenseService licenseService,
-            IMessageService messageService, ICommandManager commandManager)
-            : base(Commands.Tools.UpdateLicense, commandManager)
+            IMessageService messageService, ICommandManager commandManager, IRuntimeConfigurationService runtimeConfigurationService)
+            : base(Commands.Tools.UpdateLicense, commandManager, runtimeConfigurationService)
         {
             Argument.IsNotNull(() => openFileService);
             Argument.IsNotNull(() => licenseService);

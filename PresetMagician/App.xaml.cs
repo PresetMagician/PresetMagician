@@ -43,6 +43,16 @@ namespace PresetMagician
 #endif
         }
 
+        private ILogListener _debugListener;
+
+        public void SetCatelLogging(bool enable)
+        {
+            if (_debugListener != null)
+            {
+                _debugListener.IgnoreCatelLogging = !enable;
+            }
+        }
+        
         protected override async void OnStartup(StartupEventArgs e)
         {
             var languageService = ServiceLocator.Default.ResolveType<ILanguageService>();
@@ -50,7 +60,7 @@ namespace PresetMagician
             languageService.FallbackCulture = new CultureInfo("en-US");
 
 #if DEBUG
-            LogManager.AddDebugListener(true);
+            _debugListener = LogManager.AddDebugListener(true);
 #endif
 
             var fileLogListener = new FileLogListener

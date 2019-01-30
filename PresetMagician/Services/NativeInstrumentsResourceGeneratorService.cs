@@ -9,6 +9,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Catel.Logging;
 using ColorThiefDotNet;
 using MethodTimer;
 using PresetMagician.Models.NativeInstrumentsResources;
@@ -20,7 +21,7 @@ using Color = System.Windows.Media.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
 using Point = System.Windows.Point;
 using Size = System.Drawing.Size;
-
+using NiResourceColor = SharedModels.NativeInstrumentsResources.Color;
 namespace PresetMagician.Services
 {
     public class NativeInstrumentsResourceGeneratorService : INativeInstrumentsResourceGeneratorService
@@ -109,8 +110,58 @@ namespace PresetMagician.Services
             Image bmp;
             var niResource = pluginInstance.Plugin.NativeInstrumentsResource;
 
+            if (niResource.ShortNamesState.State ==
+                NativeInstrumentsResource.ResourceStates.Empty || force)
+            {
+                niResource.ShortNames.VB_shortname = pluginInstance.Plugin.PluginName;
+                niResource.ShortNames.MKII_shortname = pluginInstance.Plugin.PluginName;
+                niResource.ShortNames.MIKRO_shortname = pluginInstance.Plugin.PluginName;
+                niResource.ShortNames.MST_shortname = pluginInstance.Plugin.PluginName;
+                niResource.ShortNamesState.State = NativeInstrumentsResource.ResourceStates.AutomaticallyGenerated;
+            }
+
+            if (niResource.CategoriesState.State == NativeInstrumentsResource.ResourceStates.Empty || force)
+            {
+                niResource.Categories.CategoryNames.Clear();
+                var categoryDb = new CategoryDB
+                {
+                    FileType = pluginInstance.Plugin.PluginType == Plugin.PluginTypes.Instrument ? "INST" : "FX"
+                };
+
+                niResource.Categories.CategoryDB.Add(categoryDb);
+                niResource.Categories.Vendor = pluginInstance.Plugin.PluginVendor;
+                niResource.Categories.Product = pluginInstance.Plugin.PluginName;
+                niResource.CategoriesState.State = NativeInstrumentsResource.ResourceStates.AutomaticallyGenerated;
+            }
+            
+            var pluginName = pluginInstance.Plugin.PluginName;
+            var pluginVendor = pluginInstance.Plugin.PluginVendor;
+            
+            niResource.MST_logo.ReplaceFromStream(
+                RenderBigLogo(pluginName, pluginVendor, niResource.MST_logo.TargetSize, 35, 12),
+                NativeInstrumentsResource.ResourceStates.AutomaticallyGenerated);
+
+            niResource.VB_logo.ReplaceFromStream(
+                RenderLogo(pluginName, niResource.VB_logo.TargetSize, 30, new Point(7, 2)),
+                NativeInstrumentsResource.ResourceStates.AutomaticallyGenerated);
+
+            niResource.OSO_logo.ReplaceFromStream(
+                RenderLogo(pluginName, niResource.OSO_logo.TargetSize, 43, new Point(7, 2)),
+                NativeInstrumentsResource.ResourceStates.AutomaticallyGenerated);
+
+           
+            niResource.Color.SetRandomColor();
+            niResource.ColorState.State = NativeInstrumentsResource.ResourceStates.AutomaticallyGenerated;
+            
             if (!ShouldCreateScreenshot(pluginInstance) && !force)
             {
+                return;
+            }
+
+            if (!pluginInstance.IsEditorOpen)
+            {
+                // todo: create dummy image and generate random color
+                pluginInstance.Plugin.Logger.Error("Tried to create a screenshot, but the editor was not open (maybe the plugin denied to open the editor)");
                 return;
             }
 
@@ -125,11 +176,10 @@ namespace PresetMagician.Services
             }
             else
             {
+                // todo: create dummy image and generate random color
+                pluginInstance.Plugin.Logger.Error("Failed to acquire screenshot.");
                 return;
             }
-
-            var pluginName = pluginInstance.Plugin.PluginName;
-            var pluginVendor = pluginInstance.Plugin.PluginVendor;
 
             niResource.VB_artwork.ReplaceFromStream(GetScaledBitmap(bmp, niResource.VB_artwork.TargetSize),
                 NativeInstrumentsResource.ResourceStates.AutomaticallyGenerated);
@@ -141,19 +191,8 @@ namespace PresetMagician.Services
 
             niResource.Color.BackgroundColor = DetectBestColor((Bitmap) bmp);
 
-            niResource.MST_logo.ReplaceFromStream(
-                RenderBigLogo(pluginName, pluginVendor, niResource.MST_logo.TargetSize, 35, 12),
-                NativeInstrumentsResource.ResourceStates.AutomaticallyGenerated);
-
-            niResource.VB_logo.ReplaceFromStream(
-                RenderLogo(pluginName, niResource.VB_logo.TargetSize, 30, new Point(7, 2)),
-                NativeInstrumentsResource.ResourceStates.AutomaticallyGenerated);
-
-            niResource.OSO_logo.ReplaceFromStream(
-                RenderLogo(pluginName, niResource.OSO_logo.TargetSize, 43, new Point(7, 2)),
-                NativeInstrumentsResource.ResourceStates.AutomaticallyGenerated);
+            
         }
-
 
         [Time]
         private static MemoryStream RenderLogo(string pluginName, Size targetSize, int fontSize, Point offset)
@@ -281,7 +320,7 @@ namespace PresetMagician.Services
                     darkWeight = 0.3;
                 }
 
-                if (col.GetBrightness() > 0.7)
+                if (col.GetBrightness() > 0.5)
                 {
                     darkWeight = 0;
                 }
@@ -304,7 +343,7 @@ namespace PresetMagician.Services
 
             var bestColor = orderedColors.FirstOrDefault();
 
-            var resultColor = Colors.Transparent;
+            var resultColor = NiResourceColor.GetRandomColor();
 
             if (bestColor == null)
             {

@@ -149,42 +149,17 @@
 
                 <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
                     <xctk:IntegerUpDown Width="200" Height="20" MaxWidth="200"
-                                        Value="{Binding Plugin.AudioPreviewPreDelay}"
+                                        Value="{Binding AudioPreviewPreDelay}"
                                         Watermark="Pre-Delay after loading preset (empty=default)" />
                     <TextBlock>Default from preset parser:</TextBlock>
                     <TextBlock Text="{Binding Plugin.PresetParser.AudioPreviewPreDelay}" />
                 </StackPanel>
 
                 <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
-                    <StackPanel.Style>
-                    <Style TargetType="{x:Type StackPanel}">
-                        <Setter Property="Visibility" Value="Collapsed" />
-                        <Style.Triggers>
-                            <DataTrigger
-                                Binding="{Binding Plugin.PresetParser.SupportsAdditionalBankFiles}"
-                                Value="True">
-                                <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                    </StackPanel.Style>
                     <Label Content="Additional Banks/Presets" />
                 </StackPanel>
 
                 <Grid Grid.Row="1" Grid.Column="1">
-                    <Grid.Style>
-                        <Style TargetType="{x:Type Grid}">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                            <Style.Triggers>
-                                <DataTrigger
-                                    Binding="{Binding Plugin.PresetParser.SupportsAdditionalBankFiles}"
-                                    Value="True">
-                                    <Setter Property="Visibility" Value="Visible" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Grid.Style>
-                        
                     <Grid.RowDefinitions>
                         <RowDefinition Height="250" />
                         <RowDefinition Height="Auto" />
@@ -192,7 +167,7 @@
                     <DataGrid
                         Grid.Row="0"
                         x:Name="AdditionalBankFiles"
-                        ItemsSource="{Binding Plugin.AdditionalBankFiles}">
+                        ItemsSource="{Binding AdditionalBankFiles}">
 
                         <DataGrid.Columns>
                             <DataGridTextColumn
@@ -327,7 +302,7 @@
 
                 <GroupBox Header="Background Color" Grid.Row="0" Grid.Column="0">
                     <xctk:ColorPicker x:Name="BackgroundColor" Height="22" Width="150"
-                                      SelectedColor="{Binding Plugin.NativeInstrumentsResource.Color.BackgroundColor}"
+                                      SelectedColor="{Binding NativeInstrumentsResource.Color.BackgroundColor}"
                                       ColorMode="ColorCanvas"
                                       DisplayColorAndName="True"
                                       MaxDropDownWidth="250"
@@ -353,19 +328,19 @@
 
                     <Label Grid.Row="0" Grid.Column="0" Content="Visual Browser" />
                     <TextBox Grid.Row="0" Grid.Column="1"
-                             Text="{Binding Plugin.NativeInstrumentsResource.ShortNames.VB_shortname}" />
+                             Text="{Binding NativeInstrumentsResource.ShortNames.VB_shortname}" />
 
                     <Label Grid.Row="1" Grid.Column="0" Content="Maschine Studio" />
                     <TextBox Grid.Row="1" Grid.Column="1"
-                             Text="{Binding Plugin.NativeInstrumentsResource.ShortNames.MST_shortname}" />
+                             Text="{Binding NativeInstrumentsResource.ShortNames.MST_shortname}" />
 
                     <Label Grid.Row="2" Grid.Column="0" Content="Maschine Mikro" />
                     <TextBox Grid.Row="2" Grid.Column="1"
-                             Text="{Binding Plugin.NativeInstrumentsResource.ShortNames.MIKRO_shortname}" />
+                             Text="{Binding NativeInstrumentsResource.ShortNames.MIKRO_shortname}" />
 
                     <Label Grid.Row="3" Grid.Column="0" Content="Maschine MK1/MK2" />
                     <TextBox Grid.Row="3" Grid.Column="1"
-                             Text="{Binding Plugin.NativeInstrumentsResource.ShortNames.MKII_shortname}" />
+                             Text="{Binding NativeInstrumentsResource.ShortNames.MKII_shortname}" />
                 </Grid>
                     </GroupBox>
 
@@ -378,7 +353,7 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <DataGrid Grid.Row="0" x:Name="CategoryNames"
-                              ItemsSource="{Binding Plugin.NativeInstrumentsResource.Categories.CategoryNames}"
+                              ItemsSource="{Binding NativeInstrumentsResource.Categories.CategoryNames}"
                               IsReadOnly="False">
                         <DataGrid.Columns>
                             <DataGridTextColumn
@@ -430,9 +405,9 @@
                             <GroupBox Header="Logo">
                                 <WrapPanel Orientation="Vertical">
                                     <StackPanel Width="324" Height="47" Margin="0"
-                                                Background="{Binding Plugin.NativeInstrumentsResource.Color.BackgroundColor, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}">
+                                                Background="{Binding NativeInstrumentsResource.Color.BackgroundColor, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}">
                                         <Image Margin="0" Width="279" Height="47"
-                                               Source="{Binding Plugin.NativeInstrumentsResource.VB_logo.Image}"
+                                               Source="{Binding NativeInstrumentsResource.VB_logo.Image}"
                                                HorizontalAlignment="Left" />
                                     </StackPanel>
                                     <Button Command="{Binding ReplaceVBLogo}" Content="Replace Logo (279x47 pixels)" />
@@ -441,7 +416,7 @@
                             <GroupBox Header="Artwork">
                                 <WrapPanel Orientation="Vertical">
                             <Image Margin="0" Width="96" Height="47"
-                                   Source="{Binding Plugin.NativeInstrumentsResource.VB_artwork.Image}" HorizontalAlignment="Left" />
+                                   Source="{Binding NativeInstrumentsResource.VB_artwork.Image}" HorizontalAlignment="Left" />
                             <Button Command="{Binding ReplaceVBArtwork}" Content="Replace Artwork (96x47 pixels)" />
                             </WrapPanel>
                             </GroupBox>
@@ -460,9 +435,9 @@
                             <GroupBox Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Header="Logo">
                                 <WrapPanel Orientation="Vertical">
                                     <StackPanel Width="240" Height="196" Margin="0"
-                                                Background="{Binding Plugin.NativeInstrumentsResource.Color.BackgroundColor, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}">
+                                                Background="{Binding NativeInstrumentsResource.Color.BackgroundColor, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}">
                                         <Image Margin="0" Width="240" Height="196"
-                                               Source="{Binding Plugin.NativeInstrumentsResource.MST_logo.Image}"
+                                               Source="{Binding NativeInstrumentsResource.MST_logo.Image}"
                                                HorizontalAlignment="Left" />
                                     </StackPanel>
                                     <Button Command="{Binding ReplaceMSTLogo}" Content="Replace Logo (240x196 pixels)" />
@@ -471,14 +446,14 @@
                             <GroupBox  Grid.Column="1" Grid.Row="0" Header="Artwork">
                                 <WrapPanel Orientation="Vertical">
                                     <Image Margin="0" Width="134" Height="66"
-                                           Source="{Binding Plugin.NativeInstrumentsResource.MST_artwork.Image}" HorizontalAlignment="Left" />
+                                           Source="{Binding NativeInstrumentsResource.MST_artwork.Image}" HorizontalAlignment="Left" />
                                     <Button Command="{Binding ReplaceMSTArtwork}" Content="Replace Artwork (134x66 pixels)" />
                                 </WrapPanel>
                             </GroupBox>
                             <GroupBox  Grid.Column="1" Grid.Row="1" Header="Plugin">
                                 <WrapPanel Orientation="Vertical">
                                     <Image Margin="0" Width="127" Height="70"
-                                           Source="{Binding Plugin.NativeInstrumentsResource.MST_plugin.Image}" HorizontalAlignment="Left" />
+                                           Source="{Binding NativeInstrumentsResource.MST_plugin.Image}" HorizontalAlignment="Left" />
                                     <Button Command="{Binding ReplaceMSTPlugin}" Content="Replace Plugin Artwork (127x70 pixels)" />
                                 </WrapPanel>
                             </GroupBox>
@@ -489,9 +464,9 @@
                             <GroupBox Header="Logo">
                                 <WrapPanel Orientation="Vertical">
                                     <StackPanel Width="417" Height="65" Margin="0"
-                                                Background="{Binding Plugin.NativeInstrumentsResource.Color.BackgroundColor, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}">
+                                                Background="{Binding NativeInstrumentsResource.Color.BackgroundColor, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}">
                                         <Image Margin="0" Width="417" Height="65"
-                                               Source="{Binding Plugin.NativeInstrumentsResource.OSO_logo.Image}"
+                                               Source="{Binding NativeInstrumentsResource.OSO_logo.Image}"
                                                HorizontalAlignment="Left" />
                                     </StackPanel>
                                     <Button Command="{Binding ReplaceOSOLogo}" Content="Replace Logo (417x65 pixels)" />

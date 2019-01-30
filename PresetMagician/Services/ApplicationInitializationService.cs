@@ -67,16 +67,21 @@ namespace PresetMagician.Services
             RegisterTypes();
             _splashScreenService.Action = "Initializing database…";
             InitDatabase();
+            
+            _splashScreenService.Action = "Loading configuration…";
+            LoadConfiguration();
 
-            _splashScreenService.Action = "Initializing commands…";
+            _splashScreenService.Action = "Loading database…";
             InitializeCommands();
+            
+            _splashScreenService.Action = "Almost there…";
         }
+        
 
         [Time]
         public override async Task InitializeBeforeShowingShellAsync()
         {
-            _splashScreenService.Action = "Loading configuration…";
-            LoadConfiguration();
+            
             ServiceLocator.Default.ResolveType<IApplicationService>().StartProcessPool();
         }
 
@@ -94,8 +99,9 @@ namespace PresetMagician.Services
 
             TaskHelper.Run(() =>
             {
-                CheckForUpdatesAsync();
                 _commandManager.ExecuteCommand(Commands.Plugin.RefreshPlugins);
+                CheckForUpdatesAsync();
+                
             });
         }
 
@@ -199,6 +205,7 @@ namespace PresetMagician.Services
             serviceLocator.RegisterType<IVstService, VstService>();
             serviceLocator.RegisterType<IApplicationService, ApplicationService>();
             serviceLocator.RegisterType<IDatabaseService, DatabaseService>();
+            serviceLocator.RegisterType<IAdvancedMessageService, AdvancedMessageService>();
             serviceLocator
                 .RegisterType<INativeInstrumentsResourceGeneratorService, NativeInstrumentsResourceGeneratorService>();
         }

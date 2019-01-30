@@ -1,8 +1,9 @@
+using Catel.Data;
 using PresetMagician.Models.NativeInstrumentsResources;
 
 namespace SharedModels.NativeInstrumentsResources
 {
-    public class ResourceState
+    public class ResourceState: DispatcherObservableObject
     {
         private NativeInstrumentsResource.ResourceStates
             _resourceState = NativeInstrumentsResource.ResourceStates.Empty;

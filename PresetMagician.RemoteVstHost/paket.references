@@ -1,4 +1,7 @@
 Catel.Core
+Catel.MVVM
 Anotar.Catel.Fody copy_local: false
 Fody
 Newtonsoft.Json
+MethodTimer.Fody copy_local: false
+PropertyChanged.Fody copy_local: false

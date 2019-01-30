@@ -49,6 +49,14 @@
                                 CanHide="False">
                                 <orclogviewer:AdvancedLogViewerControl IgnoreCatelLogging="True" />
                             </xcad:LayoutAnchorable>
+                            <xcad:LayoutAnchorable
+                                Title="VST worker pool"
+                                AutoHideMinHeight="300"
+                                CanClose="False"
+                                CanFloat="False"
+                                CanHide="False">
+                                <local:VstWorkerPoolView />
+                            </xcad:LayoutAnchorable>
                         </xcad:LayoutAnchorGroup>
                     </xcad:LayoutAnchorSide>
                 </xcad:LayoutRoot.BottomSide>

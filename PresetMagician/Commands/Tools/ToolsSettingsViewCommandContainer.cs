@@ -10,15 +10,12 @@ namespace PresetMagician
     // ReSharper disable once UnusedMember.Global
     public class ToolsSettingsViewCommandContainer : AbstractOpenDialogCommandContainer
     {
-        private readonly IRuntimeConfigurationService _runtimeConfigurationService;
-
         public ToolsSettingsViewCommandContainer(IRuntimeConfigurationService runtimeConfigurationService,
             ICommandManager commandManager, IUIVisualizerService uiVisualizerService,
             IViewModelFactory viewModelFactory)
-            : base(Commands.Tools.SettingsView, nameof(SettingsViewModel), commandManager, uiVisualizerService,
+            : base(Commands.Tools.SettingsView, nameof(SettingsViewModel), false, commandManager, uiVisualizerService, runtimeConfigurationService,
                 viewModelFactory)
         {
-            _runtimeConfigurationService = runtimeConfigurationService;
         }
 
         protected override async Task ExecuteAsync(object parameter)

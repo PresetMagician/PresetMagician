@@ -10,3 +10,5 @@ EntityFramework
 System.Data.SQLite
 SQLite.CodeFirst
 EFInteractiveViews
+Orc.EntityFramework6
+MethodTimer.Fody copy_local: false

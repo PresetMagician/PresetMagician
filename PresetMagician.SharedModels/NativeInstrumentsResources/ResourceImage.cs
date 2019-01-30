@@ -1,9 +1,15 @@
 using System;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Media.Imaging;
+using System.Xml.Serialization;
 using Anotar.Catel;
 using Catel.Data;
+using Catel.Fody;
+using Catel.Runtime.Serialization;
 using PresetMagician.Models.NativeInstrumentsResources;
 
 namespace SharedModels.NativeInstrumentsResources
@@ -11,7 +17,6 @@ namespace SharedModels.NativeInstrumentsResources
     public class ResourceImage : ModelBase
     {
         public ResourceState State { get; } = new ResourceState();
-
 
         public ResourceImage(int width, int height, string fileName)
         {
@@ -22,14 +27,65 @@ namespace SharedModels.NativeInstrumentsResources
             Filename = fileName;
             var bitmapImage = new BitmapImage(
                 new Uri("pack://application:,,,/PresetMagician.SharedModels;component/Resources/Images/empty.png"));
+            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
             bitmapImage.Freeze();
             Image = bitmapImage;
+
+        }
+
+        private ResourceImage()
+        {
+           
         }
 
 
-        public BitmapImage Image { get; set; } 
+        [ExcludeFromBackup]
+        public BitmapImage Image { get; set; }
 
-        public MemoryStream ImageStream { get; set; } = new MemoryStream();
+        private byte[] GetImageData()
+        {
+            if (Image == null) return null;
+            var ms = new MemoryStream();
+            var encoder = new PngBitmapEncoder();
+            BitmapFrame frame = BitmapFrame.Create(Image);
+            encoder.Frames.Add(frame);
+            encoder.Save(ms);
+            return ms.ToArray();
+        }
+
+        protected override void OnSerializing()
+        {
+            if (Image == null) return;
+
+            _serializedImage = GetImageData();
+            base.OnSerializing();
+        }
+
+        protected override void OnDeserialized()
+        {
+            base.OnDeserialized();
+            if (_serializedImage != null ) {
+                using (MemoryStream ms = new MemoryStream(_serializedImage))
+                {
+                    var tmpImage = new BitmapImage();
+                    tmpImage.BeginInit();
+                    tmpImage.CacheOption = BitmapCacheOption.OnLoad;
+                    tmpImage.BaseUri = null;
+                    tmpImage.StreamSource = ms;
+                    tmpImage.EndInit();
+                    tmpImage.Freeze();
+
+                    Image = tmpImage;
+                }
+            }
+
+            
+        }
+
+        [IncludeInSerialization]
+        private byte[] _serializedImage { get; set; }
+      
+
         public Size TargetSize { get; set; }
         public string Filename { get; set; }
 
@@ -37,19 +93,17 @@ namespace SharedModels.NativeInstrumentsResources
             NativeInstrumentsResource.ResourceStates resourceState = NativeInstrumentsResource.ResourceStates.FromDisk)
         {
             State.State = resourceState;
-            ImageStream.SetLength(0);
-
-            var bytes = File.ReadAllBytes(fileName);
-            ImageStream.Write(bytes, 0, bytes.Length);
-            ImageStream.Seek(0, SeekOrigin.Begin);
-
             var tmpImage = new BitmapImage();
-            tmpImage.BeginInit();
-            tmpImage.BaseUri = null;
-            tmpImage.StreamSource = ImageStream;
-            tmpImage.EndInit();
-            tmpImage.Freeze();
-
+            using (var fs = new FileStream(fileName, FileMode.Open))
+            {
+                tmpImage.BeginInit();
+                tmpImage.CacheOption = BitmapCacheOption.OnLoad;
+                tmpImage.BaseUri = null;
+                tmpImage.StreamSource = fs;
+                tmpImage.EndInit();
+                tmpImage.Freeze();
+            }
+          
             Image = tmpImage;
         }
 
@@ -57,18 +111,18 @@ namespace SharedModels.NativeInstrumentsResources
             NativeInstrumentsResource.ResourceStates resourceState = NativeInstrumentsResource.ResourceStates.FromWeb)
         {
             State.State = resourceState;
-            ImageStream.SetLength(0);
-
-            var bytes = Convert.FromBase64String(base64);
-            ImageStream.Write(bytes, 0, bytes.Length);
-            ImageStream.Seek(0, SeekOrigin.Begin);
-
+           
             var tmpImage = new BitmapImage();
-            tmpImage.BeginInit();
-            tmpImage.BaseUri = null;
-            tmpImage.StreamSource = ImageStream;
-            tmpImage.EndInit();
-            tmpImage.Freeze();
+            
+            using (var ms = new MemoryStream(Convert.FromBase64String(base64)))
+            {
+                tmpImage.BeginInit();
+                tmpImage.CacheOption = BitmapCacheOption.OnLoad;
+                tmpImage.BaseUri = null;
+                tmpImage.StreamSource = ms;
+                tmpImage.EndInit();
+                tmpImage.Freeze();
+            }
 
             Image = tmpImage;
         }
@@ -76,16 +130,12 @@ namespace SharedModels.NativeInstrumentsResources
         public void ReplaceFromStream(MemoryStream memoryStream, NativeInstrumentsResource.ResourceStates resourceState)
         {
             State.State = resourceState;
-            ImageStream.SetLength(0);
-            memoryStream.Seek(0, SeekOrigin.Begin);
-            memoryStream.CopyTo(ImageStream);
-
-            ImageStream.Seek(0, SeekOrigin.Begin);
-
+           
             var tmpImage = new BitmapImage();
             tmpImage.BeginInit();
+            tmpImage.CacheOption = BitmapCacheOption.OnLoad;
             tmpImage.BaseUri = null;
-            tmpImage.StreamSource = ImageStream;
+            tmpImage.StreamSource = memoryStream;
             tmpImage.EndInit();
             tmpImage.Freeze();
 
@@ -94,7 +144,7 @@ namespace SharedModels.NativeInstrumentsResources
 
         public string ToBase64()
         {
-            return Convert.ToBase64String(ImageStream.ToArray());
+            return Convert.ToBase64String(GetImageData());
         }
 
         public void Save(string baseDirectory)
@@ -107,7 +157,7 @@ namespace SharedModels.NativeInstrumentsResources
                 return;
             }
 
-            File.WriteAllBytes(fullFile, ImageStream.ToArray());
+            File.WriteAllBytes(fullFile, GetImageData());
             State.State = NativeInstrumentsResource.ResourceStates.FromDisk;
         }
 

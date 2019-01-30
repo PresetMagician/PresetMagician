@@ -137,6 +137,7 @@ namespace PresetMagician.VstHost.VST
             ctx.PluginCommandStub.StartProcess();
 
             Debug.WriteLine($"{remoteVst.DllFilename}: adding to list");
+            remoteVst.IsLoaded = true;
         }
 
         public static void IdleLoop(IVstPluginContext ctx, int loops)
@@ -240,6 +241,7 @@ namespace PresetMagician.VstHost.VST
                     Debug.WriteLine($"{remoteVst.DllFilename}: starting shutdown");
                     remoteVst.PluginContext?.PluginCommandStub.Close();
                     remoteVst.PluginContext = null;
+                    remoteVst.IsLoaded = false;
                 }
             }
         }

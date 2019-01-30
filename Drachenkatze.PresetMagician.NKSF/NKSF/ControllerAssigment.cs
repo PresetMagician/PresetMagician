@@ -1,19 +1,21 @@
 ﻿using System;
+using Catel.Data;
 using MessagePack;
 
 namespace Drachenkatze.PresetMagician.NKSF.NKSF
 {
     [MessagePackObject]
+    [Serializable]
     public class ControllerAssignment
     {
-        [Key("autoname")] public Boolean autoname { get; set; }
+        [Key("autoname")] public bool autoname { get; set; }
 
         [Key("id")] public int? id { get; set; }
 
-        [Key("name")] public String name { get; set; }
+        [Key("name")] public string name { get; set; }
 
-        [Key("vflag")] public Boolean vflag { get; set; }
+        [Key("vflag")] public bool vflag { get; set; }
 
-        [Key("section")] public String section { get; set; }
+        [Key("section")] public string section { get; set; }
     }
 }

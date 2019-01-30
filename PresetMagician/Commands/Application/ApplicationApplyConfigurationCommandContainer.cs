@@ -9,17 +9,15 @@ using PresetMagician.Services.Interfaces;
 namespace PresetMagician
 {
     // ReSharper disable once UnusedMember.Global
-    public class ApplicationApplyConfigurationCommandContainer : CommandContainerBase
+    public class ApplicationApplyConfigurationCommandContainer : ApplicationNotBusyCommandContainer
     {
-        private readonly IRuntimeConfigurationService _runtimeConfigurationService;
         private readonly ICommandManager _commandManager;
 
         public ApplicationApplyConfigurationCommandContainer(ICommandManager commandManager,
             IRuntimeConfigurationService runtimeConfigurationService)
-            : base(Commands.Application.ApplyConfiguration, commandManager)
+            : base(Commands.Application.ApplyConfiguration, commandManager, runtimeConfigurationService)
         {
             Argument.IsNotNull(() => runtimeConfigurationService);
-            _runtimeConfigurationService = runtimeConfigurationService;
             _commandManager = commandManager;
         }
 
@@ -28,7 +26,7 @@ namespace PresetMagician
             var currentConfiguration = _runtimeConfigurationService.RuntimeConfiguration;
             var newConfiguration = _runtimeConfigurationService.EditableConfiguration;
 
-            List<string> commandsList = new List<string>();
+            var commandsList = new List<string>();
 
             if (!_runtimeConfigurationService.IsConfigurationValueEqual(currentConfiguration.VstDirectories,
                 newConfiguration.VstDirectories))

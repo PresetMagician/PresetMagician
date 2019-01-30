@@ -12,7 +12,7 @@ namespace SharedModels
         Guid RegisterPlugin(string dllPath, bool backgroundProcessing = true);
 
         [OperationContract]
-        void LoadPlugin(Guid guid);
+        void LoadPlugin(Guid pluginGuid);
 
         [OperationContract]
         bool OpenEditorHidden(Guid pluginGuid);
@@ -24,10 +24,10 @@ namespace SharedModels
         byte[] CreateScreenshot(Guid pluginGuid);
 
         [OperationContract]
-        void ReloadPlugin(Guid guid);
+        void ReloadPlugin(Guid pluginGuid);
 
         [OperationContract]
-        void UnloadPlugin(Guid guid);
+        void UnloadPlugin(Guid pluginGuid);
 
         [OperationContract]
         bool Ping();
@@ -67,7 +67,7 @@ namespace SharedModels
         bool OpenEditor(Guid pluginGuid);
 
         [OperationContract]
-        string GetPluginHash(Guid guid);
+        string GetPluginHash(Guid pluginGuid);
 
         [OperationContract]
         int GetPluginVendorVersion(Guid pluginGuid);
@@ -76,5 +76,20 @@ namespace SharedModels
 
         [OperationContract]
         string GetEffectivePluginName(Guid pluginGuid);
+        
+        [OperationContract]
+        bool Exists (string file);
+        
+        [OperationContract]
+        long GetSize (string file);
+        
+        [OperationContract]
+        string GetHash (string file);
+        
+        [OperationContract]
+        byte[] GetContents (string file);
+        
+        [OperationContract]
+        void KillSelf ();
     }
 }

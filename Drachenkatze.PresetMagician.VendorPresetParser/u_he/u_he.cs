@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Catel.Collections;
 using Catel.Logging;
+using Drachenkatze.PresetMagician.Utils;
 using SharedModels;
 using Squirrel.Shell;
 using Type = SharedModels.Type;
@@ -31,7 +32,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
         {
 
             var count = H2PScanBanks(GetDataDirectoryName(), GetProductName(), false, false).GetAwaiter().GetResult();
-            count += H2PScanBanks(GetDataDirectoryName(), GetProductName(), false, false).GetAwaiter().GetResult();
+            count += H2PScanBanks(GetDataDirectoryName(), GetProductName(), true, false).GetAwaiter().GetResult();
 
             return count;
         }
@@ -39,7 +40,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
         public override async Task DoScan()
         {
             await H2PScanBanks(GetDataDirectoryName(), GetProductName(), false, true);
-            await H2PScanBanks(GetDataDirectoryName(), GetProductName(), false, true);
+            await H2PScanBanks(GetDataDirectoryName(), GetProductName(), true, true);
         }
 
         protected abstract string GetProductName();
@@ -71,7 +72,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
                 bankName = BankNameUser;
             }
 
-
             var bank = RootBank.CreateRecursive(bankName);
             var count = await H2PScanBank(bank, directoryInfo, persist);
             PluginInstance.Plugin.Logger.Debug($"End H2PScanBanks");
@@ -90,20 +90,21 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
                 {
                     continue;
                 }
-                PluginInstance.Plugin.Logger.Debug($"Parsing file {file.FullName}");
+                
+                var presetData = File.ReadAllBytes(file.FullName);
+                var sourceFile = file.FullName;
+
+                if (PluginInstance.Plugin.HasPreset(sourceFile, HashUtils.getIxxHash(presetData)))
+                {
+                    continue;
+                }
                 
                 var preset = new Preset
                 {
                     PresetName = file.Name.Replace(".h2p", ""), Plugin = PluginInstance.Plugin, PresetBank = bank,
-                    SourceFile = file.FullName
+                    SourceFile = sourceFile
                 };
-
-                var fs = file.OpenRead();
-
-                var presetData = new byte[fs.Length];
-                fs.Read(presetData, 0, (int) fs.Length);
-                fs.Close();
-
+               
                 var metadata = ExtractMetadata(Encoding.UTF8.GetString(presetData));
 
                 if (metadata.ContainsKey("Author"))
