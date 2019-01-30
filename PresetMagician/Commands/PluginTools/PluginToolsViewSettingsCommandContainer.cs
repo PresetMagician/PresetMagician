@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Catel;
 using Catel.MVVM;
 using Catel.Services;
+using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.ViewModels;
 using SharedModels;
@@ -12,26 +13,26 @@ using SharedModels;
 namespace PresetMagician
 {
     // ReSharper disable once UnusedMember.Global
-    public class PluginToolsViewSettingsCommandContainer : CommandContainerBase
+    public class PluginToolsViewSettingsCommandContainer : ApplicationNotBusyCommandContainer
     {
         private readonly IUIVisualizerService _uiVisualizerService;
         private readonly IVstService _vstService;
         private Plugin previouslySelectedPlugin;
 
         public PluginToolsViewSettingsCommandContainer(ICommandManager commandManager, IVstService vstService,
-            IUIVisualizerService uiVisualizerService
+            IUIVisualizerService uiVisualizerService,IRuntimeConfigurationService runtimeConfigurationService
         )
-            : base(Commands.PluginTools.ViewSettings, commandManager)
+            : base(Commands.PluginTools.ViewSettings, commandManager, runtimeConfigurationService)
         {
             Argument.IsNotNull(() => vstService);
             Argument.IsNotNull(() => uiVisualizerService);
 
             _vstService = vstService;
             _vstService.SelectedPlugins.CollectionChanged += OnSelectedPluginsListChanged;
-
             _uiVisualizerService = uiVisualizerService;
         }
-
+        
+     
         private void SelectedPluginOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             InvalidateCommand();
@@ -39,8 +40,9 @@ namespace PresetMagician
 
         protected override bool CanExecute(object parameter)
         {
-            return _vstService.SelectedPlugins.Count > 0 && _vstService.SelectedPlugin != null &&
-                   _vstService.SelectedPlugin.IsAnalyzed && _vstService.SelectedPlugin.IsPresent ;
+            return base.CanExecute(parameter) && _vstService.SelectedPlugins.Count > 0 &&
+                   _vstService.SelectedPlugin != null &&
+                   _vstService.SelectedPlugin.IsAnalyzed;
         }
 
         private void OnSelectedPluginsListChanged(object o, NotifyCollectionChangedEventArgs ev)

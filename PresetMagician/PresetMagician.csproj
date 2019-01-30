@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\ModuleInit.Fody\build\ModuleInit.Fody.props" Condition="Exists('..\packages\ModuleInit.Fody\build\ModuleInit.Fody.props')" Label="Paket"/>
-  <Import Project="..\packages\MethodTimer.Fody\build\MethodTimer.Fody.props" Condition="Exists('..\packages\MethodTimer.Fody\build\MethodTimer.Fody.props')" Label="Paket"/>
+  <Import Project="..\packages\ModuleInit.Fody\build\ModuleInit.Fody.props" Condition="Exists('..\packages\ModuleInit.Fody\build\ModuleInit.Fody.props')" Label="Paket" />
+  <Import Project="..\packages\MethodTimer.Fody\build\MethodTimer.Fody.props" Condition="Exists('..\packages\MethodTimer.Fody\build\MethodTimer.Fody.props')" Label="Paket" />
   <Import Project="..\packages\Costura.Fody\build\Costura.Fody.props" Condition="Exists('..\packages\Costura.Fody\build\Costura.Fody.props')" Label="Paket" />
-  <Import Project="..\packages\Catel.Fody\build\Catel.Fody.props" Condition="Exists('..\packages\Catel.Fody\build\Catel.Fody.props')" Label="Paket"/>
+  <Import Project="..\packages\Catel.Fody\build\Catel.Fody.props" Condition="Exists('..\packages\Catel.Fody\build\Catel.Fody.props')" Label="Paket" />
   <Import Project="..\packages\Anotar.Catel.Fody\build\Anotar.Catel.Fody.props" Condition="Exists('..\packages\Anotar.Catel.Fody\build\Anotar.Catel.Fody.props')" Label="Paket" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -94,6 +94,7 @@
     <Compile Include="Behaviors\MultiSelectBehavior.cs" />
     <Compile Include="Behaviors\TwoListSynchronizer.cs" />
     <Compile Include="Commands\AbstractOpenDialogCommandContainer.cs" />
+    <Compile Include="Commands\ApplicationNotBusyCommandContainer.cs" />
     <Compile Include="Commands\Application\ApplicationApplyConfigurationCommandContainer.cs" />
     <Compile Include="Commands\Application\ApplicationCancelOperationCommandContainer.cs" />
     <Compile Include="Commands\Application\ApplicationClearLastOperationErrorsCommandContainer.cs" />
@@ -122,7 +123,7 @@
     <Compile Include="Commands\Plugin\PluginScanPluginsCommandContainer.cs" />
     <Compile Include="Commands\PresetTools\PresetToolsShowPresetDataCommandContainer.cs" />
     <Compile Include="Commands\Preset\PresetActivatePresetViewCommandContainer.cs" />
-    <Compile Include="Commands\Preset\PresetApplyMidiNoteCommandContainer - Copy.cs" />
+    <Compile Include="Commands\Preset\PresetApplyMidiNoteCommandContainer.cs" />
     <Compile Include="Commands\Preset\PresetClearListCommandContainer.cs" />
     <Compile Include="Commands\Preset\PresetClearSelectedCommandContainer.cs" />
     <Compile Include="Commands\Preset\PresetExportCommandContainer.cs" />
@@ -130,13 +131,20 @@
     <Compile Include="Commands\Tools\ToolsSettingsViewCommandContainer.cs" />
     <Compile Include="Commands\Tools\ToolsUpdateLicenseCommandContainer.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="Controls\ProcessPoolGrid.xaml.cs">
+      <DependentUpon>ProcessPoolGrid.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\RibbonDataWindow.cs" />
     <Compile Include="Controls\TabControl.cs" />
+    <Compile Include="Converters\FormatKbSizeConverter.cs" />
+    <Compile Include="Converters\MessageButtonToCollapsingVisibilityConverter.cs" />
+    <Compile Include="Converters\MessageImageToTextConverter.cs" />
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Converters\VisibilityToBooleanConverter.cs" />
     <Compile Include="Extensions\CollectionExtensions.cs" />
     <Compile Include="Extensions\DispatcherExtensions.cs" />
     <Compile Include="Extensions\FrameworkExtensions.cs" />
+    <Compile Include="Extensions\GenericObjectFactoryExtensions.cs" />
     <Compile Include="Helpers\AvalonDockHelper.cs" />
     <Compile Include="Helpers\BindingProxy.cs" />
     <Compile Include="Helpers\ShellDimensionsHelper.cs" />
@@ -145,14 +153,16 @@
     <Compile Include="Models\ControllerAssignments\ControllerAssignmentPage.cs" />
     <Compile Include="Models\RuntimeConfiguration.cs" />
     <Compile Include="Models\Settings\VstDirectory.cs" />
-    <Compile Include="Program.cs"/>
+    <Compile Include="Program.cs" />
     <Compile Include="Services\AboutInfoService.cs" />
+    <Compile Include="Services\AdvancedMessageService.cs" />
     <Compile Include="Services\ApplicationAlreadyBusyException.cs" />
     <Compile Include="Services\ApplicationInitializationService.cs" />
     <Compile Include="Services\ApplicationService.cs" />
     <Compile Include="Services\CustomPleaseWaitService.cs" />
     <Compile Include="Services\CustomStatusService.cs" />
     <Compile Include="Services\DatabaseService.cs" />
+    <Compile Include="Services\Interfaces\IAdvancedMessageService.cs" />
     <Compile Include="Services\Interfaces\IApplicationService.cs" />
     <Compile Include="Services\Interfaces\ICustomStatusService.cs" />
     <Compile Include="Services\Interfaces\ILicenseService.cs" />
@@ -165,6 +175,7 @@
     <Compile Include="Services\Interfaces\IVstService.cs" />
     <Compile Include="Services\SplashScreenService.cs" />
     <Compile Include="Services\VstService.cs" />
+    <Compile Include="ViewModels\HelpLinkMessageBoxViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\NKSFViewModel.cs" />
     <Compile Include="ViewModels\PaneViewModel.cs" />
@@ -183,6 +194,10 @@
     <Compile Include="ViewModels\VstPluginInfoViewModel.cs" />
     <Compile Include="ViewModels\VstPluginsViewModel.cs" />
     <Compile Include="ViewModels\VstPluginViewModel.cs" />
+    <Compile Include="ViewModels\VstWorkerPoolViewModel.cs" />
+    <Compile Include="Views\HelpLinkMessageBox.xaml.cs">
+      <DependentUpon>HelpLinkMessageBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
     </Compile>
@@ -240,6 +255,9 @@
     <Compile Include="Views\VstPluginView.xaml.cs">
       <DependentUpon>VstPluginView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\VstWorkerPool.xaml.cs">
+      <DependentUpon>VstWorkerPoolView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Workers\ProgressUserState.cs" />
     <None Include="NBug.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -250,6 +268,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Controls\ProcessPoolGrid.xaml" />
     <Page Include="Templates\BusyTemplate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -290,6 +309,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\HelpLinkMessageBox.xaml" />
     <Page Include="Views\MainView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -343,6 +363,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\VstWorkerPoolView.xaml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ModuleInitializer.cs" />
@@ -453,6 +474,7 @@
     <Content Include="msvcr110.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="paket.references" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Choose>
@@ -490,6 +512,7 @@
     <Exec Command="..\packages\NuGet.CommandLine\tools\NuGet pack PresetMagician.nuspec -Version %(myAssemblyInfo.Version) -Properties Configuration=Release -OutputDirectory $(OutDir) -BasePath $(OutDir)" />
     <Exec Command="..\packages\squirrel.windows\tools\squirrel --no-delta --setupIcon=Resources/Icons/PresetMagician.ico --icon=Resources/Icons/PresetMagician.ico  --framework-version=net462 --releasify $(OutDir)PresetMagician.$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(3)).nupkg --releaseDir=$(SolutionDir)\Releases" />
   </Target>
+  <Import Project="..\common\ExtraCleanup.targets" />
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
@@ -1302,5 +1325,4 @@
   <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.osx\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_osx_targets).targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.osx\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_osx_targets).targets')" Label="Paket" />
   <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_xp\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_v110_xp_targets).targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_xp\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_v110_xp_targets).targets')" Label="Paket" />
   <Import Project="..\packages\System.Data.SQLite.Core\build\$(__paket__System_Data_SQLite_Core_targets).targets" Condition="Exists('..\packages\System.Data.SQLite.Core\build\$(__paket__System_Data_SQLite_Core_targets).targets')" Label="Paket" />
-  <Import Project="..\common\ExtraCleanup.targets"/>
 </Project>

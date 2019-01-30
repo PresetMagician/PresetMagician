@@ -7,6 +7,7 @@ using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
 using PresetMagician.ProcessIsolation;
+using PresetMagician.ProcessIsolation.Processes;
 using PresetMagician.Services.Interfaces;
 
 namespace PresetMagician.Services
@@ -16,42 +17,57 @@ namespace PresetMagician.Services
         private readonly IRuntimeConfigurationService _runtimeConfigurationService;
         private readonly ICustomStatusService _statusService;
         private readonly IPleaseWaitService _pleaseWaitService;
+        private readonly IAdvancedMessageService _messageService;
         private string _lastUpdateStatus;
         private ILog _log;
         public ProcessPool ProcessPool { get; }
+        public NewProcessPool NewProcessPool { get; }
 
         private readonly List<string> _applicationOperationErrors = new List<string>();
 
         public ApplicationService(IRuntimeConfigurationService runtimeConfigurationService,
-            ICustomStatusService statusService, IPleaseWaitService pleaseWaitService)
+            ICustomStatusService statusService, IPleaseWaitService pleaseWaitService, IAdvancedMessageService messageService)
         {
             Argument.IsNotNull(() => runtimeConfigurationService);
             Argument.IsNotNull(() => statusService);
             Argument.IsNotNull(() => pleaseWaitService);
+            Argument.IsNotNull(() => messageService);
 
             _pleaseWaitService = pleaseWaitService;
             _statusService = statusService;
             _runtimeConfigurationService = runtimeConfigurationService;
+            _messageService = messageService;
+            
             ProcessPool = new ProcessPool();
-            ProcessPool.ProcessWatcherUpdated += ProcessPoolOnProcessWatcherUpdated;
+           
+            NewProcessPool = new NewProcessPool();
+            NewProcessPool.PoolFailed += NewProcessPoolOnPoolFailed;
+            NewProcessPool.ProcessWatcherUpdated += ProcessPoolOnProcessWatcherUpdated;
+        }
+
+        private void NewProcessPoolOnPoolFailed(object sender, PoolFailedEventArgs e)
+        {
+            _messageService.ShowErrorAsync(e.ShutdownReason, "VST worker pool failed", Settings.Help.CONCEPTS_VST_WORKER_POOL);
         }
 
         private void ProcessPoolOnProcessWatcherUpdated(object sender, System.EventArgs e)
         {
-            _runtimeConfigurationService.ApplicationState.RunningWorkers = (from process in ProcessPool.Processes
-                where process.CurrentProcessState == IsolatedProcess.ProcessState.RUNNING
+            _runtimeConfigurationService.ApplicationState.RunningWorkers = (from process in NewProcessPool.RunningProcesses
+                where process.CurrentProcessState == HostProcess.ProcessState.RUNNING
                 select process).Count();
-            _runtimeConfigurationService.ApplicationState.TotalWorkers = ProcessPool.Processes.Count;
+            _runtimeConfigurationService.ApplicationState.TotalWorkers = NewProcessPool.RunningProcesses.Count;
         }
 
         public void StartProcessPool()
         {
             ProcessPool.StartPool();
+            NewProcessPool.StartPool();
         }
 
         public void ShutdownProcessPool()
         {
             ProcessPool.StopPool();
+            NewProcessPool.StopPool();
         }
 
         public CancellationTokenSource GetApplicationOperationCancellationSource()

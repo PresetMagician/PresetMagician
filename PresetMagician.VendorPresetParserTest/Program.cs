@@ -26,7 +26,7 @@ namespace PresetMagician.VendorPresetParserTest
             var pluginTestDirectory = @"C:\Program Files\VSTPlugins";
             var testResults = new List<PluginTestResult>();
 
-            var presetParserDictionary = VendorPresetParser.GetPresetHandlerList();
+            var presetParserDictionary = VendorPresetParser.GetPresetHandlerListByPlugin();
 
             ApplicationDatabaseContext.OverrideDbPath = Path.Combine(Directory.GetCurrentDirectory(), "test.sqlite3");
 
@@ -197,20 +197,47 @@ namespace PresetMagician.VendorPresetParserTest
 
     class StubIsolatedProcess : IIsolatedProcess
     {
-        public void Kill()
+        public void Kill(string reason)
         {
             
         }
 
-        public IRemoteVstService GetVstService()
+        public int Pid { get; }
+
+        public ProxiedRemoteVstService GetVstService()
         {
-            return new StubRemoteVstService();
-           
+            return new ProxiedRemoteVstService(new StubRemoteVstService(), this);
+
         }
     }
     
      public class StubRemoteVstService : IRemoteVstService
      {
+         public void KillSelf()
+         {
+             
+         }
+
+         public bool Exists(string file)
+         {
+             return true;
+         }
+
+         public long GetSize(string file)
+         {
+             return 0;
+         }
+
+         public string GetHash(string file)
+         {
+             return "";
+         }
+
+         public byte[] GetContents(string file)
+         {
+             return null;
+         }
+
          public int GetPluginVendorVersion(Guid pluginGuid)
          {
              return 0;

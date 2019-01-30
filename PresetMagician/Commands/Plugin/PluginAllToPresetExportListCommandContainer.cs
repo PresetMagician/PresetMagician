@@ -16,47 +16,28 @@ using SharedModels;
 namespace PresetMagician
 {
     // ReSharper disable once UnusedMember.Global
-    public class PluginAllToPresetExportListCommandContainer : CommandContainerBase
+    public class PluginAllToPresetExportListCommandContainer : ApplicationNotBusyCommandContainer
     {
         private readonly IApplicationService _applicationService;
         private readonly IDispatcherService _dispatcherService;
-        private readonly IRuntimeConfigurationService _runtimeConfigurationService;
         private readonly ILicenseService _licenseService;
         private readonly IVstService _vstService;
 
         public PluginAllToPresetExportListCommandContainer(ICommandManager commandManager, IVstService vstService,
             IApplicationService applicationService, IDispatcherService dispatcherService,
             IRuntimeConfigurationService runtimeConfigurationService, ILicenseService licenseService)
-            : base(Commands.Plugin.AllToPresetExportList, commandManager)
+            : base(Commands.Plugin.AllToPresetExportList, commandManager, runtimeConfigurationService)
         {
             Argument.IsNotNull(() => vstService);
             Argument.IsNotNull(() => applicationService);
             Argument.IsNotNull(() => dispatcherService);
-            Argument.IsNotNull(() => runtimeConfigurationService);
             Argument.IsNotNull(() => licenseService);
 
             _vstService = vstService;
             _applicationService = applicationService;
             _dispatcherService = dispatcherService;
-            _runtimeConfigurationService = runtimeConfigurationService;
             _licenseService = licenseService;
-
-            _runtimeConfigurationService.ApplicationState.PropertyChanged += OnAllowModifyPresetExportListChanged;
         }
-
-        protected override bool CanExecute(object parameter)
-        {
-            return _runtimeConfigurationService.ApplicationState.AllowModifyPresetExportList;
-        }
-
-        private void OnAllowModifyPresetExportListChanged(object o, PropertyChangedEventArgs ev)
-        {
-            if (ev.PropertyName == nameof(ApplicationState.AllowModifyPresetExportList))
-            {
-                InvalidateCommand();
-            }
-        }
-
 
         protected override async Task ExecuteAsync(object parameter)
         {

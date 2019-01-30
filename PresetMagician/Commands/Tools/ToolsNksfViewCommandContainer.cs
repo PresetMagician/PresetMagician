@@ -1,5 +1,6 @@
 ﻿using Catel.MVVM;
 using Catel.Services;
+using PresetMagician.Services.Interfaces;
 using PresetMagician.ViewModels;
 
 // ReSharper disable once CheckNamespace
@@ -9,8 +10,8 @@ namespace PresetMagician
     public class ToolsNksfViewCommandContainer : AbstractOpenDialogCommandContainer
     {
         public ToolsNksfViewCommandContainer(ICommandManager commandManager, IUIVisualizerService uiVisualizerService,
-            IViewModelFactory viewModelFactory)
-            : base(Commands.Tools.NksfView, nameof(NKSFViewModel), commandManager, uiVisualizerService,
+            IViewModelFactory viewModelFactory, IRuntimeConfigurationService runtimeConfigurationService)
+            : base(Commands.Tools.NksfView, nameof(NKSFViewModel), true, commandManager, uiVisualizerService, runtimeConfigurationService,
                 viewModelFactory)
         {
         }

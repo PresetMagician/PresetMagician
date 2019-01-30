@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Catel.Threading;
 using Jacobi.Vst.Core;
-using Newtonsoft.Json;
 using PresetMagician.Models;
+using PresetMagician.ProcessIsolation.Services;
 using SharedModels;
 
 namespace PresetMagician.ProcessIsolation
@@ -13,7 +14,8 @@ namespace PresetMagician.ProcessIsolation
         public Plugin Plugin { get; }
         private Guid _guid;
         public bool IsLoaded { get; private set; }
-        private readonly IRemoteVstService _remoteVstService;
+        public bool IsEditorOpen { get; private set; }
+        private readonly ProxiedRemoteVstService _remoteVstService;
         private readonly IIsolatedProcess _isolatedProcess;
 
         public RemotePluginInstance(IIsolatedProcess isolatedProcess, Plugin plugin, bool backgroundProcessing = true)
@@ -35,35 +37,38 @@ namespace PresetMagician.ProcessIsolation
             {
                 return;
             }
-            
-            try
-            {
-                _remoteVstService.LoadPlugin(_guid);
-                Plugin.PluginName = _remoteVstService.GetEffectivePluginName(_guid);
-                Plugin.PluginVendor = _remoteVstService.GetPluginVendor(_guid);
-                Plugin.PluginInfo = _remoteVstService.GetPluginInfo(_guid);
-                Plugin.PluginId = Plugin.PluginInfo.PluginID;
-                Plugin.PluginLocation.PluginId = Plugin.PluginId;
-                Plugin.PluginLocation.DllHash = _remoteVstService.GetPluginHash(_guid);
-                Plugin.PluginLocation.PluginName = _remoteVstService.GetPluginName(_guid);
-                Plugin.PluginLocation.PluginVendor = Plugin.PluginVendor;
-                Plugin.PluginLocation.PluginProduct = _remoteVstService.GetPluginProductString(_guid);
-                Plugin.PluginLocation.VendorVersion = _remoteVstService.GetPluginVendorVersion(_guid).ToString();
-                
 
-                Plugin.PluginType = Plugin.PluginInfo.Flags.HasFlag(VstPluginFlags.IsSynth)
-                    ? Plugin.PluginTypes.Instrument
-                    : Plugin.PluginTypes.Effect;
-
-                Plugin.PluginCapabilities.Clear();
-                Plugin.PluginCapabilities.AddRange(_remoteVstService.GetPluginInfoItems(_guid));
-                IsLoaded = true;
-                Plugin.HasMetadata = true;
-            }
-            catch (Exception e)
+            await TaskHelper.Run(() =>
             {
-                Plugin.OnLoadError(e);
-            }
+                try
+                {
+                    _remoteVstService.LoadPlugin(_guid);
+                    Plugin.PluginName = _remoteVstService.GetEffectivePluginName(_guid);
+                    Plugin.PluginVendor = _remoteVstService.GetPluginVendor(_guid);
+                    Plugin.PluginInfo = _remoteVstService.GetPluginInfo(_guid);
+                    Plugin.PluginId = Plugin.PluginInfo.PluginID;
+                    Plugin.PluginLocation.PluginId = Plugin.PluginId;
+                    Plugin.PluginLocation.DllHash = _remoteVstService.GetPluginHash(_guid);
+                    Plugin.PluginLocation.PluginName = _remoteVstService.GetPluginName(_guid);
+                    Plugin.PluginLocation.PluginVendor = Plugin.PluginVendor;
+                    Plugin.PluginLocation.PluginProduct = _remoteVstService.GetPluginProductString(_guid);
+                    Plugin.PluginLocation.VendorVersion = _remoteVstService.GetPluginVendorVersion(_guid).ToString();
+
+
+                    Plugin.PluginType = Plugin.PluginInfo.Flags.HasFlag(VstPluginFlags.IsSynth)
+                        ? Plugin.PluginTypes.Instrument
+                        : Plugin.PluginTypes.Effect;
+
+                    Plugin.PluginCapabilities.Clear();
+                    Plugin.PluginCapabilities.AddRange(_remoteVstService.GetPluginInfoItems(_guid));
+                    IsLoaded = true;
+                    Plugin.HasMetadata = true;
+                }
+                catch (Exception e)
+                {
+                    Plugin.OnLoadError(e);
+                }
+            }, true);
         }
 
         public string GetPluginHash()
@@ -73,12 +78,14 @@ namespace PresetMagician.ProcessIsolation
 
         public bool OpenEditorHidden()
         {
-            return _remoteVstService.OpenEditorHidden(_guid);
+            IsEditorOpen = _remoteVstService.OpenEditorHidden(_guid);
+            return IsEditorOpen;
         }
 
         public void CloseEditor()
         {
             _remoteVstService.CloseEditor(_guid);
+            IsEditorOpen = false;
         }
 
         public byte[] CreateScreenshot()
@@ -153,12 +160,13 @@ namespace PresetMagician.ProcessIsolation
 
         public bool OpenEditor()
         {
-            return _remoteVstService.OpenEditor(_guid);
+            IsEditorOpen = _remoteVstService.OpenEditor(_guid);
+            return IsEditorOpen;
         }
 
         public void KillHost()
         {
-            _isolatedProcess.Kill();
+            _isolatedProcess.Kill("via RemotePluginInstance");
         }
     }
 }

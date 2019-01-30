@@ -1,11 +1,14 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Anotar.Catel;
 using Catel;
 using Catel.Logging;
 using Catel.MVVM;
 using Catel.Threading;
+using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
 using SharedModels;
 
@@ -13,18 +16,15 @@ using SharedModels;
 namespace PresetMagician
 {
     // ReSharper disable once UnusedMember.Global
-    public class PresetExportCommandContainer : CommandContainerBase
+    public class PresetExportCommandContainer : ApplicationNotBusyCommandContainer
     {
-        private static readonly ILog _log = LogManager.GetCurrentClassLogger();
-
         private readonly IVstService _vstService;
         private readonly IApplicationService _applicationService;
-        private readonly IRuntimeConfigurationService _runtimeConfigurationService;
 
         public PresetExportCommandContainer(ICommandManager commandManager, IVstService vstService,
             IApplicationService applicationService,
             IRuntimeConfigurationService runtimeConfigurationService)
-            : base(Commands.Preset.Export, commandManager)
+            : base(Commands.Preset.Export, commandManager, runtimeConfigurationService)
         {
             Argument.IsNotNull(() => vstService);
             Argument.IsNotNull(() => applicationService);
@@ -32,9 +32,8 @@ namespace PresetMagician
 
             _vstService = vstService;
             _applicationService = applicationService;
-            _runtimeConfigurationService = runtimeConfigurationService;
         }
-
+        
         [STAThread]
         protected override async Task ExecuteAsync(object parameter)
         {
@@ -63,7 +62,7 @@ namespace PresetMagician
 
                 if (!Directory.Exists(exportDirectory))
                 {
-                    _log.Warning($"Directory {exportDirectory} does not exist, using the default");
+                    LogTo.Warning($"Directory {exportDirectory} does not exist, using the default");
                 }
 
                 foreach (var pluginPreset in pluginPresets)

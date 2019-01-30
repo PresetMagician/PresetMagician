@@ -12,16 +12,16 @@ using SharedModels;
 namespace PresetMagician
 {
     // ReSharper disable once UnusedMember.Global
-    public class PluginToolsViewErrorsCommandContainer : CommandContainerBase
+    public class PluginToolsViewErrorsCommandContainer : ApplicationNotBusyCommandContainer
     {
         private readonly IUIVisualizerService _uiVisualizerService;
         private readonly IVstService _vstService;
         private Plugin previouslySelectedPlugin;
 
         public PluginToolsViewErrorsCommandContainer(ICommandManager commandManager, IVstService vstService,
-            IUIVisualizerService uiVisualizerService
+            IUIVisualizerService uiVisualizerService, IRuntimeConfigurationService runtimeConfigurationService
         )
-            : base(Commands.PluginTools.ViewErrors, commandManager)
+            : base(Commands.PluginTools.ViewErrors, commandManager, runtimeConfigurationService)
         {
             Argument.IsNotNull(() => vstService);
             Argument.IsNotNull(() => uiVisualizerService);
@@ -39,7 +39,7 @@ namespace PresetMagician
 
         protected override bool CanExecute(object parameter)
         {
-            return _vstService.SelectedPlugins.Count > 0 && _vstService.SelectedPlugin != null;
+            return base.CanExecute(parameter) && _vstService.SelectedPlugins.Count > 0 && _vstService.SelectedPlugin != null;
         }
 
         private void OnSelectedPluginsListChanged(object o, NotifyCollectionChangedEventArgs ev)

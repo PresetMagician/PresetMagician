@@ -167,12 +167,19 @@
                 SelectionUnit="FullRow">
                 <DataGrid.Resources>
                     <DataTemplate x:Key="PluginImages" DataType="{x:Type models:Plugin}">
-                        <StackPanel Height="22" Margin="0" Orientation="Horizontal"
+                        <StackPanel Height="22" Margin="0" Orientation="Horizontal" MinWidth="176" Width="176" MaxWidth="176"
                                     Background="{Binding NativeInstrumentsResource.Color.BackgroundColor, Converter={StaticResource ColorToSolidColorBrush_ValueConverter}}">
                             <Image Margin="0,0,10,0" Height="22" RenderOptions.BitmapScalingMode="HighQuality"
+                                   ClipToBounds="True"
+                                   MaxWidth="45"
+                                   MinWidth="45"
+                                   Stretch="None"
                                    Source="{Binding NativeInstrumentsResource.VB_artwork.Image}"
                                    HorizontalAlignment="Left" />
                             <Image Margin="0" Height="22" RenderOptions.BitmapScalingMode="HighQuality"
+                                   ClipToBounds="True"
+                                   MinWidth="131"
+                                   MaxWidth="131"
                                    Source="{Binding NativeInstrumentsResource.VB_logo.Image}"
                                    HorizontalAlignment="Left" />
                         </StackPanel>

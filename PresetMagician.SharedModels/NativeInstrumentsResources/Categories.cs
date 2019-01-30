@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Catel.Data;
 using Newtonsoft.Json;
 
 namespace SharedModels.NativeInstrumentsResources

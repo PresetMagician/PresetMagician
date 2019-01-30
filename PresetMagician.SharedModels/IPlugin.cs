@@ -34,5 +34,6 @@ namespace SharedModels
         string CanonicalDllFilename { get; }
 
         void OnLoadError(Exception e);
+        bool HasPreset(string sourceFile, string hash);
     }
 }

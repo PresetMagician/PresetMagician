@@ -3,4 +3,5 @@
   <Anotar.Catel />
   <Catel />
   <PropertyChanged/>
+  <MethodTimer/>
 </Weavers>

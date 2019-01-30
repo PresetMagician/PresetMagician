@@ -10,14 +10,14 @@ using PresetMagician.ViewModels;
 namespace PresetMagician
 {
     // ReSharper disable once UnusedMember.Global
-    public class PluginToolsShowPluginInfoCommandContainer : CommandContainerBase
+    public class PluginToolsShowPluginInfoCommandContainer : ApplicationNotBusyCommandContainer
     {
         private readonly IVstService _vstService;
         private readonly IUIVisualizerService _uiVisualizerService;
 
         public PluginToolsShowPluginInfoCommandContainer(ICommandManager commandManager, IVstService vstService,
-            IUIVisualizerService uiVisualizerService)
-            : base(Commands.PluginTools.ShowPluginInfo, commandManager)
+            IUIVisualizerService uiVisualizerService, IRuntimeConfigurationService runtimeConfigurationService)
+            : base(Commands.PluginTools.ShowPluginInfo, commandManager, runtimeConfigurationService)
         {
             Argument.IsNotNull(() => vstService);
             Argument.IsNotNull(() => uiVisualizerService);
@@ -30,7 +30,7 @@ namespace PresetMagician
 
         protected override bool CanExecute(object parameter)
         {
-            return _vstService.SelectedPlugins.Count == 1;
+            return base.CanExecute(parameter) && _vstService.SelectedPlugins.Count == 1;
         }
 
         private void OnSelectedPluginsListChanged(object o, NotifyCollectionChangedEventArgs ev)

@@ -8,7 +8,7 @@ using System.Windows;
 [assembly: AssemblyTitle("PresetMagician.RemoteVstHost")]
 [assembly: AssemblyDescription("Runs plugins in a separate process")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Drachenkatze")]
 [assembly: AssemblyProduct("PresetMagician.RemoteVstHost")]
 [assembly: AssemblyCopyright("Copyright ©  2019 Felicia Hummel")]
 [assembly: AssemblyTrademark("")]

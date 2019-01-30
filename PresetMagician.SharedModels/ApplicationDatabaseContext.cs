@@ -11,9 +11,12 @@ using CannedBytes.Midi.Message;
 using Catel;
 using Drachenkatze.PresetMagician.Utils;
 using InteractivePreGeneratedViews;
+using MethodTimer;
 using PresetMagician.Migrations;
 using PresetMagician.Models.EventArgs;
 using SQLite.CodeFirst;
+using Orc.EntityFramework;
+using PresetMagician.SharedModels;
 
 namespace SharedModels
 {
@@ -46,10 +49,14 @@ namespace SharedModels
             var sqliteConnectionInitializer =
                 new SqliteCreateDatabaseIfNotExists<ApplicationDatabaseContext>(modelBuilder);
 
+            
+            
             modelBuilder.Entity<Plugin>().HasMany(p => p.DefaultModes).WithMany(q => q.Plugins).Map(mc =>
                 mc.MapLeftKey("PluginId").MapRightKey("ModeId").ToTable("PluginModes"));
             modelBuilder.Entity<Plugin>().HasMany(p => p.DefaultTypes).WithMany(q => q.Plugins).Map(mc =>
                 mc.MapLeftKey("PluginId").MapRightKey("TypeId").ToTable("PluginTypes"));
+            modelBuilder.Entity<Plugin>().IgnoreCatelProperties();
+            modelBuilder.Entity<BankFile>().IgnoreCatelProperties();
 
             modelBuilder.Entity<Preset>().HasMany(p => p.Types).WithMany(q => q.Presets).Map(mc =>
                 mc.MapLeftKey("PresetId").MapRightKey("TypeId").ToTable("PresetTypes"));
@@ -60,6 +67,8 @@ namespace SharedModels
             modelBuilder.Entity<PresetDataStorage>();
             modelBuilder.Entity<PluginLocation>();
             modelBuilder.Entity<SchemaVersion>();
+            
+            
             Database.SetInitializer(sqliteConnectionInitializer);
         }
 
@@ -171,6 +180,7 @@ namespace SharedModels
             presetDataList.Add((preset, data));
         }
 
+        
         public async Task PersistPreset(Preset preset, byte[] data)
         {
             if (preset.Plugin == null || string.IsNullOrEmpty(preset.SourceFile))
@@ -296,6 +306,7 @@ namespace SharedModels
             SaveChanges();
         }
 
+        [Time]
         public Type GetOrCreateType(string typeName, string subTypeName)
         {
             var type = (from st in Types
@@ -310,11 +321,10 @@ namespace SharedModels
                 Types.Add(type);
             }
 
-            SaveChanges();
-
             return type;
         }
 
+        [Time]
         public Mode GetOrCreateMode(string modeName)
         {
             var mode = (from st in Modes
@@ -327,8 +337,6 @@ namespace SharedModels
                 mode.Name = modeName;
                 Modes.Add(mode);
             }
-
-            SaveChanges();
 
             return mode;
         }

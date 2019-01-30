@@ -17,46 +17,37 @@ using SharedModels;
 namespace PresetMagician
 {
     // ReSharper disable once UnusedMember.Global
-    public class PluginSelectedToPresetExportListCommandContainer : CommandContainerBase
+    public class PluginSelectedToPresetExportListCommandContainer : ApplicationNotBusyCommandContainer
     {
         private readonly IApplicationService _applicationService;
 
         private readonly IVstService _vstService;
         private readonly IDispatcherService _dispatcherService;
-        private readonly IRuntimeConfigurationService _runtimeConfigurationService;
         private readonly ILicenseService _licenseService;
 
         public PluginSelectedToPresetExportListCommandContainer(ICommandManager commandManager, IVstService vstService,
             IApplicationService applicationService, IDispatcherService dispatcherService,
             IRuntimeConfigurationService runtimeConfigurationService,
             ILicenseService licenseService)
-            : base(Commands.Plugin.SelectedToPresetExportList, commandManager)
+            : base(Commands.Plugin.SelectedToPresetExportList, commandManager, runtimeConfigurationService)
         {
             Argument.IsNotNull(() => vstService);
             Argument.IsNotNull(() => applicationService);
             Argument.IsNotNull(() => dispatcherService);
             Argument.IsNotNull(() => licenseService);
-            Argument.IsNotNull(() => runtimeConfigurationService);
 
             _vstService = vstService;
             _applicationService = applicationService;
             _dispatcherService = dispatcherService;
             _licenseService = licenseService;
-            _runtimeConfigurationService = runtimeConfigurationService;
 
             _vstService.SelectedPlugins.CollectionChanged += OnSelectedPluginsListChanged;
-            _runtimeConfigurationService.ApplicationState.PropertyChanged += OnAllowModifyPresetExportListChanged;
         }
 
         protected override bool CanExecute(object parameter)
         {
-            return (_runtimeConfigurationService.ApplicationState.AllowModifyPresetExportList &&
-                    _vstService.SelectedPlugins.Count > 0);
-        }
-
-        private void OnAllowModifyPresetExportListChanged(object o, PropertyChangedEventArgs ev)
-        {
-            if (ev.PropertyName == nameof(ApplicationState.AllowModifyPresetExportList)) InvalidateCommand();
+            return base.CanExecute(parameter) && 
+                    _vstService.SelectedPlugins.Count > 0;
         }
 
         private void OnSelectedPluginsListChanged(object o, NotifyCollectionChangedEventArgs ev)

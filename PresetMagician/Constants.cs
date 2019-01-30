@@ -22,6 +22,7 @@ namespace PresetMagician
 #endif
 
             public static readonly string Documentation = $"https://presetmagician.gitbook.io/help/";
+            public static readonly string HelpLink = $"https://presetmagician.com/help/";
             public static readonly string Support = $"{_masterProtocol}{_supportSite}/support";
             public static readonly string SupportEmail = "support-confidential@presetmagician.com";
             public static readonly string SupportEmailName = "PresetMagician Support";
@@ -35,6 +36,11 @@ namespace PresetMagician
             public static readonly string GetOnlineResource = $"{_protocol}{_site}/plugins/getResource/";
 
             public static readonly string Homepage = $"{_masterProtocol}{_masterSite}";
+        }
+
+        public class Help
+        {
+            public static string CONCEPTS_VST_WORKER_POOL = "CONCEPTS_VST_WORKER_POOL";
         }
 
         #endregion

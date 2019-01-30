@@ -1,0 +1,60 @@
+<UserControl x:Class="PresetMagician.Controls.ProcessPoolGrid"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dgx="urn:tom-englert.de/DataGridExtensions"
+             d:DataContext="{extensions:GenericObjectFactory Type={x:Type objectModel:ObservableCollection`1},
+             T=processes:HostProcess}"
+             
+             xmlns:converters="clr-namespace:PresetMagician.Converters"
+             xmlns:extensions="clr-namespace:PresetMagician.Extensions"
+             xmlns:objectModel="clr-namespace:System.Collections.ObjectModel;assembly=System"
+             xmlns:processes="clr-namespace:PresetMagician.ProcessIsolation.Processes;assembly=PresetMagician.RemoteVstHost"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <converters:FormatKbSizeConverter x:Key="FormatKbSizeConverter" />
+    </UserControl.Resources>
+    <DataGrid ItemsSource="{Binding}"
+              AutoGenerateColumns="False"
+              CanUserAddRows="False"
+              CanUserSortColumns="True"
+              dgx:Tools.ApplyInitialSorting="True"
+              GridLinesVisibility="All" SelectionUnit="FullRow">
+        <DataGrid.Columns>
+            <DataGridTextColumn
+                Width="Auto"
+                Binding="{Binding Pid, Mode=OneWay}"
+                Header="PID"
+                IsReadOnly="True"
+                SortDirection="Ascending" />
+            <DataGridTextColumn
+                Width="Auto"
+                Binding="{Binding Uptime, Mode=OneWay, StringFormat=hh\\:mm\\:ss}"
+                Header="Uptime"
+                IsReadOnly="True" />
+            <DataGridTextColumn
+                Width="Auto"
+                Binding="{Binding MemoryUsage, Mode=OneWay,Converter={StaticResource FormatKbSizeConverter}}"
+                Header="Memory"
+                IsReadOnly="True" />
+            <DataGridTextColumn
+                Width="Auto"
+                Binding="{Binding StartupTime, Mode=OneWay, StringFormat=hh\\:mm\\:ss}"
+                Header="Startup Time"
+                IsReadOnly="True" />
+            <DataGridTextColumn
+                Width="Auto"
+                Binding="{Binding CurrentOperation.Name, Mode=OneWay}"
+                Header="Current Operation"
+                IsReadOnly="True" />
+            <DataGridTextColumn
+                Width="Auto"
+                Binding="{Binding CurrentOperation.ElapsedTime, Mode=OneWay, StringFormat=hh\\:mm\\:ss}"
+                Header="Current Operation (Elapsed Time)"
+                IsReadOnly="True"/>
+        </DataGrid.Columns>
+            
+    </DataGrid>
+</UserControl>

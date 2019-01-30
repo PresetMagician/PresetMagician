@@ -6,9 +6,14 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.IO;
+using System.Linq;
+using System.Net.Sockets;
+using System.Xml.Schema;
 using Anotar.Catel;
 using Catel.Data;
+using Catel.Fody;
 using Catel.Logging;
+using Catel.Runtime.Serialization;
 using Drachenkatze.PresetMagician.NKSF.NKSF;
 using Newtonsoft.Json;
 using PresetMagician.Collections;
@@ -19,7 +24,7 @@ using Path = Catel.IO.Path;
 
 namespace SharedModels
 {
-    public class Plugin : ObservableObject, IPlugin
+    public class Plugin : ModelBase
     {
         private int _collectionChangedCounter;
 
@@ -58,6 +63,12 @@ namespace SharedModels
             return PresetParserAudioPreviewPreDelay;
         }
 
+        public bool HasPreset(string sourceFile, string hash)
+        {
+            return (from preset in Presets
+                where preset.PresetHash == hash && preset.SourceFile == sourceFile
+                select preset).Any();
+        }
 
         public void Invalidate()
         {
@@ -130,6 +141,7 @@ namespace SharedModels
         public PresetBank RootBank { get; } = new PresetBank();
 
 
+        [ExcludeFromBackup]
         public ProgressFastObservableCollection<Preset> Presets { get; set; } =
             new ProgressFastObservableCollection<Preset>();
 
@@ -155,6 +167,7 @@ namespace SharedModels
                 {
                     _pluginLocation.PropertyChanged -= PluginLocationOnPropertyChanged;
                 }
+
                 _pluginLocation = value;
                 if (_pluginLocation != null)
                 {
@@ -179,7 +192,7 @@ namespace SharedModels
         [NotMapped] public MemoryStream ChunkPresetMemoryStream { get; } = new MemoryStream();
         [NotMapped] public MemoryStream ChunkBankMemoryStream { get; } = new MemoryStream();
 
-        [NotMapped] public VstPluginInfoSurrogate PluginInfo { get; set; }
+        [ExcludeFromBackup] [NotMapped] public VstPluginInfoSurrogate PluginInfo { get; set; }
 
         [Column("PluginInfo")]
         public string SerializedPluginInfo
@@ -207,6 +220,7 @@ namespace SharedModels
         public string DllPath => PluginLocation?.DllPath;
 
         private string _lastKnownGoodDllPath;
+
         public string LastKnownGoodDllPath
         {
             get
@@ -233,7 +247,9 @@ namespace SharedModels
         public string DllFilename => string.IsNullOrEmpty(DllPath) ? null : Path.GetFileName(DllPath);
 
         public string CanonicalDllFilename =>
-            string.IsNullOrEmpty(DllPath) ? "Plugin DLL is missing. Last known dll path: " + LastKnownGoodDllPath: Path.GetFileName(DllPath);
+            string.IsNullOrEmpty(DllPath)
+                ? "Plugin DLL is missing. Last known dll path: " + LastKnownGoodDllPath
+                : Path.GetFileName(DllPath);
 
         /// <summary>
         /// Defines if the current plugin is enabled
@@ -268,7 +284,7 @@ namespace SharedModels
         }
 
         public bool IsReported { get; set; }
-        public ObservableCollection<BankFile> AdditionalBankFiles { get; } = new ObservableCollection<BankFile>();
+        public ProgressFastObservableCollection<BankFile> AdditionalBankFiles { get; set; } = new ProgressFastObservableCollection<BankFile>();
 
 
         public ICollection<Type> DefaultTypes { get; set; } = new HashSet<Type>();
@@ -286,7 +302,7 @@ namespace SharedModels
 
         public int PluginId { get; set; }
 
-        [NotMapped] public int NumPresets => Presets.Count;
+        [NotMapped] public int NumPresets => Presets?.Count ?? 0;
 
         public string PluginName { get; set; } = "";
 
@@ -294,7 +310,7 @@ namespace SharedModels
 
         public string PluginVendor { get; set; }
 
-        [NotMapped] public IVendorPresetParser PresetParser { get; set; }
+        [ExcludeFromBackup] [NotMapped] public IVendorPresetParser PresetParser { get; set; }
 
         /// <summary>
         /// Defines if the plugin is or was scanned

@@ -7,12 +7,12 @@ using PresetMagician.Services.Interfaces;
 namespace PresetMagician
 {
     // ReSharper disable once UnusedMember.Global
-    public class PresetClearSelectedCommandContainer : CommandContainerBase
+    public class PresetClearSelectedCommandContainer : ApplicationNotBusyCommandContainer
     {
         private readonly IVstService _vstService;
 
-        public PresetClearSelectedCommandContainer(ICommandManager commandManager, IVstService vstService)
-            : base(Commands.Preset.ClearSelected, commandManager)
+        public PresetClearSelectedCommandContainer(ICommandManager commandManager, IVstService vstService, IRuntimeConfigurationService runtimeConfigurationService)
+            : base(Commands.Preset.ClearSelected, commandManager, runtimeConfigurationService)
         {
             Argument.IsNotNull(() => vstService);
 
@@ -22,7 +22,7 @@ namespace PresetMagician
 
         protected override bool CanExecute(object parameter)
         {
-            return _vstService.SelectedPresets.Count > 0;
+            return base.CanExecute(parameter) && _vstService.SelectedPresets.Count > 0;
         }
 
         private void OnSelectedPresetListChanged(object o, NotifyCollectionChangedEventArgs ev)

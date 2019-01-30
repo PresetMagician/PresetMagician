@@ -9,8 +9,6 @@ namespace PresetMagician
     // ReSharper disable once UnusedMember.Global
     public class PluginReportUnsupportedPluginsCommandContainer : AbstractReportPluginsCommandContainer
     {
-        protected override ILog _log { get; set; } = LogManager.GetCurrentClassLogger();
-
         public PluginReportUnsupportedPluginsCommandContainer(ICommandManager commandManager, IVstService vstService,
             ILicenseService licenseService, IApplicationService applicationService,
             IRuntimeConfigurationService runtimeConfigurationService) : base(Commands.Plugin.ReportUnsupportedPlugins,

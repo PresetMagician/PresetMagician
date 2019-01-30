@@ -6,13 +6,12 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Anotar.Catel;
 using Catel;
 using Catel.Data;
-using Catel.Logging;
 using Catel.MVVM;
 using Newtonsoft.Json.Linq;
 using Orchestra;
-using PresetMagician.Models;
 using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
 using SharedModels;
@@ -21,32 +20,26 @@ using SharedModels;
 namespace PresetMagician
 {
     // ReSharper disable once UnusedMember.Global
-    public abstract class AbstractReportPluginsCommandContainer : CommandContainerBase
+    public abstract class AbstractReportPluginsCommandContainer : ApplicationNotBusyCommandContainer
     {
-        protected abstract ILog _log { get; set; }
         private readonly IApplicationService _applicationService;
         private readonly ILicenseService _licenseService;
         protected readonly IVstService _vstService;
-        private readonly IRuntimeConfigurationService _runtimeConfigurationService;
-        protected bool ReportAll { get; set; } = false;
+        protected bool ReportAll;
 
         protected AbstractReportPluginsCommandContainer(string command, ICommandManager commandManager,
             IVstService vstService,
             ILicenseService licenseService, IApplicationService applicationService,
             IRuntimeConfigurationService runtimeConfigurationService)
-            : base(command, commandManager)
+            : base(command, commandManager, runtimeConfigurationService)
         {
             Argument.IsNotNull(() => vstService);
             Argument.IsNotNull(() => licenseService);
             Argument.IsNotNull(() => applicationService);
-            Argument.IsNotNull(() => runtimeConfigurationService);
 
             _vstService = vstService;
             _licenseService = licenseService;
             _applicationService = applicationService;
-            _runtimeConfigurationService = runtimeConfigurationService;
-
-            _runtimeConfigurationService.ApplicationState.PropertyChanged += OnAllowReportUnsupportedPluginsChanged;
 
             var wrapper = new ChangeNotificationWrapper(_vstService.Plugins);
             wrapper.CollectionItemPropertyChanged += OnPluginItemPropertyChanged;
@@ -72,21 +65,12 @@ namespace PresetMagician
                     select plugin).Count();
             }
 
-            return (
-                _runtimeConfigurationService.ApplicationState.AllowReportUnsupportedPlugins && numPluginsToReport > 0);
+            return base.CanExecute(parameter) && numPluginsToReport > 0;
         }
 
         private void OnPluginListChanged(object o, NotifyCollectionChangedEventArgs ev)
         {
             InvalidateCommand();
-        }
-
-        private void OnAllowReportUnsupportedPluginsChanged(object o, PropertyChangedEventArgs ev)
-        {
-            if (ev.PropertyName == nameof(ApplicationState.AllowReportUnsupportedPlugins))
-            {
-                InvalidateCommand();
-            }
         }
 
         private void OnPluginItemPropertyChanged(object o, PropertyChangedEventArgs ev)
@@ -119,9 +103,7 @@ namespace PresetMagician
 
         protected override async Task ExecuteAsync(object parameter)
         {
-            List<Plugin> pluginsToReport;
-
-            pluginsToReport = GetPluginsToReport();
+            var pluginsToReport = GetPluginsToReport();
 
             var pluginReport = JObject.FromObject(new
             {
@@ -162,24 +144,21 @@ namespace PresetMagician
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     _applicationService.ReportStatus("Report submitted successfully");
-                    pluginsToReport.Select(c =>
-                    {
-                        c.IsReported = true;
-                        return c;
-                    }).ToList();
-                    _runtimeConfigurationService.Save();
+                    pluginsToReport.ForEach(c => c.IsReported = true);
+                    await _vstService.SavePlugins();
+
                 }
                 else
                 {
                     _applicationService.ReportStatus("An error occured during report submission; see log for details");
                     var responseString = await response.Content.ReadAsStringAsync();
-                    _log.Error(responseString);
+                    LogTo.Error(responseString);
                 }
             }
             catch (HttpRequestException e)
             {
                 _applicationService.ReportStatus("An error occured during report submission; see log for details");
-                _log.Error(e.ToString());
+                LogTo.Error(e.ToString());
             }
 
 

@@ -7,14 +7,12 @@ using PresetMagician.Services.Interfaces;
 namespace PresetMagician
 {
     // ReSharper disable once UnusedMember.Global
-    public class PresetClearListCommandContainer : CommandContainerBase
+    public class PresetClearListCommandContainer : ApplicationNotBusyCommandContainer
     {
-        private static readonly ILog _log = LogManager.GetCurrentClassLogger();
-
         private readonly IVstService _vstService;
 
-        public PresetClearListCommandContainer(ICommandManager commandManager, IVstService vstService)
-            : base(Commands.Preset.ClearList, commandManager)
+        public PresetClearListCommandContainer(ICommandManager commandManager, IVstService vstService, IRuntimeConfigurationService runtimeConfigurationService)
+            : base(Commands.Preset.ClearList, commandManager, runtimeConfigurationService)
         {
             Argument.IsNotNull(() => vstService);
 
