@@ -42,6 +42,7 @@ namespace PresetMagician.ProcessIsolation
         {
             _poolRunning = true;
             _processWatcher.Start();
+            CreateProcesses();
         }
 
         public void StopPool()
@@ -232,12 +233,14 @@ namespace PresetMagician.ProcessIsolation
             _process.OutputDataReceived += ProcessOnOutputDataReceived;
             _process.ErrorDataReceived += ProcessOnOutputDataReceived;
 
+
+            //var b = new BasicHttpsBinding(BasicHttpsSecurityMode.Transport, "bla");
             
             _address = ProcessPool.BaseAddress + _process.Id;
             var binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.None)
             {
-                OpenTimeout = new TimeSpan(0, 0, 0, 0, 300),
                 MaxReceivedMessageSize = 40000000,
+                
                 SendTimeout = new TimeSpan(0, 0, 0, 60)
             };
 

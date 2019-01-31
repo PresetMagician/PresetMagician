@@ -91,6 +91,7 @@
     <Compile Include="Exceptions\VstPluginException.cs" />
     <Compile Include="NewProcessPool.cs" />
     <Compile Include="Processes\ProcessOperation.cs" />
+    <Compile Include="Processes\VstHostProcess.cs" />
     <Compile Include="ProcessPool.cs" />
     <Compile Include="Processes\HostProcess.cs" />
     <Compile Include="Program.cs" />

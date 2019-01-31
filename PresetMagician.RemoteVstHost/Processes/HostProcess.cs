@@ -1,13 +1,14 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Timers;
 using Anotar.Catel;
 using Catel;
-using Catel.Collections;
 using Catel.Data;
+using Catel.Logging;
+using Catel.Threading;
 using MethodTimer;
+using SharedModels;
+using Timer = System.Timers.Timer;
 
 namespace PresetMagician.ProcessIsolation.Processes
 {
@@ -20,8 +21,14 @@ namespace PresetMagician.ProcessIsolation.Processes
             EXITED
         }
 
-        public int Pid { get; }
-        public DateTime StartDateTime { get; }
+        public int Pid { get; private set; }
+        public DateTime StartDateTime { get; private set; }
+
+        public string StartupTimeFormatted
+        {
+            get { return (int) StartupTime.TotalMilliseconds + "ms"; }
+        }
+
         public DateTime StopDateTime { get; private set; }
         public long MemoryUsage { get; private set; }
 
@@ -33,49 +40,51 @@ namespace PresetMagician.ProcessIsolation.Processes
             {
                 _currentProcessState = value;
                 ProcessStateUpdated.SafeInvoke(this);
-                
             }
         }
 
-        public FastObservableCollection<string> LogMessages = new FastObservableCollection<string>();
-        public FastObservableCollection<ProcessOperation> Operations = new FastObservableCollection<ProcessOperation>();
+        public string Logs
+        {
+            get { return string.Join(Environment.NewLine, Logger.LogList); }
+        }
+
+        public MiniLogger Logger { get; }
+
 
         public bool IsBusy
         {
             get => _isBusy;
-            private set
-            {
-                _isBusy = value;
-                BusyUpdated.SafeInvoke(this);
-            }
+            protected set { _isBusy = value; }
         }
 
-        public ProcessOperation CurrentOperation { get; private set; }
 
         public TimeSpan StartupTime { get; private set; }
         public TimeSpan Uptime { get; private set; }
+        public string StopReason { get; private set; }
 
         public bool StartupSuccessful { get; private set; }
 
         private readonly int _maxStartupTime;
-        private const int UpdateInterval = 100;
+        private const int UpdateInterval = 1000;
         private const string ProcessName = "PresetMagician.RemoteVstHost.exe";
 
         private readonly Timer _startupTimer;
         private readonly Timer _updateTimer;
 
         private readonly string _processImageName;
-        private readonly Process _process;
-        private readonly object _updateLock = new object();
+        private Process _process;
+        protected bool inShutdown;
         private ProcessState _currentProcessState;
         private bool _isBusy;
+        private readonly object _updateLock = new object();
 
-        public event EventHandler BusyUpdated;
         public event EventHandler ProcessStateUpdated;
-        public event EventHandler OperationUpdated;
 
-        public HostProcess(int maxStartupTimeSeconds = 10)
+
+        [Time]
+        public HostProcess(int maxStartupTimeSeconds = 20)
         {
+            Logger = new MiniLogger();
             _maxStartupTime = maxStartupTimeSeconds * 1000;
             _processImageName = ProcessName;
 
@@ -87,99 +96,71 @@ namespace PresetMagician.ProcessIsolation.Processes
 
             CurrentProcessState = ProcessState.STARTING;
 
+            _process = new Process();
+
+            _process.StartInfo = processStartInfo;
+            _process.OutputDataReceived += ProcessOnOutputDataReceived;
+            _process.Exited += ProcessOnExited;
+            _process.EnableRaisingEvents = true;
+
+            _startupTimer = new Timer {Interval = _maxStartupTime, Enabled = false, AutoReset = false};
+            _startupTimer.Elapsed += StartupTimerOnElapsed;
+
+            _updateTimer = new Timer {Interval = UpdateInterval, Enabled = false, AutoReset = false};
+            _updateTimer.Elapsed += UpdateTimerOnElapsed;
+        }
+
+        public virtual void Start()
+        {
             try
             {
-                StartOperation($"Starting up {_processImageName}");
-                _process = Process.Start(processStartInfo);
+                LogTo.Debug($"Startup {Pid}");
+                _process.Start();
                 _process.BeginOutputReadLine();
-                _process.BeginErrorReadLine();
-                _process.OutputDataReceived += ProcessOnOutputDataReceived;
-                _process.ErrorDataReceived += ProcessOnOutputDataReceived;
-                _process.Exited += ProcessOnExited;
-                _process.EnableRaisingEvents = true;
-
                 Pid = _process.Id;
                 StartDateTime = DateTime.Now;
 
-                _startupTimer = new Timer {Interval = _maxStartupTime, Enabled = true, AutoReset = false};
-                _startupTimer.Elapsed += StartupTimerOnElapsed;
-
-                _updateTimer = new Timer {Interval = UpdateInterval, Enabled = true, AutoReset = true};
-                _updateTimer.Elapsed += UpdateTimerOnElapsed;
+                IsBusy = true;
+                _startupTimer.Start();
+                _updateTimer.Start();
             }
+
             catch (Exception e)
             {
                 Log($"Unable to start {_processImageName}), got exception {e}");
-                StopOperation($"Starting up {_processImageName}", "Error starting up");
                 CurrentProcessState = ProcessState.EXITED;
                 StopDateTime = DateTime.Now;
             }
         }
 
-        protected void StartOperation(string operation)
-        {
-            lock (_updateLock)
-            {
-                if (CurrentProcessState == ProcessState.EXITED)
-                {
-                    LogTo.Error(
-                        $"Error PID {Pid}: Attempted to start operation {operation} but the process has already stopped!");
-                }
-
-                if (IsBusy)
-                {
-                    LogTo.Error(
-                        $"Error PID {Pid}: Attempted to start operation {operation} before another one finished!");
-                }
-
-                CurrentOperation = new ProcessOperation(operation, DateTime.Now);
-                Operations.Add(CurrentOperation);
-                IsBusy = true;
-                OperationUpdated.SafeInvoke(this);
-            }
-        }
-
-        protected void StopOperation(string operation, string result = "OK")
-        {
-            lock (_updateLock)
-            {
-                if (CurrentOperation == null)
-                {
-                    LogTo.Error(
-                        $"Error PID {Pid}: Attempted to stop operation {operation} but there was no operation running!");
-                    return;
-                }
-
-                if (CurrentOperation.Name != operation)
-                {
-                    LogTo.Error(
-                        $"Error PID {Pid}: Attempted to stop operation {operation} but the current running operation is {CurrentOperation}");
-                    CurrentOperation = null;
-                    return;
-                }
-
-                IsBusy = false;
-                CurrentOperation.SetStopTime(DateTime.Now);
-                CurrentOperation.SetResult(result);
-                CurrentOperation.SetCompleted();
-                OperationUpdated.SafeInvoke(this);
-            }
-        }
 
         private void UpdateTimerOnElapsed(object sender, ElapsedEventArgs e)
         {
-            if (!_process.HasExited)
+            if (_process.HasExited)
             {
-                _process.Refresh();
-                MemoryUsage = _process.PrivateMemorySize64 ;
+                return;
             }
-            
+
+            _process.Refresh();
+
+            try
+            {
+                MemoryUsage = _process.PrivateMemorySize64;
+            }
+            catch (Exception)
+            {
+                // The process has probably gone away during retrieval of PrivateMemorySize64
+            }
+
+
             Uptime = DateTime.Now - StartDateTime;
 
             if (CurrentProcessState == ProcessState.STARTING)
             {
                 StartupTime = DateTime.Now - StartDateTime;
             }
+
+            _updateTimer.Start();
         }
 
         private void StartupTimerOnElapsed(object sender, ElapsedEventArgs e)
@@ -190,58 +171,37 @@ namespace PresetMagician.ProcessIsolation.Processes
             }
         }
 
+        [Time]
         protected void Log(string message)
         {
-            LogMessages.Add($"{DateTime.Now.ToLongTimeString()} {message}");
+            Logger.Debug(message);
         }
 
+        [Time]
         private void ProcessOnOutputDataReceived(object sender, DataReceivedEventArgs e)
         {
             if (string.IsNullOrEmpty(e.Data))
             {
                 return;
             }
-            
-            Debug.WriteLine("received data length: "+e.Data.Length);
-            Debug.WriteLine(e.Data);
+
             if (e.Data.Trim() == $"{_processImageName}:{Pid} ready.")
             {
-                StopOperation($"Starting up {_processImageName}");
-                
-                var isRunning = false;
-
-                lock (_updateLock)
-                {
-                    try
-                    {
-                        isRunning = OnVerifyRunning();
-                        if (isRunning)
-                        {
-                            CurrentProcessState = ProcessState.RUNNING;
-                            StartupSuccessful = true;
-                            _startupTimer.Stop();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Log($"Tried to verify if the process is running, but got exception {ex.Message}");
-                    }
-                }
-
-                if (!isRunning)
-                {
-                    ForceStop("Host says its started but it's not");
-                }
+                CurrentProcessState = ProcessState.RUNNING;
+                StartupTime = DateTime.Now - StartDateTime;
+                StartupSuccessful = true;
+                _startupTimer.Stop();
+                TaskHelper.Run(() => { OnAfterStart(); });
             }
             else
             {
+                LogTo.Debug($"{Pid} {e.Data}");
                 Log(e.Data);
             }
         }
 
-        protected virtual bool OnVerifyRunning()
+        protected virtual void OnAfterStart()
         {
-            return true;
         }
 
         private void ProcessOnExited(object sender, EventArgs e)
@@ -251,16 +211,17 @@ namespace PresetMagician.ProcessIsolation.Processes
                 // Process is already existed, do nothing
                 return;
             }
+
             Log($"{_processImageName} shut itself down (timeout?), cleaning up");
-            lock (_updateLock)
-            {
-                CurrentProcessState = ProcessState.EXITED;
-                StopDateTime = DateTime.Now;
-                CleanupBeforeForceStop();
-            }
+
+            StopDateTime = DateTime.Now;
+            CurrentProcessState = ProcessState.EXITED;
+
+            CleanupBeforeForceStop();
+            StopReason = "Process stopped itself";
         }
 
-        protected void OnBeforeForceStop()
+        protected virtual void OnBeforeForceStop()
         {
         }
 
@@ -268,6 +229,7 @@ namespace PresetMagician.ProcessIsolation.Processes
         {
             _startupTimer.Stop();
             _updateTimer.Stop();
+            _process.Exited -= ProcessOnExited;
 
             try
             {
@@ -275,28 +237,30 @@ namespace PresetMagician.ProcessIsolation.Processes
             }
             catch (Exception e)
             {
-                Log($"Tried to cleanup before stop, but got exception {e.Message}");
+                Log($"Tried to cleanup before stop, but got {e.GetType().FullName} {e.Message}");
             }
         }
 
         public void ForceStop(string reason)
         {
-            lock (_updateLock)
+            inShutdown = true;
+
+            if (CurrentProcessState != ProcessState.EXITED)
             {
-                if (CurrentProcessState != ProcessState.EXITED)
-                {
-                    Log($"Instructing {Pid} to stop because of {reason}");
-                    CurrentProcessState = ProcessState.EXITED;
-                    CleanupBeforeForceStop();
-                }
+                Log($"Instructing {Pid} to stop because of {reason}");
+                CurrentProcessState = ProcessState.EXITED;
 
-                if (!_process.HasExited)
-                {
-                    _process.Kill();
-                }
 
-                StopDateTime = DateTime.Now;
+                CleanupBeforeForceStop();
             }
+
+            if (!_process.HasExited)
+            {
+                _process.Kill();
+            }
+
+            StopReason = reason;
+            StopDateTime = DateTime.Now;
         }
     }
 }

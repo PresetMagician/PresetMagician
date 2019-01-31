@@ -30,7 +30,7 @@ namespace SharedModels
         /// </summary>
         bool IsSupported { get; set; }
 
-        PluginLogger Logger { get; }
+        MiniLogger Logger { get; }
         string CanonicalDllFilename { get; }
 
         void OnLoadError(Exception e);

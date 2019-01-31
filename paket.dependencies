@@ -56,3 +56,4 @@ nuget Costura.Fody
 nuget Standart.Hash.xxHash
 nuget Orc.EntityFramework6
 nuget Castle.Core
+nuget Orc.Scheduling

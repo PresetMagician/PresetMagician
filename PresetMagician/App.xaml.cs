@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Threading;
 using Catel.IoC;
 using Catel.IO;
 using Catel.Logging;
@@ -17,6 +18,7 @@ using Orchestra.Services;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.Views;
 using Win32Mapi;
+using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
 using Path = System.IO.Path;
 

@@ -4,18 +4,19 @@ using Catel.Logging;
 
 namespace SharedModels
 {
-    public class PluginLogger: ILog
+    public class MiniLogger: ILog
     {
         public List<string> LogList = new List<string>();
         
         public void WriteWithData(string message, object extraData, LogEvent logEvent)
         {
-            LogList.Add(message);
+            
+            LogList.Add($"{DateTime.Now.ToLongTimeString()} {message}");
         }
 
         public void WriteWithData(string message, LogData logData, LogEvent logEvent)
         {
-            LogList.Add(message);
+            LogList.Add($"{DateTime.Now.ToLongTimeString()} {message}");
         }
 
         public void Indent()

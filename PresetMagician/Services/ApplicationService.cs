@@ -2,13 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Timers;
 using Catel;
 using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
+using MethodTimer;
+using Orc.Scheduling;
 using PresetMagician.ProcessIsolation;
 using PresetMagician.ProcessIsolation.Processes;
 using PresetMagician.Services.Interfaces;
+using Timer = System.Timers.Timer;
 
 namespace PresetMagician.Services
 {
@@ -19,6 +24,7 @@ namespace PresetMagician.Services
         private readonly IPleaseWaitService _pleaseWaitService;
         private readonly IAdvancedMessageService _messageService;
         private string _lastUpdateStatus;
+        private Timer _updateStatsTimer;
         private ILog _log;
         public ProcessPool ProcessPool { get; }
         public NewProcessPool NewProcessPool { get; }
@@ -42,31 +48,34 @@ namespace PresetMagician.Services
            
             NewProcessPool = new NewProcessPool();
             NewProcessPool.PoolFailed += NewProcessPoolOnPoolFailed;
-            NewProcessPool.ProcessWatcherUpdated += ProcessPoolOnProcessWatcherUpdated;
+            
+            _updateStatsTimer = new Timer(500);
+            _updateStatsTimer.Elapsed += UpdateStatsTimerOnElapsed;
+            _updateStatsTimer.AutoReset = false;
+            _updateStatsTimer.Start();
+
+        }
+
+        private void UpdateStatsTimerOnElapsed(object sender, ElapsedEventArgs e)
+        {
+            _runtimeConfigurationService.ApplicationState.RunningWorkers = NewProcessPool.NumRunningProcesses;
+            _runtimeConfigurationService.ApplicationState.TotalWorkers = NewProcessPool.NumTotalProcesses;
+            _updateStatsTimer.Start();
         }
 
         private void NewProcessPoolOnPoolFailed(object sender, PoolFailedEventArgs e)
         {
             _messageService.ShowErrorAsync(e.ShutdownReason, "VST worker pool failed", Settings.Help.CONCEPTS_VST_WORKER_POOL);
         }
-
-        private void ProcessPoolOnProcessWatcherUpdated(object sender, System.EventArgs e)
-        {
-            _runtimeConfigurationService.ApplicationState.RunningWorkers = (from process in NewProcessPool.RunningProcesses
-                where process.CurrentProcessState == HostProcess.ProcessState.RUNNING
-                select process).Count();
-            _runtimeConfigurationService.ApplicationState.TotalWorkers = NewProcessPool.RunningProcesses.Count;
-        }
-
+        
+      
         public void StartProcessPool()
         {
-            ProcessPool.StartPool();
             NewProcessPool.StartPool();
         }
 
         public void ShutdownProcessPool()
         {
-            ProcessPool.StopPool();
             NewProcessPool.StopPool();
         }
 

@@ -90,6 +90,8 @@ NUGET
       Catel.Core (>= 5.8)
       Catel.MVVM (>= 5.8)
       Orc.Controls (>= 3.1)
+    Orc.Scheduling (3.1)
+      Catel.Core (>= 5.8)
     Orc.Squirrel (3.0)
       Catel.Core (>= 5.6)
       Orc.FileSystem (>= 3.0)

@@ -4,6 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System;
 using System.Threading.Tasks;
 using Catel;
 using Catel.IoC;
@@ -12,6 +13,7 @@ using Catel.MVVM;
 using Catel.Services;
 using Catel.Threading;
 using MethodTimer;
+using Orc.Scheduling;
 using Orc.Squirrel;
 using Orchestra.Services;
 using PresetMagician.Services.Interfaces;
@@ -65,6 +67,9 @@ namespace PresetMagician.Services
         {
             // Non-async first
             RegisterTypes();
+            
+            ServiceLocator.Default.ResolveType<IApplicationService>().StartProcessPool();
+            
             _splashScreenService.Action = "Initializing database…";
             InitDatabase();
             
@@ -76,31 +81,41 @@ namespace PresetMagician.Services
             
             _splashScreenService.Action = "Almost there…";
         }
-        
 
-        [Time]
-        public override async Task InitializeBeforeShowingShellAsync()
+        public override Task InitializeAfterCreatingShellAsync()
         {
-            
-            ServiceLocator.Default.ResolveType<IApplicationService>().StartProcessPool();
+            return base.InitializeAfterCreatingShellAsync();
         }
 
         [Time]
         public override async Task InitializeAfterShowingShellAsync()
         {
-            var serviceLocator = ServiceLocator.Default;
-            var licenseService = serviceLocator.ResolveType<ILicenseService>();
-            if (!licenseService.CheckLicense())
-            {
-                StartRegistration();
-            }
-            
-            await base.InitializeAfterShowingShellAsync();
-
             TaskHelper.Run(() =>
             {
-                _commandManager.ExecuteCommand(Commands.Plugin.RefreshPlugins);
-                CheckForUpdatesAsync();
+                var serviceLocator = ServiceLocator.Default;
+                var licenseService = serviceLocator.ResolveType<ILicenseService>();
+                if (!licenseService.CheckLicense())
+                {
+                    StartRegistration();
+                }
+            });
+            
+            base.InitializeAfterShowingShellAsync();
+
+            var schedulerService = _serviceLocator.ResolveType<ISchedulingService>();
+            
+            var updateCheckTask = new ScheduledTask
+            {
+                Name = "Update Check task",
+                Start = DateTime.Now.AddMinutes(1),
+                Action = CheckForUpdatesAsync
+            };
+            
+            schedulerService.AddScheduledTask(updateCheckTask);
+            
+            TaskHelper.Run(() =>
+            {
+                //_commandManager.ExecuteCommand(Commands.Plugin.RefreshPlugins);
                 
             });
         }
