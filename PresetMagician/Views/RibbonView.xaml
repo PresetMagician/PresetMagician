@@ -31,18 +31,6 @@
             IsQuickAccessToolBarVisible="False"
             SelectedTabIndex="{Binding ApplicationState.SelectedRibbonTabIndex}">
 
-            <!-- <fluent:Ribbon.ContextualGroups>
-                <fluent:RibbonContextualTabGroup
-                    x:Name="tabGroup1"
-                    Background="Magenta"
-                    BorderBrush="Magenta"
-                    Foreground="DeepPink"
-                    Header="Plugin"
-                    Visibility="Visible" />
-
-            </fluent:Ribbon.ContextualGroups>-->
-
-
             <fluent:RibbonTabItem Header="Plugins">
 
                 <fluent:RibbonGroupBox Header="Plugins">

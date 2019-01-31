@@ -84,7 +84,7 @@
     <Compile Include="Plugin.cs" />
     <Compile Include="PluginInfoItem.cs" />
     <Compile Include="PluginLocation.cs" />
-    <Compile Include="PluginLogger.cs" />
+    <Compile Include="MiniLogger.cs" />
     <Compile Include="Preset.cs" />
     <Compile Include="PresetBank.cs" />
     <Compile Include="PresetDataStorage.cs" />

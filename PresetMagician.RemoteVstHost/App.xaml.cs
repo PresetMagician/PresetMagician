@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.ServiceModel;
 using System.Timers;
 using System.Windows;
@@ -14,27 +15,29 @@ namespace PresetMagician.ProcessIsolation
     /// </summary>
     public partial class App
     {
-        private ServiceHost _serviceHost;
+        private static ServiceHost _serviceHost;
 
         private static Timer _shutdownTimer;
-        //private static FileLogListener _fileLogListener;
+        private static StreamWriter _logFileStreamWriter;
+        private static FileStream _logFileStream;
+        private static string _logFile;
 
         protected override void OnStartup(StartupEventArgs e)
         {
-           /* _fileLogListener = new FileLogListener
-            {
-                IgnoreCatelLogging = false,
-                FilePath = @"{AppDataLocal}\Logs\PresetMagician.RemoteVstHost"+Process.GetCurrentProcess().Id+".log",
-                TimeDisplay = TimeDisplay.DateTime
-            };
+            var path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) +
+                       @"\Drachenkatze\PresetMagician.RemoteVstHost\Logs\";
+            Directory.CreateDirectory(path);
 
-            LogManager.AddListener(_fileLogListener);*/
+            _logFile = Path.Combine(path, "PresetMagician.RemoteVstHost" +
+                                             Process.GetCurrentProcess().Id + ".log");
+
             
+          
             AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
             Current.DispatcherUnhandledException += CurrentOnDispatcherUnhandledException;
             
            string address = Constants.BaseAddress + Process.GetCurrentProcess().Id;
-
+           
             _serviceHost = new ServiceHost(typeof(RemoteVstService));
             var binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.None);
 
@@ -42,8 +45,9 @@ namespace PresetMagician.ProcessIsolation
             Current.MainWindow = dummyWin;
             
             _serviceHost.AddServiceEndpoint(typeof(IRemoteVstService), binding, address);
-            _serviceHost.Open();
             _serviceHost.Faulted += ServiceHostOnFaulted;
+            _serviceHost.Opened += ServiceHostOnOpened;
+            _serviceHost.Open();
 
             _shutdownTimer = new Timer();
             _shutdownTimer.Elapsed += OnIdleTimeout;
@@ -51,64 +55,78 @@ namespace PresetMagician.ProcessIsolation
             _shutdownTimer.Enabled = true;
             _shutdownTimer.AutoReset = false;
 
-            //LogTo.Debug("Starting up");
-            //Console.WriteLine($"{address} ready.");
-            Console.WriteLine($"PresetMagician.RemoteVstHost.exe:{Process.GetCurrentProcess().Id} ready.");
+            
             base.OnStartup(e);
         }
 
-        private void CurrentOnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        private void ServiceHostOnOpened(object sender, EventArgs e)
         {
-            var exception = e.Exception;
-            //LogTo.Debug("Got exception "+exception.Message);
-            //LogTo.Debug(exception.StackTrace);
-            //_fileLogListener.FlushAsync().Wait();
+            Console.WriteLine($"PresetMagician.RemoteVstHost.exe:{Process.GetCurrentProcess().Id} ready.");
+            Console.WriteLine($"[{DateTime.Now:HH:mm:ss:fff}] => {Process.GetCurrentProcess().Id} rdy");
+            
+            
         }
 
-        private void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        private static void MiniLog(string message)
+        {
+            _logFileStream = new FileStream(_logFile, FileMode.Create);
+            _logFileStreamWriter = new StreamWriter(_logFileStream);
+            _logFileStreamWriter.WriteLine($"[{DateTime.Now:HH:mm:ss:fff}] => {message}");
+            _logFileStreamWriter.Flush();
+            _logFileStreamWriter.BaseStream.Flush();
+            _logFileStreamWriter.Close();
+            _logFileStream.Close();
+        }
+
+        private static void CurrentOnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            var exception = e.Exception;
+            MiniLog("Got exception "+exception.Message);
+            MiniLog(exception.StackTrace);
+        }
+
+        private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             var exception = (Exception) e.ExceptionObject;
-            //LogTo.Debug("Got exception "+exception.Message + ", is terminating: "+e.IsTerminating);
-            //LogTo.Debug(exception.StackTrace);
-            //_fileLogListener.FlushAsync().Wait();
+            MiniLog("Got exception "+exception.Message + ", is terminating: "+e.IsTerminating);
+            MiniLog(exception.StackTrace);
         }
 
         private void OnIdleTimeout(object sender, ElapsedEventArgs e)
         {
-            //LogTo.Debug("Idle for 120 seconds, shutting down");
-            //_fileLogListener.FlushAsync().Wait();
+            MiniLog("idle for 120 seconds, shutting down");
             Process.GetCurrentProcess().Kill();
         }
 
         public static void Ping()
         {
+            Console.WriteLine($"[{DateTime.Now:HH:mm:ss:fff}] => {Process.GetCurrentProcess().Id} ping");
             _shutdownTimer.Stop();
             _shutdownTimer.Start();
         }
 
-        private void ServiceHostOnFaulted(object sender, EventArgs e)
+        private static void ServiceHostOnFaulted(object sender, EventArgs e)
         {
-            //LogTo.Debug("Service Host faulted, exiting");
-
-            _serviceHost.Close();
-            //_fileLogListener.FlushAsync().Wait();
+            MiniLog("Service Host faulted, exiting");
             Process.GetCurrentProcess().Kill();
         }
 
         public static void KillSelf()
         {
-            //LogTo.Debug("I should kill myself now");
-            //_fileLogListener.FlushAsync().Wait();
-            //File.Delete(_fileLogListener.FilePath);
-            //Process.GetCurrentProcess().Kill();
+            _serviceHost.Faulted -= ServiceHostOnFaulted;
+            AppDomain.CurrentDomain.UnhandledException -= CurrentDomainOnUnhandledException;
+            Current.DispatcherUnhandledException -= CurrentOnDispatcherUnhandledException;
+            
+            Console.WriteLine($"[{DateTime.Now:HH:mm:ss:fff}] => {Process.GetCurrentProcess().Id} Shutting down");
+            
+            Process.GetCurrentProcess().Kill();
         }
 
         protected override void OnExit(ExitEventArgs e)
         {
-            //LogTo.Debug("Regular shutdown");
+          
             _serviceHost.Close();
-            //_fileLogListener.FlushAsync().Wait();
-            //File.Delete(_fileLogListener.FilePath);
+
             base.OnExit(e);
         }
     }

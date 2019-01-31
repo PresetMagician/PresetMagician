@@ -5,21 +5,161 @@
                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                    xmlns:viewModels="clr-namespace:PresetMagician.ViewModels"
                    xmlns:catel="http://schemas.catelproject.com"
-                   xmlns:controls="clr-namespace:PresetMagician.Controls"
+                   xmlns:dgx="urn:tom-englert.de/DataGridExtensions"
+                   xmlns:converters="clr-namespace:PresetMagician.Converters"
                    d:DataContext="{d:DesignInstance viewModels:VstWorkerPoolViewModel}"
                    mc:Ignorable="d">
 
+    <catel:UserControl.Resources>
+        <converters:FormatKbSizeConverter x:Key="FormatKbSizeConverter" />
+    </catel:UserControl.Resources>
+    
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="2*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <GroupBox Header="Runnning Processes" Grid.Column="0">
-            <controls:ProcessPoolGrid DataContext="{Binding ProcessPool.RunningProcesses}" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <GroupBox Header="Runnning Processes" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2">
+            
+            <DataGrid ItemsSource="{Binding ProcessPool.RunningProcesses}"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      CanUserSortColumns="True"
+                      dgx:Tools.ApplyInitialSorting="True"
+                      SelectedItem="{Binding SelectedVstHostProcess}"
+                      GridLinesVisibility="All" SelectionUnit="FullRow">
+                <DataGrid.Columns>
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding Pid, Mode=OneWay}"
+                        Header="PID"
+                        IsReadOnly="True"
+                        SortDirection="Ascending" />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding Uptime, Mode=OneWay, StringFormat=hh\\:mm\\:ss}"
+                        Header="Uptime"
+                        IsReadOnly="True" />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding MemoryUsage, Mode=OneWay,Converter={StaticResource FormatKbSizeConverter}}"
+                        Header="Memory"
+                        IsReadOnly="True" />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding StartupTimeFormatted, Mode=OneWay}"
+                        Header="Startup Time"
+                        IsReadOnly="True" />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding CurrentOperation.Name, Mode=OneWay}"
+                        Header="Current Operation"
+                        IsReadOnly="True" />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding CurrentOperation.ElapsedTime, Mode=OneWay, StringFormat=hh\\:mm\\:ss}"
+                        Header="Current Operation (Elapsed Time)"
+                        IsReadOnly="True"/>
+                </DataGrid.Columns>
+            
+            </DataGrid>
         </GroupBox>
-        <GroupBox Header="Terminated Processes" Grid.Column="1">
-            <controls:ProcessPoolGrid DataContext="{Binding ProcessPool.OldProcesses}" />
+        <GroupBox Header="Terminated Processes" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
+             <DataGrid ItemsSource="{Binding ProcessPool.OldProcesses}"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      CanUserSortColumns="True"
+                      dgx:Tools.ApplyInitialSorting="True"
+                      SelectedItem="{Binding SelectedVstHostProcess}"
+                      GridLinesVisibility="All" SelectionUnit="FullRow">
+                <DataGrid.Columns>
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding StopDateTime, Mode=OneWay}"
+                        Header="Stopped at"
+                        IsReadOnly="True"
+                        SortDirection="Descending" />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding Pid, Mode=OneWay}"
+                        Header="PID"
+                        IsReadOnly="True"
+                         />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding Uptime, Mode=OneWay, StringFormat=hh\\:mm\\:ss}"
+                        Header="Uptime"
+                        IsReadOnly="True" />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding StartupTimeFormatted, Mode=OneWay}"
+                        Header="Startup Time"
+                        IsReadOnly="True" />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding StopReason, Mode=OneWay}"
+                        Header="Stop Reason"
+                        IsReadOnly="True" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
+        <GroupBox Header="Selected Process" Grid.Column="2" Grid.Row="0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Text="PID"
+                    />
+               <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SelectedVstHostProcess.Pid}"/>
+
+                <TextBlock
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Text="Required Startup Time"
+                />
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SelectedVstHostProcess.StartupTimeFormatted}"/>
+                
+                <TextBlock
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Text="Uptime"
+                />
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SelectedVstHostProcess.Uptime, Mode=OneWay, StringFormat=hh\\:mm\\:ss}"/>
+                
+                <TextBlock
+                    Grid.Row="3"
+                    Grid.Column="0"
+                    Text="State"
+                />
+                <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SelectedVstHostProcess.CurrentProcessState}"/>
+                
+                <DockPanel Grid.Row="4" Grid.ColumnSpan="2" Grid.Column="0" LastChildFill="False">
+                    <Button Command="{Binding ShowVstHostProcessLog}">Show Log</Button>
+                    <Button Command="{Binding KillVstHostProcess}">Kill Process</Button>
+                </DockPanel>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Process Pool" Grid.Column="2" Grid.Row="1">
+            <DockPanel LastChildFill="False">
+                <Button Command="{Binding StopPool}">Stop Pool</Button>
+                <Button Command="{Binding StartPool}">Start Pool</Button>
+            </DockPanel>
         </GroupBox>
 
     </Grid>

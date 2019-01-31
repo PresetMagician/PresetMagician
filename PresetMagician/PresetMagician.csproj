@@ -189,6 +189,7 @@
     <Compile Include="ViewModels\SplashScreenViewModel.cs" />
     <Compile Include="ViewModels\StatusBarViewModel.cs" />
     <Compile Include="ViewModels\VstFolderListViewModel.cs" />
+    <Compile Include="ViewModels\VstHostProcessLogViewModel.cs" />
     <Compile Include="ViewModels\VstPluginChunkViewModel.cs" />
     <Compile Include="ViewModels\VstPluginLogViewModel.cs" />
     <Compile Include="ViewModels\VstPluginInfoViewModel.cs" />
@@ -206,6 +207,9 @@
     </Compile>
     <Compile Include="Views\PresetDataView.xaml.cs">
       <DependentUpon>PresetDataView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\VstHostProcessLogView.xaml.cs">
+      <DependentUpon>VstHostProcessLogView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\VstPluginChunkView.xaml.cs">
       <DependentUpon>VstPluginChunkView.xaml</DependentUpon>
@@ -319,6 +323,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\PresetDataView.xaml" />
+    <Page Include="Views\VstHostProcessLogView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\VstPluginChunkView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -860,6 +868,17 @@
       <ItemGroup>
         <Reference Include="Orc.LogViewer">
           <HintPath>..\packages\Orc.LogViewer\lib\net47\Orc.LogViewer.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="Orc.Scheduling">
+          <HintPath>..\packages\Orc.Scheduling\lib\net47\Orc.Scheduling.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>

@@ -41,7 +41,7 @@ namespace SharedModels
         {
             Presets.CollectionChanged += PresetsOnCollectionChanged;
             RootBank.PresetBanks.Add(new PresetBank());
-            Logger = new PluginLogger();
+            Logger = new MiniLogger();
         }
 
         private void PresetsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -327,7 +327,7 @@ namespace SharedModels
         /// </summary>
         public bool IsSupported { get; set; }
 
-        public PluginLogger Logger { get; }
+        public MiniLogger Logger { get; }
 
         [NotMapped]
         public NativeInstrumentsResource NativeInstrumentsResource { get; set; } = new NativeInstrumentsResource();

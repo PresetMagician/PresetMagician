@@ -1,50 +1,55 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Timers;
+using System.Windows;
+using System.Windows.Data;
 using Catel;
 using Catel.Collections;
-using MethodTimer;
+using Catel.Data;
+using Catel.Threading;
 using PresetMagician.ProcessIsolation.Processes;
-using SharedModels;
+using Timer = System.Threading.Timer;
 
 namespace PresetMagician.ProcessIsolation
 {
-    public class NewProcessPool
+    public class NewProcessPool : ObservableObject
     {
-        protected virtual string BaseAddress { get; } = "net.pipe://localhost/presetmagician/vstService/";
-
         private int _maxProcesses = 8;
-        private int _maxStartTimeout = 10;
+        private int _maxStartTimeout = 20;
         private int _failedStartupProcesses;
         private int _totalStartedProcesses;
-        public event EventHandler ProcessWatcherUpdated;
+
+        public int NumRunningProcesses;
+        public int NumTotalProcesses;
+        
         public event EventHandler<PoolFailedEventArgs> PoolFailed;
 
-        public FastObservableCollection<HostProcess> RunningProcesses { get; } =
-            new FastObservableCollection<HostProcess>();
+        public FastObservableCollection<VstHostProcess> RunningProcesses { get; } =
+            new FastObservableCollection<VstHostProcess>();
 
-        public FastObservableCollection<HostProcess> OldProcesses { get; } =
-            new FastObservableCollection<HostProcess>();
+        public FastObservableCollection<VstHostProcess> OldProcesses { get; } =
+            new FastObservableCollection<VstHostProcess>();
 
         private readonly Timer _processWatcher;
-        private bool _poolRunning;
+        public bool PoolRunning { get; private set; }
 
         private static readonly object _updateLock = new object();
+        private bool _updateProcessesRunning;
 
         public NewProcessPool()
         {
-            _processWatcher = new Timer(500) {AutoReset = false};
-            _processWatcher.Elapsed += ProcessWatcherOnElapsed;
+            _processWatcher = new Timer(UpdateProcesses, null, 500, 500);
+
+            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                BindingOperations.EnableCollectionSynchronization(RunningProcesses, _updateLock);
+                BindingOperations.EnableCollectionSynchronization(OldProcesses, _updateLock);
+            }));
         }
 
         public void StartPool()
         {
-            lock (_updateLock)
-            {
-                _poolRunning = true;
-                _processWatcher.Start();
-            }
+            PoolRunning = true;
         }
 
         public void SetMaxProcesses(int maxProcesses)
@@ -61,87 +66,80 @@ namespace PresetMagician.ProcessIsolation
         {
             lock (_updateLock)
             {
-                using (RunningProcesses.SuspendChangeNotifications())
+                _failedStartupProcesses = 0;
+                PoolRunning = false;
+                foreach (var process in RunningProcesses.ToArray())
                 {
-                    _failedStartupProcesses = 0;
-                    _poolRunning = false;
-                    _processWatcher.Stop();
-                    foreach (var process in RunningProcesses.ToArray())
-                    {
-                        process.ForceStop("Pool shutdown");
-                    }
+                    process.ForceStop("Pool shutdown");
                 }
             }
         }
 
-        private void ProcessWatcherOnElapsed(object sender, ElapsedEventArgs e)
-        {
-            if (!_poolRunning)
-            {
-                return;
-            }
 
-            UpdateProcesses();
-            ProcessWatcherUpdated.SafeInvoke(this);
-            _processWatcher.Start();
-        }
-
-        private void UpdateProcesses()
+        private void UpdateProcesses(object o)
         {
             lock (_updateLock)
             {
-                using (RunningProcesses.SuspendChangeNotifications())
-                using (OldProcesses.SuspendChangeNotifications())
+                if (_updateProcessesRunning)
                 {
-                    var pluginsToRemove = new List<HostProcess>();
-                    foreach (var process in RunningProcesses)
-                    {
-                        if (process.CurrentProcessState == HostProcess.ProcessState.EXITED)
-                        {
-                            UnwatchProcess(process);
-                            pluginsToRemove.Add(process);
-                            OldProcesses.Add(process);
-                        }
-                    }
+                    return;
+                }
 
-                    foreach (var process in pluginsToRemove)
-                    {
-                        RunningProcesses.Remove(process);
-                    }
+                _updateProcessesRunning = true;
 
-                    if (_poolRunning)
+                var pluginsToRemove = new List<VstHostProcess>();
+                foreach (var process in RunningProcesses)
+                {
+                    if (process.CurrentProcessState == HostProcess.ProcessState.EXITED)
                     {
-                        if (RunningProcesses.Count < _maxProcesses)
-                        {
-                            for (var i = 0; i < _maxProcesses - RunningProcesses.Count; i++)
-                            {
-                                var process = new HostProcess(_maxStartTimeout);
-                                process.BusyUpdated += ProcessOnBusyUpdated;
-                                process.ProcessStateUpdated += ProcessOnProcessStateUpdated;
-                                process.OperationUpdated += ProcessOnOperationUpdated;
-                                RunningProcesses.Add(process);
-                                _totalStartedProcesses++;
-                            }
-                        }
+                        UnwatchProcess(process);
+                        pluginsToRemove.Add(process);
+                        OldProcesses.Add(process);
                     }
                 }
+
+                foreach (var process in pluginsToRemove)
+                {
+                    RunningProcesses.Remove(process);
+                }
+
+                if (PoolRunning)
+                {
+                    if (RunningProcesses.Count < _maxProcesses)
+                    {
+                        var process = new VstHostProcess(_maxStartTimeout);
+                        process.ProcessStateUpdated += ProcessOnProcessStateUpdated;
+                        TaskHelper.Run(() => process.Start());
+                        RunningProcesses.Add(process);
+
+                        _totalStartedProcesses++;
+                    }
+                }
+                
+                NumRunningProcesses = (from process in RunningProcesses
+                    where process.CurrentProcessState == HostProcess.ProcessState.RUNNING
+                    select process).Count();
+                NumTotalProcesses = RunningProcesses.Count;
+
+
+                _updateProcessesRunning = false;
             }
+
         }
 
 
-        private void UnwatchProcess(HostProcess process)
+        private void UnwatchProcess(VstHostProcess process)
         {
-            process.BusyUpdated -= ProcessOnBusyUpdated;
             process.ProcessStateUpdated -= ProcessOnProcessStateUpdated;
-            process.ProcessStateUpdated -= ProcessOnOperationUpdated;
         }
 
         private void ProcessOnProcessStateUpdated(object sender, EventArgs e)
         {
             lock (_updateLock)
             {
-                var process = sender as HostProcess;
-                if (process.CurrentProcessState == HostProcess.ProcessState.EXITED && !process.StartupSuccessful && _poolRunning)
+                var process = sender as VstHostProcess;
+                if (process.CurrentProcessState == HostProcess.ProcessState.EXITED && !process.StartupSuccessful &&
+                    PoolRunning)
                 {
                     _failedStartupProcesses++;
                     if (_failedStartupProcesses > 5 && (double) _failedStartupProcesses / _totalStartedProcesses > 0.1)
@@ -156,25 +154,14 @@ namespace PresetMagician.ProcessIsolation
                                 " worker (Tab 'VST Workers') and increase the startup time in the settings if necessary. " +
                                 Environment.NewLine + Environment.NewLine +
                                 "Re-start your pool after investigation and configuration."
-
                         };
                         PoolFailed.SafeInvoke(this, eventArgs);
                     }
                 }
             }
-
-            UpdateProcesses();
         }
 
-        private void ProcessOnBusyUpdated(object sender, EventArgs e)
-        {
-            ProcessWatcherUpdated.SafeInvoke(this);
-        }
-
-        private void ProcessOnOperationUpdated(object sender, EventArgs e)
-        {
-            ProcessWatcherUpdated.SafeInvoke(this);
-        }
+      
     }
 
     public class PoolFailedEventArgs : EventArgs

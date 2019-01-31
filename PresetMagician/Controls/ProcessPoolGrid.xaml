@@ -21,6 +21,7 @@
               CanUserAddRows="False"
               CanUserSortColumns="True"
               dgx:Tools.ApplyInitialSorting="True"
+              SelectedItem="{Binding SelectedPlugin}"
               GridLinesVisibility="All" SelectionUnit="FullRow">
         <DataGrid.Columns>
             <DataGridTextColumn
@@ -41,7 +42,7 @@
                 IsReadOnly="True" />
             <DataGridTextColumn
                 Width="Auto"
-                Binding="{Binding StartupTime, Mode=OneWay, StringFormat=hh\\:mm\\:ss}"
+                Binding="{Binding StartupTimeFormatted, Mode=OneWay}"
                 Header="Startup Time"
                 IsReadOnly="True" />
             <DataGridTextColumn
