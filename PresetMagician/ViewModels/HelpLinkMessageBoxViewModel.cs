@@ -44,6 +44,12 @@ namespace PresetMagician.ViewModels
         public string Message { get; set; }
         
         public string HelpLink { get; set; }
+        
+        public string DontAskAgainText { get; set; }
+        
+        public bool ShowDontAskAgain { get; set; }
+
+        public bool DontAskAgainResult { get; set; }
 
         public string FinalHelpLink
         {

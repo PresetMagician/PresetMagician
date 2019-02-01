@@ -90,13 +90,13 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Exceptions\VstPluginException.cs" />
     <Compile Include="NewProcessPool.cs" />
+    <Compile Include="Processes\ClientProxyInterceptor.cs" />
     <Compile Include="Processes\ProcessOperation.cs" />
+    <Compile Include="Processes\ProcessPoolInterceptor.cs" />
     <Compile Include="Processes\VstHostProcess.cs" />
-    <Compile Include="ProcessPool.cs" />
     <Compile Include="Processes\HostProcess.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="RemotePluginInstance.cs" />
-    <Compile Include="Services\ProxiedRemoteVstService.cs" />
     <Compile Include="Services\RemoteVstService.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -163,6 +163,20 @@
         <Reference Include="Anotar.Catel">
           <HintPath>..\packages\Anotar.Catel.Fody\lib\net452\Anotar.Catel.dll</HintPath>
           <Private>False</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="System.Configuration">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Castle.Core">
+          <HintPath>..\packages\Castle.Core\lib\net45\Castle.Core.dll</HintPath>
+          <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -273,9 +287,6 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
-        <Reference Include="System.Configuration">
-          <Paket>True</Paket>
-        </Reference>
         <Reference Include="System.Configuration.ConfigurationManager">
           <HintPath>..\packages\System.Configuration.ConfigurationManager\lib\net461\System.Configuration.ConfigurationManager.dll</HintPath>
           <Private>False</Private>

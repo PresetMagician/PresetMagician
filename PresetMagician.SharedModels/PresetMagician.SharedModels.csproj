@@ -271,9 +271,6 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
-        <Reference Include="System.ComponentModel.DataAnnotations">
-          <Paket>True</Paket>
-        </Reference>
         <Reference Include="SQLite.CodeFirst">
           <HintPath>..\packages\SQLite.CodeFirst\lib\net45\SQLite.CodeFirst.dll</HintPath>
           <Private>True</Private>
@@ -307,6 +304,9 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
+        <Reference Include="System.ComponentModel.DataAnnotations">
+          <Paket>True</Paket>
+        </Reference>
         <Reference Include="mscorlib">
           <Paket>True</Paket>
         </Reference>

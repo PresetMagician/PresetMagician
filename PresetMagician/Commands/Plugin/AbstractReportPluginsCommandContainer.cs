@@ -55,13 +55,13 @@ namespace PresetMagician
             if (ReportAll)
             {
                 numPluginsToReport = (from plugin in _vstService.Plugins
-                    where plugin.IsAnalyzed
+                    where plugin.IsAnalyzed && !plugin.DontReport && !plugin.IsReported
                     select plugin).Count();
             }
             else
             {
                 numPluginsToReport = (from plugin in _vstService.Plugins
-                    where plugin.IsAnalyzed && plugin.IsSupported == false
+                    where plugin.IsAnalyzed && plugin.IsSupported == false && !plugin.DontReport && !plugin.IsReported
                     select plugin).Count();
             }
 
@@ -86,13 +86,13 @@ namespace PresetMagician
             if (ReportAll)
             {
                 return (from plugin in _vstService.Plugins
-                    where plugin.IsAnalyzed
+                    where plugin.IsAnalyzed && !plugin.DontReport && !plugin.IsReported
                     select plugin).ToList();
             }
 
 
             return (from plugin in _vstService.Plugins
-                where plugin.IsAnalyzed && plugin.IsSupported == false
+                where plugin.IsAnalyzed && plugin.IsSupported == false && !plugin.DontReport && !plugin.IsReported
                 select plugin).ToList();
         }
 
@@ -112,12 +112,12 @@ namespace PresetMagician
                     email = _licenseService.GetCurrentLicense().Customer.Email,
                     plugins =
                         from p in pluginsToReport
-                        orderby p.PluginId
+                        orderby p.VstPluginId
                         select new
                         {
                             vendorName = p.PluginVendor,
                             pluginName = p.PluginName,
-                            pluginId = p.PluginId,
+                            pluginId = p.VstPluginId,
                             pluginSupported = p.IsSupported,
                             pluginSupportedSince = VersionHelper.GetCurrentVersion(),
                             pluginType = p.PluginTypeDescription,

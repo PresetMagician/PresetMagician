@@ -14,7 +14,7 @@ namespace SharedModels
         {
             PluginName = preset.Plugin.PluginName;
             PluginVendor = preset.Plugin.PluginVendor;
-            PluginId = preset.Plugin.PluginId;
+            PluginId = preset.Plugin.VstPluginId;
             PluginType = preset.Plugin.PluginType;
             BankPath = preset.PresetBank.GetBankPath().ToList();
             BankPath.RemoveFirst();

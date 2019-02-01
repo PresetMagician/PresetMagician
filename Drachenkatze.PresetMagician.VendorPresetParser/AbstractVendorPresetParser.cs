@@ -66,7 +66,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
         public virtual bool CanHandle()
         {
-            return SupportedPlugins.Contains(PluginInstance.Plugin.PluginId);
+            return SupportedPlugins.Contains(PluginInstance.Plugin.VstPluginId);
         }
 
         public virtual void OnAfterPresetExport()

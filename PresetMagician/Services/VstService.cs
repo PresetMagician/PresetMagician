@@ -7,6 +7,7 @@ using Catel;
 using Catel.Collections;
 using MethodTimer;
 using PresetMagician.ProcessIsolation;
+using PresetMagician.ProcessIsolation.Processes;
 using PresetMagician.Services.Interfaces;
 using SharedModels;
 using Type = SharedModels.Type;
@@ -16,18 +17,25 @@ namespace PresetMagician.Services
     public class VstService : IVstService
     {
         private readonly IDatabaseService _databaseService;
-        private readonly IsolatedProcess _frontendProcess = new IsolatedProcess();
-
+        private readonly IApplicationService _applicationService;
+        private VstHostProcess _interactiveVstHostProcess;
         private readonly Dictionary<Plugin, IRemotePluginInstance> _pluginInstances =
             new Dictionary<Plugin, IRemotePluginInstance>();
 
-        public VstService(IDatabaseService databaseService)
+        public VstService(IDatabaseService databaseService, IApplicationService applicationService)
         {
             Argument.IsNotNull(() => databaseService);
+            Argument.IsNotNull(() => applicationService);
 
+            _applicationService = applicationService;
             _databaseService = databaseService;
             _databaseService.Context.Plugins.Include(plugin => plugin.AdditionalBankFiles).Include(plugin => plugin.PluginLocation).Load();
             Plugins = _databaseService.Context.Plugins.Local;
+        }
+
+        public IRemoteVstService GetVstService()
+        {
+            return _applicationService.NewProcessPool.GetVstService();
         }
 
         public async Task SavePlugins()
@@ -40,16 +48,30 @@ namespace PresetMagician.Services
             return _databaseService.Context.GetPresetData(preset);
         }
 
-        public async Task<IRemotePluginInstance> GetRemotePluginInstance(Plugin plugin)
+        public IRemotePluginInstance GetRemotePluginInstance(Plugin plugin)
         {
-            return await ProcessPool.GetRemotePluginInstance(plugin);
+            return _applicationService.NewProcessPool.GetRemotePluginInstance(plugin);
         }
 
-        public IRemotePluginInstance GetInteractivePluginInstance(Plugin plugin)
+        public List<PluginLocation> GetPluginLocations(Plugin plugin)
         {
+            return _databaseService.Context.GetPluginLocations(plugin);
+        }
+
+      
+        public  async Task<IRemotePluginInstance> GetInteractivePluginInstance(Plugin plugin)
+        {
+            if (_interactiveVstHostProcess == null)
+            {
+                _interactiveVstHostProcess = new VstHostProcess();
+                _interactiveVstHostProcess.Start();
+                await _interactiveVstHostProcess.WaitUntilStarted();
+            }
+            
             if (!_pluginInstances.ContainsKey(plugin))
             {
-                _pluginInstances.Add(plugin, _frontendProcess.GetRemotePluginInstance(plugin));
+
+                _pluginInstances.Add(plugin, new RemotePluginInstance(_interactiveVstHostProcess, plugin));
             }
 
             return _pluginInstances[plugin];
@@ -58,7 +80,6 @@ namespace PresetMagician.Services
 
         public FastObservableCollection<Plugin> SelectedPlugins { get; } = new FastObservableCollection<Plugin>();
         public ObservableCollection<Plugin> Plugins { get; set; }
-        public FastObservableCollection<Plugin> CachedPlugins { get; } = new FastObservableCollection<Plugin>();
 
         public FastObservableCollection<Preset> SelectedPresets { get; } = new FastObservableCollection<Preset>();
         public FastObservableCollection<Preset> PresetExportList { get; } = new FastObservableCollection<Preset>();

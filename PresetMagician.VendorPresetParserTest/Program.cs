@@ -12,6 +12,7 @@ using Drachenkatze.PresetMagician.Utils;
 using Drachenkatze.PresetMagician.VendorPresetParser;
 using PresetMagician.Models;
 using PresetMagician.ProcessIsolation;
+using PresetMagician.ProcessIsolation.Processes;
 using PresetMagician.ProcessIsolation.Services;
 using PresetMagician.VstHost.VST;
 using SharedModels;
@@ -68,9 +69,9 @@ namespace PresetMagician.VendorPresetParserTest
                     DllPath = @"C:\Program Files\VstPlugins\Foobar.dll", IsPresent = true
                 };
 
-                var plugin = new Plugin {PluginId = pluginId, PluginLocation = pluginLocation};
+                var plugin = new Plugin {VstPluginId = pluginId, PluginLocation = pluginLocation};
 
-                var stubProcess = new StubIsolatedProcess();
+                var stubProcess = new VstHostProcess();
                 
                 var remoteInstance = new RemotePluginInstance(stubProcess, plugin);
 
@@ -83,7 +84,7 @@ namespace PresetMagician.VendorPresetParserTest
                 var testResult = new PluginTestResult
                 {
                     VendorPresetParser = presetParser.PresetParserType,
-                    PluginId = plugin.PluginId
+                    PluginId = plugin.VstPluginId
                 };
 
                 double timeForNumPresets = 0;
@@ -195,21 +196,7 @@ namespace PresetMagician.VendorPresetParserTest
         }
     }
 
-    class StubIsolatedProcess : IIsolatedProcess
-    {
-        public void Kill(string reason)
-        {
-            
-        }
-
-        public int Pid { get; }
-
-        public ProxiedRemoteVstService GetVstService()
-        {
-            return new ProxiedRemoteVstService(new StubRemoteVstService(), this);
-
-        }
-    }
+   
     
      public class StubRemoteVstService : IRemoteVstService
      {

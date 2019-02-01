@@ -85,9 +85,9 @@ namespace PresetMagician.ViewModels
 
             Title = "Settings for " + Plugin.PluginName;
 
-            Debug.WriteLine(plugin.DefaultControllerAssignments);
-            Debug.WriteLine(DefaultControllerAssignments);
+           
             GenerateControllerMappingModels();
+            PluginLocations = _vstService.GetPluginLocations(plugin);
         }
 
         #region Properties
@@ -96,6 +96,8 @@ namespace PresetMagician.ViewModels
             new ObservableCollection<OnlineResource>();
 
         public OnlineResource SelectedOnlineResource { get; set; }
+        
+        public List<PluginLocation> PluginLocations { get;  }
 
         public ObservableCollection<ControllerAssignmentPage> ControllerAssignmentPages { get; set; } =
             new ObservableCollection<ControllerAssignmentPage>();
@@ -401,7 +403,7 @@ namespace PresetMagician.ViewModels
             var resourceSubmission = JObject.FromObject(new
             {
                 email = _licenseService.GetCurrentLicense().Customer.Email,
-                pluginId = Plugin.PluginId.ToString(),
+                pluginId = Plugin.VstPluginId.ToString(),
                 bgColor = niResource.Color.VB_bgcolor,
                 shortName_VB = niResource.ShortNames.VB_shortname,
                 shortName_MST = niResource.ShortNames.MST_shortname,
@@ -470,7 +472,7 @@ namespace PresetMagician.ViewModels
 
             try
             {
-                var response = await client.GetAsync(Settings.Links.GetOnlineResources + Plugin.PluginId);
+                var response = await client.GetAsync(Settings.Links.GetOnlineResources + Plugin.VstPluginId);
 
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
@@ -509,12 +511,14 @@ namespace PresetMagician.ViewModels
 
         private async Task OnGenerateResourcesExecute()
         {
-            var remotePluginInstance = await _vstService.GetRemotePluginInstance(Plugin);
-            await remotePluginInstance.LoadPlugin();
-            remotePluginInstance.OpenEditorHidden();
-            await Task.Delay(1000);
-            _resourceGeneratorService.GenerateResources(remotePluginInstance, true);
-            remotePluginInstance.UnloadPlugin();
+            using (var remotePluginInstance = _vstService.GetRemotePluginInstance(Plugin))
+            {
+                await remotePluginInstance.LoadPlugin();
+                remotePluginInstance.OpenEditorHidden();
+                await Task.Delay(1000);
+                _resourceGeneratorService.GenerateResources(remotePluginInstance, true);
+                remotePluginInstance.UnloadPlugin();
+            }
         }
 
         private void AddBankFile(string path)

@@ -93,7 +93,7 @@ namespace PresetMagician.ViewModels
 
         private async Task OnStopPoolExecute ()
         {
-            ProcessPool.StopPool();
+            _applicationService.ShutdownProcessPool();
         }
         
         private bool CanStopPoolExecute()
@@ -105,7 +105,7 @@ namespace PresetMagician.ViewModels
 
         private async Task OnStartPoolExecute ()
         {
-            ProcessPool.StartPool();
+            _applicationService.StartProcessPool();
         }
         
         private bool CanStartPoolExecute()

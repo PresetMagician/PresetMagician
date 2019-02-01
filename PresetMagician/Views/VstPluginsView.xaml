@@ -173,7 +173,6 @@
                                    ClipToBounds="True"
                                    MaxWidth="45"
                                    MinWidth="45"
-                                   Stretch="None"
                                    Source="{Binding NativeInstrumentsResource.VB_artwork.Image}"
                                    HorizontalAlignment="Left" />
                             <Image Margin="0" Height="22" RenderOptions.BitmapScalingMode="HighQuality"
@@ -399,17 +398,20 @@
                                     </iconPacks:PackIconOcticons>
                                     <TextBlock Text="{Binding PresetParser.PresetParserType}" />
                                 </StackPanel>
-
-
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-
+                    <DataGridTextColumn
+                        Width="150"
+                        MinWidth="100"
+                        Header="Plugin ID"
+                        Binding="{Binding VstPluginId}"/>
                     <DataGridTextColumn
                         Width="150"
                         MinWidth="100"
                         Binding="{Binding CanonicalDllFilename}"
                         Header="Plugin DLL"
+                        SortDirection="Ascending"
                         IsReadOnly="True">
                         <DataGridTextColumn.CellStyle>
                             <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultCellStyle}">

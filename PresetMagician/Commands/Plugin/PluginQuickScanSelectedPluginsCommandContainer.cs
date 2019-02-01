@@ -10,18 +10,23 @@ using SharedModels;
 namespace PresetMagician
 {
     // ReSharper disable once UnusedMember.Global
-    public class PluginScanSelectedPluginsCommandContainer : AbstractScanPluginsCommandContainer
+    public class PluginQuickScanSelectedPluginsCommandContainer : AbstractScanPluginsCommandContainer
     {
-        public PluginScanSelectedPluginsCommandContainer(ICommandManager commandManager,
+        public PluginQuickScanSelectedPluginsCommandContainer(ICommandManager commandManager,
             IRuntimeConfigurationService runtimeConfigurationService, IVstService vstService,
             IApplicationService applicationService,
             IDispatcherService dispatcherService, IDatabaseService databaseService,
             IAdvancedMessageService messageService,
             INativeInstrumentsResourceGeneratorService resourceGeneratorService)
-            : base(Commands.Plugin.ScanSelectedPlugins, commandManager, runtimeConfigurationService, vstService,
+            : base(Commands.Plugin.QuickScanSelectedPlugins, commandManager, runtimeConfigurationService, vstService,
                 applicationService, dispatcherService, messageService, databaseService, resourceGeneratorService)
         {
             vstService.SelectedPlugins.CollectionChanged += OnPluginsListChanged;
+        }
+
+        protected override bool IsQuickAnalysisMode()
+        {
+            return true;
         }
 
         protected override List<Plugin> GetPluginsToScan()

@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics;
 using Catel;
+using Fluent;
 using Orchestra;
 using PresetMagician.Services.Interfaces;
 
@@ -20,11 +22,18 @@ namespace PresetMagician.Views
             InitializeComponent();
             ribbon.AddAboutButton();
 
-
             _runtimeConfigurationService = runtimeConfigurationService;
 
             _runtimeConfigurationService.ApplicationState.PropertyChanged += ApplicationStateOnPropertyChanged;
+            ScreenTip.HelpPressed += OnScreenTipHelpPressed;
         }
+        private static void OnScreenTipHelpPressed(object sender, ScreenTipHelpEventArgs e)
+        {
+            var link = Settings.Links.HelpLink + (string) e.HelpTopic;
+            Process.Start(link);
+        }
+
+        
 
         private void ApplicationStateOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {

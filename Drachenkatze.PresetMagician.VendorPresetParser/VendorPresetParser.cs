@@ -58,9 +58,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             pluginInstance.Plugin.Logger.Debug("Resolving Preset Parser");
 
             var list = GetPresetHandlerListByPlugin();
-            if (list.ContainsKey(pluginInstance.Plugin.PluginId))
+            if (list.ContainsKey(pluginInstance.Plugin.VstPluginId))
             {
-                var directlyFoundParser = list[pluginInstance.Plugin.PluginId];
+                var directlyFoundParser = list[pluginInstance.Plugin.VstPluginId];
                 directlyFoundParser.PluginInstance = pluginInstance;
                 directlyFoundParser.Init();
                 

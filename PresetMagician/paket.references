@@ -5,6 +5,7 @@ Catel.Fody
 Fody
 MethodTimer.Fody copy_local: false
 ModuleInit.Fody copy_local: false
+Anotar.Catel.Fody copy_local: false
 LoadAssembliesOnStartup.Fody copy_local: false
 MahApps.Metro.IconPacks
 WPFHexaEditor
@@ -19,7 +20,6 @@ Extended.Wpf.Toolkit
 Dirkster.AvalonDock.Themes.VS2013
 Portable.Licensing
 Simple-MAPI.NET
-Anotar.Catel.Fody
 System.ValueTuple
 System.Threading.Tasks.Extensions
 Be.Windows.Forms.HexBox
@@ -28,5 +28,4 @@ DataGridExtensions
 EntityFramework
 System.Data.SQLite
 ksemenenko.ColorThief
-Costura.Fody copy_local: false
 Orc.Scheduling

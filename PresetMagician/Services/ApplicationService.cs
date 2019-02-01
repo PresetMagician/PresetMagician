@@ -26,7 +26,6 @@ namespace PresetMagician.Services
         private string _lastUpdateStatus;
         private Timer _updateStatsTimer;
         private ILog _log;
-        public ProcessPool ProcessPool { get; }
         public NewProcessPool NewProcessPool { get; }
 
         private readonly List<string> _applicationOperationErrors = new List<string>();
@@ -44,8 +43,7 @@ namespace PresetMagician.Services
             _runtimeConfigurationService = runtimeConfigurationService;
             _messageService = messageService;
             
-            ProcessPool = new ProcessPool();
-           
+          
             NewProcessPool = new NewProcessPool();
             NewProcessPool.PoolFailed += NewProcessPoolOnPoolFailed;
             
@@ -71,6 +69,8 @@ namespace PresetMagician.Services
       
         public void StartProcessPool()
         {
+            NewProcessPool.SetMaxProcesses(_runtimeConfigurationService.RuntimeConfiguration.NumPoolWorkers);
+            NewProcessPool.SetStartTimeout(_runtimeConfigurationService.RuntimeConfiguration.MaxPoolWorkerStartupTime);
             NewProcessPool.StartPool();
         }
 

@@ -10,6 +10,7 @@
     xmlns:orccontrols="http://schemas.wildgums.com/orc/controls"
     xmlns:viewModels="clr-namespace:PresetMagician.ViewModels"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     MinWidth="800"
     MinHeight="600"
     Width="800"
@@ -124,7 +125,7 @@
                             <TextBlock FontStyle="Italic">“brought to you by using the latest in Voodoo Ritual Technology™.”</TextBlock>
                         </StackPanel>
                         
-                         <!-- Auto-create resources -->
+                         <!-- Preview Note resources -->
                         <StackPanel Grid.Row="4" Grid.Column="0" Orientation="Horizontal">
                             <Label Content="Default Preview Note" />
                         </StackPanel>
@@ -140,6 +141,78 @@
                     </Grid>
                 </ScrollViewer>
             </TabItem>
+            <TabItem VerticalContentAlignment="Top" Header="Advanced Settings">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                    
+                    
+                    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                            <Label Content="VST Workers" VerticalAlignment="Top" />
+                            <iconPacks:PackIconFontAwesome Margin="0,0,10,0" VerticalAlignment="Center"
+                                                           Kind="QuestionCircleSolid" ToolTipService.ShowDuration="12000">
+                                <iconPacks:PackIconFontAwesome.ToolTip>
+                                    <StackPanel Margin="5" Width="600">
+                                        <TextBlock TextWrapping="Wrap">
+                                            This setting controls how many VST Workers should be started.<LineBreak />
+                                            <LineBreak />
+                                            Each VST worker consumes only between 10 and 30 MB of memory when being idle, but this number can raise
+                                            quickly when the VST worker loads a plugin, especially if the plugin doesn't clean up it's resources properly. 
+                                            <LineBreak />
+                                            PresetMagician will shut down each VST worker after a certain number of loaded plugins to avoid that issue. However,
+                                            don't set this number too high if you have a limited amount of RAM. For 8GB of RAM, you can use 8 workers.
+                                        </TextBlock>
+                                    </StackPanel>
+                                </iconPacks:PackIconFontAwesome.ToolTip>
+                            </iconPacks:PackIconFontAwesome>
+                        </StackPanel>
+                        
+                        <StackPanel Orientation="Vertical" Grid.Row="0"
+                                    Grid.Column="1">
+                            <xctk:IntegerUpDown Width="200" Height="20" MaxWidth="200"
+                                                Value="{Binding EditableConfiguration.NumPoolWorkers}"
+                                                AllowTextInput="False"
+                                                Minimum="4"
+                                                Maximum="16" />
+                           
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Top">
+                            <Label Content="Max VST Worker Start Time" VerticalAlignment="Top" />
+                            <iconPacks:PackIconFontAwesome Margin="0,0,10,0" VerticalAlignment="Center"
+                                                           Kind="QuestionCircleSolid" ToolTipService.ShowDuration="12000">
+                                <iconPacks:PackIconFontAwesome.ToolTip>
+                                    <StackPanel Margin="5" Width="600">
+                                        <TextBlock TextWrapping="Wrap">
+                                            This setting controls how long PresetMagician waits until a VST Workers has been started.<LineBreak />
+                                            <LineBreak />
+                                            If a VST worker doesn't start up within the specified time, it will be stopped.
+                                        </TextBlock>
+                                    </StackPanel>
+                                </iconPacks:PackIconFontAwesome.ToolTip>
+                            </iconPacks:PackIconFontAwesome>
+                        </StackPanel>
+                        
+                        <StackPanel Orientation="Vertical" Grid.Row="1"
+                                    Grid.Column="1" VerticalAlignment="Top">
+                            <xctk:IntegerUpDown Width="200" Height="20" MaxWidth="200"
+                                                Value="{Binding EditableConfiguration.MaxPoolWorkerStartupTime}"
+                                                AllowTextInput="False"
+                                                Increment="5"
+                                                Minimum="10"
+                                                Maximum="60" />
+                        </StackPanel>
+                    </Grid>
+                    </ScrollViewer>
+            </TabItem>
         </controls:TabControl>
     </Grid>
 </controls:RibbonDataWindow>
+

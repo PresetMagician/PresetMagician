@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Catel.Collections;
@@ -16,11 +17,12 @@ namespace PresetMagician.Services.Interfaces
         FastObservableCollection<Preset> PresetExportList { get; }
         Preset SelectedExportPreset { get; set; }
         FastObservableCollection<Preset> SelectedPresets { get; }
-        FastObservableCollection<Plugin> CachedPlugins { get; }
         event EventHandler SelectedExportPresetChanged;
         Task SavePlugins();
         byte[] GetPresetData(Preset preset);
-        Task<IRemotePluginInstance> GetRemotePluginInstance(Plugin plugin);
-        IRemotePluginInstance GetInteractivePluginInstance(Plugin plugin);
+        IRemotePluginInstance GetRemotePluginInstance(Plugin plugin);
+        Task<IRemotePluginInstance> GetInteractivePluginInstance(Plugin plugin);
+        IRemoteVstService GetVstService();
+        List<PluginLocation> GetPluginLocations(Plugin plugin);
     }
 }

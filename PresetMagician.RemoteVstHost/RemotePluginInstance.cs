@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Catel.Threading;
 using Jacobi.Vst.Core;
 using PresetMagician.Models;
+using PresetMagician.ProcessIsolation.Processes;
 using PresetMagician.ProcessIsolation.Services;
 using SharedModels;
 
@@ -15,14 +16,15 @@ namespace PresetMagician.ProcessIsolation
         private Guid _guid;
         public bool IsLoaded { get; private set; }
         public bool IsEditorOpen { get; private set; }
-        private readonly ProxiedRemoteVstService _remoteVstService;
-        private readonly IIsolatedProcess _isolatedProcess;
+        private readonly IRemoteVstService _remoteVstService;
+        private readonly VstHostProcess _vstHostProcess;
 
-        public RemotePluginInstance(IIsolatedProcess isolatedProcess, Plugin plugin, bool backgroundProcessing = true)
+        public RemotePluginInstance(VstHostProcess vstHostProcess, Plugin plugin, bool backgroundProcessing = true)
         {
             Plugin = plugin;
-            _isolatedProcess = isolatedProcess;
-            _remoteVstService = isolatedProcess.GetVstService();
+            _vstHostProcess = vstHostProcess;
+            _vstHostProcess.Lock(plugin);
+            _remoteVstService = vstHostProcess.GetVstService();
             RegisterPlugin(backgroundProcessing);
         }
 
@@ -46,8 +48,8 @@ namespace PresetMagician.ProcessIsolation
                     Plugin.PluginName = _remoteVstService.GetEffectivePluginName(_guid);
                     Plugin.PluginVendor = _remoteVstService.GetPluginVendor(_guid);
                     Plugin.PluginInfo = _remoteVstService.GetPluginInfo(_guid);
-                    Plugin.PluginId = Plugin.PluginInfo.PluginID;
-                    Plugin.PluginLocation.PluginId = Plugin.PluginId;
+                    Plugin.VstPluginId = Plugin.PluginInfo.PluginID;
+                    Plugin.PluginLocation.VstPluginId = Plugin.VstPluginId;
                     Plugin.PluginLocation.DllHash = _remoteVstService.GetPluginHash(_guid);
                     Plugin.PluginLocation.PluginName = _remoteVstService.GetPluginName(_guid);
                     Plugin.PluginLocation.PluginVendor = Plugin.PluginVendor;
@@ -164,9 +166,10 @@ namespace PresetMagician.ProcessIsolation
             return IsEditorOpen;
         }
 
-        public void KillHost()
+        public void Dispose()
         {
-            _isolatedProcess.Kill("via RemotePluginInstance");
+            _vstHostProcess.Unlock();
+            _vstHostProcess.ForceStop("Regular Shutdown");
         }
     }
 }

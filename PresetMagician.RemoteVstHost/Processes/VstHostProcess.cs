@@ -1,12 +1,13 @@
 using System;
-using System.Collections.Generic;
 using System.ServiceModel;
+using System.ServiceModel.Channels;
+using System.Threading.Tasks;
 using System.Timers;
 using Anotar.Catel;
-using Catel;
+using Castle.DynamicProxy;
 using MethodTimer;
-using PresetMagician.ProcessIsolation.Services;
 using SharedModels;
+using Type = System.Type;
 
 namespace PresetMagician.ProcessIsolation.Processes
 {
@@ -14,34 +15,85 @@ namespace PresetMagician.ProcessIsolation.Processes
     {
         private string _address;
         private IRemoteVstService _vstService;
-        private ProxiedRemoteVstService _proxiedVstService;
         private Timer _pingTimer;
-        
+        private bool _isLocked;
+        private bool _vstServiceAvailable;
+        private Plugin _lockedToPlugin;
         private readonly object _operationLock = new object();
-        
-        public event EventHandler OperationUpdated;
         public ProcessOperation CurrentOperation { get; private set; }
-        
-        public List<ProcessOperation> Operations = new List<ProcessOperation>();
+        private ProcessOperation _currentOperation;
+
+       
         public VstHostProcess(int maxStartupTimeSeconds = 20) : base(maxStartupTimeSeconds)
         {
+        }
+
+        
+
+        public async Task WaitUntilStarted()
+        {
+            var waitCounter = 0;
             
-           
+            while (!_vstServiceAvailable)
+            {
+                waitCounter++;
+                await Task.Delay(100);
+
+                if (waitCounter > 20)
+                {
+                    throw new Exception("Did not start within the timeout period");
+                }
+            }
+        }
+        public void Lock(Plugin plugin = null)
+        {
+            lock (_operationLock)
+            {
+                IsBusy = true;
+                _isLocked = true;
+            }
+
+            _lockedToPlugin = plugin;
+        }
+
+        public bool IsLockedToPlugin()
+        {
+            return _lockedToPlugin != null;
+        }
+
+        public Plugin GetLockedPlugin()
+        {
+            return _lockedToPlugin;
+        }
+        
+        public void Unlock()
+        {
+            lock (_operationLock)
+            {
+
+                _isLocked = false;
+                IsBusy = false;
+            }
         }
 
         public override void Start()
         {
             base.Start();
-            
+
             _pingTimer = new Timer();
             _pingTimer.Elapsed += PingTimerOnElapsed;
             _pingTimer.Interval = 60000;
             _pingTimer.Enabled = false;
             _pingTimer.AutoReset = false;
-            
         }
 
-        protected bool StartOperation(string operation)
+        public void ResetPingTimer()
+        {
+            _pingTimer.Stop();
+            _pingTimer.Start();
+        }
+
+        public bool StartOperation(string operation)
         {
             lock (_operationLock)
             {
@@ -52,47 +104,51 @@ namespace PresetMagician.ProcessIsolation.Processes
                     return false;
                 }
 
-                if (IsBusy)
+                if (_currentOperation != null && !_currentOperation.Completed)
                 {
                     LogTo.Error(
                         $"Error PID {Pid}: Attempted to start operation {operation} before another one finished!");
                 }
 
-                CurrentOperation = new ProcessOperation(operation, DateTime.Now);
-                IsBusy = true;
+                _currentOperation = new ProcessOperation(operation, DateTime.Now);
+
+                if (!_isLocked)
+                {
+                    IsBusy = true;
+                }
             }
 
-            Operations.Add(CurrentOperation);
-            OperationUpdated.SafeInvoke(this);
             return true;
         }
 
-        protected void StopOperation(string operation, string result = "OK")
+        public void StopOperation(string operation, string result = "OK")
         {
             lock (_operationLock)
             {
-                if (CurrentOperation == null)
+                if (_currentOperation == null)
                 {
                     LogTo.Error(
                         $"Error PID {Pid}: Attempted to stop operation {operation} but there was no operation running!");
                     return;
                 }
 
-                if (CurrentOperation.Name != operation)
+                if (_currentOperation.Name != operation)
                 {
                     LogTo.Error(
-                        $"Error PID {Pid}: Attempted to stop operation {operation} but the current running operation is {CurrentOperation}");
-                    CurrentOperation = null;
+                        $"Error PID {Pid}: Attempted to stop operation {operation} but the current running operation is {_currentOperation}");
+                    _currentOperation = null;
                     return;
                 }
 
-                IsBusy = false;
-                CurrentOperation.SetStopTime(DateTime.Now);
-                CurrentOperation.SetResult(result);
-                CurrentOperation.SetCompleted();
+                if (!_isLocked)
+                {
+                    IsBusy = false;
+                }
             }
 
-            OperationUpdated.SafeInvoke(this);
+            _currentOperation.SetStopTime(DateTime.Now);
+            _currentOperation.SetResult(result);
+            _currentOperation.SetCompleted();
         }
 
         [Time]
@@ -102,7 +158,7 @@ namespace PresetMagician.ProcessIsolation.Processes
             {
                 return;
             }
-            
+
             try
             {
                 _vstService.Ping();
@@ -112,52 +168,25 @@ namespace PresetMagician.ProcessIsolation.Processes
             {
                 Log(ex.Message);
                 Log(ex.StackTrace);
-                ForceStop("Ping failed: {ex}");
+                ForceStop($"Ping failed: {ex}");
             }
-        }
-
-        private void OnFaulted(object sender, EventArgs e)
-        {
-            if (CurrentProcessState == ProcessState.EXITED || inShutdown)
-            {
-                return;
-            }
-
-            ForceStop("Received client channel fault");
-        }
-        
-        private void OnClosing(object sender, EventArgs e)
-        {
-            Log("Received OnClosing event");
-        }
-        
-        private void OnClosed(object sender, EventArgs e)
-        {
-            Log("Received OnClosed event");
-        }
-        
-        private void OnOpened(object sender, EventArgs e)
-        {
-             try
-           {
-               _vstService.Ping();
-               IsBusy = false;
-               _pingTimer.Start();
-           }
-           catch (Exception ex)
-           {
-               Log(ex.Message);
-               Log(ex.StackTrace);
-               ForceStop("Initial ping failed: {ex}");
-           }
         }
 
         protected override void OnBeforeForceStop()
         {
             _pingTimer.Stop();
+            _vstServiceAvailable = false;
 
             base.OnBeforeForceStop();
         }
+
+        public IRemoteVstService GetVstService()
+        {
+            return _vstService;
+        }
+
+        private ProxyGenerator _generator = new ProxyGenerator();
+
 
         protected override void OnAfterStart()
         {
@@ -172,19 +201,59 @@ namespace PresetMagician.ProcessIsolation.Processes
                 };
 
                 var ep = new EndpointAddress(_address);
-                _vstService = ChannelFactory<IRemoteVstService>.CreateChannel(binding, ep);
 
-                ((IClientChannel) _vstService).Faulted += OnFaulted;
-                ((IClientChannel) _vstService).Closed += OnClosed;
-                ((IClientChannel) _vstService).Closing += OnClosing;
-                ((IClientChannel) _vstService).Opened += OnOpened;
-                ((IClientChannel) _vstService).Open();
+                var type = typeof(IRemoteVstService);
+                var proxyCreatorType = MakeGenericType(type);
+                var proxyCreator = GetProxyCreator(proxyCreatorType, binding, ep);
+                var x = _generator.CreateInterfaceProxyWithoutTarget(type, new[] {typeof(IContextChannel)},
+                    CreateInterceptor(proxyCreator, type));
+              
+                _vstService = x as IRemoteVstService;
+
+
+                _vstService.Ping();
+                _vstServiceAvailable = true;
+                IsBusy = false;
+                _pingTimer.Start();
+
             }
             catch (Exception ex)
             {
                 ForceStop($"Failure when attempting to open the service channel: {ex}");
             }
+        }
 
+        protected virtual IInterceptor CreateInterceptor(IChannelFactory proxyCreator, Type serviceType)
+        {
+            dynamic channelFactory = proxyCreator;
+            return new ClientProxyInterceptor(() => (ICommunicationObject) channelFactory.CreateChannel(), serviceType,
+                this);
+        }
+
+        protected virtual IChannelFactory CreateProxyInstanceCreator(Type genericProxyCreatorType, Binding binding,
+            EndpointAddress endpointAddress)
+        {
+            IChannelFactory proxyInstanceCreator =
+                (IChannelFactory) Activator.CreateInstance(genericProxyCreatorType, binding, endpointAddress);
+            return proxyInstanceCreator;
+        }
+
+        private IChannelFactory GetProxyCreator(Type genericProxyCreatorType, Binding binding,
+            EndpointAddress endpointAddress)
+        {
+            return CreateProxyInstanceCreator(genericProxyCreatorType, binding, endpointAddress);
+        }
+
+        private Type MakeGenericType(Type serviceType)
+        {
+            if (!serviceType.IsInterface)
+            {
+                throw new InvalidOperationException(
+                    "Type returned from proxy type provider must not be concrete type!");
+            }
+
+
+            return typeof(ChannelFactory<>).MakeGenericType(serviceType);
         }
     }
 }

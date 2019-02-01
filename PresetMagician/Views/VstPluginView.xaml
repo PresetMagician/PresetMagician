@@ -13,8 +13,8 @@
     xmlns:controllerAssignments="clr-namespace:PresetMagician.Models.ControllerAssignments"
     xmlns:sharedModels1="clr-namespace:SharedModels;assembly=PresetMagician.SharedModels"
     Padding="2,2,2,2"
-    Width="900"
-    Height="620"
+    Width="1024"
+    Height="800"
     ResizeMode="CanResizeWithGrip"
     SizeToContent="Manual"
     d:DataContext="{d:DesignInstance viewModels:VstPluginViewModel}"
@@ -31,21 +31,21 @@
             <TextBlock Text="{Binding BankName}" />
         </HierarchicalDataTemplate>
 
-        <ControlTemplate x:Key="SelectPlugin">
+        <ControlTemplate x:Key="PluginNotAnalyzed">
             <Grid>
                 <TextBlock
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Text="Select a plugin to view information" />
+                    Text="Plugin not analyzed, unable to display information" />
             </Grid>
         </ControlTemplate>
 
-        <ControlTemplate x:Key="PluginNotScanned">
+        <ControlTemplate x:Key="PresetsNotLoaded">
             <Grid>
                 <TextBlock
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Text="Plugin not scanned, unable to display information" />
+                    Text="Presets not loaded from database, or plugin has no presets. To load presets from the database, analyze the plugin" />
             </Grid>
         </ControlTemplate>
 
@@ -94,16 +94,111 @@
                             Header="Bank"
                             IsReadOnly="True"
                             SortDirection="Ascending" />
+                        <DataGridTemplateColumn
+                            Width="1*"
+                            CellStyle="{StaticResource NoPaddingCellStyle}"
+                            Header="Types"
+                            IsReadOnly="True">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <ItemsControl ItemsSource="{Binding Path=Types}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                
+                                                <Border
+                                                    Margin="1,1,2,1"
+                                                    Padding="2,0,2,0"
+                                                    Background="BlueViolet"
+                                                    CornerRadius="3">
+
+                                                    <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                                        <TextBlock
+                                                            HorizontalAlignment="Left"
+                                                            Foreground="White"
+                                                            Text="{Binding Name}" />
+                                                        <iconPacks:PackIconTypicons
+                                                            x:Name="commaTextBlock"
+                                                            Width="10"
+                                                            Height="10"
+                                                            VerticalAlignment="Center"
+                                                            Foreground="White"
+                                                            Kind="ChevronRightOutline">
+                                                            <iconPacks:PackIconTypicons.Style>
+                                                                <Style TargetType="{x:Type iconPacks:PackIconTypicons}">
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding SubTypeName}" Value="{x:Null}">
+                                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </iconPacks:PackIconTypicons.Style>
+                                                        </iconPacks:PackIconTypicons>
+
+                                                        <TextBlock
+                                                            HorizontalAlignment="Left"
+                                                            Foreground="White"
+                                                            Text="{Binding SubTypeName}" />
+                                                    </StackPanel>
+
+
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn
+                            Width="1*"
+                            CellStyle="{StaticResource NoPaddingCellStyle}"
+                            Header="Modes"
+                            IsReadOnly="True">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <ItemsControl ItemsSource="{Binding Path=Modes}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel Margin="1,0,0,0" />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border
+                                                    Margin="1,1,2,1"
+                                                    Padding="2,0,2,0"
+                                                    Background="BlueViolet"
+                                                    CornerRadius="3">
+                                                    <TextBlock
+                                                        HorizontalAlignment="Left"
+                                                        Foreground="White"
+                                                        Text="{Binding Name}" />
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                         <DataGridTextColumn
                             Width="80"
                             Binding="{Binding PreviewNote.FullNoteName}"
                             Header="Key"
                             IsReadOnly="False" />
+                        <DataGridTextColumn
+                            Width="80"
+                            Binding="{Binding LastExported}"
+                            Header="Last Exported"
+                            IsReadOnly="True" />
                         <DataGridCheckBoxColumn
                             Width="80"
-                            Binding="{Binding Export}"
-                            Header="Export"
-                            IsReadOnly="False" />
+                            Binding="{Binding ChangedSingleLastExport, Mode=OneWay}"
+                            Header="Changed since Exported"
+                            IsReadOnly="True" />
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
@@ -117,6 +212,7 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -196,17 +292,16 @@
                             VerticalAlignment="Stretch"
                             VerticalContentAlignment="Center"
                             Content="Add Files…"
-                            Command="{Binding AddAdditionalPresetFiles}"/>
+                            Command="{Binding AddAdditionalPresetFiles}" />
 
-                          
-                        
+
                         <Button
                             Margin="6,2,2,2"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Stretch"
                             Content="Add Files from Folder…"
-                            Command="{Binding AddAdditionalPresetFolder}"/>
-                          
+                            Command="{Binding AddAdditionalPresetFolder}" />
+
                         <Button
                             Margin="6,2,2,2"
                             HorizontalAlignment="Left"
@@ -249,40 +344,33 @@
                         </Button>
                     </DockPanel>
                 </Grid>
-                
-                <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Top">
-                    <StackPanel.Style>
-                        <Style TargetType="{x:Type StackPanel}">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                            <Style.Triggers>
-                                <DataTrigger
-                                    Binding="{Binding Plugin.PresetParser.SupportsAdditionalBankFiles}"
-                                    Value="False">
-                                    <Setter Property="Visibility" Value="Visible" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </StackPanel.Style>
+
+                <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
                     <Label Content="Bank/Preset Loading Notes" />
                 </StackPanel>
 
-                <TextBox Grid.Row="2" Grid.Column="1" IsReadOnly="True" Text="{Binding Plugin.PresetParser.BankLoadingNotes}" TextWrapping="Wrap">
-                    <TextBox.Style>
-                        <Style TargetType="{x:Type TextBox}">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                            <Style.Triggers>
-                                <DataTrigger
-                                    Binding="{Binding Plugin.PresetParser.SupportsAdditionalBankFiles}"
-                                    Value="False">
-                                    <Setter Property="Visibility" Value="Visible" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBox.Style>
-               
-            </TextBox>
-                </Grid>
+                <StackPanel Grid.Row="2" Grid.Column="1">
+                    <TextBox IsReadOnly="True" Text="{Binding Plugin.PresetParser.BankLoadingNotes}"
+                             TextWrapping="Wrap" />
+                </StackPanel>
 
+                <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal">
+                    <Label Content="Plugin DLL" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="3" Grid.Column="1">
+                    <ComboBox ItemsSource="{Binding PluginLocations}" SelectedItem="{Binding Plugin.PluginLocation}"
+                              DisplayMemberPath="ShortTextRepresentation">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding FullTextRepresentation}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+            </Grid>
         </ControlTemplate>
 
 
@@ -310,94 +398,94 @@
                                       ShowDropDownButton="True"
                                       UsingAlphaChannel="False" />
                 </GroupBox>
-              
+
                 <GroupBox Grid.Row="1" Grid.Column="0" Header="Short Names">
-               
 
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
 
-                    <Label Grid.Row="0" Grid.Column="0" Content="Visual Browser" />
-                    <TextBox Grid.Row="0" Grid.Column="1"
-                             Text="{Binding NativeInstrumentsResource.ShortNames.VB_shortname}" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
 
-                    <Label Grid.Row="1" Grid.Column="0" Content="Maschine Studio" />
-                    <TextBox Grid.Row="1" Grid.Column="1"
-                             Text="{Binding NativeInstrumentsResource.ShortNames.MST_shortname}" />
+                        <Label Grid.Row="0" Grid.Column="0" Content="Visual Browser" />
+                        <TextBox Grid.Row="0" Grid.Column="1"
+                                 Text="{Binding NativeInstrumentsResource.ShortNames.VB_shortname}" />
 
-                    <Label Grid.Row="2" Grid.Column="0" Content="Maschine Mikro" />
-                    <TextBox Grid.Row="2" Grid.Column="1"
-                             Text="{Binding NativeInstrumentsResource.ShortNames.MIKRO_shortname}" />
+                        <Label Grid.Row="1" Grid.Column="0" Content="Maschine Studio" />
+                        <TextBox Grid.Row="1" Grid.Column="1"
+                                 Text="{Binding NativeInstrumentsResource.ShortNames.MST_shortname}" />
 
-                    <Label Grid.Row="3" Grid.Column="0" Content="Maschine MK1/MK2" />
-                    <TextBox Grid.Row="3" Grid.Column="1"
-                             Text="{Binding NativeInstrumentsResource.ShortNames.MKII_shortname}" />
-                </Grid>
-                    </GroupBox>
+                        <Label Grid.Row="2" Grid.Column="0" Content="Maschine Mikro" />
+                        <TextBox Grid.Row="2" Grid.Column="1"
+                                 Text="{Binding NativeInstrumentsResource.ShortNames.MIKRO_shortname}" />
+
+                        <Label Grid.Row="3" Grid.Column="0" Content="Maschine MK1/MK2" />
+                        <TextBox Grid.Row="3" Grid.Column="1"
+                                 Text="{Binding NativeInstrumentsResource.ShortNames.MKII_shortname}" />
+                    </Grid>
+                </GroupBox>
 
                 <GroupBox Grid.Row="2" Grid.Column="0" Header="Categories">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="150" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <DataGrid Grid.Row="0" x:Name="CategoryNames"
-                              ItemsSource="{Binding NativeInstrumentsResource.Categories.CategoryNames}"
-                              IsReadOnly="False">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn
-                                Width="*"
-                                Binding="{Binding Path=Name}"
-                                Header="Category"
-                                IsReadOnly="False"
-                                SortDirection="Ascending" />
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="150" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <DataGrid Grid.Row="0" x:Name="CategoryNames"
+                                  ItemsSource="{Binding NativeInstrumentsResource.Categories.CategoryNames}"
+                                  IsReadOnly="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn
+                                    Width="*"
+                                    Binding="{Binding Path=Name}"
+                                    Header="Category"
+                                    IsReadOnly="False"
+                                    SortDirection="Ascending" />
 
-                        </DataGrid.Columns>
-                    </DataGrid>
+                            </DataGrid.Columns>
+                        </DataGrid>
 
-                    <DockPanel Grid.Row="1" VerticalAlignment="Bottom">
-                        <Button
-                            Margin="6,2,2,2"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Stretch"
-                            VerticalContentAlignment="Center"
-                            Content="Add Category…"
-                            Command="{Binding AddCategory}"/>
-                        <Button
-                            Margin="6,2,2,2"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Stretch"
-                            Command="{Binding RemoveCategory}"
-                            Content="Remove"
-                            CommandParameter="{Binding Path=SelectedItems, ElementName=CategoryNames}">
-                            <Button.Style>
-                                <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="{x:Type Button}">
-                                    <Setter Property="IsEnabled" Value="True" />
-                                    <Style.Triggers>
-                                        <DataTrigger
-                                            Binding="{Binding SelectedItems.Count, ElementName=CategoryNames}"
-                                            Value="0">
-                                            <Setter Property="IsEnabled" Value="False" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
+                        <DockPanel Grid.Row="1" VerticalAlignment="Bottom">
+                            <Button
+                                Margin="6,2,2,2"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Stretch"
+                                VerticalContentAlignment="Center"
+                                Content="Add Category…"
+                                Command="{Binding AddCategory}" />
+                            <Button
+                                Margin="6,2,2,2"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Stretch"
+                                Command="{Binding RemoveCategory}"
+                                Content="Remove"
+                                CommandParameter="{Binding Path=SelectedItems, ElementName=CategoryNames}">
+                                <Button.Style>
+                                    <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="{x:Type Button}">
+                                        <Setter Property="IsEnabled" Value="True" />
+                                        <Style.Triggers>
+                                            <DataTrigger
+                                                Binding="{Binding SelectedItems.Count, ElementName=CategoryNames}"
+                                                Value="0">
+                                                <Setter Property="IsEnabled" Value="False" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
 
-                                </Style>
-                            </Button.Style>
-                        </Button>
-                    </DockPanel>
-                </Grid>
-                    </GroupBox>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </DockPanel>
+                    </Grid>
+                </GroupBox>
 
                 <TabControl Grid.Row="0" Grid.RowSpan="3" Grid.Column="1">
                     <TabItem Header="Visual Browser">
@@ -415,10 +503,12 @@
                             </GroupBox>
                             <GroupBox Header="Artwork">
                                 <WrapPanel Orientation="Vertical">
-                            <Image Margin="0" Width="96" Height="47"
-                                   Source="{Binding NativeInstrumentsResource.VB_artwork.Image}" HorizontalAlignment="Left" />
-                            <Button Command="{Binding ReplaceVBArtwork}" Content="Replace Artwork (96x47 pixels)" />
-                            </WrapPanel>
+                                    <Image Margin="0" Width="96" Height="47"
+                                           Source="{Binding NativeInstrumentsResource.VB_artwork.Image}"
+                                           HorizontalAlignment="Left" />
+                                    <Button Command="{Binding ReplaceVBArtwork}"
+                                            Content="Replace Artwork (96x47 pixels)" />
+                                </WrapPanel>
                             </GroupBox>
                         </WrapPanel>
                     </TabItem>
@@ -443,18 +533,22 @@
                                     <Button Command="{Binding ReplaceMSTLogo}" Content="Replace Logo (240x196 pixels)" />
                                 </WrapPanel>
                             </GroupBox>
-                            <GroupBox  Grid.Column="1" Grid.Row="0" Header="Artwork">
+                            <GroupBox Grid.Column="1" Grid.Row="0" Header="Artwork">
                                 <WrapPanel Orientation="Vertical">
                                     <Image Margin="0" Width="134" Height="66"
-                                           Source="{Binding NativeInstrumentsResource.MST_artwork.Image}" HorizontalAlignment="Left" />
-                                    <Button Command="{Binding ReplaceMSTArtwork}" Content="Replace Artwork (134x66 pixels)" />
+                                           Source="{Binding NativeInstrumentsResource.MST_artwork.Image}"
+                                           HorizontalAlignment="Left" />
+                                    <Button Command="{Binding ReplaceMSTArtwork}"
+                                            Content="Replace Artwork (134x66 pixels)" />
                                 </WrapPanel>
                             </GroupBox>
-                            <GroupBox  Grid.Column="1" Grid.Row="1" Header="Plugin">
+                            <GroupBox Grid.Column="1" Grid.Row="1" Header="Plugin">
                                 <WrapPanel Orientation="Vertical">
                                     <Image Margin="0" Width="127" Height="70"
-                                           Source="{Binding NativeInstrumentsResource.MST_plugin.Image}" HorizontalAlignment="Left" />
-                                    <Button Command="{Binding ReplaceMSTPlugin}" Content="Replace Plugin Artwork (127x70 pixels)" />
+                                           Source="{Binding NativeInstrumentsResource.MST_plugin.Image}"
+                                           HorizontalAlignment="Left" />
+                                    <Button Command="{Binding ReplaceMSTPlugin}"
+                                            Content="Replace Plugin Artwork (127x70 pixels)" />
                                 </WrapPanel>
                             </GroupBox>
                         </Grid>
@@ -476,48 +570,50 @@
                     </TabItem>
                 </TabControl>
 
-                 <DockPanel Grid.Row="3" Grid.ColumnSpan="2" Grid.Column="0" VerticalAlignment="Bottom">
-                     <Label Content="Online Resources:" />
-                     <Button
-                         HorizontalAlignment="Left"
-                         VerticalAlignment="Stretch"
-                         VerticalContentAlignment="Center"
-                         Content="{iconPacks:Material Reload}"
-                         ToolTip="Reload Online Resources"
-                         Command="{Binding QueryOnlineResources}"/>
-                     <ComboBox ItemsSource="{Binding OnlineResources}" SelectedItem="{Binding SelectedOnlineResource, Mode=OneWayToSource}">
-                         <ComboBox.ItemTemplate>
-                             <DataTemplate>
-                                 <StackPanel Orientation="Horizontal">
-                                     <TextBlock Text="{Binding DataContext.Plugin.PluginName, RelativeSource={RelativeSource AncestorType=catel:DataWindow}}" />
-                                     <TextBlock Text="by" />
-                                     <TextBlock Text="{Binding author}" />
-                                 </StackPanel>
-                             </DataTemplate>
-                         </ComboBox.ItemTemplate>
-                     </ComboBox>
-                    
-                     <Button
-                         HorizontalAlignment="Left"
-                         VerticalAlignment="Stretch"
-                         VerticalContentAlignment="Center"
-                         Content="Load…"
-                         Command="{Binding LoadSelectedOnlineResource}"/>
-                     <Button
-                            HorizontalAlignment="Left"
+                <DockPanel Grid.Row="3" Grid.ColumnSpan="2" Grid.Column="0" VerticalAlignment="Bottom">
+                    <Label Content="Online Resources:" />
+                    <Button
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Stretch"
+                        VerticalContentAlignment="Center"
+                        Content="{iconPacks:Material Reload}"
+                        ToolTip="Reload Online Resources"
+                        Command="{Binding QueryOnlineResources}" />
+                    <ComboBox ItemsSource="{Binding OnlineResources}"
+                              SelectedItem="{Binding SelectedOnlineResource, Mode=OneWayToSource}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        Text="{Binding DataContext.Plugin.PluginName, RelativeSource={RelativeSource AncestorType=catel:DataWindow}}" />
+                                    <TextBlock Text="by" />
+                                    <TextBlock Text="{Binding author}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
+                    <Button
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Stretch"
+                        VerticalContentAlignment="Center"
+                        Content="Load…"
+                        Command="{Binding LoadSelectedOnlineResource}" />
+                    <Button
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Stretch"
+                        VerticalContentAlignment="Center"
+                        Content="Submit Resources…"
+                        ToolTip="Submits your resources to the online database, so other users can use it"
+                        Command="{Binding SubmitResource}" />
+
+                    <Button HorizontalAlignment="Right"
                             VerticalAlignment="Stretch"
                             VerticalContentAlignment="Center"
-                            Content="Submit Resources…"
-                            ToolTip="Submits your resources to the online database, so other users can use it"
-                            Command="{Binding SubmitResource}"/>
-                     
-                     <Button HorizontalAlignment="Right"
-                             VerticalAlignment="Stretch"
-                             VerticalContentAlignment="Center"
-                             Content="Auto-generate resources"
-                             ToolTip="Creates screenshots from your plugin and auto-generating the resources"
-                             Command="{Binding GenerateResources}"/>
-                    </DockPanel>
+                            Content="Auto-generate resources"
+                            ToolTip="Creates screenshots from your plugin and auto-generating the resources"
+                            Command="{Binding GenerateResources}" />
+                </DockPanel>
             </Grid>
 
         </ControlTemplate>
@@ -654,43 +750,40 @@
                     </ScrollViewer>
                 </TabItem>
                 <TabItem Header="Bank View" VerticalContentAlignment="Stretch">
-                    <ContentControl Template="{StaticResource BankView}" />
+                    <ContentControl>
+                        <ContentControl.Style>
+                            <Style TargetType="{x:Type ContentControl}">
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Plugin.IsAnalyzed, Mode=OneWay}" Value="True" />
+                                            <Condition Binding="{Binding Plugin.HasPresets, Mode=OneWay}" Value="True" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Template" Value="{StaticResource BankView}" />
+                                    </MultiDataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Plugin.IsAnalyzed, Mode=OneWay}" Value="True" />
+                                            <Condition Binding="{Binding Plugin.HasPresets, Mode=OneWay}" Value="False" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Template" Value="{StaticResource PresetsNotLoaded}" />
+                                    </MultiDataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Plugin.IsAnalyzed, Mode=OneWay}" Value="False" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Template" Value="{StaticResource PluginNotAnalyzed}" />
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ContentControl.Style>
+                    </ContentControl>
                 </TabItem>
 
             </controls:TabControl>
         </ControlTemplate>
     </catel:DataWindow.Resources>
 
-    <ContentControl>
-        <ContentControl.Style>
-            <Style TargetType="{x:Type ContentControl}">
-                <Style.Triggers>
-                    <MultiDataTrigger>
-                        <MultiDataTrigger.Conditions>
-                            <Condition Binding="{Binding IsPluginSet, Mode=OneWay}" Value="True" />
-                            <Condition Binding="{Binding Plugin.IsAnalyzed, Mode=OneWay}" Value="True" />
-                        </MultiDataTrigger.Conditions>
-                        <Setter Property="Template" Value="{StaticResource PluginTabControl}" />
-                    </MultiDataTrigger>
-                    <MultiDataTrigger>
-                        <MultiDataTrigger.Conditions>
-                            <Condition Binding="{Binding IsPluginSet, Mode=OneWay}" Value="True" />
-                            <Condition Binding="{Binding Plugin.IsAnalyzed, Mode=OneWay}" Value="False" />
-                        </MultiDataTrigger.Conditions>
-
-                        <Setter Property="Template" Value="{StaticResource PluginNotScanned}" />
-                    </MultiDataTrigger>
-                    <MultiDataTrigger>
-                        <MultiDataTrigger.Conditions>
-                            <Condition Binding="{Binding IsPluginSet, Mode=OneWay}" Value="False" />
-
-                        </MultiDataTrigger.Conditions>
-
-                        <Setter Property="Template" Value="{StaticResource SelectPlugin}" />
-                    </MultiDataTrigger>
-                </Style.Triggers>
-            </Style>
-        </ContentControl.Style>
-    </ContentControl>
+    <ContentControl Template="{StaticResource PluginTabControl}" />
 
 </catel:DataWindow>

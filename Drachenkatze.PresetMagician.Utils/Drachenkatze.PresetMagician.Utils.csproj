@@ -54,9 +54,6 @@
   <ItemGroup>
     <Content Include="paket.references" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Catel" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\.paket\paket.targets" />
   <Import Project="..\common\ExtraCleanup.targets" />
