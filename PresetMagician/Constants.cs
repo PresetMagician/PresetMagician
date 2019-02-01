@@ -100,6 +100,8 @@ namespace PresetMagician
             public const string ScanSelectedPlugin = "Plugin.ScanSelectedPlugin";
             public const string AllToPresetExportList = "Plugin.AllToPresetExportList";
             public const string SelectedToPresetExportList = "Plugin.SelectedToPresetExportList";
+            public const string NotExportedAllToPresetExportList = "Plugin.NotExportedAllToPresetExportList";
+            public const string NotExportedSelectedToPresetExportList = "Plugin.NotExportedSelectedToPresetExportList";
             public const string ReportUnsupportedPlugins = "Plugin.ReportUnsupportedPlugins";
         }
 

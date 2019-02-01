@@ -115,6 +115,7 @@
     <Compile Include="Commands\Plugin\AbstractScanPluginsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginAllToPresetExportListCommandContainer.cs" />
     <Compile Include="Commands\Plugin\AbstractReportPluginsCommandContainer.cs" />
+    <Compile Include="Commands\Plugin\PluginNotExportedAllToPresetExportListCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginQuickScanPluginsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginQuickScanSelectedPluginsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginReportUnsupportedPluginsCommandContainer.cs" />
@@ -123,6 +124,7 @@
     <Compile Include="Commands\Plugin\PluginSelectedToPresetExportListCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginRefreshPluginsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginScanPluginsCommandContainer.cs" />
+    <Compile Include="Commands\Plugin\PluginNotExportedSelectedToPresetExportListCommandContainer.cs" />
     <Compile Include="Commands\PresetTools\PresetToolsShowPresetDataCommandContainer.cs" />
     <Compile Include="Commands\Preset\PresetActivatePresetViewCommandContainer.cs" />
     <Compile Include="Commands\Preset\PresetApplyMidiNoteCommandContainer.cs" />
@@ -602,7 +604,7 @@
       <ItemGroup>
         <Reference Include="Costura">
           <HintPath>..\packages\Costura.Fody\lib\net40\Costura.dll</HintPath>
-          <Private>False</Private>
+          <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
