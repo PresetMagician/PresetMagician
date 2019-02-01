@@ -5,7 +5,7 @@ Catel.Fody
 Fody
 MethodTimer.Fody copy_local: false
 ModuleInit.Fody copy_local: false
-Anotar.Catel.Fody copy_local: false
+Anotar.Catel.Fody
 LoadAssembliesOnStartup.Fody copy_local: false
 MahApps.Metro.IconPacks
 WPFHexaEditor

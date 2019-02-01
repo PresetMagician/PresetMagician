@@ -74,13 +74,30 @@
                                                              Height=32}"
                         Size="Large">
                         <fluent:MenuItem
-                            Command="{catel:CommandManagerBinding Plugin.AllToPresetExportList}"
+                            
                             Header="Presets from all plugins"
-                            Icon="{iconPacks:Modern Kind=AddMultiple}" />
+                            Icon="{iconPacks:Modern Kind=AddMultiple}">
+                            <fluent:MenuItem
+                                Command="{catel:CommandManagerBinding Plugin.AllToPresetExportList}"
+                                Icon="{iconPacks:Modern Kind=AddMultiple}"
+                                Header="All Presets"/>
+                            <fluent:MenuItem
+                                Command="{catel:CommandManagerBinding Plugin.NotExportedAllToPresetExportList}"
+                                Icon="{iconPacks:Modern Kind=AddMultiple}"
+                                Header="Presets not yet exported"/>
+                            </fluent:MenuItem>
                         <fluent:MenuItem
-                            Command="{catel:CommandManagerBinding Plugin.SelectedToPresetExportList}"
                             Header="Presets from selected plugins only"
-                            Icon="{iconPacks:MaterialDesign Kind=AddCircle}" />
+                            Icon="{iconPacks:MaterialDesign Kind=AddCircle}">
+                            <fluent:MenuItem
+                                Command="{catel:CommandManagerBinding Plugin.SelectedToPresetExportList}"
+                                Icon="{iconPacks:MaterialDesign Kind=AddCircle}"
+                                Header="All Presets"/>
+                            <fluent:MenuItem
+                                Command="{catel:CommandManagerBinding Plugin.NotExportedSelectedToPresetExportList}"
+                                Icon="{iconPacks:MaterialDesign Kind=AddCircle}"
+                                Header="Presets not yet exported"/>
+                        </fluent:MenuItem>
                     </fluent:DropDownButton>
 
                     <fluent:Button
