@@ -65,9 +65,7 @@ namespace SharedModels
 
         public bool HasPreset(string sourceFile, string hash)
         {
-            return (from preset in Presets
-                where preset.PresetHash == hash && preset.SourceFile == sourceFile
-                select preset).Any();
+            return PresetHashCache.ContainsKey((hash, sourceFile));
         }
 
         public void Invalidate()
@@ -77,7 +75,7 @@ namespace SharedModels
 
         public override string ToString()
         {
-            return IsLoaded ? $"{PluginVendor} {PluginName} ({PluginId})" : $"{DllPath}";
+            return IsLoaded ? $"{PluginVendor} {PluginName} ({VstPluginId})" : $"{DllPath}";
         }
 
         public void OnLoadError(Exception e)
@@ -182,6 +180,20 @@ namespace SharedModels
         {
             RaisePropertyChanged(nameof(PluginLocation));
         }
+        
+        [NotMapped]
+        public bool HasPresets
+        {
+            get
+            {
+                if (Presets != null)
+                {
+                    return Presets.Count > 0;
+                }
+
+                return false;
+            }
+        }
 
         /// <summary>
         /// Defines if the plugin had a load error
@@ -211,13 +223,25 @@ namespace SharedModels
             }
         }
 
-        public Dictionary<(int, string), Preset> PresetCache = new Dictionary<(int, string), Preset>();
+        public Dictionary<string, Preset> PresetCache = new Dictionary<string, Preset>();
+        public Dictionary<(string hash, string sourceFile), Preset> PresetHashCache = new Dictionary<(string, string), Preset>();
 
 
         /// <summary>
         /// Defines the full path to the plugin DLL
         /// </summary>
-        public string DllPath => PluginLocation?.DllPath;
+        public string DllPath
+        {
+            get {
+                if (PluginLocation == null)
+                {
+                    return "";
+                }
+
+                return PluginLocation.DllPath;
+
+            } 
+        }
 
         private string _lastKnownGoodDllPath;
 
@@ -239,12 +263,12 @@ namespace SharedModels
         /// <summary>
         /// Returns the DLL directory in which the DLL is located
         /// </summary>
-        public string DllDirectory => string.IsNullOrEmpty(DllPath) ? null : Path.GetDirectoryName(DllPath);
+        public string DllDirectory => string.IsNullOrEmpty(DllPath) ? "" : Path.GetDirectoryName(DllPath);
 
         /// <summary>
         /// Returns the Dll Filename without the path
         /// </summary>
-        public string DllFilename => string.IsNullOrEmpty(DllPath) ? null : Path.GetFileName(DllPath);
+        public string DllFilename => string.IsNullOrEmpty(DllPath) ? "" : Path.GetFileName(DllPath);
 
         public string CanonicalDllFilename =>
             string.IsNullOrEmpty(DllPath)
@@ -284,6 +308,7 @@ namespace SharedModels
         }
 
         public bool IsReported { get; set; }
+        public bool DontReport { get; set; }
         public ProgressFastObservableCollection<BankFile> AdditionalBankFiles { get; set; } = new ProgressFastObservableCollection<BankFile>();
 
 
@@ -300,7 +325,7 @@ namespace SharedModels
 
         public string PluginTypeDescription => PluginType.ToString();
 
-        public int PluginId { get; set; }
+        public int VstPluginId { get; set; }
 
         [NotMapped] public int NumPresets => Presets?.Count ?? 0;
 

@@ -5,6 +5,7 @@ using System.Data.SQLite;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Threading.Tasks;
 using CannedBytes.Midi.Message;
@@ -27,6 +28,8 @@ namespace SharedModels
         public event EventHandler<PresetUpdatedEventArgs> PresetUpdated;
         public bool CompressPresetData { private get; set; }
         public MidiNoteName PreviewNote { private get; set; }
+        private Dictionary<(string, string), Type> TypeCache = new Dictionary<(string, string), Type>();
+        private Dictionary<string, Mode> ModeCache = new Dictionary<string, Mode>();
         public static string OverrideDbPath;
 
         private readonly List<(Preset preset, byte[] presetData)> presetDataList =
@@ -126,10 +129,29 @@ namespace SharedModels
             }
         }
 
+        public List<PluginLocation> GetPluginLocations(Plugin plugin)
+        {
+            if (!plugin.HasMetadata)
+            {
+                return new List<PluginLocation>();
+            }
+
+            var list= (from pluginLocation in PluginLocations
+                where pluginLocation.VstPluginId == plugin.VstPluginId &&
+                      pluginLocation.IsPresent && pluginLocation.Id != plugin.PluginLocation.Id
+                select pluginLocation).ToList();
+            
+            // Workaround so that the combobox has the correct hash for the pluginlocation object
+            list.Add(plugin.PluginLocation);
+
+            return list;
+        }
+
         public void LoadPresetsForPlugin(Plugin plugin)
         {
             Configuration.AutoDetectChangesEnabled = false;
             plugin.PresetCache.Clear();
+            plugin.PresetHashCache.Clear();
             var deletedPresets =
                 (from deletedPreset in Presets
                     where deletedPreset.Plugin.Id == plugin.Id && deletedPreset.IsDeleted
@@ -137,17 +159,18 @@ namespace SharedModels
 
             foreach (var preset in deletedPresets)
             {
-                plugin.PresetCache.Add((plugin.Id, preset.SourceFile), preset);
+                plugin.PresetCache.Add(preset.SourceFile, preset);
             }
 
             using (plugin.Presets.SuspendChangeNotifications())
             {
-                Entry(plugin).Collection(p => p.Presets).Query().Where(p => !p.IsDeleted).Load();
+                Entry(plugin).Collection(p => p.Presets).Query().Include(p => p.Modes).Include(p => p.Types).Where(p => !p.IsDeleted).Load();
             }
 
             foreach (var preset in plugin.Presets)
             {
-                plugin.PresetCache.Add((plugin.Id, preset.SourceFile), preset);
+                plugin.PresetCache.Add(preset.SourceFile, preset);
+                plugin.PresetHashCache.Add((preset.PresetHash, preset.SourceFile), preset);
             }
 
             Configuration.AutoDetectChangesEnabled = true;
@@ -193,16 +216,16 @@ namespace SharedModels
 
             PresetUpdated.SafeInvoke(this, new PresetUpdatedEventArgs(preset));
 
-            if (!preset.Plugin.PresetCache.ContainsKey((preset.Plugin.Id, preset.SourceFile)))
+            if (!preset.Plugin.PresetCache.ContainsKey(preset.SourceFile))
             {
                 preset.Plugin.Presets.Add(preset);
                 preset.PreviewNote = PreviewNote;
                 SavePresetData(preset, data);
-                preset.Plugin.PresetCache.Add((preset.Plugin.Id, preset.SourceFile), preset);
+                preset.Plugin.PresetCache.Add(preset.SourceFile, preset);
             }
             else
             {
-                SavePresetData(preset.Plugin.PresetCache[(preset.Plugin.Id, preset.SourceFile)], data);
+                SavePresetData(preset.Plugin.PresetCache[preset.SourceFile], data);
             }
 
             persistPresetCount++;
@@ -306,41 +329,56 @@ namespace SharedModels
             SaveChanges();
         }
 
-        [Time]
         public Type GetOrCreateType(string typeName, string subTypeName)
         {
+            if (TypeCache.ContainsKey((typeName, subTypeName)))
+            {
+                return TypeCache[(typeName, subTypeName)];
+            }
+            
             var type = (from st in Types
                 where st.Name == typeName && st.SubTypeName == subTypeName
                 select st).FirstOrDefault();
 
             if (type == null)
             {
-                type = new Type();
-                type.Name = typeName;
-                type.SubTypeName = subTypeName;
+                type = new Type {Name = typeName, SubTypeName = subTypeName};
                 Types.Add(type);
             }
+            
+            TypeCache.Add((typeName, subTypeName), type);
 
             return type;
         }
 
-        [Time]
         public Mode GetOrCreateMode(string modeName)
         {
+            if (ModeCache.ContainsKey(modeName))
+            {
+                return ModeCache[modeName];
+            }
+            
             var mode = (from st in Modes
                 where st.Name == modeName
                 select st).FirstOrDefault();
 
             if (mode == null)
             {
-                mode = new Mode();
-                mode.Name = modeName;
+                mode = new Mode {Name = modeName};
                 Modes.Add(mode);
             }
+
+            ModeCache.Add(modeName, mode);
 
             return mode;
         }
 
+        /// <summary>
+        /// Gets a plugin location by dll path and hash
+        /// </summary>
+        /// <param name="dllPath"></param>
+        /// <param name="hash"></param>
+        /// <returns></returns>
         public PluginLocation GetPluginLocation(string dllPath, string hash)
         {
             return (from st in PluginLocations

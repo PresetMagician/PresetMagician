@@ -26,6 +26,16 @@ namespace SharedModels
 
         public bool IsPresent { get; set; }
         
-        public int PluginId { get; set; }
+        public int VstPluginId { get; set; }
+
+        public string ShortTextRepresentation
+        {
+            get { return $"{PluginName} by {PluginVendor}, Version {VendorVersion}"; }
+        }
+        
+        public string FullTextRepresentation
+        {
+            get { return $"{PluginName} by {PluginVendor}, Version {VendorVersion} ({DllPath}"; }
+        }
     }
 }

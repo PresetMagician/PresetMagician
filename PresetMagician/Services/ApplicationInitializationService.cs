@@ -115,7 +115,7 @@ namespace PresetMagician.Services
             
             TaskHelper.Run(() =>
             {
-                //_commandManager.ExecuteCommand(Commands.Plugin.RefreshPlugins);
+                _commandManager.ExecuteCommand(Commands.Plugin.RefreshPlugins);
                 
             });
         }
@@ -155,7 +155,11 @@ namespace PresetMagician.Services
 
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "ScanPlugins");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin),
+                nameof(Commands.Plugin.QuickScanPlugins));
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin),
                 nameof(Commands.Plugin.ScanSelectedPlugins));
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin),
+                nameof(Commands.Plugin.QuickScanSelectedPlugins));
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin),
                 nameof(Commands.Plugin.ScanSelectedPlugin));
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "RefreshPlugins");

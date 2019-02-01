@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using PresetMagician.Models;
 
 namespace SharedModels
 {
-    public interface IRemotePluginInstance
+    public interface IRemotePluginInstance: IDisposable
     {
         Plugin Plugin { get; }
 
@@ -46,6 +47,6 @@ namespace SharedModels
         bool IsLoaded { get; }
         bool IsEditorOpen { get; }
         string GetPluginHash();
-        void KillHost();
+
     }
 }

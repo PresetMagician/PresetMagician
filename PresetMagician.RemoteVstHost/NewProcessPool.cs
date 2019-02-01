@@ -1,28 +1,35 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using Castle.DynamicProxy;
 using Catel;
 using Catel.Collections;
 using Catel.Data;
 using Catel.Threading;
 using PresetMagician.ProcessIsolation.Processes;
+using SharedModels;
 using Timer = System.Threading.Timer;
 
 namespace PresetMagician.ProcessIsolation
 {
     public class NewProcessPool : ObservableObject
     {
-        private int _maxProcesses = 8;
-        private int _maxStartTimeout = 20;
+        private int _maxProcesses = 4;
+        private int _maxStartTimeout = 10;
         private int _failedStartupProcesses;
         private int _totalStartedProcesses;
 
         public int NumRunningProcesses;
         public int NumTotalProcesses;
         
+        private ProxyGenerator _generator = new ProxyGenerator();
+        
         public event EventHandler<PoolFailedEventArgs> PoolFailed;
+        
 
         public FastObservableCollection<VstHostProcess> RunningProcesses { get; } =
             new FastObservableCollection<VstHostProcess>();
@@ -54,12 +61,38 @@ namespace PresetMagician.ProcessIsolation
 
         public void SetMaxProcesses(int maxProcesses)
         {
-            _maxProcesses = maxProcesses;
+            if (maxProcesses >= 4)
+            {
+                _maxProcesses = maxProcesses;
+            }
+        }
+
+        public IRemoteVstService GetVstService()
+        {
+            var type = typeof(IRemoteVstService);
+            return _generator.CreateInterfaceProxyWithoutTarget(type, CreateInterceptor()) as IRemoteVstService;
+        }
+        
+        protected virtual IInterceptor CreateInterceptor()
+        {
+            return new ProcessPoolInterceptor(this);
         }
 
         public void SetStartTimeout(int maxStartTimeoutSeconds)
         {
-            _maxStartTimeout = maxStartTimeoutSeconds;
+            if (_maxStartTimeout >= 10)
+            {
+                _maxStartTimeout = maxStartTimeoutSeconds;
+            }
+        }
+
+        public VstHostProcess GetFreeHostProcess()
+        {
+            var foundProcess = (from process in RunningProcesses
+                where !process.IsBusy && process.CurrentProcessState == HostProcess.ProcessState.RUNNING
+                select process).OrderBy(qu => Guid.NewGuid()).FirstOrDefault();
+// Todo: Handle non-found process
+            return foundProcess;
         }
 
         public void StopPool()
@@ -75,7 +108,13 @@ namespace PresetMagician.ProcessIsolation
             }
         }
 
-
+        public  IRemotePluginInstance GetRemotePluginInstance(Plugin plugin)
+        {
+            var hostProcess = GetFreeHostProcess();
+            return new RemotePluginInstance(hostProcess, plugin);
+        }
+        
+       
         private void UpdateProcesses(object o)
         {
             lock (_updateLock)

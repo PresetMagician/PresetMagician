@@ -37,7 +37,7 @@ namespace PresetMagician
 
         protected override async Task ExecuteAsync(object parameter)
         {
-            var pluginInstance = _vstService.GetInteractivePluginInstance(_vstService.SelectedPlugin);
+            var pluginInstance = await _vstService.GetInteractivePluginInstance(_vstService.SelectedPlugin);
 
             if (!pluginInstance.IsLoaded)
             {

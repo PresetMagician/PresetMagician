@@ -60,10 +60,6 @@ namespace PresetMagician.Services
 
         public Task<MessageResult> ShowAsync(string message, string caption = "", string helpLink = null, MessageButton button = MessageButton.OK, MessageImage icon = MessageImage.None)
         {
-            Argument.IsNotNullOrWhitespace("message", message);
-
-            Log.Info("Showing message to the user:\n\n{0}", this.GetAsText(message, button));
-
             var tcs = new TaskCompletionSource<MessageResult>();
 
 #pragma warning disable AvoidAsyncVoid
@@ -79,6 +75,7 @@ namespace PresetMagician.Services
                 vm.Button = button;
                 vm.Icon = icon;
                 vm.HelpLink = helpLink;
+                vm.ShowDontAskAgain = false;
 
                 vm.SetTitle(caption);
 
@@ -86,9 +83,47 @@ namespace PresetMagician.Services
 
                 Mouse.OverrideCursor = previousCursor;
 
-                Log.Info("Result of message: {0}", vm.Result);
-
                 tcs.TrySetResult(vm.Result);
+            });
+
+            return tcs.Task;
+        }
+        
+        public Task<(MessageResult result, bool dontAskAgainChecked)> ShowAsyncWithDontAskAgain(string message, string caption = "", string helpLink = null, MessageButton button = MessageButton.OK, MessageImage icon = MessageImage.None, string dontAskAgainText = "")
+        {
+            Argument.IsNotNullOrWhitespace("message", message);
+
+            var tcs = new TaskCompletionSource<(MessageResult result, bool dontAskAgainChecked)>();
+
+#pragma warning disable AvoidAsyncVoid
+            _dispatcherService.BeginInvoke(async () =>
+#pragma warning restore AvoidAsyncVoid
+            {
+                var previousCursor = Mouse.OverrideCursor;
+                Mouse.OverrideCursor = null;
+
+                var vm = _viewModelFactory.CreateViewModel<HelpLinkMessageBoxViewModel>(null, null);
+
+                vm.Message = message;
+                vm.Button = button;
+                vm.Icon = icon;
+                vm.HelpLink = helpLink;
+                vm.ShowDontAskAgain = true;
+
+                if (string.IsNullOrWhiteSpace(dontAskAgainText))
+                {
+                    dontAskAgainText = "Don't ask again";
+                }
+                
+                vm.DontAskAgainText = dontAskAgainText;
+
+                vm.SetTitle(caption);
+
+                await _uiVisualizerService.ShowDialogAsync(vm);
+
+                Mouse.OverrideCursor = previousCursor;
+
+                tcs.TrySetResult((vm.Result, vm.DontAskAgainResult));
             });
 
             return tcs.Task;

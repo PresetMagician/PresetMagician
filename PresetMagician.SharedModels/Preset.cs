@@ -31,7 +31,7 @@ namespace SharedModels
                     _bankPath = null;
                 }
 
-                VstPluginId = value.PluginId;
+                VstPluginId = value.VstPluginId;
             }
         }
 
@@ -40,6 +40,8 @@ namespace SharedModels
         public bool IsDeleted { get; set; }
 
         public DateTime? LastExported { get; set; }
+
+        public bool ChangedSingleLastExport => LastExportedPresetHash == null || LastExportedPresetHash != PresetHash;
 
 
         public void SetPlugin(Plugin vst)

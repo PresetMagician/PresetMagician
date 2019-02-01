@@ -65,6 +65,11 @@
                         Binding="{Binding CurrentOperation.ElapsedTime, Mode=OneWay, StringFormat=hh\\:mm\\:ss}"
                         Header="Current Operation (Elapsed Time)"
                         IsReadOnly="True"/>
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding IsBusy}"
+                        Header="Busy"
+                        IsReadOnly="True"/>
                 </DataGrid.Columns>
             
             </DataGrid>

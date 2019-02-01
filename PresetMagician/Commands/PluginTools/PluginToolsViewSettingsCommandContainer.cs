@@ -42,7 +42,7 @@ namespace PresetMagician
         {
             return base.CanExecute(parameter) && _vstService.SelectedPlugins.Count > 0 &&
                    _vstService.SelectedPlugin != null &&
-                   _vstService.SelectedPlugin.IsAnalyzed;
+                   _vstService.SelectedPlugin.HasMetadata;
         }
 
         private void OnSelectedPluginsListChanged(object o, NotifyCollectionChangedEventArgs ev)

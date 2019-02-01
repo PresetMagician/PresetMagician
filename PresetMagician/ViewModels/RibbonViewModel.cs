@@ -129,7 +129,7 @@ namespace PresetMagician.ViewModels
         /// </summary>
         private async Task OnDoSomethingExecuteAsync()
         {
-            Process.GetCurrentProcess().Kill();
+            Debug.WriteLine(_vstService.GetVstService().Exists(@"C:\foo.txt"));
         }
 
         #endregion

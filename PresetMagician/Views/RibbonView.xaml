@@ -35,16 +35,34 @@
 
                 <fluent:RibbonGroupBox Header="Plugins">
 
-                    <fluent:Button
+                   
+                    <fluent:SplitButton
                         Width="60"
                         Padding="0"
                         VerticalAlignment="Center"
                         Command="{catel:CommandManagerBinding Plugin.ScanPlugins}"
-                        Header="Analyze Plugins"
-                        ToolTip="Loads all plugins, analyzes their capabilities and loads their presets"
+                        Header="Analyze"
                         LargeIcon="{iconPacks:Material Kind=BarcodeScan,
                                                        Width=32,
-                                                       Height=32}" />
+                                                       Height=32}">
+                        <fluent:SplitButton.ToolTip>
+                            <fluent:ScreenTip Title="Full Analysis"
+                                              Width="250"
+                                              Text="Loads all plugins, analyzes their capabilities and adds/updates their presets in the database."
+                                              HelpTopic="COMMANDS_ANALYZE"/>
+                        </fluent:SplitButton.ToolTip>
+                        <fluent:MenuItem
+                            Command="{catel:CommandManagerBinding Plugin.QuickScanPlugins}"
+                            Header="Quick Analysis"
+                            Icon="{iconPacks:Ionicons Kind=BarcodeiOS}">
+                            <fluent:MenuItem.ToolTip>
+                                <fluent:ScreenTip Title="Quick Analysis"
+                                                  Width="250"
+                                                  Text="Does a quick analysis. Loads existing presets from the database if this plugin was analyzed previously, and does not check for new/updated presets. Skips plugins previously not analyzed."
+                                                  HelpTopic="COMMANDS_ANALYZE"/>
+                            </fluent:MenuItem.ToolTip>
+                        </fluent:MenuItem>
+                    </fluent:SplitButton>
 
 
                     <fluent:DropDownButton
@@ -106,16 +124,33 @@
                         Icon="{iconPacks:Octicons Kind=DiffAdded}"
                         Size="Middle" />
 
-                    <fluent:Button
+                    <fluent:SplitButton
                         Padding="0"
                         VerticalAlignment="Center"
                         Command="{catel:CommandManagerBinding Plugin.ScanSelectedPlugins}"
                         Size="Middle"
                         Header="Analyze Selected Plugins"
-                        ToolTip="Loads selected plugins, analyzes their capabilities and loads their presets"
                         Icon="{iconPacks:Material Kind=BarcodeScan,
                                                        Width=16,
-                                                       Height=16}" />
+                                                       Height=16}">
+                        <fluent:SplitButton.ToolTip>
+                            <fluent:ScreenTip Title="Full Analysis"
+                                              Width="250"
+                                              Text="Loads all plugins, analyzes their capabilities and adds/updates their presets in the database."
+                                              HelpTopic="COMMANDS_ANALYZE"/>
+                        </fluent:SplitButton.ToolTip>
+                        <fluent:MenuItem
+                            Command="{catel:CommandManagerBinding Plugin.QuickScanSelectedPlugins}"
+                            Header="Quick Analysis"
+                            Icon="{iconPacks:Ionicons Kind=BarcodeiOS}">
+                            <fluent:MenuItem.ToolTip>
+                                <fluent:ScreenTip Title="Quick Analysis"
+                                                  Width="250"
+                                                  Text="Does a quick analysis. Loads existing presets from the database if this plugin was analyzed previously, and does not check for new/updated presets. Skips plugins previously not analyzed."
+                                                  HelpTopic="COMMANDS_ANALYZE"/>
+                            </fluent:MenuItem.ToolTip>
+                        </fluent:MenuItem>
+                        </fluent:SplitButton>
                     <fluent:Button
                         Command="{catel:CommandManagerBinding PluginTools.ViewErrors}"
                         Header="View Plugin Log"

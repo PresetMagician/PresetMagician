@@ -248,7 +248,7 @@ namespace PresetMagician.Models.NativeInstrumentsResources
             }
             else
             {
-                    Color.SetRandomColor();
+                    Color.BackgroundColor = (System.Windows.Media.Color) ColorConverter.ConvertFromString("#FFFFFF");
             }
            
           

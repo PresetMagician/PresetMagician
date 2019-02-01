@@ -55,7 +55,6 @@ namespace PresetMagician.Services
 
             using (RuntimeConfiguration.SuspendValidations())
             {
-                RuntimeConfiguration.CachedPlugins.Clear();
                 RuntimeConfiguration.VstDirectories.Clear();
                 JsonConvert.PopulateObject(output, RuntimeConfiguration);
             }
@@ -79,7 +78,6 @@ namespace PresetMagician.Services
                 {
                     using (RuntimeConfiguration.SuspendValidations())
                     {
-                        RuntimeConfiguration.CachedPlugins.Clear();
                         RuntimeConfiguration.VstDirectories.Clear();
                         _jsonSerializer.Populate(jsonReader, RuntimeConfiguration);
                     }

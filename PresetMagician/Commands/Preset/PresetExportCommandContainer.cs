@@ -1,14 +1,11 @@
 ﻿using System;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Anotar.Catel;
 using Catel;
-using Catel.Logging;
 using Catel.MVVM;
 using Catel.Threading;
-using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
 using SharedModels;
 
@@ -43,7 +40,7 @@ namespace PresetMagician
                 let first = pluginGroup.First()
                 select new
                 {
-                    Plugin = first.Plugin,
+                    first.Plugin,
                     Presets = pluginGroup.Select(gi => new {Preset = gi})
                 };
 
@@ -67,40 +64,52 @@ namespace PresetMagician
 
                 foreach (var pluginPreset in pluginPresets)
                 {
-                    var remotePluginInstance = await _vstService.GetRemotePluginInstance(pluginPreset.Plugin);
-
-                    await remotePluginInstance.LoadPlugin();
-
-                    foreach (var preset in pluginPreset.Presets)
+                    try
                     {
-                        currentPreset++;
-                        _applicationService.UpdateApplicationOperationStatus(
-                            currentPreset,
-                            $"Exporting {pluginPreset.Plugin.PluginName} - {preset.Preset.PresetName}");
-
-                        if (cancellationToken.IsCancellationRequested)
+                        using (var remotePluginInstance = _vstService.GetRemotePluginInstance(pluginPreset.Plugin))
                         {
-                            return;
+
+                            await remotePluginInstance.LoadPlugin();
+
+                            foreach (var preset in pluginPreset.Presets)
+                            {
+                                currentPreset++;
+                                _applicationService.UpdateApplicationOperationStatus(
+                                    currentPreset,
+                                    $"Exporting {pluginPreset.Plugin.PluginName} - {preset.Preset.PresetName}");
+
+                                if (cancellationToken.IsCancellationRequested)
+                                {
+                                    return;
+                                }
+
+                                var presetData = _vstService.GetPresetData(preset.Preset);
+                                var presetExportInfo = new PresetExportInfo(preset.Preset);
+                                if (_runtimeConfigurationService.RuntimeConfiguration.ExportWithAudioPreviews &&
+                                    pluginPreset.Plugin.PluginType == Plugin.PluginTypes.Instrument)
+                                {
+                                    remotePluginInstance.ExportNksAudioPreview(presetExportInfo, presetData,
+                                        exportDirectory,
+                                        preset.Preset.Plugin.GetAudioPreviewDelay());
+                                }
+
+                                remotePluginInstance.ExportNks(presetExportInfo, presetData, exportDirectory);
+
+                                pluginPreset.Plugin.PresetParser.OnAfterPresetExport();
+                                preset.Preset.LastExported = DateTime.Now;
+                                preset.Preset.LastExportedPresetHash = preset.Preset.PresetHash;
+                            }
+
+                            remotePluginInstance.UnloadPlugin();
                         }
-
-                        var presetData = _vstService.GetPresetData(preset.Preset);
-                        var presetExportInfo = new PresetExportInfo(preset.Preset);
-                        if (_runtimeConfigurationService.RuntimeConfiguration.ExportWithAudioPreviews &&
-                            pluginPreset.Plugin.PluginType == Plugin.PluginTypes.Instrument)
-                        {
-                            remotePluginInstance.ExportNksAudioPreview(presetExportInfo, presetData, exportDirectory,
-                                preset.Preset.Plugin.GetAudioPreviewDelay());
-                        }
-
-                        remotePluginInstance.ExportNks(presetExportInfo, presetData, exportDirectory);
-
-                        pluginPreset.Plugin.PresetParser.OnAfterPresetExport();
-                        preset.Preset.LastExported = DateTime.Now;
-                        preset.Preset.LastExportedPresetHash = preset.Preset.PresetHash;
+                    }
+                    catch (Exception e)
+                    {
+                        _applicationService.AddApplicationOperationError(
+                            $"Unable to update export presets because of {e.Message}");
+                        LogTo.Debug(e.StackTrace);
                     }
 
-                    remotePluginInstance.UnloadPlugin();
-                    remotePluginInstance.KillHost();
                     await _vstService.SavePlugins();
                 }
             });

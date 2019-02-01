@@ -24,6 +24,10 @@ namespace PresetMagician.Models
 
         [JsonProperty] public bool AutoCreateResources { get; set; }
 
+        [JsonProperty] public int NumPoolWorkers { get; set; } = 4;
+
+        [JsonProperty] public int MaxPoolWorkerStartupTime { get; set; } = 20;
+
         [JsonProperty]
         public int DefaultPreviewMidiNoteNumber
         {
@@ -32,9 +36,6 @@ namespace PresetMagician.Models
         }
 
         public MidiNoteName DefaultPreviewMidiNote { get; set; } = new MidiNoteName("C3");
-
-        [JsonProperty]
-        public FastObservableCollection<Plugin> CachedPlugins { get; set; } = new FastObservableCollection<Plugin>();
 
         protected override void ValidateFields(List<IFieldValidationResult> validationResults)
         {

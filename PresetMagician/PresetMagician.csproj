@@ -115,6 +115,8 @@
     <Compile Include="Commands\Plugin\AbstractScanPluginsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginAllToPresetExportListCommandContainer.cs" />
     <Compile Include="Commands\Plugin\AbstractReportPluginsCommandContainer.cs" />
+    <Compile Include="Commands\Plugin\PluginQuickScanPluginsCommandContainer.cs" />
+    <Compile Include="Commands\Plugin\PluginQuickScanSelectedPluginsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginReportUnsupportedPluginsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginScanSelectedPluginCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginScanSelectedPluginsCommandContainer.cs" />

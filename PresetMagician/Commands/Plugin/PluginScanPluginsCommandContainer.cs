@@ -16,9 +16,10 @@ namespace PresetMagician
             IRuntimeConfigurationService runtimeConfigurationService, IVstService vstService,
             IApplicationService applicationService,
             IDispatcherService dispatcherService, IDatabaseService databaseService,
+            IAdvancedMessageService messageService,
             INativeInstrumentsResourceGeneratorService resourceGeneratorService)
             : base(Commands.Plugin.ScanPlugins, commandManager, runtimeConfigurationService, vstService,
-                applicationService, dispatcherService, databaseService, resourceGeneratorService)
+                applicationService, dispatcherService, messageService, databaseService, resourceGeneratorService)
         {
         }
 

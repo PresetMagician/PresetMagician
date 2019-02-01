@@ -122,41 +122,43 @@
                                     </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
+                                           
                                             <Border
                                                 Margin="1,1,2,1"
                                                 Padding="2,0,2,0"
                                                 Background="BlueViolet"
                                                 CornerRadius="3">
-                                                <ItemsControl ItemsSource="{Binding}">
-                                                    <ItemsControl.ItemsPanel>
-                                                        <ItemsPanelTemplate>
-                                                            <WrapPanel />
-                                                        </ItemsPanelTemplate>
-                                                    </ItemsControl.ItemsPanel>
-                                                    <ItemsControl.ItemTemplate>
-                                                        <DataTemplate>
+                                               
                                                             <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                                                <TextBlock
+                                                                    HorizontalAlignment="Left"
+                                                                    Foreground="White"
+                                                                    Text="{Binding Name}" />
                                                                 <iconPacks:PackIconTypicons
                                                                     x:Name="commaTextBlock"
                                                                     Width="10"
                                                                     Height="10"
                                                                     VerticalAlignment="Center"
                                                                     Foreground="White"
-                                                                    Kind="ChevronRightOutline" />
+                                                                    Kind="ChevronRightOutline">
+                                                                    <iconPacks:PackIconTypicons.Style>
+                                                                        <Style TargetType="{x:Type iconPacks:PackIconTypicons}">
+                                                                            <Style.Triggers>
+                                                                                <DataTrigger Binding="{Binding SubTypeName}" Value="{x:Null}">
+                                                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                                                </DataTrigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </iconPacks:PackIconTypicons.Style>
+                                                                </iconPacks:PackIconTypicons>
 
                                                                 <TextBlock
                                                                     HorizontalAlignment="Left"
                                                                     Foreground="White"
-                                                                    Text="{Binding}" />
+                                                                    Text="{Binding SubTypeName}" />
                                                             </StackPanel>
-                                                            <DataTemplate.Triggers>
-                                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
-                                                                    <Setter TargetName="commaTextBlock" Property="Visibility" Value="Collapsed" />
-                                                                </DataTrigger>
-                                                            </DataTemplate.Triggers>
-                                                        </DataTemplate>
-                                                    </ItemsControl.ItemTemplate>
-                                                </ItemsControl>
+                                                            
+                                                     
                                             </Border>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
@@ -187,7 +189,7 @@
                                                 <TextBlock
                                                     HorizontalAlignment="Left"
                                                     Foreground="White"
-                                                    Text="{Binding}" />
+                                                    Text="{Binding Name}" />
                                             </Border>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>

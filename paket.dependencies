@@ -15,8 +15,8 @@ nuget Syroot.Windows.IO.KnownFolders
 nuget System.Net.Http
 nuget WPFHexaEditor 1.3.6.2
 nuget Catel.Fody
-nuget Catel.MVVM
-nuget Catel.Core
+nuget Catel.MVVM 5.8.0
+nuget Catel.Core 5.8.0
 nuget MethodTimer.Fody
 nuget ModuleInit.Fody
 nuget LoadAssembliesOnStartup.Fody
@@ -52,7 +52,6 @@ nuget K4os.Compression.LZ4
 nuget EFInteractiveViews
 nuget ksemenenko.ColorThief
 nuget CsvHelper
-nuget Costura.Fody
 nuget Standart.Hash.xxHash
 nuget Orc.EntityFramework6
 nuget Castle.Core

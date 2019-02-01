@@ -20,7 +20,7 @@ namespace PresetMagician.ProcessIsolation.Services
          private static readonly VstHost.VST.VstHost _vstHost = new VstHost.VST.VstHost(true);
          private readonly Dictionary<Guid, RemoteVstPlugin> _plugins = new Dictionary<Guid, RemoteVstPlugin>();
  
-         public bool Ping()
+         public virtual bool Ping()
          {
              App.Ping();
              return true;
@@ -28,6 +28,7 @@ namespace PresetMagician.ProcessIsolation.Services
  
          public Guid RegisterPlugin(string dllPath, bool backgroundProcessing = true)
          {
+             App.Ping();
              var plugin = new RemoteVstPlugin {DllPath = dllPath, BackgroundProcessing = backgroundProcessing};
              var guid = Guid.NewGuid();
              _plugins.Add(guid, plugin);
@@ -37,6 +38,7 @@ namespace PresetMagician.ProcessIsolation.Services
  
          public string GetPluginHash(Guid guid)
          {
+             App.Ping();
              var plugin = GetPluginByGuid(guid);
              if (File.Exists(plugin.DllPath))
              {
@@ -48,6 +50,7 @@ namespace PresetMagician.ProcessIsolation.Services
  
          public void LoadPlugin(Guid guid)
          {
+             App.Ping();
              var plugin = GetPluginByGuid(guid);
  
              try
@@ -62,6 +65,7 @@ namespace PresetMagician.ProcessIsolation.Services
  
          public void UnloadPlugin(Guid guid)
          {
+             App.Ping();
              var plugin = GetPluginByGuid(guid);
 
              if (plugin.IsLoaded)
@@ -72,12 +76,14 @@ namespace PresetMagician.ProcessIsolation.Services
  
          public void ReloadPlugin(Guid guid)
          {
+             App.Ping();
              var plugin = GetPluginByGuid(guid);
              _vstHost.ReloadPlugin(plugin);
          }
  
          private RemoteVstPlugin GetPluginByGuid(Guid guid)
          {
+             App.Ping();
              if (!_plugins.ContainsKey(guid))
              {
                  throw new FaultException($"Plugin with GUID {guid} does not exist in this instance");
@@ -88,6 +94,7 @@ namespace PresetMagician.ProcessIsolation.Services
  
          public bool OpenEditorHidden(Guid pluginGuid)
          {
+             App.Ping();
              var plugin = GetPluginByGuid(pluginGuid);
 
              if (!plugin.IsLoaded)
@@ -100,6 +107,7 @@ namespace PresetMagician.ProcessIsolation.Services
  
          public bool OpenEditor(Guid pluginGuid)
          {
+             App.Ping();
              var plugin = GetPluginByGuid(pluginGuid);
              
              if (!plugin.IsLoaded)
@@ -112,6 +120,7 @@ namespace PresetMagician.ProcessIsolation.Services
  
          public void CloseEditor(Guid pluginGuid)
          {
+             App.Ping();
              var plugin = GetPluginByGuid(pluginGuid);
              if (!plugin.IsLoaded)
              {
@@ -122,6 +131,7 @@ namespace PresetMagician.ProcessIsolation.Services
  
          public byte[] CreateScreenshot(Guid pluginGuid)
          {
+             App.Ping();
              var plugin = GetPluginByGuid(pluginGuid);
              
              if (!plugin.IsLoaded)
@@ -149,6 +159,7 @@ namespace PresetMagician.ProcessIsolation.Services
 
          public string GetPluginName(Guid pluginGuid)
          {
+             App.Ping();
              var plugin = GetPluginByGuid(pluginGuid);
 
              if (!plugin.IsLoaded)
@@ -161,6 +172,7 @@ namespace PresetMagician.ProcessIsolation.Services
 
          public string GetEffectivePluginName(Guid pluginGuid)
          {
+             App.Ping();
              var plugin = GetPluginByGuid(pluginGuid);
              
              if (!plugin.IsLoaded)
@@ -186,6 +198,7 @@ namespace PresetMagician.ProcessIsolation.Services
 
          public int GetPluginVendorVersion(Guid pluginGuid)
          {
+             App.Ping();
              var plugin = GetPluginByGuid(pluginGuid);
              
              if (!plugin.IsLoaded)
@@ -197,6 +210,7 @@ namespace PresetMagician.ProcessIsolation.Services
          
          public string GetPluginProductString(Guid pluginGuid)
          {
+             App.Ping();
              var plugin = GetPluginByGuid(pluginGuid);
              
              if (!plugin.IsLoaded)
@@ -208,6 +222,7 @@ namespace PresetMagician.ProcessIsolation.Services
  
          public string GetPluginVendor(Guid pluginGuid)
          {
+             App.Ping();
              var plugin = GetPluginByGuid(pluginGuid);
              
              if (!plugin.IsLoaded)
@@ -226,6 +241,7 @@ namespace PresetMagician.ProcessIsolation.Services
  
          public List<PluginInfoItem> GetPluginInfoItems(Guid pluginGuid)
          {
+             App.Ping();
              var plugin = GetPluginByGuid(pluginGuid);
              if (!plugin.IsLoaded)
              {
@@ -237,6 +253,7 @@ namespace PresetMagician.ProcessIsolation.Services
  
          public VstPluginInfoSurrogate GetPluginInfo(Guid pluginGuid)
          {
+             App.Ping();
              var plugin = GetPluginByGuid(pluginGuid);
              if (!plugin.IsLoaded)
              {
@@ -259,6 +276,7 @@ namespace PresetMagician.ProcessIsolation.Services
  
          public void SetProgram(Guid pluginGuid, int program)
          {
+             App.Ping();
              var plugin = GetPluginByGuid(pluginGuid);
              if (!plugin.IsLoaded)
              {
@@ -269,6 +287,7 @@ namespace PresetMagician.ProcessIsolation.Services
  
          public string GetCurrentProgramName(Guid pluginGuid)
          {
+             App.Ping();
              var plugin = GetPluginByGuid(pluginGuid);
              if (!plugin.IsLoaded)
              {
@@ -279,6 +298,7 @@ namespace PresetMagician.ProcessIsolation.Services
  
          public byte[] GetChunk(Guid pluginGuid, bool isPreset)
          {
+             App.Ping();
              var plugin = GetPluginByGuid(pluginGuid);
              if (!plugin.IsLoaded)
              {
@@ -289,6 +309,7 @@ namespace PresetMagician.ProcessIsolation.Services
  
          public void SetChunk(Guid pluginGuid, byte[] data, bool isPreset)
          {
+             App.Ping();
              var plugin = GetPluginByGuid(pluginGuid);
              if (!plugin.IsLoaded)
              {
@@ -300,6 +321,7 @@ namespace PresetMagician.ProcessIsolation.Services
          public void ExportNksAudioPreview(Guid pluginGuid, PresetExportInfo preset, byte[] presetData,
              string userContentDirectory, int initialDelay)
          {
+             App.Ping();
              var plugin = GetPluginByGuid(pluginGuid);
              if (!plugin.IsLoaded)
              {
@@ -311,28 +333,33 @@ namespace PresetMagician.ProcessIsolation.Services
  
          public void ExportNks(Guid pluginGuid, PresetExportInfo preset, byte[] presetData, string userContentDirectory)
          {
+             App.Ping();
              var exporter = new NKSExport(_vstHost) {UserContentDirectory = userContentDirectory};
              exporter.ExportNKSPreset(preset, presetData);
          }
          
          public bool Exists(string file)
          {
+             App.Ping();
              return File.Exists(file);
          }
 
          public long GetSize(string file)
          {
+             App.Ping();
              var fileInfo = new FileInfo(file);
              return fileInfo.Length;
          }
 
          public string GetHash(string file)
          {
+             App.Ping();
              return HashUtils.getIxxHash(File.ReadAllBytes(file));
          }
 
          public byte[] GetContents(string file)
          {
+             App.Ping();
              return File.ReadAllBytes(file);
          }
 
