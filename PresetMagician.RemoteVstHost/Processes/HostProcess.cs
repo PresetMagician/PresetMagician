@@ -193,11 +193,7 @@ namespace PresetMagician.ProcessIsolation.Processes
                 _startupTimer.Stop();
                 TaskHelper.Run(() => { OnAfterStart(); });
             }
-            else
-            {
-                LogTo.Debug($"{Pid} {e.Data}");
-                Log(e.Data);
-            }
+            
         }
 
         protected virtual void OnAfterStart()
