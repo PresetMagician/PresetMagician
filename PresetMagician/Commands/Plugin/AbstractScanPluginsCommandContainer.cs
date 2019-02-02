@@ -373,6 +373,9 @@ namespace PresetMagician
                 }
 
                 plugin.IsAnalyzing = false;
+                _applicationService.UpdateApplicationOperationStatus(
+                    pluginsToScan.IndexOf(plugin),
+                    $"{plugin.DllFilename} - Updating Database");
                 _databaseService.Context.SaveChanges();
             }
         }
