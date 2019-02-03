@@ -12,22 +12,25 @@ namespace Drachenkatze.PresetMagician.VSTHost
     {
         public string Directory;
         public string PluginDll;
+        private bool _debug;
+        private VstProcessLevels _currentProcessLevel;
+
+        public NewHostCommandStub(bool debug = false)
+        {
+            _debug = debug;
+            _currentProcessLevel = VstProcessLevels.User;
+        }
 
         public void Dispose()
         {
         }
 
-        public event EventHandler<NewPluginCalledEventArgs> PluginCalled;
-
-        private void RaisePluginCalled(string message)
+        private void Debug(string message)
         {
-            //LogTo.Debug(message);
-            /*EventHandler<PluginCalledEventArgs> handler = PluginCalled;
-
-            if (handler != null)
+            if (_debug)
             {
-                handler(this, new PluginCalledEventArgs(message));
-            }*/
+                Console.WriteLine(message);
+            }
         }
 
         #region IVstHostCommandStub Members
@@ -40,66 +43,73 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public bool BeginEdit(int index)
         {
-            RaisePluginCalled("BeginEdit");
+            Debug($"BeginEdit {index}");
             return false;
         }
 
 
         public bool CloseFileSelector(VstFileSelect fileSelect)
         {
-            RaisePluginCalled("CloseFileSelector");
+            Debug($"CloseFileSelector {fileSelect.Title} {fileSelect.InitialPath}");
             return false;
         }
 
         public bool EndEdit(int index)
         {
-            RaisePluginCalled("EndEdit");
+            Debug($"EndEdit {index}");
             return false;
         }
 
         public VstAutomationStates GetAutomationState()
         {
-            RaisePluginCalled("GetAutomationStates");
+            Debug($"GetAutomationState");
             throw new NotImplementedException();
         }
 
         public int GetBlockSize()
         {
-            RaisePluginCalled("GetBlockSize");
+            Debug($"GetBlockSize");
             return VstHost.BlockSize;
         }
 
         public string GetDirectory()
         {
-            RaisePluginCalled("GetDirectory");
+            Debug($"GetDirectory");
             return Directory;
         }
 
         public int GetInputLatency()
         {
-            RaisePluginCalled("GetInputLatency");
+            Debug($"GetInputLatency");
             return 0;
         }
 
         public VstHostLanguage GetLanguage()
         {
+            Debug($"GetLanguage");
             return VstHostLanguage.English;
         }
 
         public int GetOutputLatency()
         {
-            RaisePluginCalled("GetOutputLatency");
+            Debug($"GetOutputLatency");
             return 0;
         }
 
         public VstProcessLevels GetProcessLevel()
         {
-            //RaisePluginCalled("GetProcessLevel");
-            return VstProcessLevels.Realtime;
+            Debug($"GetProcessLevel {_currentProcessLevel}");
+            return _currentProcessLevel;
+        }
+
+        public void SetProcessLevel(VstProcessLevels processLevel)
+        {
+            _currentProcessLevel = processLevel;
         }
 
         public string GetProductString()
         {
+            Debug($"GetProductString");
             if (PluginDll.ToLower() == "wavestation.dll")
             {
                 return null;
@@ -110,7 +120,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public float GetSampleRate()
         {
-            RaisePluginCalled("GetSampleRate");
+            Debug($"GetSampleRate");
             return 44100f;
         }
 
@@ -118,7 +128,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public VstTimeInfo GetTimeInfo(VstTimeInfoFlags filterFlags)
         {
-            //RaisePluginCalled("GetTimeInfo");
+            Debug($"GetTimeInfo {filterFlags}");
 
             vstTimeInfo.SamplePosition = 0.0;
             vstTimeInfo.SampleRate = 44100;
@@ -133,44 +143,46 @@ namespace Drachenkatze.PresetMagician.VSTHost
             vstTimeInfo.SmpteOffset = 0;
             vstTimeInfo.SmpteFrameRate = new VstSmpteFrameRate();
             vstTimeInfo.SamplesToNearestClock = 0;
-            vstTimeInfo.Flags = 0;
+            vstTimeInfo.Flags = filterFlags;
 
             return vstTimeInfo;
         }
 
         public string GetVendorString()
         {
-            RaisePluginCalled("GetVendorString");
+            Debug($"GetVendorString");
             return "Drachenkatze";
         }
 
         public int GetVendorVersion()
         {
+            Debug($"GetVendorVersion");
             return 1000;
         }
 
         public bool IoChanged()
         {
-            RaisePluginCalled("IoChanged()");
+            Debug($"IoChanged");
             return false;
         }
 
         /// <inheritdoc />
         public bool OpenFileSelector(VstFileSelect fileSelect)
         {
-            RaisePluginCalled("OpenFileSelector(" + fileSelect.Command + ")");
+            Debug($"OpenFileSelector");
             return false;
         }
 
         public bool ProcessEvents(VstEvent[] events)
         {
-            RaisePluginCalled("ProcessEvents");
+            Debug($"ProcessEvents");
             return false;
         }
 
         /// <inheritdoc />
         public bool SizeWindow(int width, int height)
         {
+            Debug($"SizeWindow {width}x{height}");
             var plugin = PluginContext.Find<RemoteVstPlugin>("Plugin");
             plugin?.ResizeEditor(width, height);
             return true;
@@ -178,6 +190,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public bool UpdateDisplay()
         {
+            Debug($"UpateDisplay");
             var plugin = PluginContext.Find<RemoteVstPlugin>("Plugin");
             plugin?.RedrawEditor();
 
@@ -190,27 +203,29 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public int GetCurrentPluginID()
         {
-            RaisePluginCalled("GetCurrentPluginID");
+            Debug($"GetCurrentPluginID");
             return PluginContext.PluginInfo.PluginID;
         }
 
         public int GetVersion()
         {
+            Debug($"GetVersion");
             return 2400;
         }
 
         public void ProcessIdle()
         {
-            RaisePluginCalled("ProcessIdle");
+            Debug($"ProcessIdle");
         }
 
         public void SetParameterAutomated(int index, float value)
         {
-            //RaisePluginCalled("SetParameterAutomated");
+            Debug($"SetParameterAutomated {index} {value}");
         }
 
         public VstCanDoResult CanDo(string cando)
         {
+            Debug($"CanDo {cando}");
             switch (cando)
             {
                 case "NIMKPIVendorSpecificCallbacks":
@@ -234,7 +249,6 @@ namespace Drachenkatze.PresetMagician.VSTHost
                     return VstCanDoResult.Yes;
                 default:
 #if DEBUG
-                    Debug.WriteLine(cando);
                     throw new NotImplementedException("in CanDo with " + cando);
 #endif
                     return VstCanDoResult.Unknown;
@@ -247,6 +261,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public bool PinConnected(int connectionIndex, bool output)
         {
+            Debug($"PinConnected {connectionIndex} {output}");
             if (!output && PluginContext.PluginInfo != null && PluginContext.PluginInfo.AudioInputCount < 2)
             {
                 return true;
@@ -266,109 +281,108 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public bool WantMidi()
         {
+            Debug($"WantMidi");
             return false;
         }
 
         public bool SetTime(VstTimeInfo timeInfo, VstTimeInfoFlags filterFlags)
         {
+            Debug($"SetTime");
             throw new NotImplementedException();
         }
 
         public int GetTempoAt(int sampleIndex)
         {
+            Debug($"GetTempoAt");
             throw new NotImplementedException();
         }
 
         public int GetAutomatableParameterCount()
         {
+            Debug($"GetAutomatableParameterCount");
             throw new NotImplementedException();
         }
 
         public int GetParameterQuantization(int parameterIndex)
         {
+            Debug($"GetParameterQuantization");
             throw new NotImplementedException();
         }
 
         public bool NeedIdle()
         {
+            Debug($"NeedIdle");
             throw new NotImplementedException();
         }
 
         public IntPtr GetPreviousPlugin(int pinIndex)
         {
+            Debug($"GetPreviousPlugin");
             throw new NotImplementedException();
         }
 
         public IntPtr GetNextPlugin(int pinIndex)
         {
+            Debug($"GetNextPlugin");
             throw new NotImplementedException();
         }
 
         public int WillReplaceOrAccumulate()
         {
+            Debug($"WillReplaceOrAccumulate");
             throw new NotImplementedException();
         }
 
         public bool SetOutputSampleRate(float sampleRate)
         {
+            Debug($"SetOutputSampleRate {sampleRate}");
             throw new NotImplementedException();
         }
 
         public VstSpeakerArrangement GetOutputSpeakerArrangement()
         {
+            Debug($"GetOutputSpeakerArrangement");
             throw new NotImplementedException();
         }
 
         public bool SetIcon(Icon icon)
         {
+            Debug($"SetIcon");
             throw new NotImplementedException();
         }
 
         public IntPtr OpenWindow()
         {
+            Debug($"OpenWindow");
             throw new NotImplementedException();
         }
 
         public bool CloseWindow(IntPtr wnd)
         {
+            Debug($"CloseWindow");
             throw new NotImplementedException();
         }
 
         public bool EditFile(string xml)
         {
+            Debug($"EditFile");
             throw new NotImplementedException();
         }
 
         public string GetChunkFile()
         {
-            throw new NotImplementedException();
+            Debug($"GetChunkFile");
+            return "";
         }
 
         public VstSpeakerArrangement GetInputSpeakerArrangement()
         {
+            Debug($"GetInputSpeakerArrangement");
             throw new NotImplementedException();
         }
 
         #endregion
     }
 
-    /// <summary>
-    /// Event arguments used when one of the mehtods is called.
-    /// </summary>
-    public class NewPluginCalledEventArgs : EventArgs
-    {
-        /// <summary>
-        /// Constructs a new instance with a <paramref name="message"/>.
-        /// </summary>
-        /// <param name="message"></param>
-        public NewPluginCalledEventArgs(string message)
-        {
-            Message = message;
-        }
-
-        /// <summary>
-        /// Gets the message.
-        /// </summary>
-        public string Message { get; private set; }
-    }
+  
 }

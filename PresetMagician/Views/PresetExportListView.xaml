@@ -27,7 +27,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <xctk:BusyIndicator Grid.Row="0" IsBusy="{Binding ApplicationState.IsPresetExportListBusy, Mode=OneWay}">
+        <xctk:BusyIndicator Grid.Row="0" IsBusy="{Binding ApplicationState.IsApplicationBusy, Mode=OneWay}">
 
             <xctk:BusyIndicator.BusyContentTemplate>
                 <DataTemplate>

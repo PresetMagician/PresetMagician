@@ -10,6 +10,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Anotar.Catel;
 using Catel;
 using Catel.Collections;
@@ -37,11 +38,13 @@ namespace PresetMagician.ViewModels
         private readonly IOpenFileService _openFileService;
         private readonly ISelectDirectoryService _selectDirectoryService;
         private readonly ILicenseService _licenseService;
+        private readonly ICommandManager _commandManager;
         private readonly INativeInstrumentsResourceGeneratorService _resourceGeneratorService;
 
 
         public VstPluginViewModel(Plugin plugin, IVstService vstService, IOpenFileService openFileService,
             ISelectDirectoryService selectDirectoryService, ILicenseService licenseService,
+            ICommandManager commandManager,
             INativeInstrumentsResourceGeneratorService
                 resourceGeneratorService)
         {
@@ -50,10 +53,12 @@ namespace PresetMagician.ViewModels
             Argument.IsNotNull(() => selectDirectoryService);
             Argument.IsNotNull(() => licenseService);
             Argument.IsNotNull(() => resourceGeneratorService);
+            Argument.IsNotNull(() => commandManager);
 
             Plugin = plugin;
 
             _openFileService = openFileService;
+            _commandManager = commandManager;
             _selectDirectoryService = selectDirectoryService;
             _licenseService = licenseService;
             _vstService = vstService;
@@ -85,7 +90,7 @@ namespace PresetMagician.ViewModels
 
             Title = "Settings for " + Plugin.PluginName;
 
-           
+
             GenerateControllerMappingModels();
             PluginLocations = _vstService.GetPluginLocations(plugin);
         }
@@ -96,13 +101,15 @@ namespace PresetMagician.ViewModels
             new ObservableCollection<OnlineResource>();
 
         public OnlineResource SelectedOnlineResource { get; set; }
-        
-        public List<PluginLocation> PluginLocations { get;  }
+
+        public List<PluginLocation> PluginLocations { get; }
 
         public ObservableCollection<ControllerAssignmentPage> ControllerAssignmentPages { get; set; } =
             new ObservableCollection<ControllerAssignmentPage>();
 
         public int CurrentControllerAssignmentPage { get; set; }
+
+        public bool ReanalyzePluginOnClose { get; set; }
 
 
         public bool IsPluginSet => Plugin != null;
@@ -111,15 +118,12 @@ namespace PresetMagician.ViewModels
         [Expose("AudioPreviewPreDelay")]
         public Plugin Plugin { get; protected set; }
 
-        [ViewModelToModel("Plugin")]
-        public ControllerAssignments DefaultControllerAssignments { get; set; }
-        
-        [ViewModelToModel("Plugin")]
-        public NativeInstrumentsResource NativeInstrumentsResource { get; set; }
-        
-        [ViewModelToModel("Plugin")]
-        public FastObservableCollection<BankFile> AdditionalBankFiles { get; set; }
-        
+        [ViewModelToModel("Plugin")] public ControllerAssignments DefaultControllerAssignments { get; set; }
+
+        [ViewModelToModel("Plugin")] public NativeInstrumentsResource NativeInstrumentsResource { get; set; }
+
+        [ViewModelToModel("Plugin")] public FastObservableCollection<BankFile> AdditionalBankFiles { get; set; }
+
         #endregion
 
         #region Commands
@@ -221,17 +225,25 @@ namespace PresetMagician.ViewModels
             }
             catch (Exception e)
             {
-                Debug.WriteLine(e);
+                LogTo.Error($"Error occured while saving plugin settings: {e.Message}");
+                LogTo.Debug(e.StackTrace);
             }
-            
+
             var result = await base.SaveAsync();
-            
+
             NativeInstrumentsResource.ColorState.State = NativeInstrumentsResource.ResourceStates.UserModified;
             NativeInstrumentsResource.CategoriesState.State =
                 NativeInstrumentsResource.ResourceStates.UserModified;
             NativeInstrumentsResource.ShortNamesState.State =
                 NativeInstrumentsResource.ResourceStates.UserModified;
             NativeInstrumentsResource.Save(Plugin);
+
+
+            if (ReanalyzePluginOnClose)
+            {
+                _commandManager.ExecuteCommand(Commands.Plugin.ScanSelectedPlugin);
+            }
+
 
             return result;
         }
@@ -273,6 +285,8 @@ namespace PresetMagician.ViewModels
                     {
                         AddBankFile(filename);
                     }
+
+                    ReanalyzePluginOnClose = true;
                 }
             }
             catch (Exception ex)
@@ -532,6 +546,7 @@ namespace PresetMagician.ViewModels
             var bankName = Path.GetExtension(path) == ".fxp" ? "User Presets" : Path.GetFileNameWithoutExtension(path);
 
             AdditionalBankFiles.Add(new BankFile {Path = path, BankName = bankName});
+            ReanalyzePluginOnClose = true;
         }
 
         public Command<object> RemoveAdditionalBankFiles { get; set; }
@@ -569,7 +584,6 @@ namespace PresetMagician.ViewModels
 
         private async Task OnClearMappingsExecute()
         {
-            
             DefaultControllerAssignments = null;
             GenerateControllerMappingModels();
         }

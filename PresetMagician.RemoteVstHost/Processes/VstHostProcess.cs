@@ -24,7 +24,7 @@ namespace PresetMagician.ProcessIsolation.Processes
         private ProcessOperation _currentOperation;
 
        
-        public VstHostProcess(int maxStartupTimeSeconds = 20) : base(maxStartupTimeSeconds)
+        public VstHostProcess(int maxStartupTimeSeconds = 20, bool debug = false) : base(maxStartupTimeSeconds, debug)
         {
         }
 

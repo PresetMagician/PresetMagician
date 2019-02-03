@@ -17,6 +17,12 @@ namespace PresetMagician
                 viewModelFactory)
         {
         }
+        
+        protected override void OnBeforeShowDialog(IViewModel viewModel, object parameter)
+        {
+            var vm = viewModel as SettingsViewModel;
+            vm.SelectedTabTitle = parameter as string;
+        }
 
         protected override async Task ExecuteAsync(object parameter)
         {

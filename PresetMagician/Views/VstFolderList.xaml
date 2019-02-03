@@ -29,7 +29,7 @@
                     Width="*"
                     Binding="{Binding Path}"
                     CanUserSort="True"
-                    Header="Path"
+                    Header="Directory"
                     IsReadOnly="True" />
             </DataGrid.Columns>
         </DataGrid>
@@ -43,11 +43,10 @@
                 Command="{Binding AddDefaultVstFolders}">
 
                 <StackPanel Orientation="Horizontal">
-
                     <TextBlock
                         Margin="2,4,4,4"
                         VerticalAlignment="Center"
-                        Text="Add Default VST Paths" />
+                        Text="Add Default VST Directories" />
                 </StackPanel>
             </Button>
             <Button
@@ -60,7 +59,7 @@
                     <TextBlock
                         Margin="2,4,4,4"
                         VerticalAlignment="Center"
-                        Text="Add Folder…" />
+                        Text="Add Directory…" />
                 </StackPanel>
             </Button>
             <Button
@@ -86,7 +85,7 @@
                     <TextBlock
                         Margin="2,4,4,4"
                         VerticalAlignment="Center"
-                        Text="Remove Folder" />
+                        Text="Remove Directory" />
                 </StackPanel>
             </Button>
         </DockPanel>

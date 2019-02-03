@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.ExceptionServices;
+using System.Security;
 using System.ServiceModel;
 using System.Timers;
 using System.Windows;
 using System.Windows.Threading;
+using Drachenkatze.PresetMagician.Utils;
 using PresetMagician.ProcessIsolation.Services;
 using SharedModels;
 
@@ -24,8 +27,7 @@ namespace PresetMagician.ProcessIsolation
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            var path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) +
-                       @"\Drachenkatze\PresetMagician.RemoteVstHost\Logs\";
+            var path = VstUtils.GetVstWorkerLogDirectory();
             Directory.CreateDirectory(path);
 
             _logFile = Path.Combine(path, "PresetMagician.RemoteVstHost" +
@@ -85,6 +87,7 @@ namespace PresetMagician.ProcessIsolation
             MiniLog(exception.StackTrace);
         }
 
+        [HandleProcessCorruptedStateExceptions, SecurityCritical]
         private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             var exception = (Exception) e.ExceptionObject;
@@ -94,13 +97,11 @@ namespace PresetMagician.ProcessIsolation
 
         private void OnIdleTimeout(object sender, ElapsedEventArgs e)
         {
-            MiniLog("idle for 120 seconds, shutting down");
             Process.GetCurrentProcess().Kill();
         }
 
         public static void Ping()
         {
-            Console.WriteLine($"[{DateTime.Now:HH:mm:ss:fff}] => {Process.GetCurrentProcess().Id} ping");
             _shutdownTimer.Stop();
             _shutdownTimer.Start();
         }

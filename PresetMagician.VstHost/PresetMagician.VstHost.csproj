@@ -62,7 +62,6 @@
     <Compile Include="PluginWindow.xaml.cs">
       <DependentUpon>PluginWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

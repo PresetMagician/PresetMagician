@@ -1,14 +1,26 @@
 ﻿using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Orc.Squirrel;
 
 
-
+namespace PresetMagician
+{
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
+    public class HelpLinks
+    {
+        public static string COMMANDS_ANALYZE => "COMMANDS_ANALYZE";
+        public static string COMMANDS_COMPRESS => "COMMANDS_COMPRESS";
+        public static string SETTINGS_PLUGIN_DLL => "SETTINGS_PLUGIN_DLL";
+        public static string CONCEPTS_VST_WORKER_POOL => "CONCEPTS_VST_WORKER_POOL";
+    }
+}
 
 
 namespace PresetMagician
 {
+   
     public static class Settings
     {
         #region Links
@@ -44,14 +56,7 @@ namespace PresetMagician
             public static readonly string Homepage = $"{_masterProtocol}{_masterSite}";
         }
 
-        public class Help
-        {
-            public static string COMMANDS_ANALYZE = "COMMANDS_ANALYZE";
-            
-            public static string SETTINGS_PLUGIN_DLL = "SETTINGS_PLUGIN_DLL";
-            
-            public static string CONCEPTS_VST_WORKER_POOL = "CONCEPTS_VST_WORKER_POOL";
-        }
+        
 
         #endregion
 
@@ -139,6 +144,7 @@ namespace PresetMagician
             public const string NksfView = "Tools.NksfView";
             public const string SettingsView = "Tools.SettingsView";
             public const string UpdateLicense = "Tools.UpdateLicense";
+            public const string CompressDatabase = "Tools.CompressDatabase";
         }
 
         public static class Help

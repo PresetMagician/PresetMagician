@@ -8,6 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:orccontrols="http://schemas.wildgums.com/orc/controls"
     xmlns:viewModels="clr-namespace:PresetMagician.ViewModels"
+    xmlns:converters="clr-namespace:PresetMagician.Converters"
     d:DataContext="{d:DesignInstance viewModels:StatusBarViewModel}"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -15,7 +16,7 @@
 
     <UserControl.Resources>
         <catel:BooleanToCollapsingVisibilityConverter x:Key="BooleanToCollapsingVisibilityConverter" />
-
+        <converters:FormatKbSizeConverter x:Key="FormatKbSizeConverter" />
         <Style TargetType="{x:Type StackPanel}">
             <Setter Property="Orientation" Value="Horizontal" />
             <Setter Property="HorizontalAlignment" Value="Right" />
@@ -83,25 +84,35 @@
             </StackPanel>
 
             <StackPanel>
-                <TextBlock
-                    orccontrols:PinnableToolTipService.InitialShowDelay="0"
-                    orccontrols:PinnableToolTipService.Placement="Top"
-                    Text="{Binding LicensedTo}">
-                    <orccontrols:PinnableToolTipService.ToolTip>
-                        <orccontrols:PinnableToolTip AllowCloseByUser="True" ResizeMode="CanResize">
-                            <StackPanel Margin="5">
-                                <TextBox IsReadOnly="True" Text="{Binding LicenseTooltip, Mode=OneWay}" />
-
-                            </StackPanel>
-                        </orccontrols:PinnableToolTip>
-                    </orccontrols:PinnableToolTipService.ToolTip>
-                </TextBlock>
+                <iconPacks:PackIconModern
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Kind="Database" />
+                <orccontrols:LinkLabel
+                    Content="{Binding ApplicationState.DatabaseSize, Mode=OneWay,Converter={StaticResource FormatKbSizeConverter}}"
+                    Command="{catel:CommandManagerBinding Tools.SettingsView}"
+                    Style="{StaticResource StatusBarLinkLabel}"
+                    CommandParameter="Database"
+                    ToolTip="Database Size"
+                    ClickBehavior="Undefined" />
                 <Separator Width="{Binding ElementName=StackPanel, Path=ActualHeight}" Margin="3,0,3,0">
                     <Separator.LayoutTransform>
                         <RotateTransform Angle="90" />
                     </Separator.LayoutTransform>
                 </Separator>
+            </StackPanel>
 
+            <StackPanel>
+                <orccontrols:LinkLabel Content="{Binding ApplicationState.LicensedTo}"
+                                       Command="{catel:CommandManagerBinding Tools.SettingsView}"
+                                       Style="{StaticResource StatusBarLinkLabel}"
+                                       CommandParameter="Licensing"
+                                       ClickBehavior="Undefined" />
+                <Separator Width="{Binding ElementName=StackPanel, Path=ActualHeight}" Margin="3,0,3,0">
+                    <Separator.LayoutTransform>
+                        <RotateTransform Angle="90" />
+                    </Separator.LayoutTransform>
+                </Separator>
             </StackPanel>
 
 

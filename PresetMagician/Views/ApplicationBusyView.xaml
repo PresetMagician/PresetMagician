@@ -1,0 +1,54 @@
+<catel:UserControl
+    x:Class="PresetMagician.Views.ApplicationBusyView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:catel="http://schemas.catelproject.com"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:PresetMagician.ViewModels"
+    Width="600"
+    Height="200"
+    d:DataContext="{d:DesignInstance viewModels:ApplicationBusyViewModel}"
+    mc:Ignorable="d">
+    <StackPanel Width="600" Margin="2">
+        <TextBlock
+            HorizontalAlignment="Center"
+            FontWeight="Bold"
+            Text="{Binding Path=ApplicationState.ApplicationBusyOperationDescription, Mode=OneWay}" />
+        <StackPanel Margin="2">
+            <ProgressBar
+                Width="550"
+                Height="15"
+                Value="{Binding Path=ApplicationState.ApplicationBusyPercent, Mode=OneWay}" />
+            <TextBlock
+                Width="550"
+                Height="30"
+                HorizontalAlignment="Center"
+                Text="{Binding Path=ApplicationState.ApplicationBusyStatusText, Mode=OneWay}"
+                TextAlignment="Left"
+                TextWrapping="Wrap" />
+        </StackPanel>
+        <Grid>
+
+            <Button
+                Margin="2,0,0,0"
+                HorizontalAlignment="Center"
+                Command="{catel:CommandManagerBinding Application.CancelOperation}">
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Content" Value="Cancel Operation" />
+                        <Setter Property="IsEnabled" Value="True" />
+                        <Style.Triggers>
+                            <DataTrigger
+                                Binding="{Binding Path=ApplicationState.ApplicationOperationCancelRequested, Mode=OneWay}"
+                                Value="True">
+                                <Setter Property="IsEnabled" Value="False" />
+                                <Setter Property="Content" Value="Cancelling operation..." />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+        </Grid>
+    </StackPanel>
+</catel:UserControl>

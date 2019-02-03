@@ -18,7 +18,7 @@ using SharedModels;
 namespace PresetMagician
 {
     // ReSharper disable once UnusedMember.Global
-    public class PluginRefreshPluginsCommandContainer : ApplicationNotBusyCommandContainer
+    public class PluginRefreshPluginsCommandContainer : ThreadedApplicationNotBusyCommandContainer
     {
         private readonly IApplicationService _applicationService;
         private readonly IVstService _vstService;
@@ -45,7 +45,8 @@ namespace PresetMagician
             _databaseService = databaseService;
         }
 
-        protected override async Task ExecuteAsync(object parameter)
+
+        protected override async Task ExecuteThreaded(object parameter)
         {
             var vstDirectories = (from vstDirectory in _runtimeConfigurationService.RuntimeConfiguration.VstDirectories
                 where vstDirectory.Active
@@ -81,7 +82,7 @@ namespace PresetMagician
 
                 if (!cancellationToken.IsCancellationRequested)
                 {
-                    _applicationService.StartApplicationOperation(this, "Adding/Mergin plugin DLLs", vstPluginDLLFiles.Count);
+                    _applicationService.StartApplicationOperation(this, "Adding/Merging plugin DLLs", vstPluginDLLFiles.Count);
                     cancellationToken = _applicationService.GetApplicationOperationCancellationSource().Token;
 
                     await TaskHelper.Run(() => { MergeOrCreatePlugins(vstPluginDLLFiles, plugins); }, true, cancellationToken);

@@ -83,45 +83,6 @@ namespace PresetMagician.ViewModels
             }
         }
 
-        public string LicenseTooltip
-        {
-            get
-            {
-                List<string> licenseTooltipItems = new List<string>();
-
-                if (_licenseService.GetCurrentLicense() != null)
-                {
-                    licenseTooltipItems.Add($"Licensed to: {_licenseService.GetCurrentLicense().Customer.Name}");
-
-                    if (_licenseService.GetCurrentLicense().Type == LicenseType.Trial)
-                    {
-                        licenseTooltipItems.Add(
-                            $"License Type: Trial (Expires {_licenseService.GetCurrentLicense().Expiration.ToShortDateString()})");
-
-                        if (_licenseService.getPresetExportLimit() > 0)
-                        {
-                            licenseTooltipItems.Add(
-                                $"Maximum preset exports: {_licenseService.getPresetExportLimit().ToString()}");
-                        }
-                    }
-                    else
-                    {
-                        licenseTooltipItems.Add(
-                            $"License Type: Full");
-                    }
-
-                    licenseTooltipItems.Add(
-                        $"System Code: {LicenseService.SystemCodeInfo.getSystemInfo()}");
-
-                    return String.Join(Environment.NewLine, licenseTooltipItems);
-                }
-                else
-                {
-                    return "Not licensed";
-                }
-            }
-        }
-
         #endregion Properties
 
         #region Methods

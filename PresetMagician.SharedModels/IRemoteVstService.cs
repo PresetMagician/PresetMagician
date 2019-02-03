@@ -12,7 +12,7 @@ namespace SharedModels
         Guid RegisterPlugin(string dllPath, bool backgroundProcessing = true);
 
         [OperationContract]
-        void LoadPlugin(Guid pluginGuid);
+        void LoadPlugin(Guid pluginGuid, bool debug = false);
 
         [OperationContract]
         bool OpenEditorHidden(Guid pluginGuid);

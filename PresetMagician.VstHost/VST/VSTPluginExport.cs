@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using Catel.Collections;
 using Drachenkatze.PresetMagician.NKSF.NKSF;
+using Drachenkatze.PresetMagician.Utils;
 using Drachenkatze.PresetMagician.VSTHost.Properties;
 using Jacobi.Vst.Core;
 using Jacobi.Vst.Interop.Host;
@@ -80,9 +81,7 @@ namespace PresetMagician.VstHost.VST
             string userContentDirectory;
             if (!Directory.Exists(UserContentDirectory))
             {
-                userContentDirectory = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                    @"Native Instruments\User Content");
+                userContentDirectory = VstUtils.GetDefaultNativeInstrumentsUserContentDirectory();
             }
             else
             {
