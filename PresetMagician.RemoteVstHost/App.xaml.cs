@@ -8,10 +8,10 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Threading;
 using Drachenkatze.PresetMagician.Utils;
-using PresetMagician.ProcessIsolation.Services;
+using PresetMagician.RemoteVstHost.Services;
 using SharedModels;
 
-namespace PresetMagician.ProcessIsolation
+namespace PresetMagician.RemoteVstHost
 {
     /// <summary>
     /// Interaction logic for App.xaml

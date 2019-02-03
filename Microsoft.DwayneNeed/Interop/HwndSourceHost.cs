@@ -164,7 +164,7 @@ namespace Microsoft.DwayneNeed.Interop
             }
         }
 
-        protected override void OnRender(System.Windows.Media.DrawingContext drawingContext)
+        protected override void OnRender(DrawingContext drawingContext)
         {
             // Draw something so that rendering does something.  This
             // is part of the fix for rendering artifacts, see WndProc

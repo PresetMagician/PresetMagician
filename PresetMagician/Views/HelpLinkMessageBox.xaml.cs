@@ -5,14 +5,13 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
+using Catel.Services;
+using Catel.Windows;
 using Orchestra;
+using PresetMagician.ViewModels;
 
 namespace PresetMagician.Views
 {
-    using Catel.Services;
-    using Catel.Windows;
-    using ViewModels;
-
     public partial class HelpLinkMessageBox
     {
         #region Constructors

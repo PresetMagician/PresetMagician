@@ -1,5 +1,4 @@
 ﻿using Catel;
-using Catel.Logging;
 using Catel.MVVM;
 using PresetMagician.Services.Interfaces;
 

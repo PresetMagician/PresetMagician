@@ -5,11 +5,10 @@ using Catel.Logging;
 using Catel.Threading;
 using Jacobi.Vst.Core;
 using PresetMagician.Models;
-using PresetMagician.ProcessIsolation.Processes;
-using PresetMagician.ProcessIsolation.Services;
+using PresetMagician.RemoteVstHost.Processes;
 using SharedModels;
 
-namespace PresetMagician.ProcessIsolation
+namespace PresetMagician.RemoteVstHost
 {
     public class RemotePluginInstance : IRemotePluginInstance
     {

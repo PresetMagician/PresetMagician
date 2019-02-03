@@ -1,7 +1,7 @@
 using System;
 using Catel.Data;
 
-namespace PresetMagician.ProcessIsolation.Processes
+namespace PresetMagician.RemoteVstHost.Processes
 {
     public class ProcessOperation: ObservableObject
     {

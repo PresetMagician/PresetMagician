@@ -9,7 +9,7 @@ using MethodTimer;
 using SharedModels;
 using Type = System.Type;
 
-namespace PresetMagician.ProcessIsolation.Processes
+namespace PresetMagician.RemoteVstHost.Processes
 {
     public class VstHostProcess : HostProcess
     {

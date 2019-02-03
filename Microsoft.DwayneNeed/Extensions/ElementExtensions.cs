@@ -24,7 +24,7 @@ namespace Microsoft.DwayneNeed.Extensions
                 HwndTarget hwndTarget = (HwndTarget) hwndSource.CompositionTarget;
 
                 isSoftwareRendering = hwndTarget.RenderMode == RenderMode.SoftwareOnly ||
-                                      (System.Windows.Media.RenderCapability.Tier >> 16) == 0;
+                                      (RenderCapability.Tier >> 16) == 0;
             }
 
             return isSoftwareRendering;

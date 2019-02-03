@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -8,8 +7,6 @@ using Catel;
 using Catel.Collections;
 using Catel.MVVM;
 using Catel.Services;
-using PresetMagician.Models;
-using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
 using SharedModels;
 

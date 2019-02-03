@@ -1,11 +1,8 @@
 using System;
-using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
-using System.ServiceModel;
 using Castle.DynamicProxy;
 
-namespace PresetMagician.ProcessIsolation.Processes
+namespace PresetMagician.RemoteVstHost.Processes
 {
    public class ProcessPoolInterceptor : IInterceptor
     {

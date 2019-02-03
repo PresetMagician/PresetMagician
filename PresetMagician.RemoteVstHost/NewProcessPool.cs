@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using Castle.DynamicProxy;
@@ -11,11 +9,11 @@ using Catel;
 using Catel.Collections;
 using Catel.Data;
 using Catel.Threading;
-using PresetMagician.ProcessIsolation.Processes;
+using PresetMagician.RemoteVstHost.Processes;
 using SharedModels;
 using Timer = System.Threading.Timer;
 
-namespace PresetMagician.ProcessIsolation
+namespace PresetMagician.RemoteVstHost
 {
     public class VstWorkerNotFoundException : Exception
     {

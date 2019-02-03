@@ -10,7 +10,7 @@ namespace Microsoft.DwayneNeed.Shapes
         {
             // The height of the cone is specified by MaxV, so make the default
             // MaxV property be 1.
-            ParametricShape3D.MaxVProperty.OverrideMetadata(typeof(Cone), new PropertyMetadata(1.0));
+            MaxVProperty.OverrideMetadata(typeof(Cone), new PropertyMetadata(1.0));
         }
 
         public static DependencyProperty RadiusProperty =
@@ -26,7 +26,7 @@ namespace Microsoft.DwayneNeed.Shapes
             set { SetValue(RadiusProperty, value); }
         }
 
-        protected override System.Windows.Media.Media3D.Point3D Project(MemoizeMath u, MemoizeMath v)
+        protected override Point3D Project(MemoizeMath u, MemoizeMath v)
         {
             double radius = Radius;
             double height = MaxV - MinV;

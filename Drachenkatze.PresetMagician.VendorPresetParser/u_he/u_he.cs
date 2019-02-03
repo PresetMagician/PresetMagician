@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Catel.Collections;
 using Catel.Logging;
 using Drachenkatze.PresetMagician.Utils;
-using MethodTimer;
 using SharedModels;
 using Squirrel.Shell;
 using Type = SharedModels.Type;

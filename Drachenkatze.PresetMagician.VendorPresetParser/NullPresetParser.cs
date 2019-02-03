@@ -11,7 +11,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         {
         }
 
+#pragma warning disable 1998
         public override async Task DoScan()
+#pragma warning restore 1998
         {
         }
 

@@ -11,11 +11,11 @@ namespace Microsoft.DwayneNeed.Shapes
         {
             // So texture coordinates work out better, configure the default
             // MinV property to be PI.
-            ParametricShape3D.MinVProperty.OverrideMetadata(typeof(Figure8Torus), new PropertyMetadata(Math.PI));
+            MinVProperty.OverrideMetadata(typeof(Figure8Torus), new PropertyMetadata(Math.PI));
 
             // So texture coordinates work out better, configure the default
             // MaxV property to be 3*PI.
-            ParametricShape3D.MaxVProperty.OverrideMetadata(typeof(Figure8Torus), new PropertyMetadata(Math.PI * 3.0));
+            MaxVProperty.OverrideMetadata(typeof(Figure8Torus), new PropertyMetadata(Math.PI * 3.0));
         }
 
 

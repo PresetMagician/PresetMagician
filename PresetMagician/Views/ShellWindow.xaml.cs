@@ -7,6 +7,7 @@
 
 using Catel.IoC;
 using Catel.Windows;
+using Fluent;
 using Orchestra;
 using Orchestra.Services;
 using Orchestra.Views;
@@ -45,10 +46,10 @@ namespace PresetMagician.Views
             {
                 ribbonContentControl.SetCurrentValue(ContentProperty, ribbonContent);
 
-                var ribbon = ribbonContent.FindVisualDescendantByType<Fluent.Ribbon>();
+                var ribbon = ribbonContent.FindVisualDescendantByType<Ribbon>();
                 if (ribbon != null)
                 {
-                    serviceLocator.RegisterInstance<Fluent.Ribbon>(ribbon);
+                    serviceLocator.RegisterInstance<Ribbon>(ribbon);
                 }
             }
 

@@ -1,13 +1,11 @@
 using System;
-using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 using System.ServiceModel;
 using Anotar.Catel;
 using Castle.DynamicProxy;
 using Catel.Logging;
 
-namespace PresetMagician.ProcessIsolation.Processes
+namespace PresetMagician.RemoteVstHost.Processes
 {
    public class ClientProxyInterceptor : IInterceptor
     {

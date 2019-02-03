@@ -4,21 +4,21 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Threading;
 using Catel.IoC;
 using Catel.IO;
 using Catel.Logging;
 using Catel.Services;
+using NBug;
 using NBug.Events;
 using Orchestra.Services;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.Views;
 using Win32Mapi;
-using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
 using Path = System.IO.Path;
 
@@ -37,9 +37,9 @@ namespace PresetMagician
         private void SetupExceptionHandling()
         {
 #if !DEBUG
-            AppDomain.CurrentDomain.UnhandledException += NBug.Handler.UnhandledException;
-            Current.DispatcherUnhandledException += NBug.Handler.DispatcherUnhandledException;
-            TaskScheduler.UnobservedTaskException += NBug.Handler.UnobservedTaskException;
+            AppDomain.CurrentDomain.UnhandledException += Handler.UnhandledException;
+            Current.DispatcherUnhandledException += Handler.DispatcherUnhandledException;
+            TaskScheduler.UnobservedTaskException += Handler.UnobservedTaskException;
 
             NBug.Settings.CustomSubmissionEvent += Settings_CustomSubmissionEvent;
 #endif
@@ -117,7 +117,7 @@ namespace PresetMagician
             fileStream.Read(result, 0, readlength);
             fileStream.Seek(0, SeekOrigin.Begin);
 
-            var firstLogEntries = System.Text.Encoding.UTF8.GetString(result);
+            var firstLogEntries = Encoding.UTF8.GetString(result);
 
 
             if (firstLogEntries.Length >= readlength)

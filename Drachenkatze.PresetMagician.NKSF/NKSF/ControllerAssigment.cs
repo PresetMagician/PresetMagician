@@ -1,5 +1,4 @@
 ﻿using System;
-using Catel.Data;
 using MessagePack;
 
 namespace Drachenkatze.PresetMagician.NKSF.NKSF

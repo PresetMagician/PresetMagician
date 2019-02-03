@@ -1,4 +1,4 @@
-namespace PresetMagician.ProcessIsolation
+namespace PresetMagician.RemoteVstHost
 {
     public class Constants
     {

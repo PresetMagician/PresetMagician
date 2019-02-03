@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Catel;
 using Catel.MVVM;
-using Catel.Services;
 using PresetMagician.Services.Interfaces;
 
 // ReSharper disable once CheckNamespace

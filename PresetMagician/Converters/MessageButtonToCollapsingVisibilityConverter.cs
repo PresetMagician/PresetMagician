@@ -5,13 +5,13 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
+using System;
+using System.Windows;
+using Catel.MVVM.Converters;
+using Catel.Services;
+
 namespace PresetMagician.Converters
 {
-    using System;
-    using System.Windows;
-    using Catel.MVVM.Converters;
-    using Catel.Services;
-
     internal class MessageButtonToCollapsingVisibilityConverter : VisibilityConverterBase
     {
         public MessageButtonToCollapsingVisibilityConverter()

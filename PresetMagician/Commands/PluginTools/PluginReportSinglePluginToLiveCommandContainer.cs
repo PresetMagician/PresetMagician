@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Catel.MVVM;
-using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
 using SharedModels;
 

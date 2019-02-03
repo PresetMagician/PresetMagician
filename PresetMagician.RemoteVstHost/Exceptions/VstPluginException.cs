@@ -1,7 +1,7 @@
 using System;
 using PresetMagician.VstHost.VST;
 
-namespace PresetMagician.ProcessIsolation.Exceptions
+namespace PresetMagician.RemoteVstHost.Exceptions
 {
     public class VstPluginException : Exception
     {

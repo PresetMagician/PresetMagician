@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
 using System.Timers;
-using Anotar.Catel;
 using Catel;
 using Catel.Data;
 using Catel.Logging;
@@ -10,7 +9,7 @@ using MethodTimer;
 using SharedModels;
 using Timer = System.Timers.Timer;
 
-namespace PresetMagician.ProcessIsolation.Processes
+namespace PresetMagician.RemoteVstHost.Processes
 {
     public class HostProcess : ObservableObject
     {
