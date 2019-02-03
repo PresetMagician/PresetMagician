@@ -45,20 +45,27 @@ namespace PresetMagician.ProcessIsolation.Processes
             {
                 _vstHostProcess.Logger.Debug(invocation.Method.Name);   
             }
+
             try
             {
                 invocation.ReturnValue = invocation.Method.Invoke(CachedProxy, invocation.Arguments);
+                _vstHostProcess.ResetPingTimer();
             }
             catch (TargetInvocationException ex)
             {
                 Exception innerException = ex.InnerException;
 
+                if (innerException is CommunicationException)
+                {
+                    _vstHostProcess.ForceStop($"Communication Exception {innerException.Message}");
+                }
+                else
+                {
+                    LogTo.Debug($"Got exception: {innerException.GetType().FullName}");    
+                }
+                
+                
                 throw innerException;
-            }
-            catch (CommunicationException cex)
-            {
-                _vstHostProcess.ForceStop($"Communication Exception {cex.Message}");
-                LogTo.Debug(cex.StackTrace);
             }
             finally
             {

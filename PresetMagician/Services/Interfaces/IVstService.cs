@@ -20,7 +20,7 @@ namespace PresetMagician.Services.Interfaces
         event EventHandler SelectedExportPresetChanged;
         Task SavePlugins();
         byte[] GetPresetData(Preset preset);
-        IRemotePluginInstance GetRemotePluginInstance(Plugin plugin);
+        IRemotePluginInstance GetRemotePluginInstance(Plugin plugin, bool backgroundProcessing = true);
         Task<IRemotePluginInstance> GetInteractivePluginInstance(Plugin plugin);
         IRemoteVstService GetVstService();
         List<PluginLocation> GetPluginLocations(Plugin plugin);

@@ -31,28 +31,21 @@ namespace PresetMagician.Services
         {
             Argument.IsNotNull(() => runtimeConfigurationService);
 
-            SystemInfo = new SystemCodeInfo();
-            
             _runtimeConfigurationService = runtimeConfigurationService;
-            _runtimeConfigurationService.ApplicationState.SystemCode = SystemInfo.SystemCode;
-            
-            
+            _runtimeConfigurationService.ApplicationState.SystemCode = SystemCodeInfo.getSystemInfo();
         }
 
         public License CurrentLicense { get; private set; }
         public License ValidatingLicense { get; private set; }
         
-        public SystemCodeInfo SystemInfo { get; }
-
-        public event EventHandler LicenseChanged;
-        public bool ValidLicense { get; private set; }
+        
 
         public License GetCurrentLicense()
         {
             return CurrentLicense;
         }
 
-        public int getPresetExportLimit()
+        public int GetPresetExportLimit()
         {
             if (CurrentLicense.Type == LicenseType.Standard)
             {
@@ -116,9 +109,9 @@ namespace PresetMagician.Services
 
             File.Copy(filePath, _defaultLocalLicenseFilePath);
             CurrentLicense = ValidatingLicense;
-            ValidLicense = true;
+            _runtimeConfigurationService.ApplicationState.ValidLicense = true;
             _runtimeConfigurationService.ApplicationState.ActiveLicense = CurrentLicense;
-            _runtimeConfigurationService.ApplicationState.PresetExportLimit = getPresetExportLimit();
+            _runtimeConfigurationService.ApplicationState.PresetExportLimit = GetPresetExportLimit();
 
             return updateLicense;
         }
@@ -132,9 +125,9 @@ namespace PresetMagician.Services
                 if (!validationFailures.Any())
                 {
                     CurrentLicense = ValidatingLicense;
-                    ValidLicense = true;
+                    _runtimeConfigurationService.ApplicationState.ValidLicense = true;
                     _runtimeConfigurationService.ApplicationState.ActiveLicense = CurrentLicense;
-                    _runtimeConfigurationService.ApplicationState.PresetExportLimit = getPresetExportLimit();
+                    _runtimeConfigurationService.ApplicationState.PresetExportLimit = GetPresetExportLimit();
 
                     return true;
                 }
@@ -150,9 +143,9 @@ namespace PresetMagician.Services
         {
             public string MachineName => Environment.MachineName;
 
-            public String SystemCode => getSystemHash();
+            public string SystemCode => getSystemHash();
 
-            public String getSystemHash()
+            public string getSystemHash()
             {
                 ManagementObject os = new ManagementObject("Win32_OperatingSystem=@");
                 string serial = (string) os["SerialNumber"];
@@ -160,7 +153,7 @@ namespace PresetMagician.Services
                 return HashUtils.getFormattedSHA256Hash(serial);
             }
 
-            public static String getSystemInfo()
+            public static string getSystemInfo()
             {
                 SystemCodeInfo systemInfo = new SystemCodeInfo();
 

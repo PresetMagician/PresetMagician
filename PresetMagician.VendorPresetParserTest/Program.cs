@@ -205,6 +205,11 @@ namespace PresetMagician.VendorPresetParserTest
              
          }
 
+         public DateTime GetLastModifiedDate(string file)
+         {
+             return DateTime.Now;
+         }
+
          public bool Exists(string file)
          {
              return true;

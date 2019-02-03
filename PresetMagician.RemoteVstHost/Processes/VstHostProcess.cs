@@ -20,6 +20,8 @@ namespace PresetMagician.ProcessIsolation.Processes
         private bool _vstServiceAvailable;
         private Plugin _lockedToPlugin;
         private readonly object _operationLock = new object();
+        private const int shutdownAfterNumUnloads = 8;
+        private int currentUnloadCount;
         public ProcessOperation CurrentOperation { get; private set; }
         private ProcessOperation _currentOperation;
 
@@ -73,6 +75,12 @@ namespace PresetMagician.ProcessIsolation.Processes
 
                 _isLocked = false;
                 IsBusy = false;
+            }
+            
+            currentUnloadCount++;
+            if (currentUnloadCount > shutdownAfterNumUnloads)
+            {
+                ForceStop($"Regular Shutdown after {shutdownAfterNumUnloads} unloaded plugins");
             }
         }
 

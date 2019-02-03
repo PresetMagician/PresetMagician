@@ -70,11 +70,11 @@ namespace PresetMagician
                 {
                     var hs = new HashSet<Preset>();
 
-                    if (_licenseService.getPresetExportLimit() > 0)
+                    if (_licenseService.GetPresetExportLimit() > 0)
                     {
-                        hs.AddRange(plugin.Presets.Take(_licenseService.getPresetExportLimit()));
+                        hs.AddRange(plugin.Presets.Take(_licenseService.GetPresetExportLimit()));
 
-                        if (plugin.Presets.Count > _licenseService.getPresetExportLimit())
+                        if (plugin.Presets.Count > _licenseService.GetPresetExportLimit())
                         {
                             listExceeded = true;
                         }
@@ -97,7 +97,7 @@ namespace PresetMagician
             if (listExceeded)
             {
                 MessageBox.Show(
-                    $"The trial version is limited to {_licenseService.getPresetExportLimit()} presets per plugin.");
+                    $"The trial version is limited to {_licenseService.GetPresetExportLimit()} presets per plugin.");
             }
 
             var skippedPresets = totalPresets - addedPresets;

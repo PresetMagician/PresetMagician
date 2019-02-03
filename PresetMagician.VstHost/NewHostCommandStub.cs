@@ -29,7 +29,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
         {
             if (_debug)
             {
-                Console.WriteLine(message);
+                Console.WriteLine($"{PluginDll} called: {message}");
             }
         }
 
@@ -68,7 +68,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public int GetBlockSize()
         {
-            Debug($"GetBlockSize");
+            Debug($"GetBlockSize => {VstHost.BlockSize}");
             return VstHost.BlockSize;
         }
 
@@ -98,7 +98,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public VstProcessLevels GetProcessLevel()
         {
-            Debug($"GetProcessLevel {_currentProcessLevel}");
+            Debug($"GetProcessLevel => {_currentProcessLevel}");
             return _currentProcessLevel;
         }
 
@@ -120,7 +120,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public float GetSampleRate()
         {
-            Debug($"GetSampleRate");
+            Debug($"GetSampleRate => 44100f");
             return 44100f;
         }
 
@@ -209,7 +209,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public int GetVersion()
         {
-            Debug($"GetVersion");
+            Debug($"GetVersion => 2400");
             return 2400;
         }
 

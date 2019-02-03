@@ -46,7 +46,6 @@ namespace SharedModels
         bool OpenEditor();
         bool IsLoaded { get; }
         bool IsEditorOpen { get; }
-        string GetPluginHash();
 
     }
 }

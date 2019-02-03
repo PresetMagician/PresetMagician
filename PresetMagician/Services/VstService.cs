@@ -48,9 +48,9 @@ namespace PresetMagician.Services
             return _databaseService.Context.GetPresetData(preset);
         }
 
-        public IRemotePluginInstance GetRemotePluginInstance(Plugin plugin)
+        public IRemotePluginInstance GetRemotePluginInstance(Plugin plugin, bool backgroundProcessing = true)
         {
-            return _applicationService.NewProcessPool.GetRemotePluginInstance(plugin);
+            return _applicationService.NewProcessPool.GetRemotePluginInstance(plugin, backgroundProcessing);
         }
 
         public List<PluginLocation> GetPluginLocations(Plugin plugin)

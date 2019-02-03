@@ -5,4 +5,6 @@ Fody
 Newtonsoft.Json
 MethodTimer.Fody copy_local: false
 PropertyChanged.Fody copy_local: false
+ModuleInit.Fody copy_local: false
+LoadAssembliesOnStartup.Fody copy_local: false
 Castle.Core

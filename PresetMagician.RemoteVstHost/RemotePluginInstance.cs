@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Catel.Logging;
 using Catel.Threading;
 using Jacobi.Vst.Core;
 using PresetMagician.Models;
@@ -19,6 +20,7 @@ namespace PresetMagician.ProcessIsolation
         private readonly IRemoteVstService _remoteVstService;
         private readonly VstHostProcess _vstHostProcess;
         private readonly bool _debug;
+        
 
         public RemotePluginInstance(VstHostProcess vstHostProcess, Plugin plugin, bool backgroundProcessing = true, bool debug=false)
         {
@@ -26,6 +28,7 @@ namespace PresetMagician.ProcessIsolation
             _debug = debug;
             _vstHostProcess = vstHostProcess;
             _vstHostProcess.Lock(plugin);
+            Plugin.Logger.Debug($"Locking to PID {vstHostProcess.Pid}");
             _remoteVstService = vstHostProcess.GetVstService();
             RegisterPlugin(backgroundProcessing);
         }
@@ -52,7 +55,8 @@ namespace PresetMagician.ProcessIsolation
                     Plugin.PluginInfo = _remoteVstService.GetPluginInfo(_guid);
                     Plugin.VstPluginId = Plugin.PluginInfo.PluginID;
                     Plugin.PluginLocation.VstPluginId = Plugin.VstPluginId;
-                    Plugin.PluginLocation.DllHash = _remoteVstService.GetPluginHash(_guid);
+                    Plugin.PluginLocation.DllHash = _remoteVstService.GetHash(Plugin.DllPath);
+                    Plugin.PluginLocation.LastModifiedDateTime = _remoteVstService.GetLastModifiedDate(Plugin.DllPath);
                     Plugin.PluginLocation.PluginName = _remoteVstService.GetPluginName(_guid);
                     Plugin.PluginLocation.PluginVendor = Plugin.PluginVendor;
                     Plugin.PluginLocation.PluginProduct = _remoteVstService.GetPluginProductString(_guid);
@@ -75,10 +79,7 @@ namespace PresetMagician.ProcessIsolation
             }, true);
         }
 
-        public string GetPluginHash()
-        {
-            return _remoteVstService.GetPluginHash(_guid);
-        }
+      
 
         public bool OpenEditorHidden()
         {
@@ -170,8 +171,8 @@ namespace PresetMagician.ProcessIsolation
 
         public void Dispose()
         {
+            Plugin.Logger.Debug($"Unlocking from PID {_vstHostProcess.Pid}");
             _vstHostProcess.Unlock();
-            _vstHostProcess.ForceStop("Regular Shutdown");
         }
     }
 }

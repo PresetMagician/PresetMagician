@@ -67,18 +67,18 @@ namespace PresetMagician.Services
         {
             // Non-async first
             RegisterTypes();
-            
+
             ServiceLocator.Default.ResolveType<IApplicationService>().StartProcessPool();
-            
+
             _splashScreenService.Action = "Initializing database…";
             InitDatabase();
-            
+
             _splashScreenService.Action = "Loading configuration…";
             LoadConfiguration();
 
             _splashScreenService.Action = "Loading database…";
             InitializeCommands();
-            
+
             _splashScreenService.Action = "Almost there…";
         }
 
@@ -90,40 +90,33 @@ namespace PresetMagician.Services
         [Time]
         public override async Task InitializeAfterShowingShellAsync()
         {
-            TaskHelper.Run(() =>
+            var serviceLocator = ServiceLocator.Default;
+            var licenseService = serviceLocator.ResolveType<ILicenseService>();
+            if (!licenseService.CheckLicense())
             {
-                var serviceLocator = ServiceLocator.Default;
-                var licenseService = serviceLocator.ResolveType<ILicenseService>();
-                if (!licenseService.CheckLicense())
-                {
-                    StartRegistration();
-                }
-            });
-            
+                StartRegistration();
+            }
+
+
             base.InitializeAfterShowingShellAsync();
 
             var schedulerService = _serviceLocator.ResolveType<ISchedulingService>();
-            
+
             var updateCheckTask = new ScheduledTask
             {
                 Name = "Update Check task",
                 Start = DateTime.Now.AddMinutes(1),
                 Action = CheckForUpdatesAsync
             };
-            
+
             schedulerService.AddScheduledTask(updateCheckTask);
-            
-            TaskHelper.Run(() =>
-            {
-                _commandManager.ExecuteCommand(Commands.Plugin.RefreshPlugins);
-            });
+
+            TaskHelper.Run(() => { _commandManager.ExecuteCommand(Commands.Plugin.RefreshPlugins); });
         }
 
         private async void StartRegistration()
         {
-            var viewModel = _viewModelFactory.CreateViewModel(typeof(RegistrationViewModel), null);
-
-            _uiVisualizerService.ShowDialogAsync(viewModel);
+            await _uiVisualizerService.ShowDialogAsync<RegistrationViewModel>();
         }
 
         [Time]
@@ -164,8 +157,10 @@ namespace PresetMagician.Services
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "RefreshPlugins");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "AllToPresetExportList");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "SelectedToPresetExportList");
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), nameof(Commands.Plugin.NotExportedAllToPresetExportList));
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), nameof(Commands.Plugin.NotExportedSelectedToPresetExportList));
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin),
+                nameof(Commands.Plugin.NotExportedAllToPresetExportList));
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin),
+                nameof(Commands.Plugin.NotExportedSelectedToPresetExportList));
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "ReportUnsupportedPlugins");
 
             _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "EnablePlugins");

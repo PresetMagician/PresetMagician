@@ -1,35 +1,39 @@
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Catel;
 using Catel.MVVM;
 using Catel.Services;
+using PresetMagician.Models;
 using PresetMagician.Services;
+using PresetMagician.Services.Interfaces;
 
 namespace PresetMagician.ViewModels
 {
     public class RegistrationViewModel : ViewModelBase
     {
         private readonly INavigationService _navigationService;
-        private readonly ILicenseService _licenseService;
         private readonly ICommandManager _commandManager;
+        private readonly IRuntimeConfigurationService _runtimeConfigurationService;
 
         public string SystemCode { get; }
 
-        public event EventHandler LicenseUpdated;
-        public bool ValidLicense => _licenseService.ValidLicense;
+        public bool ValidLicense => _runtimeConfigurationService.ApplicationState.ValidLicense;
 
-        public RegistrationViewModel(INavigationService navigationService, ILicenseService licenseService,
+        public RegistrationViewModel(INavigationService navigationService,
+            IRuntimeConfigurationService runtimeConfigurationService,
             ICommandManager commandManager)
         {
             Argument.IsNotNull(() => navigationService);
-            Argument.IsNotNull(() => licenseService);
+            Argument.IsNotNull(() => runtimeConfigurationService);
             Argument.IsNotNull(() => commandManager);
 
             _navigationService = navigationService;
-            _licenseService = licenseService;
             _commandManager = commandManager;
-            _licenseService.LicenseChanged += OnLicenseUpdated;
+            _runtimeConfigurationService = runtimeConfigurationService;
+            
+            _runtimeConfigurationService.ApplicationState.PropertyChanged += ApplicationStateOnPropertyChanged;
 
             CloseApplication = new TaskCommand(OnCloseApplicationExecuteAsync);
             GetLicense = new TaskCommand(OnGetLicenseExecuteAsync);
@@ -37,12 +41,18 @@ namespace PresetMagician.ViewModels
             SystemCode = LicenseService.SystemCodeInfo.getSystemInfo();
         }
 
-        private void OnLicenseUpdated(object o, EventArgs e)
+        private void ApplicationStateOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            LicenseUpdated.SafeInvoke(this);
+            if (e.PropertyName == nameof(ApplicationState.ValidLicense))
+            {
+                if (_runtimeConfigurationService.ApplicationState.ValidLicense)
+                {
+                    this.CancelAndCloseViewModelAsync().Wait();
+                }
+            }
         }
 
-        public TaskCommand CloseApplication { get; private set; }
+        public TaskCommand CloseApplication { get; }
 
         private async Task OnCloseApplicationExecuteAsync()
         {
@@ -56,7 +66,7 @@ namespace PresetMagician.ViewModels
             Process.Start(Settings.Links.GetTrialLicense);
         }
 
-        public TaskCommand SelectLicenseFile { get; private set; }
+        public TaskCommand SelectLicenseFile { get; }
 
         private async Task OnSelectLicenseFileExecuteAsync()
         {
