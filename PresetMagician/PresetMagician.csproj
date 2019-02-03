@@ -181,7 +181,6 @@
     <Compile Include="Services\Interfaces\IVstService.cs" />
     <Compile Include="Services\SplashScreenService.cs" />
     <Compile Include="Services\VstService.cs" />
-    <Compile Include="ViewModels\ApplicationBusyViewModel.cs" />
     <Compile Include="ViewModels\HelpLinkMessageBoxViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\NKSFViewModel.cs" />
@@ -203,9 +202,6 @@
     <Compile Include="ViewModels\VstPluginsViewModel.cs" />
     <Compile Include="ViewModels\VstPluginViewModel.cs" />
     <Compile Include="ViewModels\VstWorkerPoolViewModel.cs" />
-    <Compile Include="Views\ApplicationBusyView.xaml.cs">
-      <DependentUpon>ApplicationBusyView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\HelpLinkMessageBox.xaml.cs">
       <DependentUpon>HelpLinkMessageBox.xaml</DependentUpon>
     </Compile>
@@ -323,7 +319,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ApplicationBusyView.xaml" />
     <Page Include="Views\HelpLinkMessageBox.xaml" />
     <Page Include="Views\MainView.xaml">
       <SubType>Designer</SubType>
