@@ -32,7 +32,7 @@ namespace SharedModels
         IDataPersistence DataPersistence { get; set; }
 
         List<int> GetSupportedPlugins();
-        void ScanBanks();
+      
         Task DoScan();
         void OnAfterPresetExport();
     }

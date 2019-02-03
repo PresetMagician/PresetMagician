@@ -59,11 +59,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             //throw new NotImplementedException();
         }
 
-        public void ScanBanks()
-        {
-            //throw new NotImplementedException();
-        }
-
         public virtual bool CanHandle()
         {
             return SupportedPlugins.Contains(PluginInstance.Plugin.VstPluginId);
