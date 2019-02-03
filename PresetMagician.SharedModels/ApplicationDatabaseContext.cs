@@ -5,7 +5,6 @@ using System.Data.SQLite;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,12 +12,11 @@ using CannedBytes.Midi.Message;
 using Catel;
 using Drachenkatze.PresetMagician.Utils;
 using InteractivePreGeneratedViews;
-using MethodTimer;
+using Orc.EntityFramework;
 using PresetMagician.Migrations;
 using PresetMagician.Models.EventArgs;
-using SQLite.CodeFirst;
-using Orc.EntityFramework;
 using PresetMagician.SharedModels;
+using SQLite.CodeFirst;
 
 namespace SharedModels
 {

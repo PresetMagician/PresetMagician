@@ -316,7 +316,7 @@ namespace Microsoft.DwayneNeed.Interop
             return hwndChild;
         }
 
-        protected override void OnRender(System.Windows.Media.DrawingContext drawingContext)
+        protected override void OnRender(DrawingContext drawingContext)
         {
             if (_bitmap != null)
             {

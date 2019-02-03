@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 using Catel.MVVM;
-using PresetMagician.ProcessIsolation;
+using PresetMagician.RemoteVstHost;
 
 namespace PresetMagician.Services.Interfaces
 {

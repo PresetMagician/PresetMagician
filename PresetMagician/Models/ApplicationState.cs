@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading;
 using Catel.Data;
 using Portable.Licensing;
+using PresetMagician.Views;
 
 namespace PresetMagician.Models
 {
@@ -16,12 +17,12 @@ namespace PresetMagician.Models
             get { return _currentDocument; }
             set
             {
-                if (value == typeof(PresetMagician.Views.PresetExportListView))
+                if (value == typeof(PresetExportListView))
                 {
                     SelectedRibbonTabIndex = 1;
                 }
 
-                if (value == typeof(PresetMagician.Views.VstPluginsView))
+                if (value == typeof(VstPluginsView))
                 {
                     SelectedRibbonTabIndex = 0;
                 }

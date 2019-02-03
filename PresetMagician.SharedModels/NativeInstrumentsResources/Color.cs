@@ -1,5 +1,4 @@
 using System;
-using System.Windows.Media;
 using Catel.Data;
 using Catel.Runtime.Serialization;
 using Newtonsoft.Json;

@@ -10,10 +10,10 @@ namespace Microsoft.DwayneNeed.Shapes
         static MobiusStrip()
         {
             // MinV should be -1.
-            ParametricShape3D.MinVProperty.OverrideMetadata(typeof(MobiusStrip), new PropertyMetadata(-1.0));
+            MinVProperty.OverrideMetadata(typeof(MobiusStrip), new PropertyMetadata(-1.0));
 
             // MaxV should be 1.
-            ParametricShape3D.MaxVProperty.OverrideMetadata(typeof(MobiusStrip), new PropertyMetadata(1.0));
+            MaxVProperty.OverrideMetadata(typeof(MobiusStrip), new PropertyMetadata(1.0));
         }
 
         public static DependencyProperty AProperty =

@@ -5,12 +5,10 @@ using System.Data.Entity;
 using System.Threading.Tasks;
 using Catel;
 using Catel.Collections;
-using MethodTimer;
-using PresetMagician.ProcessIsolation;
-using PresetMagician.ProcessIsolation.Processes;
+using PresetMagician.RemoteVstHost;
+using PresetMagician.RemoteVstHost.Processes;
 using PresetMagician.Services.Interfaces;
 using SharedModels;
-using Type = SharedModels.Type;
 
 namespace PresetMagician.Services
 {

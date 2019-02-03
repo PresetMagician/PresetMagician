@@ -4,15 +4,4 @@
   <MethodTimer/>
   <ModuleInit/>
   <PropertyChanged />
-  <LoadAssembliesOnStartup>
-    <IncludeAssemblies>
-      PresetMagician.VstHost
-      PresetMagician.SharedModels
-      Jacobi.Vst.Core.Clr4
-      Jacobi.Vst.Interop.Clr4
-      Jacobi.Vst.Interop
-      Standart.Hash.xxHash
-      Newtonsoft.Json
-    </IncludeAssemblies>
-  </LoadAssembliesOnStartup>
 </Weavers>

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Catel;
 using Catel.MVVM;
 using Catel.Services;
-using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
 using Syroot.Windows.IO;
 

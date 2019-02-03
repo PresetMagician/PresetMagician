@@ -945,7 +945,7 @@ namespace Drachenkatze.PresetMagician.Utils
         /// </summary>
         /// <param name="stream">a MemoryStream</param>
         /// <returns>float array</returns>
-        public static float[] FloatArrayFromStream(System.IO.MemoryStream stream)
+        public static float[] FloatArrayFromStream(MemoryStream stream)
         {
             return FloatArrayFromByteArray(stream.GetBuffer());
         }

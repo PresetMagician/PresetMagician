@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace Microsoft.DwayneNeed.Controls
 {
@@ -55,7 +56,7 @@ namespace Microsoft.DwayneNeed.Controls
                 SolidColorBrush fill = new SolidColorBrush(color);
                 fill.Freeze();
 
-                System.Windows.Shapes.Rectangle child = new System.Windows.Shapes.Rectangle();
+                Rectangle child = new Rectangle();
                 child.Fill = fill;
 
                 grid.Children.Add(child);

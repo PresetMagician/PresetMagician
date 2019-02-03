@@ -100,7 +100,7 @@ namespace Microsoft.DwayneNeed.Win32.User32
 
         public override bool Equals(object obj)
         {
-            if (Object.ReferenceEquals(obj, null))
+            if (ReferenceEquals(obj, null))
             {
                 return handle == IntPtr.Zero;
             }
@@ -113,7 +113,7 @@ namespace Microsoft.DwayneNeed.Win32.User32
 
         public bool Equals(HWND other)
         {
-            if (Object.ReferenceEquals(other, null))
+            if (ReferenceEquals(other, null))
             {
                 return handle == IntPtr.Zero;
             }
@@ -130,11 +130,11 @@ namespace Microsoft.DwayneNeed.Win32.User32
 
         public static bool operator ==(HWND lvalue, HWND rvalue)
         {
-            if (Object.ReferenceEquals(lvalue, null))
+            if (ReferenceEquals(lvalue, null))
             {
-                return Object.ReferenceEquals(rvalue, null) || rvalue.handle == IntPtr.Zero;
+                return ReferenceEquals(rvalue, null) || rvalue.handle == IntPtr.Zero;
             }
-            else if (Object.ReferenceEquals(rvalue, null))
+            else if (ReferenceEquals(rvalue, null))
             {
                 return lvalue.handle == IntPtr.Zero;
             }

@@ -20,7 +20,7 @@ namespace Microsoft.DwayneNeed.Interop
             set { SetValue(IsLogicalParentEnabledProperty, value); }
         }
 
-        protected override System.Windows.DependencyObject GetUIParentCore()
+        protected override DependencyObject GetUIParentCore()
         {
             if (IsLogicalParentEnabled)
             {

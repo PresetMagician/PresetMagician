@@ -4,6 +4,7 @@ using Orchestra;
 using Orchestra.Services;
 using PresetMagician;
 using PresetMagician.Services;
+using SplashScreenService = PresetMagician.Services.SplashScreenService;
 
 /// <summary>
 /// Used by the ModuleInit. All code inside the Initialize method is ran as soon as the assembly is loaded.
@@ -20,7 +21,7 @@ public static class ModuleInitializer
 
         var serviceLocator = ServiceLocator.Default;
 
-        serviceLocator.RegisterType<ISplashScreenService, PresetMagician.Services.SplashScreenService>();
+        serviceLocator.RegisterType<ISplashScreenService, SplashScreenService>();
         serviceLocator.RegisterType<IRibbonService, RibbonService>();
         serviceLocator.RegisterType<IApplicationInitializationService, ApplicationInitializationService>();
 

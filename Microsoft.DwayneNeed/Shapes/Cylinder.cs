@@ -10,10 +10,10 @@ namespace Microsoft.DwayneNeed.Shapes
         {
             // The height of the cylinder is specified by MaxV, so make the
             // default MaxV property be 1.
-            ParametricShape3D.MaxVProperty.OverrideMetadata(typeof(Cylinder), new PropertyMetadata(1.0));
+            MaxVProperty.OverrideMetadata(typeof(Cylinder), new PropertyMetadata(1.0));
         }
 
-        protected override System.Windows.Media.Media3D.Point3D Project(MemoizeMath u, MemoizeMath v)
+        protected override Point3D Project(MemoizeMath u, MemoizeMath v)
         {
             double radius = 1;
 

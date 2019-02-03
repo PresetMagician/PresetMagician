@@ -1,18 +1,11 @@
-using System;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Catel;
-using Catel.Collections;
-using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
-using PresetMagician.Models;
-using PresetMagician.ProcessIsolation;
-using PresetMagician.ProcessIsolation.Processes;
+using PresetMagician.RemoteVstHost;
+using PresetMagician.RemoteVstHost.Processes;
 using PresetMagician.Services.Interfaces;
-using SharedModels;
 
 namespace PresetMagician.ViewModels
 {

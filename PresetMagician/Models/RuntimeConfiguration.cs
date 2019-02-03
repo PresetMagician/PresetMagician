@@ -5,7 +5,6 @@ using Catel.Collections;
 using Catel.Data;
 using Newtonsoft.Json;
 using PresetMagician.Models.Settings;
-using SharedModels;
 
 namespace PresetMagician.Models
 {

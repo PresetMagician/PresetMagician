@@ -5,12 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dgx="urn:tom-englert.de/DataGridExtensions"
              d:DataContext="{extensions:GenericObjectFactory Type={x:Type objectModel:ObservableCollection`1},
-             T=processes:HostProcess}"
+             T=processes1:HostProcess}"
              
              xmlns:converters="clr-namespace:PresetMagician.Converters"
              xmlns:extensions="clr-namespace:PresetMagician.Extensions"
              xmlns:objectModel="clr-namespace:System.Collections.ObjectModel;assembly=System"
-             xmlns:processes="clr-namespace:PresetMagician.ProcessIsolation.Processes;assembly=PresetMagician.RemoteVstHost"
+             xmlns:processes1="clr-namespace:PresetMagician.RemoteVstHost.Processes;assembly=PresetMagician.RemoteVstHost"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>

@@ -1,5 +1,7 @@
-﻿using System.Drawing;
+﻿using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
+using Jacobi.Vst.Core.Host;
 
 namespace PresetMagician.Views
 {
@@ -19,7 +21,7 @@ namespace PresetMagician.Views
         /// <summary>
         /// Gets or sets the Plugin Command Stub.
         /// </summary>
-        public Jacobi.Vst.Core.Host.IVstPluginCommandStub PluginCommandStub { get; set; }
+        public IVstPluginCommandStub PluginCommandStub { get; set; }
 
         /// <summary>
         /// Shows the custom plugin editor UI.
@@ -77,7 +79,7 @@ namespace PresetMagician.Views
         }
 
 
-        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        protected override void OnClosing(CancelEventArgs e)
         {
             base.OnClosing(e);
 

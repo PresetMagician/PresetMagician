@@ -4,6 +4,7 @@ using System.Runtime;
 using Catel.IoC;
 using Orchestra.Services;
 using PresetMagician.Services;
+using SplashScreenService = PresetMagician.Services.SplashScreenService;
 
 namespace PresetMagician
 {
@@ -23,7 +24,7 @@ namespace PresetMagician
 
             var serviceLocator = ServiceLocator.Default;
 
-            serviceLocator.RegisterType<ISplashScreenService, PresetMagician.Services.SplashScreenService>();
+            serviceLocator.RegisterType<ISplashScreenService, SplashScreenService>();
             serviceLocator.RegisterType<IRibbonService, RibbonService>();
             serviceLocator.RegisterType<IApplicationInitializationService, ApplicationInitializationService>();
             App.Main();

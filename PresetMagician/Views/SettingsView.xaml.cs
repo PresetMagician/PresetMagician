@@ -1,5 +1,3 @@
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Windows.Controls;
 using Catel.Windows;
 using PresetMagician.ViewModels;

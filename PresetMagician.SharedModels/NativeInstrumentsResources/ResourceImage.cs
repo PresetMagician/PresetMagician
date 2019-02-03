@@ -1,11 +1,7 @@
 using System;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Media.Imaging;
-using System.Xml.Serialization;
 using Anotar.Catel;
 using Catel.Data;
 using Catel.Fody;

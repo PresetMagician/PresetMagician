@@ -307,7 +307,7 @@ namespace Microsoft.DwayneNeed.MDI
 
                     case WindowState.Normal:
                     default:
-                        Rect windowRect = (Rect) child.GetValue(MdiPanel.BaseWindowRectPropertyKey.DependencyProperty);
+                        Rect windowRect = (Rect) child.GetValue(BaseWindowRectPropertyKey.DependencyProperty);
 
                         // Respect minimum size.
                         windowRect.Width = Math.Max(windowRect.Width, child.MinWidth);
@@ -350,7 +350,7 @@ namespace Microsoft.DwayneNeed.MDI
                 // 2. Ensure against null values in the children collection,
                 //    which are technically possible (though rare)
                 // 3. Order by ZIndex
-                return Children.OfType<FrameworkElement>().Where((e) => e != null).OrderBy((e) => Panel.GetZIndex(e));
+                return Children.OfType<FrameworkElement>().Where((e) => e != null).OrderBy((e) => GetZIndex(e));
             }
         }
 
@@ -364,7 +364,7 @@ namespace Microsoft.DwayneNeed.MDI
             {
                 // Record the base value since we will be using for internal
                 // calculations.
-                d.SetValue(MdiPanel.BaseWindowRectPropertyKey, windowRect);
+                d.SetValue(BaseWindowRectPropertyKey, windowRect);
 
                 // The window rect size must at least be as large as the
                 // child's minimum size.

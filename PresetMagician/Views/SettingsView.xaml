@@ -67,7 +67,7 @@
                                 LabelWidth="0"
                                 SelectedDirectory="{Binding EditableConfiguration.NativeInstrumentsUserContentDirectory}" />
                             <TextBlock>
-                                <Run Text="Default:"></Run>
+                                <Run Text="Default:" />
                                 <Run Text="{Binding DefaultNativeInstrumentsUserContentDirectory, Mode=OneWay}"/>
                             </TextBlock>
                         </StackPanel>
@@ -259,18 +259,18 @@
                             </DataGrid.Columns>
                         </DataGrid>
                         <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
-                            <Run Text="Total Presets:"></Run>
-                            <Run FontWeight="Bold" Text="{Binding TotalPresets}"></Run>
-                            <Run Text="Total Preset Size (uncompressed):"></Run>
-                            <Run FontWeight="Bold" Text="{Binding TotalPresetsUncompressedSize,Converter={StaticResource FormatKbSizeConverter}}"></Run>
-                            <Run Text="Total Preset Size (compressed):"></Run>
-                            <Run FontWeight="Bold" Text="{Binding TotalPresetsCompressedSize,Converter={StaticResource FormatKbSizeConverter}}"></Run>
-                            <Run Text="Saved Space:"></Run>
-                            <Run FontWeight="Bold" Text="{Binding SavedSpace,Converter={StaticResource FormatKbSizeConverter}}"></Run>
-                            <Run FontWeight="Bold" Text="("></Run>
-                            <Run FontWeight="Bold" Text="{Binding SavedSpacePercent,Mode=OneWay,StringFormat={}{0:P2}}"></Run>
-                            <Run FontWeight="Bold" Text=")"></Run>
-                            
+                            <Run Text="Total Presets:" />
+                            <Run FontWeight="Bold" Text="{Binding TotalPresets}" />
+                            <Run Text="Total Preset Size (uncompressed):" />
+                            <Run FontWeight="Bold" Text="{Binding TotalPresetsUncompressedSize,Converter={StaticResource FormatKbSizeConverter}}" />
+                            <Run Text="Total Preset Size (compressed):" />
+                            <Run FontWeight="Bold" Text="{Binding TotalPresetsCompressedSize,Converter={StaticResource FormatKbSizeConverter}}" />
+                            <Run Text="Saved Space:" />
+                            <Run FontWeight="Bold" Text="{Binding SavedSpace,Converter={StaticResource FormatKbSizeConverter}}" />
+                            <Run FontWeight="Bold" Text="(" />
+                            <Run FontWeight="Bold" Text="{Binding SavedSpacePercent,Mode=OneWay,StringFormat={}{0:P2}}" />
+                            <Run FontWeight="Bold" Text=")" />
+
                         </TextBlock>
                         <DockPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Bottom">
                             <Button

@@ -1,17 +1,9 @@
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
-using System.Threading;
-using System.Windows;
-using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Threading;
-using Jacobi.Vst.Core.Host;
 using Microsoft.DwayneNeed.Win32;
 using Microsoft.DwayneNeed.Win32.User32;
 using Host = PresetMagician.VstHost.VST.VstHost;
-using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace PresetMagician.VstHost.Util
 {

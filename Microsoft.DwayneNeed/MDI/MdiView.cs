@@ -240,7 +240,7 @@ namespace Microsoft.DwayneNeed.MDI
             // Look up the style for this control by using its type as its key.
             DefaultStyleKeyProperty.OverrideMetadata(typeof(MdiView), new FrameworkPropertyMetadata(typeof(MdiView)));
 
-            Selector.SelectedItemProperty.OverrideMetadata(
+            SelectedItemProperty.OverrideMetadata(
                 /* Type:                 */ typeof(MdiView),
                 /* Metadata:             */ new FrameworkPropertyMetadata(
                     /*     Changed Callback: */ (s, e) => ((MdiView) s).OnSelectedItemChanged(e),
@@ -615,7 +615,7 @@ namespace Microsoft.DwayneNeed.MDI
             _windows.CoerceValues(Panel.ZIndexProperty);
 
             // Selection is coerced to normal/maximized windows.
-            CoerceValue(Selector.SelectedItemProperty);
+            CoerceValue(SelectedItemProperty);
         }
 
         /// <summary>

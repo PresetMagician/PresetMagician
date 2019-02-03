@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.ExceptionServices;
 using System.ServiceModel;
 using Drachenkatze.PresetMagician.Utils;
-using Newtonsoft.Json;
 using PresetMagician.Models;
-using PresetMagician.ProcessIsolation.Exceptions;
+using PresetMagician.RemoteVstHost.Exceptions;
 using PresetMagician.VstHost.VST;
 using SharedModels;
 
-namespace PresetMagician.ProcessIsolation.Services
+namespace PresetMagician.RemoteVstHost.Services
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Single,
         UseSynchronizationContext = true, IncludeExceptionDetailInFaults = true)]

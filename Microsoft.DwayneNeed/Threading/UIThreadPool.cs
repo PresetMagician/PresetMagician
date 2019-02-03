@@ -11,7 +11,7 @@ namespace Microsoft.DwayneNeed.Threading
         static UIThreadPool()
         {
             _minThreads = 0;
-            _maxThreads = System.Environment.ProcessorCount;
+            _maxThreads = Environment.ProcessorCount;
             _numThreads = 0;
         }
 

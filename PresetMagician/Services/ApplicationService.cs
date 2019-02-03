@@ -7,7 +7,7 @@ using Catel;
 using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
-using PresetMagician.ProcessIsolation;
+using PresetMagician.RemoteVstHost;
 using PresetMagician.Services.Interfaces;
 using Timer = System.Timers.Timer;
 

@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Runtime.ExceptionServices;
 using System.Security;
 
-namespace PresetMagician.ProcessIsolation
+namespace PresetMagician.RemoteVstHost
 {
     internal static class MethodTimeLogger
     {

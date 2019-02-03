@@ -53,10 +53,10 @@ namespace Microsoft.DwayneNeed.MDI
 
             EventManager.RegisterClassHandler(
                 typeof(MdiWindowThumb),
-                Thumb.DragDeltaEvent,
+                DragDeltaEvent,
                 (DragDeltaEventHandler) ((s, e) => ((MdiWindowThumb) s).OnDragDelta(e)));
 
-            FrameworkElement.CursorProperty.OverrideMetadata(
+            CursorProperty.OverrideMetadata(
                 /* Type:                 */ typeof(MdiWindowThumb),
                 /* Metadata:             */ new FrameworkPropertyMetadata(
                     /*     Default Value:    */ Cursors.Arrow,
@@ -89,7 +89,7 @@ namespace Microsoft.DwayneNeed.MDI
 
         private void OnInteractiveEdgesChanged(DependencyPropertyChangedEventArgs e)
         {
-            CoerceValue(FrameworkElement.CursorProperty);
+            CoerceValue(CursorProperty);
         }
 
         private object OnCoerceCursor(object baseValue)
@@ -97,7 +97,7 @@ namespace Microsoft.DwayneNeed.MDI
             Cursor cursor = (Cursor) baseValue;
 
             // Only coerce the default value.
-            ValueSource vs = DependencyPropertyHelper.GetValueSource(this, FrameworkElement.CursorProperty);
+            ValueSource vs = DependencyPropertyHelper.GetValueSource(this, CursorProperty);
             if (vs.BaseValueSource == BaseValueSource.Default)
             {
                 switch (InteractiveEdges)

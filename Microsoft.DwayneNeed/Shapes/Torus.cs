@@ -11,14 +11,14 @@ namespace Microsoft.DwayneNeed.Shapes
         {
             // So texture coordinates work out better, configure the default
             // MinV property to be PI.
-            ParametricShape3D.MinVProperty.OverrideMetadata(typeof(Torus), new PropertyMetadata(Math.PI));
+            MinVProperty.OverrideMetadata(typeof(Torus), new PropertyMetadata(Math.PI));
 
             // So texture coordinates work out better, configure the default
             // MaxV property to be 3*PI.
-            ParametricShape3D.MaxVProperty.OverrideMetadata(typeof(Torus), new PropertyMetadata(Math.PI * 3.0));
+            MaxVProperty.OverrideMetadata(typeof(Torus), new PropertyMetadata(Math.PI * 3.0));
         }
 
-        protected override System.Windows.Media.Media3D.Point3D Project(MemoizeMath u, MemoizeMath v)
+        protected override Point3D Project(MemoizeMath u, MemoizeMath v)
         {
             double centerRadius = 2.0;
             double crossSectionRadius = 1.0;

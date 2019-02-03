@@ -12,7 +12,6 @@ using Catel.Data;
 using Catel.MVVM;
 using Newtonsoft.Json.Linq;
 using Orchestra;
-using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
 using SharedModels;
 

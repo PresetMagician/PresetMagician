@@ -19,9 +19,10 @@ using SharedModels.NativeInstrumentsResources;
 using Brushes = System.Windows.Media.Brushes;
 using Color = System.Windows.Media.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
+using NiResourceColor = SharedModels.NativeInstrumentsResources.Color;
 using Point = System.Windows.Point;
 using Size = System.Drawing.Size;
-using NiResourceColor = SharedModels.NativeInstrumentsResources.Color;
+
 namespace PresetMagician.Services
 {
     public class NativeInstrumentsResourceGeneratorService : INativeInstrumentsResourceGeneratorService

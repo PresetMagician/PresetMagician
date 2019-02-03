@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Drawing;
 using Jacobi.Vst.Core;
 using Jacobi.Vst.Core.Deprecated;

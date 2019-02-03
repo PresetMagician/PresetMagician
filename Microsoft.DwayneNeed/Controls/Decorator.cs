@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Media;
@@ -47,7 +48,7 @@ namespace Microsoft.DwayneNeed.Controls
             OnChildChanged(oldChild, newChild);
         }
 
-        protected override System.Collections.IEnumerator LogicalChildren
+        protected override IEnumerator LogicalChildren
         {
             get
             {

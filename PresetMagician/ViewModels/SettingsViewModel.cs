@@ -1,16 +1,12 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Catel;
 using Catel.MVVM;
 using Catel.Services;
-using Catel.Threading;
 using Drachenkatze.PresetMagician.Utils;
-using Portable.Licensing;
 using PresetMagician.Models;
 using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;

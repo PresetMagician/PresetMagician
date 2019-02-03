@@ -9,16 +9,17 @@ using System.Windows;
 using Catel;
 using Orchestra.Services;
 using PresetMagician.Services.EventArgs;
+using SplashScreen = PresetMagician.Views.SplashScreen;
 
 namespace PresetMagician.Services
 {
     public class SplashScreenService : ISplashScreenService
     {
-        private Views.SplashScreen _splashScreen;
+        private SplashScreen _splashScreen;
 
         public Window CreateSplashScreen()
         {
-            _splashScreen = new Views.SplashScreen(this);
+            _splashScreen = new SplashScreen(this);
             return _splashScreen;
         }
 

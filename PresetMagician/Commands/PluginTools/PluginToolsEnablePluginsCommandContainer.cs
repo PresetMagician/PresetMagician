@@ -1,10 +1,7 @@
 ﻿using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Threading.Tasks;
 using Catel;
 using Catel.MVVM;
-using PresetMagician.Models;
-using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
 
 // ReSharper disable once CheckNamespace

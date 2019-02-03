@@ -11,14 +11,12 @@ using Catel;
 using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
-using Orchestra.Services;
-using Orchestra.ViewModels;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.ViewModels;
 
 namespace PresetMagician.Services
 {
-    public class AdvancedMessageService : Catel.Services.MessageService, IAdvancedMessageService
+    public class AdvancedMessageService : MessageService, IAdvancedMessageService
     {
         #region Fields
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();

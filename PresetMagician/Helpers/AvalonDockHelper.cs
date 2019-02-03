@@ -73,7 +73,7 @@ namespace PresetMagician.Helpers
             var viewLocator = sl.ResolveType<IViewLocator>();
             var viewType = viewLocator.ResolveView(viewModel.GetType());
 
-            return AvalonDockHelper.FindDocument(viewType, tag);
+            return FindDocument(viewType, tag);
         }
 
         public static LayoutDocument CreateDocument<TService>(object tag = null, bool activateDocument = false,
@@ -84,18 +84,18 @@ namespace PresetMagician.Helpers
             var viewLocator = sl.ResolveType<IViewLocator>();
             var viewType = viewLocator.ResolveView(viewModel.GetType());
 
-            var document = AvalonDockHelper.FindDocument(viewType, tag);
+            var document = FindDocument(viewType, tag);
             if (document == null)
             {
                 var view = ViewHelper.ConstructViewWithViewModel(viewType, viewModel);
-                document = AvalonDockHelper.CreateDocument(view, tag);
+                document = CreateDocument(view, tag);
             }
 
             document.CanClose = isClosable;
 
             if (activateDocument)
             {
-                AvalonDockHelper.ActivateDocument(document);
+                ActivateDocument(document);
             }
 
             return document;

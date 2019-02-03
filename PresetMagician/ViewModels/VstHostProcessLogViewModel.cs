@@ -1,6 +1,5 @@
 ﻿using Catel.MVVM;
-using PresetMagician.ProcessIsolation.Processes;
-using SharedModels;
+using PresetMagician.RemoteVstHost.Processes;
 
 namespace PresetMagician.ViewModels
 {
