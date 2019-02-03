@@ -7,10 +7,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
     {
         public override bool IsNullParser => true;
 
-        public void ScanBanks()
-        {
-        }
-
 #pragma warning disable 1998
         public override async Task DoScan()
 #pragma warning restore 1998
