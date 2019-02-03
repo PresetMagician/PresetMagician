@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using CannedBytes.Midi.Message;
 using Catel.Collections;
@@ -27,6 +28,8 @@ namespace PresetMagician.Models
         [JsonProperty] public int NumPoolWorkers { get; set; } = 4;
 
         [JsonProperty] public int MaxPoolWorkerStartupTime { get; set; } = 20;
+        
+        [JsonProperty] public DateTime LastBackupNotificationDateTime { get; set; } = DateTime.Now;
 
         [JsonProperty]
         public int DefaultPreviewMidiNoteNumber

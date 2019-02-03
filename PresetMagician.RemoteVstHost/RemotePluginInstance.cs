@@ -18,10 +18,12 @@ namespace PresetMagician.ProcessIsolation
         public bool IsEditorOpen { get; private set; }
         private readonly IRemoteVstService _remoteVstService;
         private readonly VstHostProcess _vstHostProcess;
+        private readonly bool _debug;
 
-        public RemotePluginInstance(VstHostProcess vstHostProcess, Plugin plugin, bool backgroundProcessing = true)
+        public RemotePluginInstance(VstHostProcess vstHostProcess, Plugin plugin, bool backgroundProcessing = true, bool debug=false)
         {
             Plugin = plugin;
+            _debug = debug;
             _vstHostProcess = vstHostProcess;
             _vstHostProcess.Lock(plugin);
             _remoteVstService = vstHostProcess.GetVstService();
@@ -44,7 +46,7 @@ namespace PresetMagician.ProcessIsolation
             {
                 try
                 {
-                    _remoteVstService.LoadPlugin(_guid);
+                    _remoteVstService.LoadPlugin(_guid, _debug);
                     Plugin.PluginName = _remoteVstService.GetEffectivePluginName(_guid);
                     Plugin.PluginVendor = _remoteVstService.GetPluginVendor(_guid);
                     Plugin.PluginInfo = _remoteVstService.GetPluginInfo(_guid);

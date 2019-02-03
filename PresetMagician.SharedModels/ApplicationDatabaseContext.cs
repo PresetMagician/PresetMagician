@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using CannedBytes.Midi.Message;
 using Catel;
@@ -52,8 +53,7 @@ namespace SharedModels
             var sqliteConnectionInitializer =
                 new SqliteCreateDatabaseIfNotExists<ApplicationDatabaseContext>(modelBuilder);
 
-            
-            
+
             modelBuilder.Entity<Plugin>().HasMany(p => p.DefaultModes).WithMany(q => q.Plugins).Map(mc =>
                 mc.MapLeftKey("PluginId").MapRightKey("ModeId").ToTable("PluginModes"));
             modelBuilder.Entity<Plugin>().HasMany(p => p.DefaultTypes).WithMany(q => q.Plugins).Map(mc =>
@@ -70,13 +70,12 @@ namespace SharedModels
             modelBuilder.Entity<PresetDataStorage>();
             modelBuilder.Entity<PluginLocation>();
             modelBuilder.Entity<SchemaVersion>();
-            
-            
+
             Database.SetInitializer(sqliteConnectionInitializer);
         }
 
 
-        private static string GetDatabasePath(string dbPath = null)
+        public static string GetDatabasePath(string dbPath = null)
         {
             if (!string.IsNullOrEmpty(dbPath))
             {
@@ -107,6 +106,8 @@ namespace SharedModels
                 DataSource = GetDatabasePath(OverrideDbPath), ForeignKeys = false, SyncMode = SynchronizationModes.Off,
                 CacheSize = -10240
             };
+            
+
 
             return cs.ConnectionString;
         }
@@ -136,16 +137,90 @@ namespace SharedModels
                 return new List<PluginLocation>();
             }
 
-            var list= (from pluginLocation in PluginLocations
+            var list = (from pluginLocation in PluginLocations
                 where pluginLocation.VstPluginId == plugin.VstPluginId &&
                       pluginLocation.IsPresent && pluginLocation.Id != plugin.PluginLocation.Id
                 select pluginLocation).ToList();
-            
+
             // Workaround so that the combobox has the correct hash for the pluginlocation object
             list.Add(plugin.PluginLocation);
 
             return list;
         }
+
+        public async Task<List<PresetDatabaseStatistics>> GetPresetStatistics()
+        {
+            var x = from plugin in Plugins
+                let presetCompressedSize = Presets.Where(p => p.PluginId == plugin.Id)
+                    .Select(p => p.PresetCompressedSize).DefaultIfEmpty(0).Sum()
+                let presetUncompressedSize = Presets.Where(p => p.PluginId == plugin.Id).Select(p => p.PresetSize)
+                    .DefaultIfEmpty(0).Sum()
+                let presetCount = Presets.Count(p => p.PluginId == plugin.Id)
+                where presetCount > 0
+                orderby plugin.PluginName
+                select new PresetDatabaseStatistics
+                {
+                    PluginName = plugin.PluginName,
+                    PresetCount = presetCount,
+                    PresetCompressedSize = presetCompressedSize,
+                    PresetUncompressedSize = presetUncompressedSize
+                };
+            return await x.ToListAsync();
+        }
+
+        public async Task CompressOrDecompressPresets(bool compress, CancellationToken cancellationToken,
+            IProgress<int> progress, IProgress<int> total)
+        {
+            int counter = 0;
+            using (var tempContext = Create())
+            {
+                if (total != null)
+                {
+                    var totalItems =
+                        await (from p in tempContext.PresetDataStorage where p.IsCompressed == !compress select p)
+                            .CountAsync();
+                    total.Report(totalItems);
+                }
+            }
+
+            var done = false;
+            while (!done)
+            {
+                using (var tempContext = Create())
+                {
+                    var presets = await (from presetDataStorage in tempContext.PresetDataStorage
+                        where presetDataStorage.IsCompressed == !compress
+                        select presetDataStorage).Take(200).ToListAsync();
+
+                    if (presets.Count < 200)
+                    {
+                        done = true;
+                    }
+
+                    foreach (var p in presets)
+                    {
+                        p.IsCompressed = compress;
+                        counter++;
+
+                        if (progress != null)
+                        {
+                            progress.Report(counter);
+                        }
+
+                        if (cancellationToken.IsCancellationRequested)
+                        {
+                            done = true;
+                            break;
+                        }
+                    }
+
+                    await tempContext.SaveChangesAsync();
+                }
+            }
+            
+            Database.ExecuteSqlCommand(TransactionalBehavior.DoNotEnsureTransaction, "VACUUM;");
+        }
+
 
         public void LoadPresetsForPlugin(Plugin plugin)
         {
@@ -164,7 +239,8 @@ namespace SharedModels
 
             using (plugin.Presets.SuspendChangeNotifications())
             {
-                Entry(plugin).Collection(p => p.Presets).Query().Include(p => p.Modes).Include(p => p.Types).Where(p => !p.IsDeleted).Load();
+                Entry(plugin).Collection(p => p.Presets).Query().Include(p => p.Modes).Include(p => p.Types)
+                    .Where(p => !p.IsDeleted).Load();
             }
 
             foreach (var preset in plugin.Presets)
@@ -203,7 +279,7 @@ namespace SharedModels
             presetDataList.Add((preset, data));
         }
 
-        
+
         public async Task PersistPreset(Preset preset, byte[] data)
         {
             if (preset.Plugin == null || string.IsNullOrEmpty(preset.SourceFile))
@@ -335,7 +411,7 @@ namespace SharedModels
             {
                 return TypeCache[(typeName, subTypeName)];
             }
-            
+
             var type = (from st in Types
                 where st.Name == typeName && st.SubTypeName == subTypeName
                 select st).FirstOrDefault();
@@ -345,7 +421,7 @@ namespace SharedModels
                 type = new Type {Name = typeName, SubTypeName = subTypeName};
                 Types.Add(type);
             }
-            
+
             TypeCache.Add((typeName, subTypeName), type);
 
             return type;
@@ -357,7 +433,7 @@ namespace SharedModels
             {
                 return ModeCache[modeName];
             }
-            
+
             var mode = (from st in Modes
                 where st.Name == modeName
                 select st).FirstOrDefault();
@@ -397,5 +473,26 @@ namespace SharedModels
         public DbSet<Mode> Modes { get; set; }
         public DbSet<SchemaVersion> SchemaVersions { get; set; }
         public DbSet<PresetDataStorage> PresetDataStorage { get; set; }
+    }
+
+    public class PresetDatabaseStatistics
+    {
+        public string PluginName { get; set; }
+        public int PresetCount { get; set; }
+        public long PresetUncompressedSize { get; set; }
+        public long PresetCompressedSize { get; set; }
+
+        public double SavedSpace
+        {
+            get
+            {
+                if (PresetUncompressedSize != 0)
+                {
+                    return 1-PresetCompressedSize / (double) PresetUncompressedSize;
+                }
+
+                return 0;
+            }
+        }
     }
 }

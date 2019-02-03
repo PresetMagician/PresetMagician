@@ -8,15 +8,43 @@
     xmlns:fluent="urn:fluent-ribbon"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:orchestra="http://schemas.wildgums.com/orchestra"
+    xmlns:collections="clr-namespace:System.Collections;assembly=mscorlib"
     d:DataContext="{d:DesignInstance ViewModels:RibbonViewModel}"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
     <catel:UserControl.Resources>
-        <ResourceDictionary>
-            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        </ResourceDictionary>
+        <catel:BooleanToCollapsingVisibilityConverter x:Key="BooleanToCollapsingVisibilityConverter" />
+
+        <collections:ArrayList x:Key="HelpSection" x:Shared="false">
+            <fluent:Button
+                Command="{catel:CommandManagerBinding Help.OpenDocumentationLink}"
+                Header="Online Help"
+                Width="50"
+                LargeIcon="{iconPacks:Material Kind=HelpNetwork,
+                                                       Width=32,
+                                                       Height=32}" />
+
+            <fluent:Button
+                Command="{catel:CommandManagerBinding Help.OpenChatLink}"
+                Header="Chat"
+                Size="Middle"
+                Icon="{iconPacks:Material Kind=Chat}" />
+
+            <fluent:Button
+                Command="{catel:CommandManagerBinding Help.OpenSupportLink}"
+                Header="Support"
+                Size="Middle"
+                Icon="{iconPacks:Material Kind=Lifebuoy}" />
+
+            <fluent:Button
+                Command="{Binding ShowAboutDialog}"
+                Header="About"
+                Size="Middle"
+                Icon="{iconPacks:Entypo Kind=InfoWithCircle}" />
+
+        </collections:ArrayList>
+
     </catel:UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -32,25 +60,26 @@
             SelectedTabIndex="{Binding ApplicationState.SelectedRibbonTabIndex}">
 
             <fluent:RibbonTabItem Header="Plugins">
-
                 <fluent:RibbonGroupBox Header="Plugins">
-
-                   
-                    <fluent:SplitButton
+                    <fluent:DropDownButton
                         Width="60"
                         Padding="0"
                         VerticalAlignment="Center"
-                        Command="{catel:CommandManagerBinding Plugin.ScanPlugins}"
                         Header="Analyze"
                         LargeIcon="{iconPacks:Material Kind=BarcodeScan,
                                                        Width=32,
                                                        Height=32}">
-                        <fluent:SplitButton.ToolTip>
-                            <fluent:ScreenTip Title="Full Analysis"
-                                              Width="250"
-                                              Text="Loads all plugins, analyzes their capabilities and adds/updates their presets in the database."
-                                              HelpTopic="COMMANDS_ANALYZE"/>
-                        </fluent:SplitButton.ToolTip>
+                        <fluent:MenuItem
+                            Command="{catel:CommandManagerBinding Plugin.ScanPlugins}"
+                            Header="Full Analysis"
+                            Icon="{iconPacks:Material Kind=BarcodeScan}">
+                            <fluent:MenuItem.ToolTip>
+                                <fluent:ScreenTip Title="Full Analysis"
+                                                  Width="250"
+                                                  Text="Loads all plugins, analyzes their capabilities and adds/updates their presets in the database."
+                                                  HelpTopic="{Binding HelpLinks.COMMANDS_ANALYZE}" />
+                            </fluent:MenuItem.ToolTip>
+                        </fluent:MenuItem>
                         <fluent:MenuItem
                             Command="{catel:CommandManagerBinding Plugin.QuickScanPlugins}"
                             Header="Quick Analysis"
@@ -59,10 +88,10 @@
                                 <fluent:ScreenTip Title="Quick Analysis"
                                                   Width="250"
                                                   Text="Does a quick analysis. Loads existing presets from the database if this plugin was analyzed previously, and does not check for new/updated presets. Skips plugins previously not analyzed."
-                                                  HelpTopic="COMMANDS_ANALYZE"/>
+                                                  HelpTopic="{Binding HelpLinks.COMMANDS_ANALYZE}" />
                             </fluent:MenuItem.ToolTip>
                         </fluent:MenuItem>
-                    </fluent:SplitButton>
+                    </fluent:DropDownButton>
 
 
                     <fluent:DropDownButton
@@ -74,29 +103,29 @@
                                                              Height=32}"
                         Size="Large">
                         <fluent:MenuItem
-                            
+
                             Header="Presets from all plugins"
                             Icon="{iconPacks:Modern Kind=AddMultiple}">
                             <fluent:MenuItem
                                 Command="{catel:CommandManagerBinding Plugin.AllToPresetExportList}"
                                 Icon="{iconPacks:Modern Kind=AddMultiple}"
-                                Header="All Presets"/>
+                                Header="All Presets" />
                             <fluent:MenuItem
                                 Command="{catel:CommandManagerBinding Plugin.NotExportedAllToPresetExportList}"
                                 Icon="{iconPacks:Modern Kind=AddMultiple}"
-                                Header="Presets not yet exported"/>
-                            </fluent:MenuItem>
+                                Header="Presets not yet exported" />
+                        </fluent:MenuItem>
                         <fluent:MenuItem
                             Header="Presets from selected plugins only"
                             Icon="{iconPacks:MaterialDesign Kind=AddCircle}">
                             <fluent:MenuItem
                                 Command="{catel:CommandManagerBinding Plugin.SelectedToPresetExportList}"
                                 Icon="{iconPacks:MaterialDesign Kind=AddCircle}"
-                                Header="All Presets"/>
+                                Header="All Presets" />
                             <fluent:MenuItem
                                 Command="{catel:CommandManagerBinding Plugin.NotExportedSelectedToPresetExportList}"
                                 Icon="{iconPacks:MaterialDesign Kind=AddCircle}"
-                                Header="Presets not yet exported"/>
+                                Header="Presets not yet exported" />
                         </fluent:MenuItem>
                     </fluent:DropDownButton>
 
@@ -106,18 +135,14 @@
                         Icon="{iconPacks:Modern Kind=BookList}"
                         Size="Middle" />
                     <fluent:Button
-                        Padding="0"
-                        VerticalAlignment="Center"
                         Command="{catel:CommandManagerBinding Plugin.ReportUnsupportedPlugins}"
                         Header="Report Unsupported Plugins"
                         Icon="{iconPacks:Octicons Kind=Megaphone}"
                         Size="Middle" />
                     <fluent:Button
-                        Padding="0"
-                        VerticalAlignment="Center"
                         Command="{catel:CommandManagerBinding Plugin.RefreshPlugins}"
                         Header="Refresh Plugin List"
-                        ToolTip="Scans the configured VST folders for new and updated plugin files"
+                        ToolTip="Scans the configured VST directories for new and updated plugin files"
                         Icon="{iconPacks:Modern Kind=Refresh}"
                         Size="Middle" />
                 </fluent:RibbonGroupBox>
@@ -141,21 +166,24 @@
                         Icon="{iconPacks:Octicons Kind=DiffAdded}"
                         Size="Middle" />
 
-                    <fluent:SplitButton
-                        Padding="0"
+                    <fluent:DropDownButton
                         VerticalAlignment="Center"
-                        Command="{catel:CommandManagerBinding Plugin.ScanSelectedPlugins}"
                         Size="Middle"
                         Header="Analyze Selected Plugins"
                         Icon="{iconPacks:Material Kind=BarcodeScan,
                                                        Width=16,
                                                        Height=16}">
-                        <fluent:SplitButton.ToolTip>
-                            <fluent:ScreenTip Title="Full Analysis"
-                                              Width="250"
-                                              Text="Loads all plugins, analyzes their capabilities and adds/updates their presets in the database."
-                                              HelpTopic="COMMANDS_ANALYZE"/>
-                        </fluent:SplitButton.ToolTip>
+                        <fluent:MenuItem
+                            Command="{catel:CommandManagerBinding Plugin.ScanSelectedPlugins}"
+                            Header="Full Analysis"
+                            Icon="{iconPacks:Material Kind=BarcodeScan}">
+                            <fluent:MenuItem.ToolTip>
+                                <fluent:ScreenTip Title="Full Analysis"
+                                                  Width="250"
+                                                  Text="Loads selected plugins, analyzes their capabilities and adds/updates their presets in the database."
+                                                  HelpTopic="{Binding HelpLinks.COMMANDS_ANALYZE}" />
+                            </fluent:MenuItem.ToolTip>
+                        </fluent:MenuItem>
                         <fluent:MenuItem
                             Command="{catel:CommandManagerBinding Plugin.QuickScanSelectedPlugins}"
                             Header="Quick Analysis"
@@ -164,17 +192,19 @@
                                 <fluent:ScreenTip Title="Quick Analysis"
                                                   Width="250"
                                                   Text="Does a quick analysis. Loads existing presets from the database if this plugin was analyzed previously, and does not check for new/updated presets. Skips plugins previously not analyzed."
-                                                  HelpTopic="COMMANDS_ANALYZE"/>
+                                                  HelpTopic="{Binding HelpLinks.COMMANDS_ANALYZE}" />
                             </fluent:MenuItem.ToolTip>
                         </fluent:MenuItem>
-                        </fluent:SplitButton>
+                    </fluent:DropDownButton>
                     <fluent:Button
                         Command="{catel:CommandManagerBinding PluginTools.ViewErrors}"
                         Header="View Plugin Log"
                         Icon="{iconPacks:FontAwesome Kind=ListAltSolid}"
                         Size="Middle" />
                 </fluent:RibbonGroupBox>
-                <fluent:RibbonGroupBox Header="Plugin Developer Tools">
+                <fluent:RibbonGroupBox Header="Help" ItemsSource="{StaticResource HelpSection}" />
+                <fluent:RibbonGroupBox Header="Plugin Developer Tools"
+                                       Visibility="{Binding ShowDeveloperCommands, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
                     <fluent:Button
                         Command="{catel:CommandManagerBinding PluginTools.LoadPlugin}"
                         Header="Load Plugin"
@@ -204,7 +234,7 @@
                         Command="{catel:CommandManagerBinding PluginTools.ReportSinglePluginToLive}"
                         Header="Report Single Plugin"
                         Icon="{iconPacks:Octicons Kind=Megaphone}"
-                        Size="Middle"/>
+                        Size="Middle" />
                 </fluent:RibbonGroupBox>
             </fluent:RibbonTabItem>
             <fluent:RibbonTabItem Header="Presets">
@@ -263,7 +293,7 @@
                         Size="Large" />
                 </fluent:RibbonGroupBox>
             </fluent:RibbonTabItem>
-            <fluent:RibbonTabItem Header="Settings / Help">
+            <fluent:RibbonTabItem Header="Settings / Tools">
                 <fluent:RibbonGroupBox Header="Settings">
 
                     <fluent:Button
@@ -271,57 +301,38 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Command="{catel:CommandManagerBinding Tools.SettingsView}"
+                        CommandParameter="Advanced Settings"
                         Content=""
                         Header="Settings"
                         LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Settings},
                                                        Width=32,
                                                        Height=32}" />
-
                     <fluent:Button
-                        Padding="0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Command="{catel:CommandManagerBinding Tools.UpdateLicense}"
-                        Content=""
-                        Header="Update License"
-                        LargeIcon="{iconPacks:Material Kind=Certificate,
-                                                       Width=32,
-                                                       Height=32}" />
-
-
-                </fluent:RibbonGroupBox>
-                <fluent:RibbonGroupBox Header="Help">
+                        Command="{catel:CommandManagerBinding Tools.CompressDatabase}"
+                        CommandParameter="{StaticResource BooleanTrue}"
+                        Size="Middle"
+                        Header="Compress Presets"
+                        Icon="{iconPacks:Material Kind=ArrowCollapseAll}">
+                        <fluent:Button.ToolTip>
+                            <fluent:ScreenTip Title="Compress Presets"
+                                              Width="250"
+                                              Text="Compresses preset data in the database"
+                                              HelpTopic="{Binding HelpLinks.COMMANDS_COMPRESS}" />
+                        </fluent:Button.ToolTip>
+                    </fluent:Button>
                     <fluent:Button
-                        Width="50"
-                        Command="{catel:CommandManagerBinding Help.OpenDocumentationLink}"
-                        Header="Online Help"
-                        LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconMaterialKind.HelpNetwork},
-                                                       Width=32,
-                                                       Height=32}" />
-
-                    <fluent:Button
-                        Width="50"
-                        Command="{catel:CommandManagerBinding Help.OpenChatLink}"
-                        Header="Chat"
-                        LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconMaterialKind.Chat},
-                                                       Width=32,
-                                                       Height=32}" />
-
-                    <fluent:Button
-                        Width="50"
-                        Command="{catel:CommandManagerBinding Help.OpenSupportLink}"
-                        Header="Support"
-                        LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconMaterialKind.Lifebuoy},
-                                                       Width=32,
-                                                       Height=32}" />
-
-                    <fluent:Button
-                        Width="50"
-                        Command="{Binding ShowAboutDialog}"
-                        Header="About"
-                        LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconEntypoKind.InfoWithCircle},
-                                                       Width=32,
-                                                       Height=32}" />
+                        Command="{catel:CommandManagerBinding Tools.CompressDatabase}"
+                        CommandParameter="{StaticResource BooleanFalse}"
+                        Size="Middle"
+                        Header="Uncompress Presets"
+                        Icon="{iconPacks:Material Kind=ArrowExpandAll}">
+                        <fluent:Button.ToolTip>
+                            <fluent:ScreenTip Title="Decompress Presets"
+                                              Width="250"
+                                              Text="Decompresses preset data in the database"
+                                              HelpTopic="{Binding HelpLinks.COMMANDS_COMPRESS}" />
+                        </fluent:Button.ToolTip>
+                    </fluent:Button>
 
                 </fluent:RibbonGroupBox>
 
@@ -338,7 +349,8 @@
                                                        Height=32}" />
 
                     <fluent:DropDownButton Header="Developer Tools"
-                                           LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Beaker}, Width=32, Height=32}">
+                                           LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Beaker}, Width=32, Height=32}"
+                                           Visibility="{Binding ShowDeveloperCommands, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
                         <fluent:MenuItem
                             Command="{Binding ShowThemeTest}"
                             Header="Theme Test"
@@ -347,7 +359,7 @@
                             Command="{Binding DoSomething}"
                             Header="DoSomething"
                             Icon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Paintcan}}" />
-                        
+
                     </fluent:DropDownButton>
 
                 </fluent:RibbonGroupBox>

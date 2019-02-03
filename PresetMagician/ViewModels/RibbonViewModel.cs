@@ -65,6 +65,20 @@ namespace PresetMagician.ViewModels
         public bool HasPresetSelection { get; set; }
         public MidiNoteName ApplyMidiNote { get; set; } = new MidiNoteName();
 
+        public HelpLinks HelpLinks { get; } = new HelpLinks();
+
+        public bool ShowDeveloperCommands
+        {
+            get
+            {
+#if DEBUG
+                return true;
+#else
+                return false;
+#endif
+            }
+        }
+
         #endregion
 
         private void OnSelectedPresetsListChanged(object o, NotifyCollectionChangedEventArgs ev)

@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using Portable.Licensing;
 using Portable.Licensing.Validation;
 using PresetMagician.Properties;
+using PresetMagician.Services.Interfaces;
 using Path = Catel.IO.Path;
 
 namespace PresetMagician.Services
@@ -21,12 +22,27 @@ namespace PresetMagician.Services
         private const int _defaultTrialPresetExportLimit = 50;
 
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();
+        private readonly IRuntimeConfigurationService _runtimeConfigurationService;
 
         private static readonly string _defaultLocalLicenseFilePath =
             Path.Combine(Path.GetApplicationDataDirectory(ApplicationDataTarget.UserRoaming), "license.lic");
 
+        public LicenseService(IRuntimeConfigurationService runtimeConfigurationService)
+        {
+            Argument.IsNotNull(() => runtimeConfigurationService);
+
+            SystemInfo = new SystemCodeInfo();
+            
+            _runtimeConfigurationService = runtimeConfigurationService;
+            _runtimeConfigurationService.ApplicationState.SystemCode = SystemInfo.SystemCode;
+            
+            
+        }
+
         public License CurrentLicense { get; private set; }
         public License ValidatingLicense { get; private set; }
+        
+        public SystemCodeInfo SystemInfo { get; }
 
         public event EventHandler LicenseChanged;
         public bool ValidLicense { get; private set; }
@@ -101,8 +117,8 @@ namespace PresetMagician.Services
             File.Copy(filePath, _defaultLocalLicenseFilePath);
             CurrentLicense = ValidatingLicense;
             ValidLicense = true;
-            LicenseChanged.SafeInvoke(this);
-
+            _runtimeConfigurationService.ApplicationState.ActiveLicense = CurrentLicense;
+            _runtimeConfigurationService.ApplicationState.PresetExportLimit = getPresetExportLimit();
 
             return updateLicense;
         }
@@ -117,7 +133,8 @@ namespace PresetMagician.Services
                 {
                     CurrentLicense = ValidatingLicense;
                     ValidLicense = true;
-                    LicenseChanged.SafeInvoke(this);
+                    _runtimeConfigurationService.ApplicationState.ActiveLicense = CurrentLicense;
+                    _runtimeConfigurationService.ApplicationState.PresetExportLimit = getPresetExportLimit();
 
                     return true;
                 }

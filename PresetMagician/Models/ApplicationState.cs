@@ -1,121 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading;
 using Catel.Data;
+using Portable.Licensing;
 
 namespace PresetMagician.Models
 {
     public class ApplicationState : ModelBase
     {
-        private bool _isPluginsRefreshing = false;
-
-        public bool IsPluginRefreshPluginsRunning
-        {
-            get => _isPluginsRefreshing;
-            set
-            {
-                AllowPluginScan = !value;
-                AllowReportUnsupportedPlugins = !value;
-                AllowModifyPresetExportList = !value;
-                IsPluginListBusy = value;
-                IsApplicationBusy = value;
-
-                _isPluginsRefreshing = value;
-            }
-        }
-
-        private bool _isPluginsScanning = false;
-
-        public bool IsPluginScanPluginsRunning
-        {
-            get => _isPluginsScanning;
-            set
-            {
-                AllowPluginScan = !value;
-                AllowReportUnsupportedPlugins = !value;
-                AllowModifyPresetExportList = !value;
-                IsPluginListBusy = value;
-                IsApplicationBusy = value;
-
-                _isPluginsScanning = value;
-            }
-        }
-        
-        public bool IsPluginQuickScanPluginsRunning
-        {
-            get => _isPluginsScanning;
-            set
-            {
-                AllowPluginScan = !value;
-                AllowReportUnsupportedPlugins = !value;
-                AllowModifyPresetExportList = !value;
-                IsPluginListBusy = value;
-                IsApplicationBusy = value;
-
-                _isPluginsScanning = value;
-            }
-        }
-        
-        public bool IsPluginQuickScanSelectedPluginsRunning
-        {
-            get => _isPluginsScanning;
-            set
-            {
-                AllowPluginScan = !value;
-                AllowReportUnsupportedPlugins = !value;
-                AllowModifyPresetExportList = !value;
-                IsPluginListBusy = value;
-                IsApplicationBusy = value;
-
-                _isPluginsScanning = value;
-            }
-        }
-
-        public bool IsPluginScanSelectedPluginsRunning
-        {
-            get => _isPluginsScanning;
-            set
-            {
-                AllowPluginScan = !value;
-                AllowReportUnsupportedPlugins = !value;
-                AllowModifyPresetExportList = !value;
-                IsPluginListBusy = value;
-                IsApplicationBusy = value;
-
-                _isPluginsScanning = value;
-            }
-        }
-
-        public bool IsPluginScanSelectedPluginRunning
-        {
-            get => _isPluginsScanning;
-            set
-            {
-                AllowPluginScan = !value;
-                AllowReportUnsupportedPlugins = !value;
-                AllowModifyPresetExportList = !value;
-                IsPluginListBusy = value;
-                IsApplicationBusy = value;
-
-                _isPluginsScanning = value;
-            }
-        }
-
-        private bool _isPresetExportRunning = false;
-
-        public bool IsPresetExportRunning
-        {
-            get => _isPresetExportRunning;
-            set
-            {
-                AllowModifyPresetExportList = !value;
-                IsPresetExportListBusy = value;
-                IsApplicationBusy = value;
-
-                _isPresetExportRunning = value;
-            }
-        }
-
         private Type _currentDocument;
 
         public Type CurrentDocument
@@ -141,21 +34,6 @@ namespace PresetMagician.Models
         #region Toolbars
 
         public int SelectedRibbonTabIndex { get; set; } = 1;
-
-        #endregion
-
-        #region Busy States
-
-        public bool IsPluginListBusy { get; private set; }
-        public bool IsPresetExportListBusy { get; private set; }
-
-        #endregion
-
-        #region Allowances
-
-        public bool AllowPluginScan { get; private set; }
-        public bool AllowReportUnsupportedPlugins { get; private set; }
-        public bool AllowModifyPresetExportList { get; private set; }
 
         #endregion
 
@@ -188,6 +66,64 @@ namespace PresetMagician.Models
 
         public int TotalWorkers { get; set; }
         public int RunningWorkers { get; set; }
+
+        #endregion
+
+        public long DatabaseSize { get; set; }
+
+        #region LicenseInformation
+
+        public string LicensedTo
+        {
+            get
+            {
+                if (ActiveLicense != null)
+                {
+                    if (ActiveLicense.Type == LicenseType.Trial)
+                    {
+                        return $"Licensed to: {ActiveLicense.Customer.Name} " +
+                               $"(Expires {ActiveLicense.Expiration.ToShortDateString()})";
+                    }
+
+                    return "Licensed to: " + ActiveLicense.Customer.Name;
+                }
+
+                return "Not Licensed";
+            }
+        }
+
+        public string LicenseDescription
+        {
+            get
+            {
+                var sb = new StringBuilder();
+                
+                if (ActiveLicense != null)
+                {
+                    
+
+                    if (ActiveLicense.Type == LicenseType.Trial)
+                    {
+                        sb.AppendLine($"License Type: Trial (Expires {ActiveLicense.Expiration.ToShortDateString()})");
+
+                        if (PresetExportLimit > 0)
+                        {
+                            sb.AppendLine($"Maximum preset exports: {PresetExportLimit.ToString()}");
+                        }
+                    }
+                    else
+                    {
+                        sb.AppendLine($"License Type: Full");
+                    }
+                }
+
+                return sb.ToString();
+            }
+        }
+
+        public int PresetExportLimit { get; set; }
+        public string SystemCode { get; set; }
+        public License ActiveLicense { get; set; }
 
         #endregion
     }

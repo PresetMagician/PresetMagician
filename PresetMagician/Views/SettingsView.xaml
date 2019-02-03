@@ -11,18 +11,23 @@
     xmlns:viewModels="clr-namespace:PresetMagician.ViewModels"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    xmlns:fluent="urn:fluent-ribbon"
+    xmlns:converters="clr-namespace:PresetMagician.Converters"
     MinWidth="800"
     MinHeight="600"
     Width="800"
     Height="600"
     d:DataContext="{d:DesignInstance viewModels:SettingsViewModel}"
     mc:Ignorable="d">
+    <controls:RibbonDataWindow.Resources>
+        <converters:FormatKbSizeConverter x:Key="FormatKbSizeConverter" />
+    </controls:RibbonDataWindow.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <controls:TabControl Grid.Column="0" TabStripPlacement="Bottom">
+        <controls:TabControl Grid.Column="0" TabStripPlacement="Bottom" x:Name="TabControl">
             <TabItem VerticalContentAlignment="Top" Header="General Settings">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <Grid>
@@ -42,7 +47,7 @@
                         <Label
                             Grid.Row="0"
                             Grid.Column="0"
-                            Content="VST Folders"
+                            Content="VST Directories"
                             Target="{Binding ElementName=VstFolderList}" />
                         <local:VstFolderList
                             x:Name="VstFolderList"
@@ -54,57 +59,34 @@
                         <Label
                             Grid.Row="1"
                             Grid.Column="0"
-                            Content="NI User Content Directory"
-                            Target="{Binding ElementName=NativeInstrumentsUserContentDirectory}" />
-                        <orccontrols:DirectoryPicker
-                            x:Name="NativeInstrumentsUserContentDirectory"
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            LabelText=""
-                            LabelWidth="0"
-                            SelectedDirectory="{Binding EditableConfiguration.NativeInstrumentsUserContentDirectory}" />
-                        
-                        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
-                            <Label Content="Compress Database" />
-                            <iconPacks:PackIconFontAwesome Margin="0,0,10,0" VerticalAlignment="Center"
-                                                           Kind="QuestionCircleSolid" ToolTipService.ShowDuration="12000">
-                                <iconPacks:PackIconFontAwesome.ToolTip>
-                                    <StackPanel Margin="5" Width="600">
-                                        <TextBlock TextWrapping="Wrap">
-                                            This setting controls if the preset data should be stored compressed in the database.
-                                            Saves up to 70% space in the database, but increases preset processing time by a factor of 3 or more,
-                                            depending on your disk speed. Don't worry, it's still pretty fast and you'll notice it only if you have
-                                            100.000s of presets in the database. Audio Previews are not affected.<LineBreak />
-                                            <LineBreak />
-                                            If you change this setting, existing preset data in the database will not
-                                            be automatically compressed or decompressed - the change is only applied to presets which
-                                            have new or updated preset data. Use the database control dialog to de-compress or compress
-                                            presets by plugin, or view compression statistics.
-                                        </TextBlock>
-
-                                    </StackPanel>
-                                </iconPacks:PackIconFontAwesome.ToolTip>
-                            </iconPacks:PackIconFontAwesome>
+                            Content="NI User Content Directory" />
+                        <StackPanel Grid.Row="1"
+                                    Grid.Column="1" Orientation="Vertical">
+                            <orccontrols:DirectoryPicker
+                                LabelText=""
+                                LabelWidth="0"
+                                SelectedDirectory="{Binding EditableConfiguration.NativeInstrumentsUserContentDirectory}" />
+                            <TextBlock>
+                                <Run Text="Default:"></Run>
+                                <Run Text="{Binding DefaultNativeInstrumentsUserContentDirectory, Mode=OneWay}"/>
+                            </TextBlock>
                         </StackPanel>
                         
-                        <CheckBox
-                            Grid.Row="2"
-                            Grid.Column="1"
-                            IsChecked="{Binding EditableConfiguration.CompressPresetData}"
-                           Content="Compress Preset Data in Database" />
+                        
+                        
                         
                         <!-- Auto-create resources -->
-                        <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Top">
-                            <Label Content="Auto-Create NI Resources" VerticalAlignment="Top" />
+                        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Top">
+                            <Label Content="Auto-Create NKS Resources" VerticalAlignment="Top" />
                             <iconPacks:PackIconFontAwesome Margin="0,0,10,0" VerticalAlignment="Center"
                                                            Kind="QuestionCircleSolid" ToolTipService.ShowDuration="12000">
                                 <iconPacks:PackIconFontAwesome.ToolTip>
                                     <StackPanel Margin="5" Width="600">
                                         <TextBlock TextWrapping="Wrap">
-                                            This setting controls if PresetMagician should automatically create the Native Instruments resources. Exiting resources
+                                            This setting controls if PresetMagician should automatically create the NKS. Exiting resources
                                             will not be overwritten.<LineBreak />
                                             <LineBreak />
-                                            Native Instruments Resources are images (which are shown on their hardware products as well as in Maschine and KK),
+                                            NKS Resources are images (which are shown on their hardware products as well as in Maschine and KK),
                                             abbreviated plugin names for the hardware, a plugin base color and plugin categories. <LineBreak />
                                             <LineBreak />
                                             By utilizing the latest in Voodoo Ritual Technology™, PresetMagician is able to extract and generate these resources.
@@ -116,7 +98,7 @@
                             </iconPacks:PackIconFontAwesome>
                         </StackPanel>
                         
-                        <StackPanel Orientation="Vertical" Grid.Row="3"
+                        <StackPanel Orientation="Vertical" Grid.Row="2"
                                     Grid.Column="1" VerticalAlignment="Top">
                             <CheckBox
                                 IsChecked="{Binding EditableConfiguration.AutoCreateResources}">
@@ -126,11 +108,11 @@
                         </StackPanel>
                         
                          <!-- Preview Note resources -->
-                        <StackPanel Grid.Row="4" Grid.Column="0" Orientation="Horizontal">
+                        <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal">
                             <Label Content="Default Preview Note" />
                         </StackPanel>
                         
-                        <StackPanel Orientation="Vertical" Grid.Row="4"
+                        <StackPanel Orientation="Vertical" Grid.Row="3"
                                     Grid.Column="1" VerticalAlignment="Top">
                             
                             <TextBox Text="{Binding EditableConfiguration.DefaultPreviewMidiNote.FullNoteName}"/>
@@ -141,7 +123,7 @@
                     </Grid>
                 </ScrollViewer>
             </TabItem>
-            <TabItem VerticalContentAlignment="Top" Header="Advanced Settings">
+            <TabItem VerticalContentAlignment="Top" Header="VST Workers">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <Grid>
 
@@ -152,11 +134,12 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                     
                     
                     <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
-                            <Label Content="VST Workers" VerticalAlignment="Top" />
+                            <Label Content="Maximum VST Workers" VerticalAlignment="Top" />
                             <iconPacks:PackIconFontAwesome Margin="0,0,10,0" VerticalAlignment="Center"
                                                            Kind="QuestionCircleSolid" ToolTipService.ShowDuration="12000">
                                 <iconPacks:PackIconFontAwesome.ToolTip>
@@ -209,6 +192,167 @@
                                                 Minimum="10"
                                                 Maximum="60" />
                         </StackPanel>
+                        <DockPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Bottom">
+                            <Button
+                                Margin="6,2,2,2"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Stretch"
+                                VerticalContentAlignment="Center"
+                                Content="Open VST Worker Log Directory"
+                                Command="{Binding OpenVstWorkerLogDirectory}" />
+                        </DockPanel>
+                        
+                    </Grid>
+                    </ScrollViewer>
+            </TabItem>
+            <TabItem VerticalContentAlignment="Top" Header="Database">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                    
+                    
+                   <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                            <Label Content="Compress Database" />
+                            <iconPacks:PackIconFontAwesome Margin="0,0,10,0" VerticalAlignment="Center"
+                                                           Kind="QuestionCircleSolid" ToolTipService.ShowDuration="12000">
+                                <iconPacks:PackIconFontAwesome.ToolTip>
+                                    <StackPanel Margin="5" Width="600">
+                                        <TextBlock TextWrapping="Wrap">
+                                            This setting controls if the preset data should be stored compressed in the database.
+                                            Saves up to 70% space in the database, but increases preset processing time by a factor of 3 or more,
+                                            depending on your disk speed. Don't worry, it's still pretty fast and you'll notice it only if you have
+                                            100.000s of presets in the database. Audio Previews are not affected.<LineBreak />
+                                            <LineBreak />
+                                            If you change this setting, existing preset data in the database will not
+                                            be automatically compressed or decompressed - the change is only applied to presets which
+                                            have new or updated preset data.
+                                        </TextBlock>
+
+                                    </StackPanel>
+                                </iconPacks:PackIconFontAwesome.ToolTip>
+                            </iconPacks:PackIconFontAwesome>
+                        </StackPanel>
+                        
+                        <CheckBox
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            IsChecked="{Binding EditableConfiguration.CompressPresetData}"
+                           Content="Compress Preset Data in Database" />
+                       
+                        <DataGrid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding PresetDatabaseStatistics}" EnableRowVirtualization="True" Height="300">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Binding="{Binding PluginName}" Header="Plugin Name"/>
+                                <DataGridTextColumn Binding="{Binding PresetCount}" Header="Number of Presets"/>
+                                <DataGridTextColumn Binding="{Binding PresetUncompressedSize, Mode=OneWay,Converter={StaticResource FormatKbSizeConverter}}" Header="Storage Size (Uncompressed)"/>
+                                <DataGridTextColumn Binding="{Binding PresetCompressedSize, Mode=OneWay,Converter={StaticResource FormatKbSizeConverter}}" Header="Storage Size (Compressed)"/>
+                                <DataGridTextColumn Binding="{Binding SavedSpace, Mode=OneWay,StringFormat={}{0:P2}}" Header="Saved Space"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+                            <Run Text="Total Presets:"></Run>
+                            <Run FontWeight="Bold" Text="{Binding TotalPresets}"></Run>
+                            <Run Text="Total Preset Size (uncompressed):"></Run>
+                            <Run FontWeight="Bold" Text="{Binding TotalPresetsUncompressedSize,Converter={StaticResource FormatKbSizeConverter}}"></Run>
+                            <Run Text="Total Preset Size (compressed):"></Run>
+                            <Run FontWeight="Bold" Text="{Binding TotalPresetsCompressedSize,Converter={StaticResource FormatKbSizeConverter}}"></Run>
+                            <Run Text="Saved Space:"></Run>
+                            <Run FontWeight="Bold" Text="{Binding SavedSpace,Converter={StaticResource FormatKbSizeConverter}}"></Run>
+                            <Run FontWeight="Bold" Text="("></Run>
+                            <Run FontWeight="Bold" Text="{Binding SavedSpacePercent,Mode=OneWay,StringFormat={}{0:P2}}"></Run>
+                            <Run FontWeight="Bold" Text=")"></Run>
+                            
+                        </TextBlock>
+                        <DockPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Bottom">
+                            <Button
+                                Margin="6,2,2,2"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Stretch"
+                                VerticalContentAlignment="Center"
+                                Content="Collect Database Statistics"
+                                Command="{Binding CollectDatabaseStatistics}" />
+                            <Button
+                                Margin="6,2,2,2"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Stretch"
+                                VerticalContentAlignment="Center"
+                                Content="Open Database Location"
+                                Command="{Binding OpenDatabaseLocation}" />
+                        </DockPanel>
+                       
+                    </Grid>
+                    </ScrollViewer>
+            </TabItem>
+            <TabItem VerticalContentAlignment="Top" Header="Licensing">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                    
+                    
+                    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                            <Label Content="Licensed to" VerticalAlignment="Top" />
+                           
+                        </StackPanel>
+                        
+                        <StackPanel Orientation="Vertical" Grid.Row="0"
+                                    Grid.Column="1">
+                            <TextBox BorderThickness="0" IsReadOnly="True" Background="Transparent" TextWrapping="Wrap" HorizontalAlignment="Stretch" Margin="0 0 0 10"
+                                     Text="{Binding ApplicationState.LicensedTo, Mode=OneWay}" />
+                           
+                        </StackPanel>
+                        
+                        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                            <Label Content="License Type" VerticalAlignment="Top" />
+                        </StackPanel>
+                        
+                        <StackPanel Orientation="Vertical" Grid.Row="1"
+                                    Grid.Column="1">
+                            <TextBox BorderThickness="0" IsReadOnly="True" Background="Transparent" TextWrapping="Wrap" HorizontalAlignment="Stretch" Margin="0 0 0 10"
+                                     Text="{Binding ApplicationState.LicenseDescription, Mode=OneWay}" />
+                           
+                        </StackPanel>
+                        
+                        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
+                            <Label Content="System Code" VerticalAlignment="Top" />
+                        </StackPanel>
+                        
+                        <StackPanel Orientation="Vertical" Grid.Row="2"
+                                    Grid.Column="1" VerticalAlignment="Center">
+                            <TextBox BorderThickness="0" IsReadOnly="True" Background="Transparent" TextWrapping="Wrap" HorizontalAlignment="Stretch" Margin="0 0 0 10"
+                                     Text="{Binding ApplicationState.SystemCode, Mode=OneWay}" />
+                           
+                        </StackPanel>
+                        
+                        <fluent:Button
+                            
+                            Grid.Row="3" Grid.Column="0"
+                            Padding="0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Command="{catel:CommandManagerBinding Tools.UpdateLicense}"
+                            Size="Middle"
+                            Header="Update License"
+                            Icon="{iconPacks:Material Kind=Certificate}" />
+                       
                     </Grid>
                     </ScrollViewer>
             </TabItem>

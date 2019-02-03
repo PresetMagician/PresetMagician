@@ -4,6 +4,7 @@
     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
     <system:Boolean x:Key="BooleanTrue">true</system:Boolean>
+    <system:Boolean x:Key="BooleanFalse">false</system:Boolean>
     <PriorityBinding x:Key="EnabledBinding">
         <Binding Path="IsEnabled" />
         <Binding Source="{StaticResource BooleanTrue}" />

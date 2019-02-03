@@ -33,5 +33,18 @@ namespace Drachenkatze.PresetMagician.Utils
 
             return vstPlugins;
         }
+
+        public static string GetDefaultNativeInstrumentsUserContentDirectory()
+        {
+            return Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                @"Native Instruments\User Content");
+        }
+
+        public static string GetVstWorkerLogDirectory()
+        {
+            return Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) +
+                   @"\Drachenkatze\PresetMagician.RemoteVstHost\Logs\";
+        }
     }
 }

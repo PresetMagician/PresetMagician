@@ -116,7 +116,6 @@ namespace PresetMagician.Services
             TaskHelper.Run(() =>
             {
                 _commandManager.ExecuteCommand(Commands.Plugin.RefreshPlugins);
-                
             });
         }
 
@@ -195,6 +194,7 @@ namespace PresetMagician.Services
             _commandManager.CreateCommandWithGesture(typeof(Commands.Tools), "NksfView");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Tools), "SettingsView");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Tools), nameof(Commands.Tools.UpdateLicense));
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Tools), nameof(Commands.Tools.CompressDatabase));
 
             _commandManager.CreateCommandWithGesture(typeof(Commands.Help), "OpenSupportLink");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Help), "OpenChatLink");

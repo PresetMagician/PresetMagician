@@ -1,6 +1,8 @@
 using System;
 using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
+using System.Security;
 
 namespace PresetMagician.ProcessIsolation
 {
@@ -18,6 +20,7 @@ namespace PresetMagician.ProcessIsolation
     {
        
         [STAThread]
+        [HandleProcessCorruptedStateExceptions, SecurityCritical]
         public static void Main(string[] args)
         {
             App.Main();

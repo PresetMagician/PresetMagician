@@ -63,7 +63,7 @@ namespace PresetMagician.Services
         {
             if (_interactiveVstHostProcess == null)
             {
-                _interactiveVstHostProcess = new VstHostProcess();
+                _interactiveVstHostProcess = new VstHostProcess(20, true);
                 _interactiveVstHostProcess.Start();
                 await _interactiveVstHostProcess.WaitUntilStarted();
             }
@@ -71,7 +71,7 @@ namespace PresetMagician.Services
             if (!_pluginInstances.ContainsKey(plugin))
             {
 
-                _pluginInstances.Add(plugin, new RemotePluginInstance(_interactiveVstHostProcess, plugin));
+                _pluginInstances.Add(plugin, new RemotePluginInstance(_interactiveVstHostProcess, plugin, true, true));
             }
 
             return _pluginInstances[plugin];

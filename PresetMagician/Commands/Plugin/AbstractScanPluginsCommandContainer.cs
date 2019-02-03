@@ -136,7 +136,7 @@ namespace PresetMagician
                     Environment.NewLine + Environment.NewLine +
                     pluginNames + Environment.NewLine + Environment.NewLine +
                     "Would you like to abort the analysis now, so that you can review the settings for each affected plugin? (Highly recommended!)",
-                    "Auto-merged Plugins", Settings.Help.SETTINGS_PLUGIN_DLL, MessageButton.YesNo, MessageImage.Question);
+                    "Auto-merged Plugins", HelpLinks.SETTINGS_PLUGIN_DLL, MessageButton.YesNo, MessageImage.Question);
 
                 if (result == MessageResult.Yes)
                 {

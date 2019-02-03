@@ -21,7 +21,7 @@ namespace PresetMagician.Controls
     [TemplatePart(Name = PART_ContentPresenter, Type = typeof(UIElement))]
     [TemplatePart(Name = PART_RibbonTitleBar, Type = typeof(RibbonTitleBar))]
     [TemplatePart(Name = PART_WindowCommands, Type = typeof(WindowCommands))]
-    public class RibbonDataWindow : Catel.Windows.DataWindow
+    public class RibbonDataWindow : DataWindow
     {
         private FrameworkElement iconImage;
 

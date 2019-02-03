@@ -256,7 +256,7 @@ namespace PresetMagician.VendorPresetParserTest
              return null;
          }
  
-         public void LoadPlugin(Guid guid)
+         public void LoadPlugin(Guid guid, bool debug = false)
          {
             
          }

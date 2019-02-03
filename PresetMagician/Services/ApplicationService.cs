@@ -2,16 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Timers;
 using Catel;
 using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
-using MethodTimer;
-using Orc.Scheduling;
 using PresetMagician.ProcessIsolation;
-using PresetMagician.ProcessIsolation.Processes;
 using PresetMagician.Services.Interfaces;
 using Timer = System.Timers.Timer;
 
@@ -23,47 +19,62 @@ namespace PresetMagician.Services
         private readonly ICustomStatusService _statusService;
         private readonly IPleaseWaitService _pleaseWaitService;
         private readonly IAdvancedMessageService _messageService;
+        private readonly IDatabaseService _databaseService;
         private string _lastUpdateStatus;
-        private Timer _updateStatsTimer;
+        private readonly Timer _updateWorkerPoolStatsTimer;
+        private readonly Timer _updateDatabaseSizeTimer;
         private ILog _log;
         public NewProcessPool NewProcessPool { get; }
 
         private readonly List<string> _applicationOperationErrors = new List<string>();
 
         public ApplicationService(IRuntimeConfigurationService runtimeConfigurationService,
-            ICustomStatusService statusService, IPleaseWaitService pleaseWaitService, IAdvancedMessageService messageService)
+            ICustomStatusService statusService, IPleaseWaitService pleaseWaitService, IAdvancedMessageService messageService, IDatabaseService databaseService)
         {
             Argument.IsNotNull(() => runtimeConfigurationService);
             Argument.IsNotNull(() => statusService);
             Argument.IsNotNull(() => pleaseWaitService);
             Argument.IsNotNull(() => messageService);
+            Argument.IsNotNull(() => databaseService);
 
             _pleaseWaitService = pleaseWaitService;
             _statusService = statusService;
             _runtimeConfigurationService = runtimeConfigurationService;
             _messageService = messageService;
+            _databaseService = databaseService;
             
           
             NewProcessPool = new NewProcessPool();
             NewProcessPool.PoolFailed += NewProcessPoolOnPoolFailed;
             
-            _updateStatsTimer = new Timer(500);
-            _updateStatsTimer.Elapsed += UpdateStatsTimerOnElapsed;
-            _updateStatsTimer.AutoReset = false;
-            _updateStatsTimer.Start();
+            _updateWorkerPoolStatsTimer = new Timer(500);
+            _updateWorkerPoolStatsTimer.Elapsed += UpdateWorkerPoolStatsTimerOnElapsed;
+            _updateWorkerPoolStatsTimer.AutoReset = false;
+            _updateWorkerPoolStatsTimer.Start();
+            
+            _updateDatabaseSizeTimer = new Timer(2000);
+            _updateDatabaseSizeTimer.Elapsed += UpdateDatabaseSizeTimerOnElapsed;
+            _updateDatabaseSizeTimer.AutoReset = false;
+            _updateDatabaseSizeTimer.Start();
 
         }
 
-        private void UpdateStatsTimerOnElapsed(object sender, ElapsedEventArgs e)
+        private void UpdateDatabaseSizeTimerOnElapsed(object sender, ElapsedEventArgs e)
+        {
+            _databaseService.UpdateDatabaseSize();
+            _updateDatabaseSizeTimer.Start();
+        }
+
+        private void UpdateWorkerPoolStatsTimerOnElapsed(object sender, ElapsedEventArgs e)
         {
             _runtimeConfigurationService.ApplicationState.RunningWorkers = NewProcessPool.NumRunningProcesses;
             _runtimeConfigurationService.ApplicationState.TotalWorkers = NewProcessPool.NumTotalProcesses;
-            _updateStatsTimer.Start();
+            _updateWorkerPoolStatsTimer.Start();
         }
 
         private void NewProcessPoolOnPoolFailed(object sender, PoolFailedEventArgs e)
         {
-            _messageService.ShowErrorAsync(e.ShutdownReason, "VST worker pool failed", Settings.Help.CONCEPTS_VST_WORKER_POOL);
+            _messageService.ShowErrorAsync(e.ShutdownReason, "VST worker pool failed", HelpLinks.CONCEPTS_VST_WORKER_POOL);
         }
         
       
@@ -117,7 +128,7 @@ namespace PresetMagician.Services
 
             if (targetPropertyName != null)
             {
-                SetApplicationStateProperty(true);
+                //SetApplicationStateProperty(true);
             }
 
             _applicationOperationErrors.Clear();
@@ -130,6 +141,11 @@ namespace PresetMagician.Services
             appState.IsApplicationBusy = true;
 
             _log.Info($"Started operation \"{operationDescription}\"");
+        }
+
+        public void SetApplicationOperationTotalItems(int items)
+        {
+            _runtimeConfigurationService.ApplicationState.ApplicationBusyTotalItems = items;
         }
 
         private void SetApplicationStateProperty(object value)
@@ -207,7 +223,6 @@ namespace PresetMagician.Services
         public void StopApplicationOperation(string finalMessage)
         {
             var appState = _runtimeConfigurationService.ApplicationState;
-            SetApplicationStateProperty(false);
             appState.IsApplicationBusy = false;
             _pleaseWaitService.Hide();
 

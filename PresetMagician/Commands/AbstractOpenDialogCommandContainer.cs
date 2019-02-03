@@ -56,6 +56,11 @@ namespace PresetMagician
             if (ev.PropertyName == nameof(ApplicationState.IsApplicationBusy)) InvalidateCommand();
         }
 
+        protected virtual void OnBeforeShowDialog(IViewModel viewModel, object parameter)
+        {
+            
+        }
+
         protected override async Task ExecuteAsync(object parameter)
         {
             await base.ExecuteAsync(parameter);
@@ -68,6 +73,8 @@ namespace PresetMagician
 
             var viewModel = ViewModelFactory.CreateViewModel(viewModelType, null);
 
+            OnBeforeShowDialog(viewModel, parameter);
+            
             await UiVisualizerService.ShowDialogAsync(viewModel);
         }
     }

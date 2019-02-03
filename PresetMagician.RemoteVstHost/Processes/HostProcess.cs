@@ -76,15 +76,17 @@ namespace PresetMagician.ProcessIsolation.Processes
         protected bool inShutdown;
         private ProcessState _currentProcessState;
         private bool _isBusy;
+        private bool _debug;
         private readonly object _updateLock = new object();
 
         public event EventHandler ProcessStateUpdated;
 
 
         [Time]
-        public HostProcess(int maxStartupTimeSeconds = 20)
+        public HostProcess(int maxStartupTimeSeconds = 20, bool debug=false)
         {
-            Logger = new MiniLogger();
+            _debug = debug;
+            Logger = new MiniLogger(debug);
             _maxStartupTime = maxStartupTimeSeconds * 1000;
             _processImageName = ProcessName;
 
@@ -192,6 +194,11 @@ namespace PresetMagician.ProcessIsolation.Processes
                 StartupSuccessful = true;
                 _startupTimer.Stop();
                 TaskHelper.Run(() => { OnAfterStart(); });
+            }
+
+            if (_debug)
+            {
+                Debug.WriteLine(e.Data);
             }
             
         }

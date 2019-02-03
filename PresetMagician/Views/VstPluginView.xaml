@@ -323,25 +323,7 @@
                                 </Style>
                             </Button.Style>
                         </Button>
-                        <Button
-                            Margin="6,2,2,2"
-                            HorizontalAlignment="Left"
-                            Content="Re-Analyze Plugin"
-                            VerticalAlignment="Stretch"
-                            Command="{catel:CommandManagerBinding Plugin.ScanSelectedPlugin}">
-                            <Button.Style>
-                                <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="{x:Type Button}">
-                                    <Setter Property="IsEnabled" Value="True" />
-                                    <Style.Triggers>
-                                        <DataTrigger
-                                            Binding="{Binding HasItems, ElementName=AdditionalBankFiles}"
-                                            Value="False">
-                                            <Setter Property="IsEnabled" Value="False" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
+                        <CheckBox IsChecked="{Binding ReanalyzePluginOnClose}">Re-analyze Plugin after closing the dialog</CheckBox>
                     </DockPanel>
                 </Grid>
 
@@ -681,7 +663,7 @@
                     <fluent:Button
                         Command="{Binding OpenNKSFile}"
                         Size="Middle"
-                        Header="Load Mappings from NKSF file"
+                        Header="Load Mappings from NKS file"
                         Icon="{iconPacks:FontAwesome Kind=FolderOpenRegular,
                                                      Width=16,
                                                      Height=16}" />
@@ -744,7 +726,7 @@
                 <TabItem Header="Controller Assignments">
                     <ContentControl Template="{StaticResource ControllerAssignments}" />
                 </TabItem>
-                <TabItem Header="Resources">
+                <TabItem Header="NKS Resources">
                     <ScrollViewer VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto">
                         <ContentControl Template="{StaticResource PluginResources}" />
                     </ScrollViewer>

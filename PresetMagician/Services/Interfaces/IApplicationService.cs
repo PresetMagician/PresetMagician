@@ -24,5 +24,6 @@ namespace PresetMagician.Services.Interfaces
         NewProcessPool NewProcessPool { get; }
         void StartProcessPool();
         void ShutdownProcessPool();
+        void SetApplicationOperationTotalItems(int items);
     }
 }

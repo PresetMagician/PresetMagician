@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Runtime.ExceptionServices;
 using System.ServiceModel;
 using Drachenkatze.PresetMagician.Utils;
 using Newtonsoft.Json;
@@ -42,20 +43,20 @@ namespace PresetMagician.ProcessIsolation.Services
              var plugin = GetPluginByGuid(guid);
              if (File.Exists(plugin.DllPath))
              {
-                 return HashUtils.getIxxHash(File.ReadAllBytes(plugin.DllPath));
+                 return GetHash(plugin.DllPath);
              }
  
              return null;
          }
  
-         public void LoadPlugin(Guid guid)
+         public void LoadPlugin(Guid guid, bool debug = false)
          {
              App.Ping();
              var plugin = GetPluginByGuid(guid);
  
              try
              {
-                 _vstHost.LoadVst(plugin);
+                 _vstHost.LoadVst(plugin, debug);
              }
              catch (Exception e)
              {
@@ -274,6 +275,7 @@ namespace PresetMagician.ProcessIsolation.Services
              return vstInfo;
          }
  
+         [HandleProcessCorruptedStateExceptions]
          public void SetProgram(Guid pluginGuid, int program)
          {
              App.Ping();
@@ -282,7 +284,9 @@ namespace PresetMagician.ProcessIsolation.Services
              {
                  throw new VstPluginNotLoadedException(plugin);
              }
-             plugin.PluginContext.PluginCommandStub.SetProgram(program);
+
+            
+                 plugin.PluginContext.PluginCommandStub.SetProgram(program);
          }
  
          public string GetCurrentProgramName(Guid pluginGuid)
@@ -354,7 +358,10 @@ namespace PresetMagician.ProcessIsolation.Services
          public string GetHash(string file)
          {
              App.Ping();
-             return HashUtils.getIxxHash(File.ReadAllBytes(file));
+             var data = File.ReadAllBytes(file);
+             var hash = HashUtils.getIxxHash(data);
+             GC.Collect();
+             return hash;
          }
 
          public byte[] GetContents(string file)

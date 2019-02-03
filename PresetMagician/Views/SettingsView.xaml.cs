@@ -1,3 +1,6 @@
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Windows.Controls;
 using Catel.Windows;
 using PresetMagician.ViewModels;
 
@@ -9,6 +12,16 @@ namespace PresetMagician.Views
             : base(viewModel, DataWindowMode.OkCancel)
         {
             InitializeComponent();
+
+            foreach (var item in TabControl.Items)
+            {
+                var x = item as TabItem;
+
+                if ((string)x.Header == viewModel.SelectedTabTitle)
+                {
+                    x.IsSelected = true;
+                }
+            }
         }
     }
 }
