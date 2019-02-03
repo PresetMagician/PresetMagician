@@ -29,7 +29,7 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel x:Name="StackPanel">
-            <StackPanel orccontrols:PinnableToolTipService.Placement="Top"
+            <StackPanel 
                         Visibility="{Binding ApplicationState.ApplicationOperationLastOperationHadErrors, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
                 <StackPanel>
 
@@ -51,19 +51,6 @@
                         <RotateTransform Angle="90" />
                     </Separator.LayoutTransform>
                 </Separator>
-                <orccontrols:PinnableToolTipService.ToolTip>
-                    <orccontrols:PinnableToolTip AllowCloseByUser="True" ResizeMode="CanResize">
-                        <StackPanel>
-                            <TextBlock Text="{Binding ApplicationState.ApplicationOperationLastOperation}" />
-                            <TextBlock Text="{Binding ApplicationState.ApplicationOperationLastErrorsAsText}" />
-                            <Border
-                                Width="50"
-                                Height="50"
-                                Margin="5" />
-                        </StackPanel>
-                    </orccontrols:PinnableToolTip>
-                </orccontrols:PinnableToolTipService.ToolTip>
-
             </StackPanel>
 
             <StackPanel>

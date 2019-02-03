@@ -124,6 +124,7 @@ namespace PresetMagician.Models
         public int PresetExportLimit { get; set; }
         public string SystemCode { get; set; }
         public License ActiveLicense { get; set; }
+        public bool ValidLicense { get; set; }
 
         #endregion
     }

@@ -15,13 +15,8 @@ namespace PresetMagician.Views
         {
             InitializeComponent();
 
-            viewModel.LicenseUpdated += OnLicenseUpdated;
         }
 
-        private void OnLicenseUpdated(object o, EventArgs e)
-        {
-            Close();
-        }
 
         protected override void OnClosed(EventArgs e)
         {

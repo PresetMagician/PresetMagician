@@ -116,7 +116,6 @@ namespace PresetMagician.ProcessIsolation.Processes
         {
             try
             {
-                LogTo.Debug($"Startup {Pid}");
                 _process.Start();
                 _process.BeginOutputReadLine();
                 Pid = _process.Id;

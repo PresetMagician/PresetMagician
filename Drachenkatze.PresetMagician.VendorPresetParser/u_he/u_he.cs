@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Catel.Collections;
 using Catel.Logging;
 using Drachenkatze.PresetMagician.Utils;
+using MethodTimer;
 using SharedModels;
 using Squirrel.Shell;
 using Type = SharedModels.Type;
@@ -49,12 +50,13 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
         {
             return GetProductName() + ".data";
         }
-        
-        protected async Task<int> H2PScanBanks(string dataDirectoryName, string productName, bool userPresets, bool persist)
+
+        protected async Task<int> H2PScanBanks(string dataDirectoryName, string productName, bool userPresets,
+            bool persist)
         {
             PluginInstance.Plugin.Logger.Debug(
                 $"Begin H2PScanBanks with dataDirectoryName {dataDirectoryName} product name {productName} and userPresets {userPresets}");
-            
+
             var rootDirectory = GetPresetDirectory(dataDirectoryName, productName, userPresets);
             PluginInstance.Plugin.Logger.Debug($"Parsing PresetDirectory {rootDirectory}");
 
@@ -82,7 +84,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
         private async Task<int> H2PScanBank(PresetBank bank, DirectoryInfo directory, bool persist)
         {
             var count = 0;
-            
+
             foreach (var file in directory.EnumerateFiles("*.h2p"))
             {
                 count++;
@@ -90,58 +92,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
                 {
                     continue;
                 }
-                
-                var presetData = File.ReadAllBytes(file.FullName);
-                var sourceFile = file.FullName;
 
-                if (PluginInstance.Plugin.HasPreset(sourceFile, HashUtils.getIxxHash(presetData)))
-                {
-                    continue;
-                }
-                
-                var preset = new Preset
-                {
-                    PresetName = file.Name.Replace(".h2p", ""), Plugin = PluginInstance.Plugin, PresetBank = bank,
-                    SourceFile = sourceFile
-                };
-               
-                var metadata = ExtractMetadata(Encoding.UTF8.GetString(presetData));
-
-                if (metadata.ContainsKey("Author"))
-                {
-                    preset.Author = metadata["Author"];
-                }
-
-                List<string> comments = new List<string>();
-
-                if (metadata.ContainsKey("Description") && metadata["Description"].Length > 0)
-                {
-                    comments.Add(metadata["Description"]);
-                }
-
-                if (metadata.ContainsKey("Usage") && metadata["Usage"].Length > 0)
-                {
-                    comments.Add(metadata["Usage"]);
-                }
-
-                preset.Comment = string.Join(Environment.NewLine, comments);
-
-                if (metadata.ContainsKey("Categories") && metadata["Categories"].Length > 0)
-                {
-                    preset.Types.AddRange(ExtractTypes(metadata["Categories"]));
-                }
-
-                if (metadata.ContainsKey("Features") && metadata["Features"].Length > 0)
-                {
-                    preset.Modes.AddRange(ExtractModes(metadata["Features"]));
-                }
-
-                if (metadata.ContainsKey("Character") && metadata["Character"].Length > 0)
-                {
-                    preset.Modes.AddRange(ExtractModes(metadata["Character"]));
-                }
-
-                await DataPersistence.PersistPreset(preset, presetData);
+                await ProcessPreset(file, bank);
             }
 
             foreach (var subDirectory in directory.EnumerateDirectories("*", SearchOption.TopDirectoryOnly))
@@ -151,6 +103,61 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
             }
 
             return count;
+        }
+
+        private async Task ProcessPreset(FileSystemInfo file, PresetBank bank)
+        {
+            var presetData = File.ReadAllBytes(file.FullName);
+            var sourceFile = file.FullName;
+
+            if (PluginInstance.Plugin.HasPreset(sourceFile, HashUtils.getIxxHash(presetData)))
+            {
+                return;
+            }
+
+            var preset = new Preset
+            {
+                PresetName = file.Name.Replace(".h2p", ""), Plugin = PluginInstance.Plugin, PresetBank = bank,
+                SourceFile = sourceFile
+            };
+
+            var metadata = ExtractMetadata(Encoding.UTF8.GetString(presetData));
+
+            if (metadata.ContainsKey("Author"))
+            {
+                preset.Author = metadata["Author"];
+            }
+
+            List<string> comments = new List<string>();
+
+            if (metadata.ContainsKey("Description") && metadata["Description"].Length > 0)
+            {
+                comments.Add(metadata["Description"]);
+            }
+
+            if (metadata.ContainsKey("Usage") && metadata["Usage"].Length > 0)
+            {
+                comments.Add(metadata["Usage"]);
+            }
+
+            preset.Comment = string.Join(Environment.NewLine, comments);
+
+            if (metadata.ContainsKey("Categories") && metadata["Categories"].Length > 0)
+            {
+                preset.Types.AddRange(ExtractTypes(metadata["Categories"]));
+            }
+
+            if (metadata.ContainsKey("Features") && metadata["Features"].Length > 0)
+            {
+                preset.Modes.AddRange(ExtractModes(metadata["Features"]));
+            }
+
+            if (metadata.ContainsKey("Character") && metadata["Character"].Length > 0)
+            {
+                preset.Modes.AddRange(ExtractModes(metadata["Character"]));
+            }
+
+            await DataPersistence.PersistPreset(preset, presetData);
         }
 
         private IEnumerable<Type> ExtractTypes(string typesString)
@@ -173,6 +180,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 
             return types;
         }
+
 
         private List<Mode> ExtractModes(string modesString)
         {
@@ -220,7 +228,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
         private string GetPresetDirectory(string dataDirectoryName, string productName, bool userPresets)
         {
             dataDirectoryName = GetDataDirectory(dataDirectoryName);
-            
+
             var shortCutDataDirectoryName = dataDirectoryName + ".lnk";
 
             string dataDirectory;
@@ -242,7 +250,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
             PluginInstance.Plugin.Logger.Error("Unable to find the data directory, aborting.");
             PluginInstance.Plugin.Logger.Debug("Estimated shortcut directory name is " + shortCutDataDirectoryName);
             return null;
-
         }
 
         private bool IsShortcut(string path)

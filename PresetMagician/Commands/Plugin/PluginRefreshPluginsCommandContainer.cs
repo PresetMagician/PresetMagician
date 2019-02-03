@@ -88,8 +88,6 @@ namespace PresetMagician
                     await TaskHelper.Run(() => { MergeOrCreatePlugins(vstPluginDLLFiles, plugins); }, true, cancellationToken);
                 }
 
-                await CheckForCrashedPlugins(plugins);
-
                 await _vstService.SavePlugins();
             }
             catch (Exception e)
@@ -129,6 +127,7 @@ namespace PresetMagician
                 }
 
                 var hash = remoteFileService.GetHash(dllPath);
+
                 var pluginLocation = _databaseService.Context.GetPluginLocation(dllPath, hash);
 
                 if (pluginLocation != null)
@@ -180,7 +179,7 @@ namespace PresetMagician
                 {
                     PluginLocation = new PluginLocation
                     {
-                        DllPath = dllPath, DllHash = hash, IsPresent = true
+                        DllPath = dllPath, DllHash = hash, LastModifiedDateTime = remoteFileService.GetLastModifiedDate(dllPath), IsPresent = true
                     }
                 };
                 _dispatcherService.Invoke(() => { plugins.Add(newPlugin); });
@@ -213,29 +212,37 @@ namespace PresetMagician
 
                     if (remoteFileService.Exists(plugin.PluginLocation.DllPath))
                     {
-                        var currentHash = remoteFileService.GetHash(plugin.PluginLocation.DllPath);
+                        var lastModification = remoteFileService.GetLastModifiedDate(plugin.PluginLocation.DllPath);
 
-                        if (plugin.PluginLocation.DllHash != currentHash)
+                        if (lastModification != plugin.PluginLocation.LastModifiedDateTime)
                         {
-                            // Plugin DLL has changed. That could mean:
-                            // - New Version
-                            // - Completely different plugin
-                            // In any case, we need to create a new plugin waiting to be scanned. After scanning,
-                            // the plugin location can be appended to this plugin again.
+                            var currentHash = remoteFileService.GetHash(plugin.PluginLocation.DllPath);
 
-                            var newPlugin = new Plugin
+                            if (plugin.PluginLocation.DllHash != currentHash)
                             {
-                                PluginLocation = new PluginLocation
-                                {
-                                    DllPath = plugin.PluginLocation.DllPath,
-                                    DllHash = currentHash,
-                                    IsPresent = true
-                                }
-                            };
+                                // Plugin DLL has changed. That could mean:
+                                // - New Version
+                                // - Completely different plugin
+                                // In any case, we need to create a new plugin waiting to be scanned. After scanning,
+                                // the plugin location can be appended to this plugin again.
 
-                            plugin.PluginLocation.IsPresent = false;
-                            plugin.PluginLocation = null;
-                            pluginsToAdd.Add(newPlugin);
+                                var newPlugin = new Plugin
+                                {
+                                    PluginLocation = new PluginLocation
+                                    {
+                                        DllPath = plugin.PluginLocation.DllPath,
+                                        LastModifiedDateTime = lastModification,
+                                        DllHash = currentHash,
+                                        IsPresent = true
+                                    }
+                                };
+
+                                plugin.PluginLocation.IsPresent = false;
+                                plugin.PluginLocation = null;
+                                pluginsToAdd.Add(newPlugin);
+                            } else {
+                                plugin.PluginLocation.IsPresent = true;
+                            }
                         }
                         else
                         {
@@ -290,27 +297,6 @@ namespace PresetMagician
             }
 
             return vstPluginDLLFiles;
-        }
-
-        private async Task CheckForCrashedPlugins(IEnumerable<Plugin> plugins)
-        {
-            var crashedPlugin = (from plugin in plugins where plugin.IsAnalyzing select plugin).FirstOrDefault();
-
-            if (crashedPlugin != null)
-            {
-                var result = await _messageService.ShowAsync(
-                    $"It seems the plugin {crashedPlugin.DllFilename} caused PresetMagician to crash during the last scan." +
-                    Environment.NewLine +
-                    "Would you like to disable the plugin?",
-                    "Plugin crash detected", MessageButton.YesNo);
-
-                if (result == MessageResult.Yes)
-                {
-                    crashedPlugin.IsEnabled = false;
-                }
-
-                crashedPlugin.IsAnalyzing = false;
-            }
         }
     }
 }

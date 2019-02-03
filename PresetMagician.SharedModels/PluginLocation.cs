@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Catel.Data;
@@ -15,6 +16,8 @@ namespace SharedModels
         public string DllPath { get; set; }
         
         public string DllHash { get; set; }
+        
+        public DateTime LastModifiedDateTime { get; set; }
         
         public string VendorVersion { get; set; }
         

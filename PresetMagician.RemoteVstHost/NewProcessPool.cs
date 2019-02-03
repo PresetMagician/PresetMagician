@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
@@ -16,6 +17,12 @@ using Timer = System.Threading.Timer;
 
 namespace PresetMagician.ProcessIsolation
 {
+    public class VstWorkerNotFoundException : Exception
+    {
+        public VstWorkerNotFoundException(string message) : base(message)
+        {
+        }
+    }
     public class NewProcessPool : ObservableObject
     {
         private int _maxProcesses = 4;
@@ -88,11 +95,26 @@ namespace PresetMagician.ProcessIsolation
 
         public VstHostProcess GetFreeHostProcess()
         {
-            var foundProcess = (from process in RunningProcesses
+            for (var i = 0; i < _maxStartTimeout; i++)
+            {
+                var foundProcess = FindFreeHostProcess();
+                if (foundProcess != null)
+                {
+                    return foundProcess;
+                }
+
+                Thread.Sleep(1000);
+            }
+
+            throw new VstWorkerNotFoundException(
+                $"Unable to find a free VST worker process within the maximum startup time of {_maxStartTimeout} seconds");
+        }
+
+        private VstHostProcess FindFreeHostProcess()
+        {
+            return (from process in RunningProcesses
                 where !process.IsBusy && process.CurrentProcessState == HostProcess.ProcessState.RUNNING
-                select process).OrderBy(qu => Guid.NewGuid()).FirstOrDefault();
-// Todo: Handle non-found process
-            return foundProcess;
+                select process).FirstOrDefault();
         }
 
         public void StopPool()
@@ -108,13 +130,12 @@ namespace PresetMagician.ProcessIsolation
             }
         }
 
-        public  IRemotePluginInstance GetRemotePluginInstance(Plugin plugin)
+        public IRemotePluginInstance GetRemotePluginInstance(Plugin plugin, bool backgroundProcessing = true)
         {
             var hostProcess = GetFreeHostProcess();
-            return new RemotePluginInstance(hostProcess, plugin);
+            return new RemotePluginInstance(hostProcess, plugin, backgroundProcessing);
         }
         
-       
         private void UpdateProcesses(object o)
         {
             lock (_updateLock)

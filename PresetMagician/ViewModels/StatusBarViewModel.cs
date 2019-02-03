@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Catel;
 using Catel.MVVM;
 using Orc.Squirrel;
 using Orchestra;
 using Orchestra.Services;
-using Portable.Licensing;
 using PresetMagician.Models;
 using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
@@ -18,23 +16,22 @@ namespace PresetMagician.ViewModels
         #region Constructors
 
         public StatusBarViewModel(IUpdateService updateService,
-            IApplicationInitializationService applicationInitializationService, ILicenseService licenseService,
+            IApplicationInitializationService applicationInitializationService,
             IRuntimeConfigurationService runtimeConfigurationService)
         {
             Argument.IsNotNull(() => updateService);
             Argument.IsNotNull(() => applicationInitializationService);
-            Argument.IsNotNull(() => licenseService);
             Argument.IsNotNull(() => runtimeConfigurationService);
 
             _updateService = updateService;
             _applicationInitializationService = applicationInitializationService as ApplicationInitializationService;
-            _licenseService = licenseService;
 
-            _licenseService.LicenseChanged += OnLicenseChanged;
             ApplicationState = runtimeConfigurationService.ApplicationState;
 
             InstallUpdate = new TaskCommand(OnInstallUpdateExecute);
         }
+
+     
 
         #endregion Constructors
 
@@ -42,7 +39,6 @@ namespace PresetMagician.ViewModels
 
         private readonly IUpdateService _updateService;
         private readonly ApplicationInitializationService _applicationInitializationService;
-        private readonly ILicenseService _licenseService;
 
         #endregion Fields
 
@@ -53,9 +49,8 @@ namespace PresetMagician.ViewModels
         public string UpdatedVersion { get; private set; }
 
         public string Version { get; private set; }
-        public License CurrentLicense { get; set; }
 
-        public ApplicationState ApplicationState { get; private set; }
+        public ApplicationState ApplicationState { get; }
 
         public TaskCommand InstallUpdate { get; set; }
 
@@ -64,34 +59,9 @@ namespace PresetMagician.ViewModels
             await _updateService.InstallAvailableUpdatesAsync(new SquirrelContext());
         }
 
-        public string LicensedTo
-        {
-            get
-            {
-                if (_licenseService.GetCurrentLicense() != null)
-                {
-                    if (_licenseService.GetCurrentLicense().Type == LicenseType.Trial)
-                    {
-                        return $"Licensed to: {_licenseService.GetCurrentLicense().Customer.Name} " +
-                               $"(Expires {_licenseService.GetCurrentLicense().Expiration.ToShortDateString()})";
-                    }
-
-                    return "Licensed to: " + _licenseService.GetCurrentLicense().Customer.Name;
-                }
-
-                return "Not Licensed";
-            }
-        }
-
         #endregion Properties
 
         #region Methods
-
-        private void OnLicenseChanged(object sender, EventArgs e)
-        {
-            CurrentLicense = _licenseService.GetCurrentLicense();
-            RaisePropertyChanged(nameof(LicensedTo));
-        }
 
         protected override async Task InitializeAsync()
         {

@@ -281,12 +281,6 @@ namespace SharedModels
         public bool IsEnabled { get; set; } = true;
 
         /// <summary>
-        /// Defines if the current plugin is being scanned.
-        /// This flag is used to detect crashes
-        /// </summary>
-        public bool IsAnalyzing { get; set; }
-
-        /// <summary>
         /// Defines if the plugin DLL is present.
         /// A plugin is present if it's DLL Path exists and it is contained within the configured paths
         /// </summary>
@@ -343,6 +337,11 @@ namespace SharedModels
         public bool IsAnalyzed { get; set; }
 
         public bool HasMetadata { get; set; }
+        
+        /// <summary>
+        /// Defines if the metadata scan did not yield any result in the current sessions
+        /// </summary>
+        [NotMapped] public bool MetadataUnavailableInCurrentSession { get; set; }
 
         [NotMapped] public bool IsLoaded { get; set; }
 

@@ -89,6 +89,7 @@
     </Compile>
     <Compile Include="Constants.cs" />
     <Compile Include="Exceptions\VstPluginException.cs" />
+    <Compile Include="ModuleInitializer.cs" />
     <Compile Include="NewProcessPool.cs" />
     <Compile Include="Processes\ClientProxyInterceptor.cs" />
     <Compile Include="Processes\ProcessOperation.cs" />

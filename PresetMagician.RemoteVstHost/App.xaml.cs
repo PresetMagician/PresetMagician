@@ -57,7 +57,6 @@ namespace PresetMagician.ProcessIsolation
             _shutdownTimer.Enabled = true;
             _shutdownTimer.AutoReset = false;
 
-            
             base.OnStartup(e);
         }
 
@@ -65,13 +64,11 @@ namespace PresetMagician.ProcessIsolation
         {
             Console.WriteLine($"PresetMagician.RemoteVstHost.exe:{Process.GetCurrentProcess().Id} ready.");
             Console.WriteLine($"[{DateTime.Now:HH:mm:ss:fff}] => {Process.GetCurrentProcess().Id} rdy");
-            
-            
         }
 
         private static void MiniLog(string message)
         {
-            _logFileStream = new FileStream(_logFile, FileMode.Create);
+            _logFileStream = new FileStream(_logFile, FileMode.Append);
             _logFileStreamWriter = new StreamWriter(_logFileStream);
             _logFileStreamWriter.WriteLine($"[{DateTime.Now:HH:mm:ss:fff}] => {message}");
             _logFileStreamWriter.Flush();

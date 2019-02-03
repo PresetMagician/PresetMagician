@@ -67,9 +67,6 @@ namespace SharedModels
         bool OpenEditor(Guid pluginGuid);
 
         [OperationContract]
-        string GetPluginHash(Guid pluginGuid);
-
-        [OperationContract]
         int GetPluginVendorVersion(Guid pluginGuid);
         [OperationContract]
         string GetPluginProductString(Guid pluginGuid);
@@ -91,5 +88,8 @@ namespace SharedModels
         
         [OperationContract]
         void KillSelf ();
+
+        [OperationContract]
+        DateTime GetLastModifiedDate(string file);
     }
 }

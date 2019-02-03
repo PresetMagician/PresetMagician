@@ -1,9 +1,8 @@
-using System;
 using System.Collections.Generic;
 using Portable.Licensing;
 using Portable.Licensing.Validation;
 
-namespace PresetMagician.Services
+namespace PresetMagician.Services.Interfaces
 {
     public interface ILicenseService
     {
@@ -12,8 +11,6 @@ namespace PresetMagician.Services
         bool CheckLicense();
         License GetCurrentLicense();
 
-        event EventHandler LicenseChanged;
-        int getPresetExportLimit();
-        bool ValidLicense { get; }
+        int GetPresetExportLimit();
     }
 }

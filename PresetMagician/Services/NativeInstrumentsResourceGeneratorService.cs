@@ -26,6 +26,30 @@ namespace PresetMagician.Services
 {
     public class NativeInstrumentsResourceGeneratorService : INativeInstrumentsResourceGeneratorService
     {
+        public bool NeedToGenerateResources(IRemotePluginInstance pluginInstance)
+        {
+            foreach (var img in pluginInstance.Plugin.NativeInstrumentsResource.ResourceImages)
+            {
+                if (img.State.State == NativeInstrumentsResource.ResourceStates.Empty)
+                {
+                    return true;
+                }
+            }
+
+
+
+            if (pluginInstance.Plugin.NativeInstrumentsResource.CategoriesState.State ==
+                NativeInstrumentsResource.ResourceStates.Empty ||
+                pluginInstance.Plugin.NativeInstrumentsResource.ShortNamesState.State ==
+                NativeInstrumentsResource.ResourceStates.Empty ||
+                pluginInstance.Plugin.NativeInstrumentsResource.ColorState.State ==
+                NativeInstrumentsResource.ResourceStates.Empty)
+            {
+                return true;
+            }
+            
+            return false;
+        }
         [Time]
         public void AutoGenerateResources(IRemotePluginInstance pluginInstance)
         {
