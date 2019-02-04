@@ -125,9 +125,7 @@ namespace PresetMagician.Services
             Log.Info("Checking for updates…");
 
             var updateService = _serviceLocator.ResolveType<IUpdateService>();
-            updateService.Initialize(Settings.Application.AutomaticUpdates.AvailableChannels,
-                Settings.Application.AutomaticUpdates.DefaultChannel,
-                Settings.Application.AutomaticUpdates.CheckForUpdatesDefaultValue);
+         
 
             _squirrelResult = await updateService.CheckForUpdatesAsync(new SquirrelContext());
         }

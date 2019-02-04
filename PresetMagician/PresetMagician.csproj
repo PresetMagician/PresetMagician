@@ -491,9 +491,6 @@
     <Folder Include="MarkupExtensions\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="msvcr110.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="paket.references" />
     <Content Include="vcruntime140.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -534,7 +531,7 @@
       <Output TaskParameter="Assemblies" ItemName="myAssemblyInfo" />
     </GetAssemblyIdentity>
     <Exec Command="..\packages\NuGet.CommandLine\tools\NuGet pack PresetMagician.nuspec -Version %(myAssemblyInfo.Version) -Properties Configuration=Release -OutputDirectory $(OutDir) -BasePath $(OutDir)" />
-    <Exec Command="..\packages\squirrel.windows\tools\squirrel --no-delta --setupIcon=Resources/Icons/PresetMagician.ico --icon=Resources/Icons/PresetMagician.ico  --framework-version=net462 --releasify $(OutDir)PresetMagician.$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(3)).nupkg --releaseDir=$(SolutionDir)\Releases" />
+    <Exec Command="..\packages\squirrel.windows\tools\squirrel --no-delta --setupIcon=Resources/Icons/PresetMagician.ico --icon=Resources/Icons/PresetMagician.ico  --framework-version=net472 -g Resources/Images/Installing.gif --releasify $(OutDir)PresetMagician.$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(3)).nupkg --releaseDir=$(SolutionDir)\Releases" />
   </Target>
   <Import Project="..\common\ExtraCleanup.targets" />
   <Choose>
