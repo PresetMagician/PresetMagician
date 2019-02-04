@@ -4,20 +4,26 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows;
 using System.Windows.Forms;
+using Anotar.Catel;
 using Catel.IoC;
 using Catel.IO;
 using Catel.Logging;
 using Catel.Services;
 using NBug;
 using NBug.Events;
+using Orc.Squirrel;
+using Orc.Squirrel.ViewModels;
 using Orchestra.Services;
+using PresetMagician.Helpers;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.Views;
+using Squirrel;
 using Win32Mapi;
 using MessageBox = System.Windows.MessageBox;
 using Path = System.IO.Path;
@@ -54,7 +60,7 @@ namespace PresetMagician
                 _debugListener.IgnoreCatelLogging = !enable;
             }
         }
-        
+
         protected override async void OnStartup(StartupEventArgs e)
         {
             var languageService = ServiceLocator.Default.ResolveType<ILanguageService>();
@@ -63,7 +69,40 @@ namespace PresetMagician
 
 #if DEBUG
             _debugListener = LogManager.AddDebugListener(true);
+#else
+            _debugListener = LogManager.AddDebugListener(true);
 #endif
+            var serviceLocator = ServiceLocator.Default;
+            var updateService = serviceLocator.ResolveType<IUpdateService>();
+            updateService.Initialize(Settings.Application.AutomaticUpdates.AvailableChannels,
+                Settings.Application.AutomaticUpdates.DefaultChannel,
+                Settings.Application.AutomaticUpdates.CheckForUpdatesDefaultValue);
+
+            if (updateService.IsUpdateSystemAvailable)
+            {
+                using (var mgr = new UpdateManager(updateService.CurrentChannel.DefaultUrl))
+                {
+                    // Note, in most of these scenarios, the app exits after this method
+                    // completes!
+                    SquirrelAwareApp.HandleEvents(
+                        onInitialInstall: v =>
+                        {
+                            mgr.CreateShortcutForThisExe();
+                            Environment.Exit(0);
+                        },
+                        onAppUpdate: v =>
+                        {
+                            mgr.CreateShortcutForThisExe();
+                            Environment.Exit(0);
+                        },
+                        onAppUninstall: v =>
+                        {
+                            
+                            mgr.RemoveShortcutForThisExe();
+                            Environment.Exit(0);
+                        });
+                }
+            }
 
             var fileLogListener = new FileLogListener
             {
