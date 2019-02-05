@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading;
 using Drachenkatze.PresetMagician.Utils;
 
 namespace PresetMagicianScratchPad
@@ -9,13 +10,18 @@ namespace PresetMagicianScratchPad
         [STAThread]
         static void Main(string[] args)
         {
-            var fxp = new FXP();
-            fxp.ReadFile(@"C:\Users\Drachenkatze\Documents\Xfer\Serum Presets\Presets\Bass\BA FM Bounce [ASL].fxp");
+            DoStuff();
+            Process proc = Process.GetCurrentProcess();
+            Debug.WriteLine($"Memory usage before GC: {proc.PrivateMemorySize64}");
+            Thread.Sleep(500);
+            GC.Collect();
+            Debug.WriteLine($"Memory usage after GC: {proc.PrivateMemorySize64}");
+        }
 
-            Debug.WriteLine("FXP Name: " + fxp.Name.Trim());
-            Debug.WriteLine("FXP chunk size: " + fxp.ChunkSize);
-
-            Debug.Write(HexDump.GetHexDump(BinaryFile.StringToByteArray(fxp.Name.Trim('\0'))));
+        public static void DoStuff()
+        {
+            var foo = new byte[512000000];
+            var y = HashUtils.getIxxHash(foo);
         }
     }
 }
