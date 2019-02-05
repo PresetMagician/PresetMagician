@@ -252,7 +252,7 @@
                 </StackPanel>
 
                 <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
-                    <Label Content="Additional Banks/Presets" />
+                    <Label Content="Additional Banks/Presets (FXP/FXB)"  />
                 </StackPanel>
 
                 <Grid Grid.Row="1" Grid.Column="1">
