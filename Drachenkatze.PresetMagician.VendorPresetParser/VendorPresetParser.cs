@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Anotar.Catel;
 using Catel.Logging;
 using MethodTimer;
 using SharedModels;
@@ -78,20 +79,29 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             foreach (var parser in orderedPresetParsers)
             {
                 parser.PluginInstance = pluginInstance;
-                parser.Init();
 
-                if (parser.IsNullParser)
+                try
                 {
-                    continue;
-                }
+                    parser.Init();
 
-                if (!parser.CanHandle())
+                    if (parser.IsNullParser)
+                    {
+                        continue;
+                    }
+
+                    if (!parser.CanHandle())
+                    {
+                        continue;
+                    }
+
+                    pluginInstance.Plugin.Logger.Debug("Using PresetHandler {0}",
+                        parser.PresetParserType);
+                }
+                catch (Exception e)
                 {
-                    continue;
+                    LogTo.Error($"Error while trying to use PresetParser {parser.GetType().FullName}: {e.GetType().FullName} {e.Message}. This is most likely a bug, please report it :)");
+                    LogTo.Debug(e.StackTrace);
                 }
-
-                pluginInstance.Plugin.Logger.Debug("Using PresetHandler {0}",
-                    parser.PresetParserType);
 
                 return parser;
             }
