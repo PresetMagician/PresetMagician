@@ -25,7 +25,7 @@ public static class ModuleInitializer
         serviceLocator.RegisterType<IRibbonService, RibbonService>();
         serviceLocator.RegisterType<IApplicationInitializationService, ApplicationInitializationService>();
 
-        //InitializeThirdPartyNotices();
+        InitializeThirdPartyNotices();
 
         // ***** IMPORTANT NOTE *****
         //

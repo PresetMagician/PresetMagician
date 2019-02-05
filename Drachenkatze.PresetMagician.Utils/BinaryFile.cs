@@ -34,12 +34,19 @@ namespace Drachenkatze.PresetMagician.Utils
         {
         }
 
-        public BinaryFile(string filePath, ByteOrder byteOrder, bool createFile)
+        public BinaryFile(string filePath, ByteOrder byteOrder, bool write)
         {
-            fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-
-
-            binaryReader = new BinaryReader(fs, Encoding.Default);
+            if (write)
+            {
+                fs = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite);
+                binaryWriter = new BinaryWriter(fs, Encoding.Default);
+            }
+            else
+            {
+                fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);  
+                binaryReader = new BinaryReader(fs, Encoding.Default);
+            }
+            
             this.byteOrder = byteOrder;
         }
 
@@ -474,7 +481,10 @@ namespace Drachenkatze.PresetMagician.Utils
 
         public bool Close()
         {
-            binaryReader.Close();
+            if (binaryReader != null)
+            {
+                binaryReader.Close();
+            }
 
             if (binaryWriter != null)
             {

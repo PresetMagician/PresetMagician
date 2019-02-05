@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Catel.Logging;
 using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
@@ -39,7 +38,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
                     .GetResult();
             }
 
-            return count;
+            return base.GetNumPresets() + count;
         }
 
         public override async Task DoScan()
@@ -48,6 +47,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
             {
                 await DoScanInternal(parseDirectory.presetBank, parseDirectory.directory);
             }
+
+            await base.DoScan();
         }
 
         public async Task<int> DoScanInternal(PresetBank rootBank, string directory, bool persist = true)
@@ -90,9 +91,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
                     }
                     catch (Exception e)
                     {
-                        PluginInstance.Plugin.Logger.Error("Error processing preset {0} because of {1}", file.FullName,
-                            e.Message);
-                        PluginInstance.Plugin.Logger.Debug(e);
+                        PluginInstance.Plugin.Logger.Error($"Error processing preset {file.FullName} because of {e.GetType().FullName}: {e.Message}");
+                        PluginInstance.Plugin.Logger.Debug(e.StackTrace);
                     }
                 }
             }
@@ -101,7 +101,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
             {
                 var bank = rootBank.CreateRecursive(subDirectory.Name);
 
-                count += await DoScanInternal(bank, subDirectory.FullName, persist);
+                count += await DoScanInternal(bank, subDirectory.FullName, persist).ConfigureAwait(false);
             }
 
             return count;

@@ -8,11 +8,8 @@ namespace SharedModels
     public interface IVendorPresetParser
     {
         PresetBank RootBank { get; set; }
-        ObservableCollection<Preset> Presets { get; set; }
         IRemotePluginInstance PluginInstance { get; set; }
         int AudioPreviewPreDelay { get; set; }
-
-        bool SupportsAdditionalBankFiles { get; set; }
 
         List<BankFile> AdditionalBankFiles { get; }
 

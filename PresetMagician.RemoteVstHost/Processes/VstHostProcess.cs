@@ -188,7 +188,7 @@ namespace PresetMagician.RemoteVstHost.Processes
             base.OnBeforeForceStop();
         }
 
-        public IRemoteVstService GetVstService()
+        public virtual IRemoteVstService GetVstService()
         {
             return _vstService;
         }
@@ -201,12 +201,8 @@ namespace PresetMagician.RemoteVstHost.Processes
             try
             {
                 _address = Constants.BaseAddress + Pid;
-                var binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.None)
-                {
-                    MaxReceivedMessageSize = 40000000,
-                    MaxBufferSize = 40000000,
-                    SendTimeout = new TimeSpan(0, 0, 0, 60)
-                };
+
+                var binding = WcfUtils.GetNetNamedPipeBinding();
 
                 var ep = new EndpointAddress(_address);
 
@@ -228,6 +224,14 @@ namespace PresetMagician.RemoteVstHost.Processes
             catch (Exception ex)
             {
                 ForceStop($"Failure when attempting to open the service channel: {ex}");
+            }
+        }
+
+        protected override void OnOutputDataReceived(string data)
+        {
+            if (IsLockedToPlugin() && GetLockedPlugin() != null)
+            {
+                GetLockedPlugin().Logger.Debug($"Console {Pid}: {data}");
             }
         }
 

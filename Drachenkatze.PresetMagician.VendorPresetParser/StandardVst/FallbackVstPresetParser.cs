@@ -13,7 +13,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVst
 
         public override bool CanHandle()
         {
-            if (DeterminateVstPresetSaveMode() == PresetSaveModes.Fallback)
+            if (PresetSaveMode == PresetSaveModes.Fallback)
             {
                 return true;
             }

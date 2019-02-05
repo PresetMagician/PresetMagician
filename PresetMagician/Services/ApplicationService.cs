@@ -188,11 +188,10 @@ namespace PresetMagician.Services
         public void UpdateApplicationOperationStatus(int currentItem, string statusText)
         {
             var appState = _runtimeConfigurationService.ApplicationState;
-            appState.ApplicationBusyStatusText = statusText;
-
-            var progressText = string.Format("({1} / {2}) {0}", statusText, currentItem,
-                appState.ApplicationBusyTotalItems);
-            appState.ApplicationBusyCurrentItem = currentItem;
+            var progressText = $"{currentItem} / {appState.ApplicationBusyTotalItems} {statusText}";
+            
+                appState.ApplicationBusyStatusText = statusText;
+                appState.ApplicationBusyCurrentItem = currentItem;
 
             if (progressText == _lastUpdateStatus)
             {

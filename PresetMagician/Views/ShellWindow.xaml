@@ -3,8 +3,6 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:fluent="urn:fluent-ribbon"
-    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-    xmlns:orccontrols="http://schemas.wildgums.com/orc/controls"
     xmlns:orchestra="http://schemas.wildgums.com/orchestra"
     xmlns:themes="clr-namespace:Xceed.Wpf.AvalonDock.Themes.VS2013.Themes;assembly=Xceed.Wpf.AvalonDock.Themes.VS2013"
     Title="PresetMagician"
@@ -23,12 +21,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
 
         <ContentControl x:Name="ribbonContentControl" Grid.Row="0">
             <!--  Drop down arrow fix  -->
@@ -39,9 +32,9 @@
             </ContentControl.Resources>
         </ContentControl>
 
-        <ContentControl x:Name="contentControl" Grid.Row="1" />
+        <ContentControl x:Name="contentControl" Grid.Row="1"/>
 
-        <fluent:StatusBar
+        <fluent:StatusBar 
             x:Name="statusBar"
             Grid.Row="2"
             Margin="0,0,0,0"

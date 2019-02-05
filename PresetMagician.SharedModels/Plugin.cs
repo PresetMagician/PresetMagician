@@ -9,6 +9,7 @@ using Catel.Data;
 using Catel.Fody;
 using Catel.Logging;
 using Drachenkatze.PresetMagician.NKSF.NKSF;
+using Drachenkatze.PresetMagician.Utils;
 using Newtonsoft.Json;
 using PresetMagician.Collections;
 using PresetMagician.Models;
@@ -35,7 +36,7 @@ namespace SharedModels
         {
             Presets.CollectionChanged += PresetsOnCollectionChanged;
             RootBank.PresetBanks.Add(new PresetBank());
-            Logger = new MiniLogger();
+            Logger = new MiniMemoryLogger();
         }
 
         private void PresetsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -345,7 +346,7 @@ namespace SharedModels
         /// </summary>
         public bool IsSupported { get; set; }
 
-        public MiniLogger Logger { get; }
+        public MiniMemoryLogger Logger { get; }
 
         [NotMapped]
         public NativeInstrumentsResource NativeInstrumentsResource { get; set; } = new NativeInstrumentsResource();

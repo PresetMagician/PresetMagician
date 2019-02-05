@@ -5,6 +5,7 @@ using Catel;
 using Catel.Data;
 using Catel.Logging;
 using Catel.Threading;
+using Drachenkatze.PresetMagician.Utils;
 using MethodTimer;
 using SharedModels;
 using Timer = System.Timers.Timer;
@@ -47,7 +48,7 @@ namespace PresetMagician.RemoteVstHost.Processes
             get { return string.Join(Environment.NewLine, Logger.LogList); }
         }
 
-        public MiniLogger Logger { get; }
+        public MiniMemoryLogger Logger { get; }
 
 
         public bool IsBusy
@@ -76,7 +77,6 @@ namespace PresetMagician.RemoteVstHost.Processes
         private ProcessState _currentProcessState;
         private bool _isBusy;
         private bool _debug;
-        private readonly object _updateLock = new object();
 
         public event EventHandler ProcessStateUpdated;
 
@@ -85,7 +85,7 @@ namespace PresetMagician.RemoteVstHost.Processes
         public HostProcess(int maxStartupTimeSeconds = 20, bool debug=false)
         {
             _debug = debug;
-            Logger = new MiniLogger(debug);
+            Logger = new MiniMemoryLogger(debug);
             _maxStartupTime = maxStartupTimeSeconds * 1000;
             _processImageName = ProcessName;
 
@@ -191,13 +191,22 @@ namespace PresetMagician.RemoteVstHost.Processes
                 StartupTime = DateTime.Now - StartDateTime;
                 StartupSuccessful = true;
                 _startupTimer.Stop();
-                TaskHelper.Run(() => { OnAfterStart(); });
+                TaskHelper.Run(() => { OnAfterStart(); }).ConfigureAwait(false);
+            }
+            else
+            {
+                Logger.Debug($"Console {e.Data}");
+                OnOutputDataReceived(e.Data);
             }
 
             if (_debug)
             {
                 Debug.WriteLine(e.Data);
             }
+        }
+
+        protected virtual void OnOutputDataReceived(string data)
+        {
             
         }
 

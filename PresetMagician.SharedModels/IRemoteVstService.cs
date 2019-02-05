@@ -91,5 +91,8 @@ namespace SharedModels
 
         [OperationContract]
         DateTime GetLastModifiedDate(string file);
+
+        [OperationContract]
+        void UnregisterPlugin(Guid guid);
     }
 }

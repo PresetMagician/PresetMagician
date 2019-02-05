@@ -21,13 +21,14 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
 
         public override int GetNumPresets()
         {
-            return ProcessPresetDirectory(GetUserBankPath(UserBankPath), RootBank.CreateRecursive(BankNameUser),
+            return base.GetNumPresets() + ProcessPresetDirectory(GetUserBankPath(UserBankPath), RootBank.CreateRecursive(BankNameUser),
                 false).GetAwaiter().GetResult();
         }
 
         public override async Task DoScan()
         {
             await ProcessPresetDirectory(GetUserBankPath(UserBankPath), RootBank.CreateRecursive(BankNameUser));
+            await base.DoScan();
         }
     }
 }

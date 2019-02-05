@@ -4,23 +4,19 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows;
 using System.Windows.Forms;
-using Anotar.Catel;
 using Catel.IoC;
 using Catel.IO;
 using Catel.Logging;
 using Catel.Services;
-using NBug;
+using Drachenkatze.PresetMagician.Utils;
 using NBug.Events;
 using Orc.Squirrel;
-using Orc.Squirrel.ViewModels;
 using Orchestra.Services;
-using PresetMagician.Helpers;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.Views;
 using Squirrel;
@@ -68,8 +64,6 @@ namespace PresetMagician
             languageService.FallbackCulture = new CultureInfo("en-US");
 
 #if DEBUG
-            _debugListener = LogManager.AddDebugListener(true);
-#else
             _debugListener = LogManager.AddDebugListener(true);
 #endif
             var serviceLocator = ServiceLocator.Default;
@@ -129,6 +123,9 @@ namespace PresetMagician
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
             }
+            
+            // Clean up old RemoteVstHost logs
+            VstUtils.CleanupVstWorkerLogDirectory();
 
 #if DEBUG
             //DebugMonitor.Start();

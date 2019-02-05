@@ -34,13 +34,14 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
             var count = H2PScanBanks(GetDataDirectoryName(), GetProductName(), false, false).GetAwaiter().GetResult();
             count += H2PScanBanks(GetDataDirectoryName(), GetProductName(), true, false).GetAwaiter().GetResult();
 
-            return count;
+            return base.GetNumPresets() + count;
         }
         
         public override async Task DoScan()
         {
             await H2PScanBanks(GetDataDirectoryName(), GetProductName(), false, true);
             await H2PScanBanks(GetDataDirectoryName(), GetProductName(), true, true);
+            await base.DoScan();
         }
 
         protected abstract string GetProductName();
@@ -198,8 +199,16 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
         {
             Dictionary<string, string> result = new Dictionary<string, string>();
 
+            var closingTagLocation = presetData.IndexOf("*/", StringComparison.InvariantCulture);
 
-            foreach (Match match in parsingRegex.Matches(presetData))
+            if (closingTagLocation == -1)
+            {
+                // no metadata found, return
+                return result;
+            }
+            var trimmedPresetData = presetData.Substring(0, closingTagLocation);
+
+            foreach (Match match in parsingRegex.Matches(trimmedPresetData))
             {
                 var type = match.Groups["type"].Value;
                 var value = match.Groups["value"].Value;
@@ -272,8 +281,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
             }
             catch (IOException e)
             {
-                PluginInstance.Plugin.Logger.Error("Error while trying to resolve the shortcut {0} because of {1} {2}",
-                    path, e.Message, e);
+                PluginInstance.Plugin.Logger.Error($"Error while trying to resolve the shortcut {path} because of {e.GetType().FullName}: {e.Message}");
                 PluginInstance.Plugin.Logger.Debug(e.StackTrace);
             }
 
@@ -295,8 +303,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
             }
             catch (IOException e)
             {
-                PluginInstance.Plugin.Logger.Error("Error while trying to resolve the shortcut {0} because of {1} {2}",
-                    path, e.Message, e);
+                PluginInstance.Plugin.Logger.Error($"Error while trying to resolve the shortcut {path} because of {e.GetType().FullName}: {e.Message}");
                 PluginInstance.Plugin.Logger.Debug(e.StackTrace);
             }
 

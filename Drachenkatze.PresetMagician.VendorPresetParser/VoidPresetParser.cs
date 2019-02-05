@@ -29,20 +29,5 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             1297306467, // MeldaProduction StereoScope
             1297380718, // MeldaProduction Tuner
         };
-
-#pragma warning disable 1998
-        public override async Task DoScan()
-#pragma warning restore 1998
-        {
-        }
-
-        public override int GetNumPresets()
-        {
-            return 0;
-        }
-
-        public void ScanBanks()
-        {
-        }
     }
 }
