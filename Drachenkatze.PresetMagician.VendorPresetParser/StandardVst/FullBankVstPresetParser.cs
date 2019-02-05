@@ -11,49 +11,17 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
     {
         public override bool CanHandle()
         {
-            return DeterminateVstPresetSaveMode() == PresetSaveModes.FullBank;
+            return PresetSaveMode == PresetSaveModes.FullBank;
         }
 
 
         protected override async Task GetFactoryPresets()
         {
-            var factoryBank = FindOrCreateBank(BankNameFactory);
+            var factoryBank = RootBank.CreateRecursive(BankNameFactory);
 
             await GetPresets(factoryBank, 0, PluginInstance.Plugin.PluginInfo.ProgramCount, "Builtin");
         }
 
-        [Time]
-        protected override async Task GetPresets(PresetBank bank, int start, int numPresets, string sourceFile)
-        {
-            if (start < 0)
-            {
-                PluginInstance.Plugin.Logger.Error("GetPresets start index is less than 0, ignoring.");
-                return;
-            }
-
-            var endIndex = start + numPresets;
-
-            if (endIndex > PluginInstance.Plugin.PluginInfo.ProgramCount)
-            {
-                PluginInstance.Plugin.Logger.Error(
-                    $"GetPresets between {start} and {endIndex} would exceed maximum program count of {PluginInstance.Plugin.PluginInfo.ProgramCount}, ignoring.");
-                return;
-            }
-
-            for (var index = start; index < endIndex; index++)
-            {
-                PluginInstance.SetProgram(index);
-
-                var preset = new Preset
-                {
-                    PresetName = PluginInstance.GetCurrentProgramName(),
-                    PresetBank = bank,
-                    SourceFile = sourceFile + ":" + index,
-                    Plugin = PluginInstance.Plugin
-                };
-
-                await DataPersistence.PersistPreset(preset, PluginInstance.GetChunk(false));
-            }
-        }
+        
     }
 }

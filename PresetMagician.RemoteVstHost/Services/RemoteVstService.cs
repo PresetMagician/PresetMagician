@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.ExceptionServices;
 using System.ServiceModel;
+using Catel.Logging;
 using Drachenkatze.PresetMagician.Utils;
 using PresetMagician.Models;
 using PresetMagician.RemoteVstHost.Exceptions;
@@ -28,11 +30,31 @@ namespace PresetMagician.RemoteVstHost.Services
         public Guid RegisterPlugin(string dllPath, bool backgroundProcessing = true)
         {
             App.Ping();
-            var plugin = new RemoteVstPlugin {DllPath = dllPath, BackgroundProcessing = backgroundProcessing};
             var guid = Guid.NewGuid();
+            var logFile = VstUtils.GetWorkerPluginLog(Process.GetCurrentProcess().Id, guid);
+            
+            var plugin = new RemoteVstPlugin {DllPath = dllPath, BackgroundProcessing = backgroundProcessing, MiniDiskLogger = new MiniDiskLogger(logFile)};
+            
             _plugins.Add(guid, plugin);
 
             return guid;
+        }
+        
+        public void UnregisterPlugin(Guid guid)
+        {
+            App.Ping();
+            
+            var plugin = GetPluginByGuid(guid);
+            if (plugin.IsLoaded)
+            {
+                _vstHost.UnloadVst(plugin);
+            }
+
+            _plugins.Remove(guid);
+            if (File.Exists(plugin.MiniDiskLogger.LogFilePath))
+            {
+                File.Delete(plugin.MiniDiskLogger.LogFilePath);
+            }
         }
 
 
@@ -40,6 +62,7 @@ namespace PresetMagician.RemoteVstHost.Services
         {
             App.Ping();
             var plugin = GetPluginByGuid(guid);
+            plugin.MiniDiskLogger.Debug($"LoadPlugin()");
 
             try
             {
@@ -56,6 +79,7 @@ namespace PresetMagician.RemoteVstHost.Services
             App.Ping();
             var plugin = GetPluginByGuid(guid);
 
+            plugin.MiniDiskLogger.Debug($"UnloadPlugin()");
             if (plugin.IsLoaded)
             {
                 _vstHost.UnloadVst(plugin);
@@ -66,6 +90,7 @@ namespace PresetMagician.RemoteVstHost.Services
         {
             App.Ping();
             var plugin = GetPluginByGuid(guid);
+            plugin.MiniDiskLogger.Debug($"ReloadPlugin()");
             _vstHost.ReloadPlugin(plugin);
         }
 
@@ -85,6 +110,7 @@ namespace PresetMagician.RemoteVstHost.Services
             App.Ping();
             var plugin = GetPluginByGuid(pluginGuid);
 
+            plugin.MiniDiskLogger.Debug($"OpenEditorHidden()");
             if (!plugin.IsLoaded)
             {
                 throw new VstPluginNotLoadedException(plugin);
@@ -98,6 +124,7 @@ namespace PresetMagician.RemoteVstHost.Services
             App.Ping();
             var plugin = GetPluginByGuid(pluginGuid);
 
+            plugin.MiniDiskLogger.Debug($"OpenEditor()");
             if (!plugin.IsLoaded)
             {
                 throw new VstPluginNotLoadedException(plugin);
@@ -110,6 +137,8 @@ namespace PresetMagician.RemoteVstHost.Services
         {
             App.Ping();
             var plugin = GetPluginByGuid(pluginGuid);
+            
+            plugin.MiniDiskLogger.Debug($"CloseEditor()");
             if (!plugin.IsLoaded)
             {
                 throw new VstPluginNotLoadedException(plugin);
@@ -123,6 +152,8 @@ namespace PresetMagician.RemoteVstHost.Services
             App.Ping();
             var plugin = GetPluginByGuid(pluginGuid);
 
+            plugin.MiniDiskLogger.Debug($"CreateScreenshot()");
+            
             if (!plugin.IsLoaded)
             {
                 throw new VstPluginNotLoadedException(plugin);
@@ -150,7 +181,7 @@ namespace PresetMagician.RemoteVstHost.Services
         {
             App.Ping();
             var plugin = GetPluginByGuid(pluginGuid);
-
+            plugin.MiniDiskLogger.Debug($"GetPluginName()");
             if (!plugin.IsLoaded)
             {
                 throw new VstPluginNotLoadedException(plugin);
@@ -163,7 +194,7 @@ namespace PresetMagician.RemoteVstHost.Services
         {
             App.Ping();
             var plugin = GetPluginByGuid(pluginGuid);
-
+            plugin.MiniDiskLogger.Debug($"GetEffectivePluginName()");
             if (!plugin.IsLoaded)
             {
                 throw new VstPluginNotLoadedException(plugin);
@@ -189,6 +220,7 @@ namespace PresetMagician.RemoteVstHost.Services
         {
             App.Ping();
             var plugin = GetPluginByGuid(pluginGuid);
+            plugin.MiniDiskLogger.Debug($"GetPluginVendorVersion()");
 
             if (!plugin.IsLoaded)
             {
@@ -202,6 +234,7 @@ namespace PresetMagician.RemoteVstHost.Services
         {
             App.Ping();
             var plugin = GetPluginByGuid(pluginGuid);
+            plugin.MiniDiskLogger.Debug($"GetPluginProductString()");
 
             if (!plugin.IsLoaded)
             {
@@ -215,6 +248,7 @@ namespace PresetMagician.RemoteVstHost.Services
         {
             App.Ping();
             var plugin = GetPluginByGuid(pluginGuid);
+            plugin.MiniDiskLogger.Debug($"GetPluginVendor()");
 
             if (!plugin.IsLoaded)
             {
@@ -235,6 +269,7 @@ namespace PresetMagician.RemoteVstHost.Services
         {
             App.Ping();
             var plugin = GetPluginByGuid(pluginGuid);
+            plugin.MiniDiskLogger.Debug($"GetPluginInfoItems()");
             if (!plugin.IsLoaded)
             {
                 throw new VstPluginNotLoadedException(plugin);
@@ -247,6 +282,7 @@ namespace PresetMagician.RemoteVstHost.Services
         {
             App.Ping();
             var plugin = GetPluginByGuid(pluginGuid);
+            plugin.MiniDiskLogger.Debug($"GetPluginInfo()");
             if (!plugin.IsLoaded)
             {
                 throw new VstPluginNotLoadedException(plugin);
@@ -272,6 +308,7 @@ namespace PresetMagician.RemoteVstHost.Services
         {
             App.Ping();
             var plugin = GetPluginByGuid(pluginGuid);
+            plugin.MiniDiskLogger.Debug($"SetProgram()");
             if (!plugin.IsLoaded)
             {
                 throw new VstPluginNotLoadedException(plugin);
@@ -285,6 +322,7 @@ namespace PresetMagician.RemoteVstHost.Services
         {
             App.Ping();
             var plugin = GetPluginByGuid(pluginGuid);
+            plugin.MiniDiskLogger.Debug($"GetCurrentProgramName()");
             if (!plugin.IsLoaded)
             {
                 throw new VstPluginNotLoadedException(plugin);
@@ -297,6 +335,7 @@ namespace PresetMagician.RemoteVstHost.Services
         {
             App.Ping();
             var plugin = GetPluginByGuid(pluginGuid);
+            plugin.MiniDiskLogger.Debug($"GetChunk()");
             if (!plugin.IsLoaded)
             {
                 throw new VstPluginNotLoadedException(plugin);
@@ -309,6 +348,7 @@ namespace PresetMagician.RemoteVstHost.Services
         {
             App.Ping();
             var plugin = GetPluginByGuid(pluginGuid);
+            plugin.MiniDiskLogger.Debug($"SetChunk(data length {data.Length}, isPreset {isPreset})");
             if (!plugin.IsLoaded)
             {
                 throw new VstPluginNotLoadedException(plugin);
@@ -322,6 +362,7 @@ namespace PresetMagician.RemoteVstHost.Services
         {
             App.Ping();
             var plugin = GetPluginByGuid(pluginGuid);
+            plugin.MiniDiskLogger.Debug($"ExportNksAudioPreview(presetName: {preset.PresetName}, presetDataLength:{presetData}, userContentDirectory:{userContentDirectory}, initialDelay:{initialDelay})");
             if (!plugin.IsLoaded)
             {
                 throw new VstPluginNotLoadedException(plugin);
@@ -334,6 +375,8 @@ namespace PresetMagician.RemoteVstHost.Services
         public void ExportNks(Guid pluginGuid, PresetExportInfo preset, byte[] presetData, string userContentDirectory)
         {
             App.Ping();
+            var plugin = GetPluginByGuid(pluginGuid);
+            plugin.MiniDiskLogger.Debug($"ExportNks(presetName: {preset.PresetName}, presetDataLength:{presetData}, userContentDirectory:{userContentDirectory})");
             var exporter = new NKSExport(_vstHost) {UserContentDirectory = userContentDirectory};
             exporter.ExportNKSPreset(preset, presetData);
         }

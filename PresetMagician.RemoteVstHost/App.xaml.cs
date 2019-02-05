@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.ExceptionServices;
 using System.Security;
 using System.ServiceModel;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Threading;
+using Catel.Logging;
 using Drachenkatze.PresetMagician.Utils;
 using PresetMagician.RemoteVstHost.Services;
 using SharedModels;
@@ -21,27 +24,27 @@ namespace PresetMagician.RemoteVstHost
         private static ServiceHost _serviceHost;
 
         private static Timer _shutdownTimer;
-        private static StreamWriter _logFileStreamWriter;
-        private static FileStream _logFileStream;
-        private static string _logFile;
+        public static MiniDiskLogger MiniDiskLogger;
+        private readonly HashSet<int> _processedExceptions = new HashSet<int>();
 
         protected override void OnStartup(StartupEventArgs e)
         {
             var path = VstUtils.GetVstWorkerLogDirectory();
-            Directory.CreateDirectory(path);
 
-            _logFile = Path.Combine(path, "PresetMagician.RemoteVstHost" +
+            var logFile = Path.Combine(path, "PresetMagician.RemoteVstHost" +
                                              Process.GetCurrentProcess().Id + ".log");
 
-            
+            MiniDiskLogger = new MiniDiskLogger(logFile);
           
             AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
             Current.DispatcherUnhandledException += CurrentOnDispatcherUnhandledException;
+            TaskScheduler.UnobservedTaskException += TaskSchedulerOnUnobservedTaskException;
+            AppDomain.CurrentDomain.FirstChanceException += CurrentDomainOnFirstChanceException;
             
-           string address = Constants.BaseAddress + Process.GetCurrentProcess().Id;
+            string address = Constants.BaseAddress + Process.GetCurrentProcess().Id;
            
             _serviceHost = new ServiceHost(typeof(RemoteVstService));
-            var binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.None);
+            var binding = WcfUtils.GetNetNamedPipeBinding();
 
             var dummyWin = new Window();
             Current.MainWindow = dummyWin;
@@ -60,36 +63,58 @@ namespace PresetMagician.RemoteVstHost
             base.OnStartup(e);
         }
 
+        private void TaskSchedulerOnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
+        {
+            var message = $"TaskSchedulerOnUnobservedTaskException {e.Exception.GetType().FullName}: {e.Exception.Message}";
+            Console.WriteLine(message);
+            Console.WriteLine(e.Exception.StackTrace);
+            
+            MiniDiskLogger.Error(message);
+            MiniDiskLogger.Debug(e.Exception.StackTrace);
+        }
+
+        private void CurrentDomainOnFirstChanceException(object sender, FirstChanceExceptionEventArgs e)
+        {
+            if (_processedExceptions.Contains(e.Exception.GetHashCode()))
+            {
+                return;
+            }
+            _processedExceptions.Add(e.Exception.GetHashCode());
+            var message = $"FirstChanceException {e.Exception.GetType().FullName}: {e.Exception.Message}";
+            Console.WriteLine(message);
+            Console.WriteLine(e.Exception.StackTrace);
+            
+            MiniDiskLogger.Error(message);
+            MiniDiskLogger.Debug(e.Exception.StackTrace);
+            
+        }
+
         private void ServiceHostOnOpened(object sender, EventArgs e)
         {
             Console.WriteLine($"PresetMagician.RemoteVstHost.exe:{Process.GetCurrentProcess().Id} ready.");
-            Console.WriteLine($"[{DateTime.Now:HH:mm:ss:fff}] => {Process.GetCurrentProcess().Id} rdy");
-        }
-
-        private static void MiniLog(string message)
-        {
-            _logFileStream = new FileStream(_logFile, FileMode.Append);
-            _logFileStreamWriter = new StreamWriter(_logFileStream);
-            _logFileStreamWriter.WriteLine($"[{DateTime.Now:HH:mm:ss:fff}] => {message}");
-            _logFileStreamWriter.Flush();
-            _logFileStreamWriter.BaseStream.Flush();
-            _logFileStreamWriter.Close();
-            _logFileStream.Close();
         }
 
         private static void CurrentOnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             var exception = e.Exception;
-            MiniLog("Got exception "+exception.Message);
-            MiniLog(exception.StackTrace);
+            var message =
+                $"CurrentOnDispatcherUnhandledException: {exception.GetType().FullName}: {exception.Message}";
+            Console.WriteLine(message);
+            Console.WriteLine(exception.StackTrace);
+            MiniDiskLogger.Error(message);
+            MiniDiskLogger.Debug(exception.StackTrace);
         }
 
         [HandleProcessCorruptedStateExceptions, SecurityCritical]
         private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             var exception = (Exception) e.ExceptionObject;
-            MiniLog("Got exception "+exception.Message + ", is terminating: "+e.IsTerminating);
-            MiniLog(exception.StackTrace);
+            var message =
+                $"CurrentOnDispatcherUnhandledException: {exception.GetType().FullName}: {exception.Message}. IsTerminating: {e.IsTerminating}";
+            Console.WriteLine(message);
+            Console.WriteLine(exception.StackTrace);
+            MiniDiskLogger.Error(message);
+            MiniDiskLogger.Debug(exception.StackTrace);
         }
 
         private void OnIdleTimeout(object sender, ElapsedEventArgs e)
@@ -105,7 +130,7 @@ namespace PresetMagician.RemoteVstHost
 
         private static void ServiceHostOnFaulted(object sender, EventArgs e)
         {
-            MiniLog("Service Host faulted, exiting");
+            MiniDiskLogger.Error("Service Host faulted, exiting");
             Process.GetCurrentProcess().Kill();
         }
 

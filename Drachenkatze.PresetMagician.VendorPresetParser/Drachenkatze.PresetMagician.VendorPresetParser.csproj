@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractVendorPresetParser.cs" />
+    <Compile Include="AbstractVendorPresetParser_StandardVst.cs" />
     <Compile Include="Arturia\Arturia.cs" />
     <Compile Include="Arturia\Arturia_AnalogLab3.cs" />
     <Compile Include="Arturia\Arturia_Arp2600.cs" />
@@ -246,6 +247,7 @@
     <Compile Include="MeldaProduction\MeldaProduction_MWobbler.cs" />
     <Compile Include="MeldaProduction\MeldaProduction_MWobblerMB.cs" />
     <Compile Include="MeldaProduction\MeldaProduction_MXXX.cs" />
+    <Compile Include="NoMetadataAvailableException.cs" />
     <Compile Include="NullPresetParser.cs" />
     <Compile Include="D16 Group\D16Group.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

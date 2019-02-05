@@ -3,7 +3,6 @@ using System.Reflection;
 using System.ServiceModel;
 using Anotar.Catel;
 using Castle.DynamicProxy;
-using Catel.Logging;
 
 namespace PresetMagician.RemoteVstHost.Processes
 {
@@ -25,13 +24,10 @@ namespace PresetMagician.RemoteVstHost.Processes
         {
             get
             {
-                this.EnsureProxyExists();
-                return this.proxyInstance;
+                EnsureProxyExists();
+                return proxyInstance;
             }
-            set
-            {
-                this.proxyInstance = value;
-            }
+            set => proxyInstance = value;
         }
 
         public void Intercept(IInvocation invocation)
@@ -41,7 +37,7 @@ namespace PresetMagician.RemoteVstHost.Processes
 
             if (_vstHostProcess.IsLockedToPlugin())
             {
-                _vstHostProcess.Logger.Debug(invocation.Method.Name);   
+                _vstHostProcess.GetLockedPlugin().Logger.Debug("Calling "+invocation.Method.Name);   
             }
 
             try
@@ -53,9 +49,9 @@ namespace PresetMagician.RemoteVstHost.Processes
             {
                 Exception innerException = ex.InnerException;
 
-                if (innerException is CommunicationException)
+                if (innerException is CommunicationException && !(innerException is FaultException))
                 {
-                    _vstHostProcess.ForceStop($"Communication Exception {innerException.Message}");
+                    _vstHostProcess.ForceStop($"{innerException.GetType().FullName}: {innerException.Message}");
                 }
                 else
                 {
@@ -75,53 +71,14 @@ namespace PresetMagician.RemoteVstHost.Processes
 
         private void EnsureProxyExists()
         {
-            if (this.proxyInstance == null)
+            if (proxyInstance == null)
             {
-                this.proxyInstance = this.proxyCreator();
+                proxyInstance = proxyCreator();
             }
         }
 
-        private void CloseProxy(MethodInfo methodInfo)
-        {
-            var wcfProxy = this.CachedProxy;
+        
 
-            if (wcfProxy != null && this.typeToProxy.IsAssignableFrom(methodInfo.DeclaringType))
-            {
-                if (wcfProxy.State == CommunicationState.Faulted)
-                {
-                    this.AbortCommunicationObject(wcfProxy);
-                }
-                else if (wcfProxy.State != CommunicationState.Closed)
-                {
-                    try
-                    {
-                        wcfProxy.Close();
-
-                        this.CachedProxy = null;
-                    }
-                    catch (CommunicationException)
-                    {
-                        this.AbortCommunicationObject(wcfProxy);
-                    }
-                    catch (TimeoutException)
-                    {
-                        this.AbortCommunicationObject(wcfProxy);
-                    }
-                    catch (Exception)
-                    {
-                        this.AbortCommunicationObject(wcfProxy);
-                        throw;
-                    }
-                }
-            }
-        }
-
-        private void AbortCommunicationObject(ICommunicationObject wcfProxy)
-        {
-            wcfProxy.Abort();
-
-            this.CachedProxy = null;
-        }
     }
    
   

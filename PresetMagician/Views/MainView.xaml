@@ -15,7 +15,6 @@
     d:DesignWidth="800"
     mc:Ignorable="d">
 
-    <Grid>
 
         <xcad:DockingManager x:Name="DockingManager" AllowMixedOrientation="True">
 
@@ -67,5 +66,5 @@
 
         </xcad:DockingManager>
 
-    </Grid>
+
 </catel:UserControl>

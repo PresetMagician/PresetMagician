@@ -30,7 +30,7 @@ namespace PresetMagician
             _vstService = vstService;
             _applicationService = applicationService;
         }
-        
+
         [STAThread]
         protected override async Task ExecuteAsync(object parameter)
         {
@@ -66,11 +66,9 @@ namespace PresetMagician
                 {
                     try
                     {
-                        using (var remotePluginInstance = _vstService.GetRemotePluginInstance(pluginPreset.Plugin))
+                        using (var remotePluginInstance =
+                            _vstService.GetRemotePluginInstance(pluginPreset.Plugin, false))
                         {
-
-                            await remotePluginInstance.LoadPlugin();
-
                             foreach (var preset in pluginPreset.Presets)
                             {
                                 currentPreset++;
@@ -88,6 +86,7 @@ namespace PresetMagician
                                 if (_runtimeConfigurationService.RuntimeConfiguration.ExportWithAudioPreviews &&
                                     pluginPreset.Plugin.PluginType == Plugin.PluginTypes.Instrument)
                                 {
+                                    await remotePluginInstance.LoadPlugin().ConfigureAwait(false);
                                     remotePluginInstance.ExportNksAudioPreview(presetExportInfo, presetData,
                                         exportDirectory,
                                         preset.Preset.Plugin.GetAudioPreviewDelay());
@@ -106,11 +105,11 @@ namespace PresetMagician
                     catch (Exception e)
                     {
                         _applicationService.AddApplicationOperationError(
-                            $"Unable to update export presets because of {e.Message}");
+                            $"Unable to update export presets because of {e.GetType().FullName}: {e.Message}");
                         LogTo.Debug(e.StackTrace);
                     }
 
-                    await _vstService.SavePlugins();
+                    await _vstService.SavePlugins().ConfigureAwait(false);
                 }
             });
 

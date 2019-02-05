@@ -47,6 +47,7 @@ namespace PresetMagician
             catch (Exception e)
             {
                 LogTo.Error($"Error executing command {CommandName} - Got exception {e.GetType().FullName} with message {e.Message}");
+                LogTo.Debug(e.StackTrace);
             }
         }
     }

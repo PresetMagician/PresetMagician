@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using Anotar.Catel;
 using Castle.DynamicProxy;
 using Catel;
 using Catel.Collections;
@@ -95,13 +97,20 @@ namespace PresetMagician.RemoteVstHost
         {
             for (var i = 0; i < _maxStartTimeout; i++)
             {
+                
                 var foundProcess = FindFreeHostProcess();
                 if (foundProcess != null)
                 {
                     return foundProcess;
                 }
+                
+                if (i != 0)
+                {
+                    LogTo.Debug($"Warning: No free host process after {i} second(s)");
+                }
 
                 Thread.Sleep(1000);
+                
             }
 
             throw new VstWorkerNotFoundException(
@@ -193,8 +202,7 @@ namespace PresetMagician.RemoteVstHost
 
         private void ProcessOnProcessStateUpdated(object sender, EventArgs e)
         {
-            lock (_updateLock)
-            {
+           
                 var process = sender as VstHostProcess;
                 if (process.CurrentProcessState == HostProcess.ProcessState.EXITED && !process.StartupSuccessful &&
                     PoolRunning)
@@ -216,7 +224,7 @@ namespace PresetMagician.RemoteVstHost
                         PoolFailed.SafeInvoke(this, eventArgs);
                     }
                 }
-            }
+            
         }
 
       

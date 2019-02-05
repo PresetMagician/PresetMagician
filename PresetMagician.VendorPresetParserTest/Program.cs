@@ -5,13 +5,16 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Catel.Logging;
 using CsvHelper;
 using CsvHelper.Configuration.Attributes;
 using Drachenkatze.PresetMagician.Utils;
 using Drachenkatze.PresetMagician.VendorPresetParser;
+using Jacobi.Vst.Core;
 using PresetMagician.Models;
 using PresetMagician.RemoteVstHost;
 using PresetMagician.RemoteVstHost.Processes;
+using PresetMagician.SharedModels;
 using PresetMagician.VstHost.VST;
 using SharedModels;
 using Type = SharedModels.Type;
@@ -22,6 +25,9 @@ namespace PresetMagician.VendorPresetParserTest
     {
         public static void Main(string[] args)
         {
+            var logger = new RollingInMemoryLogListener();
+            LogManager.AddListener(logger);
+            
             var pluginTestDirectory = @"C:\Program Files\VSTPlugins";
             var testResults = new List<PluginTestResult>();
 
@@ -59,7 +65,7 @@ namespace PresetMagician.VendorPresetParserTest
                 }
 
                 Console.Write(presetParser.PresetParserType + ": ");
-                
+
                 var start = DateTime.Now;
 
                 var pluginLocation = new PluginLocation
@@ -67,17 +73,20 @@ namespace PresetMagician.VendorPresetParserTest
                     DllPath = @"C:\Program Files\VstPlugins\Foobar.dll", IsPresent = true
                 };
 
-                var plugin = new Plugin {VstPluginId = pluginId, PluginLocation = pluginLocation};
+                var plugin = new Plugin
+                {
+                    VstPluginId = pluginId, PluginLocation = pluginLocation,
+                    PluginInfo = new VstPluginInfoSurrogate {ProgramCount = 1, Flags = VstPluginFlags.ProgramChunks, PluginID = pluginId}
+                };
 
-                var stubProcess = new VstHostProcess();
-                
+                var stubProcess = new StubVstHostProcess();
+                stubProcess.PluginId = pluginId;
+
                 var remoteInstance = new RemotePluginInstance(stubProcess, plugin);
-
 
                 presetParser.DataPersistence = new NullPresetPersistence();
                 presetParser.PluginInstance = remoteInstance;
                 presetParser.RootBank = plugin.RootBank.First();
-                presetParser.Presets = new ObservableCollection<Preset>();
 
                 var testResult = new PluginTestResult
                 {
@@ -101,13 +110,16 @@ namespace PresetMagician.VendorPresetParserTest
                 catch (Exception e)
                 {
                     testResult.Error = "Errored";
+                    Console.WriteLine(e.Message);
+                    Console.WriteLine(e.StackTrace);
                 }
 
                 testResult.Presets = plugin.Presets.Count;
 
-                
+                var timePerPreset = (totalTime / testResult.Presets) * 1000;
                 // ReSharper disable once LocalizableElement
-                Console.WriteLine($"{testResult.Presets} parsed in {totalTime}s (DoScan {timeForDoScan}s NumPresets {timeForNumPresets}s");
+                Console.WriteLine(
+                    $"{testResult.Presets} parsed in {totalTime:F3}s (avg {timePerPreset:F3}ms / Preset, DoScan {timeForDoScan:F3}s, NumPresets {timeForNumPresets:F3}s");
 
                 var testDataEntry = GetTestDataEntry(testData, presetParser.PresetParserType, pluginId);
                 var foundPreset = false;
@@ -135,15 +147,52 @@ namespace PresetMagician.VendorPresetParserTest
                     testResult.RndHash = randomPreset.PresetHash;
                     testResult.RndPresetName = randomPreset.PresetName;
                     testResult.RndBankPath = randomPreset.BankPath;
-                    //testResult.RandomPresetSource = randomPreset.SourceFile;
                 }
 
-                if (foundPreset && plugin.Presets.Count > 5 && testResult.BankMissing < 2 &&
-                     plugin.Presets.Count == testResult.ReportedPresets)
+                var mockFxp = Path.Combine(Directory.GetCurrentDirectory(), "mock.fxp");
+                var fxp = new FXP();
+                fxp.ReadFile(Path.Combine(Directory.GetCurrentDirectory(), "test.fxp"));
+                fxp.FxID = VstUtils.PluginIdNumberToIdString(pluginId);
+                fxp.WriteFile(mockFxp);
+                // Test additional banks
+                var bankFile = new BankFile();
+                bankFile.Path = mockFxp;
+                bankFile.BankName = "Default";
+
+                presetParser.AdditionalBankFiles.Clear();
+                presetParser.AdditionalBankFiles.Add(bankFile);
+                bool additionalBankFileCountOk = false;
+
+
+                if (presetParser.GetNumPresets() == testResult.ReportedPresets + 1)
+                {
+                    additionalBankFileCountOk = true;
+                }
+                else
+                {
+                    testResult.Error += " additionalBankFileCount failed";
+                }
+
+                plugin.Presets.Clear();
+                presetParser.DoScan().Wait();
+
+                var additionalBankFileScanOk = false;
+
+                if (plugin.Presets.Count == testResult.Presets + 1)
+                {
+                    additionalBankFileScanOk = true;
+                }
+                else
+                {
+                    testResult.Error += " additionalBankFileScan failed";
+                }
+
+                if (foundPreset && testResult.Presets > 5 && testResult.BankMissing < 2 &&
+                    testResult.Presets == testResult.ReportedPresets && additionalBankFileCountOk &&
+                    additionalBankFileScanOk)
                 {
                     testResult.IsOK = true;
                 }
-
 
                 testResults.Add(testResult);
             }
@@ -156,7 +205,7 @@ namespace PresetMagician.VendorPresetParserTest
 
             Console.WriteLine(consoleTable.ToMinimalString());
 
-            Console.WriteLine("Stuff left: " + consoleTable.Rows.Count);
+            Console.WriteLine($"Stuff left: {consoleTable.Rows.Count} / {presetParserDictionary.Count}");
         }
 
         public static List<TestData> ReadTestData()
@@ -194,162 +243,192 @@ namespace PresetMagician.VendorPresetParserTest
         }
     }
 
-   
-    
-     public class StubRemoteVstService : IRemoteVstService
-     {
-         public void KillSelf()
-         {
-             
-         }
+    public class StubVstHostProcess : VstHostProcess
+    {
+        public int PluginId { get; set; }
+        public override IRemoteVstService GetVstService()
+        {
+            return new StubRemoteVstService(PluginId);
+        }
+    }
 
-         public DateTime GetLastModifiedDate(string file)
-         {
-             return DateTime.Now;
-         }
 
-         public bool Exists(string file)
-         {
-             return true;
-         }
+    public class StubRemoteVstService : IRemoteVstService
+    {
+        private byte[] _bankData = Encoding.UTF8.GetBytes("foo");
+        private byte[] _presetData = Encoding.UTF8.GetBytes("foo");
+        private int _pluginId;
 
-         public long GetSize(string file)
-         {
-             return 0;
-         }
+        public StubRemoteVstService(int pluginId)
+        {
+            _pluginId = pluginId;
+        }
 
-         public string GetHash(string file)
-         {
-             return "";
-         }
+        public void KillSelf()
+        {
+        }
 
-         public byte[] GetContents(string file)
-         {
-             return null;
-         }
+        public DateTime GetLastModifiedDate(string file)
+        {
+            return DateTime.Now;
+        }
 
-         public int GetPluginVendorVersion(Guid pluginGuid)
-         {
-             return 0;
-         }
+        public bool Exists(string file)
+        {
+            return true;
+        }
 
-         public string GetPluginProductString(Guid pluginGuid)
-         {
-             return null;
-         }
+        public long GetSize(string file)
+        {
+            return 0;
+        }
 
-         public string GetEffectivePluginName(Guid pluginGuid)
-         {
-             return null;
-         }
+        public string GetHash(string file)
+        {
+            return "";
+        }
 
-         public bool Ping()
-         {
-             return true;
-         }
- 
-         public Guid RegisterPlugin(string dllPath, bool backgroundProcessing = true)
-         {
-             var guid = Guid.NewGuid();
-             return guid;
-         }
- 
-         public string GetPluginHash(Guid guid)
-         {
-             return null;
-         }
- 
-         public void LoadPlugin(Guid guid, bool debug = false)
-         {
+        public byte[] GetContents(string file)
+        {
+            return null;
+        }
+
+        public int GetPluginVendorVersion(Guid pluginGuid)
+        {
+            return 0;
+        }
+
+        public string GetPluginProductString(Guid pluginGuid)
+        {
+            return null;
+        }
+
+        public string GetEffectivePluginName(Guid pluginGuid)
+        {
+            return null;
+        }
+
+        public bool Ping()
+        {
+            return true;
+        }
+
+        public Guid RegisterPlugin(string dllPath, bool backgroundProcessing = true)
+        {
+            var guid = Guid.NewGuid();
+            return guid;
+        }
+
+        public void UnregisterPlugin(Guid guid)
+        {
             
-         }
- 
-         public void UnloadPlugin(Guid guid)
-         {
-            
-         }
- 
-         public void ReloadPlugin(Guid guid)
-         {
-            
-         }
- 
-         private RemoteVstPlugin GetPluginByGuid(Guid guid)
-         {
-             return null;
-         }
- 
-         public bool OpenEditorHidden(Guid pluginGuid)
-         {
-             return true;
-         }
- 
-         public bool OpenEditor(Guid pluginGuid)
-         {
-             return true;
-         }
- 
-         public void CloseEditor(Guid pluginGuid)
-         {
-           
-         }
- 
-         public byte[] CreateScreenshot(Guid pluginGuid)
-         {
-             return null;
-         }
- 
-         public string GetPluginName(Guid pluginGuid)
-         {
-             return null;
-         }
- 
-         public string GetPluginVendor(Guid pluginGuid)
-         {
-             return null;
-         }
- 
-         public List<PluginInfoItem> GetPluginInfoItems(Guid pluginGuid)
-         {
-             return null;
-         }
- 
-         public VstPluginInfoSurrogate GetPluginInfo(Guid pluginGuid)
-         {
-             return null;
-         }
- 
-         public void SetProgram(Guid pluginGuid, int program)
-         {
-            
-         }
- 
-         public string GetCurrentProgramName(Guid pluginGuid)
-         {
-             return null;
-         }
- 
-         public byte[] GetChunk(Guid pluginGuid, bool isPreset)
-         {
-             return Encoding.UTF8.GetBytes("foo");
-         }
- 
-         public void SetChunk(Guid pluginGuid, byte[] data, bool isPreset)
-         {
-    
-         }
- 
-         public void ExportNksAudioPreview(Guid pluginGuid, PresetExportInfo preset, byte[] presetData,
-             string userContentDirectory, int initialDelay)
-         {
+        }
 
-         }
- 
-         public void ExportNks(Guid pluginGuid, PresetExportInfo preset, byte[] presetData, string userContentDirectory)
-         {
-          
-         }
-     }
+        public string GetPluginHash(Guid guid)
+        {
+            return null;
+        }
+
+        public void LoadPlugin(Guid guid, bool debug = false)
+        {
+        }
+
+        public void UnloadPlugin(Guid guid)
+        {
+        }
+
+        public void ReloadPlugin(Guid guid)
+        {
+        }
+
+        private RemoteVstPlugin GetPluginByGuid(Guid guid)
+        {
+            return null;
+        }
+
+        public bool OpenEditorHidden(Guid pluginGuid)
+        {
+            return true;
+        }
+
+        public bool OpenEditor(Guid pluginGuid)
+        {
+            return true;
+        }
+
+        public void CloseEditor(Guid pluginGuid)
+        {
+        }
+
+        public byte[] CreateScreenshot(Guid pluginGuid)
+        {
+            return null;
+        }
+
+        public string GetPluginName(Guid pluginGuid)
+        {
+            return null;
+        }
+
+        public string GetPluginVendor(Guid pluginGuid)
+        {
+            return null;
+        }
+
+        public List<PluginInfoItem> GetPluginInfoItems(Guid pluginGuid)
+        {
+            return new List<PluginInfoItem>();
+        }
+
+        public VstPluginInfoSurrogate GetPluginInfo(Guid pluginGuid)
+        {
+            var info = new VstPluginInfoSurrogate {ProgramCount = 1, Flags = VstPluginFlags.ProgramChunks, PluginID = _pluginId};
+            return info;
+        }
+
+        public void SetProgram(Guid pluginGuid, int program)
+        {
+        }
+
+        public string GetCurrentProgramName(Guid pluginGuid)
+        {
+            return "nope";
+        }
+
+        public byte[] GetChunk(Guid pluginGuid, bool isPreset)
+        {
+            if (isPreset)
+            {
+                return _presetData;
+            }
+            else
+            {
+                return _bankData;
+            }
+        }
+
+        public void SetChunk(Guid pluginGuid, byte[] data, bool isPreset)
+        {
+            if (isPreset)
+            {
+                _presetData = data;
+            }
+            else
+            {
+                _bankData = data;
+            }
+        }
+
+        public void ExportNksAudioPreview(Guid pluginGuid, PresetExportInfo preset, byte[] presetData,
+            string userContentDirectory, int initialDelay)
+        {
+        }
+
+        public void ExportNks(Guid pluginGuid, PresetExportInfo preset, byte[] presetData, string userContentDirectory)
+        {
+        }
+    }
+
     internal class NullPresetPersistence : IDataPersistence
     {
 #pragma warning disable 1998

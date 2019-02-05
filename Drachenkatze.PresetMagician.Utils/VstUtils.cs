@@ -43,8 +43,42 @@ namespace Drachenkatze.PresetMagician.Utils
 
         public static string GetVstWorkerLogDirectory()
         {
-            return Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) +
-                   @"\Drachenkatze\PresetMagician.RemoteVstHost\Logs\";
+            var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                @"\Drachenkatze\PresetMagician.RemoteVstHost\Logs\");
+
+            Directory.CreateDirectory(directory);
+
+            return directory;
+        }
+
+        public static string GetWorkerPluginLog(int pid, Guid guid)
+        {
+            return Path.Combine(GetVstWorkerLogDirectory(), $"PresetMagician.RemoteVstHost{pid}_{guid}.log");
+        }
+
+        public static void CleanupVstWorkerLogDirectory()
+        {
+            var vstWorkerLogDirectory = GetVstWorkerLogDirectory();
+            
+            var directory = new DirectoryInfo(vstWorkerLogDirectory);
+
+            try
+            {
+                foreach (var file in directory.EnumerateFiles("*.*"))
+                {
+                    try
+                    {
+                        file.Delete();
+                    }
+                    catch (Exception e)
+                    {
+
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+            }
         }
     }
 }

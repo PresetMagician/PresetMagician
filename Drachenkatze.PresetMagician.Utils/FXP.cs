@@ -189,8 +189,6 @@ namespace Drachenkatze.PresetMagician.Utils
                 return;
             }
 
-            Console.Out.WriteLine("Writing FXP to {0} ...", filePath);
-
             bf.Write(ChunkMagic); // chunkMagic, 4
 
             // check what preset type we are saving

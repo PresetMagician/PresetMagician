@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Anotar.Catel;
-using Catel.Logging;
 using MethodTimer;
 using SharedModels;
 
@@ -54,7 +53,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         }
 
         [Time]
-        private static IVendorPresetParser GetPresetHandler(IRemotePluginInstance pluginInstance)
+        private static IVendorPresetParser GetPresetParser(IRemotePluginInstance pluginInstance)
         {
             pluginInstance.Plugin.Logger.Debug("Resolving Preset Parser");
 
@@ -67,8 +66,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
                 
                 if (directlyFoundParser.CanHandle())
                 {
-                    pluginInstance.Plugin.Logger.Debug("Directly found PresetHandler {0}",
-                        directlyFoundParser.PresetParserType);
+                    pluginInstance.Plugin.Logger.Debug($"Directly found PresetHandler {directlyFoundParser.PresetParserType}");
 
                     return directlyFoundParser;
                 }
@@ -94,8 +92,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
                         continue;
                     }
 
-                    pluginInstance.Plugin.Logger.Debug("Using PresetHandler {0}",
-                        parser.PresetParserType);
+                    pluginInstance.Plugin.Logger.Debug($"Using PresetHandler {parser.PresetParserType}");
                 }
                 catch (Exception e)
                 {
@@ -112,7 +109,12 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
         public static void DeterminatePresetParser(IRemotePluginInstance pluginInstance)
         {
-            pluginInstance.Plugin.PresetParser = GetPresetHandler(pluginInstance);
+            if (!pluginInstance.Plugin.HasMetadata)
+            {
+                throw new NoMetadataAvailableException(pluginInstance);
+            }
+            
+            pluginInstance.Plugin.PresetParser = GetPresetParser(pluginInstance);
 
             if (pluginInstance.Plugin.PresetParser == null)
             {

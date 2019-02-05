@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Drachenkatze.PresetMagician.Utils;
 using PresetMagician.Models;
 
 namespace SharedModels
@@ -29,7 +30,7 @@ namespace SharedModels
         /// </summary>
         bool IsSupported { get; set; }
 
-        MiniLogger Logger { get; }
+        MiniMemoryLogger Logger { get; }
         string CanonicalDllFilename { get; }
 
         void OnLoadError(Exception e);

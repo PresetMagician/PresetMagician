@@ -6,6 +6,7 @@
 
 using System;
 using System.Threading.Tasks;
+using Anotar.Catel;
 using Catel;
 using Catel.IoC;
 using Catel.Logging;
@@ -90,16 +91,20 @@ namespace PresetMagician.Services
         [Time]
         public override async Task InitializeAfterShowingShellAsync()
         {
+            LogTo.Debug("Running initialization after showing the shell");
+            
             var serviceLocator = ServiceLocator.Default;
             var licenseService = serviceLocator.ResolveType<ILicenseService>();
             if (!licenseService.CheckLicense())
             {
+                LogTo.Debug("No valid license found, showing registration dialog");
                 StartRegistration();
             }
 
 
             base.InitializeAfterShowingShellAsync();
 
+            LogTo.Debug("Scheduling update check task");
             var schedulerService = _serviceLocator.ResolveType<ISchedulingService>();
 
             var updateCheckTask = new ScheduledTask

@@ -61,7 +61,7 @@
     <ApplicationIcon>Resources\Icons\PresetMagician.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>PresetMagician.Program</StartupObject>
+    <StartupObject>PresetMagician.App</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Publish|x64' ">
     <OutputPath>bin\x64\Publish\</OutputPath>

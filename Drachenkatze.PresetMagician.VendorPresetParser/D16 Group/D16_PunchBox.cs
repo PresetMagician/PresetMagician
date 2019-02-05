@@ -34,6 +34,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
         {
             await ProcessPresetDirectory(GetUserBankPath(UserBankPath), RootBank.CreateRecursive(BankNameUser));
             await ProcessD16PkgArchive(GetFactoryBankPath(FactoryBankPath), RootBank.CreateRecursive(BankNameFactory));
+            await base.DoScan();
         }
 
         public override int GetNumPresets()
@@ -44,7 +45,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
             count += ProcessD16PkgArchive(GetFactoryBankPath(FactoryBankPath),
                 RootBank.CreateRecursive(BankNameFactory), false).GetAwaiter().GetResult();
 
-            return count;
+            return base.GetNumPresets() + count;
         }
 
         public override void OnAfterPresetExport()

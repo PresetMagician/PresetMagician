@@ -1,19 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Threading.Tasks;
+using Catel.Logging;
+using Drachenkatze.PresetMagician.Utils;
+using Jacobi.Vst.Core;
 using PresetMagician.SharedModels;
 using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser
 {
-    public abstract class AbstractVendorPresetParser
+    public abstract partial class AbstractVendorPresetParser
     {
         protected const string BankNameFactory = "Factory";
         protected const string BankNameUser = "User";
 
-        public virtual bool SupportsAdditionalBankFiles { get; set; } = false;
-        public virtual List<BankFile> AdditionalBankFiles { get; } = null;
+        public virtual List<BankFile> AdditionalBankFiles { get; } = new List<BankFile>();
 
         public IRemotePluginInstance PluginInstance { get; set; }
 
@@ -39,15 +42,12 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
         public ObservableCollection<string> DefaultModes { get; set; } = new ObservableCollection<string>();
 
-        public ObservableCollection<Preset> Presets { get; set; } = new ObservableCollection<Preset>();
-
         public virtual string BankLoadingNotes { get; set; }
         public IDataPersistence DataPersistence { get; set; }
 
         public virtual int GetNumPresets()
         {
-            return 99999;
-            throw new NotImplementedException();
+            return GetAdditionalBanksPresetCount();
         }
 
         public virtual void Init()
@@ -56,9 +56,13 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
         public virtual async Task DoScan()
         {
-            //throw new NotImplementedException();
+            if (AdditionalBankFiles.Count > 0)
+            {
+                await PluginInstance.LoadPlugin();
+                await ParseAdditionalBanks();    
+            }
         }
-
+        
         public virtual bool CanHandle()
         {
             return SupportedPlugins.Contains(PluginInstance.Plugin.VstPluginId);

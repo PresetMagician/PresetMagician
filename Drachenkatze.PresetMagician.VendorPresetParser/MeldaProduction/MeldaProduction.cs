@@ -22,12 +22,13 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
 
         public override int GetNumPresets()
         {
-            return ScanPresetXmlFile(PresetFile, RootTag, false).GetAwaiter().GetResult();
+            return base.GetNumPresets() + ScanPresetXmlFile(PresetFile, RootTag, false).GetAwaiter().GetResult();
         }
 
         public override async Task DoScan()
         {
             await ScanPresetXmlFile(PresetFile, RootTag);
+            await base.DoScan();
         }
 
         public async Task<int> ScanPresetXmlFile(string filename, string rootTag, bool persist = true)
