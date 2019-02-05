@@ -1,5 +1,6 @@
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Drachenkatze.PresetMagician.VendorPresetParser.Common;
 using GSF.Collections;
 using ICSharpCode.SharpZipLib.Zip.Compression;
@@ -12,10 +13,12 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.DmitrySches
         private byte[] _decodeBuffer;
         private const int DecodeBufferSize = 1024 * 1024 * 100;
 
-        public override void Init()
+    
+        public override async Task DoScan()
         {
             _decodeBuffer = new byte[DecodeBufferSize];
-            base.Init();
+            await base.DoScan();
+            _decodeBuffer = null;
         }
 
         protected override byte[] ProcessFile(string fileName, Preset preset)
