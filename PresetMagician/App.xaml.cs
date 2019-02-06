@@ -62,11 +62,22 @@ namespace PresetMagician
         {
             var languageService = ServiceLocator.Default.ResolveType<ILanguageService>();
             languageService.PreferredCulture = new CultureInfo("en-US");
+
             languageService.FallbackCulture = new CultureInfo("en-US");
 
 #if DEBUG
             _debugListener = LogManager.AddDebugListener(true);
 #endif
+            var fileLogListener = new FileLogListener
+            {
+                IgnoreCatelLogging = true,
+                FilePath = @"{AppDataLocal}\Logs\PresetMagician.log",
+                TimeDisplay = TimeDisplay.DateTime
+            };
+            LogManager.IgnoreDuplicateExceptionLogging = false;
+            LogManager.AddListener(fileLogListener);
+            LogManager.GetCurrentClassLogger().Debug($"Started with command line {Environment.CommandLine}");
+            
             var serviceLocator = ServiceLocator.Default;
             var updateService = serviceLocator.ResolveType<IUpdateService>();
             updateService.Initialize(Settings.Application.AutomaticUpdates.AvailableChannels,
@@ -75,6 +86,7 @@ namespace PresetMagician
 
             if (updateService.IsUpdateSystemAvailable)
             {
+                LogManager.GetCurrentClassLogger().Debug("Update system available, processing squirrel events");
                 using (var mgr = new UpdateManager(updateService.CurrentChannel.DefaultUrl))
                 {
                     // Note, in most of these scenarios, the app exits after this method
@@ -82,11 +94,13 @@ namespace PresetMagician
                     SquirrelAwareApp.HandleEvents(
                         onInitialInstall: v =>
                         {
+                            LogManager.GetCurrentClassLogger().Debug("Installing shortcuts");
                             mgr.CreateShortcutForThisExe();
                             Environment.Exit(0);
                         },
                         onAppUpdate: v =>
                         {
+                            LogManager.GetCurrentClassLogger().Debug("Update: Installing shortcuts");
                             mgr.CreateShortcutForThisExe();
                             Environment.Exit(0);
                         },
@@ -99,14 +113,7 @@ namespace PresetMagician
                 }
             }
 
-            var fileLogListener = new FileLogListener
-            {
-                IgnoreCatelLogging = true,
-                FilePath = @"{AppDataLocal}\Logs\PresetMagician.log",
-                TimeDisplay = TimeDisplay.DateTime
-            };
-
-            LogManager.AddListener(fileLogListener);
+           
             LogManager.GetCurrentClassLogger().Debug("Startup");
 
             try
