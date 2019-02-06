@@ -2,7 +2,6 @@
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\ModuleInit.Fody\build\ModuleInit.Fody.props" Condition="Exists('..\packages\ModuleInit.Fody\build\ModuleInit.Fody.props')" Label="Paket" />
   <Import Project="..\packages\MethodTimer.Fody\build\MethodTimer.Fody.props" Condition="Exists('..\packages\MethodTimer.Fody\build\MethodTimer.Fody.props')" Label="Paket" />
-  <Import Project="..\packages\Costura.Fody\build\Costura.Fody.props" Condition="Exists('..\packages\Costura.Fody\build\Costura.Fody.props')" Label="Paket" />
   <Import Project="..\packages\Catel.Fody\build\Catel.Fody.props" Condition="Exists('..\packages\Catel.Fody\build\Catel.Fody.props')" Label="Paket" />
   <Import Project="..\packages\Anotar.Catel.Fody\build\Anotar.Catel.Fody.props" Condition="Exists('..\packages\Anotar.Catel.Fody\build\Anotar.Catel.Fody.props')" Label="Paket" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -611,17 +610,6 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
-        <Reference Include="Costura">
-          <HintPath>..\packages\Costura.Fody\lib\net40\Costura.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
-      <ItemGroup>
         <Reference Include="DataGridExtensions">
           <HintPath>..\packages\DataGridExtensions\lib\net45\DataGridExtensions.dll</HintPath>
           <Private>True</Private>
@@ -903,17 +891,6 @@
       <ItemGroup>
         <Reference Include="Orc.Squirrel">
           <HintPath>..\packages\Orc.Squirrel\lib\net47\Orc.Squirrel.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
-      <ItemGroup>
-        <Reference Include="Orc.Squirrel.Xaml">
-          <HintPath>..\packages\Orc.Squirrel.Xaml\lib\net47\Orc.Squirrel.Xaml.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
