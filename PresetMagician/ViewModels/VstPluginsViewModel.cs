@@ -36,6 +36,8 @@ namespace PresetMagician.ViewModels
             Plugins.CollectionChanged += PluginsOnCollectionChanged;
 
             _vstService.SelectedPluginChanged += VstServiceOnSelectedPluginChanged;
+            ThrottlingRate = new TimeSpan(0, 0, 0, 0, 500);
+
             Title = "VST Plugins";
         }
 
@@ -47,11 +49,6 @@ namespace PresetMagician.ViewModels
         private void PluginsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             RaisePropertyChanged(nameof(HasPlugins));
-        }
-
-        protected override async Task InitializeAsync()
-        {
-            await base.InitializeAsync();
         }
 
         public bool HasPlugins => Plugins.Count > 0;

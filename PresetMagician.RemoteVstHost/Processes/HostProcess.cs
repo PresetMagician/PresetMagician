@@ -191,7 +191,7 @@ namespace PresetMagician.RemoteVstHost.Processes
                 StartupTime = DateTime.Now - StartDateTime;
                 StartupSuccessful = true;
                 _startupTimer.Stop();
-                TaskHelper.Run(() => { OnAfterStart(); }).ConfigureAwait(false);
+                TaskHelper.Run(() => { OnAfterStart(); });
             }
             else
             {
