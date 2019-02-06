@@ -86,7 +86,7 @@ namespace PresetMagician.Services
             LoadConfiguration();
 
             _splashScreenService.Action = "Loading database…";
-            await InitializeCommandsAsync();
+            InitializeCommands();
 
             _splashScreenService.Action = "Almost there…";
             
@@ -150,7 +150,7 @@ namespace PresetMagician.Services
         }
 
         [Time]
-        private async Task InitializeCommandsAsync()
+        private void InitializeCommands()
         {
             _commandManager.CreateCommandWithGesture(typeof(Commands.Application), "CancelOperation");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Application), "ClearLastOperationErrors");

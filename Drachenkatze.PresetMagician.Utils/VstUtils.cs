@@ -44,7 +44,7 @@ namespace Drachenkatze.PresetMagician.Utils
         public static string GetVstWorkerLogDirectory()
         {
             var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                @"\Drachenkatze\PresetMagician.RemoteVstHost\Logs\");
+                @"Drachenkatze\PresetMagician.RemoteVstHost\Logs\");
 
             Directory.CreateDirectory(directory);
 
