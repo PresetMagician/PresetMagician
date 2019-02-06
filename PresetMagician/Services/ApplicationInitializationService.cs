@@ -66,6 +66,14 @@ namespace PresetMagician.Services
         [Time]
         public override async Task InitializeBeforeCreatingShellAsync()
         {
+            
+
+            await RunAndWaitAsync(new Func<Task>[]
+            {
+                InitializePerformanceAsync
+            });
+
+            
             // Non-async first
             RegisterTypes();
 
@@ -78,9 +86,10 @@ namespace PresetMagician.Services
             LoadConfiguration();
 
             _splashScreenService.Action = "Loading database…";
-            InitializeCommands();
+            await InitializeCommandsAsync();
 
             _splashScreenService.Action = "Almost there…";
+            
         }
 
         public override Task InitializeAfterCreatingShellAsync()
@@ -141,7 +150,7 @@ namespace PresetMagician.Services
         }
 
         [Time]
-        private void InitializeCommands()
+        private async Task InitializeCommandsAsync()
         {
             _commandManager.CreateCommandWithGesture(typeof(Commands.Application), "CancelOperation");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Application), "ClearLastOperationErrors");
@@ -210,6 +219,13 @@ namespace PresetMagician.Services
         private void InitDatabase()
         {
             ApplicationDatabaseContext.InitializeViewCache();
+        }
+        
+        private async Task InitializePerformanceAsync()
+        {
+
+            Catel.Windows.Controls.UserControl.DefaultCreateWarningAndErrorValidatorForViewModelValue = false;
+            Catel.Windows.Controls.UserControl.DefaultSkipSearchingForInfoBarMessageControlValue = true;
         }
 
         [Time]

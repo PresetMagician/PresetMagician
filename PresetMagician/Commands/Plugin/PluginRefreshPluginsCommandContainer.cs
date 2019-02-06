@@ -74,7 +74,7 @@ namespace PresetMagician
 
                     foreach (var plugin in pluginsToAdd)
                     {
-                        _dispatcherService.Invoke(() => { plugins.Add(plugin); });
+                        _dispatcherService.BeginInvoke(() => { plugins.Add(plugin); });
                     }
 
                     _applicationService.StopApplicationOperation("Verifying plugins complete");
@@ -183,6 +183,7 @@ namespace PresetMagician
                     }
                 };
                 _dispatcherService.Invoke(() => { plugins.Add(newPlugin); });
+                Thread.Sleep(10);
             }
         }
 
@@ -257,7 +258,8 @@ namespace PresetMagician
                     }
                 }
 
-                _dispatcherService.Invoke(() => { plugin.NativeInstrumentsResource.Load(plugin); });
+                _dispatcherService.BeginInvoke(() => { plugin.NativeInstrumentsResource.Load(plugin); });
+                Thread.Sleep(10);
             }
 
             return pluginsToAdd;
