@@ -14,6 +14,7 @@ using Catel.IO;
 using Catel.Logging;
 using Catel.Services;
 using Drachenkatze.PresetMagician.Utils;
+using NBug;
 using NBug.Events;
 using Orc.Squirrel;
 using Orchestra.Services;
