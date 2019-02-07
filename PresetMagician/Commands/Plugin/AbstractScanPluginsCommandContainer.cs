@@ -251,6 +251,11 @@ namespace PresetMagician
                     continue;
                 }
 
+                if (!plugin.HasMetadata)
+                {
+                    continue;
+                }
+
                 LogTo.Debug($"Begin analysis of {plugin.DllFilename}");
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -286,7 +291,7 @@ namespace PresetMagician
                             }
                         }
 
-                        plugin.Debug($"Attempting to find presetParser for {plugin.PluginName}");
+                        plugin.Logger.Debug($"Attempting to find presetParser for {plugin.PluginName}");
 
                         VendorPresetParser.DeterminatePresetParser(remotePluginInstance);
                         var wasLoaded = remotePluginInstance.IsLoaded;
@@ -321,9 +326,8 @@ namespace PresetMagician
                         if (_runtimeConfigurationService.RuntimeConfiguration.AutoCreateResources &&
                             _resourceGeneratorService.ShouldCreateScreenshot(remotePluginInstance))
                         {
-                            plugin.Debug(
-                                $"Auto-generating resources for {plugin.DllFilename} - Opening Editor",
-                                plugin.DllFilename);
+                            plugin.Logger.Debug(
+                                $"Auto-generating resources for {plugin.DllFilename} - Opening Editor");
                             _applicationService.UpdateApplicationOperationStatus(
                                 pluginsToScan.IndexOf(plugin),
                                 $"Auto-generating resources for {plugin.DllFilename} - Opening Editor");
@@ -342,7 +346,7 @@ namespace PresetMagician
                             if (_runtimeConfigurationService.RuntimeConfiguration.AutoCreateResources &&
                                 _resourceGeneratorService.NeedToGenerateResources(remotePluginInstance))
                             {
-                                plugin.Debug(
+                                plugin.Logger.Debug(
                                     $"Auto-generating resources for {plugin.DllFilename} - Creating screenshot and applying magic");
                                 _applicationService.UpdateApplicationOperationStatus(
                                     pluginsToScan.IndexOf(plugin),
@@ -364,17 +368,18 @@ namespace PresetMagician
 
                         if (wasLoaded)
                         {
+                            plugin.Logger.Debug($"Unloading {plugin.DllFilename}");
                             remotePluginInstance.UnloadPlugin();
-                            plugin.Debug($"Unloading {plugin.DllFilename}");
                         }
                     }
                 }
                 catch (Exception e)
                 {
                     plugin.OnLoadError(e);
-                    _applicationService.AddApplicationOperationError(
-                        $"Unable to analyze {plugin.DllFilename} because of {e.Message}");
-                    plugin.Debug(e.StackTrace);
+
+                    var errorMessage =
+                        $"Unable to analyze {plugin.DllFilename} because of {e.GetType().FullName}: {e.Message}";
+                    _applicationService.AddApplicationOperationError(errorMessage + " - see plugin log for details");
                 }
 
                 LogTo.Debug($"End analysis of {plugin.DllFilename}");
@@ -465,7 +470,12 @@ namespace PresetMagician
                 {
                     _applicationService.AddApplicationOperationError(
                         $"Unable to load  metadata for {plugin.DllFilename} because of {e.GetType().FullName} {e.Message}");
-                    LogTo.Debug(e.StackTrace);
+                    plugin.OnLoadError(e);
+
+                    if (!plugin.HasMetadata)
+                    {
+                        plugin.MetadataUnavailableInCurrentSession = true;
+                    }
                 }
 
                 await _dispatcherService.InvokeAsync(() => { plugin.NativeInstrumentsResource.Load(plugin); });

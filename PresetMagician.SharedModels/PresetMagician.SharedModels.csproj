@@ -61,6 +61,7 @@
     <Compile Include="BankFile.cs" />
     <Compile Include="Collections\ProgressFastObservableCollection.cs" />
     <Compile Include="EventArgs\PresetUpdatedEventArgs.cs" />
+    <Compile Include="Exceptions\ConnectivityLostException.cs" />
     <Compile Include="IPlugin.cs" />
     <Compile Include="Interfaces\IPluginCommands.cs" />
     <Compile Include="IDataPersistence.cs" />

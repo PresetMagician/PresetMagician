@@ -76,25 +76,11 @@ namespace SharedModels
         public void OnLoadError(Exception e)
         {
             LoadError = true;
-            Error(e.ToString());
-            Debug(e.StackTrace);
-            LoadErrorMessage = e.ToString();
+            Logger.Error($"Error loading plugin because of {e.GetType().FullName}: {e.Message}");
+            Logger.Debug(e.StackTrace);
+            LoadErrorMessage = e.Message;
         }
 
-        public void Log(string messageFormat, params object[] args)
-        {
-            Logger.Debug(messageFormat);
-        }
-
-        public void Debug(string messageFormat, params object[] args)
-        {
-            Logger.Debug(messageFormat);
-        }
-
-        public void Error(string messageFormat, params object[] args)
-        {
-            Logger.Debug(messageFormat);
-        }
 
         #endregion
 
@@ -120,7 +106,8 @@ namespace SharedModels
                 }
                 catch (JsonReaderException e)
                 {
-                    Log(e.Message);
+                    Logger.Error($"Please report this as a bug: Unable to deserialize SerializedPluginCapabilities because of {e.GetType().FullName}: {e.Message}");
+                    Logger.Debug(e.StackTrace);
                 }
             }
         }
@@ -213,7 +200,8 @@ namespace SharedModels
                 }
                 catch (JsonReaderException e)
                 {
-                    Log(e.Message);
+                    Logger.Error($"Please report this as a bug: Unable to deserialize SerializedPluginInfo because of {e.GetType().FullName}: {e.Message}");
+                    Logger.Debug(e.StackTrace);
                 }
             }
         }

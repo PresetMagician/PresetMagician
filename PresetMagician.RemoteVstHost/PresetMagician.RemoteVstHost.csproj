@@ -95,8 +95,11 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Constants.cs" />
-    <Compile Include="Exceptions\VstPluginException.cs" />
+    <Compile Include="Faults\AccessViolationFault.cs" />
     <Compile Include="Faults\GenericFault.cs" />
+    <Compile Include="Faults\NoEntryPointFoundFault.cs" />
+    <Compile Include="Faults\PluginEditorNotOpenFault.cs" />
+    <Compile Include="Faults\PluginNotLoadedFault.cs" />
     <Compile Include="Faults\PluginNotRegisteredFault.cs" />
     <Compile Include="Faults\PresetDataNullFault.cs" />
     <Compile Include="IRemoteVstService.cs" />
@@ -161,7 +164,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Exceptions\" />
+    <Folder Include="Exceptions" />
     <Folder Include="Interfaces\" />
   </ItemGroup>
   <ItemGroup>

@@ -170,7 +170,11 @@ namespace PresetMagician.RemoteVstHost
 
         public void Dispose()
         {
-            _remoteVstService.UnregisterPlugin(_guid);
+            if (_vstHostProcess.IsRemoteVstServiceAvailable())
+            {
+                _remoteVstService.UnregisterPlugin(_guid);
+            }
+
             Plugin.Logger.Debug($"Unlocking from PID {_vstHostProcess.Pid}");
             _vstHostProcess.Unlock();
         }
