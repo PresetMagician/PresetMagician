@@ -10,6 +10,7 @@ namespace PresetMagician
         public static string COMMANDS_ANALYZE => "COMMANDS_ANALYZE";
         public static string COMMANDS_COMPRESS => "COMMANDS_COMPRESS";
         public static string SETTINGS_PLUGIN_DLL => "SETTINGS_PLUGIN_DLL";
+        public static string SETTINGS_PLUGIN_FXBFXPNOTES = "SETTINGS_PLUGIN_FXBFXPNOTES";
         public static string CONCEPTS_VST_WORKER_POOL => "CONCEPTS_VST_WORKER_POOL";
     }
 }
@@ -105,6 +106,8 @@ namespace PresetMagician
             public const string NotExportedAllToPresetExportList = "Plugin.NotExportedAllToPresetExportList";
             public const string NotExportedSelectedToPresetExportList = "Plugin.NotExportedSelectedToPresetExportList";
             public const string ReportUnsupportedPlugins = "Plugin.ReportUnsupportedPlugins";
+            public const string ForceReportPluginsToLive = "Plugin.ForceReportPluginsToLive";
+            public const string ForceReportPluginsToDev = "Plugin.ForceReportPluginsToDev";
         }
 
         public static class PluginTools

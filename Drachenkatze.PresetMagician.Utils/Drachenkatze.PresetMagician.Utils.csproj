@@ -56,6 +56,12 @@
     <Content Include="FodyWeavers.xml" />
     <Content Include="paket.references" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\vst.net\Source\Code\Jacobi.Vst.Core\Jacobi.Vst.Core.Clr4.csproj">
+      <Project>{5950f8a9-f413-4ace-b6e0-6f458b4c26f9}</Project>
+      <Name>Jacobi.Vst.Core.Clr4</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\.paket\paket.targets" />
   <Import Project="..\common\ExtraCleanup.targets" />

@@ -41,6 +41,7 @@
             </xs:attribute>
           </xs:complexType>
         </xs:element>
+      </xs:all>
       <xs:attribute name="VerifyAssembly" type="xs:boolean">
         <xs:annotation>
           <xs:documentation>'true' to run assembly verification (PEVerify) on the target assembly after all weavers have been executed.</xs:documentation>

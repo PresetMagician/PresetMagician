@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ServiceModel;
 using PresetMagician.Models;
+using PresetMagician.RemoteVstHost.Faults;
 
 namespace SharedModels
 {
@@ -51,6 +52,8 @@ namespace SharedModels
         byte[] GetChunk(Guid pluginGuid, bool isPreset);
 
         [OperationContract]
+        [FaultContract(typeof(PresetDataNullFault))]
+        [FaultContract(typeof(PluginNotRegisteredFault))]
         void SetChunk(Guid pluginGuid, byte[] data, bool isPreset);
 
         [OperationContract]

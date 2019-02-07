@@ -159,8 +159,9 @@ namespace PresetMagician.VendorPresetParserTest
                 bankFile.Path = mockFxp;
                 bankFile.BankName = "Default";
 
-                presetParser.AdditionalBankFiles.Clear();
-                presetParser.AdditionalBankFiles.Add(bankFile);
+                plugin.AdditionalBankFiles.Clear();
+                plugin.AdditionalBankFiles.Add(bankFile);
+                
                 bool additionalBankFileCountOk = false;
 
 

@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading.Tasks;
 using Anotar.Catel;
 using Catel;
@@ -17,6 +18,7 @@ using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
 using Drachenkatze.PresetMagician.NKSF.NKSF;
+using Drachenkatze.PresetMagician.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PresetMagician.Models.ControllerAssignments;
@@ -35,12 +37,14 @@ namespace PresetMagician.ViewModels
         private readonly IOpenFileService _openFileService;
         private readonly ISelectDirectoryService _selectDirectoryService;
         private readonly ILicenseService _licenseService;
+        private readonly IAdvancedMessageService _messageService;
         private readonly ICommandManager _commandManager;
         private readonly INativeInstrumentsResourceGeneratorService _resourceGeneratorService;
 
 
         public VstPluginViewModel(Plugin plugin, IVstService vstService, IOpenFileService openFileService,
             ISelectDirectoryService selectDirectoryService, ILicenseService licenseService,
+            IAdvancedMessageService messageService,
             ICommandManager commandManager,
             INativeInstrumentsResourceGeneratorService
                 resourceGeneratorService)
@@ -60,6 +64,7 @@ namespace PresetMagician.ViewModels
             _licenseService = licenseService;
             _vstService = vstService;
             _resourceGeneratorService = resourceGeneratorService;
+            _messageService = messageService;
 
             OpenNKSFile = new TaskCommand(OnOpenNKSFileExecute);
             ClearMappings = new TaskCommand(OnClearMappingsExecute);
@@ -190,6 +195,7 @@ namespace PresetMagician.ViewModels
 
         private async Task OnAddAdditionalPresetFilesExecute()
         {
+            List<(string fileName, string reason)> FailedFiles = new List<(string, string)>();
             try
             {
                 _openFileService.Filter = "Bank/Preset Files (*.fxb;*.fxp)|*.fxb;*.fxp";
@@ -198,11 +204,10 @@ namespace PresetMagician.ViewModels
 
                 if (await _openFileService.DetermineFileAsync())
                 {
-                    foreach (var filename in _openFileService.FileNames)
-                    {
-                        AddBankFile(filename);
-                    }
+                    await AddFxbFxpFiles(_openFileService.FileNames.ToList());
                 }
+                
+               
             }
             catch (Exception ex)
             {
@@ -241,12 +246,11 @@ namespace PresetMagician.ViewModels
                 _commandManager.ExecuteCommand(Commands.Plugin.ScanSelectedPlugin);
             }
 
-
             return result;
         }
 
 
-        private List<string> GetFiles(string path, List<string> patterns)
+        private List<string> GetFxbFxpFiles(string path, List<string> patterns)
         {
             List<string> files = new List<string>();
             var directory = new DirectoryInfo(path);
@@ -272,16 +276,14 @@ namespace PresetMagician.ViewModels
 
         private async Task OnAddAdditionalPresetFolderExecute()
         {
+            
             try
             {
                 if (await _selectDirectoryService.DetermineDirectoryAsync())
                 {
-                    var files = GetFiles(_selectDirectoryService.DirectoryName, new List<string> {"*.fxp", "*.fxb"});
+                    var files = GetFxbFxpFiles(_selectDirectoryService.DirectoryName, new List<string> {"*.fxp", "*.fxb"});
 
-                    foreach (var filename in files)
-                    {
-                        AddBankFile(filename);
-                    }
+                    await AddFxbFxpFiles(files);
 
                     ReanalyzePluginOnClose = true;
                 }
@@ -289,6 +291,40 @@ namespace PresetMagician.ViewModels
             catch (Exception ex)
             {
                 Log.Error(ex, "Failed to open file");
+            }
+        }
+
+        public async Task AddFxbFxpFiles(List<string> files)
+        {
+            List<(string fileName, string reason)> failedFiles = new List<(string, string)>();
+            
+            foreach (var filename in files)
+            {
+                var result = VstUtils.LoadFxp(filename, Plugin.PluginInfo.ToNonSurrogate());
+
+                if (result.result == VstUtils.LoadFxpResult.Error)
+                {
+                    failedFiles.Add((filename, result.message));
+                }
+                else
+                {
+                    AddBankFile(filename);
+                }
+            }
+
+            if (failedFiles.Count > 0)
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine("The following FXB/FXP files could not be added:");
+                sb.AppendLine();
+                        
+                foreach (var fail in failedFiles)
+                {
+                    sb.AppendLine($"{fail.fileName}: {fail.reason}");
+                    sb.AppendLine();
+                }
+
+                await _messageService.ShowErrorAsync(sb.ToString(), "Unable to add some FXB/FXP files", HelpLinks.SETTINGS_PLUGIN_FXBFXPNOTES);
             }
         }
 

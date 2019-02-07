@@ -85,13 +85,13 @@ namespace PresetMagician
             if (ReportAll)
             {
                 return (from plugin in _vstService.Plugins
-                    where plugin.IsAnalyzed && !plugin.DontReport && !plugin.IsReported
+                    where plugin.IsAnalyzed && plugin.HasMetadata && !plugin.DontReport && !plugin.IsReported
                     select plugin).ToList();
             }
 
 
             return (from plugin in _vstService.Plugins
-                where plugin.IsAnalyzed && plugin.IsSupported == false && !plugin.DontReport && !plugin.IsReported
+                where plugin.IsAnalyzed && plugin.HasMetadata && plugin.IsSupported == false && !plugin.DontReport && !plugin.IsReported
                 select plugin).ToList();
         }
 
@@ -118,10 +118,11 @@ namespace PresetMagician
                             pluginName = p.PluginName,
                             pluginId = p.VstPluginId,
                             pluginSupported = p.IsSupported,
+                            pluginPresetParser = p.PresetParser != null ? p.PresetParser.PresetParserType : "",
                             pluginSupportedSince = VersionHelper.GetCurrentVersion(),
                             pluginType = p.PluginTypeDescription,
                             pluginCapabilities = p.PluginCapabilities,
-                            pluginRemarks = p.PresetParser.Remarks
+                            pluginRemarks = p.PresetParser != null ? p.PresetParser.Remarks: ""
                         }
                 }
             });
