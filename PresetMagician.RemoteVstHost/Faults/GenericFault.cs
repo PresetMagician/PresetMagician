@@ -1,12 +1,18 @@
+using System;
 using System.Runtime.Serialization;
 
 namespace PresetMagician.RemoteVstHost.Faults
 {
     [DataContract]
-    public class GenericFault
+    public class GenericFault: IGenericFault
     {
-        [DataMember] public bool Result { get; set; }
         [DataMember] public string Message { get; set; }
-        [DataMember] public string Description { get; set; }
+        [DataMember] public Exception InnerException { get; set; }
+    }
+
+    public interface IGenericFault
+    {
+        [DataMember] string Message { get; set; }
+        [DataMember] Exception InnerException { get; set; }
     }
 }

@@ -9,7 +9,9 @@ namespace Drachenkatze.PresetMagician.Utils
         /// <summary>Warning message.</summary>
         Warning,
         /// <summary>Error message.</summary>
-        Error
+        Error,
+        
+        Trace
     }
     
     public abstract class MiniLogger
@@ -17,6 +19,11 @@ namespace Drachenkatze.PresetMagician.Utils
         
         public abstract void Write(string message, LogLevel logLevel);
 
+        public void Trace(string message)
+        {
+            Write(message, LogLevel.Trace);
+        }
+        
         public void Debug(string message)
         {
             Write(message, LogLevel.Debug);
@@ -49,6 +56,8 @@ namespace Drachenkatze.PresetMagician.Utils
                     return "E";
                 case LogLevel.Warning:
                     return "W";
+                case LogLevel.Trace:
+                    return "T";
             }
 
             return "";

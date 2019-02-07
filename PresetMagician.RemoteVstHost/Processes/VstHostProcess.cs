@@ -47,7 +47,7 @@ namespace PresetMagician.RemoteVstHost.Processes
                 }
             }
         }
-        public void Lock(Plugin plugin = null)
+        public void Lock(Plugin plugin)
         {
             lock (_operationLock)
             {
@@ -56,6 +56,7 @@ namespace PresetMagician.RemoteVstHost.Processes
             }
 
             _lockedToPlugin = plugin;
+            Logger.Debug($"Locking to plugin {plugin.PluginName}, see the plugin log for all further information");
         }
 
         public bool IsLockedToPlugin()
@@ -76,6 +77,9 @@ namespace PresetMagician.RemoteVstHost.Processes
                 _isLocked = false;
                 IsBusy = false;
             }
+
+            Logger.Debug($"Unlocking from  plugin {_lockedToPlugin.PluginName}, logs are coming back to this process");
+            _lockedToPlugin = null;
             
             currentUnloadCount++;
             if (currentUnloadCount > shutdownAfterNumUnloads)
@@ -180,10 +184,26 @@ namespace PresetMagician.RemoteVstHost.Processes
             }
         }
 
+        public bool IsRemoteVstServiceAvailable()
+        {
+            return _vstServiceAvailable;
+        }
+
         protected override void OnBeforeForceStop()
         {
             _pingTimer.Stop();
             _vstServiceAvailable = false;
+
+            if (_vstService != null)
+            {
+                // ReSharper disable once SuspiciousTypeConversion.Global
+                var castedVstService = (IClientChannel)_vstService;
+                
+                if (castedVstService.State == CommunicationState.Faulted)
+                {
+                    castedVstService.Abort();
+                }
+            }
 
             base.OnBeforeForceStop();
         }
@@ -235,17 +255,17 @@ namespace PresetMagician.RemoteVstHost.Processes
             }
         }
 
-        protected virtual IInterceptor CreateInterceptor(IChannelFactory proxyCreator, Type serviceType)
+        private IInterceptor CreateInterceptor(IChannelFactory proxyCreator, Type serviceType)
         {
             dynamic channelFactory = proxyCreator;
             return new ClientProxyInterceptor(() => (ICommunicationObject) channelFactory.CreateChannel(), serviceType,
                 this);
         }
 
-        protected virtual IChannelFactory CreateProxyInstanceCreator(Type genericProxyCreatorType, Binding binding,
+        private IChannelFactory CreateProxyInstanceCreator(Type genericProxyCreatorType, Binding binding,
             EndpointAddress endpointAddress)
         {
-            IChannelFactory proxyInstanceCreator =
+            var proxyInstanceCreator =
                 (IChannelFactory) Activator.CreateInstance(genericProxyCreatorType, binding, endpointAddress);
             return proxyInstanceCreator;
         }

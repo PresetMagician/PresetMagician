@@ -5,6 +5,7 @@ using System.Reflection;
 using Anotar.Catel;
 using MethodTimer;
 using SharedModels;
+using SharedModels.Exceptions;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser
 {
@@ -94,10 +95,16 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
                     pluginInstance.Plugin.Logger.Debug($"Using PresetHandler {parser.PresetParserType}");
                 }
+                catch (ConnectivityLostException e)
+                {
+                    // Let the upstream caller handle this
+                    throw e;
+                }
                 catch (Exception e)
                 {
-                    LogTo.Error($"Error while trying to use PresetParser {parser.GetType().FullName}: {e.GetType().FullName} {e.Message}. This is most likely a bug, please report it :)");
+                    LogTo.Error($"Error while trying to use PresetParser {parser.GetType().FullName}: {e.GetType().FullName} {e.Message}.");
                     LogTo.Debug(e.StackTrace);
+                    continue;
                 }
 
                 return parser;
