@@ -1,5 +1,6 @@
 using System.Runtime.Serialization;
 using Jacobi.Vst.Core;
+using Jacobi.Vst.Core.Plugin;
 using Newtonsoft.Json;
 
 namespace SharedModels
@@ -7,6 +8,15 @@ namespace SharedModels
     [DataContract]
     public class VstPluginInfoSurrogate
     {
+        public VstPluginInfoSurrogate()
+        {
+            
+        }
+
+        public VstPluginInfoSurrogate(VstPluginInfo vstPluginInfo)
+        {
+            FromNonSurrogate(vstPluginInfo);
+        }
         /// <summary>
         /// Plugin flags.
         /// </summary>
@@ -64,5 +74,34 @@ namespace SharedModels
         /// </summary>
         [DataMember]
         public int PluginVersion { get; set; }
+
+        public VstPluginInfo ToNonSurrogate()
+        {
+            var vstPluginInfo = new VstPluginInfo
+            {
+                Flags = Flags,
+                ProgramCount = ProgramCount,
+                ParameterCount = ParameterCount,
+                AudioInputCount = AudioInputCount,
+                AudioOutputCount = AudioOutputCount,
+                InitialDelay = InitialDelay,
+                PluginID = PluginID,
+                PluginVersion = PluginVersion
+            };
+
+            return vstPluginInfo;
+        }
+        
+        public void FromNonSurrogate(VstPluginInfo vstPluginInfo)
+        {
+            Flags = vstPluginInfo.Flags;
+            PluginID = vstPluginInfo.PluginID;
+            InitialDelay = vstPluginInfo.InitialDelay;
+            ProgramCount = vstPluginInfo.ProgramCount;
+            ParameterCount = vstPluginInfo.ParameterCount;
+            PluginVersion = vstPluginInfo.PluginVersion;
+            AudioInputCount = vstPluginInfo.AudioInputCount;
+            AudioOutputCount = vstPluginInfo.AudioOutputCount;
+        }
     }
 }

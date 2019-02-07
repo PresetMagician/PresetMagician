@@ -242,6 +242,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
                 case "receiveVstTimeInfo":
                 case "receiveVstMidiEvent":
                 case "acceptIOChanges":
+                    case "notifySessionRestore":
                     return VstCanDoResult.No;
                 case "sendVstMidiEvent":
                 case "sizeWindow":

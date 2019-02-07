@@ -5,10 +5,12 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.ExceptionServices;
 using System.ServiceModel;
+using Catel.Fody;
 using Catel.Logging;
 using Drachenkatze.PresetMagician.Utils;
 using PresetMagician.Models;
 using PresetMagician.RemoteVstHost.Exceptions;
+using PresetMagician.RemoteVstHost.Faults;
 using PresetMagician.VstHost.VST;
 using SharedModels;
 
@@ -99,7 +101,7 @@ namespace PresetMagician.RemoteVstHost.Services
             App.Ping();
             if (!_plugins.ContainsKey(guid))
             {
-                throw new FaultException($"Plugin with GUID {guid} does not exist in this instance");
+                throw new FaultException<PluginNotRegisteredFault>(new PluginNotRegisteredFault { Message = $"Plugin with GUID {guid} does not exist in this instance"});
             }
 
             return _plugins[guid];
@@ -288,17 +290,8 @@ namespace PresetMagician.RemoteVstHost.Services
                 throw new VstPluginNotLoadedException(plugin);
             }
 
-            var vstInfo = new VstPluginInfoSurrogate
-            {
-                Flags = plugin.PluginContext.PluginInfo.Flags,
-                PluginID = plugin.PluginContext.PluginInfo.PluginID,
-                InitialDelay = plugin.PluginContext.PluginInfo.InitialDelay,
-                ProgramCount = plugin.PluginContext.PluginInfo.ProgramCount,
-                ParameterCount = plugin.PluginContext.PluginInfo.ParameterCount,
-                PluginVersion = plugin.PluginContext.PluginInfo.PluginVersion,
-                AudioInputCount = plugin.PluginContext.PluginInfo.AudioInputCount,
-                AudioOutputCount = plugin.PluginContext.PluginInfo.AudioOutputCount
-            };
+            var vstInfo = new VstPluginInfoSurrogate(plugin.PluginContext.PluginInfo);
+         
 
             return vstInfo;
         }
@@ -346,6 +339,10 @@ namespace PresetMagician.RemoteVstHost.Services
 
         public void SetChunk(Guid pluginGuid, byte[] data, bool isPreset)
         {
+            if (data == null)
+            {
+                throw new FaultException<PresetDataNullFault>(new PresetDataNullFault(), new FaultReason("Can't set chunk because data is null"));
+            }
             App.Ping();
             var plugin = GetPluginByGuid(pluginGuid);
             plugin.MiniDiskLogger.Debug($"SetChunk(data length {data.Length}, isPreset {isPreset})");

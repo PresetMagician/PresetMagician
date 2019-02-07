@@ -155,7 +155,7 @@ namespace PresetMagician
                 cancellationToken = _applicationService.GetApplicationOperationCancellationSource().Token;
 
                 _databaseService.Context.PresetUpdated += ContextOnPresetUpdated;
-                await TaskHelper.Run(async () => await AnalyzePlugins(pluginsToScan, cancellationToken), true,
+                await TaskHelper.Run(async () => await AnalyzePlugins(pluginsToScan.OrderBy(p => p.PluginName).ToList(), cancellationToken), true,
                     cancellationToken);
 
                 // ReSharper disable once MethodSupportsCancellation
@@ -252,18 +252,21 @@ namespace PresetMagician
                 }
 
                 LogTo.Debug($"Begin analysis of {plugin.DllFilename}");
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return;
+                }
+                
+                _vstService.SelectedPlugin = plugin;
+                
                 try
                 {
                     using (var remotePluginInstance = _vstService.GetRemotePluginInstance(plugin))
                     {
-                        _vstService.SelectedPlugin = plugin;
                         _applicationService.UpdateApplicationOperationStatus(
                             pluginsToScan.IndexOf(plugin), $"Scanning {plugin.DllFilename}");
 
-                        if (cancellationToken.IsCancellationRequested)
-                        {
-                            return;
-                        }
+                        
 
                         _databaseService.Context.CompressPresetData =
                             _runtimeConfigurationService.RuntimeConfiguration.CompressPresetData;
@@ -288,10 +291,6 @@ namespace PresetMagician
                         VendorPresetParser.DeterminatePresetParser(remotePluginInstance);
                         var wasLoaded = remotePluginInstance.IsLoaded;
                         plugin.PresetParser.DataPersistence = _databaseService.GetPresetDataStorer();
-
-
-                        plugin.PresetParser.AdditionalBankFiles.Clear();
-                        plugin.PresetParser.AdditionalBankFiles.AddRange(plugin.AdditionalBankFiles);
 
 
                         _currentPluginIndex = pluginsToScan.IndexOf(plugin);

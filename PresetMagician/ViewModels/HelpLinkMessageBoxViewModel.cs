@@ -125,32 +125,44 @@ namespace PresetMagician.ViewModels
 
         private async Task OnOkCommandExecuteAsync()
         {
-            Result = MessageResult.OK;
-            await CloseViewModelAsync(null);
+            if (Button == MessageButton.OK || Button == MessageButton.OKCancel)
+            {
+                Result = MessageResult.OK;
+                await CloseViewModelAsync(null);
+            }
         }
 
         public TaskCommand YesCommand { get; private set; }
 
         private async Task OnYesCommandExecuteAsync()
         {
-            Result = MessageResult.Yes;
-            await CloseViewModelAsync(null);
+            if (Button == MessageButton.YesNo || Button == MessageButton.YesNoCancel)
+            {
+                Result = MessageResult.Yes;
+                await CloseViewModelAsync(null);
+            }
         }
 
         public TaskCommand NoCommand { get; private set; }
 
         private async Task OnNoCommandExecuteAsync()
         {
-            Result = MessageResult.No;
-            await CloseViewModelAsync(null);
+            if (Button == MessageButton.YesNo || Button == MessageButton.YesNoCancel)
+            {
+                Result = MessageResult.No;
+                await CloseViewModelAsync(null);
+            }
         }
 
         public TaskCommand CancelCommand { get; private set; }
 
         private async Task OnCancelCommandExecuteAsync()
         {
-            Result = MessageResult.Cancel;
-            await CloseViewModelAsync(null);
+            if (Button == MessageButton.YesNoCancel || Button == MessageButton.OKCancel)
+            {
+                Result = MessageResult.Cancel;
+                await CloseViewModelAsync(null);
+            }
         }
 
         public TaskCommand EscapeCommand { get; private set; }

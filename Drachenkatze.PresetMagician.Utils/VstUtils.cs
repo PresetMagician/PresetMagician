@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Jacobi.Vst.Core;
+using Jacobi.Vst.Core.Plugin;
 
 namespace Drachenkatze.PresetMagician.Utils
 {
@@ -59,7 +61,7 @@ namespace Drachenkatze.PresetMagician.Utils
         public static void CleanupVstWorkerLogDirectory()
         {
             var vstWorkerLogDirectory = GetVstWorkerLogDirectory();
-            
+
             var directory = new DirectoryInfo(vstWorkerLogDirectory);
 
             try
@@ -72,12 +74,76 @@ namespace Drachenkatze.PresetMagician.Utils
                     }
                     catch (Exception e)
                     {
-
                     }
                 }
             }
             catch (Exception e)
             {
+            }
+        }
+
+        public enum LoadFxpResult
+        {
+            Error,
+            Bank,
+            Program
+        }
+
+        public static (LoadFxpResult result, string message, FXP fxp) LoadFxp(string filePath, VstPluginInfo pluginInfo)
+        {
+            if (string.IsNullOrEmpty(filePath))
+            {
+                return (LoadFxpResult.Error, "Unable to load the FXP because the path is null or empty", null);
+            }
+
+            if (!File.Exists(filePath))
+            {
+                return (LoadFxpResult.Error, "Unable to load the FXP because the file does not exist",
+                    null);
+            }
+
+
+            if (!pluginInfo.Flags.HasFlag(VstPluginFlags.ProgramChunks))
+            {
+                return (LoadFxpResult.Error,
+                    "Aborting loading because the plugin does not support ProgramChunks", null);
+            }
+
+            var fxp = new FXP();
+            fxp.ReadFile(filePath);
+
+            if (fxp.ChunkMagic != "CcnK")
+            {
+                return (LoadFxpResult.Error,
+                    "Aborting loading because it is not an fxp or fxb file. Maybe a corrupted file? (invalid chunk)",
+                    null);
+            }
+
+            var pluginUniqueId = PluginIdStringToIdNumber(fxp.FxID);
+            var currentPluginId = pluginInfo.PluginID;
+
+            if (pluginUniqueId != currentPluginId)
+            {
+                return (LoadFxpResult.Error,
+                    "Aborting loading because it was created for a different plugin. "+
+                    $"FXP/FXB plugin ID: {pluginUniqueId}, Plugin ID: {currentPluginId}",
+                    null);
+            }
+            
+            // Preset (Program) (.fxp) with chunk (magic = 'FPCh')
+            // Bank (.fxb) with chunk (magic = 'FBCh')
+
+            switch (fxp.FxMagic)
+            {
+                case "FPCh":
+                    return (LoadFxpResult.Program, null, fxp);
+                case "FBCh":
+                    return (LoadFxpResult.Bank, null, fxp);
+                default:
+                    return (LoadFxpResult.Error,
+                        "Cannot load the file because it is neither a bank nor a program. "+
+                        $"The magic value {fxp.FxMagic} is unknown.",
+                        null);
             }
         }
     }

@@ -62,7 +62,6 @@
     <Compile Include="Collections\ProgressFastObservableCollection.cs" />
     <Compile Include="EventArgs\PresetUpdatedEventArgs.cs" />
     <Compile Include="IPlugin.cs" />
-    <Compile Include="IRemoteVstService.cs" />
     <Compile Include="Interfaces\IPluginCommands.cs" />
     <Compile Include="IDataPersistence.cs" />
     <Compile Include="IRemotePluginInstance.cs" />

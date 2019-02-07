@@ -1,6 +1,9 @@
 using System;
+using System.CodeDom;
+using System.Collections.Generic;
 using System.Reflection;
 using System.ServiceModel;
+using System.Text;
 using Anotar.Catel;
 using Castle.DynamicProxy;
 
@@ -30,16 +33,41 @@ namespace PresetMagician.RemoteVstHost.Processes
             set => proxyInstance = value;
         }
 
+        private string ValueToString(object value)
+        {
+            if (value == null)
+            {
+                return "null";
+            }
+            if (value.GetType().IsPrimitive)
+            {
+                return value.ToString();
+            }
+
+            switch (value.GetType().FullName)
+            {
+                case "System.Guid":
+                    return value.ToString();
+             
+            }
+            
+            return value.GetType().FullName;
+        }
+
         public void Intercept(IInvocation invocation)
         {
             _vstHostProcess.StartOperation(invocation.Method.Name);
             _vstHostProcess.ResetPingTimer();
 
-            if (_vstHostProcess.IsLockedToPlugin())
-            {
-                _vstHostProcess.GetLockedPlugin().Logger.Debug("Calling "+invocation.Method.Name);   
-            }
-
+            
+            
+                var argumentList = new List<string>();
+                
+                foreach (var argument in invocation.Arguments)
+                {
+                    argumentList.Add(ValueToString(argument));
+                }
+            
             try
             {
                 invocation.ReturnValue = invocation.Method.Invoke(CachedProxy, invocation.Arguments);
@@ -65,6 +93,13 @@ namespace PresetMagician.RemoteVstHost.Processes
             {
                 _vstHostProcess.StopOperation(invocation.Method.Name);
             }
+            
+            if (_vstHostProcess.IsLockedToPlugin())
+            {
+                _vstHostProcess.GetLockedPlugin().Logger.Debug($"{invocation.Method.Name}({string.Join(",",argumentList)}): {ValueToString(invocation.ReturnValue)}");   
+            }
+            
+            
 
             
         }

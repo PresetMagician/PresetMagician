@@ -232,7 +232,17 @@
                         Size="Middle" />
                     <fluent:Button
                         Command="{catel:CommandManagerBinding PluginTools.ReportSinglePluginToLive}"
-                        Header="Report Single Plugin"
+                        Header="Force Report Single Plugin (Live)"
+                        Icon="{iconPacks:Octicons Kind=Megaphone}"
+                        Size="Middle" />
+                    <fluent:Button
+                        Command="{catel:CommandManagerBinding Plugin.ForceReportPluginsToLive}"
+                        Header="Force Report Plugins (Live)"
+                        Icon="{iconPacks:Octicons Kind=Megaphone}"
+                        Size="Middle" />
+                    <fluent:Button
+                        Command="{catel:CommandManagerBinding Plugin.ForceReportPluginsToDev}"
+                        Header="Force Report Plugins (Dev)"
                         Icon="{iconPacks:Octicons Kind=Megaphone}"
                         Size="Middle" />
                 </fluent:RibbonGroupBox>

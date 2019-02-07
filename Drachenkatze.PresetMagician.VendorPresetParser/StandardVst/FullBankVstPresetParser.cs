@@ -11,6 +11,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
     {
         public override bool CanHandle()
         {
+            DeterminateVstPresetSaveMode();
             return PresetSaveMode == PresetSaveModes.FullBank;
         }
 

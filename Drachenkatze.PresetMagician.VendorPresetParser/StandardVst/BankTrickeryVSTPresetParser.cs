@@ -9,6 +9,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
     {
         public override bool CanHandle()
         {
+            DeterminateVstPresetSaveMode();
             if (PresetSaveMode == PresetSaveModes.BankTrickery)
             {
                 return true;

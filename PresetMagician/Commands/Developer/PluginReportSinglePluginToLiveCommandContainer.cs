@@ -27,7 +27,7 @@ namespace PresetMagician
         protected override List<Plugin> GetPluginsToReport()
         {
             return (from plugin in _vstService.SelectedPlugins
-                where plugin.IsAnalyzed
+                where plugin.IsAnalyzed && plugin.HasMetadata
                 select plugin).ToList();
         }
 

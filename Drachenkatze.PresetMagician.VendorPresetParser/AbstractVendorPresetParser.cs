@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using Catel.Linq;
 using Catel.Logging;
 using Drachenkatze.PresetMagician.Utils;
 using Jacobi.Vst.Core;
@@ -16,9 +18,40 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         protected const string BankNameFactory = "Factory";
         protected const string BankNameUser = "User";
 
-        public virtual List<BankFile> AdditionalBankFiles { get; } = new List<BankFile>();
+        protected List<BankFile> AdditionalBankFiles
+        {
+            get
+            {
+                if (_pluginInstance != null)
+                {
+                    return _pluginInstance.Plugin.AdditionalBankFiles.ToList();
+                }
 
-        public IRemotePluginInstance PluginInstance { get; set; }
+                return new List<BankFile>();
+            }
+        } 
+
+        private IRemotePluginInstance _pluginInstance;
+
+        public IRemotePluginInstance PluginInstance
+        {
+            get => _pluginInstance;
+            set
+            {
+                if (value == null)
+                {
+                    return;
+                }
+
+                if (_pluginInstance != value)
+                {
+                    PresetSaveMode = PresetSaveModes.NotYetDetermined;
+                    PresetHashes.Clear();
+                }
+                
+                _pluginInstance = value;
+            }
+        }
 
         public virtual List<int> SupportedPlugins => new List<int>();
 
