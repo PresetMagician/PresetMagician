@@ -451,20 +451,37 @@ namespace PresetMagician
                             select p)
                         .FirstOrDefault();
 
-                    if (existingPlugin != null && !_databaseService.Context.HasPresets(plugin))
+                    if (existingPlugin != null)
                     {
-                        // There's an existing plugin which this plugin can be merged into. Schedule it for removal
-                        pluginsToRemove.Add(plugin);
-
-                        // If the existing plugin is not present, but this one is: Move over the plugin location
-                        if (!existingPlugin.IsPresent)
+                        if (!_databaseService.Context.HasPresets(plugin))
                         {
-                            await _dispatcherService.InvokeAsync(() =>
+                            // There's an existing plugin which this plugin can be merged into. Schedule it for removal
+                            pluginsToRemove.Add(plugin);
+
+                            // If the existing plugin is not present, but this one is: Move over the plugin location
+                            if (!existingPlugin.IsPresent)
                             {
-                                existingPlugin.PluginLocation = plugin.PluginLocation;
-                            });
+                                await _dispatcherService.InvokeAsync(() =>
+                                {
+                                    existingPlugin.PluginLocation = plugin.PluginLocation;
+                                });
+                            }
+                        } else if (!_databaseService.Context.HasPresets(existingPlugin))
+                        {
+                            // The existing plugin has no presets - remove it!
+                            pluginsToRemove.Add(existingPlugin);
+
+                            // If this plugin is not present, but the other one is: Move over the plugin location
+                            if (!plugin.IsPresent)
+                            {
+                                await _dispatcherService.InvokeAsync(() =>
+                                    {
+                                        plugin.PluginLocation = existingPlugin.PluginLocation;
+                                    });
+                            }
                         }
-                    }
+                    } 
+                   
                 }
                 catch (Exception e)
                 {
