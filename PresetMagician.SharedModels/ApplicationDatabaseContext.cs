@@ -254,7 +254,7 @@ namespace SharedModels
         {
             using (var tempContext = Create())
             {
-                return tempContext.Presets.Any();
+                return (from preset in tempContext.Presets where preset.Plugin.Id == plugin.Id select preset).Any();
             }
         }
 
@@ -268,10 +268,10 @@ namespace SharedModels
         {
             var hash = HashUtils.getIxxHash(data);
 
-            if (preset.PresetHash == hash)
+            /*if (preset.PresetHash == hash)
             {
                 return;
-            }
+            }*/
 
             preset.PresetHash = hash;
             presetDataList.Add((preset, data));
@@ -348,6 +348,7 @@ namespace SharedModels
                     }
                 }
 
+                tempContext.Configuration.AutoDetectChangesEnabled = true;
                 await tempContext.SaveChangesAsync();
                 presetDataList.Clear();
             }
