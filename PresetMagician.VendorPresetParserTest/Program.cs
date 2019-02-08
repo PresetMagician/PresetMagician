@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Catel.Logging;
 using CsvHelper;
+using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
 using Drachenkatze.PresetMagician.Utils;
 using Drachenkatze.PresetMagician.VendorPresetParser;
@@ -211,8 +213,12 @@ namespace PresetMagician.VendorPresetParserTest
 
         public static List<TestData> ReadTestData()
         {
+            var config = new Configuration(CultureInfo.InvariantCulture);
+            config.MissingFieldFound = null;
             using (var reader = new StreamReader("testdata.csv"))
-            using (var csv = new CsvReader(reader))
+                
+            
+            using (var csv = new CsvReader(reader, config))
             {
                 return csv.GetRecords<TestData>().ToList();
             }
@@ -481,7 +487,8 @@ namespace PresetMagician.VendorPresetParserTest
                         PluginId.ToString(),
                         RndPresetName,
                         RndBankPath,
-                        RndHash
+                        RndHash,
+                        DateTime.Now.ToString()
                     });
                 }
 
@@ -504,6 +511,8 @@ namespace PresetMagician.VendorPresetParserTest
         [Name("BankPath")] public string BankPath { get; set; }
 
         [Name("Hash")] public string Hash { get; set; }
+        
+        [Name("LastUpdated")] [Optional] public string LastUpdated { get; set; }
     }
 
     public class IgnoredPlugins
