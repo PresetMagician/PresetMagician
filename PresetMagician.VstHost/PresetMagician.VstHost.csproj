@@ -41,7 +41,7 @@
     <Optimize>true</Optimize>
     <Prefer32bit>false</Prefer32bit>
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>portable</DebugType>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />

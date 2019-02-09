@@ -43,6 +43,12 @@
                 Size="Middle"
                 Icon="{iconPacks:Entypo Kind=InfoWithCircle}" />
 
+            <fluent:Button
+                Command="{Binding DoSomething}"
+                Header="Crash me"
+                Size="Middle"
+                Icon="{iconPacks:Entypo Kind=InfoWithCircle}" />
+         
         </collections:ArrayList>
 
     </catel:UserControl.Resources>
