@@ -40,8 +40,6 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
     <Prefer32bit>false</Prefer32bit>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>portable</DebugType>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />

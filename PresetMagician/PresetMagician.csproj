@@ -47,7 +47,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
     <PlatformTarget>x64</PlatformTarget>
-    <DebugType>portable</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>
@@ -55,7 +55,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32bit>false</Prefer32bit>
-    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Resources\Icons\PresetMagician.ico</ApplicationIcon>
@@ -68,8 +67,6 @@
     <PlatformTarget>x64</PlatformTarget>
     <Optimize>true</Optimize>
     <Prefer32bit>false</Prefer32bit>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>portable</DebugType>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="All" />
@@ -534,7 +531,7 @@
     <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
       <Output TaskParameter="Assemblies" ItemName="myAssemblyInfo" />
     </GetAssemblyIdentity>
-    <Exec Command="..\packages\NuGet.CommandLine\tools\NuGet pack PresetMagician.nuspec -Version %(myAssemblyInfo.Version) -Properties Configuration=Release -OutputDirectory $(OutDir) -BasePath $(OutDir)" />
+    <Exec Command="..\packages\NuGet.CommandLine\tools\NuGet pack PresetMagician.nuspec -Version %(myAssemblyInfo.Version) -Properties Configuration=Publish -OutputDirectory $(OutDir) -BasePath $(OutDir)" />
     <Exec Command="..\packages\squirrel.windows\tools\squirrel --no-delta --setupIcon=Resources/Icons/PresetMagician.ico --icon=Resources/Icons/PresetMagician.ico  --framework-version=net472 -g Resources/Images/Installing.gif --releasify $(OutDir)PresetMagician.$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(3)).nupkg --releaseDir=$(SolutionDir)\Releases" />
   </Target>
  <Import Project="..\common\ExtraCleanup.targets" />
