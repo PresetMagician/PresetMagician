@@ -1,4 +1,5 @@
-﻿using System.Collections.Specialized;
+﻿using System;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using CannedBytes.Midi.Message;
@@ -11,6 +12,7 @@ using Orchestra.Services;
 using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.Views;
+using SharedModels;
 
 namespace PresetMagician.ViewModels
 {
@@ -143,7 +145,8 @@ namespace PresetMagician.ViewModels
         /// </summary>
         private async Task OnDoSomethingExecuteAsync()
         {
-            Debug.WriteLine(_vstService.GetVstService().Exists(@"C:\foo.txt"));
+            throw new Exception("Your exception here!");
+
         }
 
         #endregion
