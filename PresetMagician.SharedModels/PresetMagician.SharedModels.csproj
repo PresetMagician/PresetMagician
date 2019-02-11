@@ -29,13 +29,14 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
     <PlatformTarget>x64</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32bit>false</Prefer32bit>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -97,13 +98,13 @@
     <Compile Include="VstPluginInfoSurrogated.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Drachenkatze.PresetMagician.NKSF\Drachenkatze.PresetMagician.NKSF.csproj">
+    <ProjectReference Include="..\PresetMagician.NKS\PresetMagician.NKS.csproj">
       <Project>{2126df46-7f24-4c2c-b236-514a70b7a3a5}</Project>
-      <Name>Drachenkatze.PresetMagician.NKSF</Name>
+      <Name>PresetMagician.NKS</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Drachenkatze.PresetMagician.Utils\Drachenkatze.PresetMagician.Utils.csproj">
+    <ProjectReference Include="..\PresetMagician.Utils\PresetMagician.Utils.csproj">
       <Project>{37abda8a-5ffa-41f9-b880-a272d8c21dff}</Project>
-      <Name>Drachenkatze.PresetMagician.Utils</Name>
+      <Name>PresetMagician.Utils</Name>
     </ProjectReference>
     <ProjectReference Include="..\vst.net\Source\Code\Jacobi.Vst.Core\Jacobi.Vst.Core.Clr4.csproj">
       <Project>{5950f8a9-f413-4ace-b6e0-6f458b4c26f9}</Project>

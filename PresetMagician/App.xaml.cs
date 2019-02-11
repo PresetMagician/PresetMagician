@@ -1,29 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 using System.Windows;
 using System.Windows.Forms;
 using Catel.IoC;
-using Catel.IO;
 using Catel.Logging;
 using Catel.Services;
 using Drachenkatze.PresetMagician.Utils;
-using NBug;
-using NBug.Events;
+using Drachenkatze.PresetMagician.Utils.IssueReport;
 using Orc.Squirrel;
-using Orchestra.Services;
+using Orchestra;
+using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
+using PresetMagician.ViewModels;
 using PresetMagician.Views;
+using SharedModels;
 using Squirrel;
-using Win32Mapi;
 using MessageBox = System.Windows.MessageBox;
-using Path = System.IO.Path;
 
 namespace PresetMagician
 {
@@ -39,14 +34,41 @@ namespace PresetMagician
 
         private void SetupExceptionHandling()
         {
-#if !DEBUG
-            AppDomain.CurrentDomain.UnhandledException += Handler.UnhandledException;
-            Current.DispatcherUnhandledException += Handler.DispatcherUnhandledException;
-            TaskScheduler.UnobservedTaskException += Handler.UnobservedTaskException;
-
-            NBug.Settings.CustomSubmissionEvent += Settings_CustomSubmissionEvent;
-#endif
+            AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+            {
+                ReportCrash(args.ExceptionObject as Exception);
+            };
+            Current.DispatcherUnhandledException += (sender, args) =>
+            {
+                ReportCrash(args.Exception);
+                args.Handled = true;
+            };
+            TaskScheduler.UnobservedTaskException += (sender, args) =>
+            {
+                ReportCrash(args.Exception);
+                args.SetObserved();
+            };
         }
+
+        public static void ReportCrash(Exception e)
+        {
+            var serviceLocator = ServiceLocator.Default;
+
+            var runtimeConfigurationService = serviceLocator.ResolveType<IRuntimeConfigurationService>();
+            string email = "";
+            if (runtimeConfigurationService.ApplicationState.ActiveLicense?.Customer != null && !string.IsNullOrWhiteSpace(runtimeConfigurationService.ApplicationState.ActiveLicense?.Customer?.Email) )
+            {
+                email = runtimeConfigurationService.ApplicationState.ActiveLicense.Customer.Email;
+            } 
+            var uiVisualiserService = serviceLocator.ResolveType<IUIVisualizerService>();
+            var report = new IssueReport(IssueReport.TrackerTypes.CRASH, VersionHelper.GetCurrentVersion(),
+                email, FileLocations.LogFile,
+                ApplicationDatabaseContext.DefaultDatabasePath);
+            report.SetException(e);
+
+            uiVisualiserService.ShowDialogAsync<ReportIssueViewModel>(report).ConfigureAwait(false);
+        }
+
 
         private ILogListener _debugListener;
 
@@ -71,13 +93,13 @@ namespace PresetMagician
             var fileLogListener = new FileLogListener
             {
                 IgnoreCatelLogging = true,
-                FilePath = @"{AppDataLocal}\Logs\PresetMagician.log",
+                FilePath = FileLocations.LogFile,
                 TimeDisplay = TimeDisplay.DateTime
             };
             LogManager.IgnoreDuplicateExceptionLogging = false;
             LogManager.AddListener(fileLogListener);
             LogManager.GetCurrentClassLogger().Debug($"Started with command line {Environment.CommandLine}");
-            
+
             var serviceLocator = ServiceLocator.Default;
             var updateService = serviceLocator.ResolveType<IUpdateService>();
             updateService.Initialize(Settings.Application.AutomaticUpdates.AvailableChannels,
@@ -106,14 +128,13 @@ namespace PresetMagician
                         },
                         onAppUninstall: v =>
                         {
-                            
                             mgr.RemoveShortcutForThisExe();
                             Environment.Exit(0);
                         });
                 }
             }
 
-           
+
             LogManager.GetCurrentClassLogger().Debug("Startup");
 
             try
@@ -131,16 +152,9 @@ namespace PresetMagician
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
             }
-            
+
             // Clean up old RemoteVstHost logs
             VstUtils.CleanupVstWorkerLogDirectory();
-
-#if DEBUG
-            //DebugMonitor.Start();
-            //DebugMonitor.OnOutputDebugString += delegate(int pid, string text) { LogManager.GetCurrentClassLogger().Debug($"{pid} {text.TrimEnd( Environment.NewLine.ToCharArray())}"); };
-#endif
-
-            NBug.Settings.AdditionalReportFiles.Add(fileLogListener.FilePath);
 
             await StartShell();
         }
@@ -191,7 +205,7 @@ namespace PresetMagician
         private async Task StartShell()
         {
             var serviceLocator = ServiceLocator.Default;
-            var shellService = serviceLocator.ResolveType<IShellService>();
+            var shellService = serviceLocator.ResolveType<CustomShellService>();
 
             var x = await shellService.CreateAsync<ShellWindow>();
 
@@ -218,58 +232,6 @@ namespace PresetMagician
             serviceLocator.ResolveType<IRuntimeConfigurationService>().Save();
             serviceLocator.ResolveType<IApplicationService>().ShutdownProcessPool();
             base.OnExit(e);
-        }
-
-        // Custom Submission Event handler
-        private void Settings_CustomSubmissionEvent(object sender, CustomSubmissionEventArgs e)
-        {
-            var tempZip = Path.GetTempPath() + Guid.NewGuid() + ".zip";
-            var fs = new FileStream(tempZip, FileMode.Create);
-            e.File.Seek(0, SeekOrigin.Begin);
-            e.File.CopyTo(fs);
-            fs.Close();
-
-            var mapi = new SimpleMapi();
-
-            mapi.AddRecipient(Settings.Links.SupportEmailName, Settings.Links.SupportEmail, false);
-
-            mapi.Attach(tempZip);
-
-            var myDict = new Dictionary<string, string>
-            {
-                ["User Comments"] = e.Report.GeneralInfo.UserDescription,
-                ["Exception Type"] = e.Report.GeneralInfo.ExceptionType,
-                ["Exception Backtrace"] = e.Exception.StackTrace,
-                ["Application"] = e.Report.GeneralInfo.HostApplication + " " +
-                                  e.Report.GeneralInfo.HostApplicationVersion
-            };
-
-            var noteText = string.Join("<br/>",
-                myDict.Select(x =>
-                    "<b>" + x.Key + "</b><br/><pre><code class=\"language-csharp\">" + HttpUtility.HtmlEncode(x.Value) +
-                    "</code></pre>").ToArray());
-            if (!mapi.Send("PresetMagician Crash: " + e.Exception.Message, noteText))
-            {
-                var crashesDir = Catel.IO.Path.Combine(
-                    Catel.IO.Path.GetApplicationDataDirectory(ApplicationDataTarget.UserRoaming),
-                    @"Crashes\", Guid.NewGuid().ToString());
-
-                Directory.CreateDirectory(crashesDir);
-                File.Copy(tempZip, Path.Combine(crashesDir, "DiagnosticData.zip"));
-
-                File.WriteAllText(Path.Combine(crashesDir, "ErrorDescription.txt"), noteText);
-
-                File.WriteAllText(Path.Combine(crashesDir, "0 Send all files in this directory to.txt"), "");
-                File.WriteAllText(Path.Combine(crashesDir, $"1 {Settings.Links.SupportEmail}.txt"), "");
-
-                MessageBox.Show(
-                    "Sorry, there seems to be no E-Mail client available. The Windows explorer will now open." +
-                    $"Please attach the files in the opened directory and send them to {Settings.Links.SupportEmail}");
-
-                Process.Start(crashesDir);
-            }
-
-            e.Result = true;
         }
     }
 }

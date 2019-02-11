@@ -1,18 +1,29 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Controls.Primitives;
 using CannedBytes.Midi.Message;
 using Catel;
 using Catel.IoC;
 using Catel.MVVM;
 using Catel.Reflection;
 using Catel.Services;
+using Drachenkatze.PresetMagician.Utils.IssueReport;
+using Orchestra;
 using Orchestra.Services;
 using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.Views;
+using Redmine.Net.Api;
+using Redmine.Net.Api.Async;
+using Redmine.Net.Api.Types;
 using SharedModels;
+using AssemblyHelper = Catel.Reflection.AssemblyHelper;
+using Version = Redmine.Net.Api.Types.Version;
 
 namespace PresetMagician.ViewModels
 {
@@ -145,9 +156,17 @@ namespace PresetMagician.ViewModels
         /// </summary>
         private async Task OnDoSomethingExecuteAsync()
         {
-            throw new Exception("Your exception here!");
+         
+                throw new ArgumentException("ouch");
+            
+            
+            
+           /* var report = new IssueReport(IssueReport.TrackerTypes.BUG, VersionHelper.GetCurrentVersion(), ApplicationState.ActiveLicense.Customer.Email, FileLocations.LogFile, ApplicationDatabaseContext.DefaultDatabasePath);
 
+            await _uiVisualizerService.ShowDialogAsync<ReportIssueViewModel>(report);*/
         }
+
+   
 
         #endregion
     }

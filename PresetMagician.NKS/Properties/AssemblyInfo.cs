@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Drachenkatze.PresetMagician.Utils")]
+[assembly: AssemblyTitle("PresetMagician.NKS")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Drachenkatze.PresetMagician.Utils")]
+[assembly: AssemblyProduct("PresetMagician.NKS")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("37abda8a-5ffa-41f9-b880-a272d8c21dff")]
+[assembly: Guid("2126df46-7f24-4c2c-b236-514a70b7a3a5")]
 
 // Version information for an assembly consists of the following four values:
 //

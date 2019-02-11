@@ -342,8 +342,7 @@
                 </StackPanel>
 
                 <StackPanel Grid.Row="3" Grid.Column="1">
-                    <ComboBox ItemsSource="{Binding PluginLocations}" SelectedItem="{Binding Plugin.PluginLocation}"
-                              DisplayMemberPath="ShortTextRepresentation">
+                    <ComboBox ItemsSource="{Binding PluginLocations}" SelectedItem="{Binding Plugin.PluginLocation}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">

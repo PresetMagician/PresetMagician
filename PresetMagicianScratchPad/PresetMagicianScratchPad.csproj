@@ -77,13 +77,13 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Drachenkatze.PresetMagician.Utils\Drachenkatze.PresetMagician.Utils.csproj">
+    <ProjectReference Include="..\PresetMagician.Utils\PresetMagician.Utils.csproj">
       <Project>{37abda8a-5ffa-41f9-b880-a272d8c21dff}</Project>
-      <Name>Drachenkatze.PresetMagician.Utils</Name>
+      <Name>PresetMagician.Utils</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Drachenkatze.PresetMagician.VendorPresetParser\Drachenkatze.PresetMagician.VendorPresetParser.csproj">
+    <ProjectReference Include="..\PresetMagician.VendorPresetParser\PresetMagician.VendorPresetParser.csproj">
       <Project>{3f01003f-9e52-4f4d-a5fd-ecdd9017c048}</Project>
-      <Name>Drachenkatze.PresetMagician.VendorPresetParser</Name>
+      <Name>PresetMagician.VendorPresetParser</Name>
     </ProjectReference>
     <ProjectReference Include="..\PresetMagician.VstHost\PresetMagician.VstHost.csproj">
       <Project>{bb9702b3-2826-411a-b7c5-ef64348a7a5c}</Project>

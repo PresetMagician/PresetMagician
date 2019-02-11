@@ -66,14 +66,6 @@ namespace PresetMagician.Services
         [Time]
         public override async Task InitializeBeforeCreatingShellAsync()
         {
-            
-
-            await RunAndWaitAsync(new Func<Task>[]
-            {
-                InitializePerformanceAsync
-            });
-
-            
             // Non-async first
             RegisterTypes();
 
@@ -210,9 +202,12 @@ namespace PresetMagician.Services
             _commandManager.CreateCommandWithGesture(typeof(Commands.Tools), nameof(Commands.Tools.UpdateLicense));
             _commandManager.CreateCommandWithGesture(typeof(Commands.Tools), nameof(Commands.Tools.CompressDatabase));
 
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Help), "OpenSupportLink");
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Help), nameof(Commands.Help.RequestSupport));
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Help), nameof(Commands.Help.CreateBugReport));
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Help), nameof(Commands.Help.CreateFeatureRequest));
             _commandManager.CreateCommandWithGesture(typeof(Commands.Help), "OpenChatLink");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Help), "OpenDocumentationLink");
+            
         }
 
         [Time]
@@ -231,8 +226,8 @@ namespace PresetMagician.Services
         private async Task InitializePerformanceAsync()
         {
 
-            Catel.Windows.Controls.UserControl.DefaultCreateWarningAndErrorValidatorForViewModelValue = false;
-            Catel.Windows.Controls.UserControl.DefaultSkipSearchingForInfoBarMessageControlValue = true;
+            /*Catel.Windows.Controls.UserControl.DefaultCreateWarningAndErrorValidatorForViewModelValue = false;
+            Catel.Windows.Controls.UserControl.DefaultSkipSearchingForInfoBarMessageControlValue = true;*/
         }
 
         [Time]

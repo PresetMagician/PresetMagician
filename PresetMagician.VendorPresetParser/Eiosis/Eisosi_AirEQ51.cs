@@ -10,7 +10,7 @@ using System.Xml.XPath;
 using PresetMagician.VstHost.VST;
 using JetBrains.Annotations;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
+namespace PresetMagician.VendorPresetParser.SlateDigital
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]

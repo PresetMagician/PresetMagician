@@ -1,5 +1,7 @@
-﻿using System.Collections.Immutable;
+﻿using System;
+using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using Orc.Squirrel;
 
 namespace PresetMagician
@@ -18,6 +20,15 @@ namespace PresetMagician
 
 namespace PresetMagician
 {
+
+    public static class FileLocations
+    {
+        public static string PresetMagicianLocalAppData =
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                @"Drachenkatze\PresetMagician");
+
+        public static string LogFile = Path.Combine(PresetMagicianLocalAppData, @"Logs\PresetMagician.log");
+    }
    
     public static class Settings
     {
@@ -149,7 +160,9 @@ namespace PresetMagician
 
         public static class Help
         {
-            public const string OpenSupportLink = "Help.OpenSupportLink";
+            public const string CreateBugReport = "Help.CreateBugReport";
+            public const string CreateFeatureRequest = "Help.CreateFeatureRequest";
+            public const string RequestSupport = "Help.RequestSupport";
             public const string OpenChatLink = "Help.OpenChatLink";
             public const string OpenDocumentationLink = "Help.OpenDocumentationLink";
         }

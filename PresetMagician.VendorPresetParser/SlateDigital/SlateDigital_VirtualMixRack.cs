@@ -8,11 +8,11 @@ using System.Linq;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using Anotar.Catel;
-using Drachenkatze.PresetMagician.VendorPresetParser.Common;
+using PresetMagician.VendorPresetParser.Common;
 using PresetMagician.VstHost.VST;
 using JetBrains.Annotations;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
+namespace PresetMagician.VendorPresetParser.SlateDigital
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
