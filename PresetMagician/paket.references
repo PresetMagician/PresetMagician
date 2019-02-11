@@ -28,3 +28,5 @@ EntityFramework
 System.Data.SQLite
 ksemenenko.ColorThief
 Orc.Scheduling
+redmine-api
+MimeTypeMap.List

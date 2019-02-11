@@ -1,0 +1,8 @@
+Standart.Hash.xxHash
+Catel.Core
+Catel.MVVM
+Anotar.Catel.Fody copy_local: false
+redmine-api
+MimeTypeMap.List
+sqlite-net-pcl
+Catel.Fody

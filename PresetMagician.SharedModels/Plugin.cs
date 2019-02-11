@@ -306,7 +306,7 @@ namespace SharedModels
 
         [NotMapped] public int NumPresets => Presets?.Count ?? 0;
 
-        public string PluginName { get; set; } = "";
+        public string PluginName { get; set; } = "<unknown>";
 
         public int PresetParserAudioPreviewPreDelay => PresetParser?.AudioPreviewPreDelay ?? 0;
 

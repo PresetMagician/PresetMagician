@@ -47,14 +47,15 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
     <PlatformTarget>x64</PlatformTarget>
-    <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>
     </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32bit>false</Prefer32bit>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Resources\Icons\PresetMagician.ico</ApplicationIcon>
@@ -112,9 +113,11 @@
     <Compile Include="Commands\Developer\PluginToolsShowPluginEditorCommandContainer.cs" />
     <Compile Include="Commands\Developer\PluginToolsShowPluginInfoCommandContainer.cs" />
     <Compile Include="Commands\Developer\PluginToolsUnloadPluginCommandContainer.cs" />
+    <Compile Include="Commands\Help\HelpCreateBugReportCommandContainer.cs" />
+    <Compile Include="Commands\Help\HelpCreateFeatureRequestCommandContainer.cs" />
     <Compile Include="Commands\Help\HelpOpenChatLinkCommandContainer.cs" />
     <Compile Include="Commands\Help\HelpOpenDocumentationLinkCommandContainer.cs" />
-    <Compile Include="Commands\Help\HelpOpenSupportLinkCommandContainer.cs" />
+    <Compile Include="Commands\Help\HelpRequestSupportCommandContainer.cs" />
     <Compile Include="Commands\PluginTools\PluginToolsDisablePluginsCommandContainer.cs" />
     <Compile Include="Commands\PluginTools\PluginToolsEnablePluginsCommandContainer.cs" />
     <Compile Include="Commands\PluginTools\PluginToolsViewErrorsCommandContainer.cs" />
@@ -173,6 +176,7 @@
     <Compile Include="Services\ApplicationInitializationService.cs" />
     <Compile Include="Services\ApplicationService.cs" />
     <Compile Include="Services\CustomPleaseWaitService.cs" />
+    <Compile Include="Services\CustomShellService.cs" />
     <Compile Include="Services\CustomStatusService.cs" />
     <Compile Include="Services\DatabaseService.cs" />
     <Compile Include="Services\Interfaces\IAdvancedMessageService.cs" />
@@ -196,6 +200,7 @@
     <Compile Include="ViewModels\PresetExportListViewModel.cs" />
     <Compile Include="ViewModels\PresetViewModel.cs" />
     <Compile Include="ViewModels\RegistrationViewModel.cs" />
+    <Compile Include="ViewModels\ReportIssueViewModel.cs" />
     <Compile Include="ViewModels\RibbonViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
@@ -220,6 +225,9 @@
     </Compile>
     <Compile Include="Views\PresetDataView.xaml.cs">
       <DependentUpon>PresetDataView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ReportIssueView.xaml.cs">
+      <DependentUpon>ReportIssueView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\VstHostProcessLogView.xaml.cs">
       <DependentUpon>VstHostProcessLogView.xaml</DependentUpon>
@@ -336,6 +344,7 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\PresetDataView.xaml" />
+    <Page Include="Views\ReportIssueView.xaml" />
     <Page Include="Views\VstHostProcessLogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -425,21 +434,9 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Drachenkatze.PresetMagician.NKSF\Drachenkatze.PresetMagician.NKSF.csproj">
+    <ProjectReference Include="..\PresetMagician.NKS\PresetMagician.NKS.csproj">
       <Project>{2126df46-7f24-4c2c-b236-514a70b7a3a5}</Project>
-      <Name>Drachenkatze.PresetMagician.NKSF</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Drachenkatze.PresetMagician.Utils\Drachenkatze.PresetMagician.Utils.csproj">
-      <Project>{37abda8a-5ffa-41f9-b880-a272d8c21dff}</Project>
-      <Name>Drachenkatze.PresetMagician.Utils</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Drachenkatze.PresetMagician.VendorPresetParser\Drachenkatze.PresetMagician.VendorPresetParser.csproj">
-      <Project>{3f01003f-9e52-4f4d-a5fd-ecdd9017c048}</Project>
-      <Name>Drachenkatze.PresetMagician.VendorPresetParser</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\NBug\NBug\NBug.csproj">
-      <Project>{62ced1d5-f603-40de-8bf5-3e49d3a392f4}</Project>
-      <Name>NBug</Name>
+      <Name>PresetMagician.NKS</Name>
     </ProjectReference>
     <ProjectReference Include="..\PresetMagician.RemoteVstHost\PresetMagician.RemoteVstHost.csproj">
       <Project>{f07c1405-2149-4da5-ace7-54f5278ad2e4}</Project>
@@ -448,6 +445,14 @@
     <ProjectReference Include="..\PresetMagician.SharedModels\PresetMagician.SharedModels.csproj">
       <Project>{445ac4fe-6acc-4e19-9424-b35c0b8b5804}</Project>
       <Name>PresetMagician.SharedModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PresetMagician.Utils\PresetMagician.Utils.csproj">
+      <Project>{37abda8a-5ffa-41f9-b880-a272d8c21dff}</Project>
+      <Name>PresetMagician.Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PresetMagician.VendorPresetParser\PresetMagician.VendorPresetParser.csproj">
+      <Project>{3f01003f-9e52-4f4d-a5fd-ecdd9017c048}</Project>
+      <Name>PresetMagician.VendorPresetParser</Name>
     </ProjectReference>
     <ProjectReference Include="..\PresetMagician.VstHost\PresetMagician.VstHost.csproj">
       <Project>{bb9702b3-2826-411a-b7c5-ef64348a7a5c}</Project>
@@ -534,7 +539,7 @@
     <Exec Command="..\packages\NuGet.CommandLine\tools\NuGet pack PresetMagician.nuspec -Version %(myAssemblyInfo.Version) -Properties Configuration=Publish -OutputDirectory $(OutDir) -BasePath $(OutDir)" />
     <Exec Command="..\packages\squirrel.windows\tools\squirrel --no-delta --setupIcon=Resources/Icons/PresetMagician.ico --icon=Resources/Icons/PresetMagician.ico  --framework-version=net472 -g Resources/Images/Installing.gif --releasify $(OutDir)PresetMagician.$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(3)).nupkg --releaseDir=$(SolutionDir)\Releases" />
   </Target>
- <Import Project="..\common\ExtraCleanup.targets" />
+  <Import Project="..\common\ExtraCleanup.targets" />
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
@@ -799,6 +804,17 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
+        <Reference Include="MimeTypeMap.List">
+          <HintPath>..\packages\MimeTypeMap.List\lib\netstandard1.0\MimeTypeMap.List.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
         <Reference Include="ModuleInit">
           <HintPath>..\packages\ModuleInit.Fody\lib\net452\ModuleInit.dll</HintPath>
           <Private>False</Private>
@@ -940,6 +956,17 @@
       <ItemGroup>
         <Reference Include="Portable.Licensing">
           <HintPath>..\packages\Portable.Licensing\lib\portable-net40+sl4+wp7+win8\Portable.Licensing.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="redmine-net452-api">
+          <HintPath>..\packages\redmine-api\lib\net452\redmine-net452-api.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
