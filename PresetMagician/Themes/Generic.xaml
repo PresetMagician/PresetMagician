@@ -3,10 +3,13 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Fluent="urn:fluent-ribbon"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-    xmlns:options="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options">
+    xmlns:options="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
+    xmlns:controls="http://schemas.wildgums.com/orc/controls"
+    xmlns:system="clr-namespace:System;assembly=mscorlib">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="pack://application:,,,/Xceed.Wpf.AvalonDock.Themes.VS2013;component/LightTheme.xaml" />
+        <ResourceDictionary
+            Source="pack://application:,,,/Xceed.Wpf.AvalonDock.Themes.VS2013;component/LightTheme.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Themes/Colors/LightColors.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Themes/Colors/AvalonDockColors.xaml" />
 
@@ -27,11 +30,14 @@
 
     <SolidColorBrush x:Key="AccentColorBrush" Color="#FF593196" />
     <SolidColorBrush x:Key="StatusBarColorBrush" Color="#FF391f5f" />
-
+    <Thickness x:Key="Margin.CheckBox" Left="0" Top="0" Right="0" Bottom="0" />
+    <system:Double x:Key="MarginSize.Default">0</system:Double>
     <!--  Expander  -->
     <Geometry x:Key="ExpanderCheckedArrow">M 1,4.5  L 4.5,1  L 8,4.5</Geometry>
     <Geometry x:Key="ExpanderNormalArrow">M 1,1.5 L 4.5,5 L 8,1.5</Geometry>
     <Geometry x:Key="ExpanderToggleButtonArrow">M5,-0 L9,5 1,5 z</Geometry>
+
+    <Thickness x:Key="Margin.Label" Left="0" Top="0" Right="0" Bottom="0" />
 
     <SolidColorBrush x:Key="Expander.Background" Color="LightGray" />
     <SolidColorBrush x:Key="Expander.MouseOver.Arrow.Stroke" Color="White" />
@@ -57,7 +63,8 @@
         <Setter Property="Foreground" Value="White" />
     </Style>
 
-    <ControlTemplate x:Key="RibbonContextualTabGroupControlTemplate" TargetType="{x:Type Fluent:RibbonContextualTabGroup}">
+    <ControlTemplate x:Key="RibbonContextualTabGroupControlTemplate"
+                     TargetType="{x:Type Fluent:RibbonContextualTabGroup}">
         <Border
             x:Name="rootBorder"
             Width="Auto"
@@ -143,10 +150,12 @@
                             <Setter TargetName="border" Property="Opacity" Value="0.56" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource TextBoxHoverBorderBrush}" />
+                            <Setter TargetName="border" Property="BorderBrush"
+                                    Value="{DynamicResource TextBoxHoverBorderBrush}" />
                         </Trigger>
                         <Trigger Property="IsKeyboardFocused" Value="True">
-                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource TextBoxFocusBorderBrush}" />
+                            <Setter TargetName="border" Property="BorderBrush"
+                                    Value="{DynamicResource TextBoxFocusBorderBrush}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -201,10 +210,12 @@
                             <Setter TargetName="arrow" Property="Data" Value="{StaticResource ExpanderCheckedArrow}" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="true">
-                            <Setter TargetName="arrow" Property="Stroke" Value="{StaticResource Expander.MouseOver.Arrow.Stroke}" />
+                            <Setter TargetName="arrow" Property="Stroke"
+                                    Value="{StaticResource Expander.MouseOver.Arrow.Stroke}" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="false">
-                            <Setter TargetName="arrow" Property="Stroke" Value="{StaticResource Expander.Disabled.Arrow.Stroke}" />
+                            <Setter TargetName="arrow" Property="Stroke"
+                                    Value="{StaticResource Expander.Disabled.Arrow.Stroke}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -254,10 +265,12 @@
                             <Setter TargetName="arrow" Property="Data" Value="{StaticResource ExpanderCheckedArrow}" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="true">
-                            <Setter TargetName="arrow" Property="Stroke" Value="{StaticResource Expander.MouseOver.Arrow.Stroke}" />
+                            <Setter TargetName="arrow" Property="Stroke"
+                                    Value="{StaticResource Expander.MouseOver.Arrow.Stroke}" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="false">
-                            <Setter TargetName="arrow" Property="Stroke" Value="{StaticResource Expander.Disabled.Arrow.Stroke}" />
+                            <Setter TargetName="arrow" Property="Stroke"
+                                    Value="{StaticResource Expander.Disabled.Arrow.Stroke}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -307,10 +320,12 @@
                             <Setter TargetName="arrow" Property="Data" Value="{StaticResource ExpanderCheckedArrow}" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="true">
-                            <Setter TargetName="arrow" Property="Stroke" Value="{StaticResource Expander.MouseOver.Arrow.Stroke}" />
+                            <Setter TargetName="arrow" Property="Stroke"
+                                    Value="{StaticResource Expander.MouseOver.Arrow.Stroke}" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="false">
-                            <Setter TargetName="arrow" Property="Stroke" Value="{StaticResource Expander.Disabled.Arrow.Stroke}" />
+                            <Setter TargetName="arrow" Property="Stroke"
+                                    Value="{StaticResource Expander.Disabled.Arrow.Stroke}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -365,10 +380,12 @@
                             <Setter TargetName="arrow" Property="Data" Value="{StaticResource ExpanderCheckedArrow}" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="true">
-                            <Setter TargetName="arrow" Property="Stroke" Value="{StaticResource Expander.MouseOver.Arrow.Stroke}" />
+                            <Setter TargetName="arrow" Property="Stroke"
+                                    Value="{StaticResource Expander.MouseOver.Arrow.Stroke}" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="false">
-                            <Setter TargetName="arrow" Property="Stroke" Value="{StaticResource Expander.Disabled.Arrow.Stroke}" />
+                            <Setter TargetName="arrow" Property="Stroke"
+                                    Value="{StaticResource Expander.Disabled.Arrow.Stroke}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -430,20 +447,24 @@
                         <Trigger Property="ExpandDirection" Value="Right">
                             <Setter TargetName="ExpandSite" Property="DockPanel.Dock" Value="Right" />
                             <Setter TargetName="HeaderSite" Property="DockPanel.Dock" Value="Left" />
-                            <Setter TargetName="HeaderSite" Property="Style" Value="{StaticResource ExpanderRightHeaderStyle}" />
+                            <Setter TargetName="HeaderSite" Property="Style"
+                                    Value="{StaticResource ExpanderRightHeaderStyle}" />
                         </Trigger>
                         <Trigger Property="ExpandDirection" Value="Up">
                             <Setter TargetName="ExpandSite" Property="DockPanel.Dock" Value="Top" />
                             <Setter TargetName="HeaderSite" Property="DockPanel.Dock" Value="Bottom" />
-                            <Setter TargetName="HeaderSite" Property="Style" Value="{StaticResource ExpanderUpHeaderStyle}" />
+                            <Setter TargetName="HeaderSite" Property="Style"
+                                    Value="{StaticResource ExpanderUpHeaderStyle}" />
                         </Trigger>
                         <Trigger Property="ExpandDirection" Value="Left">
                             <Setter TargetName="ExpandSite" Property="DockPanel.Dock" Value="Left" />
                             <Setter TargetName="HeaderSite" Property="DockPanel.Dock" Value="Right" />
-                            <Setter TargetName="HeaderSite" Property="Style" Value="{StaticResource ExpanderLeftHeaderStyle}" />
+                            <Setter TargetName="HeaderSite" Property="Style"
+                                    Value="{StaticResource ExpanderLeftHeaderStyle}" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="false">
-                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                            <Setter Property="Foreground"
+                                    Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -492,6 +513,64 @@
                             </MultiTrigger.Conditions>
                         </MultiTrigger>
                         <Trigger Property="IsEnabled" Value="false" />
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="{x:Type controls:LinkLabel}" TargetType="{x:Type controls:LinkLabel}"
+           BasedOn="{StaticResource {x:Type Label}}">
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:LinkLabel}">
+
+                    <TextBlock Background="{TemplateBinding Background}"
+                               Margin="0"
+                               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                               VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                               SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
+                        <Hyperlink
+                            x:Name="PART_InnerHyperlink"
+                            NavigateUri="{Binding RelativeSource= {RelativeSource TemplatedParent}, Path=Url}"
+                            Style="{Binding RelativeSource= {RelativeSource TemplatedParent}, Path=HyperlinkStyle}"
+                            Command="{Binding RelativeSource= {RelativeSource TemplatedParent}, Path=Command}"
+                            CommandParameter="{Binding RelativeSource= {RelativeSource TemplatedParent}, Path=CommandParameter}"
+                            CommandTarget="{Binding RelativeSource= {RelativeSource TemplatedParent}, Path=CommandTarget}">
+                            <controls:BindableRun
+                                BoundText="{Binding RelativeSource= {RelativeSource TemplatedParent}, Path=Content}" />
+                        </Hyperlink>
+                    </TextBlock>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="LinkLabelBehavior" Value="NeverUnderline">
+                            <Setter TargetName="PART_InnerHyperlink" Property="TextDecorations" Value="None" />
+                        </Trigger>
+                        <Trigger Property="LinkLabelBehavior" Value="AlwaysUnderline">
+                            <Setter TargetName="PART_InnerHyperlink" Property="TextDecorations" Value="Underline" />
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="true" />
+                                <Condition Property="LinkLabelBehavior" Value="HoverUnderline" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="PART_InnerHyperlink" Property="TextDecorations" Value="Underline" />
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="false" />
+                                <Condition Property="LinkLabelBehavior" Value="HoverUnderline" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="PART_InnerHyperlink" Property="TextDecorations" Value="None" />
+                        </MultiTrigger>
+                        <Trigger SourceName="PART_InnerHyperlink" Property="IsEnabled" Value="false">
+                            <Setter Property="Foreground"
+                                    Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Foreground"
+                                    Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                        </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

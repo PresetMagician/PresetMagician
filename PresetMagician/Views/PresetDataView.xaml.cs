@@ -18,7 +18,7 @@ namespace PresetMagician.Views
 
             InitializeComponent();
 
-            var provider = new DynamicByteProvider(viewModel.Preset.PresetData);
+            var provider = new DynamicByteProvider(viewModel.PresetData);
             PresetDataControl.ByteProvider = provider;
         }
     }

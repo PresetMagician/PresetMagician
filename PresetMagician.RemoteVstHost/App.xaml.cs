@@ -25,7 +25,7 @@ namespace PresetMagician.RemoteVstHost
 
         private static Timer _shutdownTimer;
         public static MiniDiskLogger MiniDiskLogger;
-        private readonly HashSet<int> _processedExceptions = new HashSet<int>();
+        private static readonly HashSet<int> _processedExceptions = new HashSet<int>();
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -73,7 +73,9 @@ namespace PresetMagician.RemoteVstHost
             MiniDiskLogger.Debug(e.Exception.StackTrace);
         }
 
-        private void CurrentDomainOnFirstChanceException(object sender, FirstChanceExceptionEventArgs e)
+        [SecurityCritical]
+        [HandleProcessCorruptedStateExceptions]
+        private static void CurrentDomainOnFirstChanceException(object sender, FirstChanceExceptionEventArgs e)
         {
             if (_processedExceptions.Contains(e.Exception.GetHashCode()))
             {

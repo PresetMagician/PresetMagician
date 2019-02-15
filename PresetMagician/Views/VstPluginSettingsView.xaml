@@ -151,6 +151,7 @@
                 </StackPanel>
 
                 <StackPanel Grid.Row="2" Grid.Column="1">
+                    <TextBlock>These notes are only for the Preset Parser, not for the FXB/FXP files above!</TextBlock>
                     <TextBox IsReadOnly="True" Text="{Binding Plugin.PresetParser.BankLoadingNotes}"
                              TextWrapping="Wrap" />
                 </StackPanel>
@@ -160,8 +161,7 @@
                 </StackPanel>
 
                 <StackPanel Grid.Row="3" Grid.Column="1">
-                    <ComboBox ItemsSource="{Binding PluginLocations}" SelectedItem="{Binding Plugin.PluginLocation}"
-                              DisplayMemberPath="ShortTextRepresentation">
+                    <ComboBox ItemsSource="{Binding PluginLocations}" SelectedItem="{Binding Plugin.PluginLocation}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">

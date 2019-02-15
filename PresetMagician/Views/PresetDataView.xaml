@@ -31,7 +31,7 @@
                             UseFixedBytesPerLine="True"
                             VScrollBarVisible="True" />
                     </WindowsFormsHost>
-                    <TextBlock Grid.Row="1" Text="{Binding Preset.PresetData.Length}" />
+                    <TextBlock Grid.Row="1" Text="{Binding PresetData.Length}" />
                 </Grid>
 
 </catel:DataWindow>

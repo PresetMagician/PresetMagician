@@ -1,0 +1,126 @@
+<catel:DataWindow
+    x:Class="PresetMagician.Views.ReportIssueView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:catel="http://schemas.catelproject.com"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:PresetMagician.ViewModels"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    xmlns:orccontrols="http://schemas.wildgums.com/orc/controls"
+    Width="800"
+    Height="600"
+    d:DataContext="{d:DesignInstance viewModels:ReportIssueViewModel}"
+    ResizeMode="CanResizeWithGrip"
+    SizeToContent="Manual"
+    mc:Ignorable="d">
+    <catel:DataWindow.Resources>
+        <catel:BooleanToCollapsingVisibilityConverter x:Key="BooleanToCollapsingVisibilityConverter" />
+    </catel:DataWindow.Resources>
+    <xctk:BusyIndicator
+        IsBusy="{Binding IsSubmitting, Mode=OneWay}">
+
+        <xctk:BusyIndicator.BusyContentTemplate>
+            <DataTemplate>
+                <StackPanel Width="600" Margin="2">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        FontWeight="Bold"
+                        Text="{Binding Path=DataContext.SubmitProgress, Mode=OneWay, RelativeSource={RelativeSource AncestorType=catel:DataWindow}}" />
+                </StackPanel>
+            </DataTemplate>
+        </xctk:BusyIndicator.BusyContentTemplate>
+        <xctk:BusyIndicator.ProgressBarStyle>
+            <Style TargetType="ProgressBar">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </Style>
+        </xctk:BusyIndicator.ProgressBarStyle>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" MinHeight="100" /> <!-- Description -->
+                    <RowDefinition Height="Auto" /> <!-- specific plugin label -->
+                    <RowDefinition Height="Auto" /> <!-- specific plugin selector -->
+                    <RowDefinition Height="Auto" /> <!-- include plugin log -->
+                    <RowDefinition Height="Auto" /> <!-- include database -->
+                    <RowDefinition Height="Auto" /> <!-- include system log -->
+                    <RowDefinition Height="Auto" /> <!-- submit privately -->
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" FontWeight="Bold" FontSize="14" Text="{Binding BoxTitle}" />
+
+                <Label Grid.Row="1" Content="Your E-Mail"
+                       Visibility="{Binding Report.RequiresEmail, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}" />
+
+                <xctk:WatermarkTextBox Grid.Row="2" Text="{Binding Report.UserEmail}" AcceptsReturn="False"
+                                       TextWrapping="NoWrap"
+                                       Visibility="{Binding Report.RequiresEmail, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
+                    <xctk:WatermarkTextBox.Watermark>
+                        <TextBlock Text="Enter your E-Mail Address here" />
+                    </xctk:WatermarkTextBox.Watermark>
+                </xctk:WatermarkTextBox>
+
+                <Border Grid.Row="3" BorderBrush="Red" BorderThickness="2" Visibility="{Binding DisplayBugWarning, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
+                    <TextBlock FontWeight="Bold">Please ensure that you triggered the bug in the current session prior reporting the bug, so that all necessary log files can be included</TextBlock>
+                </Border>
+                
+                <Label Grid.Row="4" Content="Report Title" />
+
+                <xctk:WatermarkTextBox Grid.Row="5" Text="{Binding Report.Subject}" AcceptsReturn="False"
+                                       TextWrapping="NoWrap">
+                    <xctk:WatermarkTextBox.Watermark>
+                        <TextBlock Text="Enter a short description about the issue" />
+                    </xctk:WatermarkTextBox.Watermark>
+                </xctk:WatermarkTextBox>
+
+                <Label Grid.Row="6" Content="Additional Information" />
+                <xctk:WatermarkTextBox Grid.Row="7" Watermark="{Binding ReportDescriptionHint}"
+                                       Text="{Binding Report.Description}" AcceptsReturn="True"
+                                       TextWrapping="WrapWithOverflow" />
+
+                <Label Grid.Row="8" Content="Is this report about a specific plugin? If so, please select the plugin"
+                       Visibility="{Binding MayIncludePlugins, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}" />
+                <ComboBox Grid.Row="9" ItemsSource="{Binding Plugins}" SelectedItem="{Binding SelectedPlugin}"
+                          Visibility="{Binding MayIncludePlugins, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Width="150" Text="{Binding PluginName}" />
+                                <TextBlock Text="by" />
+                                <TextBlock Width="100" Text="{Binding PluginVendor}" />
+                                <TextBlock Text="{Binding DllPath}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+                <CheckBox Grid.Row="10" IsChecked="{Binding Report.IncludePluginLog}"
+                          ToolTip="Include the plugin-specific log"
+                          Visibility="{Binding DisplayPluginLogCheckbox, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
+                    Include Plugin Log
+                </CheckBox>
+                <CheckBox Grid.Row="11" IsChecked="{Binding Report.IncludeDatabase}"
+                          Visibility="{Binding DisplayIncludeSupportFiles, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}"
+                          ToolTip="Includes a stripped-down database for debugging purposes. Leaves 10 presets per plugin. Removes all other plugin data if a specific plugin is selected.">
+                    Include Stripped-Down Database (Recommended)
+                </CheckBox>
+                <CheckBox Grid.Row="12" IsChecked="{Binding Report.IncludeSystemLog}"
+                          Visibility="{Binding DisplayIncludeSupportFiles, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}"
+                          ToolTip="Include the main PresetMagician.log">
+                    Include System Log (Recommended)
+                </CheckBox>
+                <CheckBox Grid.Row="13" IsChecked="{Binding Report.SubmitPrivately}">Submit Privately (The issue and its attachments will not be publicly visible)</CheckBox>
+            </Grid>
+        </ScrollViewer>
+    </xctk:BusyIndicator>
+</catel:DataWindow>

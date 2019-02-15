@@ -24,6 +24,50 @@
                 LargeIcon="{iconPacks:Material Kind=HelpNetwork,
                                                        Width=32,
                                                        Height=32}" />
+            
+            <fluent:DropDownButton
+                Width="60"
+                Padding="0"
+                VerticalAlignment="Center"
+                Header="Support"
+                LargeIcon="{iconPacks:Material Kind=Lifebuoy,
+                                                       Width=32,
+                                                       Height=32}">
+                <fluent:MenuItem
+                    Command="{catel:CommandManagerBinding Help.CreateBugReport}"
+                    Header="Create Bug Report"
+                    Icon="{iconPacks:FontAwesome Kind=AmbulanceSolid}">
+                    <fluent:MenuItem.ToolTip>
+                        <fluent:ScreenTip Title="Creates a new bug report"
+                                          Width="250"
+                                          Text="Creates a new bug report. "
+                        />
+                    </fluent:MenuItem.ToolTip>
+                </fluent:MenuItem>
+                <fluent:MenuItem
+                    Command="{catel:CommandManagerBinding Help.CreateFeatureRequest}"
+                    Header="Create Feature Request"
+                    Icon="{iconPacks:Octicons Kind=Beaker}">
+                    <fluent:MenuItem.ToolTip>
+                        <fluent:ScreenTip Title="Creates a new feature request"
+                                          Width="250"
+                                          Text="Creates a new feature request."
+                        />
+                    </fluent:MenuItem.ToolTip>
+                </fluent:MenuItem>
+                <fluent:MenuItem
+                    Command="{catel:CommandManagerBinding Help.RequestSupport}"
+                    Header="Request Support"
+                    Icon="{iconPacks:Material Kind=Lifebuoy}">
+                    <fluent:MenuItem.ToolTip>
+                        <fluent:ScreenTip Title="Request Support"
+                                          Width="250"
+                                          Text="Creates a new support request. Select this if you have general questions (it's neither a bug nor a feature request)."
+                                           />
+                    </fluent:MenuItem.ToolTip>
+                </fluent:MenuItem>
+            </fluent:DropDownButton>
+         
 
             <fluent:Button
                 Command="{catel:CommandManagerBinding Help.OpenChatLink}"
@@ -31,18 +75,13 @@
                 Size="Middle"
                 Icon="{iconPacks:Material Kind=Chat}" />
 
-            <fluent:Button
-                Command="{catel:CommandManagerBinding Help.OpenSupportLink}"
-                Header="Support"
-                Size="Middle"
-                Icon="{iconPacks:Material Kind=Lifebuoy}" />
-
+           
             <fluent:Button
                 Command="{Binding ShowAboutDialog}"
                 Header="About"
                 Size="Middle"
                 Icon="{iconPacks:Entypo Kind=InfoWithCircle}" />
-
+         
         </collections:ArrayList>
 
     </catel:UserControl.Resources>
@@ -243,7 +282,17 @@
                         Size="Middle" />
                     <fluent:Button
                         Command="{catel:CommandManagerBinding PluginTools.ReportSinglePluginToLive}"
-                        Header="Report Single Plugin"
+                        Header="Force Report Single Plugin (Live)"
+                        Icon="{iconPacks:Octicons Kind=Megaphone}"
+                        Size="Middle" />
+                    <fluent:Button
+                        Command="{catel:CommandManagerBinding Plugin.ForceReportPluginsToLive}"
+                        Header="Force Report Plugins (Live)"
+                        Icon="{iconPacks:Octicons Kind=Megaphone}"
+                        Size="Middle" />
+                    <fluent:Button
+                        Command="{catel:CommandManagerBinding Plugin.ForceReportPluginsToDev}"
+                        Header="Force Report Plugins (Dev)"
                         Icon="{iconPacks:Octicons Kind=Megaphone}"
                         Size="Middle" />
                     <fluent:ToggleButton
