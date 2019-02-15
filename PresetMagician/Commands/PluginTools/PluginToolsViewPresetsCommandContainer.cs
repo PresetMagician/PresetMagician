@@ -1,9 +1,14 @@
 ﻿using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Catel;
+using Catel.Data;
 using Catel.MVVM;
 using Catel.Services;
+using MethodTimer;
+using PresetMagician.Extensions;
+using PresetMagician.Helpers;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.ViewModels;
 using SharedModels;
@@ -12,16 +17,18 @@ using SharedModels;
 namespace PresetMagician
 {
     // ReSharper disable once UnusedMember.Global
-    public class PluginToolsViewSettingsCommandContainer : ApplicationNotBusyCommandContainer
+    public class PluginToolsViewPresetsCommandContainer : ApplicationNotBusyCommandContainer
     {
         private readonly IUIVisualizerService _uiVisualizerService;
         private readonly IVstService _vstService;
         private Plugin _previouslySelectedPlugin;
+        private readonly IViewModelFactory _viewModelFactory;
 
-        public PluginToolsViewSettingsCommandContainer(ICommandManager commandManager, IVstService vstService,
-            IUIVisualizerService uiVisualizerService,IRuntimeConfigurationService runtimeConfigurationService
+        public PluginToolsViewPresetsCommandContainer(ICommandManager commandManager, IVstService vstService,
+            IUIVisualizerService uiVisualizerService,IRuntimeConfigurationService runtimeConfigurationService,
+            IViewModelFactory viewModelFactory
         )
-            : base(Commands.PluginTools.ViewSettings, commandManager, runtimeConfigurationService)
+            : base(Commands.PluginTools.ViewPresets, commandManager,runtimeConfigurationService, true)
         {
             Argument.IsNotNull(() => vstService);
             Argument.IsNotNull(() => uiVisualizerService);
@@ -29,6 +36,7 @@ namespace PresetMagician
             _vstService = vstService;
             _vstService.SelectedPlugins.CollectionChanged += OnSelectedPluginsListChanged;
             _uiVisualizerService = uiVisualizerService;
+            _viewModelFactory = viewModelFactory;
         }
         
      
@@ -61,9 +69,19 @@ namespace PresetMagician
         }
 
 
+        [Time]
         protected override async Task ExecuteAsync(object parameter)
         {
-            await _uiVisualizerService.ShowDialogAsync<VstPluginSettingsViewModel>(_vstService.SelectedPlugin);
+            _vstService.SelectedPlugin.ClearIsDirtyOnAllChildsSuspended();
+            ;
+            _vstService.SelectedPlugin.foo();
+
+            var presetsViewModel =
+                _viewModelFactory.CreateViewModel<VstPluginPresetsViewModel>(_vstService.SelectedPlugin);
+            AvalonDockHelper.CreateDocument<VstPluginPresetsViewModel>(presetsViewModel, _vstService.SelectedPlugin,
+                activateDocument: true, isClosable: true, shouldTrackDirty: true);
         }
+
+        
     }
 }

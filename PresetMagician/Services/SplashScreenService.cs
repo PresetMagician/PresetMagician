@@ -33,7 +33,7 @@ namespace PresetMagician.Services
             set
             {
                 _action = value;
-                ActionChanged.SafeInvoke(this, new StartupActionChangedEventArgs(value));
+                ActionChanged?.Invoke(this, new StartupActionChangedEventArgs(value));
             }
         }
     }

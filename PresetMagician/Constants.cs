@@ -112,6 +112,7 @@ namespace PresetMagician
             public const string EnablePlugins = "PluginTools.EnablePlugins";
             public const string DisablePlugins = "PluginTools.DisablePlugins";
             public const string ViewSettings = "PluginTools.ViewSettings";
+            public const string ViewPresets = "PluginTools.ViewPresets";
             public const string ViewErrors = "PluginTools.ViewErrors";
             public const string ShowPluginInfo = "PluginTools.ShowPluginInfo";
             public const string ShowPluginEditor = "PluginTools.ShowPluginEditor";
@@ -124,11 +125,17 @@ namespace PresetMagician
 
         public static class Preset
         {
-            public const string ActivatePresetView = "Preset.ActivatePresetView";
-            public const string Export = "Preset.Export";
-            public const string ClearList = "Preset.ClearList";
-            public const string ClearSelected = "Preset.ClearSelected";
+            
             public const string ApplyMidiNote = "Preset.ApplyMidiNote";
+            public const string RenamePresetBank = "Preset.RenamePresetBank";
+        }
+
+        public static class PresetExport
+        {
+            public const string ActivatePresetView = "PresetExport.ActivatePresetView";
+            public const string DoExport = "PresetExport.DoExport";
+            public const string ClearList = "PresetExport.ClearList";
+            public const string ClearSelected = "PresetExport.ClearSelected";
         }
 
         public static class PresetTools
@@ -136,6 +143,11 @@ namespace PresetMagician
             public const string ShowPresetData = "PresetTools.ShowPresetData";
         }
 
+        public static class Developer
+        {
+            public const string SetCatelLogging = "Developer.SetCatelLogging";
+        }
+        
         public static class Tools
         {
             public const string NksfView = "Tools.NksfView";

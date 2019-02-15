@@ -1,8 +1,11 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics;
 using Catel;
 using Catel.IoC;
 using Catel.MVVM;
+using Catel.MVVM.Views;
 using PresetMagician.Helpers;
+using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
 using Xceed.Wpf.AvalonDock.Layout;
 
@@ -28,11 +31,14 @@ namespace PresetMagician.ViewModels
         {
             if (e.PropertyName == "SelectedContent")
             {
-                if (!(_layoutDocumentPane.SelectedContent is null) &&
-                    !(_layoutDocumentPane.SelectedContent.Content is null))
+                if (_layoutDocumentPane.SelectedContent?.Content != null)
                 {
                     var type = _layoutDocumentPane.SelectedContent.Content.GetType();
-                    _runtimeConfigurationService.ApplicationState.CurrentDocument = type;
+                    _runtimeConfigurationService.ApplicationState.CurrentDocumentType = type;
+
+                    var content = _layoutDocumentPane.SelectedContent as CustomLayoutDocument;
+                    _runtimeConfigurationService.ApplicationState.CurrentDocumentViewModel =
+                        content.ViewModel as IViewModel;
                 }
             }
         }

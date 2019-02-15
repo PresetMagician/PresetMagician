@@ -1,6 +1,3 @@
-[submodule "NBug"]
-	path = NBug
-	url = https://github.com/Drachenkaetzchen/NBug.git
 [submodule "vst.net"]
 	path = vst.net
 	url = git@github.com:Drachenkaetzchen/vst.net.git

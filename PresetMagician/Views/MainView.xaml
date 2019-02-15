@@ -10,19 +10,22 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:orclogviewer="http://schemas.wildgums.com/orc/logviewer"
     xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
+    xmlns:models="clr-namespace:PresetMagician.Models"
     d:DataContext="{d:DesignInstance ViewModels:MainViewModel}"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+    <catel:UserControl.Resources>
+        <catel:BooleanToCollapsingVisibilityConverter x:Key="BooleanToCollapsingVisibilityConverter" />
+    </catel:UserControl.Resources>
 
 
-        <xcad:DockingManager x:Name="DockingManager" AllowMixedOrientation="True">
-
-
+    <xcad:DockingManager x:Name="DockingManager" AllowMixedOrientation="True">
             <xcad:DockingManager.DocumentHeaderTemplate>
-                <DataTemplate>
+                <DataTemplate DataType="models:CustomLayoutDocument">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding Title}" />
+                        <iconPacks:PackIconFeatherIcons Margin="5,5,0,0" ToolTip="Modified" Width="10" Height="10" Kind="Edit2" Visibility="{Binding IsDirty, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay, FallbackValue=Visible}"/>
                     </StackPanel>
                 </DataTemplate>
             </xcad:DockingManager.DocumentHeaderTemplate>

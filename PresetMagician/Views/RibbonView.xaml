@@ -19,8 +19,8 @@
         <collections:ArrayList x:Key="HelpSection" x:Shared="false">
             <fluent:Button
                 Command="{catel:CommandManagerBinding Help.OpenDocumentationLink}"
-                Header="Online Help"
-                Width="50"
+                Header="Online Manual"
+                Width="60"
                 LargeIcon="{iconPacks:Material Kind=HelpNetwork,
                                                        Width=32,
                                                        Height=32}" />
@@ -52,12 +52,19 @@
         </Grid.RowDefinitions>
 
         <fluent:Ribbon
-            x:Name="ribbon"
+            x:Name="Ribbon"
             Grid.Row="0"
             AutomaticStateManagement="False"
             CanCustomizeRibbon="False"
-            IsQuickAccessToolBarVisible="False"
-            SelectedTabIndex="{Binding ApplicationState.SelectedRibbonTabIndex}">
+            IsQuickAccessToolBarVisible="False">
+            <fluent:Ribbon.ContextualGroups>
+                <fluent:RibbonContextualTabGroup x:Name="PresetsTabGroup"
+                                                 BorderBrush="Magenta"
+                                                 Background="Magenta"
+                                                 Foreground="Purple"
+                                                 Header="Presets"
+                                                 Visibility="Collapsed" />
+                </fluent:Ribbon.ContextualGroups>
 
             <fluent:RibbonTabItem Header="Plugins">
                 <fluent:RibbonGroupBox Header="Plugins">
@@ -130,7 +137,7 @@
                     </fluent:DropDownButton>
 
                     <fluent:Button
-                        Command="{catel:CommandManagerBinding Preset.ActivatePresetView}"
+                        Command="{catel:CommandManagerBinding PresetExport.ActivatePresetView}"
                         Header="View Preset Export List"
                         Icon="{iconPacks:Modern Kind=BookList}"
                         Size="Middle" />
@@ -152,8 +159,12 @@
                     <fluent:Button
                         Command="{catel:CommandManagerBinding PluginTools.ViewSettings}"
                         Header="Plugin Settings"
-                        Width="60"
                         LargeIcon="{iconPacks:FontAwesome Kind=CogsSolid, Width=32, Height=32}"
+                        Size="Large" />
+                    <fluent:Button
+                        Command="{catel:CommandManagerBinding PluginTools.ViewPresets}"
+                        Header="Edit Plugin Presets"
+                        LargeIcon="{iconPacks:Material Kind=CodeGreaterThanOrEqual, Width=32, Height=32}"
                         Size="Large" />
                     <fluent:Button
                         Command="{catel:CommandManagerBinding PluginTools.DisablePlugins}"
@@ -235,12 +246,20 @@
                         Header="Report Single Plugin"
                         Icon="{iconPacks:Octicons Kind=Megaphone}"
                         Size="Middle" />
+                    <fluent:ToggleButton
+                        Header="Catel Logging"
+                        x:Name="CatelLogging"
+                        Icon="{iconPacks:SimpleIcons Kind=Visa}"
+                        Command="{catel:CommandManagerBinding Developer.SetCatelLogging}"
+                        CommandParameter="{Binding ElementName=CatelLogging, Path=IsChecked}"
+                        Size="Middle"
+                         />
                 </fluent:RibbonGroupBox>
             </fluent:RibbonTabItem>
-            <fluent:RibbonTabItem Header="Presets">
+            <fluent:RibbonTabItem Header="Preset Export">
                 <fluent:RibbonGroupBox Header="Preset Export">
                     <fluent:Button
-                        Command="{catel:CommandManagerBinding Preset.Export}"
+                        Command="{catel:CommandManagerBinding PresetExport.DoExport}"
                         Header="Export Presets"
                         LargeIcon="{iconPacks:FontAwesome Kind=CogSolid,
                                                           Width=32,
@@ -255,7 +274,7 @@
                 </fluent:RibbonGroupBox>
                 <fluent:RibbonGroupBox Header="List Tools">
                     <fluent:Button
-                        Command="{catel:CommandManagerBinding Preset.ClearSelected}"
+                        Command="{catel:CommandManagerBinding PresetExport.ClearSelected}"
                         Header="Remove Selected"
                         LargeIcon="{iconPacks:Modern Kind=ListDeleteInline,
                                                      Width=32,
@@ -276,7 +295,7 @@
                     </StackPanel>
 
                     <fluent:Button
-                        Command="{catel:CommandManagerBinding Preset.ClearList}"
+                        Command="{catel:CommandManagerBinding PresetExport.ClearList}"
                         Size="Middle"
                         Header="Clear Export List"
                         Icon="{iconPacks:Modern Kind=ListDelete,
@@ -365,7 +384,17 @@
                 </fluent:RibbonGroupBox>
             </fluent:RibbonTabItem>
 
-
+            <fluent:RibbonTabItem Header="KeyTips"
+                                  Group="{Binding ElementName=PresetsTabGroup, Mode=OneWay}">
+                <fluent:RibbonGroupBox Header="LongLongGroup"
+                                       IsLauncherVisible="False">
+                    
+                        <fluent:Button Header="Rename"
+                                       Size="Middle"
+                                       Command="{catel:CommandManagerBinding Preset.RenamePresetBank}"
+                                      />
+                </fluent:RibbonGroupBox>
+                </fluent:RibbonTabItem>
         </fluent:Ribbon>
     </Grid>
 </catel:UserControl>

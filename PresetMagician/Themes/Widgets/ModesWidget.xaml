@@ -1,0 +1,79 @@
+ <ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sharedModels1="clr-namespace:SharedModels;assembly=PresetMagician.SharedModels"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks">
+
+    <DataTemplate x:Key="ModeTemplate" DataType="{x:Type sharedModels1:Mode}">
+       
+    </DataTemplate>
+
+    <DataTemplate x:Key="ModesTemplate" DataType="{x:Type sharedModels1:Mode}">
+        <ItemsControl ItemsSource="{Binding Path=Modes, Mode=OneWay}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                <Border HorizontalAlignment="Left" 
+                        Margin="1,1,2,1"
+                        Padding="2,0,2,0"
+                        Background="BlueViolet"
+                        CornerRadius="3">
+                    <TextBlock TextWrapping="NoWrap"
+                        HorizontalAlignment="Left"
+                        Foreground="White"
+                        Text="{Binding Name}" />
+                </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="1,0,0,0" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+    </DataTemplate>
+    
+    <DataTemplate x:Key="TypeTemplate" DataType="{x:Type sharedModels1:Type}">
+
+        <Border HorizontalAlignment="Left"  
+            Margin="1,1,2,1"
+            Padding="2,0,2,0"
+            Background="BlueViolet"
+            CornerRadius="3">
+
+                <TextBlock
+                    TextWrapping="NoWrap"
+                    HorizontalAlignment="Left"
+                    Foreground="White"
+                    Text="{Binding Name}">
+                    <Run Text="{Binding Name}"/>
+                    <Run FontFamily="Webdings">
+                        <Run.Style>
+                            <Style TargetType="{x:Type Run}">
+                                <Setter Property="Text" Value="4"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SubTypeName}" Value="{x:Null}">
+                                        <Setter Property="Text" Value="" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Run.Style>
+                    </Run>
+                    <Run Text="{Binding SubTypeName}"></Run>
+                </TextBlock>
+               
+               
+
+
+        </Border>
+    </DataTemplate>
+    
+    <DataTemplate x:Key="TypesTemplate" DataType="{x:Type sharedModels1:Preset}">
+        <ItemsControl ItemsSource="{Binding Path=Types,Mode=OneWay}" ItemTemplate="{StaticResource TypeTemplate}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="1,0,0,0" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+    </DataTemplate>
+</ResourceDictionary>

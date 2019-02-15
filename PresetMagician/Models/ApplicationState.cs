@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using Catel.Data;
+using Catel.MVVM;
 using Portable.Licensing;
 using PresetMagician.Views;
 
@@ -10,37 +11,52 @@ namespace PresetMagician.Models
 {
     public class ApplicationState : ModelBase
     {
-        private Type _currentDocument;
+        private Type _currentDocumentType;
 
-        public Type CurrentDocument
+        public Type CurrentDocumentType
         {
-            get { return _currentDocument; }
+            get { return _currentDocumentType; }
             set
             {
                 if (value == typeof(PresetExportListView))
                 {
                     SelectedRibbonTabIndex = 1;
+                    ShowPresetsRibbon = false;
                 }
 
                 if (value == typeof(VstPluginsView))
                 {
                     SelectedRibbonTabIndex = 0;
+                    ShowPresetsRibbon = false;
+                }
+                
+                if (value == typeof(VstPluginPresetsView))
+                {
+                    ShowPresetsRibbon = true;
+                    SelectedRibbonTabIndex = 3;
+                    
                 }
 
-                RaisePropertyChanged("SelectedRibbonTabIndex");
-                _currentDocument = value;
+                RaisePropertyChanged(nameof(SelectedRibbonTabIndex));
+                RaisePropertyChanged(nameof(ShowPresetsRibbon));
+                _currentDocumentType = value;
             }
         }
+
+        public IViewModel CurrentDocumentViewModel { get; set; }
+
 
         #region Toolbars
 
         public int SelectedRibbonTabIndex { get; set; } = 1;
+        public bool ShowPresetsRibbon { get; set; }
 
         #endregion
 
         #region ApplicationBusy
 
         public bool IsApplicationBusy { get; set; }
+        public bool IsApplicationEditing { get; set; }
         public int ApplicationBusyCurrentItem { get; set; }
         public int ApplicationBusyTotalItems { get; set; }
         public CancellationTokenSource ApplicationBusyCancellationTokenSource { get; set; }

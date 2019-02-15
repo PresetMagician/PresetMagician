@@ -148,9 +148,6 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
-        <Reference Include="System.Windows.Forms">
-          <Paket>True</Paket>
-        </Reference>
         <Reference Include="Catel.MVVM">
           <HintPath>..\packages\Catel.MVVM\lib\net47\Catel.MVVM.dll</HintPath>
           <Private>True</Private>

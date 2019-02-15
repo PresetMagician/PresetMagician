@@ -122,9 +122,12 @@
     <SolidColorBrush x:Key="DataGridSelectAllButtonBackgroundBrush" Color="{DynamicResource BackgroundColor5}" />
     <SolidColorBrush x:Key="DataGridHeaderBackgroundBrush" Color="#ede2fc" />
     <SolidColorBrush x:Key="DataGridRowHeaderBackgroundBrush" Color="{DynamicResource BackgroundColor3}" />
+    <SolidColorBrush x:Key="DataGridHeaderMouseOverBackgroundBrush" Color="{DynamicResource BackgroundColor3}" />
     <SolidColorBrush x:Key="DataGridRowSelectedBackgroundBrush" Color="{DynamicResource SelectionColor1}" />
     <SolidColorBrush x:Key="DataGridRowSelectedFocusedBackgroundBrush" Color="{DynamicResource SelectionColor1}" />
     <SolidColorBrush x:Key="DataGridHeaderGridlinesBrush" Color="{DynamicResource BackgroundColor5}" />
+    <SolidColorBrush x:Key="DataGridHeaderBorderBrush" Color="{DynamicResource BackgroundColor5}" />
+    
 
     <SolidColorBrush x:Key="DataGridAlternatingRowBrush" Color="{DynamicResource BackgroundColor1}" />
 

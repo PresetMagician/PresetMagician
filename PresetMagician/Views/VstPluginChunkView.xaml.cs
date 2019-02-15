@@ -22,18 +22,15 @@ namespace PresetMagician.Views
             AddCustomButton(new DataWindowButton("Open Bank with HxD", "OpenWithHxDBank"));
             AddCustomButton(new DataWindowButton("Open Preset with HxD", "OpenWithHxDPreset"));
 
-            viewModel.PropertyChanged += ViewModel_PropertyChanged;
             InitializeComponent();
 
-            var provider = new DynamicByteProvider(viewModel.Plugin.ChunkBankMemoryStream.ToArray());
+            var provider = new DynamicByteProvider(viewModel.ChunkBankMemoryStream.ToArray());
             PluginBankChunkControl.ByteProvider = provider;
 
-            var provider2 = new DynamicByteProvider(viewModel.Plugin.ChunkPresetMemoryStream.ToArray());
+            var provider2 = new DynamicByteProvider(viewModel.ChunkPresetMemoryStream.ToArray());
             PluginPresetChunkControl.ByteProvider = provider2;
         }
 
-        private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-        }
+       
     }
 }

@@ -6,7 +6,7 @@ using SharedModels;
 
 namespace PresetMagician.SharedModels
 {
-    public class BankFile: ModelBase
+    public class BankFile
     {
         [Key] public int BankId { get; set; }
         public Plugin Plugin { get; set; }

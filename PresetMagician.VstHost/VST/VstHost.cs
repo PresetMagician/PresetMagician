@@ -139,16 +139,17 @@ namespace PresetMagician.VstHost.VST
 
             if (debug)
             {
-                Console.WriteLine($"{hostCommandStub.PluginDll}: Setting Block Size {BlockSize}");
-            }
-            ctx.PluginCommandStub.SetBlockSize(BlockSize);
-            
-            if (debug)
-            {
                 Console.WriteLine($"{hostCommandStub.PluginDll}: Setting Sample Rate {SampleRate}");
             }
             ctx.PluginCommandStub.SetSampleRate(SampleRate);
 
+            if (debug)
+            {
+                Console.WriteLine($"{hostCommandStub.PluginDll}: Setting Block Size {BlockSize}");
+            }
+            ctx.PluginCommandStub.SetBlockSize(BlockSize);
+            
+            
             if (debug)
             {
                 Console.WriteLine($"{hostCommandStub.PluginDll}: Activating output");

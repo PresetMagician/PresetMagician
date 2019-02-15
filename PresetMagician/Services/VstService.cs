@@ -92,7 +92,7 @@ namespace PresetMagician.Services
             set
             {
                 _selectedPlugin = value;
-                SelectedPluginChanged.SafeInvoke(this);
+                SelectedPluginChanged?.Invoke(this, System.EventArgs.Empty);
             }
         }
 
@@ -110,7 +110,7 @@ namespace PresetMagician.Services
             set
             {
                 _selectedExportPreset = value;
-                SelectedExportPresetChanged.SafeInvoke(this);
+                SelectedExportPresetChanged?.Invoke(this, System.EventArgs.Empty);
             }
         }
 

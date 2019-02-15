@@ -6,10 +6,10 @@ using PresetMagician.ViewModels;
 namespace PresetMagician
 {
     // ReSharper disable once UnusedMember.Global
-    public class PresetActivatePresetViewCommandContainer : CommandContainerBase
+    public class PresetExportActivatePresetViewCommandContainer : CommandContainerBase
     {
-        public PresetActivatePresetViewCommandContainer(ICommandManager commandManager)
-            : base(Commands.Preset.ActivatePresetView, commandManager)
+        public PresetExportActivatePresetViewCommandContainer(ICommandManager commandManager)
+            : base(Commands.PresetExport.ActivatePresetView, commandManager)
         {
         }
 
