@@ -15,8 +15,8 @@ nuget Syroot.Windows.IO.KnownFolders
 nuget System.Net.Http
 nuget WPFHexaEditor 1.3.6.2
 nuget Catel.Fody
-nuget Catel.MVVM 5.8.0
-nuget Catel.Core 5.8.0
+nuget Catel.MVVM 
+nuget Catel.Core 
 nuget MethodTimer.Fody
 nuget ModuleInit.Fody
 nuget LoadAssembliesOnStartup.Fody
@@ -57,3 +57,4 @@ nuget Castle.Core
 nuget Orc.Scheduling
 nuget redmine-api
 nuget MimeTypeMap.List
+nuget gong-wpf-dragdrop

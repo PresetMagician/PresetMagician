@@ -197,7 +197,7 @@ namespace PresetMagician.RemoteVstHost.Processes
             if (_vstService != null)
             {
                 // ReSharper disable once SuspiciousTypeConversion.Global
-                var castedVstService = (IClientChannel)_vstService;
+                var castedVstService = _vstService as IChannel;
                 
                 if (castedVstService.State == CommunicationState.Faulted)
                 {
