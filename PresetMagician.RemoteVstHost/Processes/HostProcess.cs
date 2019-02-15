@@ -39,7 +39,7 @@ namespace PresetMagician.RemoteVstHost.Processes
             private set
             {
                 _currentProcessState = value;
-                ProcessStateUpdated.SafeInvoke(this);
+                ProcessStateUpdated?.Invoke(this, EventArgs.Empty);
             }
         }
 

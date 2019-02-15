@@ -31,6 +31,9 @@ namespace PresetMagician.ViewModels
         public IRemotePluginInstance PluginInstance { get; protected set; }
 
         public TaskCommand LoadBankChunk { get; set; }
+        
+        public MemoryStream ChunkPresetMemoryStream { get; } = new MemoryStream();
+        public MemoryStream ChunkBankMemoryStream { get; } = new MemoryStream();
 
         private async Task OnLoadBankChunkExecute()
         {
@@ -57,7 +60,7 @@ namespace PresetMagician.ViewModels
         private async Task OnOpenWithHxDBankExecute()
         {
             var tempFile = Path.GetTempFileName();
-            File.WriteAllBytes(tempFile, Plugin.ChunkBankMemoryStream.ToArray());
+            File.WriteAllBytes(tempFile, ChunkBankMemoryStream.ToArray());
 
             var process = new Process
             {
@@ -76,7 +79,7 @@ namespace PresetMagician.ViewModels
         private async Task OnOpenWithHxDPresetExecute()
         {
             var tempFile = Path.GetTempFileName();
-            File.WriteAllBytes(tempFile, Plugin.ChunkPresetMemoryStream.ToArray());
+            File.WriteAllBytes(tempFile, ChunkPresetMemoryStream.ToArray());
 
             var process = new Process
             {

@@ -57,8 +57,10 @@ namespace SharedModels
             modelBuilder.Entity<Plugin>().HasMany(p => p.DefaultTypes).WithMany(q => q.Plugins).Map(mc =>
                 mc.MapLeftKey("PluginId").MapRightKey("TypeId").ToTable("PluginTypes"));
             modelBuilder.Entity<Plugin>().IgnoreCatelProperties();
-            modelBuilder.Entity<BankFile>().IgnoreCatelProperties();
-
+            modelBuilder.Entity<Preset>().IgnoreCatelProperties();
+            modelBuilder.Entity<Type>().IgnoreCatelProperties();
+            modelBuilder.Entity<Mode>().IgnoreCatelProperties();
+            
             modelBuilder.Entity<Preset>().HasMany(p => p.Types).WithMany(q => q.Presets).Map(mc =>
                 mc.MapLeftKey("PresetId").MapRightKey("TypeId").ToTable("PresetTypes"));
 
@@ -119,11 +121,6 @@ namespace SharedModels
         {
             using (var context = new ApplicationDatabaseContext())
             {
-                InteractiveViews
-                    .SetViewCacheFactory(
-                        context,
-                        new FileViewCacheFactory(GetViewCachePath()));
-
                 context.Migrate();
             }
         }
@@ -227,7 +224,7 @@ namespace SharedModels
             plugin.PresetHashCache.Clear();
             var deletedPresets =
                 (from deletedPreset in Presets
-                    where deletedPreset.Plugin.Id == plugin.Id && deletedPreset.IsDeleted
+                    where deletedPreset.Plugin.Id == plugin.Id && deletedPreset.IsIgnored
                     select deletedPreset).AsNoTracking().ToList();
 
             foreach (var preset in deletedPresets)
@@ -238,7 +235,7 @@ namespace SharedModels
             using (plugin.Presets.SuspendChangeNotifications())
             {
                 Entry(plugin).Collection(p => p.Presets).Query().Include(p => p.Modes).Include(p => p.Types)
-                    .Where(p => !p.IsDeleted).Load();
+                    .Where(p => !p.IsIgnored).Load();
             }
 
             foreach (var preset in plugin.Presets)
@@ -288,7 +285,7 @@ namespace SharedModels
 
             Configuration.AutoDetectChangesEnabled = false;
 
-            PresetUpdated.SafeInvoke(this, new PresetUpdatedEventArgs(preset));
+            PresetUpdated?.Invoke(this, new PresetUpdatedEventArgs(preset));
 
             if (!preset.Plugin.PresetCache.ContainsKey(preset.SourceFile))
             {
@@ -397,7 +394,7 @@ namespace SharedModels
 
                 var executedMigration = new SchemaVersion();
                 executedMigration.Version = migration.Name;
-                //SchemaVersions.Add(executedMigration);
+                SchemaVersions.Add(executedMigration);
             }
 
             SaveChanges();

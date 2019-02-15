@@ -1,0 +1,144 @@
+﻿<catel:UserControl
+    x:Class="PresetMagician.Views.VstPluginPresetsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:catel="http://schemas.catelproject.com"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:PresetMagician.ViewModels"
+    xmlns:sharedModels1="clr-namespace:SharedModels;assembly=PresetMagician.SharedModels"
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+    xmlns:behaviors="clr-namespace:PresetMagician.Behaviors"
+    xmlns:converters="clr-namespace:PresetMagician.Converters"
+    xmlns:dd="urn:gong-wpf-dragdrop"
+    xmlns:views="clr-namespace:InplaceEditBoxLib.Views;assembly=InplaceEditBoxLib"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    CloseViewModelOnUnloaded="False"
+    Padding="2,2,2,2"
+    d:DataContext="{d:DesignInstance viewModels:VstPluginPresetsViewModel}"
+    mc:Ignorable="d">
+
+    <catel:UserControl.Resources>
+        <converters:NodeSortConverter x:Key="NodeSorter" />
+        <views:BindingProxy x:Key="DataContextProxy"  Data="{Binding }" />
+
+
+        <HierarchicalDataTemplate
+            x:Key="Contents"
+            DataType="{x:Type sharedModels1:PresetBank}"
+            ItemsSource="{Binding PresetBanks, Converter={StaticResource NodeSorter}}">
+            <StackPanel Orientation="Horizontal">
+                <iconPacks:PackIconFontAwesome VerticalAlignment="Center" Kind="ExclamationCircleSolid" Foreground="Orange" ToolTip="NKS only supports 2 sublevels. Bank names will be combined, for example Factory/Bass/Deep Bass will become Factory/Bass - Deep Bass">
+                    <iconPacks:PackIconFontAwesome.Style>
+                        <Style TargetType="{x:Type iconPacks:PackIconFontAwesome}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsBelowNksThreshold}" Value="true">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </iconPacks:PackIconFontAwesome.Style>
+                </iconPacks:PackIconFontAwesome>
+                <TextBlock VerticalAlignment="Center"><Run Text="{Binding BankName}"/></TextBlock>
+            </StackPanel>
+            
+        </HierarchicalDataTemplate>
+
+           <ControlTemplate x:Key="BankView">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <TreeView
+                    Grid.Column="0"
+                    Margin="5"
+                    ItemTemplate="{StaticResource Contents}"
+                    dd:DragDrop.IsDragSource="True"
+                    dd:DragDrop.IsDropTarget="True"
+                    dd:DragDrop.UseDefaultEffectDataTemplate="True"
+                    dd:DragDrop.UseDefaultDragAdorner="True"
+                    dd:DragDrop.DropHandler="{Binding}"
+                    ItemsSource="{Binding Plugin.RootBank.PresetBanks}">
+                    <TreeView.Resources>
+                        <Style TargetType="{x:Type TreeViewItem}">
+                            <Setter Property="IsExpanded" Value="True" />
+                        </Style>
+                    </TreeView.Resources>
+                    <i:Interaction.Behaviors>
+                        <behaviors:TreeViewSelectedItemBlendBehavior
+                            SelectedItem="{Binding SelectedTreeNode}" />
+                    </i:Interaction.Behaviors>
+                </TreeView>
+
+                <GridSplitter
+                    Grid.Column="1"
+                    Width="5"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Stretch"
+                    ShowsPreview="True" />
+
+                <DataGrid
+                    Grid.Column="2"
+                    Margin="5"
+                    MaxWidth="4096"
+                    MaxHeight="4096"
+                    dd:DragDrop.IsDragSource="True"
+                    dd:DragDrop.UseDefaultEffectDataTemplate="True"
+                    dd:DragDrop.UseDefaultDragAdorner="True"
+                    dd:DragDrop.DropHandler="{Binding}"
+                   AutoGenerateColumns="False"
+                    d:DataContext="{d:DesignInstance sharedModels1:Plugin}"
+                    ItemsSource="{Binding PresetsView}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn
+                            Width="1*"
+                            Binding="{Binding PresetName}"
+                            Header="Preset" />
+                        <DataGridTextColumn
+                            Width="1*"
+                            Binding="{Binding BankPath}"
+                            Header="Bank"
+                            IsReadOnly="True" />
+                        <DataGridTemplateColumn
+                            Width="3*"
+                            CellStyle="{StaticResource NoPaddingCellStyle}"
+                            Header="Types"
+                            CanUserSort="False"
+                            CellTemplate="{StaticResource TypesTemplate}"
+                            IsReadOnly="True"/>
+                        <DataGridTemplateColumn
+                            Width="3*"
+                            CanUserSort="False"
+                            CellStyle="{StaticResource NoPaddingCellStyle}"
+                            Header="Modes"
+                            CellTemplate="{StaticResource ModesTemplate}"
+                            IsReadOnly="True">
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn
+                            Width="40"
+                            Binding="{Binding PreviewNote.FullNoteName}"
+                            Header="Key"
+                            IsReadOnly="False" />
+                        <DataGridTextColumn
+                            Width="80"
+                            Binding="{Binding LastExported,StringFormat=d}"
+                            Header="Exported"
+                            IsReadOnly="True" />
+                        <DataGridCheckBoxColumn
+                            Width="60"
+                            Binding="{Binding ChangedSinceLastExport, Mode=OneWay}"
+                            Header="Changed"
+                            IsReadOnly="True" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </ControlTemplate>
+    </catel:UserControl.Resources>
+
+    <ContentControl Template="{StaticResource BankView}"/>
+
+</catel:UserControl>

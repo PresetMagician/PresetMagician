@@ -1,14 +1,21 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
 using CannedBytes.Midi.Message;
+using Catel.Collections;
+using Catel.Data;
+using Catel.Fody;
+using Catel.Runtime.Serialization;
 
 namespace SharedModels
 {
-    public class Preset
+    public class Preset: ChildAwareModelBase
     {
-        [Key] public string PresetId { get; set; } = Guid.NewGuid().ToString();
+        
+       [Key] public string PresetId { get; set; } = Guid.NewGuid().ToString();
 
         [ForeignKey("Plugin")]
         [Index("UniquePreset", IsUnique = true)]
@@ -16,7 +23,7 @@ namespace SharedModels
 
         public int VstPluginId { get; set; }
 
-
+        [ExcludeFromBackup]
         public Plugin Plugin
         {
             get { return _plugin; }
@@ -36,11 +43,18 @@ namespace SharedModels
 
         private Plugin _plugin;
 
-        public bool IsDeleted { get; set; }
+        public bool IsIgnored { get; set; }
+        public bool IsMetadataModified { get; set; }
 
         public DateTime? LastExported { get; set; }
 
-        public bool ChangedSingleLastExport => LastExportedPresetHash == null || LastExportedPresetHash != PresetHash;
+        public bool ChangedSinceLastExport
+        {
+            get
+            {
+                return IsMetadataModified || LastExportedPresetHash == null || LastExportedPresetHash != PresetHash;
+            }
+        }
 
 
         public void SetPlugin(Plugin vst)
@@ -53,7 +67,32 @@ namespace SharedModels
             PreviewNote = new MidiNoteName("C5");
         }
 
-        [NotMapped] public PresetBank PresetBank { get; set; }
+        private PresetBank _presetBank;
+
+        [NotMapped]
+        public PresetBank PresetBank
+        {
+            get { return _presetBank; }
+            set
+            {    
+                if (_presetBank != null)
+                {
+                    _presetBank.PropertyChanged -= PresetBankOnPropertyChanged;
+                }
+                
+                _presetBank = value;
+                _presetBank.PropertyChanged += PresetBankOnPropertyChanged;
+                RaisePropertyChanged(nameof(BankPath));
+            }
+        }
+
+        private void PresetBankOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(PresetBank.BankPath))
+            {
+                RaisePropertyChanged(nameof(BankPath));
+            }
+        }
 
         private string _bankPath;
 
@@ -93,7 +132,7 @@ namespace SharedModels
 
         public string PresetName { get; set; }
 
-        [NotMapped] public MidiNoteName PreviewNote { get; set; }
+        [NotMapped] [ExcludeFromBackup] public MidiNoteName PreviewNote { get; set; }
 
         public int PreviewNoteNumber
         {
@@ -107,10 +146,12 @@ namespace SharedModels
         [Index("UniquePreset", IsUnique = true)]
         public string SourceFile { get; set; }
 
-        public ObservableCollection<Type> Types { get; set; } =
-            new ObservableCollection<Type>();
+        [IncludeInSerialization]
+        public FastObservableCollection<Type> Types { get; set; } =
+            new FastObservableCollection<Type>();
 
-        public ObservableCollection<Mode> Modes { get; set; } = new ObservableCollection<Mode>();
+        [IncludeInSerialization]
+        public FastObservableCollection<Mode> Modes { get; set; } = new FastObservableCollection<Mode>();
 
         public string PresetHash { get; set; }
         public string LastExportedPresetHash { get; set; }

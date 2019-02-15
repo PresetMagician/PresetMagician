@@ -40,6 +40,11 @@ namespace PresetMagician.ViewModels
 
             Title = "VST Plugins";
         }
+        
+        protected override Task OnClosedAsync(bool? result)
+        {
+            return base.OnClosedAsync(result);
+        }
 
         private void VstServiceOnSelectedPluginChanged(object sender, EventArgs e)
         {

@@ -13,15 +13,15 @@ using SharedModels;
 namespace PresetMagician
 {
     // ReSharper disable once UnusedMember.Global
-    public class PresetExportCommandContainer : ApplicationNotBusyCommandContainer
+    public class PresetExportDoExportCommandContainer : ApplicationNotBusyCommandContainer
     {
         private readonly IVstService _vstService;
         private readonly IApplicationService _applicationService;
 
-        public PresetExportCommandContainer(ICommandManager commandManager, IVstService vstService,
+        public PresetExportDoExportCommandContainer(ICommandManager commandManager, IVstService vstService,
             IApplicationService applicationService,
             IRuntimeConfigurationService runtimeConfigurationService)
-            : base(Commands.Preset.Export, commandManager, runtimeConfigurationService)
+            : base(Commands.PresetExport.DoExport, commandManager, runtimeConfigurationService)
         {
             Argument.IsNotNull(() => vstService);
             Argument.IsNotNull(() => applicationService);

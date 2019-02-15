@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Drawing;
+using System.Text;
+using System.Windows;
 using Jacobi.Vst.Core;
 using Jacobi.Vst.Core.Deprecated;
 using Jacobi.Vst.Core.Host;
@@ -132,7 +134,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
             vstTimeInfo.SamplePosition = 0.0;
             vstTimeInfo.SampleRate = 44100;
             vstTimeInfo.NanoSeconds = 0.0;
-            vstTimeInfo.PpqPosition = 0.0;
+            vstTimeInfo.PpqPosition = 2.0;
             vstTimeInfo.Tempo = 120.0;
             vstTimeInfo.BarStartPosition = 0.0;
             vstTimeInfo.CycleStartPosition = 0.0;
@@ -310,8 +312,29 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public bool NeedIdle()
         {
-            Debug($"NeedIdle");
-            throw new NotImplementedException();
+            var plugin = PluginContext.Find<RemoteVstPlugin>("Plugin");
+
+            #if DEBUG
+            /*VstPluginCommandAdapter.Create(plugin.PluginContext.PluginCommandStub)
+            if (plugin != null)
+            {
+                
+            } is IVstPluginCommandsDeprecated10)
+            {
+                    
+            }*/
+
+            var sb = new StringBuilder();
+            
+            foreach (var intf in plugin.PluginContext.PluginCommandStub.GetType().GetInterfaces())
+            {
+                sb.AppendLine(intf.FullName);
+            }
+            MessageBox.Show("Plugin wants idle"+sb.ToString());
+
+#endif
+            // todo call idle on plugin there plugin?.PluginContext.PluginCommandStub.idle;   
+            return true;
         }
 
         public IntPtr GetPreviousPlugin(int pinIndex)

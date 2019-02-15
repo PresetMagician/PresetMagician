@@ -5,12 +5,16 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Media.Imaging;
 using Catel;
 using Catel.IoC;
 using Catel.MVVM;
 using Catel.MVVM.Views;
+using PresetMagician.Models;
+using PresetMagician.ViewModels;
 using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout;
 
@@ -56,17 +60,17 @@ namespace PresetMagician.Helpers
         /// <param name="tag">The tag.</param>
         /// <returns>The found document or <c>null</c> if no document was found.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="viewType"/> is <c>null</c>.</exception>
-        public static LayoutDocument FindDocument(Type viewType, object tag = null)
+        public static CustomLayoutDocument FindDocument(Type viewType, object tag = null)
         {
             Argument.IsNotNull("viewType", viewType);
 
             return (from document in LayoutDocumentPane.Children
                 where document is LayoutDocument && document.Content.GetType() == viewType &&
                       TagHelper.AreTagsEqual(tag, ((IView) document.Content).Tag)
-                select document).Cast<LayoutDocument>().FirstOrDefault();
+                select document).Cast<CustomLayoutDocument>().FirstOrDefault();
         }
 
-        public static LayoutDocument FindDocument<TService>(object tag = null)
+        public static CustomLayoutDocument FindDocument<TService>(object tag = null)
         {
             var sl = ServiceLocator.Default;
             var viewModel = sl.ResolveType<TService>();
@@ -76,7 +80,7 @@ namespace PresetMagician.Helpers
             return FindDocument(viewType, tag);
         }
 
-        public static LayoutDocument CreateDocument<TService>(object tag = null, bool activateDocument = false,
+        public static CustomLayoutDocument CreateDocument<TService>(object tag = null, bool activateDocument = false,
             bool isClosable = false)
         {
             var sl = ServiceLocator.Default;
@@ -100,13 +104,44 @@ namespace PresetMagician.Helpers
 
             return document;
         }
+        
+        public static CustomLayoutDocument CreateDocument<TViewModel>(TViewModel viewModel, object tag = null, bool activateDocument = false,
+            bool isClosable = false, bool shouldTrackDirty = false)
+        {
+            var sl = ServiceLocator.Default;
+            var viewLocator = sl.ResolveType<IViewLocator>();
+            var viewType = viewLocator.ResolveView(viewModel.GetType());
 
+            var document = FindDocument(viewType, tag);
+            if (document == null)
+            {
+                var view = ViewHelper.ConstructViewWithViewModel(viewType, viewModel);
+                document = CreateDocument(view, tag);
+
+                if (viewModel is ViewModelBase)
+                {
+                    document.ShouldTrackModified = shouldTrackDirty;
+                    document.ViewModel = viewModel as ViewModelBase;
+                    
+                }
+            }
+
+            document.CanClose = isClosable;
+
+            if (activateDocument)
+            {
+                ActivateDocument(document);
+            }
+
+            return document;
+        }
+        
         /// <summary>
         /// Activates the document in the docking manager, which makes it the active document.
         /// </summary>
         /// <param name="document">The document.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="document"/> is <c>null</c>.</exception>
-        public static void ActivateDocument(LayoutDocument document)
+        public static void ActivateDocument(CustomLayoutDocument document)
         {
             Argument.IsNotNull("document", document);
             LayoutDocumentPane.SelectedContentIndex = LayoutDocumentPane.IndexOfChild(document);
@@ -124,7 +159,7 @@ namespace PresetMagician.Helpers
         /// <param name="tag">The tag.</param>
         /// <returns>The created layout document.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="view"/> is <c>null</c>.</exception>
-        public static LayoutDocument CreateDocument(FrameworkElement view, object tag = null)
+        public static CustomLayoutDocument CreateDocument(FrameworkElement view, object tag = null)
         {
             Argument.IsNotNull("view", view);
 
@@ -134,7 +169,7 @@ namespace PresetMagician.Helpers
 
             return layoutDocument;
         }
-
+        
         /// <summary>
         /// Wraps the view in a layout document.
         /// </summary>
@@ -142,11 +177,11 @@ namespace PresetMagician.Helpers
         /// <param name="tag">The tag.</param>
         /// <returns>A wrapped layout document.</returns>
         /// <exception cref="ArgumentNullException">The <paramref name="view"/> is <c>null</c>.</exception>
-        private static LayoutDocument WrapViewInLayoutDocument(FrameworkElement view, object tag = null)
+        private static CustomLayoutDocument WrapViewInLayoutDocument(FrameworkElement view, object tag = null)
         {
             Argument.IsNotNull("view", view);
 
-            var layoutDocument = new LayoutDocument();
+            var layoutDocument = new CustomLayoutDocument();
 
             layoutDocument.CanFloat = false;
             // TODO: Make bindable => automatic updates
@@ -159,11 +194,12 @@ namespace PresetMagician.Helpers
             return layoutDocument;
         }
 
+
         /// <summary>
         /// Called when the docking manager has just closed a document.
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="AvalonDock.DocumentClosedEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="DocumentClosedEventArgs"/> instance containing the event data.</param>
         private static void OnDockingManagerDocumentClosed(object sender, DocumentClosedEventArgs e)
         {
             /*var containerView = e.Document;

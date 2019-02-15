@@ -221,7 +221,7 @@ namespace PresetMagician.RemoteVstHost
                                 Environment.NewLine + Environment.NewLine +
                                 "Re-start your pool after investigation and configuration."
                         };
-                        PoolFailed.SafeInvoke(this, eventArgs);
+                        PoolFailed?.Invoke(this, eventArgs);
                     }
                 }
             

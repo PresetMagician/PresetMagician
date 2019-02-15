@@ -42,7 +42,7 @@ namespace PresetMagician.Collections
 
             if (IsDirty && _initialCount != Count)
             {
-                CollectionCountChanged.SafeInvoke(this);
+                CollectionCountChanged?.Invoke(this, EventArgs.Empty);
             }
         }
     }

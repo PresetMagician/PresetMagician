@@ -14,10 +14,10 @@ namespace PresetMagician.Views
 
         private void VstPluginList_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (VstPluginList.SelectedItem != null)
+            /*if (VstPluginList.SelectedItem != null)
             {
                 VstPluginList.ScrollIntoView(VstPluginList.SelectedItem);
-            }
+            }*/
         }
     }
 }

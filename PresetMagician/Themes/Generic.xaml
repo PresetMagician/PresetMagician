@@ -12,6 +12,7 @@
 
         <ResourceDictionary Source="pack://application:,,,/Themes/Brushes/ThemeBrushes.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Themes/Styles/Styles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Themes/Widgets/ModesWidget.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style

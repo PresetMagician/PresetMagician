@@ -70,7 +70,7 @@
     <Compile Include="MidiNoteName.cs" />
     <Compile Include="Migrations\BaseMigration.cs" />
     <Compile Include="Migrations\IMigration.cs" />
-    <Compile Include="Migrations\Migration20191501.cs" />
+    <Compile Include="Migrations\Migration20190215.cs" />
     <Compile Include="Mode.cs" />
     <Compile Include="NativeInstrumentsResources\Categories.cs" />
     <Compile Include="NativeInstrumentsResources\Category.cs" />
@@ -89,10 +89,8 @@
     <Compile Include="PresetBank.cs" />
     <Compile Include="PresetDataStorage.cs" />
     <Compile Include="PresetExportInfo.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SchemaVersion.cs" />
-    <Compile Include="Subtype.cs" />
     <Compile Include="Type.cs" />
     <Compile Include="VstPluginInfoSurrogated.cs" />
   </ItemGroup>
