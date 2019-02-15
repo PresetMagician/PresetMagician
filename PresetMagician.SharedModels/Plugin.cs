@@ -4,10 +4,12 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
 using System.IO;
 using Catel.Data;
 using Catel.Fody;
 using Catel.Logging;
+using Catel.Runtime.Serialization;
 using Drachenkatze.PresetMagician.NKSF.NKSF;
 using Drachenkatze.PresetMagician.Utils;
 using Newtonsoft.Json;
@@ -19,9 +21,12 @@ using Path = Catel.IO.Path;
 
 namespace SharedModels
 {
-    public class Plugin : ModelBase
+    public class Plugin : ChildAwareModelBase 
     {
         private int _collectionChangedCounter;
+        public readonly Dictionary<string, Preset> PresetCache = new Dictionary<string, Preset>();
+        public readonly Dictionary<(string hash, string sourceFile), Preset> PresetHashCache = new Dictionary<(string, string), Preset>();
+
 
         public enum PluginTypes
         {
@@ -35,7 +40,10 @@ namespace SharedModels
         public Plugin()
         {
             Presets.CollectionChanged += PresetsOnCollectionChanged;
-            RootBank.PresetBanks.Add(new PresetBank());
+            RootBank.BankName = "Hidden Virtual Root";
+            RootBank.IsVirtualBank = true;
+            RootBank.PresetBanks.Add(new PresetBank { IsVirtualBank = true});
+            
             Logger = new MiniMemoryLogger();
         }
 
@@ -63,11 +71,6 @@ namespace SharedModels
             return PresetHashCache.ContainsKey((hash, sourceFile));
         }
 
-        public void Invalidate()
-        {
-            IsAnalyzed = false;
-        }
-
         public override string ToString()
         {
             return IsLoaded ? $"{PluginVendor} {PluginName} ({VstPluginId})" : $"{DllPath}";
@@ -80,19 +83,66 @@ namespace SharedModels
             Logger.Debug(e.StackTrace);
             LoadErrorMessage = e.Message;
         }
-
+        
+        private void PluginLocationOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            RaisePropertyChanged(nameof(PluginLocation));
+        }
 
         #endregion
 
-        [NotMapped] public string LoadErrorMessage { get; private set; }
-
+        
+        #region Properties
+        
+        #region Basic Properties
+        
         /// <summary>
-        /// Gets or sets the table collection.
+        /// The plugin ID for storage in the database
+        /// </summary>
+        [Key]
+        public int Id { get; set; }
+        
+        /// <summary>
+        /// Defines if the current plugin is enabled
+        /// </summary>
+        public bool IsEnabled { get; set; } = true;
+        
+        /// <summary>
+        /// The Vst Plugin Id, which is used when matching against PluginLocations
+        /// </summary>
+        public int VstPluginId { get; set; }
+        
+        /// <summary>
+        /// The type of the plugin
+        /// </summary>
+        public PluginTypes PluginType { get; set; } = PluginTypes.Unknown;
+        
+        #endregion
+        
+        #region Plugin Errors
+        // todo refactor this
+        [NotMapped] [ExcludeFromBackup] public string LoadErrorMessage { get; private set; }
+        
+        /// <summary>
+        /// Defines if the plugin had a load error
+        /// </summary>
+        [NotMapped] [ExcludeFromBackup]
+        public bool LoadError { get; private set; }
+        #endregion
+        
+        #region Property PluginCapabilities
+        
+        /// <summary>
+        /// The plugin capabilities
         /// </summary>
         [NotMapped]
         public List<PluginInfoItem> PluginCapabilities { get; } = new List<PluginInfoItem>();
-
-        [Column("PluginCapabilities")]
+        
+        /// <summary>
+        /// These are the plugin capabilities which will get serialized into the database
+        /// todo check if this can be refactored to use EF6 builtin serializer only and get rid of that serializer stuff
+        /// </summary>
+        [Column("PluginCapabilities")] [ExcludeFromBackup]
         public string SerializedPluginCapabilities
         {
             get => JsonConvert.SerializeObject(PluginCapabilities);
@@ -106,41 +156,24 @@ namespace SharedModels
                 }
                 catch (JsonReaderException e)
                 {
+                    // todo refactor this to use new bug reporter
                     Logger.Error($"Please report this as a bug: Unable to deserialize SerializedPluginCapabilities because of {e.GetType().FullName}: {e.Message}");
                     Logger.Debug(e.StackTrace);
                 }
             }
         }
-
-        #region PresetBanks property
-
-        /// <summary>
-        /// Gets or sets the PresetBanks value.
-        /// </summary>
-        [NotMapped]
-        public PresetBank RootBank { get; } = new PresetBank();
-
-
-        [ExcludeFromBackup]
-        public ProgressFastObservableCollection<Preset> Presets { get; set; } =
-            new ProgressFastObservableCollection<Preset>();
-
         #endregion
-
-
-        #region Properties
-
-        /// <summary>
-        /// The plugin ID for storage in the database
-        /// </summary>
-        [Key]
-        public int Id { get; set; }
-
+        
+        #region Property Plugin Location
+        
         private PluginLocation _pluginLocation;
 
+        /// <summary>
+        /// The plugin location to use. Attach event listeners if being set
+        /// </summary>
         public PluginLocation PluginLocation
         {
-            get { return _pluginLocation; }
+            get => _pluginLocation;
             set
             {
                 if (_pluginLocation != null)
@@ -157,38 +190,16 @@ namespace SharedModels
                 RaisePropertyChanged(nameof(PluginLocation));
             }
         }
-
-        private void PluginLocationOnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            RaisePropertyChanged(nameof(PluginLocation));
-        }
+        #endregion
         
-        [NotMapped]
-        public bool HasPresets
-        {
-            get
-            {
-                if (Presets != null)
-                {
-                    return Presets.Count > 0;
-                }
-
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Defines if the plugin had a load error
-        /// </summary>
-        [NotMapped]
-        public bool LoadError { get; private set; }
-
-        [NotMapped] public MemoryStream ChunkPresetMemoryStream { get; } = new MemoryStream();
-        [NotMapped] public MemoryStream ChunkBankMemoryStream { get; } = new MemoryStream();
-
+        #region Plugin Info
         [ExcludeFromBackup] [NotMapped] public VstPluginInfoSurrogate PluginInfo { get; set; }
 
-        [Column("PluginInfo")]
+        /// <summary>
+        /// These are the plugin infos which will get serialized into the database
+        /// todo check if this can be refactored to use EF6 builtin serializer only and get rid of that serializer stuff
+        /// </summary>
+        [Column("PluginInfo")] [ExcludeFromBackup]
         public string SerializedPluginInfo
         {
             get => JsonConvert.SerializeObject(PluginInfo);
@@ -205,10 +216,25 @@ namespace SharedModels
                 }
             }
         }
+        #endregion
 
-        public Dictionary<string, Preset> PresetCache = new Dictionary<string, Preset>();
-        public Dictionary<(string hash, string sourceFile), Preset> PresetHashCache = new Dictionary<(string, string), Preset>();
+        /// <summary>
+        /// Gets or sets the PresetBanks value.
+        /// </summary>
+        [NotMapped]
+        public PresetBank RootBank { get; set; } = new PresetBank();
 
+        
+        [IncludeInSerialization]
+        public ProgressFastObservableCollection<Preset> Presets { get; set; } =
+            new ProgressFastObservableCollection<Preset>();
+
+
+       
+
+        
+
+        
 
         /// <summary>
         /// Defines the full path to the plugin DLL
@@ -255,13 +281,14 @@ namespace SharedModels
 
         public string CanonicalDllFilename =>
             string.IsNullOrEmpty(DllPath)
-                ? "Plugin DLL is missing. Last known dll path: " + LastKnownGoodDllPath
+                ? "Plugin DLL is missing."
                 : Path.GetFileName(DllPath);
 
-        /// <summary>
-        /// Defines if the current plugin is enabled
-        /// </summary>
-        public bool IsEnabled { get; set; } = true;
+        public string CanonicalDllDirectory =>string.IsNullOrEmpty(DllPath)
+            ? "Last known dll path: " + LastKnownGoodDllPath
+            : Path.GetDirectoryName(DllPath);
+        
+       
 
         /// <summary>
         /// Defines if the plugin DLL is present.
@@ -277,6 +304,7 @@ namespace SharedModels
         [NotMapped] public ControllerAssignments DefaultControllerAssignments { get; set; }
 
         [Column("DefaultControllerAssignments")]
+        [ExcludeFromBackup]
         // ReSharper disable once UnusedMember.Global
         public string SerializedDefaultControllerAssignments
         {
@@ -298,11 +326,11 @@ namespace SharedModels
             get { return string.Join(Environment.NewLine, Logger.LogList); }
         }
 
-        public PluginTypes PluginType { get; set; } = PluginTypes.Unknown;
+        
 
         public string PluginTypeDescription => PluginType.ToString();
 
-        public int VstPluginId { get; set; }
+        
 
         [NotMapped] public int NumPresets => Presets?.Count ?? 0;
 
@@ -336,7 +364,12 @@ namespace SharedModels
 
         public MiniMemoryLogger Logger { get; }
 
-        [NotMapped]
+        public void foo()
+        {
+            IsDirty = false;
+        }
+        
+        [NotMapped] [ExcludeFromBackup]
         public NativeInstrumentsResource NativeInstrumentsResource { get; set; } = new NativeInstrumentsResource();
 
         #endregion

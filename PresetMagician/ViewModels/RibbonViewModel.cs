@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -8,9 +9,11 @@ using System.Threading.Tasks;
 using System.Windows.Controls.Primitives;
 using CannedBytes.Midi.Message;
 using Catel;
+using Catel.Data;
 using Catel.IoC;
 using Catel.MVVM;
 using Catel.Reflection;
+using Catel.Runtime.Serialization;
 using Catel.Services;
 using Drachenkatze.PresetMagician.Utils.IssueReport;
 using Orchestra;
@@ -70,6 +73,8 @@ namespace PresetMagician.ViewModels
             ShowThemeTest = new TaskCommand(OnShowThemeTestExecuteAsync);
             DoSomething = new TaskCommand(OnDoSomethingExecuteAsync);
         }
+
+       
 
         #endregion
 
@@ -156,14 +161,19 @@ namespace PresetMagician.ViewModels
         /// </summary>
         private async Task OnDoSomethingExecuteAsync()
         {
-         
-                throw new ArgumentException("ouch");
-            
-            
-            
-           /* var report = new IssueReport(IssueReport.TrackerTypes.BUG, VersionHelper.GetCurrentVersion(), ApplicationState.ActiveLicense.Customer.Email, FileLocations.LogFile, ApplicationDatabaseContext.DefaultDatabasePath);
 
-            await _uiVisualizerService.ShowDialogAsync<ReportIssueViewModel>(report);*/
+            var hive = (from plugin in _vstService.Plugins where plugin.Id == 29 select plugin).FirstOrDefault();
+
+            var preset =
+                (from pp in hive.Presets
+                    where pp.PresetId == "e3403a58-6350-4623-b975-f2b1e9abbf62"
+                    select pp).FirstOrDefault();
+            
+            (hive as IEditableObject).BeginEdit();
+            Debug.WriteLine(preset);
+            (hive as IEditableObject).CancelEdit();
+            
+
         }
 
    

@@ -5,18 +5,22 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Anotar.Catel;
 using Catel;
 using Catel.IoC;
 using Catel.Logging;
 using Catel.MVVM;
+using Catel.Runtime.Serialization;
+using Catel.Runtime.Serialization.Xml;
 using Catel.Services;
 using Catel.Threading;
 using MethodTimer;
 using Orc.Scheduling;
 using Orc.Squirrel;
 using Orchestra.Services;
+using PresetMagician.Serialization;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.ViewModels;
 using SharedModels;
@@ -81,7 +85,6 @@ namespace PresetMagician.Services
             InitializeCommands();
 
             _splashScreenService.Action = "Almost there…";
-            
         }
 
         public override Task InitializeAfterCreatingShellAsync()
@@ -178,6 +181,10 @@ namespace PresetMagician.Services
             _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "DisablePlugins");
             _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools),
                 nameof(Commands.PluginTools.ViewSettings));
+            
+            _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools),
+                nameof(Commands.PluginTools.ViewPresets));
+            
             _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools),
                 nameof(Commands.PluginTools.ViewErrors));
             _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "ShowPluginInfo");
@@ -188,11 +195,16 @@ namespace PresetMagician.Services
             _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools),
                 nameof(Commands.PluginTools.ReportSinglePluginToLive));
 
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Preset), "ActivatePresetView");
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Preset), "Export");
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Preset), "ClearList");
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Preset), nameof(Commands.Preset.ClearSelected));
+           
+            
             _commandManager.CreateCommandWithGesture(typeof(Commands.Preset), nameof(Commands.Preset.ApplyMidiNote));
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Preset), nameof(Commands.Preset.RenamePresetBank));
+            
+            
+            _commandManager.CreateCommandWithGesture(typeof(Commands.PresetExport), nameof(Commands.PresetExport.ClearSelected));
+            _commandManager.CreateCommandWithGesture(typeof(Commands.PresetExport), nameof(Commands.PresetExport.ActivatePresetView));
+            _commandManager.CreateCommandWithGesture(typeof(Commands.PresetExport), nameof(Commands.PresetExport.DoExport));
+            _commandManager.CreateCommandWithGesture(typeof(Commands.PresetExport), nameof(Commands.PresetExport.ClearList));
 
             _commandManager.CreateCommandWithGesture(typeof(Commands.PresetTools),
                 nameof(Commands.PresetTools.ShowPresetData));
@@ -208,6 +220,7 @@ namespace PresetMagician.Services
             _commandManager.CreateCommandWithGesture(typeof(Commands.Help), "OpenChatLink");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Help), "OpenDocumentationLink");
             
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Developer), nameof(Commands.Developer.SetCatelLogging));
         }
 
         [Time]
@@ -226,6 +239,7 @@ namespace PresetMagician.Services
         private async Task InitializePerformanceAsync()
         {
 
+            
             /*Catel.Windows.Controls.UserControl.DefaultCreateWarningAndErrorValidatorForViewModelValue = false;
             Catel.Windows.Controls.UserControl.DefaultSkipSearchingForInfoBarMessageControlValue = true;*/
         }
@@ -234,6 +248,8 @@ namespace PresetMagician.Services
         private void RegisterTypes()
         {
             var serviceLocator = ServiceLocator.Default;
+            ServiceLocator.Default.RegisterType<IXmlSerializer, TestSerializer>();
+            serviceLocator.RegisterType<ISerializer, TestSerializer>();
             serviceLocator.RegisterType<IAboutInfoService, AboutInfoService>();
             serviceLocator.RegisterType<ICustomStatusService, CustomStatusService>();
             serviceLocator.RegisterType<IPleaseWaitService, CustomPleaseWaitService>();

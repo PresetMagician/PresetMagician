@@ -1,7 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\squirrel.windows\build\squirrel.windows.props" Condition="Exists('..\packages\squirrel.windows\build\squirrel.windows.props')" Label="Paket" />
   <Import Project="..\packages\ModuleInit.Fody\build\ModuleInit.Fody.props" Condition="Exists('..\packages\ModuleInit.Fody\build\ModuleInit.Fody.props')" Label="Paket" />
   <Import Project="..\packages\MethodTimer.Fody\build\MethodTimer.Fody.props" Condition="Exists('..\packages\MethodTimer.Fody\build\MethodTimer.Fody.props')" Label="Paket" />
+  <Import Project="..\packages\LoadAssembliesOnStartup.Fody\build\LoadAssembliesOnStartup.Fody.props" Condition="Exists('..\packages\LoadAssembliesOnStartup.Fody\build\LoadAssembliesOnStartup.Fody.props')" Label="Paket" />
   <Import Project="..\packages\Catel.Fody\build\Catel.Fody.props" Condition="Exists('..\packages\Catel.Fody\build\Catel.Fody.props')" Label="Paket" />
   <Import Project="..\packages\Anotar.Catel.Fody\build\Anotar.Catel.Fody.props" Condition="Exists('..\packages\Anotar.Catel.Fody\build\Anotar.Catel.Fody.props')" Label="Paket" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -78,6 +80,7 @@
     <Reference Include="System.Design" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -96,6 +99,7 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Compile Include="Behaviors\BindableSelectedItemBehavior.cs" />
     <Compile Include="Behaviors\IListItemConverter.cs" />
     <Compile Include="Behaviors\MultiSelectBehavior.cs" />
     <Compile Include="Behaviors\TwoListSynchronizer.cs" />
@@ -105,6 +109,7 @@
     <Compile Include="Commands\Application\ApplicationCancelOperationCommandContainer.cs" />
     <Compile Include="Commands\Application\ApplicationClearLastOperationErrorsCommandContainer.cs" />
     <Compile Include="Commands\Application\ApplicationNotImplementedCommandContainer.cs" />
+    <Compile Include="Commands\Developer\DeveloperSetCatelLoggingCommandContainer.cs" />
     <Compile Include="Commands\Developer\PluginForceReportPluginsToDevCommandContainer.cs" />
     <Compile Include="Commands\Developer\PluginForceReportPluginsToLiveCommandContainer.cs" />
     <Compile Include="Commands\Developer\PluginReportSinglePluginToLiveCommandContainer.cs" />
@@ -120,6 +125,7 @@
     <Compile Include="Commands\Help\HelpRequestSupportCommandContainer.cs" />
     <Compile Include="Commands\PluginTools\PluginToolsDisablePluginsCommandContainer.cs" />
     <Compile Include="Commands\PluginTools\PluginToolsEnablePluginsCommandContainer.cs" />
+    <Compile Include="Commands\PluginTools\PluginToolsViewPresetsCommandContainer.cs" />
     <Compile Include="Commands\PluginTools\PluginToolsViewErrorsCommandContainer.cs" />
     <Compile Include="Commands\PluginTools\PluginToolsViewSettingsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\AbstractScanPluginsCommandContainer.cs" />
@@ -135,12 +141,14 @@
     <Compile Include="Commands\Plugin\PluginRefreshPluginsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginScanPluginsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginNotExportedSelectedToPresetExportListCommandContainer.cs" />
+    <Compile Include="Commands\PresetExport\PresetExportActivatePresetViewCommandContainer.cs" />
+    <Compile Include="Commands\PresetExport\PresetExportClearListCommandContainer.cs" />
+    <Compile Include="Commands\PresetExport\PresetExportClearSelectedCommandContainer.cs" />
+    <Compile Include="Commands\PresetExport\PresetExportDoExportCommandContainer.cs" />
     <Compile Include="Commands\PresetTools\PresetToolsShowPresetDataCommandContainer.cs" />
-    <Compile Include="Commands\Preset\PresetActivatePresetViewCommandContainer.cs" />
+    <Compile Include="Commands\Preset\AbstractCurrentPresetEditorCommandContainer.cs" />
     <Compile Include="Commands\Preset\PresetApplyMidiNoteCommandContainer.cs" />
-    <Compile Include="Commands\Preset\PresetClearListCommandContainer.cs" />
-    <Compile Include="Commands\Preset\PresetClearSelectedCommandContainer.cs" />
-    <Compile Include="Commands\Preset\PresetExportCommandContainer.cs" />
+    <Compile Include="Commands\Preset\PresetRenamePresetBankCommandContainer.cs" />
     <Compile Include="Commands\ThreadedApplicationNotBusyCommandContainer.cs" />
     <Compile Include="Commands\Tools\ToolsCompressDatabaseCommandContainer.cs" />
     <Compile Include="Commands\Tools\ToolsNksfViewCommandContainer.cs" />
@@ -155,12 +163,14 @@
     <Compile Include="Converters\FormatKbSizeConverter.cs" />
     <Compile Include="Converters\MessageButtonToCollapsingVisibilityConverter.cs" />
     <Compile Include="Converters\MessageImageToTextConverter.cs" />
+    <Compile Include="Converters\NodeSortConverter.cs" />
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Converters\VisibilityToBooleanConverter.cs" />
     <Compile Include="Extensions\CollectionExtensions.cs" />
     <Compile Include="Extensions\DispatcherExtensions.cs" />
     <Compile Include="Extensions\FrameworkExtensions.cs" />
     <Compile Include="Extensions\GenericObjectFactoryExtensions.cs" />
+    <Compile Include="Extensions\ISuspendableModelExtensions.cs" />
     <Compile Include="Helpers\AvalonDockHelper.cs" />
     <Compile Include="Helpers\BindingProxy.cs" />
     <Compile Include="Helpers\ShellDimensionsHelper.cs" />
@@ -171,6 +181,7 @@
     <Compile Include="Models\RuntimeConfiguration.cs" />
     <Compile Include="Models\Settings\VstDirectory.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Serialization\TestSerializer.cs" />
     <Compile Include="Services\AboutInfoService.cs" />
     <Compile Include="Services\AdvancedMessageService.cs" />
     <Compile Include="Services\ApplicationAlreadyBusyException.cs" />
@@ -215,9 +226,8 @@
     <Compile Include="ViewModels\VstPluginLogViewModel.cs" />
     <Compile Include="ViewModels\VstPluginInfoViewModel.cs" />
     <Compile Include="ViewModels\VstPluginPresetsViewModel.cs" />
-    <Compile Include="ViewModels\VstPluginSettingsViewModel.cs" />
     <Compile Include="ViewModels\VstPluginsViewModel.cs" />
-    <Compile Include="ViewModels\VstPluginViewModel.cs" />
+    <Compile Include="ViewModels\VstPluginSettingsViewModel.cs" />
     <Compile Include="ViewModels\VstWorkerPoolViewModel.cs" />
     <Compile Include="Views\HelpLinkMessageBox.xaml.cs">
       <DependentUpon>HelpLinkMessageBox.xaml</DependentUpon>
@@ -231,7 +241,9 @@
     <Compile Include="Views\PresetDataView.xaml.cs">
       <DependentUpon>PresetDataView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\RenamePresetBankView.xaml.cs" />
+    <Compile Include="Views\RenamePresetBankView.xaml.cs">
+      <DependentUpon>RenamePresetBankView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ReportIssueView.xaml.cs">
       <DependentUpon>ReportIssueView.xaml</DependentUpon>
     </Compile>
@@ -275,18 +287,16 @@
       <DependentUpon>VstPluginInfoView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\VstPluginPresetsView.xaml.cs" />
-    <Compile Include="Views\VstPluginSettingsView.xaml.cs" />
     <Compile Include="Views\VstPluginsView.xaml.cs">
       <DependentUpon>VstPluginsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\VstPluginSettingsView.xaml.cs">
+      <DependentUpon>VstPluginSettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\VstWorkerPool.xaml.cs">
       <DependentUpon>VstWorkerPoolView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Workers\ProgressUserState.cs" />
-    <None Include="NBug.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </None>
     <Compile Include="Services\RibbonService.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -343,6 +353,7 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\PresetDataView.xaml" />
+    <Page Include="Views\RenamePresetBankView.xaml" />
     <Page Include="Views\ReportIssueView.xaml" />
     <Page Include="Views\VstHostProcessLogView.xaml">
       <SubType>Designer</SubType>
@@ -384,7 +395,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\VstPluginPresetsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\VstPluginsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\VstPluginSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -493,12 +512,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="paket.references" />
+    <Page Include="Themes\Widgets\ModesWidget.xaml" />
     <Content Include="vcruntime140.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Views\RenamePresetBankView.xaml" />
-    <Content Include="Views\VstPluginPresetsView.xaml" />
-    <Content Include="Views\VstPluginSettingsView.xaml" />
     <Page Include="Themes\Styles\StatusBarLinkLabel.xaml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -585,9 +602,6 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
-        <Reference Include="System.Windows.Forms">
-          <Paket>True</Paket>
-        </Reference>
         <Reference Include="Catel.MVVM">
           <HintPath>..\packages\Catel.MVVM\lib\net47\Catel.MVVM.dll</HintPath>
           <Private>True</Private>
@@ -663,6 +677,33 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
+        <Reference Include="InplaceEditBoxLib">
+          <HintPath>..\packages\Dirkster.InplaceEditBoxLib\lib\net4\InplaceEditBoxLib.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="UserNotification">
+          <HintPath>..\packages\Dirkster.InplaceEditBoxLib\lib\net4\UserNotification.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="UserNotification">
+          <HintPath>..\packages\Dirkster.UserNotifications\lib\net40\UserNotification.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
         <Reference Include="EntityFramework">
           <HintPath>..\packages\EntityFramework\lib\net45\EntityFramework.dll</HintPath>
           <Private>True</Private>
@@ -726,11 +767,6 @@
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
-        <Reference Include="Xceed.Wpf.DataGrid">
-          <HintPath>..\packages\Extended.Wpf.Toolkit\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
         <Reference Include="Xceed.Wpf.Toolkit">
           <HintPath>..\packages\Extended.Wpf.Toolkit\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
           <Private>True</Private>
@@ -744,6 +780,17 @@
       <ItemGroup>
         <Reference Include="Fluent">
           <HintPath>..\packages\Fluent.Ribbon\lib\net462\Fluent.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="GongSolutions.Wpf.DragDrop">
+          <HintPath>..\packages\gong-wpf-dragdrop\lib\net46\GongSolutions.Wpf.DragDrop.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -767,6 +814,17 @@
         <Reference Include="ColorThief.Desktop.v46">
           <HintPath>..\packages\ksemenenko.ColorThief\lib\net46\ColorThief.Desktop.v46.dll</HintPath>
           <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="LoadAssembliesOnStartup.Fody">
+          <HintPath>..\packages\LoadAssembliesOnStartup.Fody\lib\net46\LoadAssembliesOnStartup.Fody.dll</HintPath>
+          <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -1360,5 +1418,6 @@
   <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.linux\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_linux_targets).targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.linux\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_linux_targets).targets')" Label="Paket" />
   <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.osx\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_osx_targets).targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.osx\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_osx_targets).targets')" Label="Paket" />
   <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_xp\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_v110_xp_targets).targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_xp\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_v110_xp_targets).targets')" Label="Paket" />
+  <Import Project="..\packages\squirrel.windows\build\squirrel.windows.targets" Condition="Exists('..\packages\squirrel.windows\build\squirrel.windows.targets')" Label="Paket" />
   <Import Project="..\packages\System.Data.SQLite.Core\build\$(__paket__System_Data_SQLite_Core_targets).targets" Condition="Exists('..\packages\System.Data.SQLite.Core\build\$(__paket__System_Data_SQLite_Core_targets).targets')" Label="Paket" />
 </Project>

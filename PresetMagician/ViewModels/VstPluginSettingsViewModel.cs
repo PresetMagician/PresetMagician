@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -10,6 +12,7 @@ using System.Net.Http.Headers;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using Anotar.Catel;
 using Catel;
 using Catel.Collections;
@@ -19,8 +22,11 @@ using Catel.MVVM;
 using Catel.Services;
 using Drachenkatze.PresetMagician.NKSF.NKSF;
 using Drachenkatze.PresetMagician.Utils;
+using Jacobi.Vst.Core.Plugin;
+using MethodTimer;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PresetMagician.Models;
 using PresetMagician.Models.ControllerAssignments;
 using PresetMagician.Models.NativeInstrumentsResources;
 using PresetMagician.Services.Interfaces;
@@ -30,7 +36,7 @@ using SharedModels.NativeInstrumentsResources;
 
 namespace PresetMagician.ViewModels
 {
-    public class VstPluginViewModel : ViewModelBase
+    public class VstPluginSettingsViewModel : ViewModelBase
     {
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();
         private readonly IVstService _vstService;
@@ -42,7 +48,7 @@ namespace PresetMagician.ViewModels
         private readonly INativeInstrumentsResourceGeneratorService _resourceGeneratorService;
 
 
-        public VstPluginViewModel(Plugin plugin, IVstService vstService, IOpenFileService openFileService,
+        public VstPluginSettingsViewModel(Plugin plugin, IVstService vstService, IOpenFileService openFileService,
             ISelectDirectoryService selectDirectoryService, ILicenseService licenseService,
             IAdvancedMessageService messageService,
             ICommandManager commandManager,
@@ -95,7 +101,11 @@ namespace PresetMagician.ViewModels
 
             GenerateControllerMappingModels();
             PluginLocations = _vstService.GetPluginLocations(plugin);
+            
         }
+        
+        
+       
 
         #region Properties
 
@@ -112,7 +122,6 @@ namespace PresetMagician.ViewModels
         public int CurrentControllerAssignmentPage { get; set; }
 
         public bool ReanalyzePluginOnClose { get; set; }
-
 
         public bool IsPluginSet => Plugin != null;
 

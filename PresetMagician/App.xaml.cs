@@ -22,6 +22,15 @@ using MessageBox = System.Windows.MessageBox;
 
 namespace PresetMagician
 {
+    #warning TODO: Finalize plugin property rework, maybe add unit tests, add msgpack serializer (maybe), test save and restore
+    #warning TODO: changed flag only respects preset data and not metadata. needs to be fixed.
+    #warning TODO: research if it's possible to work on a copy. Also ensure that while presets being edited no other operation may run!
+    #warning TODO: check if validation runs on plugin. if yes, disable it
+    #warning TODO: replace developer stuff with ugly company logos
+    #warning TODO: ensure with a test that all new properties on database models are marked with NotMapped or included in the migration
+    #warning TODO: also ensure that new properties on database models are checked for Include/Exclude in backup. do this via a static list
+    #warning TODO: implement effIdle per https://www.kvraudio.com/forum/viewtopic.php?t=349866
+
     /// <summary>
     ///     Interaction logic for App.xaml
     /// </summary>
@@ -29,7 +38,9 @@ namespace PresetMagician
     {
         public App()
         {
+            #if !DEBUG
             SetupExceptionHandling();
+            #endif
         }
 
         private void SetupExceptionHandling()
@@ -70,9 +81,9 @@ namespace PresetMagician
         }
 
 
-        private ILogListener _debugListener;
+        private static ILogListener _debugListener;
 
-        public void SetCatelLogging(bool enable)
+        public static void SetCatelLogging(bool enable)
         {
             if (_debugListener != null)
             {
