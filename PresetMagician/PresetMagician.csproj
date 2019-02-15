@@ -167,6 +167,7 @@
     <Compile Include="Models\ApplicationState.cs" />
     <Compile Include="Models\ControllerAssignments\ControllerAssignmentControl.cs" />
     <Compile Include="Models\ControllerAssignments\ControllerAssignmentPage.cs" />
+    <Compile Include="Models\CustomLayoutDocument.cs" />
     <Compile Include="Models\RuntimeConfiguration.cs" />
     <Compile Include="Models\Settings\VstDirectory.cs" />
     <Compile Include="Program.cs" />
@@ -193,6 +194,7 @@
     <Compile Include="Services\SplashScreenService.cs" />
     <Compile Include="Services\VstService.cs" />
     <Compile Include="ViewModels\HelpLinkMessageBoxViewModel.cs" />
+    <Compile Include="ViewModels\IModelTracker.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\NKSFViewModel.cs" />
     <Compile Include="ViewModels\PaneViewModel.cs" />
@@ -200,6 +202,7 @@
     <Compile Include="ViewModels\PresetExportListViewModel.cs" />
     <Compile Include="ViewModels\PresetViewModel.cs" />
     <Compile Include="ViewModels\RegistrationViewModel.cs" />
+    <Compile Include="ViewModels\RenamePresetBankViewModel.cs" />
     <Compile Include="ViewModels\ReportIssueViewModel.cs" />
     <Compile Include="ViewModels\RibbonViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
@@ -211,6 +214,8 @@
     <Compile Include="ViewModels\VstPluginChunkViewModel.cs" />
     <Compile Include="ViewModels\VstPluginLogViewModel.cs" />
     <Compile Include="ViewModels\VstPluginInfoViewModel.cs" />
+    <Compile Include="ViewModels\VstPluginPresetsViewModel.cs" />
+    <Compile Include="ViewModels\VstPluginSettingsViewModel.cs" />
     <Compile Include="ViewModels\VstPluginsViewModel.cs" />
     <Compile Include="ViewModels\VstPluginViewModel.cs" />
     <Compile Include="ViewModels\VstWorkerPoolViewModel.cs" />
@@ -226,6 +231,7 @@
     <Compile Include="Views\PresetDataView.xaml.cs">
       <DependentUpon>PresetDataView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\RenamePresetBankView.xaml.cs" />
     <Compile Include="Views\ReportIssueView.xaml.cs">
       <DependentUpon>ReportIssueView.xaml</DependentUpon>
     </Compile>
@@ -234,12 +240,6 @@
     </Compile>
     <Compile Include="Views\VstPluginChunkView.xaml.cs">
       <DependentUpon>VstPluginChunkView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\PluginEditorFrame.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\PluginEditorFrame.Designer.cs">
-      <DependentUpon>PluginEditorFrame.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\PresetExportListView.xaml.cs">
       <DependentUpon>PresetExportListView.xaml</DependentUpon>
@@ -274,11 +274,10 @@
     <Compile Include="Views\VstPluginInfoView.xaml.cs">
       <DependentUpon>VstPluginInfoView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\VstPluginPresetsView.xaml.cs" />
+    <Compile Include="Views\VstPluginSettingsView.xaml.cs" />
     <Compile Include="Views\VstPluginsView.xaml.cs">
       <DependentUpon>VstPluginsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\VstPluginView.xaml.cs">
-      <DependentUpon>VstPluginView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\VstWorkerPool.xaml.cs">
       <DependentUpon>VstWorkerPoolView.xaml</DependentUpon>
@@ -386,10 +385,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\VstPluginsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\VstPluginView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -501,6 +496,9 @@
     <Content Include="vcruntime140.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Views\RenamePresetBankView.xaml" />
+    <Content Include="Views\VstPluginPresetsView.xaml" />
+    <Content Include="Views\VstPluginSettingsView.xaml" />
     <Page Include="Themes\Styles\StatusBarLinkLabel.xaml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
