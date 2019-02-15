@@ -155,7 +155,7 @@ namespace PresetMagician
                 cancellationToken = _applicationService.GetApplicationOperationCancellationSource().Token;
 
                 _databaseService.Context.PresetUpdated += ContextOnPresetUpdated;
-                await TaskHelper.Run(async () => await AnalyzePlugins(pluginsToScan, cancellationToken), true,
+                await TaskHelper.Run(async () => await AnalyzePlugins(pluginsToScan.OrderBy(p => p.PluginName).ToList(), cancellationToken), true,
                     cancellationToken);
 
                 // ReSharper disable once MethodSupportsCancellation
@@ -251,19 +251,27 @@ namespace PresetMagician
                     continue;
                 }
 
+                if (!plugin.HasMetadata)
+                {
+                    continue;
+                }
+
                 LogTo.Debug($"Begin analysis of {plugin.DllFilename}");
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return;
+                }
+                
+                _vstService.SelectedPlugin = plugin;
+                
                 try
                 {
                     using (var remotePluginInstance = _vstService.GetRemotePluginInstance(plugin))
                     {
-                        _vstService.SelectedPlugin = plugin;
                         _applicationService.UpdateApplicationOperationStatus(
                             pluginsToScan.IndexOf(plugin), $"Scanning {plugin.DllFilename}");
 
-                        if (cancellationToken.IsCancellationRequested)
-                        {
-                            return;
-                        }
+                        
 
                         _databaseService.Context.CompressPresetData =
                             _runtimeConfigurationService.RuntimeConfiguration.CompressPresetData;
@@ -283,15 +291,11 @@ namespace PresetMagician
                             }
                         }
 
-                        plugin.Debug($"Attempting to find presetParser for {plugin.PluginName}");
+                        plugin.Logger.Debug($"Attempting to find presetParser for {plugin.PluginName}");
 
                         VendorPresetParser.DeterminatePresetParser(remotePluginInstance);
                         var wasLoaded = remotePluginInstance.IsLoaded;
                         plugin.PresetParser.DataPersistence = _databaseService.GetPresetDataStorer();
-
-
-                        plugin.PresetParser.AdditionalBankFiles.Clear();
-                        plugin.PresetParser.AdditionalBankFiles.AddRange(plugin.AdditionalBankFiles);
 
 
                         _currentPluginIndex = pluginsToScan.IndexOf(plugin);
@@ -322,9 +326,8 @@ namespace PresetMagician
                         if (_runtimeConfigurationService.RuntimeConfiguration.AutoCreateResources &&
                             _resourceGeneratorService.ShouldCreateScreenshot(remotePluginInstance))
                         {
-                            plugin.Debug(
-                                $"Auto-generating resources for {plugin.DllFilename} - Opening Editor",
-                                plugin.DllFilename);
+                            plugin.Logger.Debug(
+                                $"Auto-generating resources for {plugin.DllFilename} - Opening Editor");
                             _applicationService.UpdateApplicationOperationStatus(
                                 pluginsToScan.IndexOf(plugin),
                                 $"Auto-generating resources for {plugin.DllFilename} - Opening Editor");
@@ -343,7 +346,7 @@ namespace PresetMagician
                             if (_runtimeConfigurationService.RuntimeConfiguration.AutoCreateResources &&
                                 _resourceGeneratorService.NeedToGenerateResources(remotePluginInstance))
                             {
-                                plugin.Debug(
+                                plugin.Logger.Debug(
                                     $"Auto-generating resources for {plugin.DllFilename} - Creating screenshot and applying magic");
                                 _applicationService.UpdateApplicationOperationStatus(
                                     pluginsToScan.IndexOf(plugin),
@@ -365,17 +368,18 @@ namespace PresetMagician
 
                         if (wasLoaded)
                         {
+                            plugin.Logger.Debug($"Unloading {plugin.DllFilename}");
                             remotePluginInstance.UnloadPlugin();
-                            plugin.Debug($"Unloading {plugin.DllFilename}");
                         }
                     }
                 }
                 catch (Exception e)
                 {
                     plugin.OnLoadError(e);
-                    _applicationService.AddApplicationOperationError(
-                        $"Unable to analyze {plugin.DllFilename} because of {e.Message}");
-                    plugin.Debug(e.StackTrace);
+
+                    var errorMessage =
+                        $"Unable to analyze {plugin.DllFilename} because of {e.GetType().FullName}: {e.Message}";
+                    _applicationService.AddApplicationOperationError(errorMessage + " - see plugin log for details");
                 }
 
                 LogTo.Debug($"End analysis of {plugin.DllFilename}");
@@ -447,26 +451,48 @@ namespace PresetMagician
                             select p)
                         .FirstOrDefault();
 
-                    if (existingPlugin != null && !_databaseService.Context.HasPresets(plugin))
+                    if (existingPlugin != null)
                     {
-                        // There's an existing plugin which this plugin can be merged into. Schedule it for removal
-                        pluginsToRemove.Add(plugin);
-
-                        // If the existing plugin is not present, but this one is: Move over the plugin location
-                        if (!existingPlugin.IsPresent)
+                        if (!_databaseService.Context.HasPresets(plugin))
                         {
-                            await _dispatcherService.InvokeAsync(() =>
+                            // There's an existing plugin which this plugin can be merged into. Schedule it for removal
+                            pluginsToRemove.Add(plugin);
+
+                            // If the existing plugin is not present, but this one is: Move over the plugin location
+                            if (!existingPlugin.IsPresent)
                             {
-                                existingPlugin.PluginLocation = plugin.PluginLocation;
-                            });
+                                await _dispatcherService.InvokeAsync(() =>
+                                {
+                                    existingPlugin.PluginLocation = plugin.PluginLocation;
+                                });
+                            }
+                        } else if (!_databaseService.Context.HasPresets(existingPlugin))
+                        {
+                            // The existing plugin has no presets - remove it!
+                            pluginsToRemove.Add(existingPlugin);
+
+                            // If this plugin is not present, but the other one is: Move over the plugin location
+                            if (!plugin.IsPresent)
+                            {
+                                await _dispatcherService.InvokeAsync(() =>
+                                    {
+                                        plugin.PluginLocation = existingPlugin.PluginLocation;
+                                    });
+                            }
                         }
-                    }
+                    } 
+                   
                 }
                 catch (Exception e)
                 {
                     _applicationService.AddApplicationOperationError(
                         $"Unable to load  metadata for {plugin.DllFilename} because of {e.GetType().FullName} {e.Message}");
-                    LogTo.Debug(e.StackTrace);
+                    plugin.OnLoadError(e);
+
+                    if (!plugin.HasMetadata)
+                    {
+                        plugin.MetadataUnavailableInCurrentSession = true;
+                    }
                 }
 
                 await _dispatcherService.InvokeAsync(() => { plugin.NativeInstrumentsResource.Load(plugin); });

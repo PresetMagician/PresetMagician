@@ -38,8 +38,10 @@
     <OutputPath>bin\x64\Release\</OutputPath>
     <PlatformTarget>x64</PlatformTarget>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <Prefer32bit>false</Prefer32bit>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -89,14 +91,6 @@
     <None Include="Resources\ffmpeg.exe" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Drachenkatze.PresetMagician.NKSF\Drachenkatze.PresetMagician.NKSF.csproj">
-      <Project>{2126DF46-7F24-4C2C-B236-514A70B7A3A5}</Project>
-      <Name>Drachenkatze.PresetMagician.NKSF</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Drachenkatze.PresetMagician.Utils\Drachenkatze.PresetMagician.Utils.csproj">
-      <Project>{37abda8a-5ffa-41f9-b880-a272d8c21dff}</Project>
-      <Name>Drachenkatze.PresetMagician.Utils</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Microsoft.DwayneNeed.Win32\Microsoft.DwayneNeed.Win32.csproj">
       <Project>{39337e67-fdbb-4b17-ab5f-b65820ccd11e}</Project>
       <Name>Microsoft.DwayneNeed.Win32</Name>
@@ -105,9 +99,17 @@
       <Project>{80a10b86-6615-4440-93b0-c943df5b8693}</Project>
       <Name>Microsoft.DwayneNeed</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PresetMagician.NKS\PresetMagician.NKS.csproj">
+      <Project>{2126df46-7f24-4c2c-b236-514a70b7a3a5}</Project>
+      <Name>PresetMagician.NKS</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PresetMagician.SharedModels\PresetMagician.SharedModels.csproj">
       <Project>{445ac4fe-6acc-4e19-9424-b35c0b8b5804}</Project>
       <Name>PresetMagician.SharedModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PresetMagician.Utils\PresetMagician.Utils.csproj">
+      <Project>{37abda8a-5ffa-41f9-b880-a272d8c21dff}</Project>
+      <Name>PresetMagician.Utils</Name>
     </ProjectReference>
     <ProjectReference Include="..\vst.net\Source\Code\Jacobi.Vst.Core\Jacobi.Vst.Core.Clr4.csproj">
       <Project>{5950f8a9-f413-4ace-b6e0-6f458b4c26f9}</Project>

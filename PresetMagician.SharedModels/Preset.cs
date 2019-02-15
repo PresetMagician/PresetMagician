@@ -120,13 +120,6 @@ namespace SharedModels
             }
         }
 
-        [NotMapped]
-        public byte[] PresetData
-        {
-            get { throw new NotImplementedException(); }
-            set { throw new NotImplementedException(); }
-        }
-
         public int PresetSize { get; set; }
         public int PresetCompressedSize { get; set; }
 

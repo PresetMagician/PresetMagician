@@ -11,8 +11,6 @@ namespace SharedModels
         IRemotePluginInstance PluginInstance { get; set; }
         int AudioPreviewPreDelay { get; set; }
 
-        List<BankFile> AdditionalBankFiles { get; }
-
         string Remarks { get; set; }
         string PresetParserType { get; }
 

@@ -66,14 +66,6 @@ namespace PresetMagician.Services
         [Time]
         public override async Task InitializeBeforeCreatingShellAsync()
         {
-            
-
-            await RunAndWaitAsync(new Func<Task>[]
-            {
-                InitializePerformanceAsync
-            });
-
-            
             // Non-async first
             RegisterTypes();
 
@@ -86,7 +78,7 @@ namespace PresetMagician.Services
             LoadConfiguration();
 
             _splashScreenService.Action = "Loading database…";
-            await InitializeCommandsAsync();
+            InitializeCommands();
 
             _splashScreenService.Action = "Almost there…";
             
@@ -150,7 +142,7 @@ namespace PresetMagician.Services
         }
 
         [Time]
-        private async Task InitializeCommandsAsync()
+        private void InitializeCommands()
         {
             _commandManager.CreateCommandWithGesture(typeof(Commands.Application), "CancelOperation");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Application), "ClearLastOperationErrors");
@@ -169,11 +161,18 @@ namespace PresetMagician.Services
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "RefreshPlugins");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "AllToPresetExportList");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "SelectedToPresetExportList");
+            
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin),
                 nameof(Commands.Plugin.NotExportedAllToPresetExportList));
+            
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin),
                 nameof(Commands.Plugin.NotExportedSelectedToPresetExportList));
+            
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "ReportUnsupportedPlugins");
+            
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), nameof(Commands.Plugin.ForceReportPluginsToLive));
+            
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), nameof(Commands.Plugin.ForceReportPluginsToDev));
 
             _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "EnablePlugins");
             _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "DisablePlugins");
@@ -203,9 +202,12 @@ namespace PresetMagician.Services
             _commandManager.CreateCommandWithGesture(typeof(Commands.Tools), nameof(Commands.Tools.UpdateLicense));
             _commandManager.CreateCommandWithGesture(typeof(Commands.Tools), nameof(Commands.Tools.CompressDatabase));
 
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Help), "OpenSupportLink");
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Help), nameof(Commands.Help.RequestSupport));
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Help), nameof(Commands.Help.CreateBugReport));
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Help), nameof(Commands.Help.CreateFeatureRequest));
             _commandManager.CreateCommandWithGesture(typeof(Commands.Help), "OpenChatLink");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Help), "OpenDocumentationLink");
+            
         }
 
         [Time]
@@ -224,8 +226,8 @@ namespace PresetMagician.Services
         private async Task InitializePerformanceAsync()
         {
 
-            Catel.Windows.Controls.UserControl.DefaultCreateWarningAndErrorValidatorForViewModelValue = false;
-            Catel.Windows.Controls.UserControl.DefaultSkipSearchingForInfoBarMessageControlValue = true;
+            /*Catel.Windows.Controls.UserControl.DefaultCreateWarningAndErrorValidatorForViewModelValue = false;
+            Catel.Windows.Controls.UserControl.DefaultSkipSearchingForInfoBarMessageControlValue = true;*/
         }
 
         [Time]

@@ -53,14 +53,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Drachenkatze.PresetMagician.Utils\Drachenkatze.PresetMagician.Utils.csproj">
-      <Project>{37abda8a-5ffa-41f9-b880-a272d8c21dff}</Project>
-      <Name>Drachenkatze.PresetMagician.Utils</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Drachenkatze.PresetMagician.VendorPresetParser\Drachenkatze.PresetMagician.VendorPresetParser.csproj">
-      <Project>{3f01003f-9e52-4f4d-a5fd-ecdd9017c048}</Project>
-      <Name>Drachenkatze.PresetMagician.VendorPresetParser</Name>
-    </ProjectReference>
     <ProjectReference Include="..\PresetMagician.RemoteVstHost\PresetMagician.RemoteVstHost.csproj">
       <Project>{f07c1405-2149-4da5-ace7-54f5278ad2e4}</Project>
       <Name>PresetMagician.RemoteVstHost</Name>
@@ -68,6 +60,14 @@
     <ProjectReference Include="..\PresetMagician.SharedModels\PresetMagician.SharedModels.csproj">
       <Project>{445ac4fe-6acc-4e19-9424-b35c0b8b5804}</Project>
       <Name>PresetMagician.SharedModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PresetMagician.Utils\PresetMagician.Utils.csproj">
+      <Project>{37abda8a-5ffa-41f9-b880-a272d8c21dff}</Project>
+      <Name>PresetMagician.Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PresetMagician.VendorPresetParser\PresetMagician.VendorPresetParser.csproj">
+      <Project>{3f01003f-9e52-4f4d-a5fd-ecdd9017c048}</Project>
+      <Name>PresetMagician.VendorPresetParser</Name>
     </ProjectReference>
     <ProjectReference Include="..\PresetMagician.VstHost\PresetMagician.VstHost.csproj">
       <Project>{bb9702b3-2826-411a-b7c5-ef64348a7a5c}</Project>

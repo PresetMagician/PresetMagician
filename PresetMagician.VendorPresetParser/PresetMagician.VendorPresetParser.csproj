@@ -1,0 +1,861 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\squirrel.windows\build\squirrel.windows.props" Condition="Exists('..\packages\squirrel.windows\build\squirrel.windows.props')" Label="Paket" />
+  <Import Project="..\packages\PropertyChanged.Fody\build\PropertyChanged.Fody.props" Condition="Exists('..\packages\PropertyChanged.Fody\build\PropertyChanged.Fody.props')" Label="Paket" />
+  <Import Project="..\packages\MethodTimer.Fody\build\MethodTimer.Fody.props" Condition="Exists('..\packages\MethodTimer.Fody\build\MethodTimer.Fody.props')" Label="Paket" />
+  <Import Project="..\packages\Anotar.Catel.Fody\build\Anotar.Catel.Fody.props" Condition="Exists('..\packages\Anotar.Catel.Fody\build\Anotar.Catel.Fody.props')" Label="Paket" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="..\Packages.props" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3F01003F-9E52-4F4D-A5FD-ECDD9017C048}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Drachenkatze.PresetMagician.VendorPresetParser</RootNamespace>
+    <AssemblyName>PresetMagician.VendorPresetParser</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>false</Optimize>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AbstractVendorPresetParser.cs" />
+    <Compile Include="AbstractVendorPresetParser_StandardVst.cs" />
+    <Compile Include="Arturia\Arturia.cs" />
+    <Compile Include="Arturia\Arturia_AnalogLab3.cs" />
+    <Compile Include="Arturia\Arturia_Arp2600.cs" />
+    <Compile Include="Arturia\Arturia_B3.cs" />
+    <Compile Include="Arturia\Arturia_BuchlaEasel.cs" />
+    <Compile Include="Arturia\Arturia_Clavinet.cs" />
+    <Compile Include="Arturia\Arturia_CMI.cs" />
+    <Compile Include="Arturia\Arturia_CS80.cs" />
+    <Compile Include="Arturia\Arturia_DX7.cs" />
+    <Compile Include="Arturia\Arturia_Farfisa.cs" />
+    <Compile Include="Arturia\Arturia_Jup8.cs" />
+    <Compile Include="Arturia\Arturia_M12Filter.cs" />
+    <Compile Include="Arturia\Arturia_Matrix12.cs" />
+    <Compile Include="Arturia\Arturia_MiniFilter.cs" />
+    <Compile Include="Arturia\Arturia_MiniV3.cs" />
+    <Compile Include="Arturia\Arturia_Modular.cs" />
+    <Compile Include="Arturia\Arturia_Piano.cs" />
+    <Compile Include="Arturia\Arturia_Piano2.cs" />
+    <Compile Include="Arturia\Arturia_Pigments.cs" />
+    <Compile Include="Arturia\Arturia_Pre1973.cs" />
+    <Compile Include="Arturia\Arturia_Prophet.cs" />
+    <Compile Include="Arturia\Arturia_SEM.cs" />
+    <Compile Include="Arturia\Arturia_SEMFilter.cs" />
+    <Compile Include="Arturia\Arturia_Solina.cs" />
+    <Compile Include="Arturia\Arturia_Stage73.cs" />
+    <Compile Include="Arturia\Arturia_Synclavier.cs" />
+    <Compile Include="Arturia\Arturia_TridAPre.cs" />
+    <Compile Include="Arturia\Arturia_V76Pre.cs" />
+    <Compile Include="Arturia\Arturia_VoxContinental.cs" />
+    <Compile Include="Arturia\Arturia_Wurli.cs" />
+    <Compile Include="Arturia\Models\Characteristic.cs" />
+    <Compile Include="Arturia\Models\Instrument.cs" />
+    <Compile Include="Arturia\Models\Pack.cs" />
+    <Compile Include="Arturia\Models\Preset.cs" />
+    <Compile Include="Arturia\Models\PresetCharacteristic.cs" />
+    <Compile Include="Arturia\Models\SoundDesigner.cs" />
+    <Compile Include="Arturia\Models\Type.cs" />
+    <Compile Include="Audiority\Audiority.cs" />
+    <Compile Include="Audiority\Audiority_BigGoat.cs" />
+    <Compile Include="Audiority\Audiority_BlueFace.cs" />
+    <Compile Include="Audiority\Audiority_Deleight.cs" />
+    <Compile Include="Audiority\Audiority_Distortion1.cs" />
+    <Compile Include="Audiority\Audiority_EchoesT7E.cs" />
+    <Compile Include="Audiority\Audiority_FreeMod.cs" />
+    <Compile Include="Audiority\Audiority_GrainSpace.cs" />
+    <Compile Include="Audiority\Audiority_HarmonicMaximizer.cs" />
+    <Compile Include="Audiority\Audiority_Polaris.cs" />
+    <Compile Include="Audiority\Audiority_PreX7.cs" />
+    <Compile Include="Audiority\Audiority_TheAbuser.cs" />
+    <Compile Include="Audiority\Audiority_TS1TransientShaper.cs" />
+    <Compile Include="Audiority\Audiority_TubeModulator.cs" />
+    <Compile Include="Audiority\Audiority_XenoVerb.cs" />
+    <Compile Include="AudioThing\AudioThing_Filterjam.cs" />
+    <Compile Include="AudioThing\AudioThing_FogConvolver.cs" />
+    <Compile Include="AudioThing\AudioThing_Frostbite.cs" />
+    <Compile Include="AudioThing\AudioThing_HandClapper.cs" />
+    <Compile Include="AudioThing\AudioThing_LatinPercussion.cs" />
+    <Compile Include="AudioThing\AudioThing_Megaphone.cs" />
+    <Compile Include="AudioThing\AudioThing_miniVerb.cs" />
+    <Compile Include="AudioThing\AudioThing_OuterSpace.cs" />
+    <Compile Include="AudioThing\AudioThing_PhaseMotionV2.cs" />
+    <Compile Include="AudioThing\AudioThing_Reels.cs" />
+    <Compile Include="AudioThing\AudioThing_SpaceStrip.cs" />
+    <Compile Include="AudioThing\AudioThing_Speaker.cs" />
+    <Compile Include="AudioThing\AudioThing_SR88.cs" />
+    <Compile Include="AudioThing\AudioThing_HATS.cs" />
+    <Compile Include="AudioThing\AudioThing_miniBit.cs" />
+    <Compile Include="AudioThing\AudioThing_miniBitCM.cs" />
+    <Compile Include="AudioThing\AudioThing.cs" />
+    <Compile Include="AudioThing\AudioThing_TheOrb.cs" />
+    <Compile Include="AudioThing\AudioThing_TypeA.cs" />
+    <Compile Include="AudioThing\AudioThing_ValveExciter.cs" />
+    <Compile Include="AudioThing\AudioThing_ValveFilterVF1.cs" />
+    <Compile Include="AudioThing\AudioThing_VinylStrip.cs" />
+    <Compile Include="AudioThing\AudioThing_WaveBox.cs" />
+    <Compile Include="Common\RecursiveBankDirectoryParser.cs" />
+    <Compile Include="Common\RecursiveFXPDirectoryParser.cs" />
+    <Compile Include="Common\RecursiveVC2Parser.cs" />
+    <Compile Include="D16 Group\D16_Frontier.cs" />
+    <Compile Include="D16 Group\D16_PunchBox.cs" />
+    <Compile Include="D16 Group\D16_Repeater.cs" />
+    <Compile Include="DmitrySches\DmitrySchesPresetParser.cs" />
+    <Compile Include="DmitrySches\DmitrySches_Thorn.cs" />
+    <Compile Include="DmitrySches\DmitrySches_ThornCM.cs" />
+    <Compile Include="Eiosis\Eisosi_AirEQ.cs" />
+    <Compile Include="Eiosis\Eisosi_AirEQ51.cs" />
+    <Compile Include="Eiosis\Eiosis_Deesser.cs" />
+    <Compile Include="HumanoidSoundSystems\HumanoidSoundSystems_Enzyme.cs" />
+    <Compile Include="ImageLine\ImageLine_Drumaxx.cs" />
+    <Compile Include="ImageLine\ImageLine_Hardcore.cs" />
+    <Compile Include="ImageLine\ImageLine_Morphine.cs" />
+    <Compile Include="ImageLine\ImageLine_Poizone.cs" />
+    <Compile Include="ImageLine\ImageLine_Sakura.cs" />
+    <Compile Include="ImageLine\ImageLine_Sawer.cs" />
+    <Compile Include="ImageLine\ImageLine_ToxicBiohazard.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MAGC.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MAmp.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MAnalyzer.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MAutoAlign.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MAutoDynamicEq.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MAutoEqualizer.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MAutoEqualizerLP.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MAutopan.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MAutopanMB.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MAutoPitch.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MAutoStereoFix.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MAutoVolume.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MBandPass.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MBassador.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MBitFun.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MBitFunMB.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MChannelMatrix.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MCharacter.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MChorusMB.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MComb.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MCombMB.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MCompare.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MCompressor.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MConvolutionEZ.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MConvolutionMB.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MDelayMB.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MDistortionMB.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MDrumEnhancer.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MDrumLeveler.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MDrummer.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MDynamicEQ.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MDynamics.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MDynamicsMB.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MEqualizer.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MEqualizerLP.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MFilter.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MFlanger.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MFlangerMB.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MFreeformAnalogEq.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MFreeformEqualizer.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MFreeformPhase.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MFreqShifter.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MFreqShifterMB.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MGranularMB.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MHarmonizerMB.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MLimiterMB.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MLimiterX.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MLoudnessAnalyzer.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MModernCompressor.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MMorph.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MMultiAnalyzer.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MNoiseGenerator.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MOscillator.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MPhaser.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MPhaserMB.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MPhatik.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MPolySaturator.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MPowerSynth.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MRatio.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MReverb.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MReverbMB.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MRhythmizer.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MRhythmizerMB.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MRingModulator.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MRingModulatorMB.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MRotary.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MSaturator.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MSaturatorMB.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MSpectralDelay.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MSpectralDynamics.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MSpectralPan.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MStereoExpander.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MStereoGenerator.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MStereoProcessor.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MStereoSpread.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MTransformer.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MTransient.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MTransientMB.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MTremolo.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MTremoloMB.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MTurboComp.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MTurboCompMB.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MTurboDelay.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MTurboEQ.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MTurboReverb.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MTurboReverbMB.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MUltraMaximizer.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MUnison.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MUtility.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MVibrato.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MVibratoMB.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MVintageRotary.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MVocoder.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MWaveFolder.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MWaveFolderMB.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MWaveShaper.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MWaveShaperMB.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MWobbler.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MWobblerMB.cs" />
+    <Compile Include="MeldaProduction\MeldaProduction_MXXX.cs" />
+    <Compile Include="NoMetadataAvailableException.cs" />
+    <Compile Include="NullPresetParser.cs" />
+    <Compile Include="D16 Group\D16Group.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SlateDigital\SlateDigitalPresetParser.cs" />
+    <Compile Include="SlateDigital\SlateDigital_FGX.cs" />
+    <Compile Include="SlateDigital\SlateDigital_VBCFGGrey.cs" />
+    <Compile Include="SlateDigital\SlateDigital_VBCFGMu.cs" />
+    <Compile Include="SlateDigital\SlateDigital_VBCFGRed.cs" />
+    <Compile Include="SlateDigital\SlateDigital_VBCRack.cs" />
+    <Compile Include="SlateDigital\SlateDigital_VerbsuiteClassics.cs" />
+    <Compile Include="SlateDigital\SlateDigital_VirtualMixRack.cs" />
+    <Compile Include="SlateDigital\SlateDigital_VirtualTapeMachines.cs" />
+    <Compile Include="StandardVst\AbstractStandardVSTPresetParser.cs" />
+    <Compile Include="StandardVst\BankTrickeryVSTPresetParser.cs" />
+    <Compile Include="StandardVst\FallbackVstPresetParser.cs" />
+    <Compile Include="StandardVst\FullBankVstPresetParser.cs" />
+    <Compile Include="ToguAudioLine\ToguAudioLine_TalBassline101.cs" />
+    <Compile Include="ToguAudioLine\ToguAudioLine_TalDAC.cs" />
+    <Compile Include="ToguAudioLine\ToguAudioLine_TalDubX.cs" />
+    <Compile Include="ToguAudioLine\ToguAudioLine_TalMod.cs" />
+    <Compile Include="ToguAudioLine\ToguAudioLine_TalUNoLXV2.cs" />
+    <Compile Include="TUBerlin\Synister.cs" />
+    <Compile Include="u_he\u_he_ColourCopy.cs" />
+    <Compile Include="u_he\u_he_Filterscape.cs" />
+    <Compile Include="u_he\u_he_FilterscapeQ6.cs" />
+    <Compile Include="u_he\u_he_FilterscapeVA.cs" />
+    <Compile Include="u_he\u_he_MFM2.cs" />
+    <Compile Include="u_he\u_he_Presswerk.cs" />
+    <Compile Include="u_he\u_he_Runciter.cs" />
+    <Compile Include="u_he\u_he_Satin.cs" />
+    <Compile Include="u_he\u_he_UhbikA.cs" />
+    <Compile Include="u_he\u_he_BazilleCM.cs" />
+    <Compile Include="u_he\u_he_Protoverb.cs" />
+    <Compile Include="u_he\u_he_Repro5.cs" />
+    <Compile Include="u_he\u_he_Repro1.cs" />
+    <Compile Include="u_he\u_he_Hive.cs" />
+    <Compile Include="u_he\u_he_Diva.cs" />
+    <Compile Include="u_he\u_he_Bazille.cs" />
+    <Compile Include="u_he\u_he_TripleCheese.cs" />
+    <Compile Include="u_he\u_he_Podolski.cs" />
+    <Compile Include="u_he\u_he_Twangstrom.cs" />
+    <Compile Include="u_he\u_he_UhbikD.cs" />
+    <Compile Include="u_he\u_he_UhbikF.cs" />
+    <Compile Include="u_he\u_he_UhbikG.cs" />
+    <Compile Include="u_he\u_he_UhbikP.cs" />
+    <Compile Include="u_he\u_he_UhbikQ.cs" />
+    <Compile Include="u_he\u_he_UhbikS.cs" />
+    <Compile Include="u_he\u_he_UhbikT.cs" />
+    <Compile Include="u_he\u_he_ZebraCM.cs" />
+    <Compile Include="u_he\u_he_Zebra2.cs" />
+    <Compile Include="u_he\u_he_ACE.cs" />
+    <Compile Include="u_he\u_he_Zebralette.cs" />
+    <Compile Include="u_he\u_he_TyrellN6.cs" />
+    <Compile Include="u_he\u_he.cs" />
+    <Compile Include="u_he\u_he_Zebrify.cs" />
+    <Compile Include="ValhallaDSP\ValhallaDSP.cs" />
+    <Compile Include="ValhallaDSP\ValhallaDSP_ValhallaPlate.cs" />
+    <Compile Include="ValhallaDSP\ValhallaDSP_ValhallaRoom.cs" />
+    <Compile Include="ValhallaDSP\ValhallaDSP_ValhallaUberMod.cs" />
+    <Compile Include="ValhallaDSP\ValhallaDSP_ValhallaVintageVerb.cs" />
+    <Compile Include="VendorPresetParser.cs" />
+    <Compile Include="VoidPresetParser.cs" />
+    <Compile Include="Xfer_Records\Xfer_Records_Serum.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PresetMagician.SharedModels\PresetMagician.SharedModels.csproj">
+      <Project>{445ac4fe-6acc-4e19-9424-b35c0b8b5804}</Project>
+      <Name>PresetMagician.SharedModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PresetMagician.Utils\PresetMagician.Utils.csproj">
+      <Project>{37abda8a-5ffa-41f9-b880-a272d8c21dff}</Project>
+      <Name>PresetMagician.Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PresetMagician.VstHost\PresetMagician.VstHost.csproj">
+      <Project>{bb9702b3-2826-411a-b7c5-ef64348a7a5c}</Project>
+      <Name>PresetMagician.VstHost</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\vst.net\Source\Code\Jacobi.Vst.Core\Jacobi.Vst.Core.Clr4.csproj">
+      <Project>{5950f8a9-f413-4ace-b6e0-6f458b4c26f9}</Project>
+      <Name>Jacobi.Vst.Core.Clr4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\vst.net\Source\Code\Jacobi.Vst.Interop\Jacobi.Vst.Interop.Clr4.vcxproj">
+      <Project>{e0cc0ccf-a40d-4a53-8fac-b6af7e76eb08}</Project>
+      <Name>Jacobi.Vst.Interop.Clr4</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="FodyWeavers.xml">
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="IWshRuntimeLibrary">
+      <Guid>{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="Shell32">
+      <Guid>{50A7E9B0-70EF-11D1-B75A-00A0C90564FE}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="MadronaLabs\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="paket.references" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <PropertyGroup>
+        <__paket__SQLitePCLRaw_lib_e_sqlite3_v110_xp_targets>net35\SQLitePCLRaw.lib.e_sqlite3.v110_xp</__paket__SQLitePCLRaw_lib_e_sqlite3_v110_xp_targets>
+      </PropertyGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <PropertyGroup>
+        <__paket__SQLitePCLRaw_lib_e_sqlite3_osx_targets>net35\SQLitePCLRaw.lib.e_sqlite3.osx</__paket__SQLitePCLRaw_lib_e_sqlite3_osx_targets>
+      </PropertyGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <PropertyGroup>
+        <__paket__SQLitePCLRaw_lib_e_sqlite3_linux_targets>net35\SQLitePCLRaw.lib.e_sqlite3.linux</__paket__SQLitePCLRaw_lib_e_sqlite3_linux_targets>
+      </PropertyGroup>
+    </When>
+  </Choose>
+  <Import Project="..\.paket\paket.targets" />
+  <Import Project="..\common\ExtraCleanup.targets" />
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="Anotar.Catel">
+          <HintPath>..\packages\Anotar.Catel.Fody\lib\net452\Anotar.Catel.dll</HintPath>
+          <Private>False</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="Antlr3.Runtime">
+          <HintPath>..\packages\Antlr\lib\Antlr3.Runtime.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="Catel.Core">
+          <HintPath>..\packages\Catel.Core\lib\net47\Catel.Core.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="Catel.MVVM">
+          <HintPath>..\packages\Catel.MVVM\lib\net47\Catel.MVVM.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="DeltaCompressionDotNet">
+          <HintPath>..\packages\DeltaCompressionDotNet\lib\net20\DeltaCompressionDotNet.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="DeltaCompressionDotNet.MsDelta">
+          <HintPath>..\packages\DeltaCompressionDotNet\lib\net20\DeltaCompressionDotNet.MsDelta.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="DeltaCompressionDotNet.PatchApi">
+          <HintPath>..\packages\DeltaCompressionDotNet\lib\net20\DeltaCompressionDotNet.PatchApi.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="Microsoft.Expression.Interactions">
+          <HintPath>..\packages\Expression.Blend.Sdk.WPF\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="System.Windows.Interactivity">
+          <HintPath>..\packages\Expression.Blend.Sdk.WPF\lib\net45\System.Windows.Interactivity.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="ExpressionEvaluator">
+          <HintPath>..\packages\ExpressionEvaluator\lib\net40\ExpressionEvaluator.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="GSF.Core">
+          <HintPath>..\packages\GSF.Core\lib\net46\GSF.Core.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="JetBrains.Annotations">
+          <HintPath>..\packages\JetBrains.Annotations\lib\net20\JetBrains.Annotations.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="MethodTimer">
+          <HintPath>..\packages\MethodTimer.Fody\lib\net452\MethodTimer.dll</HintPath>
+          <Private>False</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="Mono.Cecil">
+          <HintPath>..\packages\Mono.Cecil\lib\net40\Mono.Cecil.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Mono.Cecil.Mdb">
+          <HintPath>..\packages\Mono.Cecil\lib\net40\Mono.Cecil.Mdb.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Mono.Cecil.Pdb">
+          <HintPath>..\packages\Mono.Cecil\lib\net40\Mono.Cecil.Pdb.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Mono.Cecil.Rocks">
+          <HintPath>..\packages\Mono.Cecil\lib\net40\Mono.Cecil.Rocks.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="PropertyChanged">
+          <HintPath>..\packages\PropertyChanged.Fody\lib\net452\PropertyChanged.dll</HintPath>
+          <Private>False</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="SharpCompress">
+          <HintPath>..\packages\SharpCompress\lib\net45\SharpCompress.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="ICSharpCode.SharpZipLib">
+          <HintPath>..\packages\SharpZipLib\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="PresentationCore">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="PresentationFramework">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="System.Xaml">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="WindowsBase">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Splat">
+          <HintPath>..\packages\Splat\lib\net461\Splat.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="SQLite-net">
+          <HintPath>..\packages\sqlite-net-pcl\lib\netstandard1.1\SQLite-net.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="SQLitePCLRaw.batteries_e_sqlite3">
+          <HintPath>..\packages\SQLitePCLRaw.bundle_e_sqlite3\lib\net45\SQLitePCLRaw.batteries_e_sqlite3.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="SQLitePCLRaw.batteries_v2">
+          <HintPath>..\packages\SQLitePCLRaw.bundle_e_sqlite3\lib\net45\SQLitePCLRaw.batteries_v2.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="SQLitePCLRaw.batteries_green">
+          <HintPath>..\packages\SQLitePCLRaw.bundle_green\lib\net45\SQLitePCLRaw.batteries_green.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="SQLitePCLRaw.batteries_v2">
+          <HintPath>..\packages\SQLitePCLRaw.bundle_green\lib\net45\SQLitePCLRaw.batteries_v2.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="SQLitePCLRaw.core">
+          <HintPath>..\packages\SQLitePCLRaw.core\lib\net45\SQLitePCLRaw.core.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="SQLitePCLRaw.provider.e_sqlite3">
+          <HintPath>..\packages\SQLitePCLRaw.provider.e_sqlite3.net45\lib\net45\SQLitePCLRaw.provider.e_sqlite3.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="NuGet.Squirrel">
+          <HintPath>..\packages\squirrel.windows\lib\Net45\NuGet.Squirrel.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Squirrel">
+          <HintPath>..\packages\squirrel.windows\lib\Net45\Squirrel.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="Syroot.KnownFolders">
+          <HintPath>..\packages\Syroot.Windows.IO.KnownFolders\lib\net452\Syroot.KnownFolders.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="System.Collections.Immutable">
+          <HintPath>..\packages\System.Collections.Immutable\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
+          <Private>False</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="System.ComponentModel.DataAnnotations">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="mscorlib">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="System.ComponentModel.Annotations">
+          <HintPath>..\packages\System.ComponentModel.Annotations\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
+          <Private>False</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="System.Configuration">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="System.Drawing">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="System.Configuration.ConfigurationManager">
+          <HintPath>..\packages\System.Configuration.ConfigurationManager\lib\net461\System.Configuration.ConfigurationManager.dll</HintPath>
+          <Private>False</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="System.Drawing.Primitives">
+          <HintPath>..\packages\System.Drawing.Primitives\lib\net45\System.Drawing.Primitives.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="System.Reflection">
+          <HintPath>..\packages\System.Reflection\lib\net462\System.Reflection.dll</HintPath>
+          <Private>False</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="System.Runtime.Serialization.Formatters">
+          <HintPath>..\packages\System.Runtime.Serialization.Formatters\lib\net46\System.Runtime.Serialization.Formatters.dll</HintPath>
+          <Private>False</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="System.Runtime.Serialization">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="System.Runtime.Serialization.Primitives">
+          <HintPath>..\packages\System.Runtime.Serialization.Primitives\lib\net46\System.Runtime.Serialization.Primitives.dll</HintPath>
+          <Private>False</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="System.Runtime.Serialization.Xml">
+          <HintPath>..\packages\System.Runtime.Serialization.Xml\lib\net46\System.Runtime.Serialization.Xml.dll</HintPath>
+          <Private>False</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="System.Security.AccessControl">
+          <HintPath>..\packages\System.Security.AccessControl\lib\net461\System.Security.AccessControl.dll</HintPath>
+          <Private>False</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="System.Data">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="System.Data.OracleClient">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="System.Net">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="System.ServiceProcess">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="System.Transactions">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="System.Security.Permissions">
+          <HintPath>..\packages\System.Security.Permissions\lib\net461\System.Security.Permissions.dll</HintPath>
+          <Private>False</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="System.Security.Principal.Windows">
+          <HintPath>..\packages\System.Security.Principal.Windows\lib\net461\System.Security.Principal.Windows.dll</HintPath>
+          <Private>False</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="System.ValueTuple">
+          <HintPath>..\packages\System.ValueTuple\lib\net47\System.ValueTuple.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Import Project="..\packages\Fody\build\Fody.targets" Condition="Exists('..\packages\Fody\build\Fody.targets')" Label="Paket" />
+  <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.linux\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_linux_targets).targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.linux\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_linux_targets).targets')" Label="Paket" />
+  <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.osx\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_osx_targets).targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.osx\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_osx_targets).targets')" Label="Paket" />
+  <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_xp\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_v110_xp_targets).targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_xp\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_v110_xp_targets).targets')" Label="Paket" />
+  <Import Project="..\packages\squirrel.windows\build\squirrel.windows.targets" Condition="Exists('..\packages\squirrel.windows\build\squirrel.windows.targets')" Label="Paket" />
+</Project>

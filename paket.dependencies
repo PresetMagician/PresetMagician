@@ -26,7 +26,6 @@ nuget System.ValueTuple
 nuget System.Threading.Tasks.Extensions
 nuget SharpVectors.Reloaded
 nuget NuGet.CommandLine
-nuget Orc.Squirrel.Xaml
 nuget Extended.Wpf.Toolkit
 nuget Dirkster.AvalonDock.Themes.VS2013
 nuget Orc.WorkspaceManagement
@@ -56,3 +55,5 @@ nuget Standart.Hash.xxHash
 nuget Orc.EntityFramework6
 nuget Castle.Core
 nuget Orc.Scheduling
+nuget redmine-api
+nuget MimeTypeMap.List

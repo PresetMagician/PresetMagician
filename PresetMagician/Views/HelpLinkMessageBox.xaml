@@ -19,9 +19,9 @@
     <i:Interaction.Behaviors>
         <catel:KeyPressToCommand Command="{Binding EscapeCommand}" Key="Escape" />
         <catel:KeyPressToCommand Command="{Binding CopyToClipboard}" Key="C" Modifiers="Control" />
-        <catel:KeyPressToCommand Command="{Binding YesCommand}" Key="Y" Modifiers="Control" />
-        <catel:KeyPressToCommand Command="{Binding NoCommand}" Key="N" Modifiers="Control" />
-        <catel:KeyPressToCommand Command="{Binding OkCommand}" Key="Enter" Modifiers="Control" />
+        <catel:KeyPressToCommand Command="{Binding YesCommand}" Key="Y" />
+        <catel:KeyPressToCommand Command="{Binding NoCommand}" Key="N" />
+        <catel:KeyPressToCommand Command="{Binding OkCommand}" Key="Enter" />
     </i:Interaction.Behaviors>
 
     <Grid Margin="10">

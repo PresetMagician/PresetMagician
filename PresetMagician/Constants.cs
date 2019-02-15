@@ -1,5 +1,7 @@
-﻿using System.Collections.Immutable;
+﻿using System;
+using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using Orc.Squirrel;
 
 namespace PresetMagician
@@ -10,6 +12,7 @@ namespace PresetMagician
         public static string COMMANDS_ANALYZE => "COMMANDS_ANALYZE";
         public static string COMMANDS_COMPRESS => "COMMANDS_COMPRESS";
         public static string SETTINGS_PLUGIN_DLL => "SETTINGS_PLUGIN_DLL";
+        public static string SETTINGS_PLUGIN_FXBFXPNOTES = "SETTINGS_PLUGIN_FXBFXPNOTES";
         public static string CONCEPTS_VST_WORKER_POOL => "CONCEPTS_VST_WORKER_POOL";
     }
 }
@@ -17,6 +20,15 @@ namespace PresetMagician
 
 namespace PresetMagician
 {
+
+    public static class FileLocations
+    {
+        public static string PresetMagicianLocalAppData =
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                @"Drachenkatze\PresetMagician");
+
+        public static string LogFile = Path.Combine(PresetMagicianLocalAppData, @"Logs\PresetMagician.log");
+    }
    
     public static class Settings
     {
@@ -105,6 +117,8 @@ namespace PresetMagician
             public const string NotExportedAllToPresetExportList = "Plugin.NotExportedAllToPresetExportList";
             public const string NotExportedSelectedToPresetExportList = "Plugin.NotExportedSelectedToPresetExportList";
             public const string ReportUnsupportedPlugins = "Plugin.ReportUnsupportedPlugins";
+            public const string ForceReportPluginsToLive = "Plugin.ForceReportPluginsToLive";
+            public const string ForceReportPluginsToDev = "Plugin.ForceReportPluginsToDev";
         }
 
         public static class PluginTools
@@ -158,7 +172,9 @@ namespace PresetMagician
 
         public static class Help
         {
-            public const string OpenSupportLink = "Help.OpenSupportLink";
+            public const string CreateBugReport = "Help.CreateBugReport";
+            public const string CreateFeatureRequest = "Help.CreateFeatureRequest";
+            public const string RequestSupport = "Help.RequestSupport";
             public const string OpenChatLink = "Help.OpenChatLink";
             public const string OpenDocumentationLink = "Help.OpenDocumentationLink";
         }

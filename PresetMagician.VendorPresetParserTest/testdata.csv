@@ -1,209 +1,209 @@
-PresetParser,PluginId,ProgramName,BankPath,Hash
-Arturia_Wurli,1465209394,Wurlie Jazz,Factory,JiQzdw==
-Arturia_CMI,1129138550,82 Disco,Factory,6OEBUQ==
-Arturia_Pigments,1264677937,I Heart Overdrive,Factory,UAGYSA==
-Arturia_Synclavier,1400464236,Nostalclav,Factory,tJ2ecg==
-Arturia_Prophet,1347571507,Sunday Night,Factory,OKzfKA==
-Arturia_Arp2600,1095913523,Slave01,Factory,dghxow==
-Arturia_CS80,1129535027,Ngiculela,Factory,UJ1aXw==
-Arturia_SEM,1329746738,Space 1999 Lead,Factory,sRcdOA==
-Arturia_Jup8,1247105075,Cabinet Gruessel,Factory,2h5gwA==
-Xfer_Records_Serum,1483109208,BA Dizzy [7S],Bass (Hard),8334IA==
-ImageLine_Sakura,1398893394,SYNTH Water Slide DS,Eastern Dreams Bank,9mEN+Q==
-Arturia_MiniV3,1296649779,Up Resonant,Factory,90tBIA==
-Arturia_Modular,1297040435,Mini Lead,Factory,JPwDZw==
-Arturia_DX7,1148729137,Rom1B 30-HARP 2,Factory,RgNgCQ==
-ImageLine_Sawer,1398888274,PD Warm Pad,Xenos Sawer Volume 1,iE+mYA==
-Arturia_Matrix12,1298232370,Snail Bass,Factory,YyZNMg==
-ImageLine_Poizone,1398896471,LED Blunt And Honest,Xenos Soundworks,L92aAQ==
-ToguAudioLine_TalUNoLXV2,1970171700,PRC Percussion 4 FMR,FMR Presets Bank/Percussion,3SMS7g==
-ImageLine_Morphine,1299149382,SFX Break The Static (MW) FG,(10) SFX,l5WY8g==
-ToguAudioLine_TAlBassline101,1648456497,ST_Helic,Solidtrax/FX,N6rhkA==
-Arturia_BuchlaEasel,1114981729,Sample Shake'n Hold,Factory,mHMoUw==
-Arturia_Solina,1399811122,No Fool Here,Factory,GesTAQ==
-Arturia_Farfisa,1180791398,Crunch Lead Knee,Factory,zxu1NA==
-ImageLine_Drumaxx,1145918257,70s Beats FG,Acoustic,61mXPw==
-ImageLine_ToxicBiohazard,1416591412,Beauty ToTc,Pads,w2ToHA==
-ToguAudioLine_TAlMod,1833919537,ST Grand Pad LtZ,Lotuzia/Strings,zmNHqw==
-Arturia_VoxContinental,1450145842,Tikyverb,Factory,YNRqnw==
-ImageLine_Hardcore,1212371505,Too Effected FG,Default,KS7z+Q==
-Arturia_Piano2,1349083442,Japanese Init,Factory,0VKfSA==
-Arturia_B3,1416588887,June Morning,Factory,lxG8bQ==
-AudioThing_FogConvolver,1716479811,Soviet Drum Machine (kick 1),Factory,7FxyAw==
-Arturia_Stage73,1400136039,Chorus Me,Factory,UNEcIQ==
-Arturia_AnalogLab3,1097621810,Epikeys,Factory,Bav7Ow==
-Arturia_Clavinet,1131176310,Rebirth One,Factory,Be3ULQ==
-Arturia_M12Filter,1298220649,Sub Riser,Factory,Ubu3cQ==
-Arturia_Pre1973,1347565363,Ballad Female Vocal,Mono,P5m7ig==
-Arturia_SEMFilter,1330857577,Bass Boost,Factory,N8ALAQ==
-Arturia_TridAPre,1414676818,Ballad Female Vocal,Stereo,0n6AQg==
-Arturia_MiniFilter,1298744937,Patternizer,Factory,f+hd3A==
-Arturia_V76Pre,1413827653,Just Drive,Stereo,wamVyA==
-DmitrySches_ThornCM,1416122947,PAD Neutrino,Pad,ZSenQw==
-ToguAudioLine_TalDubX,1685414488,wah delay,Factory,J07nNg==
-Synister,1298748272,piano sth.,Factory,z6kBaA==
-ToguAudioLine_TalDAC,1684104024,EMU II,Factory,6NIi0g==
-Arturia_Piano,1349083502,Pop Grand,Templates,aUTQLQ==
-Audiority_XenoVerb,1199076962,Dark Plate,00 - Factory/03 - PLATE 1,Ya7F5Q==
-Audiority_TubeModulator,1148872802,Brownface Max,00 - Factory/01 - Tube Tremolo,WxX3Nw==
-Audiority_BlueFace,1194668409,Blended Crunch,00 - Factory,HBnxoA==
-Audiority_BigGoat,1194668084,Super Bright,00 - Factory,2g+nxA==
-Audiority_Pre7X,1350064183,Bright Vox,00 - Factory,M6kEoA==
-Audiority_EchoesT7E,1231909489,Hey Ya,00 - Factory/02 - Vari,4J6sEw==
-Audiority_Polaris,1466513515,Varispeed,00 - Factory/ECHO,TtBnvA==
-Audiority_Deleight,1198272631,Phasing Tails,00 - Factory/Reverberant,pyVtgg==
-Audiority_GrainSpace,1097090899,Static Noise v2,00 - Factory,9A1d4A==
-Audiority_FreeMod,1316253289,Phantom Menace,00 - Factory,1LhgcA==
-Audiority_HarmonicMaximizer,1097091149,Colored Mix,00 - Factory,14Eq3A==
-Audiority_Distortion1,1194668340,Crunchy,00 - Factory,xw6NZQ==
-Audiority_TheAbuser,1631745363,09 Fired Coil,00 - Factory,JbzWPQ==
-Audiority_TS1TransientShaper,1332836457,02 - More Ambience,Factory,8bLwDw==
-Audiority_TheAbuser,1631745363,Hot Rectifier,00 - Factory,9XSSOg==
-MeldaProduction_MOscillator,1297052459,50 Hz,Factory,R++BDw==                                                         
-MeldaProduction_MSpectralPan,1297313872,Stereo expansion 3,Factory,18IffQ==                                           
-MeldaProduction_MAutoPitch,1298232660,Default,Factory,gZtgmQ==                                                        
-MeldaProduction_MChannelMatrix,1296263245,Left from sidechain,Factory,XLAreg==                                        
-MeldaProduction_MRhythmizer,1297246329,General (try enabling a modulator),Factory,Ud/qzQ==                            
-MeldaProduction_MStereoExpander,1296131425,Default,Factory,g5UvFg==                                                   
-MeldaProduction_MAutoAlign,1296122209,Saxophone,Factory,uVu6WQ==                                                      
-MeldaProduction_MTransientMB,1296921714,Punchy high-end,Factory,6EjFOA==                                              
-MeldaProduction_MEqualizerLP,1296131434,Default,Factory,V03lhA==                                                      
-MeldaProduction_MLimiterMB,1296131369,2-band limiter,Factory,nUGlzg==                                                 
-MeldaProduction_MFreeformEqualizer,1296131409,Destroy 1,Factory,d1e3Bg==                                              
-MeldaProduction_MDrummer,1296323149,Reggae,Factory/Jam,W5vDbw==                                                       
-MeldaProduction_MDrummer,1296323126,Salsa,Factory/Percussion,rDy64w==                                                 
-MeldaProduction_MDrummer,1296323121,Funk straight,Factory/Acoustic,ep8Z7w==                                           
-MeldaProduction_MDynamicsMB,1296131368,Master - Punk Rock,Factory,RKLFdA==                                            
-MeldaProduction_MDynamicsMB,1296131424,Master - Dance,Factory,hKDVeg==                                                
-MeldaProduction_MBassador,1296195955,Powerful,Factory/Drums,V5QcRg==                                                  
-MeldaProduction_MLoudnessAnalyzer,1296851310,Rock,Factory/By music style,KEpKnw==                                     
-MeldaProduction_MAmp,1296133488,Step sequencer - Mid & High,Factory,66CgSA==                                          
-MeldaProduction_MDrumLeveler,1296331340,Low-latency - Tom,Factory,WhE+3Q==                                            
-MeldaProduction_MStereoSpread,1297314899,Voice 3,Factory,j6bv2w==                                                     
-MeldaProduction_MAutoDynamicEq,1298430273,Bass drum control,Factory,kxXkMQ==                                          
-MeldaProduction_MDynamicEQ,1298430289,Master enhancer (aggressive),Factory,U3bZiA==                                   
-MeldaProduction_MCompressor,1296131377,De-essing,Factory,jYqvbQ==                                                     
-MeldaProduction_MDynamics,1296131364,Limiting (smooth),Factory,1uGjRg==                                               
-MeldaProduction_MFreeformAnalogEq,1296449893,Waves,Factory,dHYjLg==                                                   
-MeldaProduction_MStereoGenerator,1297314887,Lead - 50% away,Factory,Zv0+GA==                                          
-MeldaProduction_MTransient,1297379937,UltraSlow +9dB,Factory,QLZxyw==                                                 
-MeldaProduction_MRhythmizerMB,1297246241,General 2 bands,Factory,0pMx5g==                                             
-MeldaProduction_MAnalyzer,1296131426,Compare to trip-hop (psycho-acoustic),Factory,z8ZBTw==                           
-MeldaProduction_MSpectralDynamics,1296114745,High: Keep,Factory,ZnoKZw==                                              
-MeldaProduction_MSpectralDynamics,1296114801,Spectral limiter,Factory,x6htww==                                        
-MeldaProduction_MPolySaturator,1297117011,octaves lower,Factory/Randomizer Multi,67XVJQ==                             
-MeldaProduction_MEqualizer,1296131379,Bright Clear Steel Guitar,Factory/Acoustic Guitar,mHzNNg==                      
-MeldaProduction_MBandPass,1296195904,Sine 1/8 (low-pass),Factory,oImWng==                                             
-MeldaProduction_MRingModulator,1296131382,Perfused synch,Factory,R/QUUA==                                             
-MeldaProduction_MConvolutionEZ,1296262522,Tiled room,Factory,H1FdEQ==                                                 
-MeldaProduction_MSpectralDelay,1297313892,90,Factory/Randomizer Multi,XmbWBQ==                                        
-MeldaProduction_MTurboComp,1297380675,Aggressive,Factory/Vocals,Qqbzag==                                              
-MeldaProduction_MWaveShaper,1296131385,-30,Factory/Randomizer Multi,RYdRqQ==                                          
-MeldaProduction_MFreqShifter,1296131398,Hard detune,Factory,gQcpaQ==                                                  
-MeldaProduction_MVibrato,1296131384,Needless scurrilous,Factory,XtxK1w==                                              
-MeldaProduction_MWaveFolder,1297572166,Orthogonalization mysteriousness,Factory,1VQQaA==                              
-MeldaProduction_MPhaser,1296131381,Suitcase,Factory,33dtuA==                                                          
-MeldaProduction_MBitFun,1296197958,Gonorrhoea bys,Factory,QW91mw==                                                    
-MeldaProduction_MWaveFolderMB,1299011430,Idaho mild,Factory,Fvz5GQ==                                                  
-MeldaProduction_MAutopan,1296131376,Sky-high thunderflash,Factory,YFegPg==                                            
-MeldaProduction_MHarmonizerMB,1299018344,Alien orchestra,Factory/General,MUAYUw==                                     
-MeldaProduction_MFlanger,1296123174,Bleep jesse,Factory,eh6YYw==                                                      
-MeldaProduction_MSaturator,1296131380,90,Factory/Randomizer Multi,JNPpbA==                                            
-MeldaProduction_MTransformer,1296454770,Mothership Voice,Factory,QD2x0w==                                             
-MeldaProduction_MPhatik,1297115233,Dynamic Reverb2,Factory,gknXEA==                                                   
-MeldaProduction_MWaveShaperMB,1299011443,Cautiousnesses scathe,Factory/Single-band,jFUG+w==                           
-MeldaProduction_MConvolutionMB,1296909135,5m (true-stereo),Factory/Room,/Oa/Ng==                                      
-MeldaProduction_MTurboReverb,1299468901,Electric piano sweetening,Factory/Piano,lLWNsw==                              
-MeldaProduction_MDrumEnhancer,1296319854,Acoustic 10,Factory/Snare drum,jVLM7Q==                                      
-MeldaProduction_MTremolo,1296131383,Mouthpiece consequential,Factory,MaN8kw==                                         
-MeldaProduction_MFilter,1296131430,Wah Wah Pedal,Factory/WahWah Pedals,n5DfTw==                                       
-MeldaProduction_MBitFunMB,1298285126,Gossamer nauseous,Factory/Single-band,9RU7vw==                                   
-MeldaProduction_MFreqShifterMB,1296125254,Crunchman,Factory/Hard,YS/YXA==                                             
-MeldaProduction_MSaturatorMB,1296908876,Post-doctoral ethicist,Factory,myA0iA==                                       
-MeldaProduction_MRingModulatorMB,1299018349,Water Heater,Factory/General purpose,RYWSJQ==                             
-MeldaProduction_MVintageRotary,1297502831,Auto slow/fast when playing high notes,Factory/Acceleration 1000ms,phrJ1Q== 
-MeldaProduction_MMorph,1296920434,20,Factory/Randomizer Multi,I9YHiQ==                                                
-MeldaProduction_MVocoder,1297510243,Haddad hypoactive,Factory,u8rkvQ==                                                
-MeldaProduction_MComb,1296265069,Hampstead scleroses,Factory/Resonators,MAkVuA==                                      
-MeldaProduction_MCharacter,1296263282,0,Factory/Randomizer Multi,MkKNlg==                                             
-MeldaProduction_MDelayMB,1735931701,Pentathlon dunderhead,Factory,4gvdnw==                                            
-MeldaProduction_MRotary,1297248116,Whiz ofsted,Factory/Extreme,WI8B8A==                                               
-MeldaProduction_MFlangerMB,1296908870,Decisioned reteach,Factory/Single band,1IlNPw==                                 
-MeldaProduction_MDistortionMB,1298426227,Mentalized,Factory/Multiband,MKTShw==                                        
-MeldaProduction_MPhaserMB,825308471,Whistler,Factory/Drums,RiuqHA==                                                   
-MeldaProduction_MVibratoMB,1299011177,Time isolated,Factory/Single-band,QXt0tw==                                      
-MeldaProduction_MGranularMB,1296910194,Sanctuary,Factory,miwIow==                                                     
-MeldaProduction_MTremoloMB,1299018861,From time to time,Factory/Single-band,oFAzAA==                                  
-MeldaProduction_MUnison,1297444457,Sick Voices,Factory/Effects,EW8Sow==                                               
-MeldaProduction_MAutopanMB,1735931700,And 1,Factory/Keyboards & Guitars,dIIWcw==                                      
-MeldaProduction_MChorusMB,1296917352,Close Intensive 2,Factory/Zentralmassiv WIP,oCXQug==                             
-MeldaProduction_MTurboDelay,1297380676,Michigan howitzer,Factory/Complex,6xmNvQ==                                     
-MeldaProduction_MCombMB,1296909167,Self-denying ell,Factory/6 bands,ktljLw==                                          
-MeldaProduction_MWobbler,1297575778,Technical nightgown,Factory/Extreme,uK/qng==                                      
-MeldaProduction_MReverb,1296131442,Real Room 1,Factory/Small rooms (send),RNyd8A==                                    
-MeldaProduction_MReverbMB,875848759,2-bands,Factory,os7iYw==                                                          
-MeldaProduction_MXXX,1297635377,Easiest optics,Factory/Reverb,ztxZMw==                                                
-MeldaProduction_MXXX,1297635416,Waveshaper,Factory/Randomizer Multi/Delay with preprocessing,bfEKJQ==                 
-MeldaProduction_MPowerSynth,1297380722,Jet Synth,Factory/FX/Designed,tA3gQw==
-MeldaProduction_MModernCompressor,1296920387,Hard superfast,Factory,1NWqYw==
-AudioThing_WaveBox,1467368056,13 - Freq Mod,Factory,tMaqTA==
-AudioThing_TheOrb,1951355458,Sway,Factory,JBYh5Q== 
-AudioThing_Reels,1884582467,Back By Demand RM,Factory/Echo,i+2IJA==
-AudioThing_OuterSpace,1330934608,Slooow SJA,Supremeja,jDHd/w==
-AudioThing_miniVerb,1835947634,Vibrato Only,Factory/Modulation,IrpzCA==
-AudioThing_miniBit,1833525876,Wah Wah,Leads,UDa5Dg==
-AudioThing_Speaker,1934650226,Compressed,Factory,3mH1dQ==
-AudioThing_Filterjam,1179279725,Mud,Factory,n7fjJw==
-AudioThing_HATS,1212240979,Soviet 1,Factory,fSzzcw==
-AudioThing_HandClapper,1212363341,21 - Dark Clap,Factory,A21dHA==
-AudioThing_PhaseMotionV2,1884122930,10 - Going Under,Factory,YXZOiQ==
-AudioThing_LatinPercussion,1819293752,18 - Afro Cuban,Factory,81JzLw==
-AudioThing_Frostbite,1181905730,13 - Sigur Pool,Factory,hCViYA==
-AudioThing_VinylStrip,1450791794,03 - Pump Master (dirty),Factory,fP8GKw==
-AudioThing_SR88,1397897272,05 - Sincope,Factory,y0SWYg==
-AudioThing_SpaceStrip,1397781364,07 - The Countdown,Factory,kC+uiQ== 
-AudioThing_Megaphone,1298485352,05 - Back Voice,Factory,PeWfAw==
-AudioThing_ValveFilterVF1,1449940582,08 - Boxed,Factory,qRDJPQ==
-AudioThing_ValveExciter,1165513842,01 - Default,Factory,Oy4yqg==
-AudioThing_TypeA,1954107457,Extra Clarity,Factory,8H1Lww==
-DmitrySches_Thorn,1416122990,PLUCK Singer,Lead,zG4EFw==
-AudioThing_miniBitCM,1833525827,[KEYS]-Handheld Quack,Factory,wAVTAw==
-D16_PunchBox,1347306072,Deeper 1,Factory,9w0Pfw==
-D16_Repeater,1380988728,Lay It Down,Factory,HUl0Vg==
-HumanoidSoundSystems_Enzyme,1162762841,BASS_Big Haas,Factory,yFPKWw==
-ValhallaDSP_ValhallaPlate,1886151028,MED-Radium Drum Warehouse,Factory/MEDIUM,b8PXKw==
-ValhallaDSP_ValhallaUberMod,1969382770,Slow2TapChorus,Chorus,RJK8zw==
-ValhallaDSP_ValhallaVintageVerb,1986356531,CH-Kick Blowing Up,Factory/Chaotic,I+3r+w==
-ValhallaDSP_ValhallaRoom,1383429485,426 ConcertHall,Den,b9IeTQ==
-u_he_Twangstrom,1969771607,Liquid Machine Room 2,Factory,0zrHvA==                           
-u_he_Protoverb,1969770582,Lively Room,Factory,sDn2MQ==                                      
-u_he_FilterscapeQ6,1179865398,FEV_Mug,Factory/FEV_,JGiLYQ==                                 
-u_he_Zebrify,1397578034,Rodeo,Factory,jdE4uw==                                              
-u_he_Runciter,1382232375,rezone,Factory/Factory,AK5PYw==                                    
-u_he_UhbikQ,1432572209,narrow mind,Factory/Factory,lHsxNg==                                 
-u_he_UhbikT,1432572977,Mellow Space,Factory,Rwbz8A==                                        
-u_he_UhbikF,1432569393,compiler,Factory/Factory,dVrO4w==                                    
-u_he_UhbikS,1432572721,Robot Voice,Factory,TSUCbw==                                         
-u_he_UhbikD,1432568881,dreamland,Factory/Factory,/siptA==                                   
-u_he_UhbikP,1432571953,bass mover,Factory/Factory,3NuF0Q==                                  
-u_he_UhbikG,1432569649,phase booth,Factory/PhaseVoc,EkBucQ==                                
-u_he_UhbikA,1432568113,carlsbad,Factory/Factory,8p+v3A==                                    
-u_he_Filterscape,1095583057,grasshopper tas,Factory/tasmaniandevil,t5tf5Q==                 
-u_he_ZebraCM,1516593997,Sub piax,Factory/Subject,5fTfLw==                                   
-u_he_ColourCopy,1967946098,Flooding,Factory,wVQlwQ==                                        
-u_he_Presswerk,1969770583,DG_Classic VCA Snare,Factory/Drums,qezpng==                       
-u_he_Satin,1969771348,LC Bee-Lay,Factory/Delay Mode,ajgohw==                                
-u_he_TripleCheese,1667388281,bio Hard Cheese (mod whl),Factory/biolabs,xmbXNw==             
-u_he_BazilleCM,1967276877,HS Third Pluck,Factory/03 Leads,4n58xA==                          
-u_he_Zebralette,1397572659,SM thinner 03,Factory/Rhythmic,Ugtzhw==                          
-u_he_MFM2,1296452914,jungle jock,Factory/04 dub-feed,o14NTQ==                               
-u_he_Podolski,1349477487,drippy 03 tas,Factory/Legacy,llEV5A==                              
-u_he_Repro1,1968332593,CK Bodyrox,Factory/01 Basses,/SvczA==                                
-u_he_Zebra2,1397572658,HS Delay Kitten,Factory/2 Leaders,tYA7ww==                           
-u_he_TyrellN6,1952017974,LEAD Jumper,Factory/Various,j2V9FQ==                               
-u_he_FilterscapeVA,1179866689,FX_DrumSweep,Factory/FEV_,c/A0rw==                            
-u_he_ACE,1633895765,RL System Bass,Factory/01 Bass,RFuV/A==                                 
-u_he_Repro5,1968332597,JH Sticks on Wood ,Factory/05 Keys - Plucks & Mallets,gwHjYw==       
-u_he_Diva,1147754081,FMR MM 75 UFO,Factory/THIRD PARTY/Fernando's hardware factory,uIyM0A== 
-u_he_Bazille,1433421876,HS Slosh,Factory/08 Hits,6lDWVQ==                                   
-u_he_Hive,1749636677,ST Retro Stab 1,Factory/07 Chords,HoUX5g==                             
+PresetParser,PluginId,ProgramName,BankPath,Hash,LastUpdated
+Arturia_AnalogLab3,1097621810,Epikeys,Factory,Bav7Ow==,
+Arturia_Arp2600,1095913523,Slave01,Factory,dghxow==,
+Arturia_B3,1416588887,June Morning,Factory,lxG8bQ==,
+Arturia_BuchlaEasel,1114981729,Sample Shake'n Hold,Factory,mHMoUw==,
+Arturia_Clavinet,1131176310,Rebirth One,Factory,Be3ULQ==,
+Arturia_CMI,1129138550,82 Disco,Factory,6OEBUQ==,
+Arturia_CS80,1129535027,Ngiculela,Factory,UJ1aXw==,
+Arturia_DX7,1148729137,Rom1B 30-HARP 2,Factory,RgNgCQ==,
+Arturia_Farfisa,1180791398,Crunch Lead Knee,Factory,zxu1NA==,
+Arturia_Jup8,1247105075,Cabinet Gruessel,Factory,2h5gwA==,
+Arturia_M12Filter,1298220649,Sub Riser,Factory,Ubu3cQ==,
+Arturia_Matrix12,1298232370,Snail Bass,Factory,YyZNMg==,
+Arturia_MiniFilter,1298744937,Patternizer,Factory,f+hd3A==,
+Arturia_MiniV3,1296649779,Up Resonant,Factory,90tBIA==,
+Arturia_Modular,1297040435,Mini Lead,Factory,JPwDZw==,
+Arturia_Piano,1349083502,Pop Grand,Templates,aUTQLQ==,
+Arturia_Piano2,1349083442,Japanese Init,Factory,0VKfSA==,
+Arturia_Pigments,1264677937,I Heart Overdrive,Factory,UAGYSA==,
+Arturia_Pre1973,1347565363,Ballad Female Vocal,Mono,P5m7ig==,
+Arturia_Prophet,1347571507,Sunday Night,Factory,OKzfKA==,
+Arturia_SEM,1329746738,Space 1999 Lead,Factory,sRcdOA==,
+Arturia_SEMFilter,1330857577,Bass Boost,Factory,N8ALAQ==,
+Arturia_Solina,1399811122,No Fool Here,Factory,GesTAQ==,
+Arturia_Stage73,1400136039,Chorus Me,Factory,UNEcIQ==,
+Arturia_Synclavier,1400464236,Nostalclav,Factory,tJ2ecg==,
+Arturia_TridAPre,1414676818,Ballad Female Vocal,Stereo,0n6AQg==,
+Arturia_V76Pre,1413827653,Just Drive,Stereo,wamVyA==,
+Arturia_VoxContinental,1450145842,Tikyverb,Factory,YNRqnw==,
+Arturia_Wurli,1465209394,Wurlie Jazz,Factory,JiQzdw==,
+Audiority_BigGoat,1194668084,Super Bright,00 - Factory,2g+nxA==,
+Audiority_BlueFace,1194668409,Blended Crunch,00 - Factory,HBnxoA==,
+Audiority_Deleight,1198272631,Phasing Tails,00 - Factory/Reverberant,pyVtgg==,
+Audiority_Distortion1,1194668340,Crunchy,00 - Factory,xw6NZQ==,
+Audiority_EchoesT7E,1231909489,Hey Ya,00 - Factory/02 - Vari,4J6sEw==,
+Audiority_FreeMod,1316253289,Phantom Menace,00 - Factory,1LhgcA==,
+Audiority_GrainSpace,1097090899,Static Noise v2,00 - Factory,9A1d4A==,
+Audiority_HarmonicMaximizer,1097091149,Colored Mix,00 - Factory,14Eq3A==,
+Audiority_Polaris,1466513515,Varispeed,00 - Factory/ECHO,TtBnvA==,
+Audiority_Pre7X,1350064183,Bright Vox,00 - Factory,M6kEoA==,
+Audiority_TheAbuser,1631745363,09 Fired Coil,00 - Factory,JbzWPQ==,
+Audiority_TheAbuser,1631745363,Hot Rectifier,00 - Factory,9XSSOg==,
+Audiority_TS1TransientShaper,1332836457,02 - More Ambience,Factory,8bLwDw==,
+Audiority_TubeModulator,1148872802,Brownface Max,00 - Factory/01 - Tube Tremolo,WxX3Nw==,
+Audiority_XenoVerb,1199076962,Dark Plate,00 - Factory/03 - PLATE 1,Ya7F5Q==,
+AudioThing_Filterjam,1179279725,Mud,Factory,5KCkZA==,2019-02-08 22:57:44                   
+AudioThing_FogConvolver,1716479811,Soviet Drum Machine (kick 1),Factory,7FxyAw==,
+AudioThing_Frostbite,1181905730,11 - Monsters,Factory,sDd5Jw==,2019-02-08 22:57:44         
+AudioThing_HandClapper,1212363341,08 - Randomness,Factory,zZuc9g==,2019-02-08 22:57:44     
+AudioThing_HATS,1212240979,Chiptune Impact,Factory,4y/UPQ==,2019-02-08 22:57:44            
+AudioThing_LatinPercussion,1819293752,06 - Moving Sun,Factory,CawyHg==,2019-02-08 22:57:44 
+AudioThing_Megaphone,1298485352,05 - Back Voice,Factory,GGrjKw==,2019-02-08 22:57:44       
+AudioThing_miniBit,1833525876,Classic Cymbal,Drums,BE6oiQ==,2019-02-08 22:57:44            
+AudioThing_miniBitCM,1833525827,[BASS]-DeepThroat,Factory,MhMc7A==,2019-02-08 22:57:44     
+AudioThing_miniVerb,1835947634,Density RM,Factory/SFX,GwETDg==,2019-02-08 22:57:44         
+AudioThing_OuterSpace,1330934608,DustDelay SJA,Supremeja,BtK3OQ==,2019-02-08 22:57:44      
+AudioThing_PhaseMotionV2,1884122930,22 - In The Mood,Factory,IHAN/A==,2019-02-08 22:57:44  
+AudioThing_Reels,1884582467,Bad Echo,Factory/Echo,KKP4eA==,2019-02-08 22:57:44             
+AudioThing_SpaceStrip,1397781364,08 - Scanners,Factory,lJdaRQ==,2019-02-08 22:57:44        
+AudioThing_Speaker,1934650226,Extra Speaker,Factory,Z8Bs3w==,2019-02-08 22:57:44           
+AudioThing_SR88,1397897272,13 - West Coast,Factory,7XCSJg==,2019-02-08 22:57:44            
+AudioThing_TheOrb,1951355458,For A Spin,Factory,/JYrSg==,2019-02-08 22:57:44               
+AudioThing_TypeA,1954107457,Submarine,Factory,RoGYjw==,2019-02-08 22:57:44                 
+AudioThing_ValveExciter,1165513842,01 - Default,Factory,C7jprg==,2019-02-08 22:57:44       
+AudioThing_ValveFilterVF1,1449940582,05 - Harsh,Factory,1RgXYA==,2019-02-08 22:57:44       
+AudioThing_VinylStrip,1450791794,04 - Vintage Record,Factory,htb+fA==,2019-02-08 22:57:44  
+AudioThing_WaveBox,1467368056,11 - Pulse Side,Factory,gJVJlA==,2019-02-08 22:57:44         
+D16_PunchBox,1347306072,Deeper 1,Factory,9w0Pfw==,
+D16_Repeater,1380988728,Lay It Down,Factory,HUl0Vg==,
+DmitrySches_Thorn,1416122990,PLUCK Singer,Lead,zG4EFw==,
+DmitrySches_ThornCM,1416122947,PAD Neutrino,Pad,ZSenQw==,
+HumanoidSoundSystems_Enzyme,1162762841,BASS_Big Haas,Factory,yFPKWw==,
+ImageLine_Drumaxx,1145918257,70s Beats FG,Acoustic,61mXPw==,
+ImageLine_Hardcore,1212371505,Too Effected FG,Default,KS7z+Q==,
+ImageLine_Morphine,1299149382,SFX Break The Static (MW) FG,(10) SFX,l5WY8g==,
+ImageLine_Poizone,1398896471,LED Blunt And Honest,Xenos Soundworks,L92aAQ==,
+ImageLine_Sakura,1398893394,SYNTH Water Slide DS,Eastern Dreams Bank,9mEN+Q==,
+ImageLine_Sawer,1398888274,PD Warm Pad,Xenos Sawer Volume 1,iE+mYA==,
+ImageLine_ToxicBiohazard,1416591412,Beauty ToTc,Pads,w2ToHA==,
+MeldaProduction_MAmp,1296133488,Step sequencer - Mid & High,Factory,66CgSA==                                          ,
+MeldaProduction_MAnalyzer,1296131426,Compare to trip-hop (psycho-acoustic),Factory,z8ZBTw==                           ,
+MeldaProduction_MAutoAlign,1296122209,Saxophone,Factory,uVu6WQ==                                                      ,
+MeldaProduction_MAutoDynamicEq,1298430273,Bass drum control,Factory,kxXkMQ==                                          ,
+MeldaProduction_MAutopan,1296131376,Sky-high thunderflash,Factory,YFegPg==                                            ,
+MeldaProduction_MAutopanMB,1735931700,And 1,Factory/Keyboards & Guitars,dIIWcw==                                      ,
+MeldaProduction_MAutoPitch,1298232660,Default,Factory,gZtgmQ==                                                        ,
+MeldaProduction_MBandPass,1296195904,Sine 1/8 (low-pass),Factory,oImWng==                                             ,
+MeldaProduction_MBassador,1296195955,Powerful,Factory/Drums,V5QcRg==                                                  ,
+MeldaProduction_MBitFun,1296197958,Gonorrhoea bys,Factory,QW91mw==                                                    ,
+MeldaProduction_MBitFunMB,1298285126,Gossamer nauseous,Factory/Single-band,9RU7vw==                                   ,
+MeldaProduction_MChannelMatrix,1296263245,Left from sidechain,Factory,XLAreg==                                        ,
+MeldaProduction_MCharacter,1296263282,0,Factory/Randomizer Multi,MkKNlg==                                             ,
+MeldaProduction_MChorusMB,1296917352,Close Intensive 2,Factory/Zentralmassiv WIP,oCXQug==                             ,
+MeldaProduction_MComb,1296265069,Hampstead scleroses,Factory/Resonators,MAkVuA==                                      ,
+MeldaProduction_MCombMB,1296909167,Self-denying ell,Factory/6 bands,ktljLw==                                          ,
+MeldaProduction_MCompressor,1296131377,De-essing,Factory,jYqvbQ==                                                     ,
+MeldaProduction_MConvolutionEZ,1296262522,Tiled room,Factory,H1FdEQ==                                                 ,
+MeldaProduction_MConvolutionMB,1296909135,5m (true-stereo),Factory/Room,/Oa/Ng==                                      ,
+MeldaProduction_MDelayMB,1735931701,Pentathlon dunderhead,Factory,4gvdnw==                                            ,
+MeldaProduction_MDistortionMB,1298426227,Mentalized,Factory/Multiband,MKTShw==                                        ,
+MeldaProduction_MDrumEnhancer,1296319854,Acoustic 10,Factory/Snare drum,jVLM7Q==                                      ,
+MeldaProduction_MDrumLeveler,1296331340,Low-latency - Tom,Factory,WhE+3Q==                                            ,
+MeldaProduction_MDrummer,1296323149,Reggae,Factory/Jam,W5vDbw==                                                       ,
+MeldaProduction_MDrummer,1296323126,Salsa,Factory/Percussion,rDy64w==                                                 ,
+MeldaProduction_MDrummer,1296323121,Funk straight,Factory/Acoustic,ep8Z7w==                                           ,
+MeldaProduction_MDynamicEQ,1298430289,Master enhancer (aggressive),Factory,U3bZiA==                                   ,
+MeldaProduction_MDynamics,1296131364,Limiting (smooth),Factory,1uGjRg==                                               ,
+MeldaProduction_MDynamicsMB,1296131368,Master - Punk Rock,Factory,RKLFdA==                                            ,
+MeldaProduction_MDynamicsMB,1296131424,Master - Dance,Factory,hKDVeg==                                                ,
+MeldaProduction_MEqualizer,1296131379,Bright Clear Steel Guitar,Factory/Acoustic Guitar,mHzNNg==                      ,
+MeldaProduction_MEqualizerLP,1296131434,Default,Factory,V03lhA==                                                      ,
+MeldaProduction_MFilter,1296131430,Wah Wah Pedal,Factory/WahWah Pedals,n5DfTw==                                       ,
+MeldaProduction_MFlanger,1296123174,Bleep jesse,Factory,eh6YYw==                                                      ,
+MeldaProduction_MFlangerMB,1296908870,Decisioned reteach,Factory/Single band,1IlNPw==                                 ,
+MeldaProduction_MFreeformAnalogEq,1296449893,Waves,Factory,dHYjLg==                                                   ,
+MeldaProduction_MFreeformEqualizer,1296131409,Destroy 1,Factory,d1e3Bg==                                              ,
+MeldaProduction_MFreqShifter,1296131398,Hard detune,Factory,gQcpaQ==                                                  ,
+MeldaProduction_MFreqShifterMB,1296125254,Crunchman,Factory/Hard,YS/YXA==                                             ,
+MeldaProduction_MGranularMB,1296910194,Sanctuary,Factory,miwIow==                                                     ,
+MeldaProduction_MHarmonizerMB,1299018344,Alien orchestra,Factory/General,MUAYUw==                                     ,
+MeldaProduction_MLimiterMB,1296131369,2-band limiter,Factory,nUGlzg==                                                 ,
+MeldaProduction_MLoudnessAnalyzer,1296851310,Rock,Factory/By music style,KEpKnw==                                     ,
+MeldaProduction_MModernCompressor,1296920387,Hard superfast,Factory,1NWqYw==,
+MeldaProduction_MMorph,1296920434,20,Factory/Randomizer Multi,I9YHiQ==                                                ,
+MeldaProduction_MOscillator,1297052459,50 Hz,Factory,R++BDw==                                                         ,
+MeldaProduction_MPhaser,1296131381,Suitcase,Factory,33dtuA==                                                          ,
+MeldaProduction_MPhaserMB,825308471,Whistler,Factory/Drums,RiuqHA==                                                   ,
+MeldaProduction_MPhatik,1297115233,Dynamic Reverb2,Factory,gknXEA==                                                   ,
+MeldaProduction_MPolySaturator,1297117011,octaves lower,Factory/Randomizer Multi,67XVJQ==                             ,
+MeldaProduction_MPowerSynth,1297380722,Jet Synth,Factory/FX/Designed,tA3gQw==,
+MeldaProduction_MReverb,1296131442,Real Room 1,Factory/Small rooms (send),RNyd8A==                                    ,
+MeldaProduction_MReverbMB,875848759,2-bands,Factory,os7iYw==                                                          ,
+MeldaProduction_MRhythmizer,1297246329,General (try enabling a modulator),Factory,Ud/qzQ==                            ,
+MeldaProduction_MRhythmizerMB,1297246241,General 2 bands,Factory,0pMx5g==                                             ,
+MeldaProduction_MRingModulator,1296131382,Perfused synch,Factory,R/QUUA==                                             ,
+MeldaProduction_MRingModulatorMB,1299018349,Water Heater,Factory/General purpose,RYWSJQ==                             ,
+MeldaProduction_MRotary,1297248116,Whiz ofsted,Factory/Extreme,WI8B8A==                                               ,
+MeldaProduction_MSaturator,1296131380,90,Factory/Randomizer Multi,JNPpbA==                                            ,
+MeldaProduction_MSaturatorMB,1296908876,Post-doctoral ethicist,Factory,myA0iA==                                       ,
+MeldaProduction_MSpectralDelay,1297313892,90,Factory/Randomizer Multi,XmbWBQ==                                        ,
+MeldaProduction_MSpectralDynamics,1296114745,High: Keep,Factory,ZnoKZw==                                              ,
+MeldaProduction_MSpectralDynamics,1296114801,Spectral limiter,Factory,x6htww==                                        ,
+MeldaProduction_MSpectralPan,1297313872,Stereo expansion 3,Factory,18IffQ==                                           ,
+MeldaProduction_MStereoExpander,1296131425,Default,Factory,g5UvFg==                                                   ,
+MeldaProduction_MStereoGenerator,1297314887,Lead - 50% away,Factory,Zv0+GA==                                          ,
+MeldaProduction_MStereoSpread,1297314899,Voice 3,Factory,j6bv2w==                                                     ,
+MeldaProduction_MTransformer,1296454770,Mothership Voice,Factory,QD2x0w==                                             ,
+MeldaProduction_MTransient,1297379937,UltraSlow +9dB,Factory,QLZxyw==                                                 ,
+MeldaProduction_MTransientMB,1296921714,Punchy high-end,Factory,6EjFOA==                                              ,
+MeldaProduction_MTremolo,1296131383,Mouthpiece consequential,Factory,MaN8kw==                                         ,
+MeldaProduction_MTremoloMB,1299018861,From time to time,Factory/Single-band,oFAzAA==                                  ,
+MeldaProduction_MTurboComp,1297380675,Aggressive,Factory/Vocals,Qqbzag==                                              ,
+MeldaProduction_MTurboDelay,1297380676,Michigan howitzer,Factory/Complex,6xmNvQ==                                     ,
+MeldaProduction_MTurboReverb,1299468901,Electric piano sweetening,Factory/Piano,lLWNsw==                              ,
+MeldaProduction_MUnison,1297444457,Sick Voices,Factory/Effects,EW8Sow==                                               ,
+MeldaProduction_MVibrato,1296131384,Needless scurrilous,Factory,XtxK1w==                                              ,
+MeldaProduction_MVibratoMB,1299011177,Time isolated,Factory/Single-band,QXt0tw==                                      ,
+MeldaProduction_MVintageRotary,1297502831,Auto slow/fast when playing high notes,Factory/Acceleration 1000ms,phrJ1Q== ,
+MeldaProduction_MVocoder,1297510243,Haddad hypoactive,Factory,u8rkvQ==                                                ,
+MeldaProduction_MWaveFolder,1297572166,Orthogonalization mysteriousness,Factory,1VQQaA==                              ,
+MeldaProduction_MWaveFolderMB,1299011430,Idaho mild,Factory,Fvz5GQ==                                                  ,
+MeldaProduction_MWaveShaper,1296131385,-30,Factory/Randomizer Multi,RYdRqQ==                                          ,
+MeldaProduction_MWaveShaperMB,1299011443,Cautiousnesses scathe,Factory/Single-band,jFUG+w==                           ,
+MeldaProduction_MWobbler,1297575778,Technical nightgown,Factory/Extreme,uK/qng==                                      ,
+MeldaProduction_MXXX,1297635377,Easiest optics,Factory/Reverb,ztxZMw==                                                ,
+MeldaProduction_MXXX,1297635416,Waveshaper,Factory/Randomizer Multi/Delay with preprocessing,bfEKJQ==                 ,
+Synister,1298748272,piano sth.,Factory,z6kBaA==,
+ToguAudioLine_TAlBassline101,1648456497,ST_Helic,Solidtrax/FX,N6rhkA==,
+ToguAudioLine_TalDAC,1684104024,EMU II,Factory,6NIi0g==,
+ToguAudioLine_TalDubX,1685414488,wah delay,Factory,J07nNg==,
+ToguAudioLine_TAlMod,1833919537,ST Grand Pad LtZ,Lotuzia/Strings,zmNHqw==,
+ToguAudioLine_TalUNoLXV2,1970171700,PRC Percussion 4 FMR,FMR Presets Bank/Percussion,3SMS7g==,
+u_he_ACE,1633895765,RL System Bass,Factory/01 Bass,RFuV/A==                                 ,
+u_he_Bazille,1433421876,HS Slosh,Factory/08 Hits,6lDWVQ==                                   ,
+u_he_BazilleCM,1967276877,HS Third Pluck,Factory/03 Leads,4n58xA==                          ,
+u_he_ColourCopy,1967946098,Flooding,Factory,wVQlwQ==                                        ,
+u_he_Diva,1147754081,FMR MM 75 UFO,Factory/THIRD PARTY/Fernando's hardware factory,uIyM0A== ,
+u_he_Filterscape,1095583057,grasshopper tas,Factory/tasmaniandevil,t5tf5Q==                 ,
+u_he_FilterscapeQ6,1179865398,FEV_Mug,Factory/FEV_,JGiLYQ==                                 ,
+u_he_FilterscapeVA,1179866689,FX_DrumSweep,Factory/FEV_,c/A0rw==                            ,
+u_he_Hive,1749636677,ST Retro Stab 1,Factory/07 Chords,HoUX5g==                             ,
+u_he_MFM2,1296452914,jungle jock,Factory/04 dub-feed,o14NTQ==                               ,
+u_he_Podolski,1349477487,drippy 03 tas,Factory/Legacy,llEV5A==                              ,
+u_he_Presswerk,1969770583,DG_Classic VCA Snare,Factory/Drums,qezpng==                       ,
+u_he_Protoverb,1969770582,Lively Room,Factory,sDn2MQ==                                      ,
+u_he_Repro1,1968332593,CK Bodyrox,Factory/01 Basses,/SvczA==                                ,
+u_he_Repro5,1968332597,JH Sticks on Wood ,Factory/05 Keys - Plucks & Mallets,gwHjYw==       ,
+u_he_Runciter,1382232375,rezone,Factory/Factory,AK5PYw==                                    ,
+u_he_Satin,1969771348,LC Bee-Lay,Factory/Delay Mode,ajgohw==                                ,
+u_he_TripleCheese,1667388281,bio Hard Cheese (mod whl),Factory/biolabs,xmbXNw==             ,
+u_he_Twangstrom,1969771607,Liquid Machine Room 2,Factory,0zrHvA==                           ,
+u_he_TyrellN6,1952017974,LEAD Jumper,Factory/Various,j2V9FQ==                               ,
+u_he_UhbikA,1432568113,carlsbad,Factory/Factory,8p+v3A==                                    ,
+u_he_UhbikD,1432568881,dreamland,Factory/Factory,/siptA==                                   ,
+u_he_UhbikF,1432569393,compiler,Factory/Factory,dVrO4w==                                    ,
+u_he_UhbikG,1432569649,phase booth,Factory/PhaseVoc,EkBucQ==                                ,
+u_he_UhbikP,1432571953,bass mover,Factory/Factory,3NuF0Q==                                  ,
+u_he_UhbikQ,1432572209,narrow mind,Factory/Factory,lHsxNg==                                 ,
+u_he_UhbikS,1432572721,Robot Voice,Factory,TSUCbw==                                         ,
+u_he_UhbikT,1432572977,Mellow Space,Factory,Rwbz8A==                                        ,
+u_he_Zebra2,1397572658,HS Delay Kitten,Factory/2 Leaders,tYA7ww==                           ,
+u_he_ZebraCM,1516593997,Sub piax,Factory/Subject,5fTfLw==                                   ,
+u_he_Zebralette,1397572659,SM thinner 03,Factory/Rhythmic,Ugtzhw==                          ,
+u_he_Zebrify,1397578034,Rodeo,Factory,jdE4uw==                                              ,
+ValhallaDSP_ValhallaPlate,1886151028,MED-Radium Drum Warehouse,Factory/MEDIUM,b8PXKw==,
+ValhallaDSP_ValhallaRoom,1383429485,426 ConcertHall,Den,b9IeTQ==,
+ValhallaDSP_ValhallaUberMod,1969382770,Slow2TapChorus,Chorus,RJK8zw==,
+ValhallaDSP_ValhallaVintageVerb,1986356531,CH-Kick Blowing Up,Factory/Chaotic,I+3r+w==,
+Xfer_Records_Serum,1483109208,BA Dizzy [7S],Bass (Hard),8334IA==,

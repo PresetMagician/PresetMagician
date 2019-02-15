@@ -31,6 +31,10 @@ namespace SharedModels
         private Dictionary<string, Mode> ModeCache = new Dictionary<string, Mode>();
         public static string OverrideDbPath;
 
+        public static string DefaultDatabasePath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            @"Drachenkatze\PresetMagician\PresetMagician.sqlite3");
+
         private readonly List<(Preset preset, byte[] presetData)> presetDataList =
             new List<(Preset preset, byte[] presetData)>();
 
@@ -82,8 +86,7 @@ namespace SharedModels
                 return dbPath;
             }
 
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                @"Drachenkatze\PresetMagician\PresetMagician.sqlite3");
+            return DefaultDatabasePath;
         }
 
         private static string GetViewCachePath()
@@ -132,10 +135,21 @@ namespace SharedModels
                 return new List<PluginLocation>();
             }
 
-            var list = (from pluginLocation in PluginLocations
-                where pluginLocation.VstPluginId == plugin.VstPluginId &&
-                      pluginLocation.IsPresent && pluginLocation.Id != plugin.PluginLocation.Id
-                select pluginLocation).ToList();
+            List<PluginLocation> list;
+            if (plugin.PluginLocation == null)
+            {
+                list = (from pluginLocation in PluginLocations
+                    where pluginLocation.VstPluginId == plugin.VstPluginId &&
+                          pluginLocation.IsPresent
+                    select pluginLocation).ToList();
+            }
+            else
+            {
+                list = (from pluginLocation in PluginLocations
+                    where pluginLocation.VstPluginId == plugin.VstPluginId &&
+                          pluginLocation.IsPresent && pluginLocation.Id != plugin.PluginLocation.Id
+                    select pluginLocation).ToList();
+            }
 
             // Workaround so that the combobox has the correct hash for the pluginlocation object
             list.Add(plugin.PluginLocation);
@@ -251,7 +265,7 @@ namespace SharedModels
         {
             using (var tempContext = Create())
             {
-                return tempContext.Presets.Any();
+                return (from preset in tempContext.Presets where preset.Plugin.Id == plugin.Id select preset).Any();
             }
         }
 
@@ -265,10 +279,10 @@ namespace SharedModels
         {
             var hash = HashUtils.getIxxHash(data);
 
-            if (preset.PresetHash == hash)
+            /*if (preset.PresetHash == hash)
             {
                 return;
-            }
+            }*/
 
             preset.PresetHash = hash;
             presetDataList.Add((preset, data));
@@ -345,6 +359,7 @@ namespace SharedModels
                     }
                 }
 
+                tempContext.Configuration.AutoDetectChangesEnabled = true;
                 await tempContext.SaveChangesAsync();
                 presetDataList.Clear();
             }

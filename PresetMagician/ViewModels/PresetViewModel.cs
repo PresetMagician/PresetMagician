@@ -1,4 +1,5 @@
 ﻿using Catel.MVVM;
+using PresetMagician.Services.Interfaces;
 using SharedModels;
 
 namespace PresetMagician.ViewModels
@@ -11,5 +12,6 @@ namespace PresetMagician.ViewModels
         }
 
         [Model] public Preset Preset { get; private set; }
+
     }
 }
