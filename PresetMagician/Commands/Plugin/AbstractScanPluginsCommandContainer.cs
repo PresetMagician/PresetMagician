@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -158,6 +159,7 @@ namespace PresetMagician
                 await TaskHelper.Run(async () => await AnalyzePlugins(pluginsToScan.OrderBy(p => p.PluginName).ToList(), cancellationToken), true,
                     cancellationToken);
 
+                _databaseService.Context.Database.Log = delegate(string s) { LogTo.Debug(s);  };
                 // ReSharper disable once MethodSupportsCancellation
                 await _databaseService.Context.SaveChangesAsync();
                 _databaseService.Context.PresetUpdated -= ContextOnPresetUpdated;

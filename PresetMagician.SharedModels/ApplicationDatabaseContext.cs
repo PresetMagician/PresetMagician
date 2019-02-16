@@ -42,12 +42,14 @@ namespace SharedModels
         {
             Configuration.LazyLoadingEnabled = false;
             Configuration.ValidateOnSaveEnabled = false;
+            Configuration.ProxyCreationEnabled = false;
         }
 
         public ApplicationDatabaseContext(string connectionString) : base(connectionString)
         {
             Configuration.LazyLoadingEnabled = false;
             Configuration.ValidateOnSaveEnabled = false;
+            Configuration.ProxyCreationEnabled = false;
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

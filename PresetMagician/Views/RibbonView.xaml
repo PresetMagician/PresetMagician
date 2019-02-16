@@ -24,7 +24,7 @@
                 LargeIcon="{iconPacks:Material Kind=HelpNetwork,
                                                        Width=32,
                                                        Height=32}" />
-            
+
             <fluent:DropDownButton
                 Width="60"
                 Padding="0"
@@ -40,8 +40,7 @@
                     <fluent:MenuItem.ToolTip>
                         <fluent:ScreenTip Title="Creates a new bug report"
                                           Width="250"
-                                          Text="Creates a new bug report. "
-                        />
+                                          Text="Creates a new bug report. " />
                     </fluent:MenuItem.ToolTip>
                 </fluent:MenuItem>
                 <fluent:MenuItem
@@ -51,8 +50,7 @@
                     <fluent:MenuItem.ToolTip>
                         <fluent:ScreenTip Title="Creates a new feature request"
                                           Width="250"
-                                          Text="Creates a new feature request."
-                        />
+                                          Text="Creates a new feature request." />
                     </fluent:MenuItem.ToolTip>
                 </fluent:MenuItem>
                 <fluent:MenuItem
@@ -62,12 +60,11 @@
                     <fluent:MenuItem.ToolTip>
                         <fluent:ScreenTip Title="Request Support"
                                           Width="250"
-                                          Text="Creates a new support request. Select this if you have general questions (it's neither a bug nor a feature request)."
-                                           />
+                                          Text="Creates a new support request. Select this if you have general questions (it's neither a bug nor a feature request)." />
                     </fluent:MenuItem.ToolTip>
                 </fluent:MenuItem>
             </fluent:DropDownButton>
-         
+
 
             <fluent:Button
                 Command="{catel:CommandManagerBinding Help.OpenChatLink}"
@@ -75,13 +72,13 @@
                 Size="Middle"
                 Icon="{iconPacks:Material Kind=Chat}" />
 
-           
+
             <fluent:Button
                 Command="{Binding ShowAboutDialog}"
                 Header="About"
                 Size="Middle"
                 Icon="{iconPacks:Entypo Kind=InfoWithCircle}" />
-         
+
         </collections:ArrayList>
 
     </catel:UserControl.Resources>
@@ -103,7 +100,7 @@
                                                  Foreground="Purple"
                                                  Header="Presets"
                                                  Visibility="Collapsed" />
-                </fluent:Ribbon.ContextualGroups>
+            </fluent:Ribbon.ContextualGroups>
 
             <fluent:RibbonTabItem Header="Plugins">
                 <fluent:RibbonGroupBox Header="Plugins">
@@ -301,8 +298,7 @@
                         Icon="{iconPacks:SimpleIcons Kind=Visa}"
                         Command="{catel:CommandManagerBinding Developer.SetCatelLogging}"
                         CommandParameter="{Binding ElementName=CatelLogging, Path=IsChecked}"
-                        Size="Middle"
-                         />
+                        Size="Middle" />
                 </fluent:RibbonGroupBox>
             </fluent:RibbonTabItem>
             <fluent:RibbonTabItem Header="Preset Export">
@@ -433,17 +429,38 @@
                 </fluent:RibbonGroupBox>
             </fluent:RibbonTabItem>
 
-            <fluent:RibbonTabItem Header="KeyTips"
+            <fluent:RibbonTabItem Header="Commands"
+                                  Group="{Binding ElementName=PresetsTabGroup, Mode=OneWay}">
+                <fluent:RibbonGroupBox Header="Preset Banks"
+                                       IsLauncherVisible="False">
+
+                    <fluent:Button Header="Rename Bank"
+                                   LargeIcon="{iconPacks:Material Kind=FolderEdit,Width=32,Height=32}"
+                                   Size="Large"
+                                   Command="{catel:CommandManagerBinding Preset.RenamePresetBank}" />
+
+                    <fluent:Button Header="Add Bank"
+                                   Icon="{iconPacks:Material Kind=FolderPlus,Spin=True}"
+                                   Size="Middle"
+                                    />
+
+                    <fluent:Button Header="Delete Bank"
+                                   Icon="{iconPacks:Material Kind=FolderRemove,Spin=True}"
+                                   Size="Middle"
+                                    />
+
+                </fluent:RibbonGroupBox>
+            </fluent:RibbonTabItem>
+            <fluent:RibbonTabItem Header="Filters"
                                   Group="{Binding ElementName=PresetsTabGroup, Mode=OneWay}">
                 <fluent:RibbonGroupBox Header="LongLongGroup"
                                        IsLauncherVisible="False">
-                    
-                        <fluent:Button Header="Rename"
-                                       Size="Middle"
-                                       Command="{catel:CommandManagerBinding Preset.RenamePresetBank}"
-                                      />
+
+                    <fluent:Button Header="Rename"
+                                   Size="Middle"
+                                   Command="{catel:CommandManagerBinding Preset.RenamePresetBank}" />
                 </fluent:RibbonGroupBox>
-                </fluent:RibbonTabItem>
+            </fluent:RibbonTabItem>
         </fluent:Ribbon>
     </Grid>
 </catel:UserControl>
