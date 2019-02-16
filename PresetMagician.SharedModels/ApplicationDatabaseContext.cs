@@ -304,7 +304,7 @@ namespace SharedModels
             if (!preset.Plugin.PresetCache.ContainsKey(preset.SourceFile))
             {
                 preset.Plugin.Presets.Add(preset);
-                preset.PreviewNote = PreviewNote;
+                preset.PreviewNoteNumber = PreviewNote.NoteNumber;
                 SavePresetData(preset, data);
                 preset.Plugin.PresetCache.Add(preset.SourceFile, preset);
             }

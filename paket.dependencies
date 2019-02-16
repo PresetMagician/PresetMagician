@@ -58,3 +58,5 @@ nuget Orc.Scheduling
 nuget redmine-api
 nuget MimeTypeMap.List
 nuget gong-wpf-dragdrop
+nuget xunit
+nuget FluentAssertions

@@ -262,8 +262,8 @@ namespace PresetMagician.VendorPresetParserTest
 
     public class StubRemoteVstService : IRemoteVstService
     {
-        private byte[] _bankData = Encoding.UTF8.GetBytes("foo");
-        private byte[] _presetData = Encoding.UTF8.GetBytes("foo");
+        private byte[] _bankData = Encoding.UTF8.GetBytes("ClearDirtyFlag");
+        private byte[] _presetData = Encoding.UTF8.GetBytes("ClearDirtyFlag");
         private int _pluginId;
 
         public StubRemoteVstService(int pluginId)

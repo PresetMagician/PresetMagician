@@ -142,11 +142,15 @@ namespace CannedBytes.Midi.Message
 
             set
             {
+                if (Equals(value, noteNumber))
+                {
+                    return;}
                 Argument.IsNotOutOfRange(() => value, 0, 127);
 
                 noteNumber = value;
 
                 CompileNoteName(value);
+                RaisePropertyChanged(nameof(NoteNumber));
             }
         }
 
