@@ -1,10 +1,21 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data.Entity;
 using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using Catel.Collections;
 using Catel.Data;
 using Drachenkatze.PresetMagician.Utils;
+using SharedModels;
+using System.Linq;
+using Catel.IoC;
+using Catel.Runtime.Serialization;
+using MethodTimer;
+using PresetMagician.Serialization;
+using Catel.Runtime.Serialization.Xml;
+using XmlSerializer = System.Xml.Serialization.XmlSerializer;
 
 namespace PresetMagicianScratchPad
 {
@@ -13,50 +24,42 @@ namespace PresetMagicianScratchPad
         [STAThread]
         static void Main(string[] args)
         {
-            var plugin = new Plugin();
-            var preset = new Preset();
-            plugin.Presets.Add(preset);
-            preset.Foo = "bar";
-            preset.ClearDirty();
-            plugin.ClearDirty();
+            ServiceLocator.Default.RegisterType<IXmlSerializer, TestSerializer>();
+            ServiceLocator.Default.RegisterType<ISerializer, TestSerializer>();
             
-           (plugin as IEditableObject).BeginEdit();
+            var plugin = new Plugin();
+            var preset = new Preset {Bar = "I'm unmodified, too!"};
+            plugin.Presets.Add(preset);
 
-           Debug.WriteLine($"State of plugin.IsDirty: {plugin.IsDirty}");
-           Debug.WriteLine($"State of preset.IsDirty: {preset.IsDirty}");
+            var ms = new MemoryStream();
+            XmlSerializer xs = new XmlSerializer(typeof(Plugin));
+            xs.Serialize(ms, plugin);
+            
+            
+            (plugin as IEditableObject).BeginEdit();
+            preset.Foo = "I'm now modified";
+            preset.Bar = "I'm now modified as well";
+            (plugin as IEditableObject).CancelEdit();
 
-           preset.Foo = "Foo";
-           
-           Debug.WriteLine($"State of plugin.IsDirty after editing: {plugin.IsDirty}");
-           Debug.WriteLine($"State of preset.IsDirty after editing: {preset.IsDirty}");
+            Debug.WriteLine(preset.Foo);
+            Debug.WriteLine(preset.Bar);
+
+     
         }
 
     }
     
-    public class Preset: ModelBase 
+    public class Preset: ModelBase
     {
-        public string Foo {get;set;} public void ClearDirty () {
-            IsDirty = false;
-        }
-
-        protected override void OnBeginEdit(BeginEditEventArgs e)
-        {
-            Debug.WriteLine("Beginning edit on preset");
-            base.OnBeginEdit(e);
-        }
+        public string Foo { get; set; } = "I'm unmodified";
+        public string Bar { get; set; }
+    
     }
 
     public class Plugin : ChildAwareModelBase 
     {
-        public string foo { get; set; }
-        public FastObservableCollection<Preset> Presets { get; set; } = new FastObservableCollection<Preset>();
-        
-        protected override void OnBeginEdit(BeginEditEventArgs e)
-        {
-            Debug.WriteLine("Beginning edit on plugin");
-            base.OnBeginEdit(e);
-        }
-        
+        [IncludeInSerialization]
+        public ObservableCollection<Preset> Presets { get; set; } = new ObservableCollection<Preset>();
         public void ClearDirty () {
             IsDirty = false;
         }

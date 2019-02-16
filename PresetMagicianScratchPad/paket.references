@@ -1,3 +1,7 @@
 Catel.Core
 Catel.MVVM
 Catel.Fody
+EntityFramework
+System.Data.SQLite
+SQLitePCLRaw.bundle_e_sqlite3
+MethodTimer.Fody copy_local: false

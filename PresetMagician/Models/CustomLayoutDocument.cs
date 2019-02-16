@@ -65,7 +65,7 @@ namespace PresetMagician.Models
                         break;
                 }
             }
-
+            _viewModel?.CancelViewModelAsync().ConfigureAwait(false);
             _viewModel?.CloseViewModelAsync(null).ConfigureAwait(false);
 
             base.OnClosing(args);

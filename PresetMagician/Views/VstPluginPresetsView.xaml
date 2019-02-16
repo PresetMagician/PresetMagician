@@ -19,6 +19,12 @@
 
     <catel:UserControl.Resources>
         <converters:NodeSortConverter x:Key="NodeSorter" />
+        <converters:RemoveNewLinesConverter x:Key="RemoveNewLinesConverter"/>
+        <Style x:Key="EllipsisText" TargetType="{x:Type TextBlock}">
+            <Style.Setters>
+                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+            </Style.Setters>
+        </Style>
 
 
         <HierarchicalDataTemplate
@@ -89,18 +95,40 @@
                     dd:DragDrop.UseDefaultDragAdorner="True"
                     dd:DragDrop.DropHandler="{Binding}"
                    AutoGenerateColumns="False"
-                    d:DataContext="{d:DesignInstance sharedModels1:Plugin}"
+                    d:DataContext="{d:DesignInstance sharedModels1:Preset, CreateList=True}"
                     ItemsSource="{Binding PresetsView}">
                     <DataGrid.Columns>
                         <DataGridTextColumn
                             Width="1*"
                             Binding="{Binding PresetName}"
-                            Header="Preset" />
+                            ElementStyle="{StaticResource EllipsisText}"
+                            Header="Preset">
+                            <DataGridTextColumn.CellStyle>
+                                <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultCellStyle}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsDirty}" Value="true">
+                                            <Setter Property="FontStyle" Value="Oblique" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTextColumn.CellStyle>
+                        </DataGridTextColumn>
                         <DataGridTextColumn
                             Width="1*"
                             Binding="{Binding BankPath}"
                             Header="Bank"
+                            ElementStyle="{StaticResource EllipsisText}"
                             IsReadOnly="True" />
+                        <DataGridTextColumn
+                            Width="1*"
+                            Binding="{Binding Author}"
+                            ElementStyle="{StaticResource EllipsisText}"
+                            Header="Author"  />
+                        <DataGridTextColumn
+                            Width="1*"
+                            IsReadOnly="True"
+                            Binding="{Binding Comment, Converter={StaticResource RemoveNewLinesConverter}}"
+                            Header="Comment" ElementStyle="{StaticResource EllipsisText}"/>
                         <DataGridTemplateColumn
                             Width="3*"
                             CellStyle="{StaticResource NoPaddingCellStyle}"
@@ -123,7 +151,7 @@
                             IsReadOnly="False" />
                         <DataGridTextColumn
                             Width="80"
-                            Binding="{Binding LastExported,StringFormat=d}"
+                            Binding="{Binding LastExported,StringFormat=d, TargetNullValue='never'}"
                             Header="Exported"
                             IsReadOnly="True" />
                         <DataGridCheckBoxColumn

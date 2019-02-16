@@ -12,6 +12,7 @@ namespace SharedModels
     {
         private string _bankName;
 
+        [IncludeInSerialization]
         public string BankName
         {
             get => _bankName;
@@ -52,6 +53,11 @@ namespace SharedModels
 
         }
 
+        public PresetBank(): this("All Banks")
+        {
+           
+        }
+        
         public PresetBank(string bankName = "All Banks")
         {
             PresetBanks = new FastObservableCollection<PresetBank>();

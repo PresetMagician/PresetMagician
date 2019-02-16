@@ -30,6 +30,16 @@ namespace PresetMagician.Serialization
 
         }
 
+        protected override SerializationObject DeserializeMember(ISerializationContext<XmlSerializationContextInfo> context, MemberValue memberValue)
+        {
+            if (memberValue.Name == "BankPath")
+            {
+                Debug.WriteLine(memberValue.Name);
+            }
+
+            return base.DeserializeMember(context, memberValue);
+        }
+
         public override void SerializeMembers(object model, Stream stream, ISerializationConfiguration configuration,
             params string[] membersToIgnore)
         {

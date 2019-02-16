@@ -1,10 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using Catel.Collections;
 using Catel.Data;
+using Catel.IoC;
+using Catel.Logging;
+using Catel.Runtime.Serialization;
+using Catel.Runtime.Serialization.Xml;
 using FluentAssertions;
+using PresetMagician.Serialization;
 using PresetMagician.Tests.Extensions;
 using SharedModels;
 using SQLitePCL;
@@ -23,6 +29,25 @@ namespace PresetMagician.Tests.ModelTests
             "PresetCompressedSize", "PresetName", "PreviewNoteNumber", "Author", "Comment",
             "SourceFile", "PresetHash", "LastExportedPresetHash", "IsIgnored", "UserModifiedMetadata"
         };
+
+        private Dictionary<string, object> BackupTestProperties =
+            new Dictionary<string, object>
+            {
+                {"PresetId", Guid.Empty.ToString()},
+                {"PluginId", 15},
+                {"VstPluginId", 1234},
+                {"IsMetadataModified", true},
+                {"LastExported", DateTime.Now}, {"BankPath", "nonexistant"}, {"PresetSize", 12311},
+                {"PresetCompressedSize", 3333},
+                {"PresetName", "idk"},
+                {"PreviewNoteNumber", 111},
+                {"Author", "ibims"},
+                {"Comment", "all okay"},
+                {"SourceFile", "nowhere to be found"},
+                {"PresetHash", "ff0ff"},
+                {"LastExportedPresetHash", "yooooobar"}, {"IsIgnored", true},
+                {"UserModifiedMetadata","[\"bla\"]"}
+            };
 
         private Dictionary<string, object> PropertiesWhichShouldNotModifyIsMetadataModified =
             new Dictionary<string, object>
@@ -104,6 +129,67 @@ namespace PresetMagician.Tests.ModelTests
             }
         }
 
+        [Fact]
+        public void TestPresetCatelBackup()
+        {
+            ServiceLocator.Default.RegisterType<IXmlSerializer, TestSerializer>();
+            ServiceLocator.Default.RegisterType<ISerializer, TestSerializer>();
+
+            var backupValues = new Dictionary<string, object>();
+
+            LogManager.AddDebugListener(false);
+
+            using (var context = ApplicationDatabaseContext.Create())
+            {
+                var preset = GetFreshPresetTestSubject();
+
+                foreach (var propName in ExpectedDatabaseProperties)
+                {
+                    var property = (from prop in context.GetTableColumns(typeof(Preset))
+                        where prop.Key == propName
+                        select prop.Value).First();
+
+                    var value = preset.GetType().GetProperty(property.Name).GetValue(preset);
+                    backupValues.Add(propName, value);
+                }
+
+                (preset.Plugin as IEditableObject).BeginEdit();
+                foreach (var propName in ExpectedDatabaseProperties)
+                {
+                    var property = (from prop in context.GetTableColumns(typeof(Preset))
+                        where prop.Key == propName
+                        select prop.Value).First();
+                    
+                    BackupTestProperties.Should()
+                        .ContainKey(propName, "because we need data to put into to test the backup");
+
+                    BackupTestProperties[propName].Should()
+                        .NotBeSameAs(preset.GetType().GetProperty(property.Name).GetValue(preset), "the test data must be different, otherwise we can't test the backup");
+
+                    preset.GetType().GetProperty(property.Name).SetValue(preset, BackupTestProperties[propName]);
+                }
+
+                var plugin = preset.Plugin;
+                (preset.Plugin as IEditableObject).CancelEdit();
+                preset = plugin.Presets.First();
+                
+
+                foreach (var propName in ExpectedDatabaseProperties)
+                {
+                    var property = (from prop in context.GetTableColumns(typeof(Preset))
+                        where prop.Key == propName
+                        select prop.Value).First();
+
+                    var actualValue = preset.GetType().GetProperty(property.Name).GetValue(preset);
+                    var expectedValue = backupValues[propName];
+
+                    actualValue.Should().BeEquivalentTo(expectedValue, "because the backup should work");
+                }
+
+                preset.Plugin.Should().Equals(plugin);
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -165,7 +251,7 @@ namespace PresetMagician.Tests.ModelTests
 
             TestModesCollection(testedProperties);
             TestTypesCollection(testedProperties);
-            
+
             var preset = GetFreshPresetTestSubject();
             (preset as IEditableObject).BeginEdit();
             preset.PresetSize = 1234;
@@ -173,7 +259,7 @@ namespace PresetMagician.Tests.ModelTests
                 .BeTrue($"Changing the preset size should modify IsMetadataModified when edit mode is on");
             preset.UserModifiedProperties.Should().NotContain("PresetSize");
             testedProperties.Add("PresetSize");
-            
+
             preset = GetFreshPresetTestSubject();
             (preset as IEditableObject).BeginEdit();
             preset.PresetCompressedSize = 1234;
@@ -181,7 +267,7 @@ namespace PresetMagician.Tests.ModelTests
                 .BeTrue($"Changing the preset compressed size should modify IsMetadataModified when edit mode is on");
             preset.UserModifiedProperties.Should().NotContain("PresetCompressedSize");
             testedProperties.Add("PresetCompressedSize");
-            
+
             preset = GetFreshPresetTestSubject();
             (preset as IEditableObject).BeginEdit();
             preset.PreviewNote.NoteNumber = 121;
@@ -205,17 +291,17 @@ namespace PresetMagician.Tests.ModelTests
         {
             var preset = GetFreshPresetTestSubject();
             (preset as IEditableObject).BeginEdit();
-            
-            preset.Plugin.RootBank.PresetBanks.First().PresetBanks.Add(new PresetBank() { BankName = "yo mama"});
+
+            preset.Plugin.RootBank.PresetBanks.First().PresetBanks.Add(new PresetBank() {BankName = "yo mama"});
             preset.IsMetadataModified.Should().BeFalse("a bank was added but did not change our bank path");
-            
+
             preset = GetFreshPresetTestSubject();
             (preset as IEditableObject).BeginEdit();
             var pp = new PresetBank() {BankName = "yo mama"};
             preset.Plugin.RootBank.PresetBanks.First().PresetBanks.Add(pp);
             preset.PresetBank = pp;
             preset.IsMetadataModified.Should().BeTrue("the bank was changed and should trigger a change");
-            
+
             preset = GetFreshPresetTestSubject();
             (preset as IEditableObject).BeginEdit();
             preset.Plugin.RootBank.PresetBanks.First().First().BankName = "diz changed";
@@ -261,7 +347,8 @@ namespace PresetMagician.Tests.ModelTests
             (preset as IEditableObject).BeginEdit();
             oldModes.Clear();
             preset.IsMetadataModified.Should()
-                .BeFalse($"Modifying a detached modes collection should not modify IsMetadataModified when edit mode is on");
+                .BeFalse(
+                    $"Modifying a detached modes collection should not modify IsMetadataModified when edit mode is on");
             preset.UserModifiedProperties.Should().NotContain("Modes");
 
             testedProperties.Add("Modes");
@@ -275,7 +362,7 @@ namespace PresetMagician.Tests.ModelTests
             preset.IsMetadataModified.Should()
                 .BeTrue($"Changing a type name should modify IsMetadataModified when edit mode is on");
             preset.UserModifiedProperties.Should().Contain("Types");
-            
+
             preset = GetFreshPresetTestSubject();
             (preset as IEditableObject).BeginEdit();
             preset.Types.First().SubTypeName = "test";
@@ -292,7 +379,7 @@ namespace PresetMagician.Tests.ModelTests
 
             preset = GetFreshPresetTestSubject();
             (preset as IEditableObject).BeginEdit();
-            preset.Types.Add(new Type{Name = "bla"});
+            preset.Types.Add(new Type {Name = "bla"});
             preset.IsMetadataModified.Should()
                 .BeTrue($"Adding a type name should modify IsMetadataModified when edit mode is on");
             preset.UserModifiedProperties.Should().Contain("Types");
@@ -311,7 +398,8 @@ namespace PresetMagician.Tests.ModelTests
             (preset as IEditableObject).BeginEdit();
             oldTypes.Clear();
             preset.IsMetadataModified.Should()
-                .BeFalse($"Modifying a detached types collection should not modify IsMetadataModified when edit mode is on");
+                .BeFalse(
+                    $"Modifying a detached types collection should not modify IsMetadataModified when edit mode is on");
             preset.UserModifiedProperties.Should().NotContain("Types");
 
             testedProperties.Add("Types");

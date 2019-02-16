@@ -165,6 +165,7 @@
     <Compile Include="Converters\MessageImageToTextConverter.cs" />
     <Compile Include="Converters\NodeSortConverter.cs" />
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
+    <Compile Include="Converters\RemoveNewLinesConverter.cs" />
     <Compile Include="Converters\VisibilityToBooleanConverter.cs" />
     <Compile Include="Extensions\CollectionExtensions.cs" />
     <Compile Include="Extensions\DispatcherExtensions.cs" />
@@ -181,7 +182,6 @@
     <Compile Include="Models\RuntimeConfiguration.cs" />
     <Compile Include="Models\Settings\VstDirectory.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Serialization\TestSerializer.cs" />
     <Compile Include="Services\AboutInfoService.cs" />
     <Compile Include="Services\AdvancedMessageService.cs" />
     <Compile Include="Services\ApplicationAlreadyBusyException.cs" />
