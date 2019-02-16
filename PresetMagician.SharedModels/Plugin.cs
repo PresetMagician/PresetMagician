@@ -364,7 +364,7 @@ namespace SharedModels
 
         public MiniMemoryLogger Logger { get; }
 
-        public void foo()
+        public void ClearDirtyFlag()
         {
             IsDirty = false;
         }

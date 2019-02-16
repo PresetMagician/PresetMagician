@@ -1,138 +1,85 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\PropertyChanged.Fody\build\PropertyChanged.Fody.props" Condition="Exists('..\packages\PropertyChanged.Fody\build\PropertyChanged.Fody.props')" Label="Paket" />
-  <Import Project="..\packages\MethodTimer.Fody\build\MethodTimer.Fody.props" Condition="Exists('..\packages\MethodTimer.Fody\build\MethodTimer.Fody.props')" Label="Paket" />
-  <Import Project="..\packages\Catel.Fody\build\Catel.Fody.props" Condition="Exists('..\packages\Catel.Fody\build\Catel.Fody.props')" Label="Paket" />
-  <Import Project="..\packages\Anotar.Catel.Fody\build\Anotar.Catel.Fody.props" Condition="Exists('..\packages\Anotar.Catel.Fody\build\Anotar.Catel.Fody.props')" Label="Paket" />
+  <Import Project="..\packages\xunit.core\build\xunit.core.props" Condition="Exists('..\packages\xunit.core\build\xunit.core.props')" Label="Paket" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{445AC4FE-6ACC-4E19-9424-B35C0B8B5804}</ProjectGuid>
+    <ProjectGuid>{19A9E75B-36C0-41AD-8A61-3614C0BBC11F}</ProjectGuid>
+    <ProjectTypeGuids>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SharedModels</RootNamespace>
-    <AssemblyName>PresetMagician.SharedModels</AssemblyName>
+    <RootNamespace>PresetMagician.Tests</RootNamespace>
+    <AssemblyName>PresetMagician.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32bit>false</Prefer32bit>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>x64</PlatformTarget>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32bit>false</Prefer32bit>
-    <DebugSymbols>true</DebugSymbols>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Catel.MVVM">
-      <HintPath>..\packages\Catel.MVVM\lib\net46\Catel.MVVM.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
-      <HintPath>..\packages\NewtonSoft.Json\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApplicationDatabaseContext.cs" />
-    <Compile Include="BankFile.cs" />
-    <Compile Include="Collections\ProgressFastObservableCollection.cs" />
-    <Compile Include="EventArgs\PresetUpdatedEventArgs.cs" />
-    <Compile Include="Exceptions\ConnectivityLostException.cs" />
-    <Compile Include="IPlugin.cs" />
-    <Compile Include="Interfaces\IPluginCommands.cs" />
-    <Compile Include="IDataPersistence.cs" />
-    <Compile Include="IRemotePluginInstance.cs" />
-    <Compile Include="IVendorPresetParser.cs" />
-    <Compile Include="MidiNoteName.cs" />
-    <Compile Include="Migrations\BaseMigration.cs" />
-    <Compile Include="Migrations\IMigration.cs" />
-    <Compile Include="Migrations\Migration20190215.cs" />
-    <Compile Include="Migrations\Migration20190216.cs" />
-    <Compile Include="Mode.cs" />
-    <Compile Include="NativeInstrumentsResources\Categories.cs" />
-    <Compile Include="NativeInstrumentsResources\Category.cs" />
-    <Compile Include="NativeInstrumentsResources\CategoryDB.cs" />
-    <Compile Include="NativeInstrumentsResources\Color.cs" />
-    <Compile Include="NativeInstrumentsResources\ResourceImage.cs" />
-    <Compile Include="NativeInstrumentsResources\NativeInstrumentsResource.cs" />
-    <Compile Include="NativeInstrumentsResources\OnlineResource.cs" />
-    <Compile Include="NativeInstrumentsResources\ResourceState.cs" />
-    <Compile Include="NativeInstrumentsResources\ShortNames.cs" />
-    <Compile Include="Plugin.cs" />
-    <Compile Include="PluginInfoItem.cs" />
-    <Compile Include="PluginLocation.cs" />
-    <Compile Include="MiniLogger.cs" />
-    <Compile Include="Preset.cs" />
-    <Compile Include="PresetBank.cs" />
-    <Compile Include="PresetDataStorage.cs" />
-    <Compile Include="PresetExportInfo.cs" />
+    <Compile Include="DatabaseFixture.cs" />
+    <Compile Include="Extensions\DatabaseContextExtensions.cs" />
+    <Compile Include="ModelTests\PresetTest.cs" />
+    <Compile Include="ModelTests\Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SchemaVersion.cs" />
-    <Compile Include="Type.cs" />
-    <Compile Include="VstPluginInfoSurrogated.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\PresetMagician.NKS\PresetMagician.NKS.csproj">
-      <Project>{2126df46-7f24-4c2c-b236-514a70b7a3a5}</Project>
-      <Name>PresetMagician.NKS</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PresetMagician.Utils\PresetMagician.Utils.csproj">
-      <Project>{37abda8a-5ffa-41f9-b880-a272d8c21dff}</Project>
-      <Name>PresetMagician.Utils</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\vst.net\Source\Code\Jacobi.Vst.Core\Jacobi.Vst.Core.Clr4.csproj">
-      <Project>{5950f8a9-f413-4ace-b6e0-6f458b4c26f9}</Project>
-      <Name>Jacobi.Vst.Core.Clr4</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\vst.net\Source\Code\Jacobi.Vst.Interop\Jacobi.Vst.Interop.Clr4.vcxproj">
-      <Project>{e0cc0ccf-a40d-4a53-8fac-b6af7e76eb08}</Project>
-      <Name>Jacobi.Vst.Interop.Clr4</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="FodyWeavers.xml">
-      <SubType>Designer</SubType>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\empty.png" />
+    <Compile Include="TestApplicationDatabaseContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="paket.references" />
+    <Content Include="Resources\PresetMagician.test.sqlite3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <PropertyGroup>
         <__paket__System_Data_SQLite_Core_targets>net46\System.Data.SQLite.Core</__paket__System_Data_SQLite_Core_targets>
+      </PropertyGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <PropertyGroup>
+        <__paket__SQLitePCLRaw_lib_e_sqlite3_v110_xp_targets>net35\SQLitePCLRaw.lib.e_sqlite3.v110_xp</__paket__SQLitePCLRaw_lib_e_sqlite3_v110_xp_targets>
+      </PropertyGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <PropertyGroup>
+        <__paket__SQLitePCLRaw_lib_e_sqlite3_osx_targets>net35\SQLitePCLRaw.lib.e_sqlite3.osx</__paket__SQLitePCLRaw_lib_e_sqlite3_osx_targets>
+      </PropertyGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <PropertyGroup>
+        <__paket__SQLitePCLRaw_lib_e_sqlite3_linux_targets>net35\SQLitePCLRaw.lib.e_sqlite3.linux</__paket__SQLitePCLRaw_lib_e_sqlite3_linux_targets>
       </PropertyGroup>
     </When>
   </Choose>
@@ -143,18 +90,15 @@
     <Target Name="AfterBuild">
     </Target>
     -->
-  <Import Project="..\common\ExtraCleanup.targets" />
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
-      <ItemGroup>
-        <Reference Include="Anotar.Catel">
-          <HintPath>..\packages\Anotar.Catel.Fody\lib\net452\Anotar.Catel.dll</HintPath>
-          <Private>False</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
+  <ItemGroup>
+    <ProjectReference Include="..\PresetMagician.SharedModels\PresetMagician.SharedModels.csproj">
+      <Project>{445ac4fe-6acc-4e19-9424-b35c0b8b5804}</Project>
+      <Name>PresetMagician.SharedModels</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
@@ -169,19 +113,8 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
-        <Reference Include="Catel.Fody.Attributes">
-          <HintPath>..\packages\Catel.Fody\lib\net452\Catel.Fody.Attributes.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
-      <ItemGroup>
-        <Reference Include="InteractivePreGeneratedViews">
-          <HintPath>..\packages\EFInteractiveViews\lib\net45\InteractivePreGeneratedViews.dll</HintPath>
+        <Reference Include="Catel.MVVM">
+          <HintPath>..\packages\Catel.MVVM\lib\net47\Catel.MVVM.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -207,8 +140,13 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
-        <Reference Include="K4os.Compression.LZ4">
-          <HintPath>..\packages\K4os.Compression.LZ4\lib\net46\K4os.Compression.LZ4.dll</HintPath>
+        <Reference Include="Microsoft.Expression.Interactions">
+          <HintPath>..\packages\Expression.Blend.Sdk.WPF\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="System.Windows.Interactivity">
+          <HintPath>..\packages\Expression.Blend.Sdk.WPF\lib\net45\System.Windows.Interactivity.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -218,9 +156,9 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
-        <Reference Include="MethodTimer">
-          <HintPath>..\packages\MethodTimer.Fody\lib\net452\MethodTimer.dll</HintPath>
-          <Private>False</Private>
+        <Reference Include="FluentAssertions">
+          <HintPath>..\packages\FluentAssertions\lib\net47\FluentAssertions.dll</HintPath>
+          <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -238,8 +176,13 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
-        <Reference Include="Orc.EntityFramework">
-          <HintPath>..\packages\Orc.EntityFramework6\lib\net47\Orc.EntityFramework.dll</HintPath>
+        <Reference Include="SQLitePCLRaw.batteries_e_sqlite3">
+          <HintPath>..\packages\SQLitePCLRaw.bundle_e_sqlite3\lib\net45\SQLitePCLRaw.batteries_e_sqlite3.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="SQLitePCLRaw.batteries_v2">
+          <HintPath>..\packages\SQLitePCLRaw.bundle_e_sqlite3\lib\net45\SQLitePCLRaw.batteries_v2.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -249,19 +192,8 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
-        <Reference Include="PropertyChanged">
-          <HintPath>..\packages\PropertyChanged.Fody\lib\net452\PropertyChanged.dll</HintPath>
-          <Private>False</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
-      <ItemGroup>
-        <Reference Include="ICSharpCode.SharpZipLib">
-          <HintPath>..\packages\SharpZipLib\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
+        <Reference Include="SQLitePCLRaw.core">
+          <HintPath>..\packages\SQLitePCLRaw.core\lib\net45\SQLitePCLRaw.core.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -271,19 +203,8 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
-        <Reference Include="SQLite.CodeFirst">
-          <HintPath>..\packages\SQLite.CodeFirst\lib\net45\SQLite.CodeFirst.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
-      <ItemGroup>
-        <Reference Include="System.Buffers">
-          <HintPath>..\packages\System.Buffers\lib\netstandard2.0\System.Buffers.dll</HintPath>
+        <Reference Include="SQLitePCLRaw.provider.e_sqlite3">
+          <HintPath>..\packages\SQLitePCLRaw.provider.e_sqlite3.net45\lib\net45\SQLitePCLRaw.provider.e_sqlite3.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -295,7 +216,7 @@
       <ItemGroup>
         <Reference Include="System.Collections.Immutable">
           <HintPath>..\packages\System.Collections.Immutable\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
-          <Private>False</Private>
+          <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -312,7 +233,7 @@
         </Reference>
         <Reference Include="System.ComponentModel.Annotations">
           <HintPath>..\packages\System.ComponentModel.Annotations\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
-          <Private>False</Private>
+          <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -324,9 +245,12 @@
         <Reference Include="System.Configuration">
           <Paket>True</Paket>
         </Reference>
+        <Reference Include="System.Drawing">
+          <Paket>True</Paket>
+        </Reference>
         <Reference Include="System.Configuration.ConfigurationManager">
           <HintPath>..\packages\System.Configuration.ConfigurationManager\lib\net461\System.Configuration.ConfigurationManager.dll</HintPath>
-          <Private>False</Private>
+          <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -368,44 +292,8 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
-        <Reference Include="System.Memory">
-          <HintPath>..\packages\System.Memory\lib\netstandard2.0\System.Memory.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
-      <ItemGroup>
-        <Reference Include="System.Numerics">
-          <Paket>True</Paket>
-        </Reference>
-        <Reference Include="System.Numerics.Vectors">
-          <HintPath>..\packages\System.Numerics.Vectors\lib\net46\System.Numerics.Vectors.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
-      <ItemGroup>
         <Reference Include="System.Reflection">
           <HintPath>..\packages\System.Reflection\lib\net462\System.Reflection.dll</HintPath>
-          <Private>False</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
-      <ItemGroup>
-        <Reference Include="System.Runtime.CompilerServices.Unsafe">
-          <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -417,7 +305,7 @@
       <ItemGroup>
         <Reference Include="System.Runtime.Serialization.Formatters">
           <HintPath>..\packages\System.Runtime.Serialization.Formatters\lib\net46\System.Runtime.Serialization.Formatters.dll</HintPath>
-          <Private>False</Private>
+          <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -431,7 +319,7 @@
         </Reference>
         <Reference Include="System.Runtime.Serialization.Primitives">
           <HintPath>..\packages\System.Runtime.Serialization.Primitives\lib\net46\System.Runtime.Serialization.Primitives.dll</HintPath>
-          <Private>False</Private>
+          <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -442,7 +330,7 @@
       <ItemGroup>
         <Reference Include="System.Runtime.Serialization.Xml">
           <HintPath>..\packages\System.Runtime.Serialization.Xml\lib\net46\System.Runtime.Serialization.Xml.dll</HintPath>
-          <Private>False</Private>
+          <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -453,7 +341,7 @@
       <ItemGroup>
         <Reference Include="System.Security.AccessControl">
           <HintPath>..\packages\System.Security.AccessControl\lib\net461\System.Security.AccessControl.dll</HintPath>
-          <Private>False</Private>
+          <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -476,7 +364,7 @@
         </Reference>
         <Reference Include="System.Security.Permissions">
           <HintPath>..\packages\System.Security.Permissions\lib\net461\System.Security.Permissions.dll</HintPath>
-          <Private>False</Private>
+          <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -487,17 +375,6 @@
       <ItemGroup>
         <Reference Include="System.Security.Principal.Windows">
           <HintPath>..\packages\System.Security.Principal.Windows\lib\net461\System.Security.Principal.Windows.dll</HintPath>
-          <Private>False</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
-      <ItemGroup>
-        <Reference Include="System.ValueTuple">
-          <HintPath>..\packages\System.ValueTuple\lib\net47\System.ValueTuple.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -513,6 +390,58 @@
       </ItemGroup>
     </When>
   </Choose>
-  <Import Project="..\packages\Fody\build\Fody.targets" Condition="Exists('..\packages\Fody\build\Fody.targets')" Label="Paket" />
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="xunit.abstractions">
+          <HintPath>..\packages\xunit.abstractions\lib\net35\xunit.abstractions.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.linux\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_linux_targets).targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.linux\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_linux_targets).targets')" Label="Paket" />
+  <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.osx\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_osx_targets).targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.osx\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_osx_targets).targets')" Label="Paket" />
+  <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_xp\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_v110_xp_targets).targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_xp\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_v110_xp_targets).targets')" Label="Paket" />
   <Import Project="..\packages\System.Data.SQLite.Core\build\$(__paket__System_Data_SQLite_Core_targets).targets" Condition="Exists('..\packages\System.Data.SQLite.Core\build\$(__paket__System_Data_SQLite_Core_targets).targets')" Label="Paket" />
+  <ItemGroup>
+    <Analyzer Include="..\packages\xunit.analyzers\analyzers\dotnet\cs\xunit.analyzers.dll">
+      <Paket>True</Paket>
+    </Analyzer>
+  </ItemGroup>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="xunit.assert">
+          <HintPath>..\packages\xunit.assert\lib\netstandard1.1\xunit.assert.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="xunit.core">
+          <HintPath>..\packages\xunit.extensibility.core\lib\net452\xunit.core.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="xunit.execution.desktop">
+          <HintPath>..\packages\xunit.extensibility.execution\lib\net452\xunit.execution.desktop.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Import Project="..\packages\xunit.core\build\xunit.core.targets" Condition="Exists('..\packages\xunit.core\build\xunit.core.targets')" Label="Paket" />
 </Project>

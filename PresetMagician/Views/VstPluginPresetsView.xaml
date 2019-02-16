@@ -11,7 +11,6 @@
     xmlns:behaviors="clr-namespace:PresetMagician.Behaviors"
     xmlns:converters="clr-namespace:PresetMagician.Converters"
     xmlns:dd="urn:gong-wpf-dragdrop"
-    xmlns:views="clr-namespace:InplaceEditBoxLib.Views;assembly=InplaceEditBoxLib"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     CloseViewModelOnUnloaded="False"
     Padding="2,2,2,2"
@@ -20,7 +19,6 @@
 
     <catel:UserControl.Resources>
         <converters:NodeSortConverter x:Key="NodeSorter" />
-        <views:BindingProxy x:Key="DataContextProxy"  Data="{Binding }" />
 
 
         <HierarchicalDataTemplate

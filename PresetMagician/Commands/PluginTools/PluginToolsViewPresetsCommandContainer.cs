@@ -73,8 +73,7 @@ namespace PresetMagician
         protected override async Task ExecuteAsync(object parameter)
         {
             _vstService.SelectedPlugin.ClearIsDirtyOnAllChildsSuspended();
-            ;
-            _vstService.SelectedPlugin.foo();
+            _vstService.SelectedPlugin.ClearDirtyFlag();
 
             var presetsViewModel =
                 _viewModelFactory.CreateViewModel<VstPluginPresetsViewModel>(_vstService.SelectedPlugin);

@@ -1,0 +1,7 @@
+xunit
+Catel.Core
+Catel.MVVM
+EntityFramework
+SQLitePCLRaw.bundle_e_sqlite3
+System.Data.SQLite
+FluentAssertions

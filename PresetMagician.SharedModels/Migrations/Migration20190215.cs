@@ -1,6 +1,6 @@
 namespace PresetMagician.Migrations
 {
-    public class Migration20191501 : BaseMigration
+    public class Migration20190215 : BaseMigration
     {
         public override void Up()
         {

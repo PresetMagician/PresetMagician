@@ -9,6 +9,9 @@ using PresetMagician.Views;
 
 namespace PresetMagician.Models
 {
+    /// <summary>
+    /// Holds the global application state, including global collections like Plugins, Presets etc.
+    /// </summary>
     public class ApplicationState : ModelBase
     {
         private Type _currentDocumentType;
