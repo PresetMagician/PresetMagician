@@ -4,7 +4,7 @@ using K4os.Compression.LZ4;
 
 namespace SharedModels
 {
-    public class PresetDataStorage
+    public class PresetDataStorage: TrackableModelBase
     {
         [Key] public string PresetDataStorageId { get; set; }
 

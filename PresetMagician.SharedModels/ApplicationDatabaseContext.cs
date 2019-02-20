@@ -45,18 +45,19 @@ namespace SharedModels
             Configuration.ProxyCreationEnabled = false;
         }
 
-        public ApplicationDatabaseContext(string connectionString) : base(connectionString)
+        public ApplicationDatabaseContext(string overrideDbPath) : base(new SQLiteConnection(GetConnectionString(overrideDbPath)),
+            true)
         {
             Configuration.LazyLoadingEnabled = false;
             Configuration.ValidateOnSaveEnabled = false;
             Configuration.ProxyCreationEnabled = false;
         }
 
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             var sqliteConnectionInitializer =
                 new SqliteCreateDatabaseIfNotExists<ApplicationDatabaseContext>(modelBuilder);
-
 
             modelBuilder.Entity<Plugin>().HasMany(p => p.DefaultModes).WithMany(q => q.Plugins).Map(mc =>
                 mc.MapLeftKey("PluginId").MapRightKey("ModeId").ToTable("PluginModes"));
@@ -104,11 +105,11 @@ namespace SharedModels
             return Path.Combine(directory, "ViewCache.xml");
         }
 
-        public static string GetConnectionString()
+        public static string GetConnectionString(string dbPath = null)
         {
             var cs = new SQLiteConnectionStringBuilder()
             {
-                DataSource = GetDatabasePath(OverrideDbPath), ForeignKeys = false, SyncMode = SynchronizationModes.Off,
+                DataSource = GetDatabasePath(dbPath), ForeignKeys = false, SyncMode = SynchronizationModes.Off,
                 CacheSize = -10240
             };
             

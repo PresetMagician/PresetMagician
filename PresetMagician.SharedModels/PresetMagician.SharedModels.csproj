@@ -15,6 +15,7 @@
     <AssemblyName>PresetMagician.SharedModels</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <PlatformTarget>x64</PlatformTarget>
@@ -45,9 +46,6 @@
     <Reference Include="Catel.MVVM">
       <HintPath>..\packages\Catel.MVVM\lib\net46\Catel.MVVM.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
-      <HintPath>..\packages\NewtonSoft.Json\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -59,21 +57,31 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationDatabaseContext.cs" />
-    <Compile Include="BankFile.cs" />
     <Compile Include="Collections\ProgressFastObservableCollection.cs" />
+    <Compile Include="Collections\TrackableFastObservableCollection.cs" />
     <Compile Include="EventArgs\PresetUpdatedEventArgs.cs" />
     <Compile Include="Exceptions\ConnectivityLostException.cs" />
+    <Compile Include="Extensions\DbContextExtensions.cs" />
+    <Compile Include="GlobalEntityManager.cs" />
     <Compile Include="IPlugin.cs" />
     <Compile Include="Interfaces\IPluginCommands.cs" />
     <Compile Include="IDataPersistence.cs" />
     <Compile Include="IRemotePluginInstance.cs" />
     <Compile Include="IVendorPresetParser.cs" />
-    <Compile Include="MidiNoteName.cs" />
     <Compile Include="Migrations\BaseMigration.cs" />
     <Compile Include="Migrations\IMigration.cs" />
     <Compile Include="Migrations\Migration20190215.cs" />
     <Compile Include="Migrations\Migration20190216.cs" />
-    <Compile Include="Mode.cs" />
+    <Compile Include="Models\BankFile.cs" />
+    <Compile Include="Models\MidiNoteName.cs" />
+    <Compile Include="Models\Mode.cs" />
+    <Compile Include="Models\Plugin.cs" />
+    <Compile Include="Models\PluginLocation.cs" />
+    <Compile Include="Models\Preset.cs" />
+    <Compile Include="Models\PresetBank.cs" />
+    <Compile Include="Models\PresetDataStorage.cs" />
+    <Compile Include="Models\SchemaVersion.cs" />
+    <Compile Include="Models\Type.cs" />
     <Compile Include="NativeInstrumentsResources\Categories.cs" />
     <Compile Include="NativeInstrumentsResources\Category.cs" />
     <Compile Include="NativeInstrumentsResources\CategoryDB.cs" />
@@ -83,18 +91,12 @@
     <Compile Include="NativeInstrumentsResources\OnlineResource.cs" />
     <Compile Include="NativeInstrumentsResources\ResourceState.cs" />
     <Compile Include="NativeInstrumentsResources\ShortNames.cs" />
-    <Compile Include="Plugin.cs" />
     <Compile Include="PluginInfoItem.cs" />
-    <Compile Include="PluginLocation.cs" />
-    <Compile Include="MiniLogger.cs" />
-    <Compile Include="Preset.cs" />
-    <Compile Include="PresetBank.cs" />
-    <Compile Include="PresetDataStorage.cs" />
     <Compile Include="PresetExportInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SchemaVersion.cs" />
     <Compile Include="Serialization\TestSerializer.cs" />
-    <Compile Include="Type.cs" />
+    <Compile Include="TrackableChildAwareModelBase.cs" />
+    <Compile Include="TrackableModelBase.cs" />
     <Compile Include="VstPluginInfoSurrogated.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -128,6 +130,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="paket.references" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\FastTest" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Choose>
@@ -231,6 +236,17 @@
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
         <Reference Include="Microsoft.CSharp">
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="Newtonsoft.Json">
+          <HintPath>..\packages\Newtonsoft.Json\lib\net45\Newtonsoft.Json.dll</HintPath>
+          <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -509,6 +525,39 @@
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
         <Reference Include="System.Xml.Linq">
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="TrackableEntities.Client">
+          <HintPath>..\packages\TrackableEntities.Client\lib\net45\TrackableEntities.Client.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="TrackableEntities.Common">
+          <HintPath>..\packages\TrackableEntities.Common\lib\portable40-net40+sl5+win8+wp8+wpa81\TrackableEntities.Common.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="TrackableEntities.EF.6">
+          <HintPath>..\packages\TrackableEntities.EF.6\lib\net45\TrackableEntities.EF.6.dll</HintPath>
+          <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>

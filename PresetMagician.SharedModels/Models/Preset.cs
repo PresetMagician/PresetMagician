@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 
 namespace SharedModels
 {
-    public class Preset : ChildAwareModelBase
+    public class Preset : TrackableModelBase
     {
         #region Fields
 

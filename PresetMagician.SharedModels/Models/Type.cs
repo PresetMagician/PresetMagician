@@ -6,7 +6,7 @@ using Catel.Fody;
 
 namespace SharedModels
 {
-    public class Type: ModelBase
+    public class Type: TrackableModelBase
     {
         [Key] public int Id { get; set; }
 
