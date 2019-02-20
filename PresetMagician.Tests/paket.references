@@ -5,3 +5,6 @@ EntityFramework
 SQLitePCLRaw.bundle_e_sqlite3
 System.Data.SQLite
 FluentAssertions
+TrackableEntities.EF.6
+TrackableEntities.Client
+Catel.Serialization.Json

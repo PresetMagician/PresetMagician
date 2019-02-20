@@ -12,3 +12,5 @@ SQLite.CodeFirst
 EFInteractiveViews
 Orc.EntityFramework6
 MethodTimer.Fody copy_local: false
+TrackableEntities.EF.6
+TrackableEntities.Client

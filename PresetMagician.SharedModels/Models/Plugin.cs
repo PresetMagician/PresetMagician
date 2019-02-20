@@ -21,7 +21,7 @@ using Path = Catel.IO.Path;
 
 namespace SharedModels
 {
-    public class Plugin : ChildAwareModelBase 
+    public class Plugin : TrackableModelBase 
     {
         private int _collectionChangedCounter;
         public readonly Dictionary<string, Preset> PresetCache = new Dictionary<string, Preset>();
