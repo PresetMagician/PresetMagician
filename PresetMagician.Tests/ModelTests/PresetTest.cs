@@ -230,6 +230,8 @@ namespace PresetMagician.Tests.ModelTests
         {
             var testedProperties = new HashSet<string>();
 
+            ModelBase.DisablePropertyChangeNotifications.Should().Be(false);
+
             foreach (var notModifyProperty in PropertiesWhichShouldNotModifyIsMetadataModified)
             {
                 var preset2 = GetFreshPresetTestSubject();

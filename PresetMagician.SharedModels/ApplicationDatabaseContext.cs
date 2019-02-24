@@ -163,11 +163,11 @@ namespace SharedModels
         public async Task<List<PresetDatabaseStatistics>> GetPresetStatistics()
         {
             var x = from plugin in Plugins
-                let presetCompressedSize = Presets.Where(p => p.PluginId == plugin.Id)
+                let presetCompressedSize = Presets.Where(p => p.Plugin.Id == plugin.Id)
                     .Select(p => p.PresetCompressedSize).DefaultIfEmpty(0).Sum()
-                let presetUncompressedSize = Presets.Where(p => p.PluginId == plugin.Id).Select(p => p.PresetSize)
+                let presetUncompressedSize = Presets.Where(p => p.Plugin.Id == plugin.Id).Select(p => p.PresetSize)
                     .DefaultIfEmpty(0).Sum()
-                let presetCount = Presets.Count(p => p.PluginId == plugin.Id)
+                let presetCount = Presets.Count(p => p.Plugin.Id == plugin.Id)
                 where presetCount > 0
                 orderby plugin.PluginName
                 select new PresetDatabaseStatistics
