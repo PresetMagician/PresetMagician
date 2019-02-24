@@ -4,4 +4,5 @@ Catel.Fody
 EntityFramework
 System.Data.SQLite
 SQLitePCLRaw.bundle_e_sqlite3
+SQLite.CodeFirst
 MethodTimer.Fody copy_local: false
