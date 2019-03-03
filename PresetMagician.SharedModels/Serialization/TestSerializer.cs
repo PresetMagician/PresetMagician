@@ -24,7 +24,7 @@ namespace PresetMagician.Serialization
                 sb.Append(i.Name + " ");
             }
             
-            Debug.WriteLine(sb);
+            //Debug.WriteLine(sb);
 
             return x;
 
@@ -35,7 +35,7 @@ namespace PresetMagician.Serialization
             if (memberValue.Name == "BankPath")
             {
                 Debug.WriteLine(memberValue.Name);
-            }
+            } 
 
             return base.DeserializeMember(context, memberValue);
         }
@@ -44,13 +44,13 @@ namespace PresetMagician.Serialization
             params string[] membersToIgnore)
         {
             base.SerializeMembers(model, stream, configuration, membersToIgnore);
-            Debug.WriteLine(stream.GetUtf8String());
+            //Debug.WriteLine(stream.GetUtf8String());
         }
 
         public override void Serialize(object model, Stream stream, ISerializationConfiguration configuration = null)
         {
             base.Serialize(model, stream, configuration);
-            Debug.WriteLine(stream.GetUtf8String());
+            //Debug.WriteLine(stream.GetUtf8String());
         }
     }
 }

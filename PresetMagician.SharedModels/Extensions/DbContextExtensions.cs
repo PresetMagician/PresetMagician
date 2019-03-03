@@ -14,7 +14,7 @@ namespace SharedModels.Extensions
 {
     public static class DbContextExtensions
     {
-        public static void SyncChanges<T> (this DbContext context, TrackableFastObservableCollection<T> items) where T: class, ITrackable, INotifyPropertyChanged, IIdentifiable 
+        public static void SyncChanges<T> (this DbContext context, TrackableCollection<T> items) where T: class, ITrackable, IUserEditable, INotifyPropertyChanged, IIdentifiable 
         {
             context.ApplyChanges(items.GetChanges());
             

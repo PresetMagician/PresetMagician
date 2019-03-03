@@ -1,73 +1,78 @@
-using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.Serialization;
-using TrackableEntities;
-using TrackableEntities.Client;
+using Catel.Data;
+using SharedModels.Data;
+using SharedModels.Extensions;
 using CatelModelBase = Catel.Data.ModelBase;
+
 namespace SharedModels
 {
-    public abstract class TrackableModelBase: CatelModelBase, ITrackable, IIdentifiable
+    public abstract partial class TrackableModelBase : ChildAwareModelBase, IEditableObject
     {
-        /// <summary>
-        /// Generate entity identifier used for correlation with MergeChanges (if not yet done)
-        /// </summary>
-        public void SetEntityIdentifier()
-        {
-            if (EntityIdentifier == Guid.Empty)
-                EntityIdentifier = Guid.NewGuid();
-        }
-
-        /// <summary>
-        /// Copy entity identifier used for correlation with MergeChanges from another entity
-        /// </summary>
-        /// <param name="other">Other trackable object</param>
-        public void SetEntityIdentifier(IIdentifiable other)
-        {
-            if (other is EntityBase otherEntity)
-                EntityIdentifier = otherEntity.EntityIdentifier;
-        }
-
-        /// <summary>
-        /// Indicates whether the current object is equal to another object of the same
-        /// type. The comparison is based on EntityIdentifier.
-        /// 
-        /// If the local EntityIdentifier is empty, then return false.
-        /// </summary>
-        /// <param name="other">An object to compare with this object</param>
-        /// <returns></returns>
-        public bool IsEquatable(IIdentifiable other)
-        {
-            if (EntityIdentifier == default)
-                return false;
-
-            if (!(other is EntityBase otherEntity))
-                return false;
-
-            return EntityIdentifier.Equals(otherEntity.EntityIdentifier);
-        }
-
-        bool IEquatable<IIdentifiable>.Equals(IIdentifiable other)
-        {
-            return IsEquatable(other);
-        }
         
-        /// <summary>
-        /// Change-tracking state of an entity.
-        /// </summary>
         [NotMapped]
-        public TrackingState TrackingState { get; set; }
+        private Dictionary<string, CollectionChangeNotificationWrapper> CollectionTrackers = new Dictionary<string, CollectionChangeNotificationWrapper>();
+        
+        private static HashSet<string> _ignoredPropertiesForModifiedProperties =
+            new HashSet<string> {nameof(ModifiedProperties), nameof(TrackingState), nameof(IsDirty), nameof(IsUserModified), nameof(IsEditing)};
 
-        /// <summary>
-        /// Properties on an entity that have been modified.
-        /// </summary>
-        [NotMapped]
-        public ICollection<string> ModifiedProperties { get; set; }
+        protected override void OnPropertyChanged(AdvancedPropertyChangedEventArgs e)
+        {
+            base.OnPropertyChanged(e);
 
-        /// <summary>
-        /// Identifier used for correlation with MergeChanges.
-        /// </summary>
-        [NotMapped]
-        public Guid EntityIdentifier { get; set; }
+            // Throw away an old collection tracker
+            if (CollectionTrackers.ContainsKey(e.PropertyName) && !e.NewValue.Equals(e.OldValue))
+            {
+                if (e.OldValue.GetType().IsTrackableCollection() && CollectionTrackers.ContainsKey(e.PropertyName))
+                {
+                    CollectionTrackers[e.PropertyName].Unsubscribe();
+                    CollectionTrackers[e.PropertyName].CollectionChanged -= OnWrappedCollectionChanged;
+                    CollectionTrackers[e.PropertyName].CollectionItemPropertyChanged -= OnCollectionItemPropertyChanged;
+                }
+            }
+            
+            if (e.NewValue != null && e.NewValue.GetType().IsTrackableCollection())
+            {
+                CollectionTrackers[e.PropertyName] = new CollectionChangeNotificationWrapper(e.NewValue, e.PropertyName);
+                CollectionTrackers[e.PropertyName].CollectionChanged += OnWrappedCollectionChanged;
+                CollectionTrackers[e.PropertyName].CollectionItemPropertyChanged += OnCollectionItemPropertyChanged;
+            }
+
+            if (e.IsNewValueMeaningful && e.OldValue != e.NewValue)
+            {
+                MarkPropertyModified(e.PropertyName);
+            }
+        }
+
+        private void OnCollectionItemPropertyChanged(object sender, WrappedCollectionItemPropertyChangedEventArgs e)
+        {
+            MarkPropertyModified(e.SourceProperty);
+        }
+
+        private void OnWrappedCollectionChanged(object sender, WrappedCollectionChangedEventArgs e)
+        {
+            MarkPropertyModified(e.SourceProperty);
+        }
+
+        private void MarkPropertyModified(string propertyName)
+        {
+            if (ModifiedProperties == null)
+            {
+                ModifiedProperties = new List<string>();
+            }
+            
+            if (!ModifiedProperties.Contains(propertyName) &&
+                !_ignoredPropertiesForModifiedProperties.Contains(propertyName))
+            {
+              
+                ModifiedProperties.Add(propertyName);
+            }
+
+            if (ShouldTrackUserChanges())
+            {
+                RecalculateIsUserModified(propertyName);
+            }
+        }
     }
 }

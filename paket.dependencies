@@ -63,3 +63,4 @@ nuget FluentAssertions
 nuget TrackableEntities.EF.6
 nuget TrackableEntities.Client
 nuget Catel.Serialization.Json
+nuget DeepCloner

@@ -8,7 +8,7 @@ using Catel.Runtime.Serialization;
 
 namespace SharedModels
 {
-    public class PresetBank : ModelBase
+    public class PresetBank: ObservableObject
     {
         private string _bankName;
 
@@ -64,7 +64,6 @@ namespace SharedModels
 
             PresetBanks.CollectionChanged += delegate(object sender, NotifyCollectionChangedEventArgs e)
             {
-                GetRootBank().SetDirty(nameof(PresetBanks));
                 if (e.Action == NotifyCollectionChangedAction.Add)
                 {
                     foreach (var i in e.NewItems)

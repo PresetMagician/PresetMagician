@@ -27,31 +27,32 @@ namespace PresetMagician.Tests.ModelTests
 
         [Fact]
         public void TestFoo()
-        {
+        { 
             var manager = _databaseFixture.GetTestDataManager();
 
             using (var dbContext = manager.Create())
             {
                 dbContext.Migrate();
-                dbContext.Database.Log = delegate(string s) { output.WriteLine(s); };
+                //dbContext.Database.Log = delegate(string s) { output.WriteLine(s); };
                 
                 Stopwatch stopWatch = new Stopwatch();
                 stopWatch.Start();
                 var modesList = dbContext.Modes.ToList();
 
+                output.WriteLine("modesList: "+stopWatch.ElapsedMilliseconds);
                 stopWatch.ElapsedMilliseconds.Should().BeLessThan(1000);
                 
                 stopWatch.Restart();
                 var typesList = dbContext.Types.ToList();
-                stopWatch.ElapsedMilliseconds.Should().BeLessThan(1000);
+                output.WriteLine("typesList: "+stopWatch.ElapsedMilliseconds);
                 
                 stopWatch.Restart();
                 var pluginList = dbContext.Plugins.Include(p => p.DefaultModes).Include(p => p.DefaultTypes).ToList();
-                stopWatch.ElapsedMilliseconds.Should().BeLessThan(3000);
+                output.WriteLine("pluginList: "+stopWatch.ElapsedMilliseconds);
                
                 stopWatch.Restart();
                 var presetsList = dbContext.Presets.Include(p => p.Modes).Include(p => p.Types).ToList();
-                stopWatch.ElapsedMilliseconds.Should().BeLessThan(6000);
+                output.WriteLine("presetList: "+stopWatch.ElapsedMilliseconds);
                
                 
                

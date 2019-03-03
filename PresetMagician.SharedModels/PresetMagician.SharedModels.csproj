@@ -33,7 +33,8 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32bit>false</Prefer32bit>
@@ -57,11 +58,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationDatabaseContext.cs" />
-    <Compile Include="Collections\ProgressFastObservableCollection.cs" />
-    <Compile Include="Collections\TrackableFastObservableCollection.cs" />
+    <Compile Include="Collections\TrackableCollection.cs" />
+    <Compile Include="Data\SourcePropertyChangeNotificationWrapper.cs" />
     <Compile Include="EventArgs\PresetUpdatedEventArgs.cs" />
     <Compile Include="Exceptions\ConnectivityLostException.cs" />
     <Compile Include="Extensions\DbContextExtensions.cs" />
+    <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="GlobalEntityManager.cs" />
     <Compile Include="IPlugin.cs" />
     <Compile Include="Interfaces\IPluginCommands.cs" />
@@ -97,6 +99,8 @@
     <Compile Include="Serialization\TestSerializer.cs" />
     <Compile Include="TrackableChildAwareModelBase.cs" />
     <Compile Include="TrackableModelBase.cs" />
+    <Compile Include="TrackableModelBase.trackable.cs" />
+    <Compile Include="TrackableModelBase.usereditable.cs" />
     <Compile Include="VstPluginInfoSurrogated.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -174,6 +178,17 @@
       <ItemGroup>
         <Reference Include="Catel.Fody.Attributes">
           <HintPath>..\packages\Catel.Fody\lib\net452\Catel.Fody.Attributes.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="DeepCloner">
+          <HintPath>..\packages\DeepCloner\lib\net40\DeepCloner.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
