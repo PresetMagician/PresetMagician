@@ -13,6 +13,7 @@ using Catel.Data;
 using Catel.Fody;
 using Catel.Runtime.Serialization;
 using Newtonsoft.Json;
+using SharedModels.Collections;
 
 namespace SharedModels
 {
@@ -51,12 +52,22 @@ namespace SharedModels
             nameof(Types)
         };
 
+        public override ICollection<string> EditableProperties { get; } = new HashSet<string>
+        {
+            nameof(Author),
+            nameof(BankPath),
+            nameof(Comment),
+            nameof(Modes),
+            nameof(PresetName),
+            nameof(PreviewNoteNumber),
+            nameof(Types)
+        };
+
         /// <summary>
         /// Saves all properties which can be set by a preset parser, but were updated by the user
         /// </summary>
-        public HashSet<string> UserModifiedProperties = new HashSet<string>();
+        public HashSet<string> UserOverwrittenProperties = new HashSet<string>();
 
-        private bool _isEditing;
         private bool _isEditingFromPresetParser;
 
         private ChangeNotificationWrapper _modesChangeNotificationWrapper;
@@ -79,7 +90,7 @@ namespace SharedModels
             _typesChangeNotificationWrapper.CollectionChanged += WrapperOnTypesCollectionChanged;
         }
 
-        protected override void OnBeginEdit(BeginEditEventArgs e)
+       /* protected override void OnBeginEdit(BeginEditEventArgs e)
         {
             base.OnBeginEdit(e);
 
@@ -105,7 +116,7 @@ namespace SharedModels
             {
                 _isEditing = false;
             }
-        }
+        }*/
 
         /// <summary>
         /// Sets updated data delivered by the preset parser. Ignores user-modified properties.
@@ -116,9 +127,9 @@ namespace SharedModels
             _isEditingFromPresetParser = true;
             foreach (var property in PresetParserMetadataProperties)
             {
-                if (!UserModifiedProperties.Contains(property))
+                if (!UserOverwrittenProperties.Contains(property))
                 {
-                    SetValue(property, preset.GetValue(property));
+                    //SetValue(property, preset.GetValue(property));
                 }
             }
 
@@ -127,7 +138,7 @@ namespace SharedModels
 
         private bool ShouldTrackChanges()
         {
-            return _isEditing || _isEditingFromPresetParser;
+            return IsEditing || _isEditingFromPresetParser;
         }
 
         private void WrapperOnTypesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -140,9 +151,9 @@ namespace SharedModels
             if (e.Action == NotifyCollectionChangedAction.Add || e.Action == NotifyCollectionChangedAction.Remove ||
                 e.Action == NotifyCollectionChangedAction.Replace)
             {
-                if (_isEditing)
+                if (IsEditing)
                 {
-                    UserModifiedProperties.Add("Types");
+                    UserOverwrittenProperties.Add("Types");
                 }
 
                 IsMetadataModified = true;
@@ -158,9 +169,9 @@ namespace SharedModels
 
             if (e.PropertyName == nameof(Type.Name) || e.PropertyName == nameof(Type.SubTypeName))
             {
-                if (_isEditing)
+                if (IsEditing)
                 {
-                    UserModifiedProperties.Add("Types");
+                    UserOverwrittenProperties.Add("Types");
                 }
 
                 IsMetadataModified = true;
@@ -177,9 +188,9 @@ namespace SharedModels
             if (e.Action == NotifyCollectionChangedAction.Add || e.Action == NotifyCollectionChangedAction.Remove ||
                 e.Action == NotifyCollectionChangedAction.Replace)
             {
-                if (_isEditing)
+                if (IsEditing)
                 {
-                    UserModifiedProperties.Add("Modes");
+                    UserOverwrittenProperties.Add("Modes");
                 }
 
                 IsMetadataModified = true;
@@ -195,9 +206,9 @@ namespace SharedModels
 
             if (e.PropertyName == nameof(Mode.Name))
             {
-                if (_isEditing)
+                if (IsEditing)
                 {
-                    UserModifiedProperties.Add("Modes");
+                    UserOverwrittenProperties.Add("Modes");
                 }
 
                 IsMetadataModified = true;
@@ -226,6 +237,8 @@ namespace SharedModels
         /// <param name="e"></param>
         protected override void OnPropertyChanged(AdvancedPropertyChangedEventArgs e)
         {
+            base.OnPropertyChanged(e);
+            
             if (e.IsNewValueMeaningful && e.PropertyName == nameof(PresetBank) && PresetBank != null)
             {
                 BankPath = PresetBank.BankPath;
@@ -234,15 +247,22 @@ namespace SharedModels
             if (e.IsNewValueMeaningful && _propertiesWhichModifyMetadata.Contains(e.PropertyName) &&
                 ShouldTrackChanges())
             {
-                if (_isEditing && PresetParserMetadataProperties.Contains(e.PropertyName))
+                if (IsEditing && PresetParserMetadataProperties.Contains(e.PropertyName))
                 {
-                    UserModifiedProperties.Add(e.PropertyName);
+                    if (UserModifiedProperties.Contains(e.PropertyName))
+                    {
+                        UserOverwrittenProperties.Add(e.PropertyName);
+                    }
+                    else
+                    {
+                        UserOverwrittenProperties.Remove(e.PropertyName);
+                    }
                 }
 
                 IsMetadataModified = true;
             }
 
-            base.OnPropertyChanged(e);
+            
         }
 
         private void PreviewNoteOnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -251,9 +271,9 @@ namespace SharedModels
             {
                 if (_propertiesWhichModifyMetadata.Contains(nameof(PreviewNoteNumber)) && ShouldTrackChanges())
                 {
-                    if (_isEditing && PresetParserMetadataProperties.Contains(nameof(PreviewNoteNumber)))
+                    if (IsEditing && PresetParserMetadataProperties.Contains(nameof(PreviewNoteNumber)))
                     {
-                        UserModifiedProperties.Add(e.PropertyName);
+                        UserOverwrittenProperties.Add(e.PropertyName);
                     }
 
                     IsMetadataModified = true;
@@ -336,7 +356,7 @@ namespace SharedModels
         /// <summary>
         /// The PresetBank this preset is assigned to
         /// </summary>
-        [NotMapped][ExcludeFromBackup]
+        [NotMapped]
         public PresetBank PresetBank
         {
             get => _presetBank;
@@ -410,15 +430,15 @@ namespace SharedModels
 
         private string _bankPath;
 
-        private FastObservableCollection<Type> _types = new FastObservableCollection<Type>();
-        private FastObservableCollection<Mode> _modes = new FastObservableCollection<Mode>();
+        private TrackableCollection<Type> _types = new TrackableCollection<Type>();
+        private TrackableCollection<Mode> _modes = new TrackableCollection<Mode>();
 
         /// <summary>
         /// The Native Instruments types used for this plugin. Note that this is m:n relationship configured using the
         /// fluent API.
         /// </summary>
         [IncludeInSerialization]
-        public FastObservableCollection<Type> Types
+        public TrackableCollection<Type> Types
         {
             get => _types;
             set
@@ -443,7 +463,7 @@ namespace SharedModels
         /// fluent API.
         /// </summary>
         [IncludeInSerialization]
-        public FastObservableCollection<Mode> Modes
+        public TrackableCollection<Mode> Modes
         {
             get => _modes;
             set
@@ -516,7 +536,7 @@ namespace SharedModels
         /// The preview note used for the audio preview. Note that we only store the midi note number in the database.
         /// </summary>
         [NotMapped]
-        [ExcludeFromBackup]
+        
         public MidiNoteName PreviewNote
 
         {
@@ -560,18 +580,18 @@ namespace SharedModels
         /// Stores all properties which the user has manually modified. These properties will never be updated by a preset parser
         /// </summary>
         [Column("UserModifiedMetadata")]
-        [ExcludeFromBackup]
+        
         // ReSharper disable once UnusedMember.Global
         public string SerializedUserModifiedMetadata
         {
-            get => JsonConvert.SerializeObject(UserModifiedProperties);
+            get => JsonConvert.SerializeObject(UserOverwrittenProperties);
             set
             {
                 if (!string.IsNullOrWhiteSpace(value))
                 {
                     try
                     {
-                        UserModifiedProperties = JsonConvert.DeserializeObject<HashSet<string>>(value);
+                        UserOverwrittenProperties = JsonConvert.DeserializeObject<HashSet<string>>(value);
                     }
                     catch (JsonReaderException e)
                     {

@@ -6,12 +6,14 @@ using System.Runtime.Serialization.Json;
 using Catel.Collections;
 using Catel.Data;
 using Catel.IoC;
+using Catel.Reflection;
 using Catel.Runtime.Serialization;
 using FluentAssertions;
 using Newtonsoft.Json;
 using PresetMagician.Serialization;
 using PresetMagician.Tests.Extensions;
 using SharedModels;
+using SharedModels.Collections;
 using Xunit;
 using Xunit.Abstractions;
 using JsonSerializer = Catel.Runtime.Serialization.Json.JsonSerializer;
@@ -74,7 +76,11 @@ namespace PresetMagician.Tests.ModelTests
                 "HasErrors",
                 "HasWarnings",
                 "IsDirty",
+                "EditableProperties",
+                "IsUserModified",
+                "IsEditing",
                 "TrackingState",
+                "UserModifiedProperties",
                 "ModifiedProperties",
                 "EntityIdentifier",
                 "IsReadOnly",
@@ -111,8 +117,6 @@ namespace PresetMagician.Tests.ModelTests
             preset.PresetHash = "foobar";
             preset.PresetName = "my preset";
             preset.IsMetadataModified = false;
-            plugin.ClearIsDirtyOnAllChilds();
-            plugin.ClearDirtyFlag();
 
             return preset;
         }
@@ -153,7 +157,11 @@ namespace PresetMagician.Tests.ModelTests
                     backupValues.Add(propName, value);
                 }
 
-                (preset.Plugin as IEditableObject).BeginEdit();
+                preset.Plugin.BeginEdit();
+                preset.IsEditing.Should().BeTrue();
+                preset.Plugin.IsEditing.Should().BeTrue();
+                preset.Plugin.Presets.IsEditing.Should().BeTrue();
+                
                 foreach (var propName in ExpectedDatabaseProperties)
                 {
                     var property = (from prop in context.GetTableColumns(typeof(Preset))
@@ -180,10 +188,10 @@ namespace PresetMagician.Tests.ModelTests
                         where prop.Key == propName
                         select prop.Value).First();
 
-                    var actualValue = preset.GetType().GetProperty(property.Name).GetValue(preset);
+                    var actualValue = PropertyHelper.GetPropertyValue(preset, property.Name);
                     var expectedValue = backupValues[propName];
 
-                    actualValue.Should().BeEquivalentTo(expectedValue, "because the backup should work");
+                    actualValue.Should().BeEquivalentTo(expectedValue, $"because the backup should work for property {property.Name}");
                 }
 
                 preset.Plugin.Should().Be(plugin);
@@ -256,8 +264,8 @@ namespace PresetMagician.Tests.ModelTests
 
                 if (Preset.PresetParserMetadataProperties.Contains(modifyProperty.Key))
                 {
-                    preset2.UserModifiedProperties.Should().Contain(modifyProperty.Key,
-                        $"UserModifiedProperties should contain {modifyProperty.Key} because it's a PresetParserMetadataProperties which is now user modified");
+                    preset2.UserOverwrittenProperties.Should().Contain(modifyProperty.Key,
+                        $"UserOverwrittenProperties should contain {modifyProperty.Key} because it's a PresetParserMetadataProperties which is now user modified");
                 }
 
                 testedProperties.Add(modifyProperty.Key);
@@ -342,39 +350,39 @@ namespace PresetMagician.Tests.ModelTests
             preset.Modes.First().Name = "test";
             preset.IsMetadataModified.Should()
                 .BeTrue("Changing a mode name should modify IsMetadataModified when edit mode is on");
-            preset.UserModifiedProperties.Should().Contain("Modes");
+            preset.UserOverwrittenProperties.Should().Contain("Modes");
 
             preset = GetFreshPresetTestSubject();
             (preset as IEditableObject).BeginEdit();
             preset.Modes.RemoveFirst();
             preset.IsMetadataModified.Should()
                 .BeTrue("Removing a mode should modify IsMetadataModified when edit mode is on");
-            preset.UserModifiedProperties.Should().Contain("Modes");
+            preset.UserOverwrittenProperties.Should().Contain("Modes");
 
             preset = GetFreshPresetTestSubject();
             (preset as IEditableObject).BeginEdit();
             preset.Modes.Add(new Mode {Name = "bla"});
             preset.IsMetadataModified.Should()
                 .BeTrue("Adding a mode name should modify IsMetadataModified when edit mode is on");
-            preset.UserModifiedProperties.Should().Contain("Modes");
+            preset.UserOverwrittenProperties.Should().Contain("Modes");
 
             preset = GetFreshPresetTestSubject();
             (preset as IEditableObject).BeginEdit();
-            preset.Modes = new FastObservableCollection<Mode>();
+            preset.Modes = new TrackableCollection<Mode>();
             preset.IsMetadataModified.Should()
                 .BeTrue("Replacing the modes collection should modify IsMetadataModified when edit mode is on");
-            preset.UserModifiedProperties.Should().Contain("Modes");
+            preset.UserOverwrittenProperties.Should().Contain("Modes");
 
             preset = GetFreshPresetTestSubject();
             var oldModes = preset.Modes;
-            preset.Modes = new FastObservableCollection<Mode>();
+            preset.Modes = new TrackableCollection<Mode>();
 
             (preset as IEditableObject).BeginEdit();
             oldModes.Clear();
             preset.IsMetadataModified.Should()
                 .BeFalse(
                     "Modifying a detached modes collection should not modify IsMetadataModified when edit mode is on");
-            preset.UserModifiedProperties.Should().NotContain("Modes");
+            preset.UserOverwrittenProperties.Should().NotContain("Modes");
 
             testedProperties.Add("Modes");
         }
@@ -386,46 +394,46 @@ namespace PresetMagician.Tests.ModelTests
             preset.Types.First().Name = "test";
             preset.IsMetadataModified.Should()
                 .BeTrue("Changing a type name should modify IsMetadataModified when edit mode is on");
-            preset.UserModifiedProperties.Should().Contain("Types");
+            preset.UserOverwrittenProperties.Should().Contain("Types");
 
             preset = GetFreshPresetTestSubject();
             (preset as IEditableObject).BeginEdit();
             preset.Types.First().SubTypeName = "test";
             preset.IsMetadataModified.Should()
                 .BeTrue("Changing a type name should modify IsMetadataModified when edit mode is on");
-            preset.UserModifiedProperties.Should().Contain("Types");
+            preset.UserOverwrittenProperties.Should().Contain("Types");
 
             preset = GetFreshPresetTestSubject();
             (preset as IEditableObject).BeginEdit();
             preset.Types.RemoveFirst();
             preset.IsMetadataModified.Should()
                 .BeTrue("Removing a type should modify IsMetadataModified when edit mode is on");
-            preset.UserModifiedProperties.Should().Contain("Types");
+            preset.UserOverwrittenProperties.Should().Contain("Types");
 
             preset = GetFreshPresetTestSubject();
             (preset as IEditableObject).BeginEdit();
             preset.Types.Add(new Type {Name = "bla"});
             preset.IsMetadataModified.Should()
                 .BeTrue("Adding a type name should modify IsMetadataModified when edit mode is on");
-            preset.UserModifiedProperties.Should().Contain("Types");
+            preset.UserOverwrittenProperties.Should().Contain("Types");
 
             preset = GetFreshPresetTestSubject();
             (preset as IEditableObject).BeginEdit();
-            preset.Types = new FastObservableCollection<Type>();
+            preset.Types = new TrackableCollection<Type>();
             preset.IsMetadataModified.Should()
                 .BeTrue("Replacing the type collection should modify IsMetadataModified when edit mode is on");
-            preset.UserModifiedProperties.Should().Contain("Types");
+            preset.UserOverwrittenProperties.Should().Contain("Types");
 
             preset = GetFreshPresetTestSubject();
             var oldTypes = preset.Types;
-            preset.Types = new FastObservableCollection<Type>();
+            preset.Types = new TrackableCollection<Type>();
 
             (preset as IEditableObject).BeginEdit();
             oldTypes.Clear();
             preset.IsMetadataModified.Should()
                 .BeFalse(
                     "Modifying a detached types collection should not modify IsMetadataModified when edit mode is on");
-            preset.UserModifiedProperties.Should().NotContain("Types");
+            preset.UserOverwrittenProperties.Should().NotContain("Types");
 
             testedProperties.Add("Types");
         }

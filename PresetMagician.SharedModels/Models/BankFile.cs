@@ -1,12 +1,11 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Anotar.Catel;
-using Catel.Data;
 using SharedModels;
 
 namespace PresetMagician.SharedModels
 {
-    public class BankFile
+    public class BankFile: TrackableModelBase
     {
         [Key] public int BankId { get; set; }
         public Plugin Plugin { get; set; }

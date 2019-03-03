@@ -33,6 +33,7 @@ NUGET
       System.ValueTuple (>= 4.4)
     DataGridExtensions (1.0.41)
       Expression.Blend.Sdk (>= 1.0.2)
+    DeepCloner (0.10.2)
     DeltaCompressionDotNet (1.1)
     Dirkster.AvalonDock.Themes.VS2013 (3.4.0.8)
     EFInteractiveViews (1.0.1)

@@ -4,20 +4,15 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics;
-using System.IO;
-using Catel.Data;
-using Catel.Fody;
-using Catel.Logging;
+using Catel.IO;
 using Catel.Runtime.Serialization;
 using Drachenkatze.PresetMagician.NKSF.NKSF;
 using Drachenkatze.PresetMagician.Utils;
 using Newtonsoft.Json;
-using PresetMagician.Collections;
 using PresetMagician.Models;
 using PresetMagician.Models.NativeInstrumentsResources;
 using PresetMagician.SharedModels;
-using Path = Catel.IO.Path;
+using SharedModels.Collections;
 
 namespace SharedModels
 {
@@ -27,7 +22,20 @@ namespace SharedModels
         public readonly Dictionary<string, Preset> PresetCache = new Dictionary<string, Preset>();
         public readonly Dictionary<(string hash, string sourceFile), Preset> PresetHashCache = new Dictionary<(string, string), Preset>();
 
-
+        public override ICollection<string> EditableProperties { get; } = new List<string>
+        {
+            nameof(Presets),
+            nameof(AdditionalBankFiles),
+            nameof(IsEnabled),
+            nameof(DefaultControllerAssignments), //todo potential issue maybe?
+            nameof(DefaultModes),
+            nameof(DefaultTypes),
+            nameof(DontReport),
+            nameof(PluginLocation),
+            nameof(RootBank)
+            
+        };
+        
         public enum PluginTypes
         {
             Effect,
@@ -121,12 +129,12 @@ namespace SharedModels
         
         #region Plugin Errors
         // todo refactor this
-        [NotMapped] [ExcludeFromBackup] public string LoadErrorMessage { get; private set; }
+        [NotMapped]  public string LoadErrorMessage { get; private set; }
         
         /// <summary>
         /// Defines if the plugin had a load error
         /// </summary>
-        [NotMapped] [ExcludeFromBackup]
+        [NotMapped] 
         public bool LoadError { get; private set; }
         #endregion
         
@@ -142,7 +150,7 @@ namespace SharedModels
         /// These are the plugin capabilities which will get serialized into the database
         /// todo check if this can be refactored to use EF6 builtin serializer only and get rid of that serializer stuff
         /// </summary>
-        [Column("PluginCapabilities")] [ExcludeFromBackup]
+        [Column("PluginCapabilities")] 
         public string SerializedPluginCapabilities
         {
             get => JsonConvert.SerializeObject(PluginCapabilities);
@@ -193,13 +201,13 @@ namespace SharedModels
         #endregion
         
         #region Plugin Info
-        [ExcludeFromBackup] [NotMapped] public VstPluginInfoSurrogate PluginInfo { get; set; }
+         [NotMapped] public VstPluginInfoSurrogate PluginInfo { get; set; }
 
         /// <summary>
         /// These are the plugin infos which will get serialized into the database
         /// todo check if this can be refactored to use EF6 builtin serializer only and get rid of that serializer stuff
         /// </summary>
-        [Column("PluginInfo")] [ExcludeFromBackup]
+        [Column("PluginInfo")] 
         public string SerializedPluginInfo
         {
             get => JsonConvert.SerializeObject(PluginInfo);
@@ -226,15 +234,8 @@ namespace SharedModels
 
         
         [IncludeInSerialization]
-        public ProgressFastObservableCollection<Preset> Presets { get; set; } =
-            new ProgressFastObservableCollection<Preset>();
-
-
-       
-
-        
-
-        
+        public TrackableCollection<Preset> Presets { get; set; } =
+            new TrackableCollection<Preset>();
 
         /// <summary>
         /// Defines the full path to the plugin DLL
@@ -304,7 +305,7 @@ namespace SharedModels
         [NotMapped] public ControllerAssignments DefaultControllerAssignments { get; set; }
 
         [Column("DefaultControllerAssignments")]
-        [ExcludeFromBackup]
+        
         // ReSharper disable once UnusedMember.Global
         public string SerializedDefaultControllerAssignments
         {
@@ -314,7 +315,7 @@ namespace SharedModels
 
         public bool IsReported { get; set; }
         public bool DontReport { get; set; }
-        public ProgressFastObservableCollection<BankFile> AdditionalBankFiles { get; set; } = new ProgressFastObservableCollection<BankFile>();
+        public TrackableCollection<BankFile> AdditionalBankFiles { get; set; } = new TrackableCollection<BankFile>();
 
 
         public ICollection<Type> DefaultTypes { get; set; } = new HashSet<Type>();
@@ -336,11 +337,12 @@ namespace SharedModels
 
         public string PluginName { get; set; } = "<unknown>";
 
+        
         public int PresetParserAudioPreviewPreDelay => PresetParser?.AudioPreviewPreDelay ?? 0;
 
         public string PluginVendor { get; set; }
 
-        [ExcludeFromBackup] [NotMapped] public IVendorPresetParser PresetParser { get; set; }
+         [NotMapped] public IVendorPresetParser PresetParser { get; set; }
 
         /// <summary>
         /// Defines if the plugin is or was scanned
@@ -364,12 +366,13 @@ namespace SharedModels
 
         public MiniMemoryLogger Logger { get; }
 
+        // todo remove
         public void ClearDirtyFlag()
         {
-            IsDirty = false;
+            //IsDirty = false;
         }
         
-        [NotMapped] [ExcludeFromBackup]
+        [NotMapped] 
         public NativeInstrumentsResource NativeInstrumentsResource { get; set; } = new NativeInstrumentsResource();
 
         #endregion

@@ -64,15 +64,16 @@ namespace SharedModels
             modelBuilder.Entity<Plugin>().HasMany(p => p.DefaultTypes).WithMany(q => q.Plugins).Map(mc =>
                 mc.MapLeftKey("PluginId").MapRightKey("TypeId").ToTable("PluginTypes"));
             modelBuilder.Entity<Plugin>().IgnoreCatelProperties();
-            modelBuilder.Entity<Preset>().IgnoreCatelProperties();
-            modelBuilder.Entity<Type>().IgnoreCatelProperties();
-            modelBuilder.Entity<Mode>().IgnoreCatelProperties();
             
             modelBuilder.Entity<Preset>().HasMany(p => p.Types).WithMany(q => q.Presets).Map(mc =>
                 mc.MapLeftKey("PresetId").MapRightKey("TypeId").ToTable("PresetTypes"));
 
             modelBuilder.Entity<Preset>().HasMany(p => p.Modes).WithMany(q => q.Presets).Map(mc =>
                 mc.MapLeftKey("PresetId").MapRightKey("ModeId").ToTable("PresetModes"));
+            
+            modelBuilder.Entity<Preset>().IgnoreCatelProperties();
+            modelBuilder.Entity<Mode>().IgnoreCatelProperties();
+            modelBuilder.Entity<Type>().IgnoreCatelProperties();
 
             modelBuilder.Entity<PresetDataStorage>();
             modelBuilder.Entity<PluginLocation>();
@@ -249,7 +250,7 @@ namespace SharedModels
                 plugin.PresetCache.Add(preset.SourceFile, preset);
             }
 
-            using (plugin.Presets.SuspendChangeNotifications())
+            //using (plugin.Presets.SuspendChangeNotifications())
             {
                 Entry(plugin).Collection(p => p.Presets).Query().Include(p => p.Modes).Include(p => p.Types)
                     .Where(p => !p.IsIgnored).Load();

@@ -1,6 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\xunit.core\build\xunit.core.props" Condition="Exists('..\packages\xunit.core\build\xunit.core.props')" Label="Paket" />
+  <Import Project="..\packages\ModuleInit.Fody\build\ModuleInit.Fody.props" Condition="Exists('..\packages\ModuleInit.Fody\build\ModuleInit.Fody.props')" Label="Paket" />
+  <Import Project="..\packages\LoadAssembliesOnStartup.Fody\build\LoadAssembliesOnStartup.Fody.props" Condition="Exists('..\packages\LoadAssembliesOnStartup.Fody\build\LoadAssembliesOnStartup.Fody.props')" Label="Paket" />
+  <Import Project="..\packages\Catel.Fody\build\Catel.Fody.props" Condition="Exists('..\packages\Catel.Fody\build\Catel.Fody.props')" Label="Paket" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -21,7 +24,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -30,7 +33,8 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -45,12 +49,17 @@
     <Compile Include="Extensions\DatabaseContextExtensions.cs" />
     <Compile Include="ModelTests\ApplicationTests.cs" />
     <Compile Include="ModelTests\PresetTest.cs" />
-    <Compile Include="ModelTests\TrackableFastObservableCollectionTests.cs" />
+    <Compile Include="ModelTests\TrackableCollectionTests.cs" />
+    <Compile Include="ModelTests\TrackableModelBaseTest.cs" />
+    <Compile Include="ModuleInitializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EmptyDbContextManager.cs" />
     <Compile Include="TestDataContextManager.cs" />
+    <Compile Include="TestEntities\Company.cs" />
+    <Compile Include="TestEntities\User.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="FodyWeavers.xml" />
     <Content Include="paket.references" />
     <Content Include="Resources\PresetMagician.test.sqlite3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -106,6 +115,17 @@
       <ItemGroup>
         <Reference Include="Catel.Core">
           <HintPath>..\packages\Catel.Core\lib\net47\Catel.Core.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="Catel.Fody.Attributes">
+          <HintPath>..\packages\Catel.Fody\lib\net452\Catel.Fody.Attributes.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -180,7 +200,29 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
+        <Reference Include="LoadAssembliesOnStartup.Fody">
+          <HintPath>..\packages\LoadAssembliesOnStartup.Fody\lib\net46\LoadAssembliesOnStartup.Fody.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
         <Reference Include="Microsoft.CSharp">
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="ModuleInit">
+          <HintPath>..\packages\ModuleInit.Fody\lib\net452\ModuleInit.dll</HintPath>
+          <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -458,6 +500,7 @@
       </ItemGroup>
     </When>
   </Choose>
+  <Import Project="..\packages\Fody\build\Fody.targets" Condition="Exists('..\packages\Fody\build\Fody.targets')" Label="Paket" />
   <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.linux\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_linux_targets).targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.linux\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_linux_targets).targets')" Label="Paket" />
   <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.osx\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_osx_targets).targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.osx\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_osx_targets).targets')" Label="Paket" />
   <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_xp\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_v110_xp_targets).targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_xp\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_v110_xp_targets).targets')" Label="Paket" />
