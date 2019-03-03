@@ -1,6 +1,6 @@
 using System.Data.Entity;
 
-namespace PresetMagician.Migrations
+namespace SharedModels.Migrations
 {
     public interface IMigration
     {

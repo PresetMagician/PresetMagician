@@ -1,5 +1,6 @@
-namespace PresetMagician.Migrations
+namespace SharedModels.Migrations
 {
+    // ReSharper disable once UnusedMember.Global
     public class Migration20190215 : BaseMigration
     {
         public override void Up()

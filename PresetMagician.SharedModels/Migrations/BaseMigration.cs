@@ -1,7 +1,7 @@
 using System.Data.Entity;
 using System.Linq;
 
-namespace PresetMagician.Migrations
+namespace SharedModels.Migrations
 {
     abstract public class BaseMigration : IMigration
     {

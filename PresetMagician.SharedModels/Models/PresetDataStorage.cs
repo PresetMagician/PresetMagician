@@ -17,7 +17,7 @@ namespace SharedModels
         {
             get
             {
-                if (!IsCompressed)
+                if (!IsCompressed || PresetData == null)
                 {
                     return new byte[0];
                 }
