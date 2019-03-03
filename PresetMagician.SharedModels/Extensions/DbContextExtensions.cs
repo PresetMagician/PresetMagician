@@ -1,13 +1,8 @@
-using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.Entity;
 using SharedModels.Collections;
 using TrackableEntities;
-using TrackableEntities.Common;
-using TrackableEntities.EF6;
-using TrackableEntities;
 using TrackableEntities.Client;
-using TrackableEntities.Common;
-using System.ComponentModel;
 using TrackableEntities.EF6;
 
 namespace SharedModels.Extensions

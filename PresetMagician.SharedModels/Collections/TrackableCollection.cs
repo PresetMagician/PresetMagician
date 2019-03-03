@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using System.Net.Sockets;
 using Catel.Collections;
 using Catel.Data;
 using TrackableEntities;
@@ -37,11 +36,13 @@ namespace SharedModels.Collections
         public TrackableCollection()
         {
             InitChangeNotificationWrapper();
+            AutomaticallyDispatchChangeNotifications = false;
         }
 
         public TrackableCollection(IEnumerable<T> collection) : base(collection)
         {
             InitChangeNotificationWrapper();
+            AutomaticallyDispatchChangeNotifications = false;
             _backingTrackingCollection = new ChangeTrackingCollection<T>(collection);
 
         }

@@ -13,9 +13,9 @@ using Catel;
 using Drachenkatze.PresetMagician.Utils;
 using InteractivePreGeneratedViews;
 using Orc.EntityFramework;
-using PresetMagician.Migrations;
 using PresetMagician.Models.EventArgs;
 using PresetMagician.SharedModels;
+using SharedModels.Migrations;
 using SQLite.CodeFirst;
 
 namespace SharedModels
@@ -74,8 +74,9 @@ namespace SharedModels
             modelBuilder.Entity<Preset>().IgnoreCatelProperties();
             modelBuilder.Entity<Mode>().IgnoreCatelProperties();
             modelBuilder.Entity<Type>().IgnoreCatelProperties();
+            modelBuilder.Entity<BankFile>().IgnoreCatelProperties();
 
-            modelBuilder.Entity<PresetDataStorage>();
+            modelBuilder.Entity<PresetDataStorage>().IgnoreCatelProperties();
             modelBuilder.Entity<PluginLocation>();
             modelBuilder.Entity<SchemaVersion>();
 
@@ -250,7 +251,7 @@ namespace SharedModels
                 plugin.PresetCache.Add(preset.SourceFile, preset);
             }
 
-            //using (plugin.Presets.SuspendChangeNotifications())
+            using (plugin.Presets.SuspendChangeNotifications())
             {
                 Entry(plugin).Collection(p => p.Presets).Query().Include(p => p.Modes).Include(p => p.Types)
                     .Where(p => !p.IsIgnored).Load();

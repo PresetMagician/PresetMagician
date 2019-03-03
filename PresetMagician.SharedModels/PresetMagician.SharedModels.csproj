@@ -74,6 +74,7 @@
     <Compile Include="Migrations\IMigration.cs" />
     <Compile Include="Migrations\Migration20190215.cs" />
     <Compile Include="Migrations\Migration20190216.cs" />
+    <Compile Include="Migrations\Migration20190303.cs" />
     <Compile Include="Models\BankFile.cs" />
     <Compile Include="Models\MidiNoteName.cs" />
     <Compile Include="Models\Mode.cs" />
