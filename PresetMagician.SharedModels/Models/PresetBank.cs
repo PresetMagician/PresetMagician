@@ -65,7 +65,7 @@ namespace SharedModels
         public PresetBank(string bankName = "All Banks")
         {
             PresetBanks = new FastObservableCollection<PresetBank>();
-            PresetBanks.AutomaticallyDispatchChangeNotifications = false;
+            //PresetBanks.AutomaticallyDispatchChangeNotifications = false;
 
             PresetBanks.CollectionChanged += delegate(object sender, NotifyCollectionChangedEventArgs e)
             {

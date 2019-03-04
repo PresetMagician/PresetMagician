@@ -23,33 +23,16 @@ namespace PresetMagician.ViewModels
         public MainViewModel(IRuntimeConfigurationService runtimeConfigurationService, ICommandManager commandManager)
         {
             Argument.IsNotNull(() => runtimeConfigurationService);
-            
+
 
             _layoutDocumentPane = ServiceLocator.Default.ResolveType<LayoutDocumentPane>();
             _layoutDocumentPane.PropertyChanged += LayoutDocumentPaneOnPropertyChanged;
             _runtimeConfigurationService = runtimeConfigurationService;
             _commandManager = commandManager;
 
-
-        }
-
-        protected override async Task InitializeAsync()
-        {
             AvalonDockHelper.CreateDocument<VstPluginsViewModel>(activateDocument: true);
             AvalonDockHelper.CreateDocument<PresetExportListViewModel>();
-            
-            var ds = ServiceLocator.Default.ResolveType<IDispatcherService>();
-            ds.BeginInvoke(() =>
-            {
-                _commandManager.ExecuteCommand(Commands.Plugin.LoadPluginsFromDatabase);
-                
-            });
-            //
-            //_commandManager.ExecuteCommand(Commands.Plugin.RefreshPlugins);
-
-
         }
-
 
         private void LayoutDocumentPaneOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {

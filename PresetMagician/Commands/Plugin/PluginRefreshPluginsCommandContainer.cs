@@ -70,11 +70,11 @@ namespace PresetMagician
                         plugins.Count);
                     cancellationToken = _applicationService.GetApplicationOperationCancellationSource().Token;
                     var pluginsToAdd =
-                        await TaskHelper.Run(() => VerifyPlugins(plugins, cancellationToken), true, cancellationToken);
+                        await TaskHelper.Run(() => VerifyPlugins(plugins, cancellationToken), false, cancellationToken);
 
                     foreach (var plugin in pluginsToAdd)
                     {
-                        _dispatcherService.BeginInvoke(() => { plugins.Add(plugin); });
+                        _dispatcherService.Invoke(() => plugins.Add(plugin));
                     }
 
                     _applicationService.StopApplicationOperation("Verifying plugins complete");
@@ -85,7 +85,7 @@ namespace PresetMagician
                     _applicationService.StartApplicationOperation(this, "Adding/Merging plugin DLLs", vstPluginDLLFiles.Count);
                     cancellationToken = _applicationService.GetApplicationOperationCancellationSource().Token;
 
-                    await TaskHelper.Run(() => { MergeOrCreatePlugins(vstPluginDLLFiles, plugins); }, true, cancellationToken);
+                    await TaskHelper.Run(() => { MergeOrCreatePlugins(vstPluginDLLFiles, plugins); }, false, cancellationToken);
                 }
 
                 await _vstService.SavePlugins();
@@ -183,7 +183,7 @@ namespace PresetMagician
                     }
                 };
                 _dispatcherService.Invoke(() => { plugins.Add(newPlugin); });
-                Thread.Sleep(10);
+                
             }
         }
 
@@ -259,7 +259,7 @@ namespace PresetMagician
                 }
 
                 _dispatcherService.BeginInvoke(() => { plugin.NativeInstrumentsResource.Load(plugin); });
-                Thread.Sleep(1);
+                Thread.Sleep(10);
             }
 
             return pluginsToAdd;

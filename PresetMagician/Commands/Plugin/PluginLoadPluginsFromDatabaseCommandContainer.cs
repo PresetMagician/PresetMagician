@@ -18,7 +18,7 @@ using SharedModels;
 namespace PresetMagician
 {
     // ReSharper disable once UnusedMember.Global
-    public class PluginLoadPluginsFromDatabaseCommandContainer : ThreadedApplicationNotBusyCommandContainer
+    public class PluginLoadPluginsFromDatabaseCommandContainer : CommandContainerBase
     {
         private readonly IApplicationService _applicationService;
         private readonly IVstService _vstService;
@@ -30,7 +30,7 @@ namespace PresetMagician
             IVstService vstService, IRuntimeConfigurationService runtimeConfigurationService,
             IApplicationService applicationService, IDispatcherService dispatcherService,
             IMessageService messageService, IDatabaseService databaseService)
-            : base(Commands.Plugin.LoadPluginsFromDatabase, commandManager, runtimeConfigurationService)
+            : base(Commands.Plugin.LoadPluginsFromDatabase, commandManager)
         {
             Argument.IsNotNull(() => vstService);
             Argument.IsNotNull(() => applicationService);
@@ -45,10 +45,10 @@ namespace PresetMagician
             _databaseService = databaseService;
         }
 
-
-        protected override async Task ExecuteThreaded(object parameter)
+        protected override async Task ExecuteAsync(object parameter)
         {
             await _vstService.LoadPlugins();
         }
+
     }
 }
