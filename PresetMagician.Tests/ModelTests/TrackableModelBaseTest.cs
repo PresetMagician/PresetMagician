@@ -35,6 +35,8 @@ namespace PresetMagician.Tests.ModelTests
             company.ModifiedProperties.Should()
                 .Contain(nameof(Company.Name), "The name of the company has changed, thus the modified properties should contain 'Name'");
 
+            company.ModifiedProperties.Count.Should().Be(1);
+            
             company.ModifiedProperties = null;
             
             company.IsUserModified.Should()
