@@ -33,7 +33,7 @@ namespace PresetMagician.ViewModels
             _runtimeConfigurationService.ApplicationState.IsApplicationEditing = true;
             
             RenameBankCommand = new TaskCommand(OnRenameBankCommandExecute);
-            ThrottlingRate = new TimeSpan(0, 0, 0, 0, 500);
+            //ThrottlingRate = new TimeSpan(0, 0, 0, 0, 500);
         }
         
         /// <summary>
