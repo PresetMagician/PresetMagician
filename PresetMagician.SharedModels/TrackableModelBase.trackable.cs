@@ -9,7 +9,7 @@ using TrackableEntities.Client;
 namespace SharedModels
 {
   
-        public abstract partial class TrackableModelBase : ChildAwareModelBase, IEditableObject, ITrackable, IIdentifiable
+        public abstract partial class TrackableModelBase : ITrackable, IIdentifiable
         {
             #region ITrackable / IIdentifiable
 
@@ -68,7 +68,7 @@ namespace SharedModels
         /// Properties on an entity that have been modified.
         /// </summary>
         [NotMapped]
-        public ICollection<string> ModifiedProperties { get; set; } = new List<string>();
+        public ICollection<string> ModifiedProperties { get; set; } = new HashSet<string>();
 
         /// <summary>
         /// Identifier used for correlation with MergeChanges.

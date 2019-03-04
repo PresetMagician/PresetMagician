@@ -44,6 +44,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PresetMagician.Tests", "PresetMagician.Tests\PresetMagician.Tests.csproj", "{19A9E75B-36C0-41AD-8A61-3614C0BBC11F}"
 EndProject
 Global
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
@@ -255,8 +258,8 @@ Global
 		{8220DE1F-C4E0-45B2-A00A-F468D5C3072B}.Publish|x86.Build.0 = Debug|Any CPU
 		{8220DE1F-C4E0-45B2-A00A-F468D5C3072B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8220DE1F-C4E0-45B2-A00A-F468D5C3072B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8220DE1F-C4E0-45B2-A00A-F468D5C3072B}.Release|x64.ActiveCfg = Release|Any CPU
-		{8220DE1F-C4E0-45B2-A00A-F468D5C3072B}.Release|x64.Build.0 = Release|Any CPU
+		{8220DE1F-C4E0-45B2-A00A-F468D5C3072B}.Release|x64.ActiveCfg = Release|x64
+		{8220DE1F-C4E0-45B2-A00A-F468D5C3072B}.Release|x64.Build.0 = Release|x64
 		{8220DE1F-C4E0-45B2-A00A-F468D5C3072B}.Release|x86.ActiveCfg = Release|Any CPU
 		{8220DE1F-C4E0-45B2-A00A-F468D5C3072B}.Release|x86.Build.0 = Release|Any CPU
 		{19A9E75B-36C0-41AD-8A61-3614C0BBC11F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -283,6 +286,12 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2008D33E-2B46-48FA-B735-97A03C568532}
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 	GlobalSection(Performance) = preSolution
 		HasPerformanceSessions = true

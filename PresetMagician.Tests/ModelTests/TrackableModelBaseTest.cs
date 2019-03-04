@@ -22,9 +22,6 @@ namespace PresetMagician.Tests.ModelTests
         {
             var company = new Company();
 
-            company.Name.GetType().IsTrackableCollection().Should()
-                .BeFalse("The extension method should return false because Name is not a TrackableCollection");
-
             company.IsUserModified.Should()
                 .BeFalse("The company's IsUserModified should be false because it wasn't modified by the user");
 
@@ -140,7 +137,6 @@ namespace PresetMagician.Tests.ModelTests
             {
                 foo.Add(new User());
             }
-
         }
 
         [Fact]
@@ -151,7 +147,6 @@ namespace PresetMagician.Tests.ModelTests
             {
                 company.Users.Add(new User());
             }
-
         }
 
         [Fact]

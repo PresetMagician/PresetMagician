@@ -70,24 +70,19 @@ namespace SharedModels
 
         private bool _isEditingFromPresetParser;
 
-        private ChangeNotificationWrapper _modesChangeNotificationWrapper;
-        private ChangeNotificationWrapper _typesChangeNotificationWrapper;
+     
 
         #endregion
 
         public Preset()
         {
             PreviewNote = new MidiNoteName("C5");
+            
+            _modes.ItemPropertyChanged += WrapperOnModesCollectionItemPropertyChanged;
+            _modes.CollectionChanged += WrapperOnModesCollectionChanged;
+            _types.ItemPropertyChanged += WrapperOnTypesCollectionItemPropertyChanged;
+            _types.CollectionChanged += WrapperOnTypesCollectionChanged;
 
-            _modesChangeNotificationWrapper = new ChangeNotificationWrapper(Modes);
-            _modesChangeNotificationWrapper.CollectionItemPropertyChanged +=
-                WrapperOnModesCollectionItemPropertyChanged;
-            _modesChangeNotificationWrapper.CollectionChanged += WrapperOnModesCollectionChanged;
-
-            _typesChangeNotificationWrapper = new ChangeNotificationWrapper(Types);
-            _typesChangeNotificationWrapper.CollectionItemPropertyChanged +=
-                WrapperOnTypesCollectionItemPropertyChanged;
-            _typesChangeNotificationWrapper.CollectionChanged += WrapperOnTypesCollectionChanged;
         }
 
        /* protected override void OnBeginEdit(BeginEditEventArgs e)
@@ -267,7 +262,9 @@ namespace SharedModels
 
         private void PreviewNoteOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(MidiNoteName.NoteNumber))
+            var adv = (AdvancedPropertyChangedEventArgs) e;
+            
+            if (e.PropertyName == nameof(MidiNoteName.NoteNumber) && adv.OldValue != adv.NewValue)
             {
                 if (_propertiesWhichModifyMetadata.Contains(nameof(PreviewNoteNumber)) && ShouldTrackChanges())
                 {
@@ -279,7 +276,7 @@ namespace SharedModels
                     IsMetadataModified = true;
                 }
 
-                RaisePropertyChanged(nameof(PreviewNoteNumber));
+                RaisePropertyChanged(nameof(PreviewNoteNumber), adv.OldValue, adv.NewValue);
             }
         }
 
@@ -422,9 +419,10 @@ namespace SharedModels
                 {
                     return;
                 }
-                
+
+                var oldValue = _bankPath;
                 _bankPath = value;
-                RaisePropertyChanged(nameof(BankPath));
+                RaisePropertyChanged(nameof(BankPath), (object)oldValue, value);
             }
         }
 
@@ -443,18 +441,29 @@ namespace SharedModels
             get => _types;
             set
             {
-                if (Equals(_types, value))
+                if (_types.Equals(value))
                 {
                     return;
                 }
 
-                _typesChangeNotificationWrapper.UnsubscribeFromAllEvents();
+                var oldValue = _types;
+             
+
+                if (_types != null)
+                {
+                    _types.ItemPropertyChanged -= WrapperOnTypesCollectionItemPropertyChanged;
+                    _types.CollectionChanged -= WrapperOnTypesCollectionChanged;
+                }
+
                 _types = value;
-                _typesChangeNotificationWrapper = new ChangeNotificationWrapper(Types);
-                _typesChangeNotificationWrapper.CollectionItemPropertyChanged +=
-                    WrapperOnTypesCollectionItemPropertyChanged;
-                _typesChangeNotificationWrapper.CollectionChanged += WrapperOnTypesCollectionChanged;
-                RaisePropertyChanged(nameof(Types));
+                
+                if (_types != null)
+                {
+                    _types.ItemPropertyChanged += WrapperOnTypesCollectionItemPropertyChanged;
+                    _types.CollectionChanged += WrapperOnTypesCollectionChanged;
+                }
+               
+                RaisePropertyChanged(nameof(Types), oldValue, _types);
             }
         }
 
@@ -468,19 +477,27 @@ namespace SharedModels
             get => _modes;
             set
             {
-                if (Equals(_modes, value))
+                if (_modes.Equals(value))
                 {
                     return;
                 }
 
-                _modesChangeNotificationWrapper.UnsubscribeFromAllEvents();
+                var oldValue = _modes;
+                if (_modes != null)
+                {
+                    _modes.ItemPropertyChanged -= WrapperOnModesCollectionItemPropertyChanged;
+                    _modes.CollectionChanged -= WrapperOnModesCollectionChanged;
+                }
+
                 _modes = value;
 
-                _modesChangeNotificationWrapper = new ChangeNotificationWrapper(_modes);
-                _modesChangeNotificationWrapper.CollectionItemPropertyChanged +=
-                    WrapperOnModesCollectionItemPropertyChanged;
-                _modesChangeNotificationWrapper.CollectionChanged += WrapperOnModesCollectionChanged;
-                RaisePropertyChanged(nameof(Modes));
+                if (_modes != null)
+                {
+                    _modes.ItemPropertyChanged += WrapperOnModesCollectionItemPropertyChanged;
+                    _modes.CollectionChanged += WrapperOnModesCollectionChanged;
+                }
+               
+                RaisePropertyChanged(nameof(Modes), oldValue, _modes);
             }
         }
 
@@ -549,10 +566,12 @@ namespace SharedModels
                 }
 
                 if (Equals(value, _previewNote)) return;
+                var oldValue = _previewNote; 
                 _previewNote = value;
+                
                 _previewNote.PropertyChanged += PreviewNoteOnPropertyChanged;
-                RaisePropertyChanged(nameof(PreviewNote));
-                RaisePropertyChanged(nameof(PreviewNoteNumber));
+                RaisePropertyChanged(nameof(PreviewNote), oldValue, _previewNote);
+                RaisePropertyChanged(nameof(PreviewNoteNumber), oldValue?.NoteNumber, _previewNote?.NoteNumber);
             }
         }
 
@@ -567,8 +586,9 @@ namespace SharedModels
             set
             {
                 if (Equals(value, PreviewNote.NoteNumber)) return;
+                var oldValue = _previewNote.NoteNumber; 
                 PreviewNote.NoteNumber = value;
-                RaisePropertyChanged(nameof(PreviewNoteNumber));
+                RaisePropertyChanged(nameof(PreviewNoteNumber), oldValue, _previewNote.NoteNumber);
             }
         }
 

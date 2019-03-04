@@ -34,7 +34,7 @@ namespace PresetMagician.Tests.ModelTests
             {
                 dbContext.Migrate();
                 //dbContext.Database.Log = delegate(string s) { output.WriteLine(s); };
-                
+                TrackableModelBase.IsLoadingFromDatabase = true;
                 Stopwatch stopWatch = new Stopwatch();
                 stopWatch.Start();
                 var modesList = dbContext.Modes.ToList();
@@ -53,16 +53,18 @@ namespace PresetMagician.Tests.ModelTests
                 stopWatch.Restart();
                 var presetsList = dbContext.Presets.Include(p => p.Modes).Include(p => p.Types).ToList();
                 output.WriteLine("presetList: "+stopWatch.ElapsedMilliseconds);
-               
+                stopWatch.Restart();
+                TrackableModelBase.IsLoadingFromDatabase = false;
                 
-               
-               
-
-
+              
                 var hive = (from preset in pluginList where preset.Id == 29 select preset).FirstOrDefault();
-                output.WriteLine(hive.Presets.Count.ToString());
-                stopWatch.Stop();
-                output.WriteLine(stopWatch.Elapsed.ToString());
+                hive.BeginEdit();
+                output.WriteLine("beginEdit: "+stopWatch.ElapsedMilliseconds);
+                hive.CancelEdit();
+                output.WriteLine("cancelEdit: "+stopWatch.ElapsedMilliseconds);
+                
+                
+              
             }
         }
     }

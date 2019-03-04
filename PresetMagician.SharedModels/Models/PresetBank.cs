@@ -18,8 +18,9 @@ namespace SharedModels
             get => _bankName;
             set
             {
+                var oldValue = _bankName;
                 _bankName = value;
-                RaisePropertyChanged(nameof(BankName));
+                RaisePropertyChanged(nameof(BankName), (object)oldValue, _bankName);
                 Refresh();
             }
         }
@@ -38,6 +39,10 @@ namespace SharedModels
 
         public void Refresh()
         {
+            var oldBankPath = BankPath;
+            var oldBelowNksThreshold = IsBelowNksThreshold;
+            var oldBankDepth = BankDepth;
+            
             foreach (var presetBank in PresetBanks)
             {
                 presetBank.Refresh();
@@ -46,9 +51,9 @@ namespace SharedModels
             UpdateBankDepth();
 
             RaisePropertyChanged(nameof(PresetBanks));
-            RaisePropertyChanged(nameof(BankPath));
-            RaisePropertyChanged(nameof(BankDepth));
-            RaisePropertyChanged(nameof(IsBelowNksThreshold));
+            RaisePropertyChanged(nameof(BankPath), (object)oldBankPath, BankPath);
+            RaisePropertyChanged(nameof(BankDepth), oldBankDepth, BankDepth);
+            RaisePropertyChanged(nameof(IsBelowNksThreshold), oldBelowNksThreshold, IsBelowNksThreshold);
             
 
         }

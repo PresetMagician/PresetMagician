@@ -5,106 +5,74 @@ using System.Data.Entity;
 using System.Data.SQLite;
 using System.Diagnostics;
 using System.Linq;
+using Catel.Collections;
+using Catel.Data;
+using PresetMagician.Tests;
+using PresetMagician.Tests.TestEntities;
+using SharedModels;
 using SQLite.CodeFirst;
+using Type = SharedModels.Type;
 
 namespace PresetMagicianScratchPad
 {
-    public class Mode
+    public class Foo : TrackableModelBase
     {
-        [Key] public int Id { get; set; }
-
-        public ICollection<Plugin> Plugins { get; set; }
-        public ICollection<Preset> Presets { get; set; }
+        public override ICollection<string> EditableProperties { get; } = new List<string>
+        {
+            nameof(Name),
+            nameof(Company)
+        };
 
         public string Name { get; set; }
+        public Company Company { get; set; }
     }
-
-    public class Type
-    {
-        [Key] public int Id { get; set; }
-
-        public ICollection<Plugin> Plugins { get; set; }
-        public ICollection<Preset> Presets { get; set; }
-
-        public string Name { get; set; }
-        public string SubTypeName { get; set; }
-    }
-
-    public class Plugin
-    {
-        [Key] public int Id { get; set; }
-        public ICollection<Preset> Presets { get; set; }
-
-        public ICollection<Type> DefaultTypes { get; set; }
-        public ICollection<Mode> DefaultModes { get; set; }
-    }
-
-    public class Preset
-    {
-        [Key] public int Id { get; set; }
-        public Plugin Plugin { get; set; }
-        public ICollection<Type> Types { get; set; }
-        public ICollection<Mode> Modes { get; set; }
-    }
-
-    public class ApplicationDatabaseContext : DbContext
-    {
-        public ApplicationDatabaseContext() : base(new SQLiteConnection(GetConnectionString()), true)
-        {
-            Configuration.LazyLoadingEnabled = false;
-            Configuration.ValidateOnSaveEnabled = false;
-            Configuration.ProxyCreationEnabled = false;
-        }
-
-        public static string GetConnectionString()
-        {
-            var cs = new SQLiteConnectionStringBuilder()
-            {
-                DataSource = "foo.sqlite3", ForeignKeys = false, SyncMode = SynchronizationModes.Off,
-                CacheSize = -10240
-            };
-
-
-            return cs.ConnectionString;
-        }
-
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        {
-            var sqliteConnectionInitializer =
-                new SqliteCreateDatabaseIfNotExists<ApplicationDatabaseContext>(modelBuilder);
-            modelBuilder.Entity<Plugin>().HasMany(p => p.DefaultModes).WithMany(q => q.Plugins).Map(mc =>
-                mc.MapLeftKey("PluginId").MapRightKey("ModeId").ToTable("PluginModes"));
-
-            modelBuilder.Entity<Plugin>().HasMany(p => p.DefaultTypes).WithMany(q => q.Plugins).Map(mc =>
-                mc.MapLeftKey("PluginId").MapRightKey("TypeId").ToTable("PluginTypes"));
-
-
-            modelBuilder.Entity<Preset>().HasMany(p => p.Types).WithMany(q => q.Presets).Map(mc =>
-                mc.MapLeftKey("PresetId").MapRightKey("TypeId").ToTable("PresetTypes"));
-
-            modelBuilder.Entity<Preset>().HasMany(p => p.Modes).WithMany(q => q.Presets).Map(mc =>
-                mc.MapLeftKey("PresetId").MapRightKey("ModeId").ToTable("PresetModes"));
-            Database.SetInitializer(sqliteConnectionInitializer);
-        }
-
-        public DbSet<Plugin> Plugins { get; set; }
-        
-    }
-
 
     public class Program
     {
         [STAThread]
         static void Main(string[] args)
         {
-            using (var context = new ApplicationDatabaseContext())
+            var x = new DatabaseFixture();
+            var manager = x.GetTestDataManager();
+
+            List<Mode> modesList;
+            List<Type> typesList;
+            List<Plugin> pluginList;
+            Stopwatch stopWatch = new Stopwatch();
+            List<Preset> presetsList;
+            using (var dbContext = manager.Create())
             {
-                context.Plugins
-                    .Include("Presets.Modes")
-                    .Include("Presets.Types")
-                    .AsNoTracking().ToList();
+                dbContext.Migrate();
+                //dbContext.Database.Log = delegate(string s) { output.WriteLine(s); };
+
+                TrackableModelBase.IsLoadingFromDatabase = true;
+                
+                stopWatch.Start();
+                modesList = dbContext.Modes.ToList();
+
+                Debug.WriteLine("modesList: " + stopWatch.ElapsedMilliseconds);
+
+                stopWatch.Restart();
+                typesList = dbContext.Types.ToList();
+                Debug.WriteLine("typesList: " + stopWatch.ElapsedMilliseconds);
+
+                stopWatch.Restart();
+                pluginList = dbContext.Plugins.Include(p => p.DefaultModes).Include(p => p.DefaultTypes).ToList();
+                Debug.WriteLine("pluginList: " + stopWatch.ElapsedMilliseconds);
+
+                stopWatch.Restart();
+                presetsList = dbContext.Presets.Include(p => p.Modes).Include(p => p.Types).ToList();
+                Debug.WriteLine("presetList: " + stopWatch.ElapsedMilliseconds);
             }
-            
-        }
+
+            GC.Collect(); GC.WaitForPendingFinalizers();
+
+
+
+            var hive = (from preset in pluginList where preset.Id == 29 select preset).FirstOrDefault();
+                stopWatch.Stop();
+                Debug.WriteLine(stopWatch.Elapsed.ToString());
+            }
+        
     }
 }
