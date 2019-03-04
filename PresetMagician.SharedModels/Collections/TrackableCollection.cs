@@ -24,6 +24,7 @@ namespace SharedModels.Collections
         IUserEditable where T : class, ITrackable, IUserEditable, INotifyPropertyChanged, IIdentifiable
     {
         private readonly ChangeTrackingCollection<T> _backingTrackingCollection = new ChangeTrackingCollection<T>(true);
+        private IUserEditable _originatingEditingObject;
 
         private int _initialCount;
         private List<T> _backupValues;
@@ -73,7 +74,7 @@ namespace SharedModels.Collections
         {
             foreach (var item in Items)
             {
-                item.CancelEdit();
+                item.CancelEdit(this);
             }
 
             base.ClearItems();
@@ -91,7 +92,7 @@ namespace SharedModels.Collections
 
             if (IsEditing)
             {
-                item.BeginEdit();
+                item.BeginEdit(this);
             }
         }
 
@@ -110,7 +111,7 @@ namespace SharedModels.Collections
 
                 if (IsEditing)
                 {
-                    oldItem.CancelEdit();
+                    oldItem.CancelEdit(this);
                 }
             }
         }
@@ -128,7 +129,7 @@ namespace SharedModels.Collections
                 oldItem.PropertyChanged -= ChangeNotificationWrapperOnCollectionItemPropertyChanged;
                 if (IsEditing)
                 {
-                    oldItem.CancelEdit();
+                    oldItem.CancelEdit(this);
                 }
             }
         }
@@ -145,7 +146,7 @@ namespace SharedModels.Collections
 
             if (IsEditing)
             {
-                item.BeginEdit();
+                item.BeginEdit(this);
             }
 
 
@@ -154,7 +155,7 @@ namespace SharedModels.Collections
                 oldItem.PropertyChanged -= ChangeNotificationWrapperOnCollectionItemPropertyChanged;
                 if (IsEditing)
                 {
-                    oldItem.CancelEdit();
+                    oldItem.CancelEdit(this);
                 }
             }
         }
@@ -212,32 +213,48 @@ namespace SharedModels.Collections
 
         public void BeginEdit()
         {
+            BeginEdit(null);
+        }
+        
+        public void BeginEdit(IUserEditable originatingObject)
+        {
             _backupValues = new List<T>(this);
             IsUserModified = false;
             IsEditing = true;
+            _originatingEditingObject = originatingObject;
 
             foreach (var i in this)
             {
-                i.BeginEdit();
+                i.BeginEdit(this);
             }
         }
 
         public void EndEdit()
         {
-            if (!IsEditing) return;
+            EndEdit(null);
+        }
+        public void EndEdit(IUserEditable originatingObject)
+        {
+            if (!IsEditing || _originatingEditingObject != originatingObject) return;
 
             foreach (var i in this)
             {
-                i.EndEdit();
+                i.EndEdit(this);
             }
 
             IsUserModified = false;
             IsEditing = false;
+            _originatingEditingObject = null;
         }
 
         public void CancelEdit()
         {
-            if (!IsEditing) return;
+            CancelEdit(null);
+        }
+
+        public void CancelEdit(IUserEditable originatingObject)
+        {
+            if (!IsEditing || _originatingEditingObject != originatingObject) return;
 
 
             using (SuspendChangeNotifications())
@@ -247,10 +264,13 @@ namespace SharedModels.Collections
 
             foreach (var i in this)
             {
-                i.CancelEdit();
+                i.CancelEdit(this);
             }
+            
+            IsUserModified = false;
+            IsEditing = false;
+            _originatingEditingObject = null;
 
-            EndEdit();
         }
 
         /// <summary>

@@ -192,6 +192,18 @@ namespace PresetMagician.Tests.ModelTests
             var company = new Company();
             company.Users.Add(firstUser);
             company.Users.Add(secondUser);
+
+            var initialCompanyName = "schorsch";
+            company.Name = initialCompanyName;
+            
+            ((IEditableObject) company).BeginEdit();
+            company.Name = "hans";
+            company.IsUserModified.Should()
+                .BeTrue("Changing the company name should result in IsUserModified to be true");
+            company.Name = initialCompanyName;
+            company.IsUserModified.Should()
+                .BeFalse("Reverting the company name should result in IsUserModified to be false");
+            ((IEditableObject) company).CancelEdit();
             
             ((IEditableObject) company).BeginEdit();
             company.Users.Remove(firstUser);

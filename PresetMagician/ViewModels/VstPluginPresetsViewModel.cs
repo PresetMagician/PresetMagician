@@ -73,7 +73,7 @@ namespace PresetMagician.ViewModels
             }
         }
 
-        public ModelBase GetTrackedModel()
+        public TrackableModelBase GetTrackedModel()
         {
             return Plugin;
         }

@@ -27,7 +27,7 @@ namespace PresetMagician.Models
         {
             if (ShouldTrackModified && _viewModel is IModelTracker modelTracker)
             {
-                IsDirty = modelTracker.GetTrackedModel().IsDirty;
+                IsDirty = modelTracker.GetTrackedModel().IsUserModified;
             }
         }
 
