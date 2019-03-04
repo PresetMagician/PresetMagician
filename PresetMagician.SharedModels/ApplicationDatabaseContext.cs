@@ -43,6 +43,7 @@ namespace SharedModels
             Configuration.LazyLoadingEnabled = false;
             Configuration.ValidateOnSaveEnabled = false;
             Configuration.ProxyCreationEnabled = false;
+            Configuration.AutoDetectChangesEnabled = false;
         }
 
         public ApplicationDatabaseContext(string overrideDbPath) : base(new SQLiteConnection(GetConnectionString(overrideDbPath)),

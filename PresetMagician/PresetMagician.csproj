@@ -131,6 +131,7 @@
     <Compile Include="Commands\Plugin\AbstractScanPluginsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginAllToPresetExportListCommandContainer.cs" />
     <Compile Include="Commands\Plugin\AbstractReportPluginsCommandContainer.cs" />
+    <Compile Include="Commands\Plugin\PluginLoadPluginsFromDatabaseCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginNotExportedAllToPresetExportListCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginQuickScanPluginsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginQuickScanSelectedPluginsCommandContainer.cs" />

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Catel.Collections;
 using SharedModels;
+using SharedModels.Collections;
 
 namespace PresetMagician.Services.Interfaces
 {
@@ -12,7 +13,7 @@ namespace PresetMagician.Services.Interfaces
         event EventHandler SelectedPluginChanged;
         Plugin SelectedPlugin { get; set; }
         FastObservableCollection<Plugin> SelectedPlugins { get; }
-        ObservableCollection<Plugin> Plugins { get; set; }
+        TrackableCollection<Plugin> Plugins { get; set; }
 
         FastObservableCollection<Preset> PresetExportList { get; }
         Preset SelectedExportPreset { get; set; }
@@ -24,5 +25,6 @@ namespace PresetMagician.Services.Interfaces
         Task<IRemotePluginInstance> GetInteractivePluginInstance(Plugin plugin);
         IRemoteVstService GetVstService();
         List<PluginLocation> GetPluginLocations(Plugin plugin);
+        Task LoadPlugins();
     }
 }

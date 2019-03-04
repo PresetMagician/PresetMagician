@@ -22,6 +22,10 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
         <ContentControl x:Name="ribbonContentControl" Grid.Row="0">
             <!--  Drop down arrow fix  -->

@@ -61,6 +61,8 @@
                 GridLinesVisibility="All"
                 ItemsSource="{Binding Plugins}"
                 SelectedItem="{Binding SelectedPlugin}"
+                VerticalScrollBarVisibility="Visible"
+                HorizontalScrollBarVisibility="Visible"
                 SelectionChanged="VstPluginList_OnSelectionChanged"
                 dgx:DataGridFilter.IsAutoFilterEnabled="True"
                 dgx:Tools.ApplyInitialSorting="True"

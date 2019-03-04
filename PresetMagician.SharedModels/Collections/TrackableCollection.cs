@@ -40,12 +40,12 @@ namespace SharedModels.Collections
 
         public TrackableCollection()
         {
-            AutomaticallyDispatchChangeNotifications = false;
+            //AutomaticallyDispatchChangeNotifications = false;
         }
 
         public TrackableCollection(IEnumerable<T> collection) : base(collection)
         {
-            AutomaticallyDispatchChangeNotifications = false;
+            //AutomaticallyDispatchChangeNotifications = false;
             _backingTrackingCollection = new ChangeTrackingCollection<T>(collection);
         }
 

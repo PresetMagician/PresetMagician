@@ -8,8 +8,6 @@ namespace PresetMagician.Views
     /// </summary>
     public partial class MainView
     {
-        private IRuntimeConfigurationService _runtimeConfigurationService;
-
         public MainView()
         {
             InitializeComponent();
@@ -18,8 +16,6 @@ namespace PresetMagician.Views
 
             serviceLocator.RegisterInstance(DockingManager);
             serviceLocator.RegisterInstance(LayoutDocumentPane);
-
-            _runtimeConfigurationService = serviceLocator.ResolveType<IRuntimeConfigurationService>();
         }
     }
 }

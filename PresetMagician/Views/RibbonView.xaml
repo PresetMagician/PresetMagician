@@ -102,6 +102,9 @@
                                                  Visibility="Collapsed" />
             </fluent:Ribbon.ContextualGroups>
 
+            <fluent:Ribbon.Tabs>
+                
+            
             <fluent:RibbonTabItem Header="Plugins">
                 <fluent:RibbonGroupBox Header="Plugins">
                     <fluent:DropDownButton
@@ -461,6 +464,7 @@
                                    Command="{catel:CommandManagerBinding Preset.RenamePresetBank}" />
                 </fluent:RibbonGroupBox>
             </fluent:RibbonTabItem>
+            </fluent:Ribbon.Tabs>
         </fluent:Ribbon>
     </Grid>
 </catel:UserControl>
