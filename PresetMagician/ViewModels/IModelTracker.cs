@@ -1,9 +1,10 @@
 using Catel.Data;
+using SharedModels;
 
 namespace PresetMagician.ViewModels
 {
     public interface IModelTracker
     {
-        ModelBase GetTrackedModel();
+        TrackableModelBase GetTrackedModel();
     }
 }

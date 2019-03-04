@@ -79,6 +79,9 @@ namespace PresetMagician
                 _viewModelFactory.CreateViewModel<VstPluginPresetsViewModel>(_vstService.SelectedPlugin);
             AvalonDockHelper.CreateDocument<VstPluginPresetsViewModel>(presetsViewModel, _vstService.SelectedPlugin,
                 activateDocument: true, isClosable: true, shouldTrackDirty: true);
+            
+            //_vstService.SelectedPlugin.BeginEdit();
+            
         }
 
         

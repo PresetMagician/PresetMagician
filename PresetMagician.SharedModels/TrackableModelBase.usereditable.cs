@@ -8,6 +8,7 @@ using Catel.Collections;
 using Catel.Data;
 using Catel.Reflection;
 using Force.DeepCloner;
+using MethodTimer;
 using SharedModels.Collections;
 using SharedModels.Extensions;
 
@@ -15,6 +16,9 @@ namespace SharedModels
 {
     public interface IUserEditable: IEditableObject
     {
+        void BeginEdit(IUserEditable originatingObject);
+        void CancelEdit(IUserEditable originatingObject);
+        void EndEdit(IUserEditable originatingObject);
         bool IsUserModified { get; }
         bool IsEditing { get; }
     }
@@ -22,6 +26,7 @@ namespace SharedModels
     public abstract partial class TrackableModelBase: IUserEditable
     {
         private readonly Dictionary<string, object> _backupValues = new Dictionary<string, object>();
+        private IUserEditable _originatingEditingObject;
         
         private bool ShouldTrackUserChanges()
         {
@@ -30,8 +35,17 @@ namespace SharedModels
 
         public void BeginEdit()
         {
+            BeginEdit(null);
+        }
+        
+
+        public void BeginEdit(IUserEditable originatingObject)
+        {
             if (IsEditing) return;
+            IsUserModified = false;
             IsEditing = true;
+            _originatingEditingObject = originatingObject;
+            
             foreach (var propertyName in from p in GetType().GetProperties() where p.CanRead && p.CanWrite  select p.Name)
             {
 
@@ -41,14 +55,20 @@ namespace SharedModels
 
                 if (EditableProperties.Contains(propertyName) && value is IUserEditable editable)
                 {
-                    editable.BeginEdit();
+                    editable.BeginEdit(this);
                 }
             }
         }
 
         public void EndEdit()
         {
-            if (!IsEditing) return;
+            EndEdit(null);
+        }
+        
+
+        public void EndEdit(IUserEditable originatingObject)
+        {
+            if (!IsEditing || _originatingEditingObject != originatingObject) return;
 
             foreach (var propertyName in EditableProperties)
             {
@@ -56,7 +76,7 @@ namespace SharedModels
 
                 if (value is IUserEditable editable)
                 {
-                    editable.EndEdit();
+                    editable.EndEdit(this);
                 }
             }
             
@@ -64,12 +84,18 @@ namespace SharedModels
             IsUserModified = false;
             
             IsEditing = false;
-             
+            _originatingEditingObject = null;
+
         }
 
         public void CancelEdit()
         {
-            if (!IsEditing) return;
+            CancelEdit(null);
+        }
+
+        public void CancelEdit(IUserEditable originatingObject)
+        {
+            if (!IsEditing || _originatingEditingObject != originatingObject) return;
             
             IsEditing = false;
             UserModifiedProperties.Clear();
@@ -77,19 +103,19 @@ namespace SharedModels
 
             foreach (var propertyName in from p in GetType().GetProperties() where p.CanRead && p.CanWrite select p.Name)
             {
-
                 var value = _backupValues[propertyName];
-               
-                PropertyHelper.SetPropertyValue(this, propertyName, value);
-              
+                
+                if (!IsEqualToBackup(PropertyHelper.GetPropertyValue(this, propertyName), propertyName))
+                {
+                    PropertyHelper.SetPropertyValue(this, propertyName, value);
+                }
 
                 if (EditableProperties.Contains(propertyName) && value is IUserEditable editable)
                 {
-                    editable.CancelEdit();
+                    editable.CancelEdit(this);
                 }
             }
-            
-          
+            _originatingEditingObject = null;
         }
 
         protected void RecalculateIsUserModified(string propertyName)
@@ -102,11 +128,21 @@ namespace SharedModels
             IsUserModified = UserModifiedProperties.Count > 0;
         }
 
+        private bool IsEqualToBackup(object value, string propertyName)
+        {
+            if (value == null)
+            {
+                return _backupValues[propertyName] == null;
+            }
+
+            return value.Equals(_backupValues[propertyName]);
+        }
+
         protected void CheckUserModified(string propertyName)
         {
             var value = PropertyHelper.GetPropertyValue(this, propertyName);
 
-            if (value != _backupValues[propertyName])
+            if (!IsEqualToBackup(value, propertyName))
             {
                 UserModifiedProperties.Add(propertyName);
             }
