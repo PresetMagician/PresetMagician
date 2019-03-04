@@ -36,7 +36,6 @@ namespace PresetMagician.ViewModels
             Plugins.CollectionChanged += PluginsOnCollectionChanged;
 
             _vstService.SelectedPluginChanged += VstServiceOnSelectedPluginChanged;
-            ThrottlingRate = new TimeSpan(0, 0, 0, 0, 500);
 
             Title = "VST Plugins";
         }

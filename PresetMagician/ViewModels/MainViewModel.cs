@@ -1,9 +1,12 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Catel;
 using Catel.IoC;
 using Catel.MVVM;
 using Catel.MVVM.Views;
+using Catel.Services;
+using Catel.Threading;
 using PresetMagician.Helpers;
 using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
@@ -15,17 +18,38 @@ namespace PresetMagician.ViewModels
     {
         private LayoutDocumentPane _layoutDocumentPane;
         private IRuntimeConfigurationService _runtimeConfigurationService;
+        private ICommandManager _commandManager;
 
-        public MainViewModel(IRuntimeConfigurationService runtimeConfigurationService)
+        public MainViewModel(IRuntimeConfigurationService runtimeConfigurationService, ICommandManager commandManager)
         {
             Argument.IsNotNull(() => runtimeConfigurationService);
-            AvalonDockHelper.CreateDocument<VstPluginsViewModel>(activateDocument: true);
-            AvalonDockHelper.CreateDocument<PresetExportListViewModel>();
+            
 
             _layoutDocumentPane = ServiceLocator.Default.ResolveType<LayoutDocumentPane>();
             _layoutDocumentPane.PropertyChanged += LayoutDocumentPaneOnPropertyChanged;
             _runtimeConfigurationService = runtimeConfigurationService;
+            _commandManager = commandManager;
+
+
         }
+
+        protected override async Task InitializeAsync()
+        {
+            AvalonDockHelper.CreateDocument<VstPluginsViewModel>(activateDocument: true);
+            AvalonDockHelper.CreateDocument<PresetExportListViewModel>();
+            
+            var ds = ServiceLocator.Default.ResolveType<IDispatcherService>();
+            ds.BeginInvoke(() =>
+            {
+                _commandManager.ExecuteCommand(Commands.Plugin.LoadPluginsFromDatabase);
+                
+            });
+            //
+            //_commandManager.ExecuteCommand(Commands.Plugin.RefreshPlugins);
+
+
+        }
+
 
         private void LayoutDocumentPaneOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {

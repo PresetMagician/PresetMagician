@@ -106,7 +106,7 @@ namespace PresetMagician.Services
             }
 
 
-            base.InitializeAfterShowingShellAsync();
+            await base.InitializeAfterShowingShellAsync();
 
             LogTo.Debug("Scheduling update check task");
             var schedulerService = _serviceLocator.ResolveType<ISchedulingService>();
@@ -119,8 +119,8 @@ namespace PresetMagician.Services
             };
 
             schedulerService.AddScheduledTask(updateCheckTask);
-
-            TaskHelper.Run(() => { _commandManager.ExecuteCommand(Commands.Plugin.RefreshPlugins); });
+           
+            
         }
 
         private async void StartRegistration()
@@ -152,6 +152,10 @@ namespace PresetMagician.Services
             _commandManager.CreateCommandWithGesture(typeof(Commands.Application), "ApplyConfiguration");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Application), "NotImplemented");
 
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin),
+                nameof(Commands.Plugin.LoadPluginsFromDatabase));
+            
+                
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "ScanPlugins");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin),
                 nameof(Commands.Plugin.QuickScanPlugins));

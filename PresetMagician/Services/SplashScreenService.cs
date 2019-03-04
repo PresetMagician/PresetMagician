@@ -32,8 +32,12 @@ namespace PresetMagician.Services
             get => _action;
             set
             {
+                if (value != _action)
+                {
+                    ActionChanged?.Invoke(this, new StartupActionChangedEventArgs(value));
+                }
                 _action = value;
-                ActionChanged?.Invoke(this, new StartupActionChangedEventArgs(value));
+                
             }
         }
     }

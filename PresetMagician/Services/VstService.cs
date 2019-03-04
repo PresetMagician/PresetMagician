@@ -2,13 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Entity;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Catel;
 using Catel.Collections;
+using Catel.Threading;
 using PresetMagician.RemoteVstHost;
 using PresetMagician.RemoteVstHost.Processes;
 using PresetMagician.Services.Interfaces;
 using SharedModels;
+using SharedModels.Collections;
 
 namespace PresetMagician.Services
 {
@@ -27,8 +31,14 @@ namespace PresetMagician.Services
 
             _applicationService = applicationService;
             _databaseService = databaseService;
-            _databaseService.Context.Plugins.Include(plugin => plugin.AdditionalBankFiles).Include(plugin => plugin.PluginLocation).Load();
-            Plugins = _databaseService.Context.Plugins.Local;
+            Plugins = new TrackableCollection<Plugin>();
+        }
+
+        public async Task LoadPlugins()
+        {
+            var plugins = await _databaseService.Context.Plugins.Include(plugin => plugin.AdditionalBankFiles)
+                .Include(plugin => plugin.PluginLocation).ToListAsync();
+            Plugins.SynchronizeCollection(plugins);
         }
 
         public IRemoteVstService GetVstService()
@@ -77,7 +87,7 @@ namespace PresetMagician.Services
 
 
         public FastObservableCollection<Plugin> SelectedPlugins { get; } = new FastObservableCollection<Plugin>();
-        public ObservableCollection<Plugin> Plugins { get; set; }
+        public TrackableCollection<Plugin> Plugins { get; set; }
 
         public FastObservableCollection<Preset> SelectedPresets { get; } = new FastObservableCollection<Preset>();
         public FastObservableCollection<Preset> PresetExportList { get; } = new FastObservableCollection<Preset>();

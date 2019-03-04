@@ -15,12 +15,16 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+    
     <catel:UserControl.Resources>
         <catel:BooleanToCollapsingVisibilityConverter x:Key="BooleanToCollapsingVisibilityConverter" />
     </catel:UserControl.Resources>
 
-
-    <xcad:DockingManager x:Name="DockingManager" AllowMixedOrientation="True">
+<Grid>
+    <Grid.RowDefinitions>
+        <RowDefinition Height="*"></RowDefinition>
+    </Grid.RowDefinitions>
+    <xcad:DockingManager x:Name="DockingManager" AllowMixedOrientation="True" Grid.Row="0">
             <xcad:DockingManager.DocumentHeaderTemplate>
                 <DataTemplate DataType="models:CustomLayoutDocument">
                     <StackPanel Orientation="Horizontal">
@@ -69,5 +73,5 @@
 
         </xcad:DockingManager>
 
-
+</Grid>
 </catel:UserControl>
