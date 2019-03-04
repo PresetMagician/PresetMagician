@@ -236,3 +236,4 @@ NUGET
       xunit.abstractions (>= 2.0.3)
     xunit.extensibility.execution (2.4.1)
       xunit.extensibility.core (2.4.1)
+    xunit.runner.visualstudio (2.4.1)

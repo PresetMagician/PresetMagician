@@ -63,7 +63,6 @@
     <Compile Include="EventArgs\PresetUpdatedEventArgs.cs" />
     <Compile Include="Exceptions\ConnectivityLostException.cs" />
     <Compile Include="Extensions\DbContextExtensions.cs" />
-    <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="GlobalEntityManager.cs" />
     <Compile Include="IPlugin.cs" />
     <Compile Include="Interfaces\IPluginCommands.cs" />
@@ -98,7 +97,6 @@
     <Compile Include="PresetExportInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serialization\TestSerializer.cs" />
-    <Compile Include="TrackableChildAwareModelBase.cs" />
     <Compile Include="TrackableModelBase.cs" />
     <Compile Include="TrackableModelBase.trackable.cs" />
     <Compile Include="TrackableModelBase.usereditable.cs" />

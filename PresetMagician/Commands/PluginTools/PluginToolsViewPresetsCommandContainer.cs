@@ -72,8 +72,8 @@ namespace PresetMagician
         [Time]
         protected override async Task ExecuteAsync(object parameter)
         {
-            _vstService.SelectedPlugin.ClearIsDirtyOnAllChildsSuspended();
-            _vstService.SelectedPlugin.ClearDirtyFlag();
+            /*_vstService.SelectedPlugin.ClearIsDirtyOnAllChildsSuspended();
+            _vstService.SelectedPlugin.ClearDirtyFlag();*/
 
             var presetsViewModel =
                 _viewModelFactory.CreateViewModel<VstPluginPresetsViewModel>(_vstService.SelectedPlugin);

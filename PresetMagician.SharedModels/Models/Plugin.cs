@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Catel.Data;
 using Catel.IO;
 using Catel.Runtime.Serialization;
 using Drachenkatze.PresetMagician.NKSF.NKSF;
@@ -22,7 +23,7 @@ namespace SharedModels
         public readonly Dictionary<string, Preset> PresetCache = new Dictionary<string, Preset>();
         public readonly Dictionary<(string hash, string sourceFile), Preset> PresetHashCache = new Dictionary<(string, string), Preset>();
 
-        public override ICollection<string> EditableProperties { get; } = new List<string>
+        public override ICollection<string> EditableProperties { get; } = new HashSet<string>
         {
             nameof(Presets),
             nameof(AdditionalBankFiles),
@@ -59,8 +60,9 @@ namespace SharedModels
         {
             if (_collectionChangedCounter != Presets.Count)
             {
+                var oldValue = _collectionChangedCounter;
                 _collectionChangedCounter = Presets.Count;
-                RaisePropertyChanged(nameof(NumPresets));
+                RaisePropertyChanged(nameof(NumPresets), oldValue, _collectionChangedCounter);
             }
         }
 
@@ -94,7 +96,8 @@ namespace SharedModels
         
         private void PluginLocationOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            RaisePropertyChanged(nameof(PluginLocation));
+            var adv = e as AdvancedPropertyChangedEventArgs;
+            RaisePropertyChanged(nameof(PluginLocation), adv.OldValue, adv.NewValue);
         }
 
         #endregion
@@ -184,18 +187,23 @@ namespace SharedModels
             get => _pluginLocation;
             set
             {
+                if (_pluginLocation == value)
+                {
+                    return;
+                }
                 if (_pluginLocation != null)
                 {
                     _pluginLocation.PropertyChanged -= PluginLocationOnPropertyChanged;
                 }
 
+                var oldValue = _pluginLocation;
                 _pluginLocation = value;
                 if (_pluginLocation != null)
                 {
                     _pluginLocation.PropertyChanged += PluginLocationOnPropertyChanged;
                 }
 
-                RaisePropertyChanged(nameof(PluginLocation));
+                RaisePropertyChanged(nameof(PluginLocation), oldValue, _pluginLocation);
             }
         }
         #endregion
@@ -232,8 +240,6 @@ namespace SharedModels
         [NotMapped]
         public PresetBank RootBank { get; set; } = new PresetBank();
 
-        
-        [IncludeInSerialization]
         public TrackableCollection<Preset> Presets { get; set; } =
             new TrackableCollection<Preset>();
 

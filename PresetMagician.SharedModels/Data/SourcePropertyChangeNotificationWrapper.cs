@@ -1,15 +1,10 @@
 using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using Catel.Data;
 using SharedModels.Collections;
 
 namespace SharedModels.Data
 {
-    using System.ComponentModel;
-
     /// <summary>
     /// The notify list changed event args.
     /// </summary>
@@ -40,19 +35,25 @@ namespace SharedModels.Data
     public class CollectionChangeNotificationWrapper
     {
         private readonly string _sourceProperty;
-        private ChangeNotificationWrapper _changeNotificationWrapper;
+        private readonly ITrackableCollection _sourceObject;
 
-        public CollectionChangeNotificationWrapper(object value, string sourceProperty)
+        public CollectionChangeNotificationWrapper(ITrackableCollection value, string sourceProperty)
         {
             _sourceProperty = sourceProperty;
-            _changeNotificationWrapper = new ChangeNotificationWrapper(value);
-            _changeNotificationWrapper.CollectionChanged += ChangeNotificationWrapperOnCollectionChanged;
-            _changeNotificationWrapper.CollectionItemPropertyChanged += ChangeNotificationWrapperOnCollectionItemPropertyChanged;
+            
+            value.CollectionChanged += ChangeNotificationWrapperOnCollectionChanged;
+            value.ItemPropertyChanged +=
+                ChangeNotificationWrapperOnCollectionItemPropertyChanged;
+            
+            _sourceObject = value;
+           
         }
 
         public void Unsubscribe()
         {
-            _changeNotificationWrapper.UnsubscribeFromAllEvents();
+            _sourceObject.CollectionChanged -= ChangeNotificationWrapperOnCollectionChanged;
+            _sourceObject.ItemPropertyChanged -=
+                ChangeNotificationWrapperOnCollectionItemPropertyChanged;
         }
 
         private void ChangeNotificationWrapperOnCollectionItemPropertyChanged(object sender, PropertyChangedEventArgs e)

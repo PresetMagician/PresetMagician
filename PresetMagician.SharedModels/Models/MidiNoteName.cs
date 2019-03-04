@@ -95,8 +95,9 @@ namespace CannedBytes.Midi.Message
         /// </summary>
         private void CompileFullNoteName()
         {
+            var oldValue = fullNoteName;
             fullNoteName = NoteName + Octave.ToString(CultureInfo.InvariantCulture);
-            RaisePropertyChanged(nameof(FullNoteName));
+            RaisePropertyChanged(nameof(FullNoteName), (object)oldValue, fullNoteName);
         }
 
         /// <summary>
@@ -146,11 +147,11 @@ namespace CannedBytes.Midi.Message
                 {
                     return;}
                 Argument.IsNotOutOfRange(() => value, 0, 127);
-
+                var oldValue = noteNumber;
                 noteNumber = value;
 
                 CompileNoteName(value);
-                RaisePropertyChanged(nameof(NoteNumber));
+                RaisePropertyChanged(nameof(NoteNumber), oldValue, noteNumber);
             }
         }
 

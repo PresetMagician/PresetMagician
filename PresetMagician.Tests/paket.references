@@ -7,9 +7,10 @@ System.Data.SQLite
 FluentAssertions
 TrackableEntities.EF.6
 TrackableEntities.Client
-Orc.EntityFramework
+Orc.EntityFramework6
 Catel.Serialization.Json
 Catel.Fody
 Fody
 LoadAssembliesOnStartup.Fody
 ModuleInit.Fody
+xunit.runner.visualstudio

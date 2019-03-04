@@ -44,8 +44,6 @@ namespace SharedModels
                     editable.BeginEdit();
                 }
             }
-
-            
         }
 
         public void EndEdit()
@@ -93,8 +91,6 @@ namespace SharedModels
             
           
         }
-        
-
 
         protected void RecalculateIsUserModified(string propertyName)
         {
@@ -104,7 +100,6 @@ namespace SharedModels
             }
             CheckUserModified(propertyName);
             IsUserModified = UserModifiedProperties.Count > 0;
-
         }
 
         protected void CheckUserModified(string propertyName)
@@ -149,7 +144,7 @@ namespace SharedModels
         /// IsUserModified flag to be changed if in edit mode
         /// </summary>
         [NotMapped]
-        public virtual ICollection<string> EditableProperties { get; }= new List<string>();
+        public virtual ICollection<string> EditableProperties { get; }= new HashSet<string>();
         
         /// <summary>
         /// Holds all properties which the user actually modified during an edit session. This set will be cleared after
