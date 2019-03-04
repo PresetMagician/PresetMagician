@@ -84,12 +84,13 @@ namespace PresetMagician.Services
             _splashScreenService.Action = "Loading database…";
             InitializeCommands();
 
-            _splashScreenService.Action = "Almost there…";
+            
         }
 
-        public override Task InitializeAfterCreatingShellAsync()
+        public override async Task InitializeBeforeShowingShellAsync()
         {
-            return base.InitializeAfterCreatingShellAsync();
+            await _serviceLocator.ResolveType<IVstService>().LoadPlugins(); 
+            _splashScreenService.Action = "Almost there…";
         }
 
         [Time]
@@ -119,8 +120,8 @@ namespace PresetMagician.Services
             };
 
             schedulerService.AddScheduledTask(updateCheckTask);
-           
-            
+
+            TaskHelper.Run(() => { _commandManager.ExecuteCommand(Commands.Plugin.RefreshPlugins); });
         }
 
         private async void StartRegistration()

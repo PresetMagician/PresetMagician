@@ -39,7 +39,7 @@ namespace PresetMagician.Views
         {
             var x = (SplashScreenViewModel) ViewModel;
             x.Action = e.NewValue;
-            Dispatcher.BeginInvoke(DispatcherPriority.Render, EmptyDelegate);
+            Dispatcher.Invoke(DispatcherPriority.Render, EmptyDelegate);
         }
 
         #endregion Constructors

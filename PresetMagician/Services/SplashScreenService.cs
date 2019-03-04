@@ -27,16 +27,13 @@ namespace PresetMagician.Services
 
         private string _action;
 
-        public String Action
+        public string Action
         {
             get => _action;
             set
             {
-                if (value != _action)
-                {
-                    ActionChanged?.Invoke(this, new StartupActionChangedEventArgs(value));
-                }
                 _action = value;
+                ActionChanged?.Invoke(this, new StartupActionChangedEventArgs(value));
                 
             }
         }

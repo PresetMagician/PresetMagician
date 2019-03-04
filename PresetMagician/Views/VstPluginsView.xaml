@@ -394,7 +394,7 @@
             </Button>
 
         </ItemsControl>
-       <!-- <xctk:BusyIndicator
+        <xctk:BusyIndicator
             Grid.Row="0"
             IsBusy="{Binding ApplicationState.IsApplicationBusy, Mode=OneWay}">
 
@@ -448,10 +448,10 @@
                 </Style>
             </xctk:BusyIndicator.ProgressBarStyle>
 
-           
-        </xctk:BusyIndicator>-->
+           <ContentControl Template="{StaticResource VstPlugins}"/>
+        </xctk:BusyIndicator>
        
-       <ContentControl Grid.Row="0" Template="{StaticResource VstPlugins}"/>
+       
 
     </Grid>
 </catel:UserControl>

@@ -37,7 +37,7 @@ namespace PresetMagician.Services
         public async Task LoadPlugins()
         {
             var plugins = await _databaseService.Context.Plugins.Include(plugin => plugin.AdditionalBankFiles)
-                .Include(plugin => plugin.PluginLocation).ToListAsync();
+                .Include(plugin => plugin.PluginLocation).ToArrayAsync();
             Plugins.SynchronizeCollection(plugins);
         }
 
@@ -87,7 +87,7 @@ namespace PresetMagician.Services
 
 
         public FastObservableCollection<Plugin> SelectedPlugins { get; } = new FastObservableCollection<Plugin>();
-        public TrackableCollection<Plugin> Plugins { get; set; }
+        public ObservableCollection<Plugin> Plugins { get; set; }
 
         public FastObservableCollection<Preset> SelectedPresets { get; } = new FastObservableCollection<Preset>();
         public FastObservableCollection<Preset> PresetExportList { get; } = new FastObservableCollection<Preset>();

@@ -13,7 +13,7 @@ namespace PresetMagician.Services.Interfaces
         event EventHandler SelectedPluginChanged;
         Plugin SelectedPlugin { get; set; }
         FastObservableCollection<Plugin> SelectedPlugins { get; }
-        TrackableCollection<Plugin> Plugins { get; set; }
+        ObservableCollection<Plugin> Plugins { get; set; }
 
         FastObservableCollection<Preset> PresetExportList { get; }
         Preset SelectedExportPreset { get; set; }
