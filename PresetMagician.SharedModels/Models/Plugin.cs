@@ -372,12 +372,6 @@ namespace SharedModels
 
         public MiniMemoryLogger Logger { get; }
 
-        // todo remove
-        public void ClearDirtyFlag()
-        {
-            //IsDirty = false;
-        }
-        
         [NotMapped] 
         public NativeInstrumentsResource NativeInstrumentsResource { get; set; } = new NativeInstrumentsResource();
 
