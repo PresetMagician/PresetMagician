@@ -63,15 +63,18 @@ namespace PresetMagicianScratchPad
                 stopWatch.Restart();
                 presetsList = dbContext.Presets.Include(p => p.Modes).Include(p => p.Types).ToList();
                 Debug.WriteLine("presetList: " + stopWatch.ElapsedMilliseconds);
+                TrackableModelBase.IsLoadingFromDatabase = false;
             }
 
             GC.Collect(); GC.WaitForPendingFinalizers();
 
 
-
+/*
             var hive = (from preset in pluginList where preset.Id == 29 select preset).FirstOrDefault();
+            hive.PluginName = "foo";
+            Debug.WriteLine(hive.ModifiedProperties.Count);
                 stopWatch.Stop();
-                Debug.WriteLine(stopWatch.Elapsed.ToString());
+                Debug.WriteLine(stopWatch.Elapsed.ToString());*/
             }
         
     }
