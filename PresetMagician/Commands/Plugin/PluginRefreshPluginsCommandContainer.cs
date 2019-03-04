@@ -259,7 +259,7 @@ namespace PresetMagician
                 }
 
                 _dispatcherService.BeginInvoke(() => { plugin.NativeInstrumentsResource.Load(plugin); });
-                Thread.Sleep(10);
+                Thread.Sleep(1);
             }
 
             return pluginsToAdd;
