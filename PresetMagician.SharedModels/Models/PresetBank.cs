@@ -54,8 +54,8 @@ namespace SharedModels
 
             RaisePropertyChanged(nameof(PresetBanks));
             RaisePropertyChanged(nameof(BankPath), (object) oldBankPath, BankPath);
-            RaisePropertyChanged(nameof(BankDepth), oldBankDepth, BankDepth);
-            RaisePropertyChanged(nameof(IsBelowNksThreshold), oldBelowNksThreshold, IsBelowNksThreshold);
+           // RaisePropertyChanged(nameof(BankDepth), oldBankDepth, BankDepth);
+            //RaisePropertyChanged(nameof(IsBelowNksThreshold), oldBelowNksThreshold, IsBelowNksThreshold);
         }
 
         public PresetBank() : this("All Banks")
@@ -65,6 +65,7 @@ namespace SharedModels
         public PresetBank(string bankName = "All Banks")
         {
             PresetBanks = new FastObservableCollection<PresetBank>();
+            PresetBanks.AutomaticallyDispatchChangeNotifications = false;
 
             PresetBanks.CollectionChanged += delegate(object sender, NotifyCollectionChangedEventArgs e)
             {
@@ -253,6 +254,14 @@ namespace SharedModels
         private void UpdateBankDepth()
         {
             BankDepth = GetBankDepth();
+            if (BankDepth > 1)
+            {
+                IsBelowNksThreshold = true;
+            }
+            else
+            {
+                IsBelowNksThreshold = false;
+            }
         }
 
         private int GetBankDepth()
@@ -268,10 +277,8 @@ namespace SharedModels
 
         public int BankDepth { get; private set; }
 
-        public bool IsBelowNksThreshold
-        {
-            get { return BankDepth > 1; }
-        }
+        public bool IsBelowNksThreshold { get; private set; }
+        
 
         #endregion
     }
