@@ -8,8 +8,10 @@ using Catel.Runtime.Serialization;
 
 namespace SharedModels
 {
-    public class PresetBank: ObservableObject
+    public class PresetBank : ObservableObject
     {
+        private Dictionary<string, PresetBank> _createCache = new Dictionary<string, PresetBank>();
+
         private string _bankName;
 
         [IncludeInSerialization]
@@ -20,7 +22,7 @@ namespace SharedModels
             {
                 var oldValue = _bankName;
                 _bankName = value;
-                RaisePropertyChanged(nameof(BankName), (object)oldValue, _bankName);
+                RaisePropertyChanged(nameof(BankName), (object) oldValue, _bankName);
                 Refresh();
             }
         }
@@ -42,7 +44,7 @@ namespace SharedModels
             var oldBankPath = BankPath;
             var oldBelowNksThreshold = IsBelowNksThreshold;
             var oldBankDepth = BankDepth;
-            
+
             foreach (var presetBank in PresetBanks)
             {
                 presetBank.Refresh();
@@ -51,18 +53,15 @@ namespace SharedModels
             UpdateBankDepth();
 
             RaisePropertyChanged(nameof(PresetBanks));
-            RaisePropertyChanged(nameof(BankPath), (object)oldBankPath, BankPath);
+            RaisePropertyChanged(nameof(BankPath), (object) oldBankPath, BankPath);
             RaisePropertyChanged(nameof(BankDepth), oldBankDepth, BankDepth);
             RaisePropertyChanged(nameof(IsBelowNksThreshold), oldBelowNksThreshold, IsBelowNksThreshold);
-            
-
         }
 
-        public PresetBank(): this("All Banks")
+        public PresetBank() : this("All Banks")
         {
-           
         }
-        
+
         public PresetBank(string bankName = "All Banks")
         {
             PresetBanks = new FastObservableCollection<PresetBank>();
@@ -149,6 +148,23 @@ namespace SharedModels
 
         public PresetBank CreateRecursive(string bankPath)
         {
+            if (_parentBank == null && _createCache.ContainsKey(bankPath))
+            {
+                return _createCache[bankPath];
+            }
+
+            var bank = CreateRecursiveInternal(bankPath);
+
+            if (_parentBank == null && !_createCache.ContainsKey(bankPath))
+            {
+                _createCache.Add(bankPath, bank);
+            }
+
+            return bank;
+        }
+
+        protected PresetBank CreateRecursiveInternal(string bankPath)
+        {
             var bankParts = bankPath.Split('/').ToList();
             PresetBank foundBank = null;
 
@@ -171,7 +187,7 @@ namespace SharedModels
 
             if (bankParts.Count > 0)
             {
-                return foundBank.CreateRecursive(string.Join<string>("/", bankParts));
+                return foundBank.CreateRecursiveInternal(string.Join<string>("/", bankParts));
             }
 
             return foundBank;
@@ -213,8 +229,13 @@ namespace SharedModels
         public bool IsVirtualBank { get; set; }
 
 
-        [ExcludeFromBackup] [ExcludeFromSerialization] public bool IsSelected { get; set; }
-        [ExcludeFromBackup] [ExcludeFromSerialization] public bool IsExpanded { get; set; }
+        [ExcludeFromBackup]
+        [ExcludeFromSerialization]
+        public bool IsSelected { get; set; }
+
+        [ExcludeFromBackup]
+        [ExcludeFromSerialization]
+        public bool IsExpanded { get; set; }
 
         public bool ContainsBankName(string bankName)
         {
@@ -236,16 +257,13 @@ namespace SharedModels
 
         private int GetBankDepth()
         {
-           
-                    var bankDepth = 0;
-                    if (_parentBank != null && !_parentBank.IsVirtualBank)
-                    {
-                        return _parentBank.GetBankDepth() + 1;
-                    }
+            var bankDepth = 0;
+            if (_parentBank != null && !_parentBank.IsVirtualBank)
+            {
+                return _parentBank.GetBankDepth() + 1;
+            }
 
-                    return bankDepth;
-                
-            
+            return bankDepth;
         }
 
         public int BankDepth { get; private set; }
