@@ -106,9 +106,6 @@ namespace PresetMagician
 
         public static class Plugin
         {
-            public const string LoadPluginsFromDatabase = "Plugin.LoadPluginsFromDatabase";
-            
-                
             public const string RefreshPlugins = "Plugin.RefreshPlugins";
             public const string ScanPlugins = "Plugin.ScanPlugins";
             public const string QuickScanPlugins = "Plugin.QuickScanPlugins";

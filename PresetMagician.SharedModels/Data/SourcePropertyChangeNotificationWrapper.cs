@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using Catel.Data;
 using SharedModels.Collections;
 
 namespace SharedModels.Data
@@ -35,7 +36,8 @@ namespace SharedModels.Data
     public class CollectionChangeNotificationWrapper
     {
         private readonly string _sourceProperty;
-        private readonly ITrackableCollection _sourceObject;
+        private readonly ITrackableCollection _sourceCollection;
+        private readonly TrackableModelBaseFoo _sourceObject;
 
         public CollectionChangeNotificationWrapper(ITrackableCollection value, string sourceProperty)
         {
@@ -45,15 +47,34 @@ namespace SharedModels.Data
             value.ItemPropertyChanged +=
                 ChangeNotificationWrapperOnCollectionItemPropertyChanged;
             
+            _sourceCollection = value;
+           
+        }
+        
+        public CollectionChangeNotificationWrapper(TrackableModelBaseFoo value, string sourceProperty)
+        {
+            _sourceProperty = sourceProperty;
+            
+            value.PropertyChanged +=
+                ChangeNotificationWrapperOnCollectionItemPropertyChanged;
+            
             _sourceObject = value;
            
         }
 
         public void Unsubscribe()
         {
-            _sourceObject.CollectionChanged -= ChangeNotificationWrapperOnCollectionChanged;
-            _sourceObject.ItemPropertyChanged -=
-                ChangeNotificationWrapperOnCollectionItemPropertyChanged;
+            if (_sourceCollection != null)
+            {
+                _sourceCollection.CollectionChanged -= ChangeNotificationWrapperOnCollectionChanged;
+                _sourceCollection.ItemPropertyChanged -=
+                    ChangeNotificationWrapperOnCollectionItemPropertyChanged;
+            }
+
+            if (_sourceObject != null)
+            {
+                _sourceObject.PropertyChanged -= ChangeNotificationWrapperOnCollectionItemPropertyChanged;
+            }
         }
 
         private void ChangeNotificationWrapperOnCollectionItemPropertyChanged(object sender, PropertyChangedEventArgs e)

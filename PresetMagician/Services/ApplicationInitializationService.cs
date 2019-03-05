@@ -153,10 +153,6 @@ namespace PresetMagician.Services
             _commandManager.CreateCommandWithGesture(typeof(Commands.Application), "ApplyConfiguration");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Application), "NotImplemented");
 
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin),
-                nameof(Commands.Plugin.LoadPluginsFromDatabase));
-            
-                
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "ScanPlugins");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin),
                 nameof(Commands.Plugin.QuickScanPlugins));

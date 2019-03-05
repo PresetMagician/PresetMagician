@@ -3,7 +3,6 @@ using System.Collections.Specialized;
 using System.Linq;
 using Catel.Collections;
 using Catel.Data;
-using Catel.Fody;
 using Catel.Runtime.Serialization;
 
 namespace SharedModels
@@ -230,11 +229,9 @@ namespace SharedModels
         public bool IsVirtualBank { get; set; }
 
 
-        [ExcludeFromBackup]
         [ExcludeFromSerialization]
         public bool IsSelected { get; set; }
 
-        [ExcludeFromBackup]
         [ExcludeFromSerialization]
         public bool IsExpanded { get; set; }
 

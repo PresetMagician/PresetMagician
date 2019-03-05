@@ -1,10 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Catel.Data;
+using SharedModels.Collections;
+using TrackableEntities.Client;
 
 namespace SharedModels
 {
-    public class PluginLocation: ObservableObject
+    public class PluginLocation: TrackableModelBase
     {
         [Key]
         public int Id { get; set; }
@@ -28,7 +31,7 @@ namespace SharedModels
 
         public bool IsPresent { get; set; }
         
-        public int VstPluginId { get; set; }
+        public int VstPluginId { get; set; }        
 
         public string ShortTextRepresentation
         {

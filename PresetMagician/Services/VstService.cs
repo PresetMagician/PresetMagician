@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Controls.Primitives;
 using Catel;
 using Catel.Collections;
 using Catel.Threading;
@@ -13,6 +15,9 @@ using PresetMagician.RemoteVstHost.Processes;
 using PresetMagician.Services.Interfaces;
 using SharedModels;
 using SharedModels.Collections;
+using SharedModels.Extensions;
+using TrackableEntities.Common;
+using TrackableEntities.EF6;
 
 namespace PresetMagician.Services
 {
@@ -36,9 +41,17 @@ namespace PresetMagician.Services
 
         public async Task LoadPlugins()
         {
-            var plugins = await _databaseService.Context.Plugins.Include(plugin => plugin.AdditionalBankFiles)
-                .Include(plugin => plugin.PluginLocation).ToArrayAsync();
-            Plugins.SynchronizeCollection(plugins);
+            TrackableModelBase.IsLoadingFromDatabase = true;
+            using (var dbContext = new ApplicationDatabaseContext())
+            {
+                var plugins = await dbContext.Plugins.Include(plugin => plugin.AdditionalBankFiles)
+                    .Include(plugin => plugin.PluginLocation).ToArrayAsync();
+                Plugins = new TrackableCollection<Plugin>(plugins);
+            }
+
+           
+           
+            TrackableModelBase.IsLoadingFromDatabase = false;
         }
 
         public IRemoteVstService GetVstService()
@@ -48,7 +61,19 @@ namespace PresetMagician.Services
 
         public async Task SavePlugins()
         {
-            await _databaseService.Context.SaveChangesAsync();
+            foreach (var x in Plugins.GetChanges())
+            {
+                Debug.WriteLine(x.PluginName);
+            }
+
+            using (var dbContext = new ApplicationDatabaseContext())
+            {
+                dbContext.Database.Log = delegate(string s) { Debug.WriteLine(s);};
+                dbContext.SyncChanges(Plugins);
+                await dbContext.SaveChangesAsync();
+                Plugins.AcceptChanges();
+            }
+            //await _databaseService.Context.SaveChangesAsync();
         }
 
         public byte[] GetPresetData(Preset preset)
@@ -87,7 +112,7 @@ namespace PresetMagician.Services
 
 
         public FastObservableCollection<Plugin> SelectedPlugins { get; } = new FastObservableCollection<Plugin>();
-        public ObservableCollection<Plugin> Plugins { get; set; }
+        public TrackableCollection<Plugin> Plugins { get; set; }
 
         public FastObservableCollection<Preset> SelectedPresets { get; } = new FastObservableCollection<Preset>();
         public FastObservableCollection<Preset> PresetExportList { get; } = new FastObservableCollection<Preset>();

@@ -15,6 +15,7 @@ using InteractivePreGeneratedViews;
 using Orc.EntityFramework;
 using PresetMagician.Models.EventArgs;
 using PresetMagician.SharedModels;
+using SharedModels.Extensions;
 using SharedModels.Migrations;
 using SQLite.CodeFirst;
 
@@ -81,7 +82,7 @@ namespace SharedModels
             modelBuilder.Entity<PresetDataStorage>().IgnoreCatelProperties();
             modelBuilder.Entity<PluginLocation>();
             modelBuilder.Entity<SchemaVersion>();
-
+            
             Database.SetInitializer(sqliteConnectionInitializer);
         }
 
@@ -127,11 +128,38 @@ namespace SharedModels
             return new ApplicationDatabaseContext();
         }
 
+        /// <summary>
+        /// todo rename to initialize or something
+        /// </summary>
         public static void InitializeViewCache()
         {
+            List<System.Type> Models = new List<System.Type>
+            {
+                typeof(Plugin),
+                typeof(Preset),
+                typeof(Mode),
+                typeof(Type),
+                typeof(PresetDataStorage),
+                typeof(PluginLocation),
+                typeof(BankFile)
+            };
+            
             using (var context = new ApplicationDatabaseContext())
             {
                 context.Migrate();
+
+                foreach (var x in Models)
+                {
+                    if (TrackableModelBase.DatabaseProperties.ContainsKey(x))
+                    {
+                        continue;
+                    }
+                    TrackableModelBase.DatabaseProperties.Add(x,
+                        (from prop in context.GetTableColumns(x) select prop.Key)
+                        .ToList());
+                }
+
+
             }
         }
 
@@ -240,32 +268,35 @@ namespace SharedModels
 
         public void LoadPresetsForPlugin(Plugin plugin)
         {
-            Configuration.AutoDetectChangesEnabled = false;
-            plugin.PresetCache.Clear();
-            plugin.PresetHashCache.Clear();
-            var deletedPresets =
-                (from deletedPreset in Presets
-                    where deletedPreset.Plugin.Id == plugin.Id && deletedPreset.IsIgnored
-                    select deletedPreset).AsNoTracking().ToList();
-
-            foreach (var preset in deletedPresets)
+            using (var dbContext = new ApplicationDatabaseContext())
             {
-                plugin.PresetCache.Add(preset.SourceFile, preset);
+                plugin.PresetCache.Clear();
+                plugin.PresetHashCache.Clear();
+
+                dbContext.Plugins.Attach(plugin);
+                var deletedPresets =
+                    (from deletedPreset in dbContext.Presets
+                        where deletedPreset.Plugin.Id == plugin.Id && deletedPreset.IsIgnored
+                        select deletedPreset).AsNoTracking().ToList();
+
+                foreach (var preset in deletedPresets)
+                {
+                    plugin.PresetCache.Add(preset.SourceFile, preset);
+                }
+
+                using (plugin.Presets.SuspendChangeNotifications())
+                {
+                    dbContext.Entry(plugin).Collection(p => p.Presets).Query().Include(p => p.Modes).Include(p => p.Types)
+                        .Where(p => !p.IsIgnored).Load();
+                }
+
+                foreach (var preset in plugin.Presets)
+                {
+                    plugin.PresetCache.Add(preset.SourceFile, preset);
+                    plugin.PresetHashCache.Add((preset.PresetHash, preset.SourceFile), preset);
+                }
             }
 
-            using (plugin.Presets.SuspendChangeNotifications())
-            {
-                Entry(plugin).Collection(p => p.Presets).Query().Include(p => p.Modes).Include(p => p.Types)
-                    .Where(p => !p.IsIgnored).Load();
-            }
-
-            foreach (var preset in plugin.Presets)
-            {
-                plugin.PresetCache.Add(preset.SourceFile, preset);
-                plugin.PresetHashCache.Add((preset.PresetHash, preset.SourceFile), preset);
-            }
-
-            Configuration.AutoDetectChangesEnabled = true;
         }
 
         public bool HasPresets(Plugin plugin)

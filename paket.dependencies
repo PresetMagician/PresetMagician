@@ -60,8 +60,7 @@ nuget MimeTypeMap.List
 nuget gong-wpf-dragdrop
 nuget xunit
 nuget FluentAssertions
-nuget TrackableEntities.EF.6
-nuget TrackableEntities.Client
-nuget Catel.Serialization.Json
 nuget DeepCloner
 nuget xunit.runner.visualstudio
+nuget FastMember
+nuget FluentNHibernate
