@@ -1,7 +1,6 @@
 Catel.Core
 System.ValueTuple
 Anotar.Catel.Fody copy_local: false
-Catel.Fody
 Fody
 PropertyChanged.Fody copy_local: false
 SharpZipLib
@@ -12,6 +11,6 @@ SQLite.CodeFirst
 EFInteractiveViews
 Orc.EntityFramework6
 MethodTimer.Fody copy_local: false
-TrackableEntities.EF.6
-TrackableEntities.Client
 DeepCloner
+Newtonsoft.Json
+FastMember

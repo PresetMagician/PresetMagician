@@ -1,8 +1,6 @@
 Catel.Core
 Catel.MVVM
 Catel.Fody
-TrackableEntities.EF.6
-TrackableEntities.Client
 Orc.EntityFramework6
 EntityFramework
 System.Data.SQLite

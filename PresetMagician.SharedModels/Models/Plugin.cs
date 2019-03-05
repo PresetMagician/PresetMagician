@@ -14,6 +14,7 @@ using PresetMagician.Models;
 using PresetMagician.Models.NativeInstrumentsResources;
 using PresetMagician.SharedModels;
 using SharedModels.Collections;
+using TrackableEntities.Client;
 
 namespace SharedModels
 {
@@ -178,6 +179,7 @@ namespace SharedModels
         #region Property Plugin Location
         
         private PluginLocation _pluginLocation;
+        private ChangeTrackingCollection<PluginLocation> PluginLocationChangeTracker { get; set; }
 
         /// <summary>
         /// The plugin location to use. Attach event listeners if being set
@@ -198,6 +200,7 @@ namespace SharedModels
 
                 var oldValue = _pluginLocation;
                 _pluginLocation = value;
+                PluginLocationChangeTracker = _pluginLocation == null ? null : new ChangeTrackingCollection<PluginLocation>(_pluginLocation);
                 if (_pluginLocation != null)
                 {
                     _pluginLocation.PropertyChanged += PluginLocationOnPropertyChanged;
@@ -372,7 +375,7 @@ namespace SharedModels
 
         public MiniMemoryLogger Logger { get; }
 
-        [NotMapped] 
+        [NotMapped] [JsonIgnore]
         public NativeInstrumentsResource NativeInstrumentsResource { get; set; } = new NativeInstrumentsResource();
 
         #endregion

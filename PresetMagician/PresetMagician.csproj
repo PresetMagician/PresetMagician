@@ -131,7 +131,6 @@
     <Compile Include="Commands\Plugin\AbstractScanPluginsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginAllToPresetExportListCommandContainer.cs" />
     <Compile Include="Commands\Plugin\AbstractReportPluginsCommandContainer.cs" />
-    <Compile Include="Commands\Plugin\PluginLoadPluginsFromDatabaseCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginNotExportedAllToPresetExportListCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginQuickScanPluginsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginQuickScanSelectedPluginsCommandContainer.cs" />
@@ -449,6 +448,18 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\trackable-entities\Source\TrackableEntities.Client\TrackableEntities.Client.csproj">
+      <Project>{ff4a77e7-2f00-426f-b626-07251756e0bb}</Project>
+      <Name>TrackableEntities.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\trackable-entities\Source\TrackableEntities.Common\TrackableEntities.Common.csproj">
+      <Project>{a59939c3-b823-43d1-84f1-74d6a9ddc598}</Project>
+      <Name>TrackableEntities.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\trackable-entities\Source\TrackableEntities.EF.6\TrackableEntities.EF.6.csproj">
+      <Project>{eadec46b-436a-416d-b44e-586c0e84aa5d}</Project>
+      <Name>TrackableEntities.EF.6</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PresetMagician.NKS\PresetMagician.NKS.csproj">
       <Project>{2126df46-7f24-4c2c-b236-514a70b7a3a5}</Project>
       <Name>PresetMagician.NKS</Name>
@@ -1366,39 +1377,6 @@
       <ItemGroup>
         <Reference Include="System.ValueTuple">
           <HintPath>..\packages\System.ValueTuple\lib\net47\System.ValueTuple.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
-      <ItemGroup>
-        <Reference Include="TrackableEntities.Client">
-          <HintPath>..\packages\TrackableEntities.Client\lib\net45\TrackableEntities.Client.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
-      <ItemGroup>
-        <Reference Include="TrackableEntities.Common">
-          <HintPath>..\packages\TrackableEntities.Common\lib\portable40-net40+sl5+win8+wp8+wpa81\TrackableEntities.Common.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
-      <ItemGroup>
-        <Reference Include="TrackableEntities.EF.6">
-          <HintPath>..\packages\TrackableEntities.EF.6\lib\net45\TrackableEntities.EF.6.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>

@@ -4,7 +4,6 @@ using System.IO;
 using System.Windows.Media.Imaging;
 using Anotar.Catel;
 using Catel.Data;
-using Catel.Fody;
 using Catel.Runtime.Serialization;
 using PresetMagician.Models.NativeInstrumentsResources;
 
@@ -35,7 +34,6 @@ namespace SharedModels.NativeInstrumentsResources
         }
 
 
-        [ExcludeFromBackup]
         public BitmapImage Image { get; set; }
 
         private byte[] GetImageData()

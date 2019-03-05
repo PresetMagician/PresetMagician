@@ -164,6 +164,16 @@ namespace SharedModels.Collections
         {
             _backingTrackingCollection.MergeChanges();
         }
+        
+        public void MergeChanges(T [] updatedItems)
+        {
+            _backingTrackingCollection.MergeChanges(updatedItems);
+        }
+
+        public ChangeTrackingCollection<T> GetTracker()
+        {
+            return _backingTrackingCollection;
+        }
 
         public ITrackingCollection<T> GetChanges()
         {

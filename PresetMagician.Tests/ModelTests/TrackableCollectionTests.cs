@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using FluentAssertions;
+using PresetMagician.SharedModels;
 using SharedModels;
 using SharedModels.Collections;
 using SharedModels.Extensions;
@@ -12,6 +13,8 @@ using TrackableEntities.Common;
 using TrackableEntities.EF6;
 using Xunit;
 using Xunit.Abstractions;
+using  System.Data.Entity.Migrations;
+using Catel.Collections;
 
 namespace PresetMagician.Tests.ModelTests
 {
@@ -154,48 +157,92 @@ namespace PresetMagician.Tests.ModelTests
         {
             var manager = _databaseFixture.GetEmptyManager();
             TrackableCollection<Plugin> plugins;
+            TrackableCollection<PluginLocation> foo;
 
             var testPlugin = new Plugin();
+            testPlugin.PluginLocation = new PluginLocation();
+            testPlugin.PluginLocation.IsPresent = true;
+            testPlugin.Presets.Add(new Preset());
+           
 
             using (var dbContext = manager.Create())
             {
                 dbContext.Database.Log = delegate(string s) { output.WriteLine(s);};
                 var test = dbContext.Plugins.ToList();
+                var test2 = dbContext.PluginLocations.ToList();
                 plugins = new TrackableCollection<Plugin>(test);
+                foo = new TrackableCollection<PluginLocation>(test2);
+              
                 plugins.Add(testPlugin);
-                dbContext.SyncChanges(plugins);
+                var changes = plugins.GetChanges();
+
+                foreach (var i in changes)
+                {
+                    if (!foo.Contains(i.PluginLocation))
+                    {
+                        foo.Add(i.PluginLocation);
+                    }
+                }
+                
+                dbContext.ApplyChanges(changes);
+                dbContext.ApplyChanges(foo.GetChanges());
+                
+                //testPlugin.PluginLocation.TrackingState.Should().Be(TrackingState.Added);
+                
                 dbContext.SaveChanges();
+
                 plugins.AcceptChanges();
+                //testPlugin.AcceptChanges();
+                
+                Assert.Equal(plugins.Count, dbContext.Plugins.Count());
+                Assert.Equal(foo.Count, dbContext.PluginLocations.Count());
             }
 
+            testPlugin.Id.Should().NotBe(0);
+            testPlugin.PluginLocation.Id.Should().NotBe(0);
 
-            Assert.True(testPlugin.TrackingState == TrackingState.Unchanged);
+            testPlugin.TrackingState.Should().Be(TrackingState.Unchanged);
+            testPlugin.PluginLocation.TrackingState.Should().Be(TrackingState.Unchanged);
 
             plugins.Remove(testPlugin);
             plugins.Add(testPlugin);
 
-            plugins.GetChanges().Should().BeEmpty("Removing and adding the same plugin should result in an unmodified list");
-            
             plugins.Remove(testPlugin);
+           
             testPlugin.PluginName = "test";
+            
+            
             plugins.Add(testPlugin);
             
-            plugins.GetChanges().Count.Should().Be(1, "Modifying a plugin when removed from the list and added again should mark the plugin as modified");
             testPlugin.TrackingState.Should().Be(TrackingState.Modified);
-
+            testPlugin.PluginLocation = null;
+            //testPlugin.ModifiedProperties.Remove("PluginLocation");
             using (var dbContext = manager.Create())
             {
                 dbContext.Database.Log = delegate(string s) { output.WriteLine(s);};
-                dbContext.SyncChanges(plugins);
+                var changes = plugins.GetChanges();
+                dbContext.ApplyChanges(foo.GetChanges());
+                dbContext.ApplyChanges(changes);
+                
                 dbContext.SaveChanges();
                 plugins.AcceptChanges();
                 
                 testPlugin.TrackingState.Should().Be(TrackingState.Unchanged);
                 Assert.Equal(plugins.Count, dbContext.Plugins.Count());
+                Assert.Equal(foo.Count, dbContext.PluginLocations.Count());
+            }
+
+            
+
+            using (var dbContext = manager.Create())
+            {
+                var test = dbContext.Plugins.ToList();
+                var test2 = dbContext.PluginLocations.ToList();
+                plugins = new TrackableCollection<Plugin>(test);
+                foo = new TrackableCollection<PluginLocation>(test2);
                 
             }
-            
-           
+
 
 
 

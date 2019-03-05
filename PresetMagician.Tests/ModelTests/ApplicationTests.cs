@@ -7,7 +7,6 @@ using Catel.Data;
 using FluentAssertions;
 using SharedModels;
 using SharedModels.Collections;
-using TrackableEntities.Common;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -32,7 +31,6 @@ namespace PresetMagician.Tests.ModelTests
 
             using (var dbContext = manager.Create())
             {
-                dbContext.Migrate();
                 //dbContext.Database.Log = delegate(string s) { output.WriteLine(s); };
                 TrackableModelBase.IsLoadingFromDatabase = true;
                 Stopwatch stopWatch = new Stopwatch();
@@ -51,20 +49,10 @@ namespace PresetMagician.Tests.ModelTests
                 output.WriteLine("pluginList: "+stopWatch.ElapsedMilliseconds);
                
                 stopWatch.Restart();
-                var presetsList = dbContext.Presets.Include(p => p.Modes).Include(p => p.Types).ToList();
+                var presetsList = dbContext.Presets.ToList();
                 output.WriteLine("presetList: "+stopWatch.ElapsedMilliseconds);
                 stopWatch.Restart();
                 TrackableModelBase.IsLoadingFromDatabase = false;
-                
-              
-                var hive = (from preset in pluginList where preset.Id == 29 select preset).FirstOrDefault();
-                hive.BeginEdit();
-                output.WriteLine("beginEdit: "+stopWatch.ElapsedMilliseconds);
-                hive.CancelEdit();
-                output.WriteLine("cancelEdit: "+stopWatch.ElapsedMilliseconds);
-                
-                
-              
             }
         }
     }

@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using SharedModels;
 using SharedModels.Collections;
 
 namespace PresetMagician.Tests.TestEntities
 {
-    public class Company: TrackableModelBase
+    public class Company: TrackableModelBaseFoo
     {
         public override ICollection<string> EditableProperties { get; } = new List<string>
         {
@@ -14,10 +16,12 @@ namespace PresetMagician.Tests.TestEntities
             nameof(AdminUser)
         };
 
-        public string Name { get; set; } = "";
+        [Key]
+        public virtual int Id { get; set; }
+        public virtual string Name { get; set; } = "";
         
-        public User AdminUser { get; set; }
-        public TrackableCollection<User> Users { get; set; }= new TrackableCollection<User>();
+        public virtual User AdminUser { get; set; }
+        public virtual IList<User> Users { get; set; }= new TrackableCollection<User>();
 
      
     }

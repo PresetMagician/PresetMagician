@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using SharedModels;
 
 namespace PresetMagician.Tests.TestEntities
 {
-    public class User: TrackableModelBase
+    public class User: TrackableModelBaseFoo
     {
         public override ICollection<string> EditableProperties { get; } = new List<string>
         {
@@ -11,7 +12,10 @@ namespace PresetMagician.Tests.TestEntities
             nameof(Company)
         };
         
-        public string Name { get; set; }
-        public Company Company { get; set; }
+        [Key]
+        public virtual int Id { get; set; }
+        
+        public virtual string Name { get; set; }
+        public virtual Company Company { get; set; }
     }
 }

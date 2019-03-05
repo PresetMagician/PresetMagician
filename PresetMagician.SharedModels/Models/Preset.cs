@@ -10,7 +10,6 @@ using Anotar.Catel;
 using CannedBytes.Midi.Message;
 using Catel.Collections;
 using Catel.Data;
-using Catel.Fody;
 using Catel.Runtime.Serialization;
 using Newtonsoft.Json;
 using SharedModels.Collections;

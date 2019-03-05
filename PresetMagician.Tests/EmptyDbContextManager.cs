@@ -25,8 +25,9 @@ namespace PresetMagician.Tests
 
         public ApplicationDatabaseContext Create()
         {
+            ApplicationDatabaseContext.InitializeViewCache();
             
-            return new ApplicationDatabaseContext(dbPath);
+            return new  ApplicationDatabaseContext(dbPath);
         }
 
         public void Remove()

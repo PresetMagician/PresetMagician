@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Xml.Serialization;
 using Catel.Data;
-using Catel.Fody;
 
 namespace SharedModels
 {
