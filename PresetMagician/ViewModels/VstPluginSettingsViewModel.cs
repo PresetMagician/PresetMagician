@@ -30,8 +30,8 @@ using PresetMagician.Models;
 using PresetMagician.Models.ControllerAssignments;
 using PresetMagician.Models.NativeInstrumentsResources;
 using PresetMagician.Services.Interfaces;
-using PresetMagician.SharedModels;
 using SharedModels;
+using SharedModels.Models;
 using SharedModels.NativeInstrumentsResources;
 
 namespace PresetMagician.ViewModels

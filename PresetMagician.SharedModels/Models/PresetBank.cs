@@ -13,7 +13,6 @@ namespace SharedModels
 
         private string _bankName;
 
-        [IncludeInSerialization]
         public string BankName
         {
             get => _bankName;

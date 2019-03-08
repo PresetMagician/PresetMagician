@@ -249,8 +249,6 @@ namespace PresetMagician.Services
         private void RegisterTypes()
         {
             var serviceLocator = ServiceLocator.Default;
-            ServiceLocator.Default.RegisterType<IXmlSerializer, TestSerializer>();
-            serviceLocator.RegisterType<ISerializer, TestSerializer>();
             serviceLocator.RegisterType<IAboutInfoService, AboutInfoService>();
             serviceLocator.RegisterType<ICustomStatusService, CustomStatusService>();
             serviceLocator.RegisterType<IPleaseWaitService, CustomPleaseWaitService>();

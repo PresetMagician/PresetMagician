@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using SharedModels;
+using SharedModels.Models;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
 {

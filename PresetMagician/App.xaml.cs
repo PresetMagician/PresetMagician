@@ -22,20 +22,27 @@ using MessageBox = System.Windows.MessageBox;
 
 namespace PresetMagician
 {
-    #warning TODO: Finalize plugin property rework, maybe add unit tests, add msgpack serializer (maybe), test save and restore
-    #warning TODO: FIXED: changed flag only respects preset data and not metadata. needs to be fixed.
-    #warning TODO: research if it's possible to work on a copy. Also ensure that while presets being edited no other operation may run!
-    #warning TODO: replace developer stuff with ugly company logos
-    #warning TODO: ensure with a test that all new properties on database models are marked with NotMapped or included in the migration
-    #warning TODO: also ensure that new properties on database models are checked for Include/Exclude in backup. do this via a static list
-    #warning TODO: implement effIdle per https://www.kvraudio.com/forum/viewtopic.php?t=349866
-    #warning TODO: add warning in the ribbon that preset editing is active
-    #warning TODO: add filters for "modified presets", types, modes, probably via quick filters? hide/show ignored and mark them somehow
-    #warning TODO: add icons for changed since last export, preset modified
-    #warning TODO: add big edit box
-    #warning TOOD: add global types/modes editor including display which properties are user overridden
-    #warning TODO: add preset functions delete selected, ignore selected
-    #warning TODO: cancelling preset editing clears list? HUH?!?
+#warning TODO: Finalize plugin property rework, maybe add unit tests, add msgpack serializer (maybe), test save and restore
+#warning TODO: FIXED: changed flag only respects preset data and not metadata. needs to be fixed.
+#warning TODO: research if it's possible to work on a copy. Also ensure that while presets being edited no other operation may run!
+#warning TODO: replace developer stuff with ugly company logos
+#warning TODO: ensure with a test that all new properties on database models are marked with NotMapped or included in the migration
+#warning TODO: also ensure that new properties on database models are checked for Include/Exclude in backup. do this via a static list
+#warning TODO: implement effIdle per https://www.kvraudio.com/forum/viewtopic.php?t=349866
+#warning TODO: add warning in the ribbon that preset editing is active
+#warning TODO: add filters for "modified presets", types, modes, probably via quick filters? hide/show ignored and mark them somehow
+#warning TODO: add icons for changed since last export, preset modified
+#warning TODO: add big edit box
+#warning TOOD: add global types/modes editor including display which properties are user overridden
+#warning TODO: add preset functions delete selected, ignore selected
+#warning TODO: cancelling preset editing clears list? HUH?!?
+#warning individual plugin loading -> requires global types/modes list with lookup
+#warning load all plugins, even ones which don't exist anymore
+#warning midi note name slow -> create static lookup ? or even better: only save the note number?  with ivalueconverter?
+#warning how to store presetdata? test zip performance
+#warning modelbasefoo: only attach change listeners when editing, or better: recalc usermodified on timer basis
+#warning remove tracking stuff
+    #warning refactor bug report to include the new mechanism and exclude the sqlite database
 
     /// <summary>
     ///     Interaction logic for App.xaml
@@ -44,9 +51,9 @@ namespace PresetMagician
     {
         public App()
         {
-            #if !DEBUG
+#if !DEBUG
             SetupExceptionHandling();
-            #endif
+#endif
         }
 
         private void SetupExceptionHandling()
@@ -73,10 +80,12 @@ namespace PresetMagician
 
             var runtimeConfigurationService = serviceLocator.ResolveType<IRuntimeConfigurationService>();
             string email = "";
-            if (runtimeConfigurationService.ApplicationState.ActiveLicense?.Customer != null && !string.IsNullOrWhiteSpace(runtimeConfigurationService.ApplicationState.ActiveLicense?.Customer?.Email) )
+            if (runtimeConfigurationService.ApplicationState.ActiveLicense?.Customer != null &&
+                !string.IsNullOrWhiteSpace(runtimeConfigurationService.ApplicationState.ActiveLicense?.Customer?.Email))
             {
                 email = runtimeConfigurationService.ApplicationState.ActiveLicense.Customer.Email;
-            } 
+            }
+
             var uiVisualiserService = serviceLocator.ResolveType<IUIVisualizerService>();
             var report = new IssueReport(IssueReport.TrackerTypes.CRASH, VersionHelper.GetCurrentVersion(),
                 email, FileLocations.LogFile,

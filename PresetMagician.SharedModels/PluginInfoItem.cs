@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace PresetMagician.Models
+namespace SharedModels
 {
     [DataContract]
     public class PluginInfoItem

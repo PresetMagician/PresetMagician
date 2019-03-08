@@ -11,6 +11,7 @@ using Catel.Runtime.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SharedModels;
+using SharedModels.Models;
 using SharedModels.NativeInstrumentsResources;
 using Color = SharedModels.NativeInstrumentsResources.Color;
 

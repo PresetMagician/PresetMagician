@@ -7,9 +7,11 @@ using System.Runtime.CompilerServices;
 using Catel.Collections;
 using Catel.Data;
 using Catel.Reflection;
+using Ceras;
 using Force.DeepCloner;
 using MethodTimer;
 using SharedModels.Collections;
+using SharedModels.Data;
 using SharedModels.Extensions;
 
 namespace SharedModels
@@ -165,27 +167,27 @@ namespace SharedModels
         /// Defines if one or more properties were changed by the user during the current edit session. Will be reset
         /// after editing.
         /// </summary>
-        [NotMapped]
+        [NotMapped] [Exclude]
         public virtual bool IsUserModified { get; private set; }
 
         /// <summary>
         /// Defines all properties which are editable by the user. If defined here, the property will cause the
         /// IsUserModified flag to be changed if in edit mode
         /// </summary>
-        [NotMapped]
+        [NotMapped] [Exclude]
         public virtual ICollection<string> EditableProperties { get; }= new HashSet<string>();
         
         /// <summary>
         /// Holds all properties which the user actually modified during an edit session. This set will be cleared after
         /// editing.
         /// </summary>
-        [NotMapped]
+        [NotMapped] [Exclude]
         public virtual HashSet<string> UserModifiedProperties { get; } = new HashSet<string>();
         
         /// <summary>
         /// Defines if this model is in editing mode and causes IsUserModified to change
         /// </summary>
-        [NotMapped]
+        [NotMapped] [Exclude]
         public virtual bool IsEditing { get; private set; }
         
         #endregion

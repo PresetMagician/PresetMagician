@@ -16,9 +16,9 @@ using Jacobi.Vst.Core;
 using PresetMagician.Models;
 using PresetMagician.RemoteVstHost;
 using PresetMagician.RemoteVstHost.Processes;
-using PresetMagician.SharedModels;
 using PresetMagician.VstHost.VST;
 using SharedModels;
+using SharedModels.Models;
 using Type = SharedModels.Type;
 
 namespace PresetMagician.VendorPresetParserTest

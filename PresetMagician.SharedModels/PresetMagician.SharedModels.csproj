@@ -54,11 +54,19 @@
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
+    <Reference Include="ZeroFormatter.Interfaces, Version=1.6.4.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\ZeroFormatter.Interfaces\lib\net45\ZeroFormatter.Interfaces.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationDatabaseContext.cs" />
+    <Compile Include="Collections\EditableCollection.cs" />
     <Compile Include="Collections\TrackableCollection.cs" />
+    <Compile Include="Data\IUserEditable.cs" />
+    <Compile Include="Data\ModelBase.cs" />
+    <Compile Include="Data\ModelBase.usereditable.cs" />
     <Compile Include="Data\SourcePropertyChangeNotificationWrapper.cs" />
+    <Compile Include="Data\UserEditableChangeNotificationWrapper.cs" />
     <Compile Include="EventArgs\PresetUpdatedEventArgs.cs" />
     <Compile Include="Exceptions\ConnectivityLostException.cs" />
     <Compile Include="Extensions\DbContextExtensions.cs" />
@@ -92,10 +100,23 @@
     <Compile Include="NativeInstrumentsResources\OnlineResource.cs" />
     <Compile Include="NativeInstrumentsResources\ResourceState.cs" />
     <Compile Include="NativeInstrumentsResources\ShortNames.cs" />
+    <Compile Include="NewModels\BankFile.cs" />
+    <Compile Include="NewModels\Characteristic.cs" />
+    <Compile Include="NewModels\CharacteristicCollection.cs" />
+    <Compile Include="NewModels\Plugin.cs" />
+    <Compile Include="NewModels\PluginLocation.cs" />
+    <Compile Include="NewModels\Preset.cs" />
+    <Compile Include="NewModels\PresetBank.cs" />
+    <Compile Include="NewModels\PresetDataStorage.cs" />
+    <Compile Include="NewModels\PreviewNotePlayer.cs" />
+    <Compile Include="NewModels\Type.cs" />
+    <Compile Include="NewModels\TypeCollection.cs" />
     <Compile Include="PluginInfoItem.cs" />
     <Compile Include="PresetExportInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Serialization\TestSerializer.cs" />
+    <Compile Include="Services\PluginDataPersisterService.cs" />
+    <Compile Include="Services\PresetDataPersisterService.cs" />
+    <Compile Include="Services\PreviewNotePlayerService.cs" />
     <Compile Include="TrackableModelBase.cs" />
     <Compile Include="TrackableModelBase.trackable.cs" />
     <Compile Include="TrackableModelBase.usereditable.cs" />
@@ -156,6 +177,27 @@
       </PropertyGroup>
     </When>
   </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <PropertyGroup>
+        <__paket__SQLitePCLRaw_lib_e_sqlite3_v110_xp_targets>net35\SQLitePCLRaw.lib.e_sqlite3.v110_xp</__paket__SQLitePCLRaw_lib_e_sqlite3_v110_xp_targets>
+      </PropertyGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <PropertyGroup>
+        <__paket__SQLitePCLRaw_lib_e_sqlite3_osx_targets>net35\SQLitePCLRaw.lib.e_sqlite3.osx</__paket__SQLitePCLRaw_lib_e_sqlite3_osx_targets>
+      </PropertyGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <PropertyGroup>
+        <__paket__SQLitePCLRaw_lib_e_sqlite3_linux_targets>net35\SQLitePCLRaw.lib.e_sqlite3.linux</__paket__SQLitePCLRaw_lib_e_sqlite3_linux_targets>
+      </PropertyGroup>
+    </When>
+  </Choose>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
          Other similar extension points exist, see Microsoft.Common.targets.
     <Target Name="BeforeBuild">
@@ -180,6 +222,17 @@
       <ItemGroup>
         <Reference Include="Catel.Core">
           <HintPath>..\packages\Catel.Core\lib\net47\Catel.Core.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="Ceras">
+          <HintPath>..\packages\Ceras\lib\net47\Ceras.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -307,8 +360,73 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
+        <Reference Include="SQLite-net">
+          <HintPath>..\packages\sqlite-net-pcl\lib\netstandard1.1\SQLite-net.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
         <Reference Include="SQLite.CodeFirst">
           <HintPath>..\packages\SQLite.CodeFirst\lib\net45\SQLite.CodeFirst.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="SQLitePCLRaw.batteries_e_sqlite3">
+          <HintPath>..\packages\SQLitePCLRaw.bundle_e_sqlite3\lib\net45\SQLitePCLRaw.batteries_e_sqlite3.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="SQLitePCLRaw.batteries_v2">
+          <HintPath>..\packages\SQLitePCLRaw.bundle_e_sqlite3\lib\net45\SQLitePCLRaw.batteries_v2.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="SQLitePCLRaw.batteries_green">
+          <HintPath>..\packages\SQLitePCLRaw.bundle_green\lib\net45\SQLitePCLRaw.batteries_green.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="SQLitePCLRaw.batteries_v2">
+          <HintPath>..\packages\SQLitePCLRaw.bundle_green\lib\net45\SQLitePCLRaw.batteries_v2.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="SQLitePCLRaw.core">
+          <HintPath>..\packages\SQLitePCLRaw.core\lib\net45\SQLitePCLRaw.core.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="SQLitePCLRaw.provider.e_sqlite3">
+          <HintPath>..\packages\SQLitePCLRaw.provider.e_sqlite3.net45\lib\net45\SQLitePCLRaw.provider.e_sqlite3.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -550,5 +668,8 @@
     </When>
   </Choose>
   <Import Project="..\packages\Fody\build\Fody.targets" Condition="Exists('..\packages\Fody\build\Fody.targets')" Label="Paket" />
+  <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.linux\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_linux_targets).targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.linux\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_linux_targets).targets')" Label="Paket" />
+  <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.osx\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_osx_targets).targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.osx\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_osx_targets).targets')" Label="Paket" />
+  <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_xp\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_v110_xp_targets).targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_xp\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_v110_xp_targets).targets')" Label="Paket" />
   <Import Project="..\packages\System.Data.SQLite.Core\build\$(__paket__System_Data_SQLite_Core_targets).targets" Condition="Exists('..\packages\System.Data.SQLite.Core\build\$(__paket__System_Data_SQLite_Core_targets).targets')" Label="Paket" />
 </Project>

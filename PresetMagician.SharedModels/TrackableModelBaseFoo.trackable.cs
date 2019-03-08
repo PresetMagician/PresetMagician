@@ -3,18 +3,16 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using Catel.Data;
+using Ceras;
 using TrackableEntities;
 using TrackableEntities.Client;
 
 namespace SharedModels
 {
-  
-        public abstract partial class TrackableModelBaseFoo : ITrackable, IIdentifiable
-        {
-            #region ITrackable / IIdentifiable
+    public abstract partial class TrackableModelBaseFoo : ITrackable, IIdentifiable
+    {
+        #region ITrackable / IIdentifiable
 
-       
-        
         /// <summary>
         /// Generate entity identifier used for correlation with MergeChanges (if not yet done)
         /// </summary>
@@ -62,18 +60,21 @@ namespace SharedModels
         /// Change-tracking state of an entity.
         /// </summary>
         [NotMapped]
+        [Exclude]
         public virtual TrackingState TrackingState { get; set; }
 
         /// <summary>
         /// Properties on an entity that have been modified.
         /// </summary>
         [NotMapped]
+        [Exclude]
         public virtual ICollection<string> ModifiedProperties { get; set; } = new HashSet<string>();
 
         /// <summary>
         /// Identifier used for correlation with MergeChanges.
         /// </summary>
         [NotMapped]
+        [Exclude]
         public virtual Guid EntityIdentifier { get; set; }
 
         #endregion

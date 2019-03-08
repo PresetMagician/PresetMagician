@@ -4,10 +4,12 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using SharedModels;
 using SharedModels.Collections;
+using SharedModels.Data;
+using TrackableEntities.Client;
 
 namespace PresetMagician.Tests.TestEntities
 {
-    public class Company: TrackableModelBaseFoo
+    public class Company: ModelBase
     {
         public override ICollection<string> EditableProperties { get; } = new List<string>
         {
@@ -21,7 +23,7 @@ namespace PresetMagician.Tests.TestEntities
         public virtual string Name { get; set; } = "";
         
         public virtual User AdminUser { get; set; }
-        public virtual IList<User> Users { get; set; }= new TrackableCollection<User>();
+        public virtual EditableCollection<User> Users { get; set; }= new EditableCollection<User>();
 
      
     }

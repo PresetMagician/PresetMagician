@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using PresetMagician.Models;
+using SharedModels.Models;
 
 namespace SharedModels
 {

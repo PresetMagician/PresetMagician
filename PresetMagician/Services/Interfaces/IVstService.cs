@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Catel.Collections;
 using SharedModels;
 using SharedModels.Collections;
+using SharedModels.Models;
 
 namespace PresetMagician.Services.Interfaces
 {

@@ -1,17 +1,18 @@
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using Anotar.Catel;
-using SharedModels;
 
-namespace PresetMagician.SharedModels
+namespace SharedModels.Models
 {
-    public class BankFile: TrackableModelBase
+    public class BankFile: TrackableModelBaseFoo
     {
-        [Key] public int BankId { get; set; }
+        [System.ComponentModel.DataAnnotations.Key] public int BankId { get; set; }
+        
         public Plugin Plugin { get; set; }
 
         public string Path { get; set; }
+        
         public string BankName { get; set; }
+        
         public string ProgramRange { get; set; }
 
         public List<(int start, int length)> GetProgramRanges()

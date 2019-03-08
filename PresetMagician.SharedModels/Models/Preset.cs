@@ -2,28 +2,26 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics;
-using System.Text;
 using Anotar.Catel;
 using CannedBytes.Midi.Message;
-using Catel.Collections;
 using Catel.Data;
 using Catel.Runtime.Serialization;
+using Ceras;
 using Newtonsoft.Json;
 using SharedModels.Collections;
+using ZeroFormatter;
 
-namespace SharedModels
+namespace SharedModels.Models
 {
-    public class Preset : TrackableModelBase
+    public class Preset : TrackableModelBaseFoo
     {
         #region Fields
 
         /// <summary>
         /// All properties which should modify the IsMetadataModified flag.
         /// </summary>
-        private static readonly HashSet<string> _propertiesWhichModifyMetadata = new HashSet<string>
+        private static readonly List<string> _propertiesWhichModifyMetadata = new List<string>
         {
             nameof(Author),
             nameof(BankPath),
@@ -40,7 +38,7 @@ namespace SharedModels
         /// <summary>
         /// A list of all preset metadata properties which can be set using a preset parser.
         /// </summary>
-        public static readonly HashSet<string> PresetParserMetadataProperties = new HashSet<string>
+        [Exclude] public static readonly List<string> PresetParserMetadataProperties = new List<string>
         {
             nameof(Author),
             nameof(BankPath),
@@ -51,7 +49,8 @@ namespace SharedModels
             nameof(Types)
         };
 
-        public override ICollection<string> EditableProperties { get; } = new HashSet<string>
+        [Exclude]
+        public override ICollection<string> EditableProperties { get; } = new List<string>
         {
             nameof(Author),
             nameof(BankPath),
@@ -65,52 +64,49 @@ namespace SharedModels
         /// <summary>
         /// Saves all properties which can be set by a preset parser, but were updated by the user
         /// </summary>
-        public HashSet<string> UserOverwrittenProperties = new HashSet<string>();
+         public List<string> UserOverwrittenProperties = new List<string>();
 
         private bool _isEditingFromPresetParser;
-
-     
 
         #endregion
 
         public Preset()
         {
-            PreviewNote = new MidiNoteName("C5");
-            
-            _modes.ItemPropertyChanged += WrapperOnModesCollectionItemPropertyChanged;
+            PreviewNote = new MidiNoteName();
+
+            /*_modes.ItemPropertyChanged += WrapperOnModesCollectionItemPropertyChanged;
             _modes.CollectionChanged += WrapperOnModesCollectionChanged;
             _types.ItemPropertyChanged += WrapperOnTypesCollectionItemPropertyChanged;
-            _types.CollectionChanged += WrapperOnTypesCollectionChanged;
-
+            _types.CollectionChanged += WrapperOnTypesCollectionChanged;*/
         }
 
-       /* protected override void OnBeginEdit(BeginEditEventArgs e)
-        {
-            base.OnBeginEdit(e);
-
-            if (!e.Cancel)
-            {
-                _isEditing = true;
-            }
-        }
-
-        protected override void OnCancelEditCompleted(CancelEditCompletedEventArgs e)
-        {
-            base.OnCancelEditCompleted(e);
-            if (!e.IsCancelOperationCanceled)
-            {
-                _isEditing = false;
-            }
-        }
-
-        protected override void OnEndEdit(EditEventArgs e)
-        {
-            base.OnEndEdit(e);
-            if (!e.Cancel)
-            {
-                _isEditing = false;
-            }
-        }*/
+        /* protected override void OnBeginEdit(BeginEditEventArgs e)
+         {
+             base.OnBeginEdit(e);
+ 
+             if (!e.Cancel)
+             {
+                 _isEditing = true;
+             }
+         }
+ 
+         protected override void OnCancelEditCompleted(CancelEditCompletedEventArgs e)
+         {
+             base.OnCancelEditCompleted(e);
+             if (!e.IsCancelOperationCanceled)
+             {
+                 _isEditing = false;
+             }
+         }
+ 
+         protected override void OnEndEdit(EditEventArgs e)
+         {
+             base.OnEndEdit(e);
+             if (!e.Cancel)
+             {
+                 _isEditing = false;
+             }
+         }*/
 
         /// <summary>
         /// Sets updated data delivered by the preset parser. Ignores user-modified properties.
@@ -232,14 +228,13 @@ namespace SharedModels
         protected override void OnPropertyChanged(AdvancedPropertyChangedEventArgs e)
         {
             base.OnPropertyChanged(e);
-            
+
             if (e.IsNewValueMeaningful && e.PropertyName == nameof(PresetBank) && PresetBank != null)
             {
                 BankPath = PresetBank.BankPath;
             }
 
-            if (e.IsNewValueMeaningful && _propertiesWhichModifyMetadata.Contains(e.PropertyName) &&
-                ShouldTrackChanges())
+            if (ShouldTrackChanges() && e.IsNewValueMeaningful && _propertiesWhichModifyMetadata.Contains(e.PropertyName))
             {
                 if (IsEditing && PresetParserMetadataProperties.Contains(e.PropertyName))
                 {
@@ -255,14 +250,12 @@ namespace SharedModels
 
                 IsMetadataModified = true;
             }
-
-            
         }
 
         private void PreviewNoteOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             var adv = (AdvancedPropertyChangedEventArgs) e;
-            
+
             if (e.PropertyName == nameof(MidiNoteName.NoteNumber) && adv.OldValue != adv.NewValue)
             {
                 if (_propertiesWhichModifyMetadata.Contains(nameof(PreviewNoteNumber)) && ShouldTrackChanges())
@@ -275,7 +268,7 @@ namespace SharedModels
                     IsMetadataModified = true;
                 }
 
-                RaisePropertyChanged(nameof(PreviewNoteNumber), adv.OldValue, adv.NewValue);
+                OnPropertyChanged(nameof(PreviewNoteNumber), adv.OldValue, adv.NewValue);
             }
         }
 
@@ -288,7 +281,7 @@ namespace SharedModels
         /// <summary>
         /// The PresetId. Always a new GUID
         /// </summary>
-        [Key]
+        [System.ComponentModel.DataAnnotations.Key]
         public string PresetId { get; set; } = Guid.NewGuid().ToString();
 
         /// <summary>
@@ -311,14 +304,13 @@ namespace SharedModels
         /// The PluginId as foreign key
         /// </summary>
         [ForeignKey("Plugin")]
-        [Index("UniquePreset", IsUnique = true)]
+        [System.ComponentModel.DataAnnotations.Schema.Index("UniquePreset", IsUnique = true)]
         public int PluginId { get; set; }
 
         /// <summary>
         /// The plugin this preset belongs to. As soon as the plugin is set, we fill the plugins bank structure
         /// with the string representation of the bank path 
         /// </summary>
-        [IncludeInSerialization]
         public Plugin Plugin
         {
             get { return _plugin; }
@@ -327,8 +319,8 @@ namespace SharedModels
                 if (Equals(_plugin, value))
                 {
                     return;
-                    
                 }
+
                 _plugin = value;
 
                 if (_plugin != null)
@@ -353,6 +345,7 @@ namespace SharedModels
         /// The PresetBank this preset is assigned to
         /// </summary>
         [NotMapped]
+        [Exclude]
         public PresetBank PresetBank
         {
             get => _presetBank;
@@ -403,7 +396,6 @@ namespace SharedModels
         /// <summary>
         /// The bank path. Only set via EntityFramework when loading from the database
         /// </summary>
-        [IncludeInSerialization]
         public string BankPath
         {
             get => _bankPath;
@@ -413,7 +405,7 @@ namespace SharedModels
                 {
                     PresetBank = Plugin.RootBank.First().CreateRecursive(value);
                 }
-                
+
                 if (Equals(_bankPath, value))
                 {
                     return;
@@ -421,7 +413,7 @@ namespace SharedModels
 
                 var oldValue = _bankPath;
                 _bankPath = value;
-                RaisePropertyChanged(nameof(BankPath), (object)oldValue, value);
+                OnPropertyChanged(nameof(BankPath), (object) oldValue, value);
             }
         }
 
@@ -434,7 +426,6 @@ namespace SharedModels
         /// The Native Instruments types used for this plugin. Note that this is m:n relationship configured using the
         /// fluent API.
         /// </summary>
-        [IncludeInSerialization]
         public TrackableCollection<Type> Types
         {
             get => _types;
@@ -446,7 +437,7 @@ namespace SharedModels
                 }
 
                 var oldValue = _types;
-             
+
 
                 if (_types != null)
                 {
@@ -455,14 +446,14 @@ namespace SharedModels
                 }
 
                 _types = value;
-                
+
                 if (_types != null)
                 {
-                    _types.ItemPropertyChanged += WrapperOnTypesCollectionItemPropertyChanged;
-                    _types.CollectionChanged += WrapperOnTypesCollectionChanged;
+                    /*_types.ItemPropertyChanged += WrapperOnTypesCollectionItemPropertyChanged;
+                    _types.CollectionChanged += WrapperOnTypesCollectionChanged;*/
                 }
-               
-                RaisePropertyChanged(nameof(Types), oldValue, _types);
+
+                OnPropertyChanged(nameof(Types), oldValue, _types);
             }
         }
 
@@ -470,7 +461,6 @@ namespace SharedModels
         /// The Native Instruments modes used for this plugin. Note that this is m:n relationship configured using the
         /// fluent API.
         /// </summary>
-        [IncludeInSerialization]
         public TrackableCollection<Mode> Modes
         {
             get => _modes;
@@ -492,11 +482,11 @@ namespace SharedModels
 
                 if (_modes != null)
                 {
-                    _modes.ItemPropertyChanged += WrapperOnModesCollectionItemPropertyChanged;
-                    _modes.CollectionChanged += WrapperOnModesCollectionChanged;
+                    /*_modes.ItemPropertyChanged += WrapperOnModesCollectionItemPropertyChanged;
+                    _modes.CollectionChanged += WrapperOnModesCollectionChanged;*/
                 }
-               
-                RaisePropertyChanged(nameof(Modes), oldValue, _modes);
+
+                OnPropertyChanged(nameof(Modes), oldValue, _modes);
             }
         }
 
@@ -508,7 +498,7 @@ namespace SharedModels
         /// The SourceFile identifies where the preset came from. Usually a filename, but can be any string, depending
         /// on how the plugin stores it's presets
         /// </summary>
-        [Index("UniquePreset", IsUnique = true)]
+        [System.ComponentModel.DataAnnotations.Schema.Index("UniquePreset", IsUnique = true)]
         public string SourceFile { get; set; }
 
         /// <summary>
@@ -552,7 +542,7 @@ namespace SharedModels
         /// The preview note used for the audio preview. Note that we only store the midi note number in the database.
         /// </summary>
         [NotMapped]
-        
+        [Exclude]
         public MidiNoteName PreviewNote
 
         {
@@ -565,12 +555,12 @@ namespace SharedModels
                 }
 
                 if (Equals(value, _previewNote)) return;
-                var oldValue = _previewNote; 
+                var oldValue = _previewNote;
                 _previewNote = value;
-                
+
                 _previewNote.PropertyChanged += PreviewNoteOnPropertyChanged;
-                RaisePropertyChanged(nameof(PreviewNote), oldValue, _previewNote);
-                RaisePropertyChanged(nameof(PreviewNoteNumber), oldValue?.NoteNumber, _previewNote?.NoteNumber);
+                OnPropertyChanged(nameof(PreviewNote), oldValue, _previewNote);
+                OnPropertyChanged(nameof(PreviewNoteNumber), oldValue?.NoteNumber, _previewNote?.NoteNumber);
             }
         }
 
@@ -579,15 +569,26 @@ namespace SharedModels
         /// <summary>
         /// The preview note number which gets stored in the database.
         /// </summary>
+        [Exclude]
         public int PreviewNoteNumber
         {
-            get { return PreviewNote.NoteNumber; }
+            get
+            {
+                if (PreviewNote != null)
+                {
+                    return PreviewNote.NoteNumber;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
             set
             {
                 if (Equals(value, PreviewNote.NoteNumber)) return;
-                var oldValue = _previewNote.NoteNumber; 
+                var oldValue = _previewNote.NoteNumber;
                 PreviewNote.NoteNumber = value;
-                RaisePropertyChanged(nameof(PreviewNoteNumber), oldValue, _previewNote.NoteNumber);
+                OnPropertyChanged(nameof(PreviewNoteNumber), oldValue, _previewNote.NoteNumber);
             }
         }
 
@@ -599,7 +600,7 @@ namespace SharedModels
         /// Stores all properties which the user has manually modified. These properties will never be updated by a preset parser
         /// </summary>
         [Column("UserModifiedMetadata")]
-        
+        [Exclude]
         // ReSharper disable once UnusedMember.Global
         public string SerializedUserModifiedMetadata
         {
@@ -610,7 +611,7 @@ namespace SharedModels
                 {
                     try
                     {
-                        UserOverwrittenProperties = JsonConvert.DeserializeObject<HashSet<string>>(value);
+                        UserOverwrittenProperties = JsonConvert.DeserializeObject<List<string>>(value);
                     }
                     catch (JsonReaderException e)
                     {
@@ -626,6 +627,7 @@ namespace SharedModels
         /// <summary>
         /// Indicates if the preset has been changed since the last export.
         /// </summary>
+        [Exclude]
         public bool ChangedSinceLastExport => IsMetadataModified || LastExportedPresetHash == null ||
                                               LastExportedPresetHash != PresetHash;
 

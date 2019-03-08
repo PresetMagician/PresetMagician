@@ -3,6 +3,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Catel.Collections;
 using Drachenkatze.PresetMagician.NKSF.NKSF;
+using SharedModels.Models;
 
 namespace SharedModels
 {

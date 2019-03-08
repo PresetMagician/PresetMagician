@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using SharedModels;
+using SharedModels.Data;
 
 namespace PresetMagician.Tests.TestEntities
 {
-    public class User: TrackableModelBaseFoo
+    public class User: ModelBase
     {
         public override ICollection<string> EditableProperties { get; } = new List<string>
         {

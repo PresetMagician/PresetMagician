@@ -14,6 +14,7 @@
     xmlns:models="clr-namespace:SharedModels;assembly=PresetMagician.SharedModels"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     xmlns:fluent="urn:fluent-ribbon"
+    xmlns:models1="clr-namespace:SharedModels.Models;assembly=PresetMagician.SharedModels"
     Padding="1"
     CloseViewModelOnUnloaded="False"
     d:DataContext="{d:DesignInstance viewModels:VstPluginsViewModel}"
@@ -69,7 +70,7 @@
                 dgx:DataGridFilter.FilterEvaluationDelay="0:0:0.1"
                 SelectionUnit="FullRow">
                 <DataGrid.Resources>
-                    <DataTemplate x:Key="PluginImages" DataType="{x:Type models:Plugin}">
+                    <DataTemplate x:Key="PluginImages" DataType="{x:Type models1:Plugin}">
                         <StackPanel Height="22" Margin="0" Orientation="Horizontal" MinWidth="176" Width="176" MaxWidth="176"
                                     Background="{Binding NativeInstrumentsResource.Color.BackgroundColor, Converter={StaticResource ColorToSolidColorBrushValueConverter}}">
                             <Image Margin="0,0,10,0" Height="22" RenderOptions.BitmapScalingMode="HighQuality"

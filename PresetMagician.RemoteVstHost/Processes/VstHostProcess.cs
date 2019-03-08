@@ -7,6 +7,7 @@ using Anotar.Catel;
 using Castle.DynamicProxy;
 using MethodTimer;
 using SharedModels;
+using SharedModels.Models;
 using Type = System.Type;
 
 namespace PresetMagician.RemoteVstHost.Processes

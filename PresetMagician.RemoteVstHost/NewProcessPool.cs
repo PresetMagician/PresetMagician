@@ -13,6 +13,7 @@ using Catel.Data;
 using Catel.Threading;
 using PresetMagician.RemoteVstHost.Processes;
 using SharedModels;
+using SharedModels.Models;
 using Timer = System.Threading.Timer;
 
 namespace PresetMagician.RemoteVstHost

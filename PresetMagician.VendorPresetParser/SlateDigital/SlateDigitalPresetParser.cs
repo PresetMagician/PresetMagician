@@ -5,6 +5,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using Drachenkatze.PresetMagician.VendorPresetParser.Common;
 using SharedModels;
+using SharedModels.Models;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
 {

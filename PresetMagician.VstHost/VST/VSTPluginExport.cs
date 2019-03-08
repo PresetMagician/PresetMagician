@@ -10,6 +10,7 @@ using Jacobi.Vst.Interop.Host;
 using MethodTimer;
 using NAudio.Wave;
 using SharedModels;
+using SharedModels.Models;
 
 namespace PresetMagician.VstHost.VST
 {

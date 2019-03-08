@@ -15,6 +15,7 @@ using Microsoft.DwayneNeed.Win32;
 using Microsoft.DwayneNeed.Win32.User32;
 using PresetMagician.Models;
 using PresetMagician.VstHost.Util;
+using SharedModels;
 using Brushes = System.Windows.Media.Brushes;
 
 namespace PresetMagician.VstHost.VST

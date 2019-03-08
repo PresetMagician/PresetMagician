@@ -5,22 +5,23 @@ using System.ComponentModel;
 using System.Linq;
 using Catel.Collections;
 using Catel.Data;
+using SharedModels.Data;
 using TrackableEntities;
 using TrackableEntities.Client;
 
 namespace SharedModels.Collections
 {
-    public interface ITrackableCollection : INotifyCollectionChanged
+    public interface ITrackableCollection : INotifyPropertyChanged, INotifyCollectionChanged
     {
         event EventHandler<PropertyChangedEventArgs> ItemPropertyChanged;
     }
 
-    public interface ITrackableCollection<T> where T : class, ITrackable, INotifyPropertyChanged, IIdentifiable
+    public interface ITrackableCollection<T>:  IList<T>, ITrackableCollection, IUserEditable where T : class, ITrackable, INotifyPropertyChanged, IIdentifiable
     {
         ITrackingCollection<T> GetChanges();
     }
 
-    public class TrackableCollection<T> : FastObservableCollection<T>, ITrackableCollection, ITrackableCollection<T>,
+    public class TrackableCollection<T> : FastObservableCollection<T>, ITrackableCollection<T>,
         IUserEditable where T : class, ITrackable, IUserEditable, INotifyPropertyChanged, IIdentifiable
     {
         private readonly ChangeTrackingCollection<T> _backingTrackingCollection = new ChangeTrackingCollection<T>(true);
@@ -46,7 +47,7 @@ namespace SharedModels.Collections
         public TrackableCollection(IEnumerable<T> collection) : base(collection)
         {
             //AutomaticallyDispatchChangeNotifications = false;
-            _backingTrackingCollection = new ChangeTrackingCollection<T>(collection);
+            //_backingTrackingCollection = new ChangeTrackingCollection<T>(collection);
         }
 
 
@@ -55,7 +56,7 @@ namespace SharedModels.Collections
             var adv = e as AdvancedPropertyChangedEventArgs;
 
 
-            if (e.PropertyName == nameof(TrackableModelBase.IsUserModified) && adv.OldValue != adv.NewValue)
+            if (IsEditing && e.PropertyName == nameof(TrackableModelBase.IsUserModified) && adv.OldValue != adv.NewValue)
             {
                 _isCollectionItemUserModified = (from i in Items where i.IsUserModified select i).Any();
                 UpdateIsUserModifiedFlag();
@@ -88,7 +89,7 @@ namespace SharedModels.Collections
         protected override void InsertItem(int index, T item)
         {
             base.InsertItem(index, item);
-            item.PropertyChanged += ChangeNotificationWrapperOnCollectionItemPropertyChanged;
+            //item.PropertyChanged += ChangeNotificationWrapperOnCollectionItemPropertyChanged;
 
             if (IsEditing)
             {
@@ -115,6 +116,8 @@ namespace SharedModels.Collections
                 }
             }
         }
+        
+        
 
         /// <summary>
         /// Removes the item at the specified index of the collection.
@@ -142,7 +145,7 @@ namespace SharedModels.Collections
             var oldItem = this[index];
             base.SetItem(index, item);
 
-            item.PropertyChanged += ChangeNotificationWrapperOnCollectionItemPropertyChanged;
+            //item.PropertyChanged += ChangeNotificationWrapperOnCollectionItemPropertyChanged;
 
             if (IsEditing)
             {

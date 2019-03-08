@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Catel.Logging;
 using Drachenkatze.PresetMagician.Utils;
 using Jacobi.Vst.Core;
-using PresetMagician.SharedModels;
 using SharedModels;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST

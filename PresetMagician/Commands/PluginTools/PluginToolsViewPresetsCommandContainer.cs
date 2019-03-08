@@ -12,6 +12,7 @@ using PresetMagician.Helpers;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.ViewModels;
 using SharedModels;
+using SharedModels.Models;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician

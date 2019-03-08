@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Catel.Data;
 using Catel.MVVM;
 using SharedModels;
+using SharedModels.Models;
 
 namespace PresetMagician.ViewModels
 {

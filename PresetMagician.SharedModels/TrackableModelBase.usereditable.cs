@@ -10,19 +10,11 @@ using Catel.Reflection;
 using Force.DeepCloner;
 using MethodTimer;
 using SharedModels.Collections;
+using SharedModels.Data;
 using SharedModels.Extensions;
 
 namespace SharedModels
 {
-    public interface IUserEditable: IEditableObject
-    {
-        void BeginEdit(IUserEditable originatingObject);
-        void CancelEdit(IUserEditable originatingObject);
-        void EndEdit(IUserEditable originatingObject);
-        bool IsUserModified { get; }
-        bool IsEditing { get; }
-    }
-
     public abstract partial class TrackableModelBase: IUserEditable
     {
         private readonly Dictionary<string, object> _backupValues = new Dictionary<string, object>();
