@@ -21,6 +21,8 @@ namespace SharedModels.Data
         }
     }
     
+  
+    
     public class WrappedCollectionChangedEventArgs : EventArgs
     {
         public string SourceProperty { get; private set; }

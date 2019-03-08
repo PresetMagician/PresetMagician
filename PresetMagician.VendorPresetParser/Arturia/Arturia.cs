@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Catel.Logging;
 using GSF;
 using SharedModels;
+using SharedModels.Models;
 using SQLite;
 using ArturiaModels = Drachenkatze.PresetMagician.VendorPresetParser.Arturia.Models;
 

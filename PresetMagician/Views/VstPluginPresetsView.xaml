@@ -12,6 +12,7 @@
     xmlns:converters="clr-namespace:PresetMagician.Converters"
     xmlns:dd="urn:gong-wpf-dragdrop"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:models="clr-namespace:SharedModels.Models;assembly=PresetMagician.SharedModels"
     CloseViewModelOnUnloaded="False"
     Padding="2,2,2,2"
     d:DataContext="{d:DesignInstance viewModels:VstPluginPresetsViewModel}"
@@ -95,7 +96,7 @@
                     dd:DragDrop.UseDefaultDragAdorner="True"
                     dd:DragDrop.DropHandler="{Binding}"
                    AutoGenerateColumns="False"
-                    d:DataContext="{d:DesignInstance sharedModels1:Preset, CreateList=True}"
+                    d:DataContext="{d:DesignInstance models:Preset, CreateList=True}"
                     ItemsSource="{Binding PresetsView}">
                     <DataGrid.Columns>
                         <DataGridTextColumn

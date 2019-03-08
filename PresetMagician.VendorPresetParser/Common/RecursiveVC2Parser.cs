@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using GSF;
 using SharedModels;
+using SharedModels.Models;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
 {

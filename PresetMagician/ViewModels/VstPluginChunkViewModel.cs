@@ -6,6 +6,7 @@ using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
 using SharedModels;
+using SharedModels.Models;
 
 namespace PresetMagician.ViewModels
 {

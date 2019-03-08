@@ -1,16 +1,15 @@
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Xml.Serialization;
-using Catel.Data;
+using Ceras;
 
-namespace SharedModels
+namespace SharedModels.Models
 {
-    public class Mode:TrackableModelBase
+    public class Mode:TrackableModelBaseFoo
     {
-        [Key] public int Id { get; set; }
+        [System.ComponentModel.DataAnnotations.Key] public int Id { get; set; }
 
-        [XmlIgnore] public ICollection<Plugin> Plugins { get; set; }
-        [XmlIgnore] public ICollection<Preset> Presets { get; set; }
+        [XmlIgnore] [Exclude] public ICollection<Plugin> Plugins { get; set; }
+        [XmlIgnore] [Exclude]  public ICollection<Preset> Presets { get; set; }
 
         public string Name { get; set; }
     }

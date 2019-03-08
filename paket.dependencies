@@ -63,4 +63,7 @@ nuget FluentAssertions
 nuget DeepCloner
 nuget xunit.runner.visualstudio
 nuget FastMember
-nuget FluentNHibernate
+nuget ZeroFormatter
+nuget ZeroFormatter.Interfaces
+nuget MessagePackAnalyzer
+nuget Ceras

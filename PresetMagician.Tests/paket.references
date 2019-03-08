@@ -14,4 +14,7 @@ LoadAssembliesOnStartup.Fody
 ModuleInit.Fody
 xunit.runner.visualstudio
 SQLite.CodeFirst
-FluentNHibernate
+ZeroFormatter
+ZeroFormatter.Interfaces
+MessagePack
+Ceras

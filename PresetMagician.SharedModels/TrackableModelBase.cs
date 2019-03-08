@@ -15,7 +15,7 @@ using CatelModelBase = Catel.Data.ModelBase;
 
 namespace SharedModels
 {
-    public abstract partial class TrackableModelBase : ModelBase, IEditableObject
+    public abstract partial class TrackableModelBase : Catel.Data.ModelBase, IEditableObject
     {
         public static bool IsLoadingFromDatabase = false;
 

@@ -8,8 +8,8 @@ using Catel.Linq;
 using Catel.Logging;
 using Drachenkatze.PresetMagician.Utils;
 using Jacobi.Vst.Core;
-using PresetMagician.SharedModels;
 using SharedModels;
+using SharedModels.Models;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser
 {

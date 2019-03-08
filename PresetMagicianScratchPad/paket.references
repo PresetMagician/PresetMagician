@@ -7,3 +7,5 @@ System.Data.SQLite
 SQLitePCLRaw.bundle_e_sqlite3
 SQLite.CodeFirst
 MethodTimer.Fody copy_local: false
+sqlite-net-pcl
+K4os.Compression.LZ4 

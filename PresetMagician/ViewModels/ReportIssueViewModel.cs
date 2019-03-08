@@ -13,6 +13,7 @@ using Drachenkatze.PresetMagician.Utils.IssueReport;
 using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
 using SharedModels;
+using SharedModels.Models;
 
 namespace PresetMagician.ViewModels
 {

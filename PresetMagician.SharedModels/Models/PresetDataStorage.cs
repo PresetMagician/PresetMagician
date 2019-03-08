@@ -2,9 +2,9 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using K4os.Compression.LZ4;
 
-namespace SharedModels
+namespace SharedModels.Models
 {
-    public class PresetDataStorage: TrackableModelBase
+    public class PresetDataStorage: TrackableModelBaseFoo
     {
         [Key] public string PresetDataStorageId { get; set; }
 

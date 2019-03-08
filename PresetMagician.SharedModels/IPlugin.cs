@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Drachenkatze.PresetMagician.Utils;
 using PresetMagician.Models;
+using SharedModels.Models;
 
 namespace SharedModels
 {

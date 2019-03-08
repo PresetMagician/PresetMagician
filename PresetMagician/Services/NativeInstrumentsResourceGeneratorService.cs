@@ -15,6 +15,7 @@ using MethodTimer;
 using PresetMagician.Models.NativeInstrumentsResources;
 using PresetMagician.Services.Interfaces;
 using SharedModels;
+using SharedModels.Models;
 using SharedModels.NativeInstrumentsResources;
 using Brushes = System.Windows.Media.Brushes;
 using Color = System.Windows.Media.Color;

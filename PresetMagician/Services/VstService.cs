@@ -16,6 +16,7 @@ using PresetMagician.Services.Interfaces;
 using SharedModels;
 using SharedModels.Collections;
 using SharedModels.Extensions;
+using SharedModels.Models;
 using TrackableEntities.Common;
 using TrackableEntities.EF6;
 

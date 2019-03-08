@@ -5,6 +5,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using SharedModels;
+using SharedModels.Models;
 
 namespace PresetMagician.Models.EventArgs
 {

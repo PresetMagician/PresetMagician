@@ -11,6 +11,7 @@ using GongSolutions.Wpf.DragDrop;
 using MethodTimer;
 using PresetMagician.Services.Interfaces;
 using SharedModels;
+using SharedModels.Models;
 
 namespace PresetMagician.ViewModels
 {
@@ -75,7 +76,8 @@ namespace PresetMagician.ViewModels
 
         public TrackableModelBase GetTrackedModel()
         {
-            return Plugin;
+            throw new Exception("uncomment me");
+            //return Plugin;
         }
 
         #region Properties

@@ -14,9 +14,9 @@ using Drachenkatze.PresetMagician.Utils;
 using InteractivePreGeneratedViews;
 using Orc.EntityFramework;
 using PresetMagician.Models.EventArgs;
-using PresetMagician.SharedModels;
 using SharedModels.Extensions;
 using SharedModels.Migrations;
+using SharedModels.Models;
 using SQLite.CodeFirst;
 
 namespace SharedModels
@@ -66,7 +66,7 @@ namespace SharedModels
                 mc.MapLeftKey("PluginId").MapRightKey("ModeId").ToTable("PluginModes"));
             modelBuilder.Entity<Plugin>().HasMany(p => p.DefaultTypes).WithMany(q => q.Plugins).Map(mc =>
                 mc.MapLeftKey("PluginId").MapRightKey("TypeId").ToTable("PluginTypes"));
-            modelBuilder.Entity<Plugin>().IgnoreCatelProperties();
+            modelBuilder.Entity<Plugin>();
             
             modelBuilder.Entity<Preset>().HasMany(p => p.Types).WithMany(q => q.Presets).Map(mc =>
                 mc.MapLeftKey("PresetId").MapRightKey("TypeId").ToTable("PresetTypes"));
@@ -74,12 +74,12 @@ namespace SharedModels
             modelBuilder.Entity<Preset>().HasMany(p => p.Modes).WithMany(q => q.Presets).Map(mc =>
                 mc.MapLeftKey("PresetId").MapRightKey("ModeId").ToTable("PresetModes"));
             
-            modelBuilder.Entity<Preset>().IgnoreCatelProperties();
-            modelBuilder.Entity<Mode>().IgnoreCatelProperties();
-            modelBuilder.Entity<Type>().IgnoreCatelProperties();
-            modelBuilder.Entity<BankFile>().IgnoreCatelProperties();
+            modelBuilder.Entity<Preset>();
+            modelBuilder.Entity<Mode>();
+            modelBuilder.Entity<Type>();
+            modelBuilder.Entity<BankFile>();
 
-            modelBuilder.Entity<PresetDataStorage>().IgnoreCatelProperties();
+            modelBuilder.Entity<PresetDataStorage>();
             modelBuilder.Entity<PluginLocation>();
             modelBuilder.Entity<SchemaVersion>();
             

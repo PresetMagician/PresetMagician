@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Catel.Data;
 using Catel.Reflection;
+using Ceras;
 using FastMember;
 using SharedModels.Collections;
 using SharedModels.Data;
@@ -21,10 +22,8 @@ namespace SharedModels
     {
         public virtual event PropertyChangedEventHandler PropertyChanged;
 
+        [Exclude]
         public static bool IsLoadingFromDatabase = false;
-
-        public static Dictionary<System.Type, List<string>> DatabaseProperties { get; } =
-            new Dictionary<System.Type, List<string>>();
 
         [NotMapped] private Dictionary<string, CollectionChangeNotificationWrapper> CollectionTrackers =
             new Dictionary<string, CollectionChangeNotificationWrapper>();
@@ -36,29 +35,30 @@ namespace SharedModels
                 nameof(IsEditing)
             };
 
-        public virtual void OnPropertyChanged(string propertyName, object before, object after)
+        public void OnPropertyChanged(string propertyName, object before, object after)
         {
             var x = new AdvancedPropertyChangedEventArgs(this, propertyName, before, after);
-            this.OnPropertyChanged(x);
+            OnPropertyChanged(x);
             PropertyChanged?.Invoke(this, x);
         }
 
         public TrackableModelBaseFoo()
         {
-            var type = GetType();
+            /*var type = GetType();
 
             foreach (var propertyName in (from p in type.GetProperties()
                 where p.PropertyType.ImplementsInterfaceEx<ITrackableCollection>() ||
-                      p.PropertyType.HasBaseTypeEx(typeof(TrackableModelBase))
+                      p.PropertyType.HasBaseTypeEx(typeof(TrackableModelBaseFoo))
                 select p.Name))
             {
                 var value = PropertyHelper.GetPropertyValue(this, propertyName);
                 ApplyTracker(propertyName, value);
-            }
+            }*/
         }
 
         private void ApplyTracker(string propertyName, object value)
         {
+            return;
             if (value == null)
             {
                 return;
@@ -79,7 +79,7 @@ namespace SharedModels
         }
 
 
-        protected void OnPropertyChanged(AdvancedPropertyChangedEventArgs e)
+        protected virtual void OnPropertyChanged(AdvancedPropertyChangedEventArgs e)
         {
             if (e.IsNewValueMeaningful && e.NewValue != e.OldValue)
             {

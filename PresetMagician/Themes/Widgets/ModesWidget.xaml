@@ -2,13 +2,14 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:sharedModels1="clr-namespace:SharedModels;assembly=PresetMagician.SharedModels"
-    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks">
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:models="clr-namespace:SharedModels.Models;assembly=PresetMagician.SharedModels">
 
-    <DataTemplate x:Key="ModeTemplate" DataType="{x:Type sharedModels1:Mode}">
+    <DataTemplate x:Key="ModeTemplate" DataType="{x:Type models:Mode}">
        
     </DataTemplate>
 
-    <DataTemplate x:Key="ModesTemplate" DataType="{x:Type sharedModels1:Mode}">
+    <DataTemplate x:Key="ModesTemplate" DataType="{x:Type models:Mode}">
         <ItemsControl ItemsSource="{Binding Path=Modes, Mode=OneWay}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
@@ -67,7 +68,7 @@
         </Border>
     </DataTemplate>
     
-    <DataTemplate x:Key="TypesTemplate" DataType="{x:Type sharedModels1:Preset}">
+    <DataTemplate x:Key="TypesTemplate" DataType="{x:Type models:Preset}">
         <ItemsControl ItemsSource="{Binding Path=Types,Mode=OneWay}" ItemTemplate="{StaticResource TypeTemplate}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
