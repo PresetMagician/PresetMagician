@@ -18,25 +18,6 @@ namespace PresetMagician.Tests.ModelTests
 {
     public class PresetTests : EmptyDbContextManager
     {
-        private Dictionary<string, object> BackupTestProperties =
-            new Dictionary<string, object>
-            {
-                {"PresetId", Guid.Empty.ToString()},
-                {"PluginId", 15},
-                {"VstPluginId", 1234},
-                {"IsMetadataModified", true},
-                {"LastExported", DateTime.Now}, {"BankPath", "nonexistant"}, {"PresetSize", 12311},
-                {"PresetCompressedSize", 3333},
-                {"PresetName", "idk"},
-                {"PreviewNoteNumber", 111},
-                {"Author", "ibims"},
-                {"Comment", "all okay"},
-                {"SourceFile", "nowhere to be found"},
-                {"PresetHash", "ff0ff"},
-                {"LastExportedPresetHash", "yooooobar"}, {"IsIgnored", true},
-                {"UserModifiedMetadata", "[\"bla\"]"}
-            };
-
         private Dictionary<string, object> PropertiesWhichShouldNotModifyIsMetadataModified =
             new Dictionary<string, object>
             {
@@ -88,7 +69,6 @@ namespace PresetMagician.Tests.ModelTests
                 nameof(Preset.Plugin),
                 nameof(Preset.IsMetadataModified),
                 nameof(Preset.ChangedSinceLastExport),
-                nameof(Preset.VstPluginId),
                 nameof(Preset.PresetId),
                 nameof(Preset.UserOverwrittenProperties)
             };

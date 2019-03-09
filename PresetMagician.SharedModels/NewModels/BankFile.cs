@@ -1,16 +1,17 @@
 using System.Collections.Generic;
 using Anotar.Catel;
+using Ceras;
 using SharedModels.Data;
 
 namespace SharedModels.NewModels
 {
     public class BankFile: ModelBase
     {
-        public string Path { get; set; }
+        [Include] public string Path { get; set; }
         
-        public string BankName { get; set; }
+        [Include] public string BankName { get; set; }
         
-        public string ProgramRange { get; set; }
+        [Include] public string ProgramRange { get; set; }
 
         public List<(int start, int length)> GetProgramRanges()
         {

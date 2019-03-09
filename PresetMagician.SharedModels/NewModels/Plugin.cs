@@ -16,12 +16,11 @@ namespace SharedModels.NewModels
     public class Plugin : ModelBase
     {
         private int _collectionChangedCounter;
-        [Exclude] public readonly Dictionary<string, Preset> PresetCache = new Dictionary<string, Preset>();
+        public readonly Dictionary<string, Preset> PresetCache = new Dictionary<string, Preset>();
 
-        [Exclude] public readonly Dictionary<(string hash, string sourceFile), Preset> PresetHashCache =
+        public readonly Dictionary<(string hash, string sourceFile), Preset> PresetHashCache =
             new Dictionary<(string, string), Preset>();
 
-        [Exclude]
         public override ICollection<string> EditableProperties { get; } = new List<string>
         {
             nameof(Presets),
@@ -62,6 +61,11 @@ namespace SharedModels.NewModels
                 _collectionChangedCounter = Presets.Count;
                 OnPropertyChanged(nameof(NumPresets), oldValue, _collectionChangedCounter);
             }
+
+            foreach (var item in e.NewItems)
+            {
+                ((Preset) item).Plugin = this;
+            }
         }
 
         public int GetAudioPreviewDelay()
@@ -81,7 +85,7 @@ namespace SharedModels.NewModels
 
         public override string ToString()
         {
-            return IsLoaded ? $"{PluginVendor} {PluginName} ({VstPluginId})" : $"{DllPath}";
+            return HasMetadata ? $"{PluginVendor} {PluginName} ({VstPluginId})" : $"{DllPath}";
         }
 
         public void OnLoadError(Exception e)
@@ -108,21 +112,25 @@ namespace SharedModels.NewModels
         /// <summary>
         /// The plugin ID for storage
         /// </summary>
+        [Include]
         public string PluginId { get; set; } = Guid.NewGuid().ToString();
 
         /// <summary>
         /// Defines if the current plugin is enabled
         /// </summary>
+        [Include]
         public bool IsEnabled { get; set; } = true;
 
         /// <summary>
         /// The Vst Plugin Id, which is used when matching against PluginLocations
         /// </summary>
+        [Include]
         public int VstPluginId { get; set; }
 
         /// <summary>
         /// The type of the plugin
         /// </summary>
+        [Include]
         public PluginTypes PluginType { get; set; } = PluginTypes.Unknown;
 
         #endregion
@@ -130,12 +138,12 @@ namespace SharedModels.NewModels
         #region Plugin Errors
 
         // todo refactor this
-        [Exclude] public string LoadErrorMessage { get; private set; }
+         public string LoadErrorMessage { get; private set; }
 
         /// <summary>
         /// Defines if the plugin had a load error
         /// </summary>
-        [Exclude]
+        
         public bool LoadError { get; private set; }
 
         #endregion
@@ -145,7 +153,8 @@ namespace SharedModels.NewModels
         /// <summary>
         /// The plugin capabilities
         /// </summary>
-        public virtual IList<PluginInfoItem> PluginCapabilities { get; } = new List<PluginInfoItem>();
+        [Include]
+        public List<PluginInfoItem> PluginCapabilities { get; private set; } = new List<PluginInfoItem>();
 
         #endregion
 
@@ -156,6 +165,7 @@ namespace SharedModels.NewModels
         /// <summary>
         /// The plugin location to use. Attach event listeners if being set
         /// </summary>
+        [Include]
         public PluginLocation PluginLocation
         {
             get => _pluginLocation;
@@ -186,23 +196,24 @@ namespace SharedModels.NewModels
 
         #region Plugin Info
 
-        [Exclude] public VstPluginInfoSurrogate PluginInfo { get; set; }
+        [Include] public VstPluginInfoSurrogate PluginInfo { get; set; }
 
         #endregion
 
         /// <summary>
         /// Gets or sets the PresetBanks value.
         /// </summary>
-        [Exclude]
+        
         public PresetBank RootBank { get; set; } = new PresetBank();
 
+        [Include]
         public EditableCollection<Preset> Presets { get; set; } =
             new EditableCollection<Preset>();
 
         /// <summary>
         /// Defines the full path to the plugin DLL
         /// </summary>
-        [Exclude]
+        
         public string DllPath
         {
             get
@@ -218,7 +229,7 @@ namespace SharedModels.NewModels
 
         private string _lastKnownGoodDllPath;
 
-
+        [Include]
         public string LastKnownGoodDllPath
         {
             get
@@ -237,22 +248,22 @@ namespace SharedModels.NewModels
         /// <summary>
         /// Returns the DLL directory in which the DLL is located
         /// </summary>
-        [Exclude]
+        
         public string DllDirectory => string.IsNullOrEmpty(DllPath) ? "" : Path.GetDirectoryName(DllPath);
 
         /// <summary>
         /// Returns the Dll Filename without the path
         /// </summary>
-        [Exclude]
+        
         public string DllFilename => string.IsNullOrEmpty(DllPath) ? "" : Path.GetFileName(DllPath);
 
-        [Exclude]
+        
         public string CanonicalDllFilename =>
             string.IsNullOrEmpty(DllPath)
                 ? "Plugin DLL is missing."
                 : Path.GetFileName(DllPath);
 
-        [Exclude]
+        
         public string CanonicalDllDirectory => string.IsNullOrEmpty(DllPath)
             ? "Last known dll path: " + LastKnownGoodDllPath
             : Path.GetDirectoryName(DllPath);
@@ -262,67 +273,77 @@ namespace SharedModels.NewModels
         /// Defines if the plugin DLL is present.
         /// A plugin is present if it's DLL Path exists and it is contained within the configured paths
         /// </summary>
-        [Exclude]
+        
         public bool IsPresent => PluginLocation != null && PluginLocation.IsPresent;
 
+        /// <summary>
+        /// Defines the audio preview pre-delay
+        /// </summary>
+        [Include]
         public int AudioPreviewPreDelay { get; set; }
 
+        [Include]
         public ControllerAssignments DefaultControllerAssignments { get; set; }
 
+        [Include]
         public bool IsReported { get; set; }
+        
+        [Include]
         public bool DontReport { get; set; }
 
+        [Include]
         public EditableCollection<BankFile> AdditionalBankFiles { get; set; } = new EditableCollection<BankFile>();
 
+        [Include]
         public TypeCollection DefaultTypes { get; set; } = new TypeCollection();
 
+        [Include]
         public CharacteristicCollection DefaultCharacteristics { get; set; } = new CharacteristicCollection();
 
-        [Exclude]
+        
         public string Logs
         {
             get { return string.Join(Environment.NewLine, Logger.LogList); }
         }
 
 
-        [Exclude] public string PluginTypeDescription => PluginType.ToString();
+         public string PluginTypeDescription => PluginType.ToString();
 
 
-        [Exclude] public int NumPresets => Presets?.Count ?? 0;
+         public int NumPresets => Presets?.Count ?? 0;
 
-        public string PluginName { get; set; } = "<unknown>";
+        [Include] public string PluginName { get; set; } = "<unknown>";
 
-        [Exclude] public int PresetParserAudioPreviewPreDelay => PresetParser?.AudioPreviewPreDelay ?? 0;
+         public int PresetParserAudioPreviewPreDelay => PresetParser?.AudioPreviewPreDelay ?? 0;
 
+         [Include]
         public string PluginVendor { get; set; }
 
-        [Exclude] public IVendorPresetParser PresetParser { get; set; }
+         public IVendorPresetParser PresetParser { get; set; }
 
         /// <summary>
         /// Defines if the plugin is or was scanned
         /// </summary>
-        ///
+        [Include]
         public bool IsAnalyzed { get; set; }
-
+        [Include]
         public bool HasMetadata { get; set; }
 
         /// <summary>
-        /// Defines if the metadata scan did not yield any result in the current sessions
+        /// Defines the PresetMagician version in which the analysis failed.
         /// </summary>
-        [Exclude]
-        public bool MetadataUnavailableInCurrentSession { get; set; }
-
-        [Exclude] public bool IsLoaded { get; set; }
-
-
+        [Include]
+        public string LastFailedAnalysisVersion { get; set; }
+        
         /// <summary>
         /// Defines if the plugin is supported
         /// </summary>
+        [Include]
         public bool IsSupported { get; set; }
 
-        [Exclude] public MiniMemoryLogger Logger { get; }
+         public MiniMemoryLogger Logger { get; }
 
-        [Exclude]
+        
         public NativeInstrumentsResource NativeInstrumentsResource { get; set; } = new NativeInstrumentsResource();
 
         #endregion

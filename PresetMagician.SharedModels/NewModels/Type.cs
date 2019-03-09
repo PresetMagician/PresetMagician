@@ -1,8 +1,6 @@
 using System.Collections.Generic;
-using System.Xml.Serialization;
 using Ceras;
 using SharedModels.Data;
-using SharedModels.Models;
 
 namespace SharedModels.NewModels
 {
@@ -16,7 +14,7 @@ namespace SharedModels.NewModels
         
         public static readonly GlobalTypeCollection GlobalTypes = new GlobalTypeCollection();
 
-        public string TypeName { get; set; } = "";
-        public string SubTypeName { get; set; } = "";
+        [Include] public string TypeName { get; set; } = "";
+        [Include] public string SubTypeName { get; set; } = "";
     }
 }

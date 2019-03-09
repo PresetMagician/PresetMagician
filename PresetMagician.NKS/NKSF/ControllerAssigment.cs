@@ -1,4 +1,5 @@
 ﻿using System;
+using Ceras;
 using MessagePack;
 
 namespace Drachenkatze.PresetMagician.NKSF.NKSF
@@ -7,14 +8,14 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
     [Serializable]
     public class ControllerAssignment
     {
-        [Key("autoname")] public bool autoname { get; set; }
+        [Key("autoname")] [Include] public bool autoname { get; set; }
 
-        [Key("id")] public int? id { get; set; }
+        [Key("id")] [Include] public int? id { get; set; }
 
-        [Key("name")] public string name { get; set; }
+        [Key("name")] [Include] public string name { get; set; }
 
-        [Key("vflag")] public bool vflag { get; set; }
+        [Key("vflag")] [Include] public bool vflag { get; set; }
 
-        [Key("section")] public string section { get; set; }
+        [Key("section")] [Include] public string section { get; set; }
     }
 }

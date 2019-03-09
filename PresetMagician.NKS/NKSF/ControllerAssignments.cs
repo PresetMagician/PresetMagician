@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Ceras;
 using MessagePack;
 
 namespace Drachenkatze.PresetMagician.NKSF.NKSF
@@ -8,7 +9,7 @@ namespace Drachenkatze.PresetMagician.NKSF.NKSF
     [Serializable]
     public class ControllerAssignments
     {
-        [Key("ni8")] public List<List<ControllerAssignment>> controllerAssignments { get; set; }
+        [Key("ni8")] [Include] public List<List<ControllerAssignment>> controllerAssignments { get; set; }
 
         public ControllerAssignments()
         {

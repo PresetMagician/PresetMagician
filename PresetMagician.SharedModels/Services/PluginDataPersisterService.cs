@@ -24,6 +24,7 @@ namespace SharedModels.Services
             serializerConfig.KnownTypes.Add(typeof(Characteristic));
             serializerConfig.KnownTypes.Add(typeof(Preset));
             serializerConfig.KnownTypes.Add(typeof(PluginLocation));
+            serializerConfig.KnownTypes.Add(typeof(PluginInfoItem));
             serializerConfig.KnownTypes.Add(typeof(Type));
 
             serializerConfig.VersionTolerance.Mode = VersionToleranceMode.Standard;
@@ -34,11 +35,16 @@ namespace SharedModels.Services
         {
             Directory.CreateDirectory(DefaultPluginStoragePath);
 
-            var dataFile = Path.Combine(DefaultPluginStoragePath, plugin.PluginId + PluginStorageExtension);
+            var dataFile = GetPluginStorageFile(plugin);
 
             var data = _serializer.Serialize(plugin);
 
             File.WriteAllBytes(dataFile, data);
+        }
+
+        public string GetPluginStorageFile(Plugin plugin)
+        {
+            return Path.Combine(DefaultPluginStoragePath, plugin.PluginId + PluginStorageExtension);
         }
 
         public Plugin LoadPlugin(string fileName)

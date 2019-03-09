@@ -1,15 +1,20 @@
 ﻿using System.Runtime.Serialization;
+using Ceras;
 
 namespace SharedModels
 {
     [DataContract]
     public class PluginInfoItem
     {
-        [DataMember] public string Category { get; set; }
+        [DataMember] [Include] public string Category { get; set; }
 
-        [DataMember] public string Name { get; set; }
+        [DataMember] [Include] public string Name { get; set; }
 
-        [DataMember] public string Value { get; set; }
+        [DataMember] [Include] public string Value { get; set; }
+
+        public PluginInfoItem()
+        {
+        }
 
         public PluginInfoItem(string category, string name, string value)
         {
