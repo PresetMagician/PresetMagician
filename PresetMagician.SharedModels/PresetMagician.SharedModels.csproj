@@ -103,6 +103,8 @@
     <Compile Include="NewModels\BankFile.cs" />
     <Compile Include="NewModels\Characteristic.cs" />
     <Compile Include="NewModels\CharacteristicCollection.cs" />
+    <Compile Include="NewModels\GlobalCharacteristicCollection.cs" />
+    <Compile Include="NewModels\GlobalTypeCollection.cs" />
     <Compile Include="NewModels\Plugin.cs" />
     <Compile Include="NewModels\PluginLocation.cs" />
     <Compile Include="NewModels\Preset.cs" />
