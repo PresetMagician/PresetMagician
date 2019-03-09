@@ -14,7 +14,7 @@ namespace SharedModels.NewModels
             nameof(SubTypeName)
         };
         
-        public static readonly Dictionary<(string TypeName, string SubTypeName), Type> GlobalTypes = new Dictionary<(string, string), Type>();
+        public static readonly GlobalTypeCollection GlobalTypes = new GlobalTypeCollection();
 
         public string TypeName { get; set; } = "";
         public string SubTypeName { get; set; } = "";

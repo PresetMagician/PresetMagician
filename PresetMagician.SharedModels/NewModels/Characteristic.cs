@@ -10,7 +10,7 @@ namespace SharedModels.NewModels
             nameof(CharacteristicName)
         };
         
-        public static Dictionary<string, Characteristic> GlobalCharacteristics = new Dictionary<string, Characteristic>();
+        public static GlobalCharacteristicCollection GlobalCharacteristics = new GlobalCharacteristicCollection();
 
         public string CharacteristicName { get; set; } = "";
     }

@@ -6,34 +6,20 @@ namespace SharedModels.NewModels
     {
         protected override void InsertItem(int index, Characteristic item)
         {
-            if (Characteristic.GlobalCharacteristics.ContainsKey(item.CharacteristicName))
-            {
-                item = Characteristic.GlobalCharacteristics[item.CharacteristicName];
-            }
-            else
-            {
-                Characteristic.GlobalCharacteristics.Add(item.CharacteristicName, item);
-            }
-
             if (!HasCharacteristic(item))
             {
+                item = Characteristic.GlobalCharacteristics.GetGlobalCharacteristic(item);
                 base.InsertItem(index, item);
             }
         }
 
         protected override void SetItem(int index, Characteristic item)
         {
-            if (Characteristic.GlobalCharacteristics.ContainsKey(item.CharacteristicName))
-            {
-                item = Characteristic.GlobalCharacteristics[item.CharacteristicName];
-            }
-            else
-            {
-                Characteristic.GlobalCharacteristics.Add(item.CharacteristicName, item);
-            }
-            
+            item = Characteristic.GlobalCharacteristics.GetGlobalCharacteristic(item);
             base.SetItem(index, item);
         }
+        
+       
 
         public bool HasCharacteristic(Characteristic item)
         {
