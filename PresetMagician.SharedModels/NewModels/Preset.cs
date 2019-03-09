@@ -66,6 +66,7 @@ namespace SharedModels.NewModels
         /// <summary>
         /// Saves all properties which can be set by a preset parser, but were updated by the user
         /// </summary>
+        [Include]
         public HashSet<string> UserOverwrittenProperties { get; set; } = new HashSet<string>();
 
         #endregion
@@ -292,19 +293,14 @@ namespace SharedModels.NewModels
         /// <summary>
         /// The PresetId. Always a new GUID
         /// </summary>
-        [System.ComponentModel.DataAnnotations.Key]
+        [Include]
         public string PresetId { get; set; } = Guid.NewGuid().ToString();
-
-        /// <summary>
-        /// The Vst Plugin Id, which is required in case we lose the association with the plugin and might need to
-        /// "repair" the database manually.
-        /// </summary>
-        public int VstPluginId { get; private set; }
 
         /// <summary>
         /// If the preset is ignored, it will never be updated by a preset parser and will never be exported. Useful
         /// if a plugin reports empty or nonsense presets.
         /// </summary>
+        [Include]
         public bool IsIgnored { get; set; }
 
         #endregion
@@ -333,8 +329,6 @@ namespace SharedModels.NewModels
                     {
                         PresetBank = _plugin.RootBank.First().CreateRecursive(_bankPath);
                     }
-
-                    VstPluginId = value.VstPluginId;
                 }
             }
         }
@@ -383,22 +377,26 @@ namespace SharedModels.NewModels
         /// <summary>
         /// The name of the preset
         /// </summary>
+        [Include]
         public string PresetName { get; set; }
 
         /// <summary>
         /// The author of the preset
         /// </summary>
+        [Include]
         public string Author { get; set; }
 
         /// <summary>
         /// The preset comment
         /// </summary>
+        [Include]
         public string Comment { get; set; }
 
 
         /// <summary>
         /// The bank path. Only set via EntityFramework when loading from the database
         /// </summary>
+        [Include]
         public string BankPath
         {
             get => _bankPath;
@@ -426,6 +424,7 @@ namespace SharedModels.NewModels
         /// The Native Instruments types used for this plugin. Note that this is m:n relationship configured using the
         /// fluent API.
         /// </summary>
+        [Include]
         public TypeCollection Types { get; set; } = new TypeCollection();
 
 
@@ -433,6 +432,7 @@ namespace SharedModels.NewModels
         /// The Native Instruments modes used for this plugin. Note that this is m:n relationship configured using the
         /// fluent API.
         /// </summary>
+        [Include]
         public CharacteristicCollection Characteristics { get; set; } = new CharacteristicCollection();
 
         #endregion
@@ -443,46 +443,68 @@ namespace SharedModels.NewModels
         /// The SourceFile identifies where the preset came from. Usually a filename, but can be any string, depending
         /// on how the plugin stores it's presets
         /// </summary>
+        [Include]
         public string SourceFile { get; set; }
 
         /// <summary>
         /// The preset size. Mainly used for statistics
         /// </summary>
+        [Include]
         public int PresetSize { get; set; }
 
         /// <summary>
         /// The compressed preset size. Mainly used for statistics
         /// </summary>
+        [Include]
         public int PresetCompressedSize { get; set; }
 
         /// <summary>
         /// The hash of the preset data. For memory usage reasons, we keep the preset data in a separate table so we
         /// can load all presets for a plugin and have a very low memory footprint. 
         /// </summary>
+        [Include]
         public string PresetHash { get; set; }
 
         /// <summary>
         /// The preset hash we last exported. This is required because the preset data could change, but still be the
         /// same size. 
         /// </summary>
+        [Include]
         public string LastExportedPresetHash { get; set; }
 
         /// <summary>
         /// The date and time when the preset was last exported. Mainly informational.
         /// </summary>
+        [Include]
         public DateTime? LastExported { get; set; }
 
         /// <summary>
         /// If the metadata has been modified. Used in conjunction with the modified preset data to determinate if the
         /// preset should be exported again
         /// </summary>
+        [Include]
         public bool IsMetadataModified { get; set; }
 
         #endregion
 
         #region Audio Preview Properties    
 
-        public PreviewNotePlayer PreviewNotePlayer { get; set; }
+        private PreviewNotePlayer _previewNotePlayer;
+
+        [Include]
+        public PreviewNotePlayer PreviewNotePlayer
+        {
+            get { return _previewNotePlayer; }
+            set
+            {
+                if (value == null)
+                {
+                    return;
+                }
+
+                _previewNotePlayer = PreviewNotePlayer.GetPreviewNotePlayer(value);
+            }
+        }
 
         #endregion
 

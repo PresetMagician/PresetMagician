@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Ceras;
 using SharedModels.Data;
 
 namespace SharedModels.NewModels
@@ -12,6 +13,6 @@ namespace SharedModels.NewModels
         
         public static GlobalCharacteristicCollection GlobalCharacteristics = new GlobalCharacteristicCollection();
 
-        public string CharacteristicName { get; set; } = "";
+        [Include] public string CharacteristicName { get; set; } = "";
     }
 }

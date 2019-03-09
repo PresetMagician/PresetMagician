@@ -109,6 +109,7 @@
     <Compile Include="NewModels\PluginLocation.cs" />
     <Compile Include="NewModels\Preset.cs" />
     <Compile Include="NewModels\PresetBank.cs" />
+    <Compile Include="NewModels\PresetCollection.cs" />
     <Compile Include="NewModels\PresetDataStorage.cs" />
     <Compile Include="NewModels\PreviewNotePlayer.cs" />
     <Compile Include="NewModels\Type.cs" />

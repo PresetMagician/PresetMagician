@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="DatabaseFixture.cs" />
     <Compile Include="ModelTests\ApplicationTests.cs" />
+    <Compile Include="ModelTests\PluginTest.cs" />
     <Compile Include="ModelTests\PresetTest.cs" />
     <Compile Include="ModelTests\TrackableModelBaseTest.cs" />
     <Compile Include="ModuleInitializer.cs" />
@@ -124,9 +125,25 @@
       <Project>{eadec46b-436a-416d-b44e-586c0e84aa5d}</Project>
       <Name>TrackableEntities.EF.6</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PresetMagician.NKS\PresetMagician.NKS.csproj">
+      <Project>{2126df46-7f24-4c2c-b236-514a70b7a3a5}</Project>
+      <Name>PresetMagician.NKS</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PresetMagician.SharedModels\PresetMagician.SharedModels.csproj">
       <Project>{445ac4fe-6acc-4e19-9424-b35c0b8b5804}</Project>
       <Name>PresetMagician.SharedModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PresetMagician.Utils\PresetMagician.Utils.csproj">
+      <Project>{37abda8a-5ffa-41f9-b880-a272d8c21dff}</Project>
+      <Name>PresetMagician.Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\vst.net\Source\Code\Jacobi.Vst.Core\Jacobi.Vst.Core.Clr4.csproj">
+      <Project>{5950f8a9-f413-4ace-b6e0-6f458b4c26f9}</Project>
+      <Name>Jacobi.Vst.Core.Clr4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\vst.net\Source\Code\Jacobi.Vst.Interop\Jacobi.Vst.Interop.Clr4.vcxproj">
+      <Project>{e0cc0ccf-a40d-4a53-8fac-b6af7e76eb08}</Project>
+      <Name>Jacobi.Vst.Interop.Clr4</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

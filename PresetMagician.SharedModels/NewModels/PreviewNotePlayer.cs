@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Ceras;
 
 namespace SharedModels.NewModels
 {
@@ -24,12 +25,28 @@ namespace SharedModels.NewModels
         }
 
         private static PreviewNotePlayer _defaultPreviewNotePlayer;
-        
-        
+        public static Dictionary<string, PreviewNotePlayer> PreviewNotePlayers = new Dictionary<string, PreviewNotePlayer>();
 
-        public string PreviewNotePlayerId { get; private set; } = Guid.NewGuid().ToString();
-        public string Name { get; set; }
-        public List<PreviewNote> PreviewNotes { get; } = new List<PreviewNote>();
+        public static PreviewNotePlayer GetPreviewNotePlayer(PreviewNotePlayer player)
+        {
+            if (PreviewNotePlayers.ContainsKey(player.PreviewNotePlayerId))
+            {
+                return PreviewNotePlayers[player.PreviewNotePlayerId];
+            }
+            else
+            {
+                PreviewNotePlayers.Add(player.PreviewNotePlayerId, player);
+                return player;
+            }
+        }
+        public PreviewNotePlayer()
+        {
+            PreviewNotePlayers.Add(PreviewNotePlayerId, this);
+        }
+
+        [Include] public string PreviewNotePlayerId { get; private set; } = Guid.NewGuid().ToString();
+        [Include] public string Name { get; set; }
+        [Include] public List<PreviewNote> PreviewNotes { get; } = new List<PreviewNote>();
 
         public bool IsEqualTo(PreviewNotePlayer target)
         {
@@ -48,8 +65,8 @@ namespace SharedModels.NewModels
 
     public class PreviewNote
     {
-        public int NoteNumber { get; set; }
-        public double Start { get; set; }
-        public double Duration { get; set; }
+        [Include] public int NoteNumber { get; set; }
+        [Include] public double Start { get; set; }
+        [Include] public double Duration { get; set; }
     }
 }

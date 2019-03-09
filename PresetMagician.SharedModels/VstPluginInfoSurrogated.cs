@@ -1,4 +1,5 @@
 using System.Runtime.Serialization;
+using Ceras;
 using Jacobi.Vst.Core;
 using Jacobi.Vst.Core.Plugin;
 using Newtonsoft.Json;
@@ -30,36 +31,42 @@ namespace SharedModels
             
         }
 
+        [Include]
         public VstPluginFlags Flags { get; set; }
 
         /// <summary>
         /// The number of programs the plugin supports.
         /// </summary>
         [DataMember]
+        [Include]
         public int ProgramCount { get; set; }
 
         /// <summary>
         /// The number of parameters the plugin supports.
         /// </summary>
         [DataMember]
+        [Include]
         public int ParameterCount { get; set; }
 
         /// <summary>
         /// The number of audio inputs the plugin supports.
         /// </summary>
         [DataMember]
+        [Include]
         public int AudioInputCount { get; set; }
 
         /// <summary>
         /// The number of audio outputs the plugin supports.
         /// </summary>
         [DataMember]
+        [Include]
         public int AudioOutputCount { get; set; }
 
         /// <summary>
         /// The latency of the plugin audio processing.
         /// </summary>
         [DataMember]
+        [Include]
         public int InitialDelay { get; set; }
 
         /// <summary>
@@ -67,12 +74,14 @@ namespace SharedModels
         /// </summary>
         /// <remarks>Must be a four character code.</remarks>
         [DataMember]
+        [Include]
         public int PluginID { get; set; }
 
         /// <summary>
         /// The version of the plugin.
         /// </summary>
         [DataMember]
+        [Include]
         public int PluginVersion { get; set; }
 
         public VstPluginInfo ToNonSurrogate()
