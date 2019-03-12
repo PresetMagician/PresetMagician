@@ -7,6 +7,8 @@ using Catel;
 using Catel.MVVM;
 using Catel.Services;
 using Drachenkatze.PresetMagician.Utils;
+using PresetMagician.Core.Models;
+using PresetMagician.Core.Services;
 using PresetMagician.Models;
 using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
@@ -29,7 +31,7 @@ namespace PresetMagician.ViewModels
             IRuntimeConfigurationService configurationService,
             ILicenseService licenseService,
             IUIVisualizerService uiVisualizerService,
-            ICommandManager commandManager
+            ICommandManager commandManager, DataPersisterService dataPersisterService
         )
         {
             Argument.IsNotNull(() => configurationService);
@@ -45,6 +47,13 @@ namespace PresetMagician.ViewModels
             
             OpenVstWorkerLogDirectory = new TaskCommand(OnOpenVstWorkerLogDirectoryExecute);
             Title = "Settings";
+
+            PresetDatabaseStatistics = dataPersisterService.GetStorageStatistics();
+            TotalPresets = (from p in PresetDatabaseStatistics select p.PresetCount).Sum();
+            TotalPresetsUncompressedSize = (from p in PresetDatabaseStatistics select p.PresetUncompressedSize).Sum();
+            TotalPresetsCompressedSize = (from p in PresetDatabaseStatistics select p.PresetCompressedSize).Sum();
+            SavedSpace = (from p in PresetDatabaseStatistics select p.SavedSpace).Sum();
+            SavedSpacePercent = (double) TotalPresetsCompressedSize / TotalPresetsUncompressedSize;
         }
 
        
@@ -72,8 +81,9 @@ namespace PresetMagician.ViewModels
         public int TotalPresets { get; set; }
         public long TotalPresetsUncompressedSize { get; set; }
         public long TotalPresetsCompressedSize { get; set; }
-        public long SavedSpace { get; set; }
+        public double SavedSpace { get; set; }
         public double SavedSpacePercent { get; set; }
+        public List<PresetDatabaseStatistic> PresetDatabaseStatistics { get; }
 
         public string DefaultNativeInstrumentsUserContentDirectory
         {

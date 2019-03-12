@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using Catel;
 using Catel.Collections;
@@ -10,8 +9,7 @@ using PresetMagician.RemoteVstHost;
 using PresetMagician.RemoteVstHost.Processes;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.Core.Interfaces;
-using SharedModels.Collections;
-using SharedModels.Extensions;
+
 
 namespace PresetMagician.Services
 {

@@ -8,7 +8,7 @@ namespace PresetMagician.Core.Data
     /// <summary>
     /// The notify list changed event args.
     /// </summary>
-    public class WrappedCollectionItemPropertyChangedEventArgs : EventArgs
+    public class WrappedCollectionItemPropertyChangedEventArgs : System.EventArgs
     {
         public string SourceProperty { get; private set; }
         public PropertyChangedEventArgs OriginalPropertyChangedEventArgs { get; private set; }
@@ -22,7 +22,7 @@ namespace PresetMagician.Core.Data
     
   
     
-    public class WrappedCollectionChangedEventArgs : EventArgs
+    public class WrappedCollectionChangedEventArgs : System.EventArgs
     {
         public string SourceProperty { get; private set; }
         public NotifyCollectionChangedEventArgs NotifyCollectionChangedEventArgs { get; private set; }

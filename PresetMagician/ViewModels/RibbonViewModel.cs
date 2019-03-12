@@ -1,33 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls.Primitives;
-using CannedBytes.Midi.Message;
 using Catel;
-using Catel.Data;
 using Catel.IoC;
 using Catel.MVVM;
 using Catel.Reflection;
-using Catel.Runtime.Serialization;
 using Catel.Services;
-using Orchestra;
 using Orchestra.Services;
+using PresetMagician.Core.Interfaces;
+using PresetMagician.Core.Services;
 using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.Views;
-using Redmine.Net.Api;
-using Redmine.Net.Api.Async;
-using Redmine.Net.Api.Types;
-using PresetMagician.Core.Interfaces;
-using PresetMagician.Core.Services;
-using AssemblyHelper = Catel.Reflection.AssemblyHelper;
-using Version = Redmine.Net.Api.Types.Version;
 
 namespace PresetMagician.ViewModels
 {
@@ -80,7 +63,6 @@ namespace PresetMagician.ViewModels
         #region Properties
 
         public bool HasPresetSelection { get; set; }
-        public MidiNoteName ApplyMidiNote { get; set; } = new MidiNoteName();
 
         public HelpLinks HelpLinks { get; } = new HelpLinks();
 

@@ -374,32 +374,6 @@
                         LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Settings},
                                                        Width=32,
                                                        Height=32}" />
-                    <fluent:Button
-                        Command="{catel:CommandManagerBinding Tools.CompressDatabase}"
-                        CommandParameter="{StaticResource BooleanTrue}"
-                        Size="Middle"
-                        Header="Compress Presets"
-                        Icon="{iconPacks:Material Kind=ArrowCollapseAll}">
-                        <fluent:Button.ToolTip>
-                            <fluent:ScreenTip Title="Compress Presets"
-                                              Width="250"
-                                              Text="Compresses preset data in the database"
-                                              HelpTopic="{Binding HelpLinks.COMMANDS_COMPRESS}" />
-                        </fluent:Button.ToolTip>
-                    </fluent:Button>
-                    <fluent:Button
-                        Command="{catel:CommandManagerBinding Tools.CompressDatabase}"
-                        CommandParameter="{StaticResource BooleanFalse}"
-                        Size="Middle"
-                        Header="Uncompress Presets"
-                        Icon="{iconPacks:Material Kind=ArrowExpandAll}">
-                        <fluent:Button.ToolTip>
-                            <fluent:ScreenTip Title="Decompress Presets"
-                                              Width="250"
-                                              Text="Decompresses preset data in the database"
-                                              HelpTopic="{Binding HelpLinks.COMMANDS_COMPRESS}" />
-                        </fluent:Button.ToolTip>
-                    </fluent:Button>
 
                 </fluent:RibbonGroupBox>
 

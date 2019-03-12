@@ -229,7 +229,6 @@ namespace PresetMagician.Services
             _commandManager.CreateCommandWithGesture(typeof(Commands.Tools), "NksfView");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Tools), "SettingsView");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Tools), nameof(Commands.Tools.UpdateLicense));
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Tools), nameof(Commands.Tools.CompressDatabase));
 
             _commandManager.CreateCommandWithGesture(typeof(Commands.Help), nameof(Commands.Help.RequestSupport));
             _commandManager.CreateCommandWithGesture(typeof(Commands.Help), nameof(Commands.Help.CreateBugReport));

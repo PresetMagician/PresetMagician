@@ -10,7 +10,6 @@ namespace PresetMagician
     public class HelpLinks
     {
         public static string COMMANDS_ANALYZE => "COMMANDS_ANALYZE";
-        public static string COMMANDS_COMPRESS => "COMMANDS_COMPRESS";
         public static string SETTINGS_PLUGIN_DLL => "SETTINGS_PLUGIN_DLL";
         public static string SETTINGS_PLUGIN_FXBFXPNOTES = "SETTINGS_PLUGIN_FXBFXPNOTES";
         public static string CONCEPTS_VST_WORKER_POOL => "CONCEPTS_VST_WORKER_POOL";
@@ -171,7 +170,6 @@ namespace PresetMagician
             public const string NksfView = "Tools.NksfView";
             public const string SettingsView = "Tools.SettingsView";
             public const string UpdateLicense = "Tools.UpdateLicense";
-            public const string CompressDatabase = "Tools.CompressDatabase";
         }
 
         public static class Help

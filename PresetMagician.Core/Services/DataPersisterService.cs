@@ -131,6 +131,23 @@ namespace PresetMagician.Core.Services
             return totalCount;
         }
         
+        public List<PresetDatabaseStatistic> GetStorageStatistics()
+        {
+            var stats = new List<PresetDatabaseStatistic>();
+            foreach (var plugin in Plugins)
+            {
+                var stat = new PresetDatabaseStatistic();
+                stat.PluginName = plugin.PluginName;
+                stat.PresetCount = plugin.Presets.Count;
+                stat.PresetUncompressedSize = (from p in plugin.Presets select p.PresetSize).Sum();
+                stat.PresetCompressedSize = (from p in plugin.Presets select p.PresetCompressedSize).Sum();
+                stats.Add(stat);
+            }
+
+            return stats;
+
+        }
+        
         public FastObservableCollection<Plugin> Plugins { get; } = new FastObservableCollection<Plugin>();
     }
 }

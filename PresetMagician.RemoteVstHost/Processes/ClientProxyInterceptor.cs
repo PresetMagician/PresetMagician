@@ -1,14 +1,11 @@
 using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.ServiceModel;
-using System.Text;
 using Anotar.Catel;
 using Castle.DynamicProxy;
-using PresetMagician.RemoteVstHost.Faults;
-using SharedModels.Exceptions;
+using PresetMagician.Core.Exceptions;
 
 namespace PresetMagician.RemoteVstHost.Processes
 {

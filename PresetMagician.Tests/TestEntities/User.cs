@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using PresetMagician.Core.Data;
-using PresetMagician.Core.Interfaces;
-using SharedModels.Data;
 
 namespace PresetMagician.Tests.TestEntities
 {

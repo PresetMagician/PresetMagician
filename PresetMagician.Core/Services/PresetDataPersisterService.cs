@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Drachenkatze.PresetMagician.Utils;
+using PresetMagician.Core.EventArgs;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 using SQLite;
@@ -12,6 +14,7 @@ namespace PresetMagician.Core.Services
 {
     public class PresetDataPersisterService: IDataPersistence
     {
+        public event EventHandler<PresetUpdatedEventArgs> PresetUpdated;
         private SQLiteAsyncConnection _db;
         
         public static string DefaultDatabasePath = Path.Combine(
@@ -51,6 +54,8 @@ namespace PresetMagician.Core.Services
             {
                 preset.Plugin.Presets.Add(preset);
             }
+            
+            PresetUpdated?.Invoke(this, new PresetUpdatedEventArgs(preset));
 
             var hash = HashUtils.getIxxHash(data);
 
@@ -73,5 +78,7 @@ namespace PresetMagician.Core.Services
             return data.PresetData;
            
         }
+
+        
     }
 }
