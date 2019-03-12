@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 using Catel;
 using Catel.MVVM;
 using Catel.Services;
+using PresetMagician.Core.Interfaces;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.ViewModels;
-using SharedModels;
-using SharedModels.Models;
+using PresetMagician.Core.Models;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician

@@ -12,7 +12,8 @@ using System.Windows.Threading;
 using Catel.Logging;
 using Drachenkatze.PresetMagician.Utils;
 using PresetMagician.RemoteVstHost.Services;
-using SharedModels;
+using PresetMagician.Core.Interfaces;
+using PresetMagician.Utils.Logger;
 
 namespace PresetMagician.RemoteVstHost
 {

@@ -1,47 +1,37 @@
-namespace Drachenkatze.PresetMagician.Utils
+namespace PresetMagician.Utils.Logger
 {
-    public enum LogLevel
-    {
-        /// <summary>Debug message.</summary>
-        Debug,
-        /// <summary>Info message.</summary>
-        Info,
-        /// <summary>Warning message.</summary>
-        Warning,
-        /// <summary>Error message.</summary>
-        Error,
-        
-        Trace
-    }
-    
     public abstract class MiniLogger
     {
+        public void Log(LogEntry logEntry)
+        {
+            Write(logEntry);
+        }
         
-        public abstract void Write(string message, LogLevel logLevel);
+        public abstract void Write(LogEntry logEntry);
 
         public void Trace(string message)
         {
-            Write(message, LogLevel.Trace);
+            Write(new LogEntry(LogLevel.Trace, message));
         }
         
         public void Debug(string message)
         {
-            Write(message, LogLevel.Debug);
+            Write(new LogEntry(LogLevel.Debug, message));
         }
         
         public void Info(string message)
         {
-            Write(message, LogLevel.Info);
+            Write(new LogEntry(LogLevel.Info, message));
         }
         
         public void Warning(string message)
         {
-            Write(message, LogLevel.Warning);
+            Write(new LogEntry(LogLevel.Warning, message));
         }
         
         public void Error(string message)
         {
-            Write(message, LogLevel.Error);
+            Write(new LogEntry(LogLevel.Error, message));
         }
 
         public string GetLogLevelShortCode(LogLevel logLevel)

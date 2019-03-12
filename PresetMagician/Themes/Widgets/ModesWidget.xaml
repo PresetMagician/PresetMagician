@@ -1,18 +1,16 @@
  <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:sharedModels1="clr-namespace:SharedModels;assembly=PresetMagician.SharedModels"
-    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-    xmlns:models="clr-namespace:SharedModels.Models;assembly=PresetMagician.SharedModels">
+    xmlns:models="clr-namespace:PresetMagician.Core.Models;assembly=PresetMagician.Core">
 
-    <DataTemplate x:Key="ModeTemplate" DataType="{x:Type models:Mode}">
+    <DataTemplate x:Key="ModeTemplate" DataType="{x:Type models:Characteristic}">
        
     </DataTemplate>
 
-    <DataTemplate x:Key="ModesTemplate" DataType="{x:Type models:Mode}">
-        <ItemsControl ItemsSource="{Binding Path=Modes, Mode=OneWay}">
+    <DataTemplate x:Key="ModesTemplate" DataType="{x:Type models:Preset}">
+        <ItemsControl ItemsSource="{Binding Path=Characteristics, Mode=OneWay}">
             <ItemsControl.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate DataType="{x:Type models:Characteristic}">
                 <Border HorizontalAlignment="Left" 
                         Margin="1,1,2,1"
                         Padding="2,0,2,0"
@@ -21,7 +19,7 @@
                     <TextBlock TextWrapping="NoWrap"
                         HorizontalAlignment="Left"
                         Foreground="White"
-                        Text="{Binding Name}" />
+                        Text="{Binding CharacteristicName}" />
                 </Border>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
@@ -33,7 +31,7 @@
         </ItemsControl>
     </DataTemplate>
     
-    <DataTemplate x:Key="TypeTemplate" DataType="{x:Type sharedModels1:Type}">
+    <DataTemplate x:Key="TypeTemplate" DataType="{x:Type models:Type}">
 
         <Border HorizontalAlignment="Left"  
             Margin="1,1,2,1"
@@ -45,8 +43,8 @@
                     TextWrapping="NoWrap"
                     HorizontalAlignment="Left"
                     Foreground="White"
-                    Text="{Binding Name}">
-                    <Run Text="{Binding Name}"/>
+                    Text="{Binding TypeName}">
+                    <Run Text="{Binding TypeName}"/>
                     <Run FontFamily="Webdings">
                         <Run.Style>
                             <Style TargetType="{x:Type Run}">

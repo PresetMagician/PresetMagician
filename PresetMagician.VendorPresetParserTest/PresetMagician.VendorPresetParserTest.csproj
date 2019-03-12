@@ -53,6 +53,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\PresetMagician.Core\PresetMagician.Core.csproj">
+      <Project>{da1b856f-d92e-49e9-a80a-48e62135f909}</Project>
+      <Name>PresetMagician.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PresetMagician.RemoteVstHost\PresetMagician.RemoteVstHost.csproj">
       <Project>{f07c1405-2149-4da5-ace7-54f5278ad2e4}</Project>
       <Name>PresetMagician.RemoteVstHost</Name>

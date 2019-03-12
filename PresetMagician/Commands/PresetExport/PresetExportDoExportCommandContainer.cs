@@ -6,9 +6,9 @@ using Anotar.Catel;
 using Catel;
 using Catel.MVVM;
 using Catel.Threading;
+using PresetMagician.Core.Interfaces;
 using PresetMagician.Services.Interfaces;
-using SharedModels;
-using SharedModels.Models;
+using PresetMagician.Core.Models;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -110,7 +110,7 @@ namespace PresetMagician
                         LogTo.Debug(e.StackTrace);
                     }
 
-                    await _vstService.SavePlugins().ConfigureAwait(false);
+                    _vstService.Save();
                 }
             });
 

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Xml.Linq;
 using Drachenkatze.PresetMagician.VendorPresetParser.Common;
 using JetBrains.Annotations;
-using SharedModels;
+using PresetMagician.Core.Interfaces;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
 {

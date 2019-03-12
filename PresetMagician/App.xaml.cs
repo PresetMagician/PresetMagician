@@ -9,14 +9,15 @@ using Catel.IoC;
 using Catel.Logging;
 using Catel.Services;
 using Drachenkatze.PresetMagician.Utils;
-using Drachenkatze.PresetMagician.Utils.IssueReport;
 using Orc.Squirrel;
 using Orchestra;
 using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.ViewModels;
 using PresetMagician.Views;
-using SharedModels;
+using PresetMagician.Core.Interfaces;
+using PresetMagician.Core.Services;
+using PresetMagician.Utils.IssueReport;
 using Squirrel;
 using MessageBox = System.Windows.MessageBox;
 
@@ -43,6 +44,7 @@ namespace PresetMagician
 #warning modelbasefoo: only attach change listeners when editing, or better: recalc usermodified on timer basis
 #warning remove tracking stuff
     #warning refactor bug report to include the new mechanism and exclude the sqlite database
+    #warning add force metadata scan function
 
     /// <summary>
     ///     Interaction logic for App.xaml
@@ -89,7 +91,7 @@ namespace PresetMagician
             var uiVisualiserService = serviceLocator.ResolveType<IUIVisualizerService>();
             var report = new IssueReport(IssueReport.TrackerTypes.CRASH, VersionHelper.GetCurrentVersion(),
                 email, FileLocations.LogFile,
-                ApplicationDatabaseContext.DefaultDatabasePath);
+                DataPersisterService.DefaultPluginStoragePath);
             report.SetException(e);
 
             uiVisualiserService.ShowDialogAsync<ReportIssueViewModel>(report).ConfigureAwait(false);

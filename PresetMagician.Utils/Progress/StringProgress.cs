@@ -1,6 +1,6 @@
 using Catel.MVVM;
 
-namespace PresetMagician.Models
+namespace Drachenkatze.PresetMagician.Utils.Progress
 {
     public class StringProgress : ITaskProgressReport
     {

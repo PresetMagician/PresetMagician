@@ -7,10 +7,11 @@ using System.Runtime.ExceptionServices;
 using System.Security;
 using System.ServiceModel;
 using Drachenkatze.PresetMagician.Utils;
-using PresetMagician.Models;
+using PresetMagician.Core.Interfaces;
+using PresetMagician.Core.Models;
 using PresetMagician.RemoteVstHost.Faults;
+using PresetMagician.Utils.Logger;
 using PresetMagician.VstHost.VST;
-using SharedModels;
 
 namespace PresetMagician.RemoteVstHost.Services
 {
@@ -21,7 +22,7 @@ namespace PresetMagician.RemoteVstHost.Services
         private static readonly VstHost.VST.VstHost _vstHost = new VstHost.VST.VstHost(true);
         private readonly Dictionary<Guid, RemoteVstPlugin> _plugins = new Dictionary<Guid, RemoteVstPlugin>();
 
-        public virtual bool Ping()
+        public bool Ping()
         {
             App.Ping();
             return true;

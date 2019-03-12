@@ -1,7 +1,6 @@
 using System.Windows.Controls;
 using Be.Windows.Forms;
 using Catel.Windows;
-using Drachenkatze.PresetMagician.Utils.IssueReport;
 using PresetMagician.ViewModels;
 
 namespace PresetMagician.Views

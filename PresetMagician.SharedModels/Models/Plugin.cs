@@ -11,6 +11,7 @@ using Drachenkatze.PresetMagician.NKSF.NKSF;
 using Drachenkatze.PresetMagician.Utils;
 using Newtonsoft.Json;
 using PresetMagician.Models.NativeInstrumentsResources;
+using PresetMagician.Utils.Logger;
 using SharedModels.Collections;
 
 namespace SharedModels.Models

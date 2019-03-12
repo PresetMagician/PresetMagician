@@ -7,10 +7,10 @@ using Catel.Collections;
 using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
+using PresetMagician.Core.Interfaces;
 using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
-using SharedModels;
-using SharedModels.Models;
+using PresetMagician.Core.Models;
 
 namespace PresetMagician.ViewModels
 {

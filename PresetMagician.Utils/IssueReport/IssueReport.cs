@@ -8,7 +8,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
 using Catel.Data;
-using PresetMagician.Models;
+using Drachenkatze.PresetMagician.Utils.Progress;
 using Redmine.Net.Api;
 using Redmine.Net.Api.Async;
 using Redmine.Net.Api.Types;
@@ -16,7 +16,7 @@ using SQLite;
 using SystemFile = System.IO.File;
 using Version = Redmine.Net.Api.Types.Version;
 
-namespace Drachenkatze.PresetMagician.Utils.IssueReport
+namespace PresetMagician.Utils.IssueReport
 {
     public class IssueAttachment
     {
@@ -81,7 +81,7 @@ namespace Drachenkatze.PresetMagician.Utils.IssueReport
 
         private string SystemLogLocation { get; }
         private string DatabaseLocation { get; }
-        public int? PluginId { get; set; }
+        public string PluginId { get; set; }
         public string PluginLog { get; set; }
         public string PluginName { get; set; }
         public string PluginVendor { get; set; }
@@ -360,8 +360,9 @@ namespace Drachenkatze.PresetMagician.Utils.IssueReport
             return impersonateUser;
         }
 
-        public async Task CreateStrippedDatabaseCopy(int? restrictToPlugin, IProgress<StringProgress> progress)
+        public async Task CreateStrippedDatabaseCopy(string restrictToPlugin, IProgress<StringProgress> progress)
         {
+            throw new Exception("Not implemented");
             var tempDatabasePath = Path.Combine(Path.GetTempPath(), "PresetMagician.Stripped.sqlite3");
             var tempDatabaseZip = tempDatabasePath + ".zip"; 
             if (SystemFile.Exists(tempDatabasePath))

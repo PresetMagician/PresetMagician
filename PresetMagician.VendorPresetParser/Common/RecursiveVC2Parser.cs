@@ -3,8 +3,7 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using GSF;
-using SharedModels;
-using SharedModels.Models;
+using PresetMagician.Core.Models;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
 {

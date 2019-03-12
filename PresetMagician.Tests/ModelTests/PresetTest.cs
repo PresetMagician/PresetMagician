@@ -7,16 +7,16 @@ using Catel.Collections;
 using Catel.Data;
 using Catel.Reflection;
 using FluentAssertions;
-using SharedModels.NewModels;
+using PresetMagician.Core.Models;
 using Xunit;
 using Xunit.Abstractions;
-using Type = SharedModels.NewModels.Type;
+using Type = PresetMagician.Core.Models.Type;
 
 // ReSharper disable PossibleNullReferenceException
 
 namespace PresetMagician.Tests.ModelTests
 {
-    public class PresetTests : EmptyDbContextManager
+    public class PresetTests 
     {
         private Dictionary<string, object> PropertiesWhichShouldNotModifyIsMetadataModified =
             new Dictionary<string, object>

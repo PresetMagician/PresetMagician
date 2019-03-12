@@ -13,8 +13,8 @@ using Catel.MVVM;
 using Newtonsoft.Json.Linq;
 using Orchestra;
 using PresetMagician.Services.Interfaces;
-using SharedModels;
-using SharedModels.Models;
+using PresetMagician.Core.Interfaces;
+using PresetMagician.Core.Models;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -146,7 +146,7 @@ namespace PresetMagician
                 {
                     _applicationService.ReportStatus("Report submitted successfully");
                     pluginsToReport.ForEach(c => c.IsReported = true);
-                    await _vstService.SavePlugins();
+                    _vstService.Save();
 
                 }
                 else

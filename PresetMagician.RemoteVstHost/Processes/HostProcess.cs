@@ -7,7 +7,8 @@ using Catel.Logging;
 using Catel.Threading;
 using Drachenkatze.PresetMagician.Utils;
 using MethodTimer;
-using SharedModels;
+using PresetMagician.Core.Interfaces;
+using PresetMagician.Utils.Logger;
 using Timer = System.Timers.Timer;
 
 namespace PresetMagician.RemoteVstHost.Processes

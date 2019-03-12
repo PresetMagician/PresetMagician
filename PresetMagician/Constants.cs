@@ -28,6 +28,10 @@ namespace PresetMagician
                 @"Drachenkatze\PresetMagician");
 
         public static string LogFile = Path.Combine(PresetMagicianLocalAppData, @"Logs\PresetMagician.log");
+        
+        public static string LegacyDatabasePath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            @"Drachenkatze\PresetMagician\PresetMagician.sqlite3");
     }
    
     public static class Settings

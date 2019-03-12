@@ -1,10 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using Catel.Logging;
 
-namespace Drachenkatze.PresetMagician.Utils
+namespace PresetMagician.Utils.Logger
 {
     public class MiniDiskLogger: MiniLogger
     {
@@ -16,9 +13,9 @@ namespace Drachenkatze.PresetMagician.Utils
         }
 
       
-        public override void Write(string message, LogLevel logLevel)
+        public override void Write(LogEntry logEntry)
         {
-            var logMessage = $"{DateTime.Now.ToString(_timeFormat)} [{GetLogLevelShortCode(logLevel)}] {message}";
+            var logMessage = $"{logEntry.DateTime.ToString(_timeFormat)} [{GetLogLevelShortCode(logEntry.LogLevel)}] {logEntry.Message}";
             
             var logStream = new FileStream(LogFilePath, FileMode.Append);
             var logStreamWriter = new StreamWriter(logStream);

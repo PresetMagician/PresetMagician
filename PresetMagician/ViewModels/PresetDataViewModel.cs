@@ -1,7 +1,6 @@
-using Catel.MVVM;
+using PresetMagician.Core.Interfaces;
 using PresetMagician.Services.Interfaces;
-using SharedModels;
-using SharedModels.Models;
+using PresetMagician.Core.Models;
 
 namespace PresetMagician.ViewModels
 {

@@ -4,7 +4,7 @@ using CannedBytes.Midi.Message;
 using Catel.Collections;
 using Catel.Data;
 using Newtonsoft.Json;
-using PresetMagician.Models.Settings;
+using PresetMagician.Core.Models;
 
 namespace PresetMagician.Models
 {

@@ -1,14 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Catel.Collections;
-using Catel.Logging;
 using Catel.Threading;
 using Jacobi.Vst.Core;
-using PresetMagician.Models;
+using PresetMagician.Core.Interfaces;
+using PresetMagician.Core.Models;
 using PresetMagician.RemoteVstHost.Processes;
-using SharedModels;
-using SharedModels.Models;
 
 namespace PresetMagician.RemoteVstHost
 {

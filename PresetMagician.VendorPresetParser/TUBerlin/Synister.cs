@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using Drachenkatze.PresetMagician.VendorPresetParser.Common;
 using JetBrains.Annotations;
-using SharedModels;
+using PresetMagician.Core.Interfaces;
+using PresetMagician.Core.Models;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.TUBerlin
 {

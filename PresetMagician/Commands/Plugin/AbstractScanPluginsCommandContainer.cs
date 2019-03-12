@@ -10,16 +10,19 @@ using System.Threading.Tasks;
 using System.Windows;
 using Anotar.Catel;
 using Catel;
+using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
 using Catel.Threading;
 using Catel.Windows;
 using Drachenkatze.PresetMagician.VendorPresetParser;
+using Orchestra;
 using PresetMagician.Models.EventArgs;
 using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
-using SharedModels;
-using SharedModels.Models;
+using PresetMagician.Core.Interfaces;
+using PresetMagician.Core.Models;
+using PresetMagician.Core.Services;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -31,8 +34,9 @@ namespace PresetMagician
         protected readonly IApplicationService _applicationService;
         protected readonly IDispatcherService _dispatcherService;
         protected readonly ICommandManager _commandManager;
-        protected readonly IDatabaseService _databaseService;
         protected readonly INativeInstrumentsResourceGeneratorService _resourceGeneratorService;
+        protected readonly PluginService _pluginService;
+        private readonly PresetDataPersisterService _presetDataPersisterService;
         private readonly IAdvancedMessageService _messageService;
         private int _totalPresets;
         private int _currentPresetIndex;
@@ -44,13 +48,12 @@ namespace PresetMagician
             IRuntimeConfigurationService runtimeConfigurationService, IVstService vstService,
             IApplicationService applicationService,
             IDispatcherService dispatcherService, IAdvancedMessageService messageService,
-            IDatabaseService databaseService, INativeInstrumentsResourceGeneratorService resourceGeneratorService)
+            INativeInstrumentsResourceGeneratorService resourceGeneratorService, PresetDataPersisterService presetDataPersisterService)
             : base(command, commandManager, runtimeConfigurationService)
         {
             Argument.IsNotNull(() => vstService);
             Argument.IsNotNull(() => applicationService);
             Argument.IsNotNull(() => dispatcherService);
-            Argument.IsNotNull(() => databaseService);
             Argument.IsNotNull(() => resourceGeneratorService);
             Argument.IsNotNull(() => messageService);
 
@@ -58,11 +61,15 @@ namespace PresetMagician
             _vstService = vstService;
             _applicationService = applicationService;
             _dispatcherService = dispatcherService;
-            _databaseService = databaseService;
             _commandManager = commandManager;
+            _presetDataPersisterService = presetDataPersisterService;
             _resourceGeneratorService = resourceGeneratorService;
+            _pluginService = ServiceLocator.Default.ResolveType<PluginService>();
+            
 
             _vstService.Plugins.CollectionChanged += OnPluginsListChanged;
+
+            Plugin.PresetMagicianVersion = VersionHelper.GetCurrentVersion();
         }
 
         protected abstract List<Plugin> GetPluginsToScan();
@@ -90,7 +97,7 @@ namespace PresetMagician
 
             var pluginsToUpdateMetadata =
                 (from p in _vstService.Plugins
-                    where (!p.HasMetadata || !p.IsPresent) && p.IsEnabled && !p.MetadataUnavailableInCurrentSession
+                    where p.RequiresMetadataScan
                     orderby p.PluginName, p.DllFilename
                     select p).ToList();
 
@@ -99,11 +106,12 @@ namespace PresetMagician
             var cancellationToken = _applicationService.GetApplicationOperationCancellationSource().Token;
 
             var pluginsToRemove = new List<Plugin>();
+            var progress = _applicationService.CreateApplicationProgress();
             // First pass: Load missing metadata
             try
             {
                 pluginsToRemove = await TaskHelper.Run(
-                    async () => await UpdateMetadata(pluginsToUpdateMetadata, cancellationToken), true,
+                    async () => await _pluginService.UpdateMetadata(pluginsToUpdateMetadata, progress), true,
                     cancellationToken);
 
                 await _dispatcherService.InvokeAsync(() =>
@@ -145,7 +153,7 @@ namespace PresetMagician
                 if (result == MessageResult.Yes)
                 {
                     // ReSharper disable once MethodSupportsCancellation
-                    await _databaseService.Context.SaveChangesAsync();
+                    _vstService.Save();
                     _commandManager.ExecuteCommand(Commands.Application.CancelOperation);
                 }
             }
@@ -156,14 +164,11 @@ namespace PresetMagician
                     pluginsToScan.Count);
                 cancellationToken = _applicationService.GetApplicationOperationCancellationSource().Token;
 
-                _databaseService.Context.PresetUpdated += ContextOnPresetUpdated;
                 await TaskHelper.Run(async () => await AnalyzePlugins(pluginsToScan.OrderBy(p => p.PluginName).ToList(), cancellationToken), true,
                     cancellationToken);
 
-                _databaseService.Context.Database.Log = delegate(string s) { LogTo.Debug(s);  };
                 // ReSharper disable once MethodSupportsCancellation
-                await _databaseService.Context.SaveChangesAsync();
-                _databaseService.Context.PresetUpdated -= ContextOnPresetUpdated;
+                _vstService.Save();
             }
 
 
@@ -204,7 +209,7 @@ namespace PresetMagician
                         plugin.DontReport = true;
                     }
 
-                    await _databaseService.Context.SaveChangesAsync();
+                    _vstService.Save();
                 }
             }
         }
@@ -229,21 +234,7 @@ namespace PresetMagician
             }
         }
 
-        private void PresetsOnCollectionChanged(object sender, EventArgs e)
-        {
-            updateThrottle++;
-
-            if (updateThrottle <= 10)
-            {
-                return;
-            }
-
-            var collection = sender as ObservableCollection<Preset>;
-            _applicationService.UpdateApplicationOperationStatus(
-                _currentPluginIndex,
-                $"Pre-loading presets from database for {_currentPlugin.PluginName}: Preset #{collection.Count}");
-            updateThrottle = 0;
-        }
+       
 
         private async Task AnalyzePlugins(IList<Plugin> pluginsToScan, CancellationToken cancellationToken)
         {
@@ -274,12 +265,6 @@ namespace PresetMagician
                         _applicationService.UpdateApplicationOperationStatus(
                             pluginsToScan.IndexOf(plugin), $"Scanning {plugin.DllFilename}");
 
-                        
-
-                        _databaseService.Context.CompressPresetData =
-                            _runtimeConfigurationService.RuntimeConfiguration.CompressPresetData;
-                        _databaseService.Context.PreviewNote =
-                            _runtimeConfigurationService.RuntimeConfiguration.DefaultPreviewMidiNote;
 
                         if (!plugin.HasMetadata)
                         {
@@ -298,15 +283,12 @@ namespace PresetMagician
 
                         VendorPresetParser.DeterminatePresetParser(remotePluginInstance);
                         var wasLoaded = remotePluginInstance.IsLoaded;
-                        plugin.PresetParser.DataPersistence = _databaseService.GetPresetDataStorer();
+                        plugin.PresetParser.DataPersistence = _presetDataPersisterService;
+                        await _presetDataPersisterService.OpenDatabase();
 
 
                         _currentPluginIndex = pluginsToScan.IndexOf(plugin);
                         _currentPlugin = plugin;
-
-                        plugin.Presets.CollectionCountChanged += PresetsOnCollectionChanged;
-                        _databaseService.Context.LoadPresetsForPlugin(plugin);
-                        plugin.Presets.CollectionCountChanged -= PresetsOnCollectionChanged;
 
                         if (!IsQuickAnalysisMode())
                         {
@@ -323,6 +305,8 @@ namespace PresetMagician
                                 }
                             }
                         }
+                        
+                        await _presetDataPersisterService.CloseDatabase();
 
                         plugin.IsAnalyzed = true;
 
@@ -366,7 +350,7 @@ namespace PresetMagician
                             _applicationService.UpdateApplicationOperationStatus(
                                 pluginsToScan.IndexOf(plugin),
                                 $"{plugin.DllFilename} - Updating Database");
-                            await _databaseService.Context.Flush();
+                            _vstService.SavePlugin(plugin);
                         }
 
                         if (wasLoaded)
@@ -392,7 +376,7 @@ namespace PresetMagician
         private async Task<List<Plugin>> UpdateMetadata(IList<Plugin> pluginsToUpdate,
             CancellationToken cancellationToken)
         {
-            var vstService = _vstService.GetVstService();
+            var vstService = _vstService.GetRemoteVstService();
             var pluginsToRemove = new List<Plugin>();
 
             foreach (var plugin in pluginsToUpdate)
@@ -414,7 +398,7 @@ namespace PresetMagician
                         if (plugin.PluginLocation == null)
                         {
                             // No metadata and no plugin location dll is not present => remove it
-                            if (!_databaseService.Context.HasPresets(plugin))
+                            if (plugin.Presets.Count == 0)
                             {
                                 LogTo.Info(
                                     $"Removing unknown plugin entry without metadata, without presets and without plugin dll");
@@ -441,7 +425,7 @@ namespace PresetMagician
 
                     if (!plugin.HasMetadata)
                     {
-                        plugin.MetadataUnavailableInCurrentSession = true;
+                        plugin.LastFailedAnalysisVersion = VersionHelper.GetCurrentVersion();
                         // Still no metadata, probably plugin loading failure
                         continue;
                     }
@@ -450,13 +434,13 @@ namespace PresetMagician
                     // merge this plugin with the existing one if it has no presets.
                     var existingPlugin =
                         (from p in _vstService.Plugins
-                            where p.VstPluginId == plugin.VstPluginId && p != plugin
+                            where p.VstPluginId == plugin.VstPluginId && p.PluginId != plugin.PluginId
                             select p)
                         .FirstOrDefault();
 
                     if (existingPlugin != null)
                     {
-                        if (!_databaseService.Context.HasPresets(plugin))
+                        if (plugin.Presets.Count == 0)
                         {
                             // There's an existing plugin which this plugin can be merged into. Schedule it for removal
                             pluginsToRemove.Add(plugin);
@@ -469,7 +453,7 @@ namespace PresetMagician
                                     existingPlugin.PluginLocation = plugin.PluginLocation;
                                 });
                             }
-                        } else if (!_databaseService.Context.HasPresets(existingPlugin))
+                        } else if (existingPlugin.Presets.Count == 0)
                         {
                             // The existing plugin has no presets - remove it!
                             pluginsToRemove.Add(existingPlugin);
@@ -494,7 +478,7 @@ namespace PresetMagician
 
                     if (!plugin.HasMetadata)
                     {
-                        plugin.MetadataUnavailableInCurrentSession = true;
+                        plugin.LastFailedAnalysisVersion = VersionHelper.GetCurrentVersion();
                     }
                 }
 

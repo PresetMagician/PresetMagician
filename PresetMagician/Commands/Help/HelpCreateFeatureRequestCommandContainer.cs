@@ -4,12 +4,13 @@ using Catel.Configuration;
 using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
-using Drachenkatze.PresetMagician.Utils.IssueReport;
 using Orchestra;
 using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.ViewModels;
-using SharedModels;
+using PresetMagician.Core.Interfaces;
+using PresetMagician.Core.Services;
+using PresetMagician.Utils.IssueReport;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -32,7 +33,7 @@ namespace PresetMagician
         {
             var report = new IssueReport(IssueReport.TrackerTypes.FEATURE, VersionHelper.GetCurrentVersion(),
                 _configurationService.ApplicationState.ActiveLicense.Customer.Email, FileLocations.LogFile,
-                ApplicationDatabaseContext.DefaultDatabasePath);
+                DataPersisterService.DefaultPluginStoragePath);
 
             await _uiVisualizerService.ShowDialogAsync<ReportIssueViewModel>(report);
         }

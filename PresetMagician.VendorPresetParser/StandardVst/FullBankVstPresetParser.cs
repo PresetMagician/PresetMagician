@@ -2,7 +2,7 @@
 using Catel.Logging;
 using JetBrains.Annotations;
 using MethodTimer;
-using SharedModels;
+using PresetMagician.Core.Interfaces;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
 {

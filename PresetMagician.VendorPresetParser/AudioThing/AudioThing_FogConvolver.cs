@@ -5,7 +5,8 @@ using System.Linq;
 using System.Xml.Linq;
 using Drachenkatze.PresetMagician.VendorPresetParser.Common;
 using JetBrains.Annotations;
-using SharedModels;
+using PresetMagician.Core.Interfaces;
+using PresetMagician.Core.Models;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
 {

@@ -5,8 +5,8 @@ using Drachenkatze.PresetMagician.Utils;
 using Drachenkatze.PresetMagician.VendorPresetParser.Common;
 using GSF;
 using JetBrains.Annotations;
-using SharedModels;
-using SharedModels.Models;
+using PresetMagician.Core.Interfaces;
+using PresetMagician.Core.Models;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.HumanoidSoundSystems
 {

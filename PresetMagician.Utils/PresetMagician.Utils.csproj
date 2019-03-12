@@ -9,7 +9,7 @@
     <ProjectGuid>{37ABDA8A-5FFA-41F9-B880-A272D8C21DFF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Drachenkatze.PresetMagician.Utils</RootNamespace>
+    <RootNamespace>PresetMagician.Utils</RootNamespace>
     <AssemblyName>PresetMagician.Utils</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -53,9 +53,14 @@
     <Compile Include="HashUtils.cs" />
     <Compile Include="HexDump.cs" />
     <Compile Include="IssueReport\IssueReport.cs" />
+    <Compile Include="Logger\EventArgs\LogEntryAddedEventArgs.cs" />
+    <Compile Include="Logger\ILogReporter.cs" />
+    <Compile Include="Logger\LogEntry.cs" />
+    <Compile Include="Logger\LogReporter.cs" />
     <Compile Include="Logger\MiniDiskLogger.cs" />
     <Compile Include="Logger\MiniLogger.cs" />
     <Compile Include="Logger\MiniMemoryLogger.cs" />
+    <Compile Include="Progress\CountProgress.cs" />
     <Compile Include="Progress\StringProgress.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VstUtils.cs" />

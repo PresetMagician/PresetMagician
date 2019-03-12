@@ -6,6 +6,7 @@ using System.Linq;
 using Catel.Collections;
 using Catel.Data;
 using SharedModels.Data;
+using SharedModels.Interfaces;
 using TrackableEntities;
 using TrackableEntities.Client;
 

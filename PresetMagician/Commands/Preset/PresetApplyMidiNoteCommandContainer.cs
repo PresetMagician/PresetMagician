@@ -1,6 +1,7 @@
 ﻿using System.Collections.Specialized;
 using Catel;
 using Catel.MVVM;
+using PresetMagician.Core.Interfaces;
 using PresetMagician.Services.Interfaces;
 
 // ReSharper disable once CheckNamespace
@@ -34,7 +35,9 @@ namespace PresetMagician
         {
             foreach (var preset in _vstService.SelectedPresets)
             {
-                preset.PreviewNote.FullNoteName = (string) parameter;
+                //preset.PreviewNote.FullNoteName = (string) parameter;
+                //todo fixme
+                
             }
         }
     }
