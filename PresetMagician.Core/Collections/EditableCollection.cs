@@ -173,7 +173,7 @@ namespace PresetMagician.Core.Collections
         {
             if (IsDirty && _initialCount != Count)
             {
-                CollectionCountChanged?.Invoke(this, EventArgs.Empty);
+                CollectionCountChanged?.Invoke(this, System.EventArgs.Empty);
             }
 
             if (IsEditing)

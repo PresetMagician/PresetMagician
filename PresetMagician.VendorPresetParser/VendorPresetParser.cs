@@ -4,8 +4,8 @@ using System.Linq;
 using System.Reflection;
 using Anotar.Catel;
 using MethodTimer;
+using PresetMagician.Core.Exceptions;
 using PresetMagician.Core.Interfaces;
-using SharedModels.Exceptions;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser
 {

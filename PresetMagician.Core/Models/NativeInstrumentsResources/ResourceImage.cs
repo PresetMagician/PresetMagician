@@ -20,7 +20,7 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
             TargetSize = targetSize;
             Filename = fileName;
             var bitmapImage = new BitmapImage(
-                new Uri("pack://application:,,,/PresetMagician.SharedModels;component/Resources/Images/empty.png"));
+                new Uri("pack://application:,,,/PresetMagician.Core;component/Resources/Images/empty.png"));
             bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
             bitmapImage.Freeze();
             Image = bitmapImage;

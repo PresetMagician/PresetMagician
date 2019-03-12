@@ -1,13 +1,7 @@
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using PresetMagician.Core.Collections;
 using PresetMagician.Core.Data;
-using PresetMagician.Core.Interfaces;
-using SharedModels.Collections;
-using SharedModels.Data;
-using TrackableEntities.Client;
 
 namespace PresetMagician.Tests.TestEntities
 {

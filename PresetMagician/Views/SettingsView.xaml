@@ -221,37 +221,9 @@
                         </Grid.RowDefinitions>
                     
                     
-                   <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
-                            <Label Content="Compress Database" />
-                            <iconPacks:PackIconFontAwesome Margin="0,0,10,0" VerticalAlignment="Center"
-                                                           Kind="QuestionCircleSolid" ToolTipService.ShowDuration="12000">
-                                <iconPacks:PackIconFontAwesome.ToolTip>
-                                    <StackPanel Margin="5" Width="600">
-                                        <TextBlock TextWrapping="Wrap">
-                                            This setting controls if the preset data should be stored compressed in the database.
-                                            Saves up to 70% space in the database, but increases preset processing time by a factor of 3 or more,
-                                            depending on your disk speed. Don't worry, it's still pretty fast and you'll notice it only if you have
-                                            100.000s of presets in the database. Audio Previews are not affected.<LineBreak />
-                                            <LineBreak />
-                                            If you change this setting, existing preset data in the database will not
-                                            be automatically compressed or decompressed - the change is only applied to presets which
-                                            have new or updated preset data.
-                                        </TextBlock>
-
-                                    </StackPanel>
-                                </iconPacks:PackIconFontAwesome.ToolTip>
-                            </iconPacks:PackIconFontAwesome>
-                        </StackPanel>
-                        
-                        <CheckBox
-                            Grid.Row="0"
-                            Grid.Column="1"
-                            IsChecked="{Binding EditableConfiguration.CompressPresetData}"
-                           Content="Compress Preset Data in Database" />
-                       
-                        <DataGrid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding PresetDatabaseStatistics}" EnableRowVirtualization="True" Height="300">
+                        <DataGrid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding PresetDatabaseStatistics}" EnableRowVirtualization="True" Height="300">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Binding="{Binding PluginName}" Header="Plugin Name"/>
+                                <DataGridTextColumn Binding="{Binding PluginName}" SortDirection="Ascending" Header="Plugin Name"/>
                                 <DataGridTextColumn Binding="{Binding PresetCount}" Header="Number of Presets"/>
                                 <DataGridTextColumn Binding="{Binding PresetUncompressedSize, Mode=OneWay,Converter={StaticResource FormatKbSizeConverter}}" Header="Storage Size (Uncompressed)"/>
                                 <DataGridTextColumn Binding="{Binding PresetCompressedSize, Mode=OneWay,Converter={StaticResource FormatKbSizeConverter}}" Header="Storage Size (Compressed)"/>
@@ -273,13 +245,6 @@
 
                         </TextBlock>
                         <DockPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Bottom">
-                            <Button
-                                Margin="6,2,2,2"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Stretch"
-                                VerticalContentAlignment="Center"
-                                Content="Collect Database Statistics"
-                                Command="{Binding CollectDatabaseStatistics}" />
                             <Button
                                 Margin="6,2,2,2"
                                 HorizontalAlignment="Left"

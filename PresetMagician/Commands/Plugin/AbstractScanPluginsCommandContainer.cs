@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -17,12 +15,11 @@ using Catel.Threading;
 using Catel.Windows;
 using Drachenkatze.PresetMagician.VendorPresetParser;
 using Orchestra;
-using PresetMagician.Models.EventArgs;
-using PresetMagician.Services;
-using PresetMagician.Services.Interfaces;
+using PresetMagician.Core.EventArgs;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
+using PresetMagician.Services.Interfaces;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -286,7 +283,7 @@ namespace PresetMagician
                         plugin.PresetParser.DataPersistence = _presetDataPersisterService;
                         await _presetDataPersisterService.OpenDatabase();
 
-
+                        _presetDataPersisterService.PresetUpdated += ContextOnPresetUpdated;
                         _currentPluginIndex = pluginsToScan.IndexOf(plugin);
                         _currentPlugin = plugin;
 
@@ -294,15 +291,14 @@ namespace PresetMagician
                         {
                             using (plugin.Presets.SuspendChangeNotifications())
                             {
-                                using (plugin.Presets.SuspendChangeNotifications())
-                                {
+                               
                                     plugin.PresetParser.RootBank = plugin.RootBank.First();
 
                                     _totalPresets = plugin.PresetParser.GetNumPresets();
                                     _currentPresetIndex = 0;
 
                                     await plugin.PresetParser.DoScan();
-                                }
+                                
                             }
                         }
                         
@@ -368,124 +364,12 @@ namespace PresetMagician
                         $"Unable to analyze {plugin.DllFilename} because of {e.GetType().FullName}: {e.Message}";
                     _applicationService.AddApplicationOperationError(errorMessage + " - see plugin log for details");
                 }
+                
+                // Remove the event handler here, so we can be absolutely sure we removed this.
+                _presetDataPersisterService.PresetUpdated -= ContextOnPresetUpdated;
 
                 LogTo.Debug($"End analysis of {plugin.DllFilename}");
             }
-        }
-
-        private async Task<List<Plugin>> UpdateMetadata(IList<Plugin> pluginsToUpdate,
-            CancellationToken cancellationToken)
-        {
-            var vstService = _vstService.GetRemoteVstService();
-            var pluginsToRemove = new List<Plugin>();
-
-            foreach (var plugin in pluginsToUpdate)
-            {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    return pluginsToRemove;
-                }
-
-                try
-                {
-                    _vstService.SelectedPlugin = plugin;
-                    _applicationService.UpdateApplicationOperationStatus(
-                        pluginsToUpdate.IndexOf(plugin),
-                        $"Loading metadata for {plugin.DllFilename}");
-
-                    if (!plugin.HasMetadata)
-                    {
-                        if (plugin.PluginLocation == null)
-                        {
-                            // No metadata and no plugin location dll is not present => remove it
-                            if (plugin.Presets.Count == 0)
-                            {
-                                LogTo.Info(
-                                    $"Removing unknown plugin entry without metadata, without presets and without plugin dll");
-
-                                pluginsToRemove.Add(plugin);
-                            }
-
-                            continue;
-                        }
-
-                        if (!vstService.Exists(plugin.PluginLocation.DllPath))
-                        {
-                            plugin.PluginLocation.IsPresent = false;
-                            plugin.PluginLocation = null;
-                            continue;
-                        }
-
-                        using (var remotePluginInstance = _vstService.GetRemotePluginInstance(plugin, false))
-                        {
-                            await remotePluginInstance.LoadPlugin();
-                            remotePluginInstance.UnloadPlugin();
-                        }
-                    }
-
-                    if (!plugin.HasMetadata)
-                    {
-                        plugin.LastFailedAnalysisVersion = VersionHelper.GetCurrentVersion();
-                        // Still no metadata, probably plugin loading failure
-                        continue;
-                    }
-
-                    // We now got metadata - check if there's an existing plugin with the same plugin ID. If so,
-                    // merge this plugin with the existing one if it has no presets.
-                    var existingPlugin =
-                        (from p in _vstService.Plugins
-                            where p.VstPluginId == plugin.VstPluginId && p.PluginId != plugin.PluginId
-                            select p)
-                        .FirstOrDefault();
-
-                    if (existingPlugin != null)
-                    {
-                        if (plugin.Presets.Count == 0)
-                        {
-                            // There's an existing plugin which this plugin can be merged into. Schedule it for removal
-                            pluginsToRemove.Add(plugin);
-
-                            // If the existing plugin is not present, but this one is: Move over the plugin location
-                            if (!existingPlugin.IsPresent)
-                            {
-                                await _dispatcherService.InvokeAsync(() =>
-                                {
-                                    existingPlugin.PluginLocation = plugin.PluginLocation;
-                                });
-                            }
-                        } else if (existingPlugin.Presets.Count == 0)
-                        {
-                            // The existing plugin has no presets - remove it!
-                            pluginsToRemove.Add(existingPlugin);
-
-                            // If this plugin is not present, but the other one is: Move over the plugin location
-                            if (!plugin.IsPresent)
-                            {
-                                await _dispatcherService.InvokeAsync(() =>
-                                    {
-                                        plugin.PluginLocation = existingPlugin.PluginLocation;
-                                    });
-                            }
-                        }
-                    } 
-                   
-                }
-                catch (Exception e)
-                {
-                    _applicationService.AddApplicationOperationError(
-                        $"Unable to load  metadata for {plugin.DllFilename} because of {e.GetType().FullName} {e.Message}");
-                    plugin.OnLoadError(e);
-
-                    if (!plugin.HasMetadata)
-                    {
-                        plugin.LastFailedAnalysisVersion = VersionHelper.GetCurrentVersion();
-                    }
-                }
-
-                await _dispatcherService.InvokeAsync(() => { plugin.NativeInstrumentsResource.Load(plugin); });
-            }
-
-            return pluginsToRemove;
         }
     }
 }

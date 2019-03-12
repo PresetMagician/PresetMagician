@@ -6,13 +6,12 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:PresetMagician.ViewModels"
-    xmlns:sharedModels1="clr-namespace:SharedModels;assembly=PresetMagician.SharedModels"
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     xmlns:behaviors="clr-namespace:PresetMagician.Behaviors"
     xmlns:converters="clr-namespace:PresetMagician.Converters"
     xmlns:dd="urn:gong-wpf-dragdrop"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-    xmlns:models="clr-namespace:SharedModels.Models;assembly=PresetMagician.SharedModels"
+    xmlns:models="clr-namespace:PresetMagician.Core.Models;assembly=PresetMagician.Core"
     CloseViewModelOnUnloaded="False"
     Padding="2,2,2,2"
     d:DataContext="{d:DesignInstance viewModels:VstPluginPresetsViewModel}"
@@ -30,7 +29,7 @@
 
         <HierarchicalDataTemplate
             x:Key="Contents"
-            DataType="{x:Type sharedModels1:PresetBank}"
+            DataType="{x:Type models:PresetBank}"
             ItemsSource="{Binding PresetBanks, Converter={StaticResource NodeSorter}}">
             <StackPanel Orientation="Horizontal">
                 <iconPacks:PackIconFontAwesome VerticalAlignment="Center" Kind="ExclamationCircleSolid" Foreground="Orange" ToolTip="NKS only supports 2 sublevels. Bank names will be combined, for example Factory/Bass/Deep Bass will become Factory/Bass - Deep Bass">

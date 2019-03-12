@@ -18,7 +18,7 @@ using PresetMagician.Core.Models.NativeInstrumentsResources;
 using Brushes = System.Windows.Media.Brushes;
 using Color = System.Windows.Media.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
-using NiResourceColor = SharedModels.NativeInstrumentsResources.Color;
+using NiResourceColor = PresetMagician.Core.Models.NativeInstrumentsResources.Color;
 using Point = System.Windows.Point;
 using Size = System.Drawing.Size;
 

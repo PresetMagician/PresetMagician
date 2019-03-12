@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using CannedBytes.Midi.Message;
 using Catel.Collections;
 using Catel.Data;
 using Newtonsoft.Json;
@@ -30,14 +29,7 @@ namespace PresetMagician.Models
         
         [JsonProperty] public DateTime LastBackupNotificationDateTime { get; set; } = DateTime.Now;
 
-        [JsonProperty]
-        public int DefaultPreviewMidiNoteNumber
-        {
-            get { return DefaultPreviewMidiNote.NoteNumber; }
-            set { DefaultPreviewMidiNote.NoteNumber = value; }
-        }
-
-        public MidiNoteName DefaultPreviewMidiNote { get; set; } = new MidiNoteName("C3");
+       
 
         protected override void ValidateFields(List<IFieldValidationResult> validationResults)
         {

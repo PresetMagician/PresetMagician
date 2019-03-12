@@ -12,6 +12,7 @@ using CsvHelper.Configuration.Attributes;
 using Drachenkatze.PresetMagician.Utils;
 using Drachenkatze.PresetMagician.VendorPresetParser;
 using Jacobi.Vst.Core;
+using PresetMagician.Core.EventArgs;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.RemoteVstHost;
 using PresetMagician.RemoteVstHost.Processes;
@@ -429,6 +430,7 @@ namespace PresetMagician.VendorPresetParserTest
 
     internal class NullPresetPersistence : IDataPersistence
     {
+        public event EventHandler<PresetUpdatedEventArgs> PresetUpdated;
 #pragma warning disable 1998
         public async Task PersistPreset(Preset preset, byte[] data)
 #pragma warning restore 1998

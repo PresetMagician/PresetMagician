@@ -7,122 +7,104 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{445AC4FE-6ACC-4E19-9424-B35C0B8B5804}</ProjectGuid>
+    <ProjectGuid>{DA1B856F-D92E-49E9-A80A-48E62135F909}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SharedModels</RootNamespace>
-    <AssemblyName>PresetMagician.SharedModels</AssemblyName>
+    <RootNamespace>PresetMagician.Core</RootNamespace>
+    <AssemblyName>PresetMagician.Core</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <LangVersion>latest</LangVersion>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32bit>false</Prefer32bit>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>x64</PlatformTarget>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>
-    </DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32bit>false</Prefer32bit>
-    <DebugSymbols>true</DebugSymbols>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Catel.MVVM">
-      <HintPath>..\packages\Catel.MVVM\lib\net46\Catel.MVVM.dll</HintPath>
-    </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresetMagician.SharedModels, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\PresetMagician.VendorPresetParserTest\bin\x64\Debug\PresetMagician.SharedModels.dll</HintPath>
+    <Reference Include="PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <HintPath>..\..\..\..\..\..\Windows\Microsoft.Net\assembly\GAC_64\PresentationCore\v4.0_4.0.0.0__31bf3856ad364e35\PresentationCore.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
-    <Reference Include="ZeroFormatter.Interfaces, Version=1.6.4.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\ZeroFormatter.Interfaces\lib\net45\ZeroFormatter.Interfaces.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApplicationDatabaseContext.cs" />
-    <Compile Include="Collections\TrackableCollection.cs" />
-    <Compile Include="Data\SourcePropertyChangeNotificationWrapper.cs" />
+    <Compile Include="ApplicationTask\ApplicationProgress.cs" />
+    <Compile Include="Collections\EditableCollection.cs" />
+    <Compile Include="Data\IUserEditable.cs" />
+    <Compile Include="Data\ModelBase.cs" />
+    <Compile Include="Data\ModelBase.usereditable.cs" />
+    <Compile Include="Data\UserEditableChangeNotificationWrapper.cs" />
     <Compile Include="EventArgs\PresetUpdatedEventArgs.cs" />
     <Compile Include="Exceptions\ConnectivityLostException.cs" />
-    <Compile Include="Extensions\DbContextExtensions.cs" />
-    <Compile Include="GlobalEntityManager.cs" />
-    <Compile Include="Interfaces\IUserEditable.cs" />
-    <Compile Include="IPlugin.cs" />
-    <Compile Include="Interfaces\IPluginCommands.cs" />
-    <Compile Include="IDataPersistence.cs" />
-    <Compile Include="IRemotePluginInstance.cs" />
-    <Compile Include="IVendorPresetParser.cs" />
-    <Compile Include="Migrations\BaseMigration.cs" />
-    <Compile Include="Migrations\IMigration.cs" />
-    <Compile Include="Migrations\Migration20190215.cs" />
-    <Compile Include="Migrations\Migration20190216.cs" />
-    <Compile Include="Migrations\Migration20190303.cs" />
+    <Compile Include="Faults\AccessViolationFault.cs" />
+    <Compile Include="Faults\GenericFault.cs" />
+    <Compile Include="Faults\NoEntryPointFoundFault.cs" />
+    <Compile Include="Faults\PluginEditorNotOpenFault.cs" />
+    <Compile Include="Faults\PluginNotLoadedFault.cs" />
+    <Compile Include="Faults\PluginNotRegisteredFault.cs" />
+    <Compile Include="Faults\PresetDataNullFault.cs" />
+    <Compile Include="Interfaces\IDataPersistence.cs" />
+    <Compile Include="Interfaces\IRemotePluginInstance.cs" />
+    <Compile Include="Interfaces\IRemoteVstService.cs" />
+    <Compile Include="Interfaces\IVendorPresetParser.cs" />
+    <Compile Include="Interfaces\IVstService.cs" />
     <Compile Include="Models\BankFile.cs" />
-    <Compile Include="Models\MidiNoteName.cs" />
-    <Compile Include="Models\Mode.cs" />
+    <Compile Include="Models\Characteristic.cs" />
+    <Compile Include="Models\CharacteristicCollection.cs" />
+    <Compile Include="Models\GlobalCharacteristicCollection.cs" />
+    <Compile Include="Models\GlobalTypeCollection.cs" />
+    <Compile Include="Models\NativeInstrumentsResources\Categories.cs" />
+    <Compile Include="Models\NativeInstrumentsResources\Category.cs" />
+    <Compile Include="Models\NativeInstrumentsResources\CategoryDB.cs" />
+    <Compile Include="Models\NativeInstrumentsResources\Color.cs" />
+    <Compile Include="Models\NativeInstrumentsResources\NativeInstrumentsResource.cs" />
+    <Compile Include="Models\NativeInstrumentsResources\OnlineResource.cs" />
+    <Compile Include="Models\NativeInstrumentsResources\ResourceImage.cs" />
+    <Compile Include="Models\NativeInstrumentsResources\ResourceState.cs" />
+    <Compile Include="Models\NativeInstrumentsResources\ShortNames.cs" />
     <Compile Include="Models\Plugin.cs" />
+    <Compile Include="Models\PluginInfoItem.cs" />
     <Compile Include="Models\PluginLocation.cs" />
     <Compile Include="Models\Preset.cs" />
     <Compile Include="Models\PresetBank.cs" />
+    <Compile Include="Models\PresetCollection.cs" />
+    <Compile Include="Models\PresetDatabaseStatistic.cs" />
     <Compile Include="Models\PresetDataStorage.cs" />
-    <Compile Include="Models\SchemaVersion.cs" />
+    <Compile Include="Models\PresetExportInfo.cs" />
+    <Compile Include="Models\PreviewNotePlayer.cs" />
     <Compile Include="Models\Type.cs" />
-    <Compile Include="NativeInstrumentsResources\Categories.cs" />
-    <Compile Include="NativeInstrumentsResources\Category.cs" />
-    <Compile Include="NativeInstrumentsResources\CategoryDB.cs" />
-    <Compile Include="NativeInstrumentsResources\Color.cs" />
-    <Compile Include="NativeInstrumentsResources\ResourceImage.cs" />
-    <Compile Include="NativeInstrumentsResources\NativeInstrumentsResource.cs" />
-    <Compile Include="NativeInstrumentsResources\OnlineResource.cs" />
-    <Compile Include="NativeInstrumentsResources\ResourceState.cs" />
-    <Compile Include="NativeInstrumentsResources\ShortNames.cs" />
-    <Compile Include="PluginInfoItem.cs" />
-    <Compile Include="PresetExportInfo.cs" />
+    <Compile Include="Models\TypeCollection.cs" />
+    <Compile Include="Models\VstDirectory.cs" />
+    <Compile Include="Models\VstPluginInfoSurrogate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TrackableModelBase.cs" />
-    <Compile Include="TrackableModelBase.trackable.cs" />
-    <Compile Include="TrackableModelBase.usereditable.cs" />
-    <Compile Include="TrackableModelBaseFoo.cs" />
-    <Compile Include="TrackableModelBaseFoo.trackable.cs" />
-    <Compile Include="TrackableModelBaseFoo.usereditable.cs" />
-    <Compile Include="VstPluginInfoSurrogated.cs" />
+    <Compile Include="Services\DataPersisterService.cs" />
+    <Compile Include="Services\PluginService.cs" />
+    <Compile Include="Services\PresetDataPersisterService.cs" />
+    <Compile Include="Services\PreviewNotePlayerService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\trackable-entities\Source\TrackableEntities.Client\TrackableEntities.Client.csproj">
-      <Project>{ff4a77e7-2f00-426f-b626-07251756e0bb}</Project>
-      <Name>TrackableEntities.Client</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\trackable-entities\Source\TrackableEntities.Common\TrackableEntities.Common.csproj">
-      <Project>{a59939c3-b823-43d1-84f1-74d6a9ddc598}</Project>
-      <Name>TrackableEntities.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\trackable-entities\Source\TrackableEntities.EF.6\TrackableEntities.EF.6.csproj">
-      <Project>{eadec46b-436a-416d-b44e-586c0e84aa5d}</Project>
-      <Name>TrackableEntities.EF.6</Name>
-    </ProjectReference>
+    <Content Include="FodyWeavers.xml" />
+    <Content Include="paket.references" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\PresetMagician.NKS\PresetMagician.NKS.csproj">
       <Project>{2126df46-7f24-4c2c-b236-514a70b7a3a5}</Project>
       <Name>PresetMagician.NKS</Name>
@@ -141,27 +123,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="FodyWeavers.xml">
-      <SubType>Designer</SubType>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Images\empty.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="paket.references" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
-      <PropertyGroup>
-        <__paket__System_Data_SQLite_Core_targets>net46\System.Data.SQLite.Core</__paket__System_Data_SQLite_Core_targets>
-      </PropertyGroup>
-    </When>
-  </Choose>
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <PropertyGroup>
@@ -190,7 +154,6 @@
     <Target Name="AfterBuild">
     </Target>
     -->
-  <Import Project="..\common\ExtraCleanup.targets" />
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
@@ -216,6 +179,17 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
+        <Reference Include="Catel.MVVM">
+          <HintPath>..\packages\Catel.MVVM\lib\net47\Catel.MVVM.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
         <Reference Include="Ceras">
           <HintPath>..\packages\Ceras\lib\net47\Ceras.dll</HintPath>
           <Private>True</Private>
@@ -227,8 +201,13 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
-        <Reference Include="DeepCloner">
-          <HintPath>..\packages\DeepCloner\lib\net40\DeepCloner.dll</HintPath>
+        <Reference Include="Microsoft.Expression.Interactions">
+          <HintPath>..\packages\Expression.Blend.Sdk.WPF\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="System.Windows.Interactivity">
+          <HintPath>..\packages\Expression.Blend.Sdk.WPF\lib\net45\System.Windows.Interactivity.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -238,38 +217,8 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
-        <Reference Include="InteractivePreGeneratedViews">
-          <HintPath>..\packages\EFInteractiveViews\lib\net45\InteractivePreGeneratedViews.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
-      <ItemGroup>
-        <Reference Include="EntityFramework">
-          <HintPath>..\packages\EntityFramework\lib\net45\EntityFramework.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-        <Reference Include="EntityFramework.SqlServer">
-          <HintPath>..\packages\EntityFramework\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
-      <ItemGroup>
-        <Reference Include="Microsoft.CSharp">
-          <Paket>True</Paket>
-        </Reference>
-        <Reference Include="FastMember">
-          <HintPath>..\packages\FastMember\lib\net461\FastMember.dll</HintPath>
+        <Reference Include="Ionic.Zip">
+          <HintPath>..\packages\Ionic.Zip\lib\Ionic.Zip.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -301,6 +250,15 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
+        <Reference Include="Microsoft.CSharp">
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
         <Reference Include="Newtonsoft.Json">
           <HintPath>..\packages\Newtonsoft.Json\lib\net45\Newtonsoft.Json.dll</HintPath>
           <Private>True</Private>
@@ -312,8 +270,44 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
-        <Reference Include="Orc.EntityFramework">
-          <HintPath>..\packages\Orc.EntityFramework6\lib\net47\Orc.EntityFramework.dll</HintPath>
+        <Reference Include="Orc.Controls">
+          <HintPath>..\packages\Orc.Controls\lib\net47\Orc.Controls.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="Orc.FileSystem">
+          <HintPath>..\packages\Orc.FileSystem\lib\net47\Orc.FileSystem.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="System.Management">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Orc.SystemInfo">
+          <HintPath>..\packages\Orc.SystemInfo\lib\net47\Orc.SystemInfo.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="Orchestra.Core">
+          <HintPath>..\packages\Orchestra.Core\lib\net47\Orchestra.Core.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -347,17 +341,6 @@
       <ItemGroup>
         <Reference Include="SQLite-net">
           <HintPath>..\packages\sqlite-net-pcl\lib\netstandard1.1\SQLite-net.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
-      <ItemGroup>
-        <Reference Include="SQLite.CodeFirst">
-          <HintPath>..\packages\SQLite.CodeFirst\lib\net45\SQLite.CodeFirst.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -463,6 +446,9 @@
         <Reference Include="System.Configuration">
           <Paket>True</Paket>
         </Reference>
+        <Reference Include="System.Drawing">
+          <Paket>True</Paket>
+        </Reference>
         <Reference Include="System.Configuration.ConfigurationManager">
           <HintPath>..\packages\System.Configuration.ConfigurationManager\lib\net461\System.Configuration.ConfigurationManager.dll</HintPath>
           <Private>False</Private>
@@ -474,30 +460,8 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
-        <Reference Include="System.Data.SQLite">
-          <HintPath>..\packages\System.Data.SQLite.Core\lib\net46\System.Data.SQLite.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
-      <ItemGroup>
-        <Reference Include="System.Data.SQLite.EF6">
-          <HintPath>..\packages\System.Data.SQLite.EF6\lib\net46\System.Data.SQLite.EF6.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
-      <ItemGroup>
-        <Reference Include="System.Data.SQLite.Linq">
-          <HintPath>..\packages\System.Data.SQLite.Linq\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
+        <Reference Include="System.IO.FileSystem.Watcher">
+          <HintPath>..\packages\System.IO.FileSystem.Watcher\lib\net46\System.IO.FileSystem.Watcher.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -635,17 +599,6 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
-        <Reference Include="System.ValueTuple">
-          <HintPath>..\packages\System.ValueTuple\lib\net47\System.ValueTuple.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
-      <ItemGroup>
         <Reference Include="System.Xml.Linq">
           <Paket>True</Paket>
         </Reference>
@@ -656,5 +609,4 @@
   <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.linux\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_linux_targets).targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.linux\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_linux_targets).targets')" Label="Paket" />
   <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.osx\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_osx_targets).targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.osx\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_osx_targets).targets')" Label="Paket" />
   <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_xp\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_v110_xp_targets).targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_xp\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_v110_xp_targets).targets')" Label="Paket" />
-  <Import Project="..\packages\System.Data.SQLite.Core\build\$(__paket__System_Data_SQLite_Core_targets).targets" Condition="Exists('..\packages\System.Data.SQLite.Core\build\$(__paket__System_Data_SQLite_Core_targets).targets')" Label="Paket" />
 </Project>
