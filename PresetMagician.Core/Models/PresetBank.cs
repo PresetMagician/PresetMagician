@@ -55,9 +55,9 @@ namespace PresetMagician.Core.Models
             UpdateBankDepth();
 
             //OnPropertyChanged(nameof(PresetBanks));
-            if (oldBankPath != BankPath) {
+            //if (oldBankPath != BankPath) {
             OnPropertyChanged(nameof(BankPath), oldBankPath, BankPath);
-            }
+            //}
            // RaisePropertyChanged(nameof(BankDepth), oldBankDepth, BankDepth);
             //RaisePropertyChanged(nameof(IsBelowNksThreshold), oldBelowNksThreshold, IsBelowNksThreshold);
         }

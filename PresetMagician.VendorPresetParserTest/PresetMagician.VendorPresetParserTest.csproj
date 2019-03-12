@@ -61,10 +61,6 @@
       <Project>{f07c1405-2149-4da5-ace7-54f5278ad2e4}</Project>
       <Name>PresetMagician.RemoteVstHost</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PresetMagician.SharedModels\PresetMagician.SharedModels.csproj">
-      <Project>{445ac4fe-6acc-4e19-9424-b35c0b8b5804}</Project>
-      <Name>PresetMagician.SharedModels</Name>
-    </ProjectReference>
     <ProjectReference Include="..\PresetMagician.Utils\PresetMagician.Utils.csproj">
       <Project>{37abda8a-5ffa-41f9-b880-a272d8c21dff}</Project>
       <Name>PresetMagician.Utils</Name>

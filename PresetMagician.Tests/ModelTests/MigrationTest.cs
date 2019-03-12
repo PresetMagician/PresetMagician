@@ -3,20 +3,25 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net.Sockets;
 using FluentAssertions;
 using PresetMagician.Core.Collections;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
 using PresetMagician.Legacy;
+using PresetMagician.Legacy.Models;
 using PresetMagician.Legacy.Services;
 using PresetMagician.Tests.Helpers;
 using Xunit;
 using Xunit.Abstractions;
+using BankFile = PresetMagician.Core.Models.BankFile;
 using OldPluginLocation = PresetMagician.Legacy.Models.PluginLocation;
 using OldPreset = PresetMagician.Legacy.Models.Preset;
 using OldPlugin = PresetMagician.Legacy.Models.Plugin;
 using OldBankFile = PresetMagician.Legacy.Models.BankFile;
+using Plugin = PresetMagician.Core.Models.Plugin;
+using PluginLocation = PresetMagician.Core.Models.PluginLocation;
+using Preset = PresetMagician.Core.Models.Preset;
+using Type = PresetMagician.Legacy.Models.Type;
 
 namespace PresetMagician.Tests.ModelTests
 {
@@ -32,11 +37,12 @@ namespace PresetMagician.Tests.ModelTests
         [Fact]
         public void TestMigration()
         {
-            var testDb = Guid.NewGuid().ToString() + ".sqlite3";
+            var testDb = Guid.NewGuid() + ".sqlite3";
             ApplicationDatabaseContext.DefaultDatabasePath = @"TestDatabases\"+testDb;
             DataPersisterService.DefaultPluginStoragePath = @"MigrationData\Plugins";
             PresetDataPersisterService.DefaultDatabasePath = @"MigrationData\PresetData.sqlite3";
 
+            File.Delete(PresetDataPersisterService.DefaultDatabasePath);
             Directory.CreateDirectory(DataPersisterService.DefaultPluginStoragePath);
             File.Copy(@"Resources\PresetMagician.test.sqlite3", ApplicationDatabaseContext.DefaultDatabasePath);
 
@@ -82,7 +88,7 @@ namespace PresetMagician.Tests.ModelTests
                nameof(Plugin.IsSupported),
                nameof(Plugin.HasMetadata),
                nameof(Plugin.VstPluginId),
-               nameof(Plugin.IsAnalyzed),
+               nameof(Plugin.IsAnalyzed)
                 
             };
             var comparer = new PropertyComparisonHelper(oldPlugin, newPlugin);
@@ -183,10 +189,9 @@ namespace PresetMagician.Tests.ModelTests
             CompareModes(oldPreset.Modes, newPreset.Characteristics);
             
             comparer.GetUnvisitedProperties().Should().BeEmpty();
-
         }
 
-        private void CompareTypes(ICollection<PresetMagician.Legacy.Models.Type> oldTypes, TypeCollection newTypes)
+        private void CompareTypes(ICollection<Type> oldTypes, TypeCollection newTypes)
         {
             newTypes.Count.Should().Be(oldTypes.Count);
 
@@ -200,7 +205,7 @@ namespace PresetMagician.Tests.ModelTests
             }
         }
         
-        private void CompareModes(ICollection<PresetMagician.Legacy.Models.Mode> oldModes, CharacteristicCollection newModes)
+        private void CompareModes(ICollection<Mode> oldModes, CharacteristicCollection newModes)
         {
             newModes.Count.Should().Be(oldModes.Count);
 

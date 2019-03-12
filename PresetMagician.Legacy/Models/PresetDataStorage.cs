@@ -8,61 +8,37 @@ namespace PresetMagician.Legacy.Models
     {
         [Key] public string PresetDataStorageId { get; set; }
 
-        private byte[] _compressedPresetDataCache;
-
         public bool IsCompressed { get; set; }
 
         [Column("CompressedPresetData", TypeName = "blob")]
-        public byte[] CompressedPresetData
-        {
-            get
-            {
-                if (!IsCompressed || PresetData == null)
-                {
-                    return new byte[0];
-                }
-
-                if (_compressedPresetDataCache == null)
-                {
-                    _compressedPresetDataCache = LZ4Pickler.Pickle(PresetData);
-                }
-
-                return _compressedPresetDataCache;
-            }
-            set
-            {
-                if (!IsCompressed)
-                {
-                    return;
-                }
-
-                PresetData = LZ4Pickler.Unpickle(value);
-            }
-        }
+        public byte[] CompressedPresetData { get; set; }
+    
 
         [Column("PresetData", TypeName = "blob")]
-        public byte[] UncompressedPresetData
+        public byte[] UncompressedPresetData { get; set; }
+      
+
+        [NotMapped]
+        public byte[] PresetData
         {
             get
             {
                 if (IsCompressed)
                 {
-                    return new byte[0];
+                    if (CompressedPresetData == null)
+                    {
+                        return new byte[0];
+                    }
+                    else
+                    {
+                        return LZ4Pickler.Unpickle(CompressedPresetData);
+                    }
                 }
-
-                return PresetData;
-            }
-            set
-            {
-                if (IsCompressed)
+                else
                 {
-                    return;
+                    return UncompressedPresetData;
                 }
-
-                PresetData = value;
             }
         }
-
-        [NotMapped] public byte[] PresetData { get; set; }
     }
 }

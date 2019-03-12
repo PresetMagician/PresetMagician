@@ -89,10 +89,6 @@
       <Project>{2126df46-7f24-4c2c-b236-514a70b7a3a5}</Project>
       <Name>PresetMagician.NKS</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PresetMagician.SharedModels\PresetMagician.SharedModels.csproj">
-      <Project>{445ac4fe-6acc-4e19-9424-b35c0b8b5804}</Project>
-      <Name>PresetMagician.SharedModels</Name>
-    </ProjectReference>
     <ProjectReference Include="..\PresetMagician.Tests\PresetMagician.Tests.csproj">
       <Project>{19a9e75b-36c0-41ad-8a61-3614c0bbc11f}</Project>
       <Name>PresetMagician.Tests</Name>

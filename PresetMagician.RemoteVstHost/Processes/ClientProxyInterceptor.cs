@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.ServiceModel;
@@ -57,8 +58,11 @@ namespace PresetMagician.RemoteVstHost.Processes
 
         public void Intercept(IInvocation invocation)
         {
-            _vstHostProcess.StartOperation(invocation.Method.Name);
-            _vstHostProcess.ResetPingTimer();
+            if (invocation.Method.Name != "get_State")
+            {
+                _vstHostProcess.StartOperation(invocation.Method.Name);
+                _vstHostProcess.ResetPingTimer();
+            }
 
 
             var argumentList = new List<string>();
@@ -134,7 +138,10 @@ namespace PresetMagician.RemoteVstHost.Processes
                         $"{invocation.Method.Name}({string.Join(",", argumentList)}): {ValueToString(invocation.ReturnValue)}");
                 }
 
-                _vstHostProcess.StopOperation(invocation.Method.Name);
+                if (invocation.Method.Name != "get_State")
+                {
+                    _vstHostProcess.StopOperation(invocation.Method.Name);
+                }
             }
         }
 
