@@ -28,11 +28,10 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PresetMagician.Models;
 using PresetMagician.Models.ControllerAssignments;
-using PresetMagician.Models.NativeInstrumentsResources;
 using PresetMagician.Services.Interfaces;
-using SharedModels;
-using SharedModels.Models;
-using SharedModels.NativeInstrumentsResources;
+using PresetMagician.Core.Interfaces;
+using PresetMagician.Core.Models;
+using PresetMagician.Core.Models.NativeInstrumentsResources;
 
 namespace PresetMagician.ViewModels
 {
@@ -100,8 +99,10 @@ namespace PresetMagician.ViewModels
 
 
             GenerateControllerMappingModels();
-            PluginLocations = _vstService.GetPluginLocations(plugin);
-            
+            PluginLocations = (from pluginLocation in Plugin.PluginLocations
+                where pluginLocation.IsPresent
+                select pluginLocation).ToList();
+
         }
         
         
@@ -232,7 +233,7 @@ namespace PresetMagician.ViewModels
         {
             try
             {
-                await _vstService.SavePlugins();
+                _vstService.Save();
             }
             catch (Exception e)
             {

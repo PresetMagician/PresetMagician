@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using Catel.MVVM;
+using PresetMagician.Core.ApplicationTask;
 using PresetMagician.RemoteVstHost;
+using PresetMagician.Utils.Progress;
 
 namespace PresetMagician.Services.Interfaces
 {
@@ -24,5 +27,6 @@ namespace PresetMagician.Services.Interfaces
         void StartProcessPool();
         void ShutdownProcessPool();
         void SetApplicationOperationTotalItems(int items);
+        ApplicationProgress CreateApplicationProgress();
     }
 }

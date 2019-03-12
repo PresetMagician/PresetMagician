@@ -7,8 +7,13 @@ using Catel;
 using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
+using PresetMagician.Core.ApplicationTask;
+using PresetMagician.Core.Services;
 using PresetMagician.RemoteVstHost;
 using PresetMagician.Services.Interfaces;
+using PresetMagician.Utils.Logger;
+using PresetMagician.Utils.Logger.EventArgs;
+using PresetMagician.Utils.Progress;
 using Timer = System.Timers.Timer;
 
 namespace PresetMagician.Services
@@ -19,29 +24,29 @@ namespace PresetMagician.Services
         private readonly ICustomStatusService _statusService;
         private readonly IPleaseWaitService _pleaseWaitService;
         private readonly IAdvancedMessageService _messageService;
-        private readonly IDatabaseService _databaseService;
+        private readonly DataPersisterService _dataPersisterService;
         private string _lastUpdateStatus;
         private readonly Timer _updateWorkerPoolStatsTimer;
         private readonly Timer _updateDatabaseSizeTimer;
+        private ApplicationProgress _applicationProgress;
         private ILog _log;
         public NewProcessPool NewProcessPool { get; }
 
         private readonly List<string> _applicationOperationErrors = new List<string>();
 
-        public ApplicationService(IRuntimeConfigurationService runtimeConfigurationService,
-            ICustomStatusService statusService, IPleaseWaitService pleaseWaitService, IAdvancedMessageService messageService, IDatabaseService databaseService)
+        public ApplicationService(IRuntimeConfigurationService runtimeConfigurationService, DataPersisterService dataPersisterService,
+            ICustomStatusService statusService, IPleaseWaitService pleaseWaitService, IAdvancedMessageService messageService)
         {
             Argument.IsNotNull(() => runtimeConfigurationService);
             Argument.IsNotNull(() => statusService);
             Argument.IsNotNull(() => pleaseWaitService);
             Argument.IsNotNull(() => messageService);
-            Argument.IsNotNull(() => databaseService);
 
             _pleaseWaitService = pleaseWaitService;
             _statusService = statusService;
             _runtimeConfigurationService = runtimeConfigurationService;
             _messageService = messageService;
-            _databaseService = databaseService;
+            _dataPersisterService = dataPersisterService;
             
           
             NewProcessPool = new NewProcessPool();
@@ -61,7 +66,7 @@ namespace PresetMagician.Services
 
         private void UpdateDatabaseSizeTimerOnElapsed(object sender, ElapsedEventArgs e)
         {
-            _databaseService.UpdateDatabaseSize();
+           _runtimeConfigurationService.ApplicationState.DatabaseSize = _dataPersisterService.GetTotalDataSize();
             _updateDatabaseSizeTimer.Start();
         }
 
@@ -94,6 +99,39 @@ namespace PresetMagician.Services
         {
             var appState = _runtimeConfigurationService.ApplicationState;
             return appState.ApplicationBusyCancellationTokenSource;
+        }
+
+        public ApplicationProgress CreateApplicationProgress ()
+        {
+            _applicationProgress = new ApplicationProgress
+            {
+                Progress = new Progress<CountProgress>(),
+                LogReporter = new LogReporter(new MiniMemoryLogger()),
+                CancellationToken = GetApplicationOperationCancellationSource().Token
+            };
+            ((Progress<CountProgress>)_applicationProgress.Progress).ProgressChanged += OnProgressChanged;
+            _applicationProgress.LogReporter.LogEntryAdded += LogReporterOnLogEntryAdded;
+            return _applicationProgress;
+        }
+
+        private void ClearApplicationProgress()
+        {
+            ((Progress<CountProgress>)_applicationProgress.Progress).ProgressChanged -= OnProgressChanged;
+            _applicationProgress.LogReporter.LogEntryAdded -= LogReporterOnLogEntryAdded;
+            _applicationProgress = null;
+        }
+
+        private void LogReporterOnLogEntryAdded(object sender, LogEntryAddedEventArgs e)
+        {
+            if (e.LogEntry.LogLevel == LogLevel.Error)
+            {
+                AddApplicationOperationError(e.LogEntry.Message);
+            }
+        }
+
+        private void OnProgressChanged(object sender, CountProgress e)
+        {
+            UpdateApplicationOperationStatus(e.Current, e.Status);
         }
 
         public void StartApplicationOperation(CommandContainerBase commandContainer, string operationDescription,
@@ -148,23 +186,7 @@ namespace PresetMagician.Services
             _runtimeConfigurationService.ApplicationState.ApplicationBusyTotalItems = items;
         }
 
-        private void SetApplicationStateProperty(object value)
-        {
-            var appState = _runtimeConfigurationService.ApplicationState;
-            try
-            {
-                var property = appState.GetType().GetProperty(appState.ApplicationOperationStatePropertyName);
-                property.SetValue(_runtimeConfigurationService.ApplicationState, value);
-            }
-            catch (Exception e) when (e is ArgumentNullException || e is NullReferenceException)
-            {
-                throw new ArgumentException(
-                    $"Property {appState.ApplicationOperationStatePropertyName} is not defined or not accessible on " +
-                    $"{appState.GetType().FullName}, but was passed by targetPropertyName. " +
-                    "Maybe you relied on the CommandContainer auto-wiring and forgot to implement it.",
-                    e);
-            }
-        }
+      
 
         public List<string> GetApplicationOperationErrors()
         {
@@ -224,6 +246,7 @@ namespace PresetMagician.Services
             var appState = _runtimeConfigurationService.ApplicationState;
             appState.IsApplicationBusy = false;
             _pleaseWaitService.Hide();
+            
 
             var lastErrors = GetApplicationOperationErrors();
 

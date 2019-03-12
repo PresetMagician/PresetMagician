@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using Catel.Logging;
 
-namespace Drachenkatze.PresetMagician.Utils
+namespace PresetMagician.Utils.Logger
 {
     public class MiniMemoryLogger: MiniLogger
     {
@@ -16,9 +14,9 @@ namespace Drachenkatze.PresetMagician.Utils
 
         public List<string> LogList = new List<string>();
 
-        public override void Write(string message, LogLevel logLevel)
+        public override void Write(LogEntry logEntry)
         {
-            var logMessage = $"{DateTime.Now.ToString(_timeFormat)} [{GetLogLevelShortCode(logLevel)}] {message}";
+            var logMessage = $"{logEntry.DateTime.ToString(_timeFormat)} [{GetLogLevelShortCode(logEntry.LogLevel)}] {logEntry.Message}";
             LogList.Add(logMessage);
 
             if (_logToConsole)

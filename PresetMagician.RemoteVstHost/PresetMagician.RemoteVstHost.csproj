@@ -97,14 +97,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Constants.cs" />
-    <Compile Include="Faults\AccessViolationFault.cs" />
-    <Compile Include="Faults\GenericFault.cs" />
-    <Compile Include="Faults\NoEntryPointFoundFault.cs" />
-    <Compile Include="Faults\PluginEditorNotOpenFault.cs" />
-    <Compile Include="Faults\PluginNotLoadedFault.cs" />
-    <Compile Include="Faults\PluginNotRegisteredFault.cs" />
-    <Compile Include="Faults\PresetDataNullFault.cs" />
-    <Compile Include="IRemoteVstService.cs" />
     <Compile Include="ModuleInitializer.cs" />
     <Compile Include="NewProcessPool.cs" />
     <Compile Include="Processes\ClientProxyInterceptor.cs" />
@@ -144,6 +136,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\PresetMagician.Core\PresetMagician.Core.csproj">
+      <Project>{da1b856f-d92e-49e9-a80a-48e62135f909}</Project>
+      <Name>PresetMagician.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PresetMagician.SharedModels\PresetMagician.SharedModels.csproj">
       <Project>{445ac4fe-6acc-4e19-9424-b35c0b8b5804}</Project>
       <Name>PresetMagician.SharedModels</Name>

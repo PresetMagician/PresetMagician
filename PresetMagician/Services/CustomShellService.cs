@@ -166,8 +166,10 @@ namespace PresetMagician.Services
             var shell = default(TShell);
             var successfullyStarted = true;
 
+#if !DEBUG
             try
             {
+#endif
                 await InitializeBeforeCreatingShellAsync();
 
                 shell = await CreateShellAsync<TShell>();
@@ -191,12 +193,15 @@ namespace PresetMagician.Services
                 }
 
                 await InitializeAfterShowingShellAsync();
+#if !DEBUG
             }
             catch (Exception ex)
             {
+                
+                
                 App.ReportCrash(ex);
-
             }
+#endif
             return shell;
         }
 

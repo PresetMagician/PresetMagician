@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
-using SharedModels;
-using SharedModels.Models;
+using PresetMagician.Core.Interfaces;
+using PresetMagician.Core.Models;
 
 namespace PresetMagician.ViewModels
 {

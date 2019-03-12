@@ -9,11 +9,12 @@ using Catel.Collections;
 using Catel.Data;
 using Catel.MVVM;
 using Catel.Services;
-using Drachenkatze.PresetMagician.Utils.IssueReport;
+using Drachenkatze.PresetMagician.Utils.Progress;
+using PresetMagician.Core.Interfaces;
 using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
-using SharedModels;
-using SharedModels.Models;
+using PresetMagician.Core.Models;
+using PresetMagician.Utils.IssueReport;
 
 namespace PresetMagician.ViewModels
 {
@@ -136,7 +137,7 @@ namespace PresetMagician.ViewModels
         {
             if (e.PropertyName == nameof(SelectedPlugin))
             {
-                if (SelectedPlugin.Id != 0)
+                if (SelectedPlugin.PluginId != "")
                 {
                     if (Report.TrackerType == IssueReport.TrackerTypes.BUG)
                     {
@@ -145,7 +146,7 @@ namespace PresetMagician.ViewModels
                         Report.IncludeDatabase = true;
                     }
 
-                    Report.PluginId = SelectedPlugin.Id;
+                    Report.PluginId = SelectedPlugin.PluginId;
                     Report.PluginName = SelectedPlugin.PluginName;
                     Report.PluginVendor = SelectedPlugin.PluginVendor;
                     Report.PluginVstId = SelectedPlugin.VstPluginId.ToString();

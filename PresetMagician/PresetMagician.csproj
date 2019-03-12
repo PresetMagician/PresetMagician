@@ -80,6 +80,7 @@
     <Reference Include="System.Design" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -150,7 +151,6 @@
     <Compile Include="Commands\Preset\PresetApplyMidiNoteCommandContainer.cs" />
     <Compile Include="Commands\Preset\PresetRenamePresetBankCommandContainer.cs" />
     <Compile Include="Commands\ThreadedApplicationNotBusyCommandContainer.cs" />
-    <Compile Include="Commands\Tools\ToolsCompressDatabaseCommandContainer.cs" />
     <Compile Include="Commands\Tools\ToolsNksfViewCommandContainer.cs" />
     <Compile Include="Commands\Tools\ToolsSettingsViewCommandContainer.cs" />
     <Compile Include="Commands\Tools\ToolsUpdateLicenseCommandContainer.cs" />
@@ -180,7 +180,6 @@
     <Compile Include="Models\ControllerAssignments\ControllerAssignmentPage.cs" />
     <Compile Include="Models\CustomLayoutDocument.cs" />
     <Compile Include="Models\RuntimeConfiguration.cs" />
-    <Compile Include="Models\Settings\VstDirectory.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Services\AboutInfoService.cs" />
     <Compile Include="Services\AdvancedMessageService.cs" />
@@ -190,7 +189,6 @@
     <Compile Include="Services\CustomPleaseWaitService.cs" />
     <Compile Include="Services\CustomShellService.cs" />
     <Compile Include="Services\CustomStatusService.cs" />
-    <Compile Include="Services\DatabaseService.cs" />
     <Compile Include="Services\Interfaces\IAdvancedMessageService.cs" />
     <Compile Include="Services\Interfaces\IApplicationService.cs" />
     <Compile Include="Services\Interfaces\ICustomStatusService.cs" />
@@ -201,7 +199,6 @@
     <Compile Include="Services\RuntimeConfigurationService.cs" />
     <Compile Include="Services\EventArgs\StartupActionChangedEventArgs.cs" />
     <Compile Include="Services\Interfaces\IRuntimeConfigurationService.cs" />
-    <Compile Include="Services\Interfaces\IVstService.cs" />
     <Compile Include="Services\SplashScreenService.cs" />
     <Compile Include="Services\VstService.cs" />
     <Compile Include="ViewModels\HelpLinkMessageBoxViewModel.cs" />
@@ -460,6 +457,14 @@
       <Project>{eadec46b-436a-416d-b44e-586c0e84aa5d}</Project>
       <Name>TrackableEntities.EF.6</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PresetMagician.Core\PresetMagician.Core.csproj">
+      <Project>{da1b856f-d92e-49e9-a80a-48e62135f909}</Project>
+      <Name>PresetMagician.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PresetMagician.Legacy\PresetMagician.Legacy.csproj">
+      <Project>{3a586416-148e-47e4-8612-87a7c9561ba7}</Project>
+      <Name>PresetMagician.Legacy</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PresetMagician.NKS\PresetMagician.NKS.csproj">
       <Project>{2126df46-7f24-4c2c-b236-514a70b7a3a5}</Project>
       <Name>PresetMagician.NKS</Name>
@@ -521,6 +526,7 @@
   <ItemGroup>
     <Folder Include="Assets\" />
     <Folder Include="MarkupExtensions\" />
+    <Folder Include="Models\Settings" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="paket.references" />

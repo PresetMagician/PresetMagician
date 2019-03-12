@@ -49,15 +49,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DatabaseFixture.cs" />
-    <Compile Include="ModelTests\ApplicationTests.cs" />
+    <Compile Include="Helpers\PropertyComparisonHelper.cs" />
+    <Compile Include="ModelTests\MigrationTest.cs" />
     <Compile Include="ModelTests\PluginTest.cs" />
     <Compile Include="ModelTests\PresetTest.cs" />
     <Compile Include="ModelTests\TrackableModelBaseTest.cs" />
     <Compile Include="ModuleInitializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="EmptyDbContextManager.cs" />
-    <Compile Include="TestDataContextManager.cs" />
     <Compile Include="TestEntities\Company.cs" />
     <Compile Include="TestEntities\User.cs" />
   </ItemGroup>
@@ -124,6 +122,14 @@
     <ProjectReference Include="..\..\trackable-entities\Source\TrackableEntities.EF.6\TrackableEntities.EF.6.csproj">
       <Project>{eadec46b-436a-416d-b44e-586c0e84aa5d}</Project>
       <Name>TrackableEntities.EF.6</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PresetMagician.Core\PresetMagician.Core.csproj">
+      <Project>{da1b856f-d92e-49e9-a80a-48e62135f909}</Project>
+      <Name>PresetMagician.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PresetMagician.Legacy\PresetMagician.Legacy.csproj">
+      <Project>{3a586416-148e-47e4-8612-87a7c9561ba7}</Project>
+      <Name>PresetMagician.Legacy</Name>
     </ProjectReference>
     <ProjectReference Include="..\PresetMagician.NKS\PresetMagician.NKS.csproj">
       <Project>{2126df46-7f24-4c2c-b236-514a70b7a3a5}</Project>

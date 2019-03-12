@@ -47,6 +47,9 @@
       <HintPath>..\packages\Catel.MVVM\lib\net46\Catel.MVVM.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
+    <Reference Include="PresetMagician.SharedModels, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\PresetMagician.VendorPresetParserTest\bin\x64\Debug\PresetMagician.SharedModels.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -60,17 +63,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationDatabaseContext.cs" />
-    <Compile Include="Collections\EditableCollection.cs" />
     <Compile Include="Collections\TrackableCollection.cs" />
-    <Compile Include="Data\IUserEditable.cs" />
-    <Compile Include="Data\ModelBase.cs" />
-    <Compile Include="Data\ModelBase.usereditable.cs" />
     <Compile Include="Data\SourcePropertyChangeNotificationWrapper.cs" />
-    <Compile Include="Data\UserEditableChangeNotificationWrapper.cs" />
     <Compile Include="EventArgs\PresetUpdatedEventArgs.cs" />
     <Compile Include="Exceptions\ConnectivityLostException.cs" />
     <Compile Include="Extensions\DbContextExtensions.cs" />
     <Compile Include="GlobalEntityManager.cs" />
+    <Compile Include="Interfaces\IUserEditable.cs" />
     <Compile Include="IPlugin.cs" />
     <Compile Include="Interfaces\IPluginCommands.cs" />
     <Compile Include="IDataPersistence.cs" />
@@ -100,26 +99,9 @@
     <Compile Include="NativeInstrumentsResources\OnlineResource.cs" />
     <Compile Include="NativeInstrumentsResources\ResourceState.cs" />
     <Compile Include="NativeInstrumentsResources\ShortNames.cs" />
-    <Compile Include="NewModels\BankFile.cs" />
-    <Compile Include="NewModels\Characteristic.cs" />
-    <Compile Include="NewModels\CharacteristicCollection.cs" />
-    <Compile Include="NewModels\GlobalCharacteristicCollection.cs" />
-    <Compile Include="NewModels\GlobalTypeCollection.cs" />
-    <Compile Include="NewModels\Plugin.cs" />
-    <Compile Include="NewModels\PluginLocation.cs" />
-    <Compile Include="NewModels\Preset.cs" />
-    <Compile Include="NewModels\PresetBank.cs" />
-    <Compile Include="NewModels\PresetCollection.cs" />
-    <Compile Include="NewModels\PresetDataStorage.cs" />
-    <Compile Include="NewModels\PreviewNotePlayer.cs" />
-    <Compile Include="NewModels\Type.cs" />
-    <Compile Include="NewModels\TypeCollection.cs" />
     <Compile Include="PluginInfoItem.cs" />
     <Compile Include="PresetExportInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\PluginDataPersisterService.cs" />
-    <Compile Include="Services\PresetDataPersisterService.cs" />
-    <Compile Include="Services\PreviewNotePlayerService.cs" />
     <Compile Include="TrackableModelBase.cs" />
     <Compile Include="TrackableModelBase.trackable.cs" />
     <Compile Include="TrackableModelBase.usereditable.cs" />

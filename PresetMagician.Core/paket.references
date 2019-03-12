@@ -1,0 +1,13 @@
+Catel.Core
+Catel.MVVM
+Anotar.Catel.Fody copy_local: false
+Fody
+PropertyChanged.Fody copy_local: false
+SharpZipLib
+MethodTimer.Fody copy_local: false
+Newtonsoft.Json
+sqlite-net-pcl
+K4os.Compression.LZ4
+SQLitePCLRaw.bundle_e_sqlite3
+Ceras
+Orchestra.Core

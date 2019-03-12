@@ -2,10 +2,11 @@
 using System.Linq;
 using Catel.MVVM;
 using Catel.Services;
+using PresetMagician.Core.Interfaces;
 using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
-using SharedModels;
-using SharedModels.Models;
+using PresetMagician.Core.Models;
+using PresetMagician.Core.Services;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -16,11 +17,11 @@ namespace PresetMagician
         public PluginQuickScanSelectedPluginsCommandContainer(ICommandManager commandManager,
             IRuntimeConfigurationService runtimeConfigurationService, IVstService vstService,
             IApplicationService applicationService,
-            IDispatcherService dispatcherService, IDatabaseService databaseService,
+            IDispatcherService dispatcherService, 
             IAdvancedMessageService messageService,
-            INativeInstrumentsResourceGeneratorService resourceGeneratorService)
+            INativeInstrumentsResourceGeneratorService resourceGeneratorService, PresetDataPersisterService presetDataPersisterService)
             : base(Commands.Plugin.QuickScanSelectedPlugins, commandManager, runtimeConfigurationService, vstService,
-                applicationService, dispatcherService, messageService, databaseService, resourceGeneratorService)
+                applicationService, dispatcherService, messageService, resourceGeneratorService, presetDataPersisterService)
         {
             vstService.SelectedPlugins.CollectionChanged += OnPluginsListChanged;
         }

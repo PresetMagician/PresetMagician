@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -13,13 +12,12 @@ using CsvHelper.Configuration.Attributes;
 using Drachenkatze.PresetMagician.Utils;
 using Drachenkatze.PresetMagician.VendorPresetParser;
 using Jacobi.Vst.Core;
-using PresetMagician.Models;
+using PresetMagician.Core.Interfaces;
 using PresetMagician.RemoteVstHost;
 using PresetMagician.RemoteVstHost.Processes;
 using PresetMagician.VstHost.VST;
-using SharedModels;
-using SharedModels.Models;
-using Type = SharedModels.Type;
+using PresetMagician.Core.Models;
+using Type = PresetMagician.Core.Models.Type;
 
 namespace PresetMagician.VendorPresetParserTest
 {
@@ -35,14 +33,7 @@ namespace PresetMagician.VendorPresetParserTest
 
             var presetParserDictionary = VendorPresetParser.GetPresetHandlerListByPlugin();
 
-            ApplicationDatabaseContext.OverrideDbPath = Path.Combine(Directory.GetCurrentDirectory(), "test.sqlite3");
-
-            if (File.Exists(ApplicationDatabaseContext.OverrideDbPath))
-            {
-                File.Delete(ApplicationDatabaseContext.OverrideDbPath);
-            }
-
-            Console.WriteLine(ApplicationDatabaseContext.OverrideDbPath);
+          
             var testData = ReadTestData();
             var ignoredPlugins = ReadIgnoredPlugins();
 
@@ -457,9 +448,9 @@ namespace PresetMagician.VendorPresetParserTest
             return new Type();
         }
 
-        public Mode GetOrCreateMode(string modeName)
+        public Characteristic GetOrCreateMode(string modeName)
         {
-            return new Mode();
+            return new Characteristic();
         }
     }
 

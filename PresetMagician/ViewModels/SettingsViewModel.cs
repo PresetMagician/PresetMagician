@@ -10,7 +10,6 @@ using Drachenkatze.PresetMagician.Utils;
 using PresetMagician.Models;
 using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
-using SharedModels;
 
 namespace PresetMagician.ViewModels
 {
@@ -21,7 +20,6 @@ namespace PresetMagician.ViewModels
         private readonly IRuntimeConfigurationService _configurationService;
         private readonly ICommandManager _commandManager;
         private readonly ILicenseService _licenseService;
-        private readonly IDatabaseService _databaseService;
         private readonly IUIVisualizerService _uiVisualizerService;
         public ApplicationState ApplicationState{ get; private set; }
 
@@ -29,7 +27,7 @@ namespace PresetMagician.ViewModels
         public string SelectedTabTitle { get; set; }
         public SettingsViewModel(
             IRuntimeConfigurationService configurationService,
-            ILicenseService licenseService, IDatabaseService databaseService,
+            ILicenseService licenseService,
             IUIVisualizerService uiVisualizerService,
             ICommandManager commandManager
         )
@@ -37,33 +35,19 @@ namespace PresetMagician.ViewModels
             Argument.IsNotNull(() => configurationService);
             Argument.IsNotNull(() => commandManager);
             Argument.IsNotNull(() => licenseService);
-            Argument.IsNotNull(() => databaseService);
             Argument.IsNotNull(() => uiVisualizerService);
 
             _configurationService = configurationService;
             _commandManager = commandManager;
 
-            _databaseService = databaseService;
             _uiVisualizerService = uiVisualizerService;
             ApplicationState = configurationService.ApplicationState;
             
-            CollectDatabaseStatistics = new TaskCommand(OnCollectDatabaseStatisticsExecute);
-            OpenDatabaseLocation= new TaskCommand(OnOpenDatabaseLocationExecute);
             OpenVstWorkerLogDirectory = new TaskCommand(OnOpenVstWorkerLogDirectoryExecute);
             Title = "Settings";
         }
 
-        public TaskCommand CollectDatabaseStatistics { get; set; }
-
-        private async Task OnCollectDatabaseStatisticsExecute()
-        {
-            PresetDatabaseStatistics = await _databaseService.Context.GetPresetStatistics();
-            TotalPresetsCompressedSize = (from p in PresetDatabaseStatistics select p.PresetCompressedSize).Sum();
-            TotalPresetsUncompressedSize = (from p in PresetDatabaseStatistics select p.PresetUncompressedSize).Sum();
-            TotalPresets = (from p in PresetDatabaseStatistics select p.PresetCount).Sum();
-            SavedSpace = TotalPresetsUncompressedSize - TotalPresetsCompressedSize;
-            SavedSpacePercent = 1-(double)TotalPresetsCompressedSize / TotalPresetsUncompressedSize;
-        }
+       
         
         public TaskCommand OpenVstWorkerLogDirectory { get; set; }
 
@@ -73,14 +57,6 @@ namespace PresetMagician.ViewModels
         }
         
             
-        public TaskCommand OpenDatabaseLocation { get; set; }
-
-        private async Task OnOpenDatabaseLocationExecute()
-        {
-
-            Process.Start(Path.GetDirectoryName(ApplicationDatabaseContext.GetDatabasePath()));
-        }
-
         protected override async Task InitializeAsync()
         {
             EditableConfiguration = _configurationService.EditableConfiguration;
@@ -93,7 +69,6 @@ namespace PresetMagician.ViewModels
             return await base.SaveAsync();
         }
 
-        public IList<PresetDatabaseStatistics> PresetDatabaseStatistics { get; set; }
         public int TotalPresets { get; set; }
         public long TotalPresetsUncompressedSize { get; set; }
         public long TotalPresetsCompressedSize { get; set; }

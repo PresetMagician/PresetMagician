@@ -107,7 +107,7 @@
                             <DataGridTextColumn.CellStyle>
                                 <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultCellStyle}">
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsDirty}" Value="true">
+                                        <DataTrigger Binding="{Binding IsUserModified}" Value="true">
                                             <Setter Property="FontStyle" Value="Oblique" />
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -141,7 +141,7 @@
                             Width="3*"
                             CanUserSort="False"
                             CellStyle="{StaticResource NoPaddingCellStyle}"
-                            Header="Modes"
+                            Header="Characteristics"
                             CellTemplate="{StaticResource ModesTemplate}"
                             IsReadOnly="True">
                         </DataGridTemplateColumn>
@@ -159,6 +159,11 @@
                             Width="60"
                             Binding="{Binding ChangedSinceLastExport, Mode=OneWay}"
                             Header="Changed"
+                            IsReadOnly="True" />
+                        <DataGridTextColumn
+                            Width="*"
+                            Binding="{Binding SourceFile, Mode=OneWay}"
+                            Header="SourceFile"
                             IsReadOnly="True" />
                     </DataGrid.Columns>
                 </DataGrid>

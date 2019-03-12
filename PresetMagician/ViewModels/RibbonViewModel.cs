@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls.Primitives;
 using CannedBytes.Midi.Message;
 using Catel;
@@ -15,7 +16,6 @@ using Catel.MVVM;
 using Catel.Reflection;
 using Catel.Runtime.Serialization;
 using Catel.Services;
-using Drachenkatze.PresetMagician.Utils.IssueReport;
 using Orchestra;
 using Orchestra.Services;
 using PresetMagician.Models;
@@ -24,7 +24,8 @@ using PresetMagician.Views;
 using Redmine.Net.Api;
 using Redmine.Net.Api.Async;
 using Redmine.Net.Api.Types;
-using SharedModels;
+using PresetMagician.Core.Interfaces;
+using PresetMagician.Core.Services;
 using AssemblyHelper = Catel.Reflection.AssemblyHelper;
 using Version = Redmine.Net.Api.Types.Version;
 
@@ -63,8 +64,6 @@ namespace PresetMagician.ViewModels
             _vstService = vstService;
             _runtimeConfigurationService = runtimeConfigurationService;
 
-            _vstService.SelectedPresets.CollectionChanged += OnSelectedPresetsListChanged;
-
             ApplicationState = runtimeConfigurationService.ApplicationState;
             RuntimeConfiguration = runtimeConfigurationService.RuntimeConfiguration;
 
@@ -99,26 +98,7 @@ namespace PresetMagician.ViewModels
 
         #endregion
 
-        private void OnSelectedPresetsListChanged(object o, NotifyCollectionChangedEventArgs ev)
-        {
-            if (_vstService.SelectedPresets.Count > 0)
-            {
-                HasPresetSelection = true;
-
-                if (_vstService.SelectedPresets.Count == 1)
-                {
-                    ApplyMidiNote.FullNoteName = _vstService.SelectedExportPreset.PreviewNote.FullNoteName;
-                }
-                else
-                {
-                    ApplyMidiNote.FullNoteName = "";
-                }
-            }
-            else
-            {
-                HasPresetSelection = false;
-            }
-        }
+      
 
         #region Commands
 
@@ -162,16 +142,7 @@ namespace PresetMagician.ViewModels
         private async Task OnDoSomethingExecuteAsync()
         {
 
-            var hive = (from plugin in _vstService.Plugins where plugin.Id == 29 select plugin).FirstOrDefault();
-
-            var preset =
-                (from pp in hive.Presets
-                    where pp.PresetId == "e3403a58-6350-4623-b975-f2b1e9abbf62"
-                    select pp).FirstOrDefault();
-            
-            (hive as IEditableObject).BeginEdit();
-            Debug.WriteLine(preset);
-            (hive as IEditableObject).CancelEdit();
+            Debug.WriteLine(_serviceLocator.ResolveType<DataPersisterService>().Plugins);
             
 
         }

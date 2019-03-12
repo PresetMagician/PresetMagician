@@ -4,8 +4,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-using SharedModels;
 using SharedModels.Models;
+using Preset = SharedModels.Models.Preset;
 
 namespace PresetMagician.Models.EventArgs
 {

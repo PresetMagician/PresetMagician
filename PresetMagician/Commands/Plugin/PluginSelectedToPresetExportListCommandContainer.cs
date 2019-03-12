@@ -7,9 +7,9 @@ using Catel;
 using Catel.Collections;
 using Catel.MVVM;
 using Catel.Services;
+using PresetMagician.Core.Interfaces;
 using PresetMagician.Services.Interfaces;
-using SharedModels;
-using SharedModels.Models;
+using PresetMagician.Core.Models;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician

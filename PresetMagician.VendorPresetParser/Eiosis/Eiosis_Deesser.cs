@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital;
 using JetBrains.Annotations;
-using SharedModels;
+using PresetMagician.Core.Interfaces;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.Eiosis
 {

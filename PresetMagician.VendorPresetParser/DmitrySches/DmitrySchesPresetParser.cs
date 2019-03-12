@@ -4,8 +4,7 @@ using System.Threading.Tasks;
 using Drachenkatze.PresetMagician.VendorPresetParser.Common;
 using GSF.Collections;
 using ICSharpCode.SharpZipLib.Zip.Compression;
-using SharedModels;
-using SharedModels.Models;
+using PresetMagician.Core.Models;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.DmitrySches
 {

@@ -1,5 +1,6 @@
-﻿using System.Threading.Tasks;
-using SharedModels;
+﻿
+
+using PresetMagician.Core.Interfaces;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser
 {

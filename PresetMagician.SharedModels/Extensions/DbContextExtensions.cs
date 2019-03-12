@@ -15,6 +15,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using SharedModels.Data;
+using SharedModels.Interfaces;
 
 namespace SharedModels.Extensions
 {

@@ -9,8 +9,7 @@ using Jacobi.Vst.Core;
 using Jacobi.Vst.Interop.Host;
 using MethodTimer;
 using NAudio.Wave;
-using SharedModels;
-using SharedModels.Models;
+using PresetMagician.Core.Models;
 
 namespace PresetMagician.VstHost.VST
 {
@@ -233,14 +232,16 @@ namespace PresetMagician.VstHost.VST
                         ctx.PluginCommandStub.ProcessReplacing(inputBuffers, outputBuffers);
                     }
 
-                    VstHost.MIDI_NoteOn(plugin, (byte) preset.PreviewNoteNumber, 127);
+                    //VstHost.MIDI_NoteOn(plugin, (byte) preset.PreviewNoteNumber, 127);
+                    throw new Exception("FIX THIS");
 
 
                     for (k = 0; k < loops; k++)
                     {
                         if (k == noteOffLoop)
                         {
-                            VstHost.MIDI_NoteOff(plugin, (byte) preset.PreviewNoteNumber, 127);
+                            //VstHost.MIDI_NoteOff(plugin, (byte) preset.PreviewNoteNumber, 127);
+                            throw new Exception("FIX THIS");
                         }
 
                         ctx.PluginCommandStub.ProcessReplacing(inputBuffers, outputBuffers);

@@ -6,10 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Catel.Logging;
 using Drachenkatze.PresetMagician.VendorPresetParser.Common;
-using SharedModels;
-using SharedModels.Models;
+using PresetMagician.Core.Models;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
 {
@@ -107,7 +105,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
 
                 foreach (var modeName in modes)
                 {
-                    preset.Modes.Add(DataPersistence.GetOrCreateMode(modeName));
+                    preset.Characteristics.Add(new Characteristic {CharacteristicName = modeName});
                 }
             }
 

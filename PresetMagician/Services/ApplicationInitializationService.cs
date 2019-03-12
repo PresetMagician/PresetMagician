@@ -5,25 +5,25 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
 using Anotar.Catel;
 using Catel;
 using Catel.IoC;
 using Catel.Logging;
 using Catel.MVVM;
-using Catel.Runtime.Serialization;
-using Catel.Runtime.Serialization.Xml;
 using Catel.Services;
 using Catel.Threading;
 using MethodTimer;
 using Orc.Scheduling;
 using Orc.Squirrel;
 using Orchestra.Services;
-using PresetMagician.Serialization;
+using PresetMagician.Core.Services;
+using PresetMagician.Legacy.Services;
+using PresetMagician.Legacy.Services.EventArgs;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.ViewModels;
-using SharedModels;
+using PresetMagician.Core.Interfaces;
 
 namespace PresetMagician.Services
 {
@@ -73,10 +73,24 @@ namespace PresetMagician.Services
             // Non-async first
             RegisterTypes();
 
-            ServiceLocator.Default.ResolveType<IApplicationService>().StartProcessPool();
+            _serviceLocator.ResolveType<IApplicationService>().StartProcessPool();
 
-            _splashScreenService.Action = "Initializing database…";
-            InitDatabase();
+            _splashScreenService.Action = "Migrating database…";
+            if (File.Exists(FileLocations.LegacyDatabasePath))
+            {
+                await TaskHelper.Run(() =>
+                {
+                    _serviceLocator.RegisterType<Ef6MigrationService, Ef6MigrationService>();
+                    var migrationService = _serviceLocator.ResolveType<Ef6MigrationService>();
+                    migrationService.MigrationProgressUpdated += delegate(object sender, MigrationProgessEventArgs args)
+                    {
+                        _splashScreenService.Action = "Migrating database…" + args.Progress;
+                    };
+                    migrationService.LoadData();
+                    migrationService.MigratePlugins();
+                }).ConfigureAwait(false);
+
+            }
 
             _splashScreenService.Action = "Loading configuration…";
             LoadConfiguration();
@@ -89,7 +103,9 @@ namespace PresetMagician.Services
 
         public override async Task InitializeBeforeShowingShellAsync()
         {
-            await _serviceLocator.ResolveType<IVstService>().LoadPlugins(); 
+            var vstService = _serviceLocator.ResolveType<IVstService>();
+            vstService.Load(); 
+            
             _splashScreenService.Action = "Almost there…";
         }
 
@@ -232,20 +248,6 @@ namespace PresetMagician.Services
         }
 
         [Time]
-        private void InitDatabase()
-        {
-            ApplicationDatabaseContext.InitializeViewCache();
-        }
-        
-        private async Task InitializePerformanceAsync()
-        {
-
-            
-            /*Catel.Windows.Controls.UserControl.DefaultCreateWarningAndErrorValidatorForViewModelValue = false;
-            Catel.Windows.Controls.UserControl.DefaultSkipSearchingForInfoBarMessageControlValue = true;*/
-        }
-
-        [Time]
         private void RegisterTypes()
         {
             var serviceLocator = ServiceLocator.Default;
@@ -256,8 +258,10 @@ namespace PresetMagician.Services
             serviceLocator.RegisterType<IRuntimeConfigurationService, RuntimeConfigurationService>();
             serviceLocator.RegisterType<IVstService, VstService>();
             serviceLocator.RegisterType<IApplicationService, ApplicationService>();
-            serviceLocator.RegisterType<IDatabaseService, DatabaseService>();
             serviceLocator.RegisterType<IAdvancedMessageService, AdvancedMessageService>();
+            serviceLocator.RegisterType<DataPersisterService, DataPersisterService>();
+            serviceLocator.RegisterType<PresetDataPersisterService, PresetDataPersisterService>();
+            serviceLocator.RegisterType<PluginService, PluginService>();
             serviceLocator
                 .RegisterType<INativeInstrumentsResourceGeneratorService, NativeInstrumentsResourceGeneratorService>();
         }

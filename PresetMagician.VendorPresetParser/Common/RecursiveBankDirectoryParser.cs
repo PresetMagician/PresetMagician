@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using SharedModels;
-using SharedModels.Models;
+using PresetMagician.Core.Models;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
 {

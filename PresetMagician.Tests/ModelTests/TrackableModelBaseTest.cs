@@ -3,8 +3,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Catel.Collections;
 using FluentAssertions;
+using PresetMagician.Core.Collections;
 using PresetMagician.Tests.TestEntities;
-using SharedModels.Collections;
 using Xunit;
 
 namespace PresetMagician.Tests.ModelTests

@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Catel.Logging;
 using GSF;
-using SharedModels;
-using SharedModels.Models;
+using PresetMagician.Core.Models;
 using SQLite;
 using ArturiaModels = Drachenkatze.PresetMagician.VendorPresetParser.Arturia.Models;
+using Type = PresetMagician.Core.Models.Type;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
 {
@@ -74,14 +73,14 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
                         Plugin = PluginInstance.Plugin
                     };
 
-                    preset.Types.Add(DataPersistence.GetOrCreateType(presetData.Type.name));
+                    preset.Types.Add(new Type {TypeName = presetData.Type.name});
 
                     var characteristics = GetPresetCharacteristics(presetData.Preset);
                     var characteristicsNames = (from c in characteristics select c.name).ToList();
 
                     foreach (var name in characteristicsNames)
                     {
-                        preset.Modes.Add(DataPersistence.GetOrCreateMode(name));
+                        preset.Characteristics.Add(new Characteristic { CharacteristicName = name});
                     }
 
                     var fileName = presetData.Preset.file_path.Replace('/', '\\');

@@ -1,11 +1,8 @@
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
-using Catel.Logging;
 using Drachenkatze.PresetMagician.Utils;
 using Jacobi.Vst.Core;
-using SharedModels;
-using SharedModels.Models;
+using PresetMagician.Core.Models;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser
 {

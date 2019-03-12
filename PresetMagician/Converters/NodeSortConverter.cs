@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Data;
 using Catel.Collections;
-using SharedModels;
+using PresetMagician.Core.Models;
 using Type = System.Type;
 
 namespace PresetMagician.Converters

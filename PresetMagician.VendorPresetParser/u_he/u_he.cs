@@ -5,12 +5,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Catel.Collections;
-using Catel.Logging;
 using Drachenkatze.PresetMagician.Utils;
-using SharedModels;
-using SharedModels.Models;
 using Squirrel.Shell;
-using Type = SharedModels.Type;
+using Type = PresetMagician.Core.Models.Type;
+using PresetMagician.Core.Models;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 {
@@ -150,12 +148,12 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 
             if (metadata.ContainsKey("Features") && metadata["Features"].Length > 0)
             {
-                preset.Modes.AddRange(ExtractModes(metadata["Features"]));
+                preset.Characteristics.AddRange(ExtractModes(metadata["Features"]));
             }
 
             if (metadata.ContainsKey("Character") && metadata["Character"].Length > 0)
             {
-                preset.Modes.AddRange(ExtractModes(metadata["Character"]));
+                preset.Characteristics.AddRange(ExtractModes(metadata["Character"]));
             }
 
             await DataPersistence.PersistPreset(preset, presetData);
@@ -171,11 +169,11 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
                 var splitTypes2 = splitType.Trim().Split(':');
                 if (splitTypes2.Length == 1)
                 {
-                    types.Add(DataPersistence.GetOrCreateType(splitTypes2[0]));
+                    types.Add(new Type { TypeName = splitTypes2[0]});
                 }
                 else if (splitTypes.Length > 1)
                 {
-                    types.Add(DataPersistence.GetOrCreateType(splitTypes2[0], splitTypes2[1]));
+                    types.Add(new Type { TypeName = splitTypes2[0], SubTypeName = splitTypes2[1]});
                 }
             }
 
@@ -183,14 +181,14 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
         }
 
 
-        private List<Mode> ExtractModes(string modesString)
+        private List<Characteristic> ExtractModes(string modesString)
         {
-            var modes = new List<Mode>();
+            var modes = new List<Characteristic>();
             var splitModes = modesString.Split(',');
 
             foreach (var splitMode in splitModes)
             {
-                modes.Add(DataPersistence.GetOrCreateMode(splitMode.Trim()));
+                modes.Add(new Characteristic { CharacteristicName = splitMode.Trim()});
             }
 
             return modes;

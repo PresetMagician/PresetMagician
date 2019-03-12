@@ -1,6 +1,5 @@
 using Drachenkatze.PresetMagician.Utils;
-using SharedModels;
-using SharedModels.Models;
+using PresetMagician.Core.Models;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
 {

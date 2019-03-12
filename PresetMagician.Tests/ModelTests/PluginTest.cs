@@ -7,11 +7,12 @@ using Catel.Reflection;
 using Drachenkatze.PresetMagician.NKSF.NKSF;
 using FluentAssertions;
 using Jacobi.Vst.Core;
-using SharedModels;
-using SharedModels.NewModels;
-using SharedModels.Services;
+using PresetMagician.Core.Models;
+using PresetMagician.Core.Services;
 using Xunit;
-using Type = SharedModels.NewModels.Type;
+using PluginInfoItem = PresetMagician.Core.Models.PluginInfoItem;
+using Type = PresetMagician.Core.Models.Type;
+using VstPluginInfoSurrogate = PresetMagician.Core.Models.VstPluginInfoSurrogate;
 
 namespace PresetMagician.Tests.ModelTests
 {
@@ -58,7 +59,8 @@ namespace PresetMagician.Tests.ModelTests
                 nameof(Plugin.PresetParserAudioPreviewPreDelay),
                 nameof(Plugin.PluginTypeDescription),
                 nameof(Plugin.NumPresets),
-                nameof(Plugin.PresetParser)
+                nameof(Plugin.PresetParser),
+                nameof(Plugin.RequiresMetadataScan)
             };
 
         private Dictionary<string, object> PluginLocationPropertiesWhichShouldBePersisted =
@@ -146,6 +148,7 @@ namespace PresetMagician.Tests.ModelTests
             plugin.PluginCapabilities.Add(new PluginInfoItem("foo", "bar", "test"));
 
             plugin.PluginLocation = new PluginLocation();
+            plugin.PluginLocation = new PluginLocation();
 
             foreach (var x in PluginLocationPropertiesWhichShouldBePersisted)
             {
@@ -227,6 +230,11 @@ namespace PresetMagician.Tests.ModelTests
             allProperties.Except(testedProperties).Should().BeEmpty("We want to test ALL TEH PROPERTIEZ");
         }
 
+        private void TestPluginLocations(Plugin originalPlugin, Plugin savedPlugin)
+        {
+            savedPlugin.PluginLocations.Count.Should().Be(originalPlugin.PluginLocations.Count);
+        }
+
         private void TestPreset(Plugin originalPlugin, Plugin savedPlugin)
         {
             savedPlugin.Presets.Count.Should().Be(originalPlugin.Presets.Count);
@@ -281,10 +289,10 @@ namespace PresetMagician.Tests.ModelTests
         [Fact]
         public void TestPersistence()
         {
-            PluginDataPersisterService.DefaultPluginStoragePath = Directory.GetCurrentDirectory();
+            DataPersisterService.DefaultPluginStoragePath = Directory.GetCurrentDirectory();
 
             var testedProperties = new HashSet<string>();
-            var persister = new PluginDataPersisterService();
+            var persister = new DataPersisterService();
             var plugin = InitializePluginToBeSaved();
 
 
@@ -327,10 +335,18 @@ namespace PresetMagician.Tests.ModelTests
             loadedPlugin.DefaultTypes.Should().BeEquivalentTo(plugin.DefaultTypes);
             testedProperties.Add(nameof(Plugin.DefaultTypes));
 
+            TestPluginLocations(plugin, loadedPlugin);
+            testedProperties.Add(nameof(Plugin.PluginLocations));
+
             var allProperties =
                 (from prop in typeof(Plugin).GetProperties() where !prop.GetType().IsEnum select prop.Name).ToList();
 
             allProperties.Except(testedProperties).Should().BeEmpty("We want to test ALL TEH PROPERTIEZ");
+        }
+
+        [Fact]
+        public void TestPluginMoves()
+        {
         }
     }
 }

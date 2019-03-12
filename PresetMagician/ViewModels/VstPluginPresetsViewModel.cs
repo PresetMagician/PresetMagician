@@ -9,9 +9,10 @@ using Catel.Data;
 using Catel.MVVM;
 using GongSolutions.Wpf.DragDrop;
 using MethodTimer;
+using PresetMagician.Core.Data;
 using PresetMagician.Services.Interfaces;
-using SharedModels;
-using SharedModels.Models;
+using PresetMagician.Core.Interfaces;
+using PresetMagician.Core.Models;
 
 namespace PresetMagician.ViewModels
 {
@@ -74,10 +75,9 @@ namespace PresetMagician.ViewModels
             }
         }
 
-        public TrackableModelBase GetTrackedModel()
+        public IUserEditable GetTrackedModel()
         {
-            throw new Exception("uncomment me");
-            //return Plugin;
+            return Plugin;
         }
 
         #region Properties

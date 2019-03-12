@@ -6,7 +6,8 @@ using Catel;
 using Catel.MVVM;
 using Catel.Services;
 using Drachenkatze.PresetMagician.VSTHost.VST;
-using PresetMagician.Models.Settings;
+using PresetMagician.Core.Interfaces;
+using PresetMagician.Core.Models;
 using PresetMagician.Services.Interfaces;
 using ApplicationSettings = PresetMagician.Settings.Application;
 

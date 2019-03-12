@@ -2,18 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using Anotar.Catel;
 using Castle.DynamicProxy;
-using Catel;
 using Catel.Collections;
 using Catel.Data;
 using Catel.Threading;
+using PresetMagician.Core.Interfaces;
+using PresetMagician.Core.Models;
 using PresetMagician.RemoteVstHost.Processes;
-using SharedModels;
-using SharedModels.Models;
 using Timer = System.Threading.Timer;
 
 namespace PresetMagician.RemoteVstHost

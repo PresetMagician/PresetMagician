@@ -1,4 +1,4 @@
-using SharedModels;
+using PresetMagician.Core.Interfaces;
 
 namespace PresetMagician.Services.Interfaces
 {

@@ -13,9 +13,9 @@ using Jacobi.Vst.Core.Host;
 using Jacobi.Vst.Interop.Host;
 using Microsoft.DwayneNeed.Win32;
 using Microsoft.DwayneNeed.Win32.User32;
-using PresetMagician.Models;
+using PresetMagician.Core.Models;
+using PresetMagician.Utils.Logger;
 using PresetMagician.VstHost.Util;
-using SharedModels;
 using Brushes = System.Windows.Media.Brushes;
 
 namespace PresetMagician.VstHost.VST

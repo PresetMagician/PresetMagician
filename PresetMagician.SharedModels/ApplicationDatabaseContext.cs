@@ -148,16 +148,7 @@ namespace SharedModels
             {
                 context.Migrate();
 
-                foreach (var x in Models)
-                {
-                    if (TrackableModelBase.DatabaseProperties.ContainsKey(x))
-                    {
-                        continue;
-                    }
-                    TrackableModelBase.DatabaseProperties.Add(x,
-                        (from prop in context.GetTableColumns(x) select prop.Key)
-                        .ToList());
-                }
+              
 
 
             }
@@ -337,7 +328,7 @@ namespace SharedModels
 
             Configuration.AutoDetectChangesEnabled = false;
 
-            PresetUpdated?.Invoke(this, new PresetUpdatedEventArgs(preset));
+            //PresetUpdated?.Invoke(this, new PresetUpdatedEventArgs(preset));
 
             if (!preset.Plugin.PresetCache.ContainsKey(preset.SourceFile))
             {

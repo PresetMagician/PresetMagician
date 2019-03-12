@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using JetBrains.Annotations;
-using SharedModels;
+using PresetMagician.Core.Interfaces;
 using Syroot.Windows.IO;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
