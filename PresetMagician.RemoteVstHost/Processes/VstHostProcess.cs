@@ -148,7 +148,7 @@ namespace PresetMagician.RemoteVstHost.Processes
                 if (_currentOperation.Name != operation)
                 {
                     LogTo.Error(
-                        $"Error PID {Pid}: Attempted to stop operation {operation} but the current running operation is {_currentOperation}");
+                        $"Error PID {Pid}: Attempted to stop operation {operation} but the current running operation is {_currentOperation.Name}");
                     _currentOperation = null;
                     return;
                 }

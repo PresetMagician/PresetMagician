@@ -87,11 +87,11 @@ namespace PresetMagician.RemoteVstHost.Services
             {
                 _vstHost.LoadVst(plugin, debug);
             }
-            catch (EntryPointNotFoundException e)
+            catch (EntryPointNotFoundException)
             {
                 throw GetFaultException<NoEntryPointFoundFault>();
             }
-            catch (AccessViolationException ex)
+            catch (AccessViolationException)
             {
                 throw GetFaultException<AccessViolationFault>();
             }
