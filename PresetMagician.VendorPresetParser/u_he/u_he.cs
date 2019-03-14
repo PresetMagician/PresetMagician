@@ -114,9 +114,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
                 return;
             }
 
-            var preset = new Preset
+            var preset = new PresetParserMetadata
             {
-                PresetName = file.Name.Replace(".h2p", ""), Plugin = PluginInstance.Plugin, PresetBank = bank,
+                PresetName = file.Name.Replace(".h2p", ""), Plugin = PluginInstance.Plugin, BankPath = bank.BankPath,
                 SourceFile = sourceFile
             };
 

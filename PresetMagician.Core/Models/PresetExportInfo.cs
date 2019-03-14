@@ -18,19 +18,19 @@ namespace PresetMagician.Core.Models
             BankPath = preset.PresetBank.GetBankPath().ToList();
             BankPath.RemoveFirst();
             BankName = preset.PresetBank.BankName;
-            PresetName = preset.PresetName;
+            PresetName = preset.Metadata.PresetName;
             PreviewNotePlayer = preset.PreviewNotePlayer;
             DefaultControllerAssignments = preset.Plugin.DefaultControllerAssignments;
-            Author = preset.Author;
-            Comment = preset.Comment;
+            Author = preset.Metadata.Author;
+            Comment = preset.Metadata.Comment;
 
 
-            foreach (var type in preset.Types)
+            foreach (var type in preset.Metadata.Types)
             {
                 Types.Add(new List<string> {type.TypeName, type.SubTypeName});
             }
 
-            foreach (var mode in preset.Characteristics)
+            foreach (var mode in preset.Metadata.Characteristics)
             {
                 Modes.Add(mode.CharacteristicName);
             }

@@ -4,13 +4,23 @@ using PresetMagician.Core.Data;
 
 namespace PresetMagician.Core.Models
 {
-    public class Type: ModelBase
+    public interface IType
     {
-        public override ICollection<string> EditableProperties { get; } = new List<string>
-        {
+        string TypeName { get; set; }
+        string SubTypeName { get; set; }
+    }
+
+    public class Type: ModelBase, IType
+    {
+        private static HashSet<string> _editableProperties = new HashSet<string>  {
             nameof(TypeName),
             nameof(SubTypeName)
         };
+            
+        public override HashSet<string> GetEditableProperties()
+        {
+            return _editableProperties;
+        }
         
         public static readonly GlobalTypeCollection GlobalTypes = new GlobalTypeCollection();
 

@@ -7,6 +7,13 @@ namespace PresetMagician.Core.Models
 {
     public class BankFile: ModelBase
     {
+        private static HashSet<string> _editableProperties = new HashSet<string>();
+            
+        public override HashSet<string> GetEditableProperties()
+        {
+            return _editableProperties;
+        }
+
         [Include] public string Path { get; set; }
         
         [Include] public string BankName { get; set; }

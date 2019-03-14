@@ -69,12 +69,12 @@ namespace PresetMagician.Core.Data
             }
         }
 
-        private void OnCollectionItemPropertyChanged(object sender, WrappedCollectionItemPropertyChangedEventArgs e)
+        protected virtual void OnCollectionItemPropertyChanged(object sender, WrappedCollectionItemPropertyChangedEventArgs e)
         {
             MarkPropertyModified(e.SourceProperty);
         }
 
-        private void OnWrappedCollectionChanged(object sender, WrappedCollectionChangedEventArgs e)
+        protected virtual void OnWrappedCollectionChanged(object sender, WrappedCollectionChangedEventArgs e)
         {
             MarkPropertyModified(e.SourceProperty);
         }

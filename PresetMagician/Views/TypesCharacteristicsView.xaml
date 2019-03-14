@@ -1,0 +1,78 @@
+﻿<catel:DataWindow
+    x:Class="PresetMagician.Views.TypesCharacteristicsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:catel="http://schemas.catelproject.com"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:PresetMagician.ViewModels"
+    xmlns:dgx="urn:tom-englert.de/DataGridExtensions"
+    Padding="2,2,2,2"
+    ResizeMode="CanResizeWithGrip"
+    Width="1000"
+    Height="800"
+    SizeToContent="Manual"
+    d:DataContext="{d:DesignInstance viewModels:TypesCharacteristicsViewModel}"
+    mc:Ignorable="d">
+
+    <catel:DataWindow.Resources>
+       
+           <ControlTemplate x:Key="TypeCharacteristicView">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <GroupBox Header="Types"  Grid.Row="0"
+                          Grid.Column="0">
+                    <DataGrid
+                       
+                        Margin="5"
+                        AutoGenerateColumns="False"
+                        dgx:DataGridFilter.IsAutoFilterEnabled="True"
+                        dgx:Tools.ApplyInitialSorting="True"
+                        dgx:DataGridFilter.FilterEvaluationDelay="0:0:0.1"
+                        ItemsSource="{Binding Types}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn
+                                SortDirection="Ascending"
+                                Width="250"
+                                Binding="{Binding TypeName}"
+                                Header="Type"/>
+                            <DataGridTextColumn
+                                Width="250"
+                                Binding="{Binding SubTypeName}"
+                                Header="Sub-Type"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </GroupBox>
+               
+                <GroupBox Header="Characteristics"  Grid.Row="0"
+                          Grid.Column="1">
+                <DataGrid
+                   
+                    Margin="5"
+                    AutoGenerateColumns="False"
+                    dgx:DataGridFilter.IsAutoFilterEnabled="True"
+                    dgx:Tools.ApplyInitialSorting="True"
+                    dgx:DataGridFilter.FilterEvaluationDelay="0:0:0.1"
+                    ItemsSource="{Binding Characteristics}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn
+                            SortDirection="Ascending"
+                            Width="250"
+                            Binding="{Binding CharacteristicName}"
+                            Header="Characteristic"/>
+                     
+                    </DataGrid.Columns>
+                </DataGrid>
+                    </GroupBox>
+            </Grid>
+               
+        </ControlTemplate>
+    </catel:DataWindow.Resources>
+
+    <ContentControl Template="{StaticResource TypeCharacteristicView}"/>
+
+</catel:DataWindow>

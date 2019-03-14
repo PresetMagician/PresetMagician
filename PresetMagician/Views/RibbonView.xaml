@@ -80,6 +80,18 @@
                 Icon="{iconPacks:Entypo Kind=InfoWithCircle}" />
 
         </collections:ArrayList>
+        
+        <collections:ArrayList x:Key="GlobalEdit" x:Shared="false">
+            <fluent:Button
+                Command="{catel:CommandManagerBinding Tools.EditTypesCharacteristics}"
+                Header="Edit Types / Characteristics"
+                Width="60"
+                LargeIcon="{iconPacks:Material Kind=HelpNetwork,
+                                                       Width=32,
+                                                       Height=32}" />
+
+
+        </collections:ArrayList>
 
     </catel:UserControl.Resources>
     <Grid>
@@ -252,6 +264,7 @@
                         Icon="{iconPacks:FontAwesome Kind=ListAltSolid}"
                         Size="Middle" />
                 </fluent:RibbonGroupBox>
+                <fluent:RibbonGroupBox Header="Global" ItemsSource="{StaticResource GlobalEdit}" />
                 <fluent:RibbonGroupBox Header="Help" ItemsSource="{StaticResource HelpSection}" />
                 <fluent:RibbonGroupBox Header="Plugin Developer Tools"
                                        Visibility="{Binding ShowDeveloperCommands, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">

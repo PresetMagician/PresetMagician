@@ -100,7 +100,7 @@
                     <DataGrid.Columns>
                         <DataGridTextColumn
                             Width="1*"
-                            Binding="{Binding PresetName}"
+                            Binding="{Binding Metadata.PresetName}"
                             ElementStyle="{StaticResource EllipsisText}"
                             Header="Preset">
                             <DataGridTextColumn.CellStyle>
@@ -115,19 +115,19 @@
                         </DataGridTextColumn>
                         <DataGridTextColumn
                             Width="1*"
-                            Binding="{Binding BankPath}"
+                            Binding="{Binding Metadata.BankPath}"
                             Header="Bank"
                             ElementStyle="{StaticResource EllipsisText}"
                             IsReadOnly="True" />
                         <DataGridTextColumn
                             Width="1*"
-                            Binding="{Binding Author}"
+                            Binding="{Binding Metadata.Author}"
                             ElementStyle="{StaticResource EllipsisText}"
                             Header="Author"  />
                         <DataGridTextColumn
                             Width="1*"
                             IsReadOnly="True"
-                            Binding="{Binding Comment, Converter={StaticResource RemoveNewLinesConverter}}"
+                            Binding="{Binding Metadata.Comment, Converter={StaticResource RemoveNewLinesConverter}}"
                             Header="Comment" ElementStyle="{StaticResource EllipsisText}"/>
                         <DataGridTemplateColumn
                             Width="3*"
@@ -161,7 +161,7 @@
                             IsReadOnly="True" />
                         <DataGridTextColumn
                             Width="*"
-                            Binding="{Binding SourceFile, Mode=OneWay}"
+                            Binding="{Binding OriginalMetadata.SourceFile, Mode=OneWay}"
                             Header="SourceFile"
                             IsReadOnly="True" />
                     </DataGrid.Columns>

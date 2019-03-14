@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using Catel.Collections;
 using Catel.Data;
 using Catel.Reflection;
 using Ceras;
 using PresetMagician.Core.Data;
+using PresetMagician.Core.Extensions;
+using PresetMagician.Core.Services;
 using ModelBase = PresetMagician.Core.Data.ModelBase;
 
 
@@ -16,230 +19,88 @@ namespace PresetMagician.Core.Models
     {
         #region Fields
 
-        /// <summary>
-        /// All properties which should modify the IsMetadataModified flag.
-        /// </summary>
-        private static readonly List<string> _propertiesWhichModifyMetadata = new List<string>
+        public override HashSet<string> GetEditableProperties()
         {
-            nameof(Author),
-            nameof(BankPath),
-            nameof(Comment),
-            nameof(Characteristics),
-            nameof(PresetCompressedSize),
-            nameof(PresetHash),
-            nameof(PresetName),
-            nameof(PresetSize),
+            return _editableProperties;
+        }
+
+        private static HashSet<string> _editableProperties { get; } = new HashSet<string>
+        {
             nameof(PreviewNotePlayer),
-            nameof(Types)
+            nameof(IsIgnored),
+            nameof(Metadata)
         };
 
-        /// <summary>
-        /// A list of all preset metadata properties which can be set using a preset parser.
-        /// </summary>
-        public static readonly List<string> PresetParserMetadataProperties = new List<string>
-        {
-            nameof(Author),
-            nameof(BankPath),
-            nameof(Comment),
-            nameof(Characteristics),
-            nameof(PresetCompressedSize),
-            nameof(PresetHash),
-            nameof(PresetName),
-            nameof(PreviewNotePlayer),
-            nameof(PresetSize),
-            nameof(Types)
-        };
+        private string _bankPath;
 
-        public override ICollection<string> EditableProperties { get; } = new List<string>
+        private void SetBankPath(string value)
         {
-            nameof(Author),
-            nameof(BankPath),
-            nameof(Comment),
-            nameof(Characteristics),
-            nameof(PresetName),
-            nameof(PreviewNotePlayer),
-            nameof(Types)
-        };
+            if (Plugin != null && (PresetBank == null || PresetBank.BankPath != value))
+            {
+                PresetBank = Plugin.RootBank.First().CreateRecursive(value);
+            }
+            else
+            {
+                _bankPath = value;
+            }
+        }
+      
 
-        /// <summary>
-        /// Saves all properties which can be set by a preset parser, but were updated by the user
-        /// </summary>
-        [Include]
-        public HashSet<string> UserOverwrittenProperties { get; set; } = new HashSet<string>();
 
         #endregion
 
+        protected override void OnCollectionItemPropertyChanged(object sender,
+            WrappedCollectionItemPropertyChangedEventArgs e)
+        {
+            base.OnCollectionItemPropertyChanged(sender, e);
+
+            
+        }
+
         public Preset()
         {
-        }
-
-        public override void BeginEdit(IUserEditable originatingObject)
-        {
-            Characteristics.ItemPropertyChanged += WrapperOnModesCollectionItemPropertyChanged;
-            Characteristics.CollectionChanged += WrapperOnModesCollectionChanged;
-            Types.ItemPropertyChanged += WrapperOnTypesCollectionItemPropertyChanged;
-            Types.CollectionChanged += WrapperOnTypesCollectionChanged;
-            base.BeginEdit(originatingObject);
-        }
-
-        public override void EndEdit(IUserEditable originatingObject)
-        {
-            Characteristics.ItemPropertyChanged -= WrapperOnModesCollectionItemPropertyChanged;
-            Characteristics.CollectionChanged -= WrapperOnModesCollectionChanged;
-            Types.ItemPropertyChanged -= WrapperOnTypesCollectionItemPropertyChanged;
-            Types.CollectionChanged -= WrapperOnTypesCollectionChanged;
-
-            if (UserModifiedProperties.Count > 0)
-            {
-                IsMetadataModified = true;
-            }
-
-            base.EndEdit(originatingObject);
-        }
-
-        public override void CancelEdit(IUserEditable originatingObject)
-        {
-            Characteristics.ItemPropertyChanged -= WrapperOnModesCollectionItemPropertyChanged;
-            Characteristics.CollectionChanged -= WrapperOnModesCollectionChanged;
-            Types.ItemPropertyChanged -= WrapperOnTypesCollectionItemPropertyChanged;
-            Types.CollectionChanged -= WrapperOnTypesCollectionChanged;
-            base.CancelEdit(originatingObject);
+            _metadata.PropertyChanged += MetadataOnPropertyChanged;
         }
 
         /// <summary>
         /// Sets updated data delivered by the preset parser. Ignores user-modified properties.
         /// </summary>
         /// <param name="preset"></param>
-        public void SetFromPresetParser(Preset preset)
+        public void SetFromPresetParser(PresetParserMetadata presetMetadata)
         {
-            foreach (var property in PresetParserMetadataProperties)
-            {
-                if (!UserOverwrittenProperties.Contains(property))
-                {
-                    var value = PropertyHelper.GetPropertyValue(preset, property);
-
-                    var currentValue = PropertyHelper.GetPropertyValue(this, property);
-
-                    if (value != currentValue)
-                    {
-                        if (value is CharacteristicCollection characteristicCollection)
-                        {
-                            if (!characteristicCollection.IsEqualTo((CharacteristicCollection) currentValue))
-                            {
-                                IsMetadataModified = true;
-                            }
-                        }
-                        else if (value is TypeCollection collection)
-                        {
-                            if (!collection.IsEqualTo((TypeCollection) currentValue))
-                            {
-                                IsMetadataModified = true;
-                            }
-                        }
-                        else if (value is PreviewNotePlayer previewNotePlayer)
-                        {
-                            if (!previewNotePlayer.IsEqualTo((PreviewNotePlayer) currentValue))
-                            {
-                                IsMetadataModified = true;
-                            }
-                        }
-                        else
-                        {
-                            if (value == null || !value.Equals(currentValue))
-                            {
-                                PropertyHelper.SetPropertyValue(this, property, value);
-                                IsMetadataModified = true;
-                            }
-                        }
-                    }
-
-                    if (IsMetadataModified)
-                    {
-                        //Debug.WriteLine($"setting IsMetadataModified for preset {PresetName} to true because of {property}");
-                    }
-
-                    // todo: check if the property has changed and trigger metadata updates
-                    // todo: also iterate over collections
-                }
-            }
+            OriginalMetadata = presetMetadata;
+            Metadata.ApplyFrom(OriginalMetadata);
+            UpdateIsMetadataModified();
         }
 
-        private void UpdateIsMetadataModifiedInEditMode(string propertyName)
+        /// <summary>
+        /// Sets updated data delivered by the preset parser. Ignores user-modified properties.
+        /// </summary>
+        /// <param name="preset"></param>
+        public void UpdateLastExportedMetadata()
         {
-            if (UserModifiedProperties.Contains(propertyName))
+            LastExportedMetadata.BankPath = Metadata.BankPath;
+            LastExportedMetadata.Author = Metadata.Author;
+            LastExportedMetadata.Comment = Metadata.Comment;
+            LastExportedMetadata.PresetName = Metadata.PresetName;
+            
+            LastExportedMetadata.Types.Clear();
+
+            foreach (var type in Metadata.Types)
             {
-                UserOverwrittenProperties.Add(propertyName);
+                LastExportedMetadata.Types.Add(new Type { TypeName = type.TypeName, SubTypeName = type.SubTypeName});
             }
-            else
+            
+            LastExportedMetadata.Characteristics.Clear();
+
+            foreach (var characteristic in Metadata.Characteristics)
             {
-                if (!((HashSet<string>) BackupValues[nameof(UserOverwrittenProperties)]).Contains(propertyName))
-                {
-                    UserOverwrittenProperties.Remove(propertyName);
-                }
-            }
-
-
-            if ((bool) BackupValues[nameof(IsMetadataModified)])
-            {
-                IsMetadataModified = true;
-                return;
-            }
-
-            IsMetadataModified = IsUserModified;
-        }
-
-        private void WrapperOnTypesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (!IsEditing)
-            {
-                return;
+                LastExportedMetadata.Characteristics.Add(new Characteristic { CharacteristicName = characteristic.CharacteristicName});
             }
 
-            if (e.Action == NotifyCollectionChangedAction.Add || e.Action == NotifyCollectionChangedAction.Remove ||
-                e.Action == NotifyCollectionChangedAction.Replace)
-            {
-                UpdateIsMetadataModifiedInEditMode(nameof(Types));
-            }
-        }
-
-        private void WrapperOnTypesCollectionItemPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (!IsEditing)
-            {
-                return;
-            }
-
-            if (e.PropertyName == nameof(Type.TypeName) || e.PropertyName == nameof(Type.SubTypeName))
-            {
-                UpdateIsMetadataModifiedInEditMode(nameof(Types));
-            }
-        }
-
-        private void WrapperOnModesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (!IsEditing)
-            {
-                return;
-            }
-
-            if (e.Action == NotifyCollectionChangedAction.Add || e.Action == NotifyCollectionChangedAction.Remove ||
-                e.Action == NotifyCollectionChangedAction.Replace)
-            {
-                UpdateIsMetadataModifiedInEditMode(nameof(Characteristics));
-            }
-        }
-
-        private void WrapperOnModesCollectionItemPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (!IsEditing)
-            {
-                return;
-            }
-
-            if (e.PropertyName == nameof(Characteristic.CharacteristicName))
-            {
-                UpdateIsMetadataModifiedInEditMode(nameof(Characteristics));
-            }
+            LastExportedMetadata.PreviewNotePlayer = PreviewNotePlayer;
+            LastExportedMetadata.PresetHash = PresetHash;
+            LastExported = DateTime.Now;
         }
 
         #region Methods
@@ -253,7 +114,7 @@ namespace PresetMagician.Core.Models
         {
             if (e.PropertyName == nameof(PresetBank.BankPath))
             {
-                BankPath = PresetBank.BankPath;
+                Metadata.BankPath = PresetBank.BankPath;
             }
         }
 
@@ -266,19 +127,9 @@ namespace PresetMagician.Core.Models
         {
             base.OnPropertyChanged(e);
 
-            if (e.IsNewValueMeaningful && e.PropertyName == nameof(PresetBank) && PresetBank != null)
+            if (e.PropertyName == nameof(PreviewNotePlayer) || e.PropertyName == nameof(PresetHash))
             {
-                BankPath = PresetBank.BankPath;
-            }
-
-            if (IsEditing && e.IsNewValueMeaningful &&
-                _propertiesWhichModifyMetadata.Contains(e.PropertyName))
-            {
-                if (PresetParserMetadataProperties.Contains(e.PropertyName))
-                {
-                    Debug.WriteLine($"in OnPropertyChanged for property {e.PropertyName}");
-                    UpdateIsMetadataModifiedInEditMode(e.PropertyName);
-                }
+                UpdateIsMetadataModified();
             }
         }
 
@@ -314,7 +165,7 @@ namespace PresetMagician.Core.Models
             get { return _plugin; }
             set
             {
-                if (Equals(_plugin, value))
+                if (ReferenceEquals(_plugin, value))
                 {
                     return;
                 }
@@ -326,6 +177,7 @@ namespace PresetMagician.Core.Models
                     if (!string.IsNullOrEmpty(_bankPath) && PresetBank == null)
                     {
                         PresetBank = _plugin.RootBank.First().CreateRecursive(_bankPath);
+                        _bankPath = null;
                     }
                 }
             }
@@ -345,7 +197,7 @@ namespace PresetMagician.Core.Models
             get => _presetBank;
             set
             {
-                if (Equals(_presetBank, value))
+                if (ReferenceEquals(_presetBank, value))
                 {
                     return;
                 }
@@ -359,7 +211,7 @@ namespace PresetMagician.Core.Models
 
                 if (value != null)
                 {
-                    BankPath = _presetBank.BankPath;
+                    Metadata.BankPath = _presetBank.BankPath;
                     _presetBank.PropertyChanged += PresetBankOnPropertyChanged;
                 }
             }
@@ -369,79 +221,7 @@ namespace PresetMagician.Core.Models
 
         #endregion
 
-        #region Metadata properties
-
-        /// <summary>
-        /// The name of the preset
-        /// </summary>
-        [Include]
-        public string PresetName { get; set; }
-
-        /// <summary>
-        /// The author of the preset
-        /// </summary>
-        [Include]
-        public string Author { get; set; }
-
-        /// <summary>
-        /// The preset comment
-        /// </summary>
-        [Include]
-        public string Comment { get; set; }
-
-
-        /// <summary>
-        /// The bank path. Only set via EntityFramework when loading from the database
-        /// </summary>
-        [Include]
-        public string BankPath
-        {
-            get => _bankPath;
-            set
-            {
-                if (Plugin != null && (PresetBank == null || PresetBank.BankPath != value))
-                {
-                    PresetBank = Plugin.RootBank.First().CreateRecursive(value);
-                }
-
-                if (Equals(_bankPath, value))
-                {
-                    return;
-                }
-
-                var oldValue = _bankPath;
-                _bankPath = value;
-                OnPropertyChanged(nameof(BankPath), (object) oldValue, value);
-            }
-        }
-
-        private string _bankPath;
-
-        /// <summary>
-        /// The Native Instruments types used for this plugin. Note that this is m:n relationship configured using the
-        /// fluent API.
-        /// </summary>
-        [Include]
-        public TypeCollection Types { get; set; } = new TypeCollection();
-
-
-        /// <summary>
-        /// The Native Instruments modes used for this plugin. Note that this is m:n relationship configured using the
-        /// fluent API.
-        /// </summary>
-        [Include]
-        public CharacteristicCollection Characteristics { get; set; } = new CharacteristicCollection();
-
-        #endregion
-
         #region Preset Data Properties
-
-        /// <summary>
-        /// The SourceFile identifies where the preset came from. Usually a filename, but can be any string, depending
-        /// on how the plugin stores it's presets
-        /// </summary>
-        [Include]
-        public string SourceFile { get; set; }
 
         /// <summary>
         /// The preset size. Mainly used for statistics
@@ -463,13 +243,6 @@ namespace PresetMagician.Core.Models
         public string PresetHash { get; set; }
 
         /// <summary>
-        /// The preset hash we last exported. This is required because the preset data could change, but still be the
-        /// same size. 
-        /// </summary>
-        [Include]
-        public string LastExportedPresetHash { get; set; }
-
-        /// <summary>
         /// The date and time when the preset was last exported. Mainly informational.
         /// </summary>
         [Include]
@@ -482,11 +255,77 @@ namespace PresetMagician.Core.Models
         [Include]
         public bool IsMetadataModified { get; set; }
 
+        /// <summary>
+        /// The metadata from the preset parser 
+        /// </summary>
+        [Include]
+        public PresetParserMetadata OriginalMetadata { get; set; } = new PresetParserMetadata();
+
+        private EditablePresetMetadata _metadata = new EditablePresetMetadata();
+
+        /// <summary>
+        /// The current metadata
+        /// </summary>
+        [Include]
+        public EditablePresetMetadata Metadata
+        {
+            get { return _metadata; }
+            set
+            {
+                if (ReferenceEquals(_metadata, value))
+                {
+                    return;
+                }
+
+                _metadata.PropertyChanged -= MetadataOnPropertyChanged;
+                _metadata = value;
+                SetBankPath(_metadata.BankPath);
+                _metadata.PropertyChanged += MetadataOnPropertyChanged;
+            }
+        }
+
+        private void MetadataOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(PresetMetadata.BankPath))
+            {
+                SetBankPath(_metadata.BankPath);
+            }
+            
+            if (IsEditing && Metadata.GetEditableProperties()
+                    .Contains(e.PropertyName))
+            {
+                if (Metadata.IsEqualTo(OriginalMetadata, e.PropertyName))
+                {
+                    Metadata.UserOverwrittenProperties.Remove(e.PropertyName);
+                }
+                else
+                {
+                    Metadata.UserOverwrittenProperties.Add(e.PropertyName);
+                }
+            }
+
+            UpdateIsMetadataModified();
+        }
+
+        private void UpdateIsMetadataModified()
+        {
+            IsMetadataModified = !(LastExportedMetadata.IsEqualTo(_metadata) &&
+                                   PresetHash == LastExportedMetadata.PresetHash && 
+                                 LastExportedMetadata.PreviewNotePlayer.PreviewNotePlayerId ==
+                                 PreviewNotePlayer.PreviewNotePlayerId);
+        }
+
+        /// <summary>
+        /// The metadata last exported 
+        /// </summary>
+        [Include]
+        public ExportedPresetMetadata LastExportedMetadata { get; set; } = new ExportedPresetMetadata();
+
         #endregion
 
         #region Audio Preview Properties    
 
-        private PreviewNotePlayer _previewNotePlayer;
+        private PreviewNotePlayer _previewNotePlayer = PreviewNotePlayer.Default;
 
         [Include]
         public PreviewNotePlayer PreviewNotePlayer
@@ -506,12 +345,6 @@ namespace PresetMagician.Core.Models
         #endregion
 
         #region Change Tracking
-
-        /// <summary>
-        /// Indicates if the preset has been changed since the last export.
-        /// </summary>
-        public bool ChangedSinceLastExport => IsMetadataModified || LastExportedPresetHash == null ||
-                                              LastExportedPresetHash != PresetHash;
 
         #endregion
 

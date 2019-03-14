@@ -13,7 +13,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
         protected abstract string PresetSectionName { get; }
         protected override string Extension { get; } = "epf";
 
-        private void RetrievePresetData(XNode node, Preset preset)
+        private void RetrievePresetData(XNode node, PresetParserMetadata preset)
         {
             preset.Comment = GetNodeValue(node,
                 $"string(/package/archives/archive[@client_id='{PresetSectionName}-preset']/section/entry[@id='Preset notes']/@value)");
@@ -27,7 +27,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
             await base.DoScan();
         }
 
-        protected override byte[] ProcessFile(string fileName, Preset preset)
+        protected override byte[] ProcessFile(string fileName, PresetParserMetadata preset)
         {
             var xmlPreset = XDocument.Load(fileName);
             var chunk = PluginInstance.GetChunk(false);
@@ -47,7 +47,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
             }
         }
 
-        private void MigrateData(XNode source, XNode dest, Preset preset)
+        private void MigrateData(XNode source, XNode dest, PresetParserMetadata preset)
         {
             var dataNode =
                 $"/package/archives/archive[@client_id='{PresetSectionName}-preset']/section[@id='ParameterValues']/entry";
@@ -65,7 +65,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
             presetNameNode.SetAttributeValue("type", "string");
 
 
-            presetNameNode.SetAttributeValue("value", preset.PresetBank.BankName + "/" + preset.PresetName);
+            presetNameNode.SetAttributeValue("value", preset.BankPath + "/" + preset.PresetName);
 
             insertNode.Add(presetNameNode);
         }

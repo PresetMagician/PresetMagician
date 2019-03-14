@@ -8,6 +8,6 @@ namespace PresetMagician.Core.Interfaces
     public interface IDataPersistence
     {
         event EventHandler<PresetUpdatedEventArgs> PresetUpdated;
-        Task PersistPreset(Preset preset, byte[] data);
+        Task PersistPreset(PresetParserMetadata presetMetadata, byte[] data);
     }
 }

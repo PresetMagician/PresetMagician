@@ -24,7 +24,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.HumanoidSoundSystems
                 @"Humanoid Sound Systems\Enzyme\EnzymeData\Presets");
         }
 
-        protected override byte[] ProcessFile(string fileName, Preset preset)
+        protected override byte[] ProcessFile(string fileName, PresetParserMetadata preset)
         {
             var data = File.ReadAllBytes(fileName);
             var ms = new MemoryStream();

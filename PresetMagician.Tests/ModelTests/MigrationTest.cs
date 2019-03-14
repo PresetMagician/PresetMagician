@@ -183,15 +183,15 @@ namespace PresetMagician.Tests.ModelTests
             comparer.CompareProperties(propertiesToCompare);
             comparer.AddVisitedProperty(nameof(OldPreset.Plugin));
 
-            CompareTypes(oldPreset.Types, newPreset.Types);
+            CompareTypes(oldPreset.Types, newPreset.OriginalMetadata.Types);
             comparer.AddVisitedProperty(nameof(OldPreset.Types));
             
-            CompareModes(oldPreset.Modes, newPreset.Characteristics);
+            CompareModes(oldPreset.Modes, newPreset.OriginalMetadata.Characteristics);
             
             comparer.GetUnvisitedProperties().Should().BeEmpty();
         }
 
-        private void CompareTypes(ICollection<Type> oldTypes, TypeCollection newTypes)
+        private void CompareTypes(ICollection<Type> oldTypes, ICollection<Core.Models.Type> newTypes)
         {
             newTypes.Count.Should().Be(oldTypes.Count);
 
@@ -205,7 +205,7 @@ namespace PresetMagician.Tests.ModelTests
             }
         }
         
-        private void CompareModes(ICollection<Mode> oldModes, CharacteristicCollection newModes)
+        private void CompareModes(ICollection<Mode> oldModes, ICollection<Core.Models.Characteristic> newModes)
         {
             newModes.Count.Should().Be(oldModes.Count);
 

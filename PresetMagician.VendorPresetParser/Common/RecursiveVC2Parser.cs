@@ -17,7 +17,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
             PreProcessXmlFunc = func;
         }
 
-        protected override byte[] ProcessFile(string fileName, Preset preset)
+        protected override byte[] ProcessFile(string fileName, PresetParserMetadata preset)
         {
             var data = File.ReadAllText(fileName);
 

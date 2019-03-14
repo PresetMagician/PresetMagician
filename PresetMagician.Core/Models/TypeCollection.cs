@@ -1,4 +1,5 @@
 using PresetMagician.Core.Collections;
+using PresetMagician.Core.Extensions;
 
 namespace PresetMagician.Core.Models
 {
@@ -6,7 +7,7 @@ namespace PresetMagician.Core.Models
     {
         protected override void InsertItem(int index, Type item)
         {
-            if (!HasType(item))
+            if (!this.HasType(item))
             {
                 item = Type.GlobalTypes.GetGlobalType(item);
                 base.InsertItem(index, item);
@@ -22,39 +23,6 @@ namespace PresetMagician.Core.Models
 
        
         
-        public bool HasType(Type item)
-        {
-            foreach (var item2 in this)
-            {
-                if (item.TypeName == item2.TypeName && item.SubTypeName == item2.SubTypeName)
-                {
-                    return true;
-                }
-
-            }
-
-            return false;
-        }
-        
-        public bool IsEqualTo(TypeCollection target)
-        {
-            if (target == null)
-            {
-                return false;
-            }
-
-            if (target.Count != Count)
-            {
-                return false;
-            }
-
-            foreach (var item in this)
-            {
-                if (!target.HasType(item))
-                {
-                    return false;}
-            }
-            return true;
-        }
+       
     }
 }

@@ -7,12 +7,15 @@ namespace PresetMagician.Tests.TestEntities
 {
     public class Company: ModelBase
     {
-        public override ICollection<string> EditableProperties { get; } = new List<string>
+        public override HashSet<string> GetEditableProperties()
         {
-            nameof(Users),
-            nameof(Name),
-            nameof(AdminUser)
-        };
+            return new HashSet<string>
+            {
+                nameof(Users),
+                nameof(Name),
+                nameof(AdminUser)
+            };
+        }
 
         [Key]
         public virtual int Id { get; set; }

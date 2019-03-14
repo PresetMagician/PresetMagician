@@ -173,10 +173,10 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             {
                 PluginInstance.SetProgram(index);
 
-                var preset = new Preset
+                var preset = new PresetParserMetadata
                 {
                     PresetName = PluginInstance.GetCurrentProgramName(),
-                    PresetBank = bank,
+                    BankPath = bank.BankPath,
                     SourceFile = sourceFile + ":" + index,
                     Plugin = PluginInstance.Plugin
                 };
@@ -208,10 +208,10 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
                 var programBackup = PluginInstance.GetChunk(true);
                 PluginInstance.SetProgram(index);
 
-                var vstPreset = new Preset
+                var vstPreset = new PresetParserMetadata
                 {
                     SourceFile = sourceFile + ":" + index,
-                    PresetBank = bank,
+                    BankPath = bank.BankPath,
                     PresetName = PluginInstance.GetCurrentProgramName(),
                     Plugin = PluginInstance.Plugin
                 };

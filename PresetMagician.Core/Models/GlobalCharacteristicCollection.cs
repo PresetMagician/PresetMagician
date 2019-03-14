@@ -12,7 +12,6 @@ namespace PresetMagician.Core.Models
                 {
                     return item2;
                 }
-
             }
             
             Characteristic.GlobalCharacteristics.Add(item);

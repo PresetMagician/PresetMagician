@@ -75,7 +75,7 @@ namespace PresetMagician
                                 currentPreset++;
                                 _applicationService.UpdateApplicationOperationStatus(
                                     currentPreset,
-                                    $"Exporting {pluginPreset.Plugin.PluginName} - {preset.Preset.PresetName}");
+                                    $"Exporting {pluginPreset.Plugin.PluginName} - {preset.Preset.Metadata.PresetName}");
 
                                 if (cancellationToken.IsCancellationRequested)
                                 {
@@ -97,7 +97,7 @@ namespace PresetMagician
 
                                 pluginPreset.Plugin.PresetParser.OnAfterPresetExport();
                                 preset.Preset.LastExported = DateTime.Now;
-                                preset.Preset.LastExportedPresetHash = preset.Preset.PresetHash;
+                                preset.Preset.UpdateLastExportedMetadata();
                             }
 
                             remotePluginInstance.UnloadPlugin();

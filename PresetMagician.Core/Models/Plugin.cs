@@ -26,7 +26,12 @@ namespace PresetMagician.Core.Models
 
         public static string PresetMagicianVersion;
 
-        public override ICollection<string> EditableProperties { get; } = new List<string>
+        public override HashSet<string> GetEditableProperties()
+        {
+            return _editableProperties;
+        }
+
+        private static HashSet<string> _editableProperties { get; } = new HashSet<string>
         {
             nameof(Presets),
             nameof(AdditionalBankFiles),
@@ -89,7 +94,7 @@ namespace PresetMagician.Core.Models
         public bool HasPreset(string sourceFile, string hash)
         {
             return (from preset in Presets
-                where preset.SourceFile == sourceFile && preset.PresetHash == hash
+                where preset.OriginalMetadata.SourceFile == sourceFile && preset.PresetHash == hash
                 select preset).Any();
         }
 
