@@ -40,20 +40,19 @@ namespace PresetMagician.Core.Services
             }
         }
         
-        public async Task PersistPreset(Preset preset, byte[] data)
+        public async Task PersistPreset(PresetParserMetadata presetMetadata, byte[] data)
         {
-            var existingPreset = (from p in preset.Plugin.Presets where p.SourceFile == preset.SourceFile select p)
+            var plugin = presetMetadata.Plugin;
+            var preset = (from p in plugin.Presets where p.OriginalMetadata.SourceFile == presetMetadata.SourceFile select p)
                 .FirstOrDefault();
 
-            if (existingPreset != null)
+            if (preset == null)
             {
-                existingPreset.SetFromPresetParser(preset);
-                preset = existingPreset;
+                preset = new Preset();
+                plugin.Presets.Add(preset);
             }
-            else
-            {
-                preset.Plugin.Presets.Add(preset);
-            }
+           
+            preset.SetFromPresetParser(presetMetadata);
             
             PresetUpdated?.Invoke(this, new PresetUpdatedEventArgs(preset));
 

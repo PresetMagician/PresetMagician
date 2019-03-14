@@ -48,12 +48,16 @@
   <ItemGroup>
     <Compile Include="ApplicationTask\ApplicationProgress.cs" />
     <Compile Include="Collections\EditableCollection.cs" />
+    <Compile Include="Collections\ObservableHashset.cs" />
     <Compile Include="Data\IUserEditable.cs" />
     <Compile Include="Data\ModelBase.cs" />
     <Compile Include="Data\ModelBase.usereditable.cs" />
     <Compile Include="Data\UserEditableChangeNotificationWrapper.cs" />
     <Compile Include="EventArgs\PresetUpdatedEventArgs.cs" />
     <Compile Include="Exceptions\ConnectivityLostException.cs" />
+    <Compile Include="Extensions\CharacteristicCollectionExtensions.cs" />
+    <Compile Include="Extensions\PresetMetadataExtensions.cs" />
+    <Compile Include="Extensions\TypeCollectionExtensions.cs" />
     <Compile Include="Faults\AccessViolationFault.cs" />
     <Compile Include="Faults\GenericFault.cs" />
     <Compile Include="Faults\NoEntryPointFoundFault.cs" />
@@ -62,6 +66,7 @@
     <Compile Include="Faults\PluginNotRegisteredFault.cs" />
     <Compile Include="Faults\PresetDataNullFault.cs" />
     <Compile Include="Interfaces\IDataPersistence.cs" />
+    <Compile Include="Interfaces\IPresetMetadata.cs" />
     <Compile Include="Interfaces\IRemotePluginInstance.cs" />
     <Compile Include="Interfaces\IRemoteVstService.cs" />
     <Compile Include="Interfaces\IVendorPresetParser.cs" />
@@ -69,6 +74,8 @@
     <Compile Include="Models\BankFile.cs" />
     <Compile Include="Models\Characteristic.cs" />
     <Compile Include="Models\CharacteristicCollection.cs" />
+    <Compile Include="Models\EditablePresetMetadata.cs" />
+    <Compile Include="Models\ExportedPresetMetadata.cs" />
     <Compile Include="Models\GlobalCharacteristicCollection.cs" />
     <Compile Include="Models\GlobalTypeCollection.cs" />
     <Compile Include="Models\NativeInstrumentsResources\Categories.cs" />
@@ -85,10 +92,13 @@
     <Compile Include="Models\PluginLocation.cs" />
     <Compile Include="Models\Preset.cs" />
     <Compile Include="Models\PresetBank.cs" />
-    <Compile Include="Models\PresetCollection.cs" />
     <Compile Include="Models\PresetDatabaseStatistic.cs" />
     <Compile Include="Models\PresetDataStorage.cs" />
     <Compile Include="Models\PresetExportInfo.cs" />
+    <Compile Include="Models\PresetMetadata.cs" />
+    <Compile Include="Models\PresetParserCharacteristic.cs" />
+    <Compile Include="Models\PresetParserMetadata.cs" />
+    <Compile Include="Models\PresetParserType.cs" />
     <Compile Include="Models\PreviewNotePlayer.cs" />
     <Compile Include="Models\Type.cs" />
     <Compile Include="Models\TypeCollection.cs" />
@@ -217,6 +227,20 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
+        <Reference Include="Microsoft.CSharp">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="FastMember">
+          <HintPath>..\packages\FastMember\lib\net461\FastMember.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
         <Reference Include="Ionic.Zip">
           <HintPath>..\packages\Ionic.Zip\lib\Ionic.Zip.dll</HintPath>
           <Private>True</Private>
@@ -242,15 +266,6 @@
         <Reference Include="MethodTimer">
           <HintPath>..\packages\MethodTimer.Fody\lib\net452\MethodTimer.dll</HintPath>
           <Private>False</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
-      <ItemGroup>
-        <Reference Include="Microsoft.CSharp">
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>

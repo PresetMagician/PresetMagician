@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Ceras;
 using PresetMagician.Core.Data;
 
@@ -6,6 +7,13 @@ namespace PresetMagician.Core.Models
 {
     public class PluginLocation : ModelBase
     {
+        private static HashSet<string> _editableProperties = new HashSet<string>();
+        
+        public override HashSet<string> GetEditableProperties()
+        {
+            return _editableProperties;
+        }
+
         /// <summary>
         /// Defines the full path to the plugin DLL
         /// </summary>

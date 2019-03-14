@@ -99,9 +99,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
 
                 if (persist)
                 {
-                    var preset = new Preset
+                    var preset = new PresetParserMetadata
                     {
-                        PresetName = nameAttribute.Value, Plugin = PluginInstance.Plugin, PresetBank = presetBank,
+                        PresetName = nameAttribute.Value, Plugin = PluginInstance.Plugin, BankPath = presetBank.BankPath,
                         SourceFile = fileName + ":" + presetBank.BankPath + "/" + nameAttribute.Value
                     };
 

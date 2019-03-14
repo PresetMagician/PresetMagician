@@ -1,14 +1,23 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using Catel.Collections;
+using Catel.Data;
 using Catel.Runtime.Serialization;
 using PresetMagician.Core.Data;
 
 namespace PresetMagician.Core.Models
 {
-    public class PresetBank : ModelBase
+    public class PresetBank : INotifyPropertyChanged
     {
+        public virtual event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged(string propertyName, object before, object after)
+        {
+            var x = new AdvancedPropertyChangedEventArgs(this, propertyName, before, after);
+            PropertyChanged?.Invoke(this, x);
+        }
+
         private Dictionary<string, PresetBank> _createCache = new Dictionary<string, PresetBank>();
 
         private string _bankName;

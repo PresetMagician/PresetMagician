@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Ceras;
+using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
+using Type = PresetMagician.Core.Models.Type;
 
 namespace PresetMagicianScratchPad
 {
@@ -13,11 +15,33 @@ namespace PresetMagicianScratchPad
         static void Main(string[] args)
         {
             var sw = new Stopwatch();
-            sw.Start();
-            var dp = new DataPersisterService();
-            dp.Load();
             
-            Debug.WriteLine(sw.ElapsedMilliseconds);
+            
+            var dp = new DataPersisterService();
+            sw.Start();
+            dp.Load();
+            Console.WriteLine("Load: "+sw.ElapsedMilliseconds+"ms");
+            sw.Restart();
+            
+            Type.GlobalTypes.BeginEdit();
+            Characteristic.GlobalCharacteristics.BeginEdit();
+            
+            foreach (var plugin in dp.Plugins)
+            {
+                plugin.BeginEdit();
+            }
+            Console.WriteLine("BeginEdit: "+sw.ElapsedMilliseconds+"ms");
+            
+            sw.Restart();
+            
+            Type.GlobalTypes.CancelEdit();
+            Characteristic.GlobalCharacteristics.CancelEdit();
+            
+            foreach (var plugin in dp.Plugins)
+            {
+                plugin.CancelEdit();
+            }
+            Console.WriteLine("CancelEdit: "+sw.ElapsedMilliseconds+"ms");
         }
     }
 }

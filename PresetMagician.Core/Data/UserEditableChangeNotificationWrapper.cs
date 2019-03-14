@@ -38,7 +38,7 @@ namespace PresetMagician.Core.Data
     {
         private readonly string _sourceProperty;
         private readonly IEditableCollection _sourceCollection;
-        private readonly PresetMagician.Core.Data.ModelBase _sourceObject;
+        private readonly ModelBase _sourceObject;
 
         public UserEditableChangeNotificationWrapper(IEditableCollection value, string sourceProperty)
         {
@@ -46,8 +46,8 @@ namespace PresetMagician.Core.Data
             
             value.CollectionChanged += ChangeNotificationWrapperOnCollectionChanged;
             value.PropertyChanged += ValueOnPropertyChanged;
-            value.ItemPropertyChanged +=
-                ChangeNotificationWrapperOnCollectionItemPropertyChanged;
+            /*value.ItemPropertyChanged +=
+                ChangeNotificationWrapperOnCollectionItemPropertyChanged;*/
             
             _sourceCollection = value;
            
@@ -74,8 +74,8 @@ namespace PresetMagician.Core.Data
             {
                 _sourceCollection.CollectionChanged -= ChangeNotificationWrapperOnCollectionChanged;
                 _sourceCollection.PropertyChanged -= ValueOnPropertyChanged;
-                _sourceCollection.ItemPropertyChanged -=
-                    ChangeNotificationWrapperOnCollectionItemPropertyChanged;
+                /*_sourceCollection.ItemPropertyChanged -=
+                    ChangeNotificationWrapperOnCollectionItemPropertyChanged;*/
             }
 
             if (_sourceObject != null)

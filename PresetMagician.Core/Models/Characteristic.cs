@@ -4,9 +4,19 @@ using PresetMagician.Core.Data;
 
 namespace PresetMagician.Core.Models
 {
-    public class Characteristic:ModelBase
+    public interface ICharacteristic
     {
-        public override ICollection<string> EditableProperties { get; } = new List<string>
+        string CharacteristicName { get; set; }
+    }
+
+    public class Characteristic:ModelBase, ICharacteristic
+    {
+        public override HashSet<string> GetEditableProperties()
+        {
+            return _editableProperties;
+        }
+
+        private static HashSet<string> _editableProperties { get; } = new HashSet<string>
         {
             nameof(CharacteristicName)
         };

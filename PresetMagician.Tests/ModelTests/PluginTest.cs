@@ -7,6 +7,8 @@ using Catel.Reflection;
 using Drachenkatze.PresetMagician.NKSF.NKSF;
 using FluentAssertions;
 using Jacobi.Vst.Core;
+using PresetMagician.Core.Extensions;
+using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
 using Xunit;
@@ -40,7 +42,6 @@ namespace PresetMagician.Tests.ModelTests
         private List<string> PropertiesWhichShouldBeIgnored =
             new List<string>
             {
-                nameof(Plugin.EditableProperties),
                 nameof(Plugin.UserModifiedProperties),
                 nameof(Plugin.LoadErrorMessage),
                 nameof(Plugin.LoadError),
@@ -83,7 +84,6 @@ namespace PresetMagician.Tests.ModelTests
                 nameof(PluginLocation.ShortTextRepresentation),
                 nameof(PluginLocation.FullTextRepresentation),
                 nameof(PluginLocation.IsUserModified),
-                nameof(PluginLocation.EditableProperties),
                 nameof(PluginLocation.IsEditing),
                 nameof(PluginLocation.UserModifiedProperties)
             };
@@ -110,19 +110,44 @@ namespace PresetMagician.Tests.ModelTests
         private Dictionary<string, object> PresetPropertiesWhichShouldBePersisted =
             new Dictionary<string, object>
             {
-                {nameof(Preset.PresetName), "im your friendly preset"},
                 {nameof(Preset.PresetId), "im your friendly id"},
                 {nameof(Preset.IsIgnored), true},
-                {nameof(Preset.Author), "author"},
-                {nameof(Preset.Comment), "comment"},
-                {nameof(Preset.BankPath), "testbank/testbank1"},
-                {nameof(Preset.SourceFile), "sourcefile"},
                 {nameof(Preset.PresetSize), 1234},
                 {nameof(Preset.PresetHash), "hash"},
-                {nameof(Preset.LastExportedPresetHash), "lasthash"},
                 {nameof(Preset.PresetCompressedSize), 1222},
                 {nameof(Preset.LastExported), DateTime.Now},
                 {nameof(Preset.IsMetadataModified), true}
+            };
+        
+        private Dictionary<string, object> PresetMetadataPropertiesWhichShouldBePersisted =
+            new Dictionary<string, object>
+            {
+                {nameof(PresetMetadata.PresetName), "im your friendly preset"},
+                {nameof(PresetMetadata.Author), "author"},
+                {nameof(PresetMetadata.Comment), "comment"},
+                {nameof(PresetMetadata.BankPath), "testbank/testbank1"},
+
+            };
+        
+        private Dictionary<string, object> OriginalPresetMetadataPropertiesWhichShouldBePersisted =
+            new Dictionary<string, object>
+            {
+                {nameof(PresetParserMetadata.PresetName), "im your friendly preset"},
+                {nameof(PresetParserMetadata.Author), "author"},
+                {nameof(PresetParserMetadata.Comment), "comment"},
+                {nameof(PresetParserMetadata.BankPath), "testbank/testbank1"},
+                {nameof(PresetParserMetadata.SourceFile), "this is my source file"}
+
+            };
+        
+        private Dictionary<string, object> ExportedPresetMetadataPropertiesWhichShouldBePersisted =
+            new Dictionary<string, object>
+            {
+                {nameof(ExportedPresetMetadata.PresetName), "im your friendly preset"},
+                {nameof(ExportedPresetMetadata.Author), "author"},
+                {nameof(ExportedPresetMetadata.Comment), "comment"},
+                {nameof(ExportedPresetMetadata.BankPath), "testbank/testbank1"},
+
             };
 
         private List<string> PresetPropertiesWhichShouldBeIgnored =
@@ -130,9 +155,7 @@ namespace PresetMagician.Tests.ModelTests
             {
                 nameof(Preset.IsEditing),
                 nameof(Preset.IsUserModified),
-                nameof(Preset.EditableProperties),
                 nameof(Preset.UserModifiedProperties),
-                nameof(Preset.ChangedSinceLastExport)
             };
 
         private Plugin InitializePluginToBeSaved()
@@ -166,12 +189,34 @@ namespace PresetMagician.Tests.ModelTests
             {
                 PropertyHelper.SetPropertyValue(preset, x.Key, x.Value);
             }
+            
+            foreach (var x in PresetMetadataPropertiesWhichShouldBePersisted)
+            {
+                PropertyHelper.SetPropertyValue(preset.Metadata, x.Key, x.Value);
+            }
+            
+            foreach (var x in OriginalPresetMetadataPropertiesWhichShouldBePersisted)
+            {
+                PropertyHelper.SetPropertyValue(preset.OriginalMetadata, x.Key, x.Value);
+            }
+            
+            foreach (var x in ExportedPresetMetadataPropertiesWhichShouldBePersisted)
+            {
+                PropertyHelper.SetPropertyValue(preset.LastExportedMetadata, x.Key, x.Value);
+            }
 
-            preset.UserOverwrittenProperties.Add("test");
+            preset.Metadata.UserOverwrittenProperties.Add("test");
             preset.PreviewNotePlayer = new PreviewNotePlayer();
             preset.Plugin = plugin;
-            preset.Types.Add(new Type {TypeName = "bla"});
-            preset.Characteristics.Add(new Characteristic {CharacteristicName = "foo"});
+            preset.Metadata.Types.Add(new Type {TypeName = "bla"});
+            preset.Metadata.Characteristics.Add(new Characteristic {CharacteristicName = "foo"});
+            
+            preset.LastExportedMetadata.Types.Add(new Type {TypeName = "ding"});
+            preset.LastExportedMetadata.Characteristics.Add(new Characteristic {CharacteristicName = "ding2"});
+            preset.LastExportedMetadata.PreviewNotePlayer = new PreviewNotePlayer();
+            
+            preset.OriginalMetadata.Types.Add(new Type {TypeName = "dingdong"});
+            preset.OriginalMetadata.Characteristics.Add(new Characteristic {CharacteristicName = "dingdong22"});
 
             plugin.Presets.Add(preset);
             plugin.DefaultControllerAssignments = new ControllerAssignments();
@@ -253,29 +298,108 @@ namespace PresetMagician.Tests.ModelTests
                 testedProperties.Add(x.Key);
             }
 
-            savedPreset.UserOverwrittenProperties.Should().BeEquivalentTo(originalPreset.UserOverwrittenProperties);
-            testedProperties.Add(nameof(Preset.UserOverwrittenProperties));
+            savedPreset.Metadata.UserOverwrittenProperties.Should().BeEquivalentTo(originalPreset.Metadata.UserOverwrittenProperties);
+            testedProperties.Add(nameof(Preset.Metadata.UserOverwrittenProperties));
 
             savedPreset.Plugin.Should().BeSameAs(savedPlugin);
             testedProperties.Add(nameof(Preset.Plugin));
 
-            savedPreset.PresetBank.BankPath.Should().Be(savedPreset.BankPath);
+            savedPreset.PresetBank.BankPath.Should().Be(savedPreset.Metadata.BankPath);
             testedProperties.Add(nameof(Preset.PresetBank));
 
             savedPreset.PreviewNotePlayer.PreviewNotePlayerId.Should()
                 .Be(originalPreset.PreviewNotePlayer.PreviewNotePlayerId);
             testedProperties.Add(nameof(Preset.PreviewNotePlayer));
 
-            savedPreset.Characteristics.IsEqualTo(originalPreset.Characteristics).Should().BeTrue();
-            testedProperties.Add(nameof(Preset.Characteristics));
-
-            savedPreset.Types.IsEqualTo(originalPreset.Types).Should().BeTrue();
-            testedProperties.Add(nameof(Preset.Types));
+            TestMetadata(originalPreset.Metadata, savedPreset.Metadata);
+            testedProperties.Add(nameof(Preset.Metadata));
+            TestOriginalMetadata(originalPreset.OriginalMetadata, savedPreset.OriginalMetadata);
+            testedProperties.Add(nameof(Preset.OriginalMetadata));
+            TestExportedMetadata(originalPreset.LastExportedMetadata, savedPreset.LastExportedMetadata);
+            testedProperties.Add(nameof(Preset.LastExportedMetadata));
 
             testedProperties.AddRange(PresetPropertiesWhichShouldBeIgnored);
 
             var allProperties =
                 (from prop in typeof(Preset).GetProperties() select prop.Name).ToList();
+
+            allProperties.Except(testedProperties).Should().BeEmpty("We want to test ALL TEH PROPERTIEZ");
+        }
+        
+        private void TestExportedMetadata(ExportedPresetMetadata originalPreset, ExportedPresetMetadata savedPreset )
+        {
+            var testedProperties = new HashSet<string>();
+            
+            foreach (var x in ExportedPresetMetadataPropertiesWhichShouldBePersisted)
+            {
+                var loadedValue = PropertyHelper.GetPropertyValue(savedPreset, x.Key);
+                var originalValue = PropertyHelper.GetPropertyValue(originalPreset, x.Key);
+
+                loadedValue.Should().BeEquivalentTo(originalValue,
+                    $"Loading the property {x.Key} should be the same as the saved one");
+                testedProperties.Add(x.Key);
+            }
+            
+            savedPreset.Characteristics.IsEqualTo(originalPreset.Characteristics).Should().BeTrue();
+            testedProperties.Add(nameof(ExportedPresetMetadata.Characteristics));
+
+            savedPreset.Types.IsEqualTo(originalPreset.Types).Should().BeTrue();
+            testedProperties.Add(nameof(ExportedPresetMetadata.Types));
+            
+            var allProperties =
+                (from prop in typeof(PresetMetadata).GetProperties() select prop.Name).ToList();
+
+            allProperties.Except(testedProperties).Should().BeEmpty("We want to test ALL TEH PROPERTIEZ");
+        }
+        
+        private void TestOriginalMetadata(PresetParserMetadata originalPreset, PresetParserMetadata savedPreset )
+        {
+            var testedProperties = new HashSet<string>();
+            
+            foreach (var x in OriginalPresetMetadataPropertiesWhichShouldBePersisted)
+            {
+                var loadedValue = PropertyHelper.GetPropertyValue(savedPreset, x.Key);
+                var originalValue = PropertyHelper.GetPropertyValue(originalPreset, x.Key);
+
+                loadedValue.Should().BeEquivalentTo(originalValue,
+                    $"Loading the property {x.Key} should be the same as the saved one");
+                testedProperties.Add(x.Key);
+            }
+            
+            savedPreset.Characteristics.IsEqualTo(originalPreset.Characteristics).Should().BeTrue();
+            testedProperties.Add(nameof(PresetParserMetadata.Characteristics));
+
+            savedPreset.Types.IsEqualTo(originalPreset.Types).Should().BeTrue();
+            testedProperties.Add(nameof(PresetParserMetadata.Types));
+            
+            var allProperties =
+                (from prop in typeof(PresetMetadata).GetProperties() select prop.Name).ToList();
+
+            allProperties.Except(testedProperties).Should().BeEmpty("We want to test ALL TEH PROPERTIEZ");
+        }
+
+        private void TestMetadata(EditablePresetMetadata originalPreset, EditablePresetMetadata savedPreset )
+        {
+            var testedProperties = new HashSet<string>();
+            
+            foreach (var x in PresetMetadataPropertiesWhichShouldBePersisted)
+            {
+                var loadedValue = PropertyHelper.GetPropertyValue(savedPreset, x.Key);
+                var originalValue = PropertyHelper.GetPropertyValue(originalPreset, x.Key);
+
+                loadedValue.Should().BeEquivalentTo(originalValue,
+                    $"Loading the property {x.Key} should be the same as the saved one");
+                testedProperties.Add(x.Key);
+            }
+            
+            savedPreset.Characteristics.IsEqualTo(originalPreset.Characteristics).Should().BeTrue();
+            testedProperties.Add(nameof(PresetMetadata.Characteristics));
+
+            savedPreset.Types.IsEqualTo(originalPreset.Types).Should().BeTrue();
+            testedProperties.Add(nameof(PresetMetadata.Types));
+            
+            var allProperties =
+                (from prop in typeof(PresetMetadata).GetProperties() select prop.Name).ToList();
 
             allProperties.Except(testedProperties).Should().BeEmpty("We want to test ALL TEH PROPERTIEZ");
         }

@@ -42,8 +42,7 @@
                 <TextBlock
                     TextWrapping="NoWrap"
                     HorizontalAlignment="Left"
-                    Foreground="White"
-                    Text="{Binding TypeName}">
+                    Foreground="White">
                     <Run Text="{Binding TypeName}"/>
                     <Run FontFamily="Webdings">
                         <Run.Style>

@@ -92,7 +92,8 @@ namespace PresetMagician.Legacy.Services
 
                 MigratePreset(preset, newPreset);
                 var data = _dbContext.GetPresetData(preset);
-                _presetDataPersister.PersistPreset(newPreset, data).Wait();
+                newPreset.Plugin = newPlugin;
+                _presetDataPersister.PersistPreset(newPreset.OriginalMetadata, data).Wait();
             }
             
             
@@ -189,7 +190,7 @@ namespace PresetMagician.Legacy.Services
             }
         }
 
-        private void MigrateModes(ICollection<PresetMagician.Legacy.Models.Mode> oldModes, NewModels.CharacteristicCollection newModes)
+        private void MigrateModes(ICollection<PresetMagician.Legacy.Models.Mode> oldModes, ICollection<NewModels.Characteristic> newModes)
         {
             foreach (var mode in oldModes)
             {
@@ -205,11 +206,11 @@ namespace PresetMagician.Legacy.Services
             }
         }
         
-        private void MigrateTypes(ICollection<PresetMagician.Legacy.Models.Type> oldTypes, NewModels.TypeCollection newTypes)
+        private void MigrateTypes(ICollection<PresetMagician.Legacy.Models.Type> oldTypes, ICollection<NewModels.Type> newTypes)
         {
             foreach (var type in oldTypes)
             {
-                newTypes.Add(new NewModels.Type() {TypeName = type.Name, SubTypeName = type.SubTypeName});
+                newTypes.Add(new NewModels.Type {TypeName = type.Name, SubTypeName = type.SubTypeName});
             }
         }
 
@@ -217,16 +218,20 @@ namespace PresetMagician.Legacy.Services
         {
             var propertiesToMigrate = new HashSet<string>
             {
-                nameof(Preset.Author),
-                nameof(Preset.Comment),
-                nameof(Preset.BankPath),
                 nameof(Preset.PresetId),
                 nameof(Preset.PresetHash),
                 nameof(Preset.LastExported),
                 nameof(Preset.LastExportedPresetHash),
-                nameof(Preset.SourceFile),
                 nameof(Preset.PresetCompressedSize),
                 nameof(Preset.PresetSize),
+            };
+            
+            var metadataPropertiesToMigrate = new HashSet<string>
+            {
+                nameof(Preset.Author),
+                nameof(Preset.Comment),
+                nameof(Preset.BankPath),
+                nameof(Preset.SourceFile),
                 nameof(Preset.PresetName)
             };
 
@@ -236,8 +241,8 @@ namespace PresetMagician.Legacy.Services
                 PropertyHelper.SetPropertyValue(newPreset, propertyName, oldValue);
             }
             
-            MigrateModes(oldPreset.Modes, newPreset.Characteristics);
-            MigrateTypes(oldPreset.Types, newPreset.Types);
+            MigrateModes(oldPreset.Modes, newPreset.OriginalMetadata.Characteristics);
+            MigrateTypes(oldPreset.Types, newPreset.OriginalMetadata.Types);
         }
     }
 }

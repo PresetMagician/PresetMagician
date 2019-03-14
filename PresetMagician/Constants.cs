@@ -168,6 +168,7 @@ namespace PresetMagician
         public static class Tools
         {
             public const string NksfView = "Tools.NksfView";
+            public const string EditTypesCharacteristics = "Tools.EditTypesCharacteristics";
             public const string SettingsView = "Tools.SettingsView";
             public const string UpdateLicense = "Tools.UpdateLicense";
         }

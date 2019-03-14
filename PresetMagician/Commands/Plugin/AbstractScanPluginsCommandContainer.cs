@@ -219,14 +219,14 @@ namespace PresetMagician
             if (_currentPresetIndex > _totalPresets)
             {
                 Debug.WriteLine(
-                    $"{e.NewValue.Plugin.PluginName}: Got called with {e.NewValue.PresetName} index {_currentPresetIndex} of {_totalPresets}");
+                    $"{e.NewValue.Plugin.PluginName}: Got called with {e.NewValue.Metadata.PresetName} index {_currentPresetIndex} of {_totalPresets}");
             }
 
             if (updateThrottle > 10)
             {
                 _applicationService.UpdateApplicationOperationStatus(
                     _currentPluginIndex,
-                    $"Adding/Updating presets for {_currentPlugin.PluginName} ({_currentPresetIndex} / {_totalPresets}): Preset {e.NewValue.PresetName}");
+                    $"Adding/Updating presets for {_currentPlugin.PluginName} ({_currentPresetIndex} / {_totalPresets}): Preset {e.NewValue.Metadata.PresetName}");
                 updateThrottle = 0;
             }
         }

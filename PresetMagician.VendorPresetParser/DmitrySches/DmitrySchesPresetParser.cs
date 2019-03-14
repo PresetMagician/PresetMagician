@@ -21,7 +21,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.DmitrySches
             _decodeBuffer = null;
         }
 
-        protected override byte[] ProcessFile(string fileName, Preset preset)
+        protected override byte[] ProcessFile(string fileName, PresetParserMetadata preset)
         {
             var inflater = new Inflater(false);
             inflater.SetInput(File.ReadAllBytes(fileName));

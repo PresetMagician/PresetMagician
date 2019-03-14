@@ -77,7 +77,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
             return count;
         }
 
-        protected virtual (Preset preset, byte[] presetData) GetPreset(string name, string presetData,
+        protected virtual (PresetParserMetadata preset, byte[] presetData) GetPreset(string name, string presetData,
             PresetBank presetBank)
         {
             var pluginState = new XElement("PluginState");
@@ -92,9 +92,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
             var presetElement = xmlPreset.Element("Preset");
             presetElement.SetAttributeValue("name", name.Replace(Extension, ""));
 
-            var preset = new Preset
+            var preset = new PresetParserMetadata
             {
-                PresetName = name.Replace(Extension, ""), Plugin = PluginInstance.Plugin, PresetBank = presetBank
+                PresetName = name.Replace(Extension, ""), Plugin = PluginInstance.Plugin, BankPath = presetBank.BankPath
             };
 
             var tagsAttribute = presetElement.Attribute("tags");

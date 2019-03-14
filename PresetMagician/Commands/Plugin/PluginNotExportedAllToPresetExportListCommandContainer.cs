@@ -64,7 +64,7 @@ namespace PresetMagician
                     }
 
                     hs.ExceptWith(_vstService.PresetExportList);
-                    hs.RemoveWhere(p => p.LastExportedPresetHash == p.PresetHash);
+                    hs.RemoveWhere(p => !p.IsMetadataModified);
 
                     _vstService.PresetExportList.AddItems(hs.ToList());
 

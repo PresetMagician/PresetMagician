@@ -64,9 +64,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
 
                 foreach (var presetData in pack.Presets)
                 {
-                    var preset = new Preset
+                    var preset = new PresetParserMetadata
                     {
-                        PresetBank = presetBank,
+                        BankPath = presetBank.BankPath,
                         PresetName = presetData.Preset.name,
                         Author = presetData.SoundDesigner.name,
                         Comment = presetData.Preset.comment,

@@ -12,7 +12,6 @@ namespace PresetMagician.Core.Services
     public class DataPersisterService
     {
         private const string PluginStorageExtension = ".pmplugin";
-        private const string PluginLocationsStorageExtension = ".pmpluginlocations";
         public static string DefaultPluginStoragePath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             @"Drachenkatze\PresetMagician\PluginData");
@@ -24,7 +23,7 @@ namespace PresetMagician.Core.Services
             var serializerConfig = new SerializerConfig();
             serializerConfig.DefaultTargets = TargetMember.None;
 
-            //serializerConfig.VersionTolerance.Mode = VersionToleranceMode.Standard;
+            serializerConfig.VersionTolerance.Mode = VersionToleranceMode.Standard;
             _serializer = new CerasSerializer(serializerConfig);
         }
 

@@ -77,12 +77,12 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
                 {
                     try
                     {
-                        var preset = new Preset
+                        var preset = new PresetParserMetadata
                         {
                             PresetName = file.Name.Replace("." + Extension, ""),
                             Plugin = PluginInstance.Plugin,
                             SourceFile = file.FullName,
-                            PresetBank = rootBank
+                            BankPath = rootBank.BankPath
                         };
 
                         var data = ProcessFile(file.FullName, preset);
@@ -107,7 +107,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
             return count;
         }
 
-        protected virtual byte[] ProcessFile(string fileName, Preset preset)
+        protected virtual byte[] ProcessFile(string fileName, PresetParserMetadata preset)
         {
             return File.ReadAllBytes(fileName);
         }

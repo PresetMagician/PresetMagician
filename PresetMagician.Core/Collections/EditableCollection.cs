@@ -25,6 +25,7 @@ namespace PresetMagician.Core.Collections
         private IUserEditable _originatingEditingObject;
 
         private int _initialCount;
+        private readonly HashSet<T> _userModifiedItems = new HashSet<T>();
         private List<T> _backupValues;
 
         /// <summary>
@@ -52,7 +53,15 @@ namespace PresetMagician.Core.Collections
 
             if (IsEditing && e.PropertyName == nameof(ModelBase.IsUserModified) && adv.OldValue != adv.NewValue)
             {
-                _isCollectionItemUserModified = (from i in Items where i.IsUserModified select i).Any();
+                if ((bool) adv.NewValue)
+                {
+                    _userModifiedItems.Add(sender as T);
+                }
+                else
+                {
+                    _userModifiedItems.Remove(sender as T);
+                }
+                
                 UpdateIsUserModifiedFlag();
             }
            
@@ -64,6 +73,10 @@ namespace PresetMagician.Core.Collections
             foreach (var item in Items)
             {
                 item.CancelEdit(this);
+                if (IsEditing)
+                {
+                    _userModifiedItems.Remove(item);
+                }
             }
 
             base.ClearItems();
@@ -80,8 +93,12 @@ namespace PresetMagician.Core.Collections
             
             if (IsEditing)
             {
-                item.PropertyChanged += ChangeNotificationWrapperOnCollectionItemPropertyChanged;
                 item.BeginEdit(this);
+                item.PropertyChanged += ChangeNotificationWrapperOnCollectionItemPropertyChanged;
+                if (item.IsUserModified)
+                {
+                    _userModifiedItems.Add(item);
+                }
             }
         }
 
@@ -96,10 +113,9 @@ namespace PresetMagician.Core.Collections
             base.MoveItem(oldIndex, newIndex);
             if (!Contains(oldItem))
             {
-                
-
                 if (IsEditing)
                 {
+                    _userModifiedItems.Remove(oldItem);
                     oldItem.PropertyChanged -= ChangeNotificationWrapperOnCollectionItemPropertyChanged;
                     oldItem.CancelEdit(this);
                 }
@@ -118,9 +134,9 @@ namespace PresetMagician.Core.Collections
             base.RemoveItem(index);
             if (!Contains(oldItem))
             {
-                
                 if (IsEditing)
                 {
+                    _userModifiedItems.Remove(oldItem);
                     oldItem.PropertyChanged -= ChangeNotificationWrapperOnCollectionItemPropertyChanged;
                     oldItem.CancelEdit(this);
                 }
@@ -135,12 +151,15 @@ namespace PresetMagician.Core.Collections
             var oldItem = this[index];
             base.SetItem(index, item);
 
-            
-
             if (IsEditing)
             {
-                item.PropertyChanged += ChangeNotificationWrapperOnCollectionItemPropertyChanged;
+                if (item.IsUserModified)
+                {
+                    _userModifiedItems.Add(item);
+                }
+                
                 item.BeginEdit(this);
+                item.PropertyChanged += ChangeNotificationWrapperOnCollectionItemPropertyChanged;
             }
 
 
@@ -149,6 +168,7 @@ namespace PresetMagician.Core.Collections
                 
                 if (IsEditing)
                 {
+                    _userModifiedItems.Remove(oldItem);
                     oldItem.PropertyChanged -= ChangeNotificationWrapperOnCollectionItemPropertyChanged;
                     oldItem.CancelEdit(this);
                 }
@@ -189,7 +209,7 @@ namespace PresetMagician.Core.Collections
             if (!IsEditing)
             {
                 return;}
-            IsUserModified = _isCollectionItemUserModified ||
+            IsUserModified = _userModifiedItems.Count != 0 ||
                              _backupValues.Count != Count ||
                              _backupValues.Except(this).Any() || this.Except(_backupValues).Any();
         }
@@ -206,11 +226,12 @@ namespace PresetMagician.Core.Collections
             IsUserModified = false;
             IsEditing = true;
             _originatingEditingObject = originatingObject;
+            _userModifiedItems.Clear();
 
             foreach (var i in this)
             {
-                i.PropertyChanged += ChangeNotificationWrapperOnCollectionItemPropertyChanged;
                 i.BeginEdit(this);
+                i.PropertyChanged += ChangeNotificationWrapperOnCollectionItemPropertyChanged;
             }
         }
 
@@ -242,9 +263,12 @@ namespace PresetMagician.Core.Collections
         {
             if (!IsEditing || _originatingEditingObject != originatingObject) return;
 
-            foreach (var i in this)
+            IsUserModified = false;
+            IsEditing = false;
+            
+            foreach (var i in this.Union(_backupValues))
             {
-                i.PropertyChanged += ChangeNotificationWrapperOnCollectionItemPropertyChanged;
+                i.PropertyChanged -= ChangeNotificationWrapperOnCollectionItemPropertyChanged;
             }
 
             using (SuspendChangeNotifications())
@@ -254,12 +278,9 @@ namespace PresetMagician.Core.Collections
 
             foreach (var i in this)
             {
-                i.PropertyChanged += ChangeNotificationWrapperOnCollectionItemPropertyChanged;
                 i.CancelEdit(this);
             }
             
-            IsUserModified = false;
-            IsEditing = false;
             _originatingEditingObject = null;
 
         }
