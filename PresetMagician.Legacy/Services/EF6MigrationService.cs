@@ -93,6 +93,7 @@ namespace PresetMagician.Legacy.Services
                 MigratePreset(preset, newPreset);
                 var data = _dbContext.GetPresetData(preset);
                 newPreset.Plugin = newPlugin;
+                newPreset.OriginalMetadata.Plugin = newPlugin;
                 _presetDataPersister.PersistPreset(newPreset.OriginalMetadata, data).Wait();
             }
             
@@ -221,7 +222,6 @@ namespace PresetMagician.Legacy.Services
                 nameof(Preset.PresetId),
                 nameof(Preset.PresetHash),
                 nameof(Preset.LastExported),
-                nameof(Preset.LastExportedPresetHash),
                 nameof(Preset.PresetCompressedSize),
                 nameof(Preset.PresetSize),
             };
@@ -241,8 +241,16 @@ namespace PresetMagician.Legacy.Services
                 PropertyHelper.SetPropertyValue(newPreset, propertyName, oldValue);
             }
             
+            foreach (var propertyName in metadataPropertiesToMigrate)
+            {
+                var oldValue = PropertyHelper.GetPropertyValue(oldPreset, propertyName);
+                PropertyHelper.SetPropertyValue(newPreset.OriginalMetadata, propertyName, oldValue);
+            }
+            
             MigrateModes(oldPreset.Modes, newPreset.OriginalMetadata.Characteristics);
             MigrateTypes(oldPreset.Types, newPreset.OriginalMetadata.Types);
+            
+            newPreset.SetFromPresetParser(newPreset.OriginalMetadata);
         }
     }
 }

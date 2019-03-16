@@ -1,4 +1,7 @@
 using System.Collections.Generic;
+using System.Linq;
+using System.Net.Sockets;
+using Catel.Collections;
 using PresetMagician.Core.Models;
 
 namespace PresetMagician.Core.Extensions
@@ -10,7 +13,7 @@ namespace PresetMagician.Core.Extensions
         {
             foreach (var item2 in collection)
             {
-                if (item.CharacteristicName == item2.CharacteristicName)
+                if (item.EffectiveCharacteristicName == item2.EffectiveCharacteristicName)
                 {
                     return true;
                 }
@@ -20,19 +23,27 @@ namespace PresetMagician.Core.Extensions
             return false;
         }
         
-        public static bool IsEqualTo<T> (this T collection, ICollection<Characteristic> target) where T: ICollection<Characteristic>
+        
+        public static bool IsEqualTo<T> (this T collection, ICollection<Characteristic> target, bool excludeIgnored = false) where T: ICollection<Characteristic>
         {
             if (target == null)
             {
                 return false;
             }
+            
+            ICollection<Characteristic> source = collection;
+            
+            if (excludeIgnored)
+            {
+                source = (from t in collection where !t.IsIgnored select t).ToList();
+            }
 
-            if (target.Count != collection.Count)
+            if (target.Count != source.Count)
             {
                 return false;
             }
 
-            foreach (var item in collection)
+            foreach (var item in source)
             {
                 if (!target.HasCharacteristic(item))
                 {

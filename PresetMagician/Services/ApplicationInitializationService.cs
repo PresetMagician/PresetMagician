@@ -251,6 +251,7 @@ namespace PresetMagician.Services
         private void RegisterTypes()
         {
             var serviceLocator = ServiceLocator.Default;
+            Core.Core.RegisterServices();
             serviceLocator.RegisterType<IAboutInfoService, AboutInfoService>();
             serviceLocator.RegisterType<ICustomStatusService, CustomStatusService>();
             serviceLocator.RegisterType<IPleaseWaitService, CustomPleaseWaitService>();
@@ -259,9 +260,7 @@ namespace PresetMagician.Services
             serviceLocator.RegisterType<IVstService, VstService>();
             serviceLocator.RegisterType<IApplicationService, ApplicationService>();
             serviceLocator.RegisterType<IAdvancedMessageService, AdvancedMessageService>();
-            serviceLocator.RegisterType<DataPersisterService, DataPersisterService>();
-            serviceLocator.RegisterType<PresetDataPersisterService, PresetDataPersisterService>();
-            serviceLocator.RegisterType<PluginService, PluginService>();
+
             serviceLocator
                 .RegisterType<INativeInstrumentsResourceGeneratorService, NativeInstrumentsResourceGeneratorService>();
         }

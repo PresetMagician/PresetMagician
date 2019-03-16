@@ -26,7 +26,10 @@ namespace PresetMagician.Core.Collections
         private IUserEditable _originatingEditingObject;
 
         private int _initialCount;
+        public readonly bool IsUniqueList;
         private readonly List<T> _userModifiedItems = new List<T>();
+        private readonly HashSet<T> _uniqueItems = new HashSet<T>();
+        private PropertyChangedEventHandler _sharedPropertyChangedEventHandler;
         private List<T> _backupValues;
 
         /// <summary>
@@ -35,13 +38,25 @@ namespace PresetMagician.Core.Collections
         public bool IsEditing;
 
         public bool IsUserModified { get; private set; }
+        
 
         public EditableCollection()
         {
+            _sharedPropertyChangedEventHandler = ChangeNotificationWrapperOnCollectionItemPropertyChanged;
         }
-
-        public EditableCollection(IEnumerable<T> collection) : base(collection)
+        
+        public EditableCollection(bool isUniqueList = false)
         {
+            IsUniqueList = isUniqueList;
+            _sharedPropertyChangedEventHandler = ChangeNotificationWrapperOnCollectionItemPropertyChanged;
+        }
+        
+        
+
+        public EditableCollection(IEnumerable<T> collection, bool isUniqueList = false) : base(collection)
+        {
+            IsUniqueList = isUniqueList;
+            _sharedPropertyChangedEventHandler = ChangeNotificationWrapperOnCollectionItemPropertyChanged;
         }
 
 
@@ -81,6 +96,7 @@ namespace PresetMagician.Core.Collections
             }
 
             base.ClearItems();
+            _uniqueItems.Clear();
         }
 
         /// <summary>
@@ -90,12 +106,22 @@ namespace PresetMagician.Core.Collections
         /// <param name="item">The object to insert.</param>
         protected override void InsertItem(int index, T item)
         {
+            if (IsUniqueList)
+            {
+                if (_uniqueItems.Contains(item))
+                {
+                    return;
+                }
+
+                _uniqueItems.Add(item);
+            }
+            
             base.InsertItem(index, item);
 
             if (IsEditing)
             {
                 item.BeginEdit(this);
-                item.PropertyChanged += ChangeNotificationWrapperOnCollectionItemPropertyChanged;
+                item.PropertyChanged += _sharedPropertyChangedEventHandler;
                 if (item.IsUserModified)
                 {
                     _userModifiedItems.Add(item);
@@ -114,10 +140,15 @@ namespace PresetMagician.Core.Collections
             base.MoveItem(oldIndex, newIndex);
             if (!Contains(oldItem))
             {
+                if (IsUniqueList)
+                {
+                    _uniqueItems.Remove(oldItem);
+                }
+                
                 if (IsEditing)
                 {
                     _userModifiedItems.Remove(oldItem);
-                    oldItem.PropertyChanged -= ChangeNotificationWrapperOnCollectionItemPropertyChanged;
+                    oldItem.PropertyChanged -= _sharedPropertyChangedEventHandler;
                     oldItem.CancelEdit(this);
                 }
             }
@@ -134,10 +165,15 @@ namespace PresetMagician.Core.Collections
             base.RemoveItem(index);
             if (!Contains(oldItem))
             {
+                if (IsUniqueList)
+                {
+                    _uniqueItems.Remove(oldItem);
+                }
+                
                 if (IsEditing)
                 {
                     _userModifiedItems.Remove(oldItem);
-                    oldItem.PropertyChanged -= ChangeNotificationWrapperOnCollectionItemPropertyChanged;
+                    oldItem.PropertyChanged -= _sharedPropertyChangedEventHandler;
                     oldItem.CancelEdit(this);
                 }
             }
@@ -148,6 +184,16 @@ namespace PresetMagician.Core.Collections
         /// <param name="item">The new value for the element at the specified index.</param>
         protected override void SetItem(int index, T item)
         {
+            if (IsUniqueList)
+            {
+                if (_uniqueItems.Contains(item))
+                {
+                    return;
+                }
+
+                _uniqueItems.Add(item);
+            }
+            
             var oldItem = this[index];
             base.SetItem(index, item);
 
@@ -159,15 +205,23 @@ namespace PresetMagician.Core.Collections
                 }
 
                 item.BeginEdit(this);
-                item.PropertyChanged += ChangeNotificationWrapperOnCollectionItemPropertyChanged;
+                item.PropertyChanged += _sharedPropertyChangedEventHandler;
             }
 
 
-            if (IsEditing && !Contains(oldItem))
+            if (!Contains(oldItem))
             {
-                _userModifiedItems.Remove(oldItem);
-                oldItem.PropertyChanged -= ChangeNotificationWrapperOnCollectionItemPropertyChanged;
-                oldItem.CancelEdit(this);
+                if (IsUniqueList)
+                {
+                    _uniqueItems.Remove(oldItem);
+                }
+
+                if (IsEditing)
+                {
+                    _userModifiedItems.Remove(oldItem);
+                    oldItem.PropertyChanged -= _sharedPropertyChangedEventHandler;
+                    oldItem.CancelEdit(this);
+                }
             }
         }
 
@@ -229,7 +283,7 @@ namespace PresetMagician.Core.Collections
             foreach (var i in this)
             {
                 i.BeginEdit(this);
-                i.PropertyChanged += ChangeNotificationWrapperOnCollectionItemPropertyChanged;
+                i.PropertyChanged += _sharedPropertyChangedEventHandler;
             }
         }
 
@@ -245,7 +299,7 @@ namespace PresetMagician.Core.Collections
             IsEditing = false;
             foreach (var i in this)
             {
-                i.PropertyChanged -= ChangeNotificationWrapperOnCollectionItemPropertyChanged;
+                i.PropertyChanged -= _sharedPropertyChangedEventHandler;
                 i.EndEdit(this);
             }
             
@@ -266,14 +320,13 @@ namespace PresetMagician.Core.Collections
 
             foreach (var i in this.Union(_backupValues))
             {
-                i.PropertyChanged -= ChangeNotificationWrapperOnCollectionItemPropertyChanged;
+                i.PropertyChanged -= _sharedPropertyChangedEventHandler;
                 i.CancelEdit(this);
             }
 
-            using (SuspendChangeNotifications())
-            {
+           
                 this.SynchronizeCollection(_backupValues);
-            }
+            
 
             foreach (var i in this)
             {

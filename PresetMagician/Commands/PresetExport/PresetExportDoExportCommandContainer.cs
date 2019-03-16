@@ -9,6 +9,7 @@ using Catel.Threading;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.Core.Models;
+using PresetMagician.Core.Services;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -18,10 +19,11 @@ namespace PresetMagician
     {
         private readonly IVstService _vstService;
         private readonly IApplicationService _applicationService;
+        private readonly PresetDataPersisterService _presetDataPersisterService;
 
         public PresetExportDoExportCommandContainer(ICommandManager commandManager, IVstService vstService,
             IApplicationService applicationService,
-            IRuntimeConfigurationService runtimeConfigurationService)
+            IRuntimeConfigurationService runtimeConfigurationService, PresetDataPersisterService presetDataPersisterService)
             : base(Commands.PresetExport.DoExport, commandManager, runtimeConfigurationService)
         {
             Argument.IsNotNull(() => vstService);
@@ -30,6 +32,7 @@ namespace PresetMagician
 
             _vstService = vstService;
             _applicationService = applicationService;
+            _presetDataPersisterService = presetDataPersisterService;
         }
 
         [STAThread]
@@ -67,6 +70,7 @@ namespace PresetMagician
                 {
                     try
                     {
+                        await _presetDataPersisterService.OpenDatabase();
                         using (var remotePluginInstance =
                             _vstService.GetRemotePluginInstance(pluginPreset.Plugin, false))
                         {
@@ -95,6 +99,7 @@ namespace PresetMagician
 
                                 remotePluginInstance.ExportNks(presetExportInfo, presetData, exportDirectory);
 
+                                pluginPreset.Plugin.PresetParser.PluginInstance = remotePluginInstance;
                                 pluginPreset.Plugin.PresetParser.OnAfterPresetExport();
                                 preset.Preset.LastExported = DateTime.Now;
                                 preset.Preset.UpdateLastExportedMetadata();
@@ -109,6 +114,8 @@ namespace PresetMagician
                             $"Unable to update export presets because of {e.GetType().FullName}: {e.Message}");
                         LogTo.Debug(e.StackTrace);
                     }
+                    
+                    await _presetDataPersisterService.CloseDatabase();
 
                     _vstService.Save();
                 }

@@ -20,18 +20,20 @@ namespace PresetMagician.Core.Services
         private const string PluginStorageExtension = ".pmplugin";
         private const string TypesStorageFile = "Types.pmmc";
         private const string CharacteristicsStorageFile = "Characteristics.pmmc";
-        
+
         public static string DefaultTypesCharacteristicsStoragePath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             @"Drachenkatze\PresetMagician");
-        
+
         public static string DefaultPluginStoragePath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             @"Drachenkatze\PresetMagician\PluginData");
-        
-        public DataPersisterService()
+
+        private GlobalService _globalService;
+
+        public DataPersisterService(GlobalService globalService)
         {
-            
+            _globalService = globalService;
         }
 
         private CerasSerializer GetSerializer()
@@ -41,13 +43,13 @@ namespace PresetMagician.Core.Services
             serializerConfig.VersionTolerance.Mode = VersionToleranceMode.Standard;
             return new CerasSerializer(serializerConfig);
         }
-        
-      
+
+
         public void SavePlugin(Plugin plugin)
         {
             SavePlugin(GetSerializer(), plugin);
         }
-        
+
         public void SaveTypesCharacteristics(CerasSerializer serializer)
         {
             Directory.CreateDirectory(DefaultTypesCharacteristicsStoragePath);
@@ -56,13 +58,14 @@ namespace PresetMagician.Core.Services
             var typesData = serializer.Serialize(Type.GlobalTypes);
 
             File.WriteAllBytes(typesDataFile, typesData);
-            
-            var characteristicsDataFile = Path.Combine(DefaultTypesCharacteristicsStoragePath, CharacteristicsStorageFile);
+
+            var characteristicsDataFile =
+                Path.Combine(DefaultTypesCharacteristicsStoragePath, CharacteristicsStorageFile);
             var characteristicsData = serializer.Serialize(Characteristic.GlobalCharacteristics);
 
             File.WriteAllBytes(characteristicsDataFile, characteristicsData);
         }
-        
+
         public void LoadTypesCharacteristics(CerasSerializer serializer)
         {
             var typesDataFile = Path.Combine(DefaultTypesCharacteristicsStoragePath, TypesStorageFile);
@@ -73,12 +76,15 @@ namespace PresetMagician.Core.Services
                 Type.GlobalTypes.Clear();
                 Type.GlobalTypes.AddRange(types);
             }
-           
-            var characteristicsDataFile = Path.Combine(DefaultTypesCharacteristicsStoragePath, CharacteristicsStorageFile);
-           
+
+            var characteristicsDataFile =
+                Path.Combine(DefaultTypesCharacteristicsStoragePath, CharacteristicsStorageFile);
+
             if (File.Exists(characteristicsDataFile))
             {
-                var characteristics = serializer.Deserialize<EditableCollection<Characteristic>>(File.ReadAllBytes(characteristicsDataFile));
+                var characteristics =
+                    serializer.Deserialize<EditableCollection<Characteristic>>(
+                        File.ReadAllBytes(characteristicsDataFile));
                 Characteristic.GlobalCharacteristics.Clear();
                 Characteristic.GlobalCharacteristics.AddRange(characteristics);
             }
@@ -115,22 +121,21 @@ namespace PresetMagician.Core.Services
         public List<string> GetStoredPluginFiles()
         {
             Directory.CreateDirectory(DefaultPluginStoragePath);
-            
+
             var list = new List<string>();
 
             foreach (var file in Directory.EnumerateFiles(
-                DefaultPluginStoragePath, "*"+PluginStorageExtension, SearchOption.AllDirectories))
+                DefaultPluginStoragePath, "*" + PluginStorageExtension, SearchOption.AllDirectories))
             {
                 list.Add(file);
             }
-            
+
             return list;
         }
-        
+
         public void Load()
         {
             LoadPlugins();
-            
         }
 
         public void Save()
@@ -142,43 +147,41 @@ namespace PresetMagician.Core.Services
         {
             var serializer = GetSerializer();
             LoadTypesCharacteristics(serializer);
-            Plugins.Clear();
+            _globalService.Plugins.Clear();
 
             var pluginFiles = GetStoredPluginFiles();
 
             foreach (var filename in pluginFiles)
             {
-                Plugins.Add(LoadPlugin(serializer, filename));
+                _globalService.Plugins.Add(LoadPlugin(serializer, filename));
             }
-            
-            
         }
 
         private void SavePlugins()
         {
             var serializer = GetSerializer();
-            
+
             var savedPluginFiles = new HashSet<string>();
-            foreach (var plugin in Plugins)
+            foreach (var plugin in _globalService.Plugins)
             {
                 SavePlugin(serializer, plugin);
                 savedPluginFiles.Add(GetPluginStorageFile(plugin));
             }
-            
+
             var pluginFiles = GetStoredPluginFiles();
             foreach (var removedPlugin in pluginFiles.Except(savedPluginFiles))
             {
                 File.Delete(removedPlugin);
             }
+
             SaveTypesCharacteristics(serializer);
         }
-        
-  
+
 
         public long GetTotalDataSize()
         {
             long totalCount = 0;
-            
+
             var files = GetStoredPluginFiles();
             FileInfo fileInfo;
 
@@ -196,11 +199,11 @@ namespace PresetMagician.Core.Services
 
             return totalCount;
         }
-        
+
         public List<PresetDatabaseStatistic> GetStorageStatistics()
         {
             var stats = new List<PresetDatabaseStatistic>();
-            foreach (var plugin in Plugins)
+            foreach (var plugin in _globalService.Plugins)
             {
                 var stat = new PresetDatabaseStatistic();
                 stat.PluginName = plugin.PluginName;
@@ -211,12 +214,6 @@ namespace PresetMagician.Core.Services
             }
 
             return stats;
-
         }
-        
-        public FastObservableCollection<Plugin> Plugins { get; } = new FastObservableCollection<Plugin>();
     }
-    
-   
-
 }

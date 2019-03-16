@@ -26,6 +26,11 @@ namespace PresetMagician.Core.Services
         {
             if (_db == null)
             {
+                var dbDir = Path.GetDirectoryName(DefaultDatabasePath);
+                if (!Directory.Exists(dbDir))
+                {
+                    Directory.CreateDirectory(dbDir);
+                }
                 _db = new SQLiteAsyncConnection(DefaultDatabasePath);
                 await _db.CreateTableAsync<PresetDataStorage>();
             }

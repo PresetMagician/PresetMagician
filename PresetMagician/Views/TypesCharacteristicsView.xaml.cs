@@ -7,6 +7,7 @@ using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
 using Catel.Threading;
+using Fluent;
 using Orchestra;
 using PresetMagician.ViewModels;
 
@@ -24,15 +25,11 @@ namespace PresetMagician.Views
 
         }
 
-      
-
         protected override void OnViewModelChanged()
         {
             base.OnViewModelChanged();
             if (ViewModel != null)
             {
-               
-                
                 ViewModel.CancelingAsync += ViewModelOnCancelingAsync;
                 ViewModel.CanceledAsync += ViewModelOnCanceledAsync;
                 ViewModel.SavingAsync += ViewModelOnSavingAsync;

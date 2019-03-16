@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Catel.Collections;
+using Catel.IoC;
 using Catel.Reflection;
 using Drachenkatze.PresetMagician.NKSF.NKSF;
 using FluentAssertions;
@@ -170,7 +171,6 @@ namespace PresetMagician.Tests.ModelTests
 
             plugin.PluginCapabilities.Add(new PluginInfoItem("foo", "bar", "test"));
 
-            plugin.PluginLocation = new PluginLocation();
             plugin.PluginLocation = new PluginLocation();
 
             foreach (var x in PluginLocationPropertiesWhichShouldBePersisted)
@@ -416,7 +416,7 @@ namespace PresetMagician.Tests.ModelTests
             DataPersisterService.DefaultPluginStoragePath = Directory.GetCurrentDirectory();
 
             var testedProperties = new HashSet<string>();
-            var persister = new DataPersisterService();
+            var persister = new DataPersisterService(new GlobalService());
             var plugin = InitializePluginToBeSaved();
 
 
@@ -466,6 +466,29 @@ namespace PresetMagician.Tests.ModelTests
                 (from prop in typeof(Plugin).GetProperties() where !prop.GetType().IsEnum select prop.Name).ToList();
 
             allProperties.Except(testedProperties).Should().BeEmpty("We want to test ALL TEH PROPERTIEZ");
+        }
+
+        [Fact]
+        public void TestSetFromPresetParser()
+        {
+            Core.Core.RegisterServices();
+            PresetDataPersisterService.DefaultDatabasePath = @"TestData\PresetData.sqlite3";
+            
+            var plugin = InitializePluginToBeSaved();
+            var presetData = new PresetParserMetadata();
+            presetData.Plugin = plugin;
+            presetData.SourceFile = "foobar";
+            presetData.BankPath = "foo/bar";
+
+            var ps = ServiceLocator.Default.ResolveType<PresetDataPersisterService>();
+            ps.OpenDatabase().Wait();
+            ps.PersistPreset(presetData, new byte[1]).Wait();
+
+            var lastPreset = plugin.Presets.Last();
+                lastPreset.OriginalMetadata.SourceFile.Should().Be("foobar");
+                lastPreset.Plugin.Should().Be(plugin);
+
+
         }
 
         [Fact]

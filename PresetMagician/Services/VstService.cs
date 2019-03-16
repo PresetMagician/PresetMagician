@@ -22,7 +22,7 @@ namespace PresetMagician.Services
         private readonly Dictionary<Plugin, IRemotePluginInstance> _pluginInstances =
             new Dictionary<Plugin, IRemotePluginInstance>();
 
-        public VstService(IApplicationService applicationService, DataPersisterService dataPersister, PresetDataPersisterService presetDataPersisterService)
+        public VstService(IApplicationService applicationService, GlobalService globalService, DataPersisterService dataPersister, PresetDataPersisterService presetDataPersisterService)
         {
             Argument.IsNotNull(() => applicationService);
             Argument.IsNotNull(() => dataPersister);
@@ -32,7 +32,8 @@ namespace PresetMagician.Services
             _presetDataPersisterService = presetDataPersisterService;
             _dataPersister = dataPersister;
 
-            Plugins = _dataPersister.Plugins;
+
+            Plugins = globalService.Plugins;
         }
 
         public void Save()

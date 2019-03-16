@@ -54,7 +54,7 @@ namespace PresetMagician.Tests.ModelTests
             sw.Start();
             var presetDataPersisterService = new PresetDataPersisterService();
             presetDataPersisterService.OpenDatabase().Wait();
-            var service = new Ef6MigrationService(new DataPersisterService(), presetDataPersisterService);
+            var service = new Ef6MigrationService(new DataPersisterService(new GlobalService()), presetDataPersisterService);
             service.LoadData();
             _output.WriteLine($"Loading took {sw.ElapsedMilliseconds}ms");
 
@@ -165,30 +165,60 @@ namespace PresetMagician.Tests.ModelTests
             
             var propertiesToCompare = new HashSet<string>
             {
-                nameof(OldPreset.PresetName),
-                nameof(OldPreset.Author),
-                nameof(OldPreset.Comment),
                 nameof(OldPreset.PresetId),
-                nameof(OldPreset.SourceFile),
                 nameof(OldPreset.IsIgnored),
                 nameof(OldPreset.LastExported),
-                nameof(OldPreset.LastExportedPresetHash),
                 nameof(OldPreset.PresetSize),
                 nameof(OldPreset.PresetCompressedSize),
                 nameof(OldPreset.PresetHash),
-                nameof(OldPreset.BankPath),
-                nameof(OldPreset.IsMetadataModified)
             };
+            
+            var metadataPropertiesToCompare = new HashSet<string>
+            {
+                nameof(OldPreset.PresetName),
+                nameof(OldPreset.Author),
+                nameof(OldPreset.Comment),
+                nameof(OldPreset.BankPath),
+            };
+            
+            var originalMetadataPropertiesToCompare = new HashSet<string>
+            {
+                nameof(OldPreset.PresetName),
+                nameof(OldPreset.Author),
+                nameof(OldPreset.Comment),
+                nameof(OldPreset.SourceFile),
+                nameof(OldPreset.BankPath),
+            };
+            
             var comparer = new PropertyComparisonHelper(oldPreset, newPreset);
             comparer.CompareProperties(propertiesToCompare);
             comparer.AddVisitedProperty(nameof(OldPreset.Plugin));
-
-            CompareTypes(oldPreset.Types, newPreset.OriginalMetadata.Types);
+            comparer.AddVisitedProperty(nameof(OldPreset.IsMetadataModified));
+            comparer.GetUnvisitedProperties().Should().BeEmpty();
+            
+            comparer = new PropertyComparisonHelper(oldPreset, newPreset.Metadata);
+            comparer.CompareProperties(metadataPropertiesToCompare);
             comparer.AddVisitedProperty(nameof(OldPreset.Types));
+            comparer.GetUnvisitedProperties().Should().BeEmpty();
+            
+            comparer = new PropertyComparisonHelper(oldPreset, newPreset.OriginalMetadata);
+            comparer.CompareProperties(originalMetadataPropertiesToCompare);
+            comparer.AddVisitedProperty(nameof(OldPreset.Types));
+            comparer.AddVisitedProperty(nameof(OldPreset.Plugin));
+            comparer.GetUnvisitedProperties().Should().BeEmpty();
+            
+            CompareTypes(oldPreset.Types, newPreset.OriginalMetadata.Types);
+            CompareTypes(oldPreset.Types, newPreset.Metadata.Types);
             
             CompareModes(oldPreset.Modes, newPreset.OriginalMetadata.Characteristics);
+            CompareModes(oldPreset.Modes, newPreset.Metadata.Characteristics);
             
-            comparer.GetUnvisitedProperties().Should().BeEmpty();
+
+            
+            
+            
+            
+            
         }
 
         private void CompareTypes(ICollection<Type> oldTypes, ICollection<Core.Models.Type> newTypes)

@@ -64,8 +64,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
             presetNameNode.SetAttributeValue("id", "Preset name");
             presetNameNode.SetAttributeValue("type", "string");
 
-
-            presetNameNode.SetAttributeValue("value", preset.BankPath + "/" + preset.PresetName);
+            var bank = RootBank.CreateRecursive(preset.BankPath);
+            presetNameNode.SetAttributeValue("value", bank.BankName + "/" + preset.PresetName);
 
             insertNode.Add(presetNameNode);
         }

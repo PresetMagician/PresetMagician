@@ -96,7 +96,7 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn
                         Width="200"
-                        Binding="{Binding PresetName, Mode=OneWay}"
+                        Binding="{Binding Metadata.PresetName, Mode=OneWay}"
                         Header="Name"
                         IsReadOnly="True"
                         SortDirection="Descending" />
@@ -111,92 +111,16 @@
                         Width="1*"
                         CellStyle="{StaticResource NoPaddingCellStyle}"
                         Header="Types"
-                        IsReadOnly="True">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <ItemsControl ItemsSource="{Binding Path=Types}">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <WrapPanel />
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                           
-                                            <Border
-                                                Margin="1,1,2,1"
-                                                Padding="2,0,2,0"
-                                                Background="BlueViolet"
-                                                CornerRadius="3">
-                                               
-                                                            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                                                                <TextBlock
-                                                                    HorizontalAlignment="Left"
-                                                                    Foreground="White"
-                                                                    Text="{Binding Name}" />
-                                                                <iconPacks:PackIconTypicons
-                                                                    x:Name="commaTextBlock"
-                                                                    Width="10"
-                                                                    Height="10"
-                                                                    VerticalAlignment="Center"
-                                                                    Foreground="White"
-                                                                    Kind="ChevronRightOutline">
-                                                                    <iconPacks:PackIconTypicons.Style>
-                                                                        <Style TargetType="{x:Type iconPacks:PackIconTypicons}">
-                                                                            <Style.Triggers>
-                                                                                <DataTrigger Binding="{Binding SubTypeName}" Value="{x:Null}">
-                                                                                    <Setter Property="Visibility" Value="Collapsed" />
-                                                                                </DataTrigger>
-                                                                            </Style.Triggers>
-                                                                        </Style>
-                                                                    </iconPacks:PackIconTypicons.Style>
-                                                                </iconPacks:PackIconTypicons>
-
-                                                                <TextBlock
-                                                                    HorizontalAlignment="Left"
-                                                                    Foreground="White"
-                                                                    Text="{Binding SubTypeName}" />
-                                                            </StackPanel>
-                                                            
-                                                     
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
+                        CellTemplate="{StaticResource TypesTemplate}"
+                        IsReadOnly="True"/>
+                       
+                    
                     <DataGridTemplateColumn
                         Width="1*"
                         CellStyle="{StaticResource NoPaddingCellStyle}"
-                        Header="Modes"
-                        IsReadOnly="True">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <ItemsControl ItemsSource="{Binding Path=Modes}">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <WrapPanel Margin="1,0,0,0" />
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border
-                                                Margin="1,1,2,1"
-                                                Padding="2,0,2,0"
-                                                Background="BlueViolet"
-                                                CornerRadius="3">
-                                                <TextBlock
-                                                    HorizontalAlignment="Left"
-                                                    Foreground="White"
-                                                    Text="{Binding Name}" />
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
+                        CellTemplate="{StaticResource CharacteristicsTemplate}"
+                        Header="Characteristics"
+                        IsReadOnly="True"/>
                     <DataGridTextColumn
                         Width="150"
                         Binding="{Binding Plugin.PluginName, Mode=OneWay}"

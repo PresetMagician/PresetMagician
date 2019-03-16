@@ -124,7 +124,7 @@ namespace PresetMagician.ViewModels
         private async Task OnDoSomethingExecuteAsync()
         {
 
-            Debug.WriteLine(_serviceLocator.ResolveType<DataPersisterService>().Plugins);
+            //Debug.WriteLine(_serviceLocator.ResolveType<DataPersisterService>().Plugins);
             
 
         }

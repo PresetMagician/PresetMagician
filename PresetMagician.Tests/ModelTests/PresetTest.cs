@@ -379,6 +379,7 @@ namespace PresetMagician.Tests.ModelTests
             
             preset.Metadata.Characteristics.First().Should().Be(preset2.Metadata.Characteristics.First());
             preset.Metadata.Characteristics.First().CharacteristicName = "dingblafoo";
+            ((CharacteristicCollection) preset.Metadata.Characteristics).IsUserModified.Should().BeTrue();
             preset.IsMetadataModified.Should()
                 .BeTrue("renaming a characteristic should modify IsMetadataModified when edit mode is on");
             preset.Metadata.UserOverwrittenProperties.Should().Contain(nameof(PresetMetadata.Characteristics));

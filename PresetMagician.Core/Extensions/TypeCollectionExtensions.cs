@@ -1,43 +1,54 @@
 using System.Collections.Generic;
+using System.Linq;
+using Catel.Collections;
 using PresetMagician.Core.Models;
 
 namespace PresetMagician.Core.Extensions
 {
-  
     public static class TypeCollectionExtensions
     {
-        public static bool HasType<T> (this T collection, Type item) where T: ICollection<Type>
+        public static bool HasType<T>(this T collection, Type item) where T : ICollection<Type>
         {
             foreach (var item2 in collection)
             {
-                if (item.TypeName == item2.TypeName && item.SubTypeName == item2.SubTypeName)
+                if (item.EffectiveTypeName == item2.EffectiveTypeName &&
+                    item.EffectiveSubTypeName == item2.EffectiveSubTypeName)
                 {
                     return true;
                 }
-
             }
 
             return false;
         }
-        
-        public static bool IsEqualTo<T> (this T collection, ICollection<Type> target) where T: ICollection<Type>
+
+        public static bool IsEqualTo<T>(this T collection, ICollection<Type> target, bool excludeIgnored = false)
+            where T : ICollection<Type>
         {
             if (target == null)
             {
                 return false;
             }
 
-            if (target.Count != collection.Count)
+            ICollection<Type> source = collection;
+
+            if (excludeIgnored)
+            {
+                source = (from t in collection where !t.IsIgnored select t).ToList();
+            }
+
+            if (target.Count != source.Count)
             {
                 return false;
             }
 
-            foreach (var item in collection)
+            foreach (var item in source)
             {
                 if (!target.HasType(item))
                 {
-                    return false;}
+                    return false;
+                }
             }
+
             return true;
         }
     }

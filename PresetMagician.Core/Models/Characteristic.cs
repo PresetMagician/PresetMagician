@@ -23,7 +23,8 @@ namespace PresetMagician.Core.Models
         {
             nameof(CharacteristicName),
             nameof(IsRedirect),
-            nameof(RedirectCharacteristic)
+            nameof(RedirectCharacteristic),
+            nameof(IsIgnored)
         };
         
         public static GlobalCharacteristicCollection GlobalCharacteristics = new GlobalCharacteristicCollection();
@@ -43,6 +44,8 @@ namespace PresetMagician.Core.Models
                 }
             }
         }
+        
+        [Include] public bool IsIgnored { get; set; }
 
         [Include] public Characteristic RedirectCharacteristic { get; set; }
 
@@ -59,7 +62,7 @@ namespace PresetMagician.Core.Models
             }
         }
         
-        public string RedirectDescription
+        public string StatusDescription
         {
             get
             {
@@ -68,9 +71,13 @@ namespace PresetMagician.Core.Models
                     return $"Redirected from {CharacteristicName}";
                 }
 
-                return "";
+                if (IsIgnored)
+                {
+                    return "This characteristic is ignored";
+                }
+
+                return null;
             }
         }
-        
     }
 }

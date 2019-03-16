@@ -79,6 +79,7 @@ namespace PresetMagician.Core.Models
                     ((Preset) item).Plugin = this;
                 }
             }
+            
         }
 
         public int GetAudioPreviewDelay()
@@ -229,7 +230,7 @@ namespace PresetMagician.Core.Models
         /// Gets or sets the PresetBanks value.
         /// </summary>
         
-        public PresetBank RootBank { get; set; } = new PresetBank();
+        public PresetBank RootBank { get; } = new PresetBank();
 
         [Include]
         public EditableCollection<Preset> Presets { get; set; } =

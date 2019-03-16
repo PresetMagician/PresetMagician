@@ -289,9 +289,7 @@ namespace PresetMagician
 
                         if (!IsQuickAnalysisMode())
                         {
-                            using (plugin.Presets.SuspendChangeNotifications())
-                            {
-                               
+                            
                                     plugin.PresetParser.RootBank = plugin.RootBank.First();
 
                                     _totalPresets = plugin.PresetParser.GetNumPresets();
@@ -299,7 +297,7 @@ namespace PresetMagician
 
                                     await plugin.PresetParser.DoScan();
                                 
-                            }
+                            
                         }
                         
                         await _presetDataPersisterService.CloseDatabase();

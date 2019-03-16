@@ -39,6 +39,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
@@ -59,8 +60,13 @@
 
             <ComboBox Grid.Row="2" Grid.Column="1"
                       Visibility="{Binding AllowRedirect, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}"
-                      ItemsSource="{Binding Types}" SelectedItem="{Binding RedirectType}"
+                      ItemsSource="{Binding RedirectTargets}" SelectedItem="{Binding RedirectType}"
                       ItemTemplate="{StaticResource TypeTemplate}" IsEnabled="{Binding IsRedirect}" />
+            
+            <CheckBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" IsChecked="{Binding IsIgnored}" 
+                      Visibility="{Binding AllowRedirect, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
+                <TextBlock Text="Ignore this type" />
+            </CheckBox>
         </Grid>
         <Grid Grid.Row="1"
               Visibility="{Binding AllowRedirect, Converter={StaticResource InvertedBooleanToCollapsingVisibilityConverter}}">

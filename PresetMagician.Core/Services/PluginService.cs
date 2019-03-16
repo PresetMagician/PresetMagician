@@ -20,7 +20,6 @@ namespace PresetMagician.Core.Services
     public class PluginService
     {
         private IDispatcherService _dispatcherService;
-        private DataPersisterService _dataPersisterService;
         private IVstService _vstService;
         private Dictionary<string, string> DllHashes = new Dictionary<string, string>();
 
@@ -28,7 +27,6 @@ namespace PresetMagician.Core.Services
             DataPersisterService dataPersisterService)
         {
             _dispatcherService = dispatcherService;
-            _dataPersisterService = dataPersisterService;
             _vstService = vstService;
         }
 
