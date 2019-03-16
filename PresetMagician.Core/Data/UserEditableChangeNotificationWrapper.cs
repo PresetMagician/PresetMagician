@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using Catel.Data;
 using PresetMagician.Core.Collections;
 
 namespace PresetMagician.Core.Data
@@ -86,7 +87,13 @@ namespace PresetMagician.Core.Data
 
         private void ChangeNotificationWrapperOnCollectionItemPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            CollectionItemPropertyChanged?.Invoke(sender, new WrappedCollectionItemPropertyChangedEventArgs(_sourceProperty,e));
+            var adv = e as AdvancedPropertyChangedEventArgs;
+
+            if (!Equals(adv.OldValue, adv.NewValue))
+            {
+                CollectionItemPropertyChanged?.Invoke(sender,
+                    new WrappedCollectionItemPropertyChangedEventArgs(_sourceProperty, e as AdvancedPropertyChangedEventArgs));
+            }
         }
 
         private void ChangeNotificationWrapperOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

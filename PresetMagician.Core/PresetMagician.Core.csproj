@@ -50,6 +50,7 @@
     <Compile Include="Collections\EditableCollection.cs" />
     <Compile Include="Collections\ObservableHashset.cs" />
     <Compile Include="Data\IUserEditable.cs" />
+    <Compile Include="Data\ModelBackup.cs" />
     <Compile Include="Data\ModelBase.cs" />
     <Compile Include="Data\ModelBase.usereditable.cs" />
     <Compile Include="Data\UserEditableChangeNotificationWrapper.cs" />

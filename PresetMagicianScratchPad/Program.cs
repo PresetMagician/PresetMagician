@@ -34,12 +34,12 @@ namespace PresetMagicianScratchPad
             
             sw.Restart();
             
-            Type.GlobalTypes.CancelEdit();
-            Characteristic.GlobalCharacteristics.CancelEdit();
+            Type.GlobalTypes.EndEdit();
+            Characteristic.GlobalCharacteristics.EndEdit();
             
             foreach (var plugin in dp.Plugins)
             {
-                plugin.CancelEdit();
+                plugin.EndEdit();
             }
             Console.WriteLine("CancelEdit: "+sw.ElapsedMilliseconds+"ms");
         }

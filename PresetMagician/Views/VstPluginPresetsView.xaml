@@ -141,7 +141,7 @@
                             CanUserSort="False"
                             CellStyle="{StaticResource NoPaddingCellStyle}"
                             Header="Characteristics"
-                            CellTemplate="{StaticResource ModesTemplate}"
+                            CellTemplate="{StaticResource CharacteristicsTemplate}"
                             IsReadOnly="True">
                         </DataGridTemplateColumn>
                         <DataGridTextColumn
@@ -156,7 +156,7 @@
                             IsReadOnly="True" />
                         <DataGridCheckBoxColumn
                             Width="60"
-                            Binding="{Binding ChangedSinceLastExport, Mode=OneWay}"
+                            Binding="{Binding IsMetadataModified, Mode=OneWay}"
                             Header="Changed"
                             IsReadOnly="True" />
                         <DataGridTextColumn

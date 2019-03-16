@@ -24,9 +24,11 @@ namespace PresetMagician.Core.Models
             nameof(PresetName),
             nameof(Types)
         };
-        
-        [Include]
-        public HashSet<string> UserOverwrittenProperties { get; set; } = new HashSet<string>();
+
+        private bool _lastTypesUserModifiedValue;
+        private bool _lastCharacteristicsUserModifiedValue;
+
+        [Include] public HashSet<string> UserOverwrittenProperties { get; set; } = new HashSet<string>();
 
         /// <summary>
         /// The name of the preset
@@ -45,37 +47,56 @@ namespace PresetMagician.Core.Models
         /// </summary>
         [Include]
         public string Comment { get; set; }
-        
+
         /// <summary>
         /// The bank path. Only set via EntityFramework when loading from the database
         /// </summary>
         [Include]
         public string BankPath { get; set; }
-        
+
         /// <summary>
         /// The Native Instruments types used for this preset.
         /// </summary>
         [Include]
-        public FastObservableCollection<Type> Types { get; set; }= new TypeCollection();
-        
+        public FastObservableCollection<Type> Types { get; set; } = new TypeCollection();
+
         /// <summary>
         /// The Native Instruments characteristics used for this preset.
         /// </summary>
         [Include]
-        public FastObservableCollection<Characteristic> Characteristics { get; set; }= new CharacteristicCollection();
+        public FastObservableCollection<Characteristic> Characteristics { get; set; } = new CharacteristicCollection();
 
-        protected override void OnCollectionItemPropertyChanged(object sender, WrappedCollectionItemPropertyChangedEventArgs e)
+        public override void BeginEdit(IUserEditable originatingObject)
         {
-            if (e.SourceProperty == nameof(Characteristics))
+            if (!IsEditing)
             {
-                OnPropertyChanged(e.SourceProperty, Characteristics, Characteristics);
+                _lastCharacteristicsUserModifiedValue = false;
+                _lastTypesUserModifiedValue = false;
             }
             
-            if (e.SourceProperty == nameof(Types))
-            {
-                OnPropertyChanged(e.SourceProperty, Types, Types);
-            }
             
+            base.BeginEdit(originatingObject);
+        }
+
+        protected override void OnCollectionItemPropertyChanged(object sender,
+            WrappedCollectionItemPropertyChangedEventArgs e)
+        {
+            if (e.SourceProperty == nameof(Characteristics) &&
+                e.OriginalPropertyChangedEventArgs.PropertyName == nameof(IsUserModified) &&
+                _lastCharacteristicsUserModifiedValue != ((CharacteristicCollection)Characteristics).IsUserModified)
+            {
+                OnPropertyChanged(e.SourceProperty, null, Characteristics);
+                _lastCharacteristicsUserModifiedValue = ((CharacteristicCollection) Characteristics).IsUserModified;
+            }
+
+            if (e.SourceProperty == nameof(Types) &&
+                e.OriginalPropertyChangedEventArgs.PropertyName == nameof(IsUserModified) &&
+                _lastTypesUserModifiedValue != ((TypeCollection)Types).IsUserModified)
+            {
+                OnPropertyChanged(e.SourceProperty, null, Types);
+                _lastTypesUserModifiedValue = ((TypeCollection) Types).IsUserModified;
+            }
+
             base.OnCollectionItemPropertyChanged(sender, e);
         }
 
@@ -85,39 +106,39 @@ namespace PresetMagician.Core.Models
             {
                 Author = presetMetadata.Author;
             }
-            
+
             if (!UserOverwrittenProperties.Contains(nameof(Comment)))
             {
                 Comment = presetMetadata.Comment;
             }
-            
+
             if (!UserOverwrittenProperties.Contains(nameof(PresetName)))
             {
                 PresetName = presetMetadata.PresetName;
             }
-            
+
             if (!UserOverwrittenProperties.Contains(nameof(BankPath)))
             {
                 BankPath = presetMetadata.BankPath;
             }
-            
+
             if (!UserOverwrittenProperties.Contains(nameof(Types)))
             {
                 Types.Clear();
 
                 foreach (var type in presetMetadata.Types)
                 {
-                    Types.Add(new Type { TypeName = type.TypeName, SubTypeName = type.SubTypeName});
+                    Types.Add(new Type {TypeName = type.TypeName, SubTypeName = type.SubTypeName});
                 }
             }
-            
+
             if (!UserOverwrittenProperties.Contains(nameof(Characteristics)))
             {
                 Characteristics.Clear();
 
                 foreach (var characteristic in presetMetadata.Characteristics)
                 {
-                    Characteristics.Add(new Characteristic { CharacteristicName= characteristic.CharacteristicName});
+                    Characteristics.Add(new Characteristic {CharacteristicName = characteristic.CharacteristicName});
                 }
             }
         }

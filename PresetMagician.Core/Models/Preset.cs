@@ -49,14 +49,6 @@ namespace PresetMagician.Core.Models
 
         #endregion
 
-        protected override void OnCollectionItemPropertyChanged(object sender,
-            WrappedCollectionItemPropertyChangedEventArgs e)
-        {
-            base.OnCollectionItemPropertyChanged(sender, e);
-
-            
-        }
-
         public Preset()
         {
             _metadata.PropertyChanged += MetadataOnPropertyChanged;

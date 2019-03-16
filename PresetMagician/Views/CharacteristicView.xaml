@@ -1,0 +1,84 @@
+<catel:DataWindow
+    x:Class="PresetMagician.Views.CharacteristicView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:catel="http://schemas.catelproject.com"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:PresetMagician.ViewModels"
+    Padding="2,2,2,2"
+    ResizeMode="NoResize"
+    Width="400"
+    Height="230"
+    Title="{Binding Title}"
+    SizeToContent="Manual"
+    d:DataContext="{d:DesignInstance viewModels:CharacteristicViewModel}"
+    mc:Ignorable="d">
+
+    <catel:DataWindow.Resources>
+        <catel:BooleanToCollapsingVisibilityConverter x:Key="BooleanToCollapsingVisibilityConverter" />
+
+        <catel:BooleanToCollapsingVisibilityConverter x:Key="InvertedBooleanToCollapsingVisibilityConverter">
+            <catel:BooleanToCollapsingVisibilityConverter.Link>
+                <catel:BooleanToOppositeBooleanConverter />
+            </catel:BooleanToCollapsingVisibilityConverter.Link>
+        </catel:BooleanToCollapsingVisibilityConverter>
+    </catel:DataWindow.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+
+            </Grid.ColumnDefinitions>
+            <Label Grid.Row="0" Grid.Column="0" Content="Characteristic Name" />
+            <TextBox Grid.Row="0" Grid.Column="1"
+                     Text="{Binding CharacteristicName, Delay=50, UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
+
+            <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding IsRedirect}"
+                      Visibility="{Binding AllowRedirect, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
+                <TextBlock Text="Redirect to:" />
+            </CheckBox>
+
+            <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Characteristics}"
+                      SelectedItem="{Binding RedirectCharacteristic}"
+                      Visibility="{Binding AllowRedirect, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}"
+                      ItemTemplate="{StaticResource CharacteristicTemplate}" IsEnabled="{Binding IsRedirect}" />
+        </Grid>
+        <Grid Grid.Row="1"
+              Visibility="{Binding AllowRedirect, Converter={StaticResource InvertedBooleanToCollapsingVisibilityConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Row="0" TextWrapping="Wrap"
+                       Text="Redirect is not possible because other characteristics are redirected to this characteristic:" />
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
+                <ItemsControl ItemsSource="{Binding CharacteristicsRedirectingToThis}"
+                              ItemTemplate="{StaticResource CharacteristicWithoutRedirectTemplate}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="1,0,0,0" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</catel:DataWindow>

@@ -40,8 +40,8 @@ namespace PresetMagician
     #warning add force metadata scan function
 #warning todo add preview note migration
     #warning refactor types and characteristics to allow redirects and use ceras to initialize
-    #warning refactor presets to include the original data from the preset parser
-    #warning refactor IsMetadataModified to be calculated from the last exported metadata
+    #warning for future: only attach event listeners where really necessary; removing listeners is expensive
+  
     /// <summary>
     ///     Interaction logic for App.xaml
     /// </summary>

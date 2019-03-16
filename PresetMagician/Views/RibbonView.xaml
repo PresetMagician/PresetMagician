@@ -85,8 +85,7 @@
             <fluent:Button
                 Command="{catel:CommandManagerBinding Tools.EditTypesCharacteristics}"
                 Header="Edit Types / Characteristics"
-                Width="60"
-                LargeIcon="{iconPacks:Material Kind=HelpNetwork,
+                LargeIcon="{iconPacks:Material Kind=Sitemap,
                                                        Width=32,
                                                        Height=32}" />
 
