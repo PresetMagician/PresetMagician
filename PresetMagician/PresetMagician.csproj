@@ -202,6 +202,7 @@
     <Compile Include="Services\Interfaces\IRuntimeConfigurationService.cs" />
     <Compile Include="Services\SplashScreenService.cs" />
     <Compile Include="Services\VstService.cs" />
+    <Compile Include="ViewModels\CharacteristicViewModel.cs" />
     <Compile Include="ViewModels\HelpLinkMessageBoxViewModel.cs" />
     <Compile Include="ViewModels\IModelTracker.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
@@ -210,6 +211,7 @@
     <Compile Include="ViewModels\PresetDataViewModel.cs" />
     <Compile Include="ViewModels\PresetExportListViewModel.cs" />
     <Compile Include="ViewModels\PresetViewModel.cs" />
+    <Compile Include="ViewModels\ProgressWindowViewModel.cs" />
     <Compile Include="ViewModels\RegistrationViewModel.cs" />
     <Compile Include="ViewModels\RenamePresetBankViewModel.cs" />
     <Compile Include="ViewModels\ReportIssueViewModel.cs" />
@@ -218,7 +220,8 @@
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="ViewModels\SplashScreenViewModel.cs" />
     <Compile Include="ViewModels\StatusBarViewModel.cs" />
-    <Compile Include="ViewModels\TypesCharacteristicsView.cs" />
+    <Compile Include="ViewModels\TypesCharacteristicsViewModel.cs" />
+    <Compile Include="ViewModels\TypeViewModel.cs" />
     <Compile Include="ViewModels\VstFolderListViewModel.cs" />
     <Compile Include="ViewModels\VstHostProcessLogViewModel.cs" />
     <Compile Include="ViewModels\VstPluginChunkViewModel.cs" />
@@ -228,6 +231,9 @@
     <Compile Include="ViewModels\VstPluginsViewModel.cs" />
     <Compile Include="ViewModels\VstPluginSettingsViewModel.cs" />
     <Compile Include="ViewModels\VstWorkerPoolViewModel.cs" />
+    <Compile Include="Views\CharacteristicView.xaml.cs">
+      <DependentUpon>CharacteristicView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\HelpLinkMessageBox.xaml.cs">
       <DependentUpon>HelpLinkMessageBox.xaml</DependentUpon>
     </Compile>
@@ -240,6 +246,9 @@
     <Compile Include="Views\PresetDataView.xaml.cs">
       <DependentUpon>PresetDataView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ProgressWindow.xaml.cs">
+      <DependentUpon>ProgressWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\RenamePresetBankView.xaml.cs">
       <DependentUpon>RenamePresetBankView.xaml</DependentUpon>
     </Compile>
@@ -248,6 +257,9 @@
     </Compile>
     <Compile Include="Views\TypesCharacteristicsView.xaml.cs">
       <DependentUpon>TypesCharacteristicsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TypeView.xaml.cs">
+      <DependentUpon>TypeView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\VstHostProcessLogView.xaml.cs">
       <DependentUpon>VstHostProcessLogView.xaml</DependentUpon>
@@ -345,6 +357,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\CharacteristicView.xaml" />
     <Page Include="Views\HelpLinkMessageBox.xaml" />
     <Page Include="Views\MainView.xaml">
       <SubType>Designer</SubType>
@@ -355,12 +368,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\PresetDataView.xaml" />
+    <Page Include="Views\ProgressWindow.xaml" />
     <Page Include="Views\RenamePresetBankView.xaml" />
     <Page Include="Views\ReportIssueView.xaml" />
     <Page Include="Views\TypesCharacteristicsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\TypeView.xaml" />
     <Page Include="Views\VstHostProcessLogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -615,6 +630,17 @@
       <ItemGroup>
         <Reference Include="Catel.MVVM">
           <HintPath>..\packages\Catel.MVVM\lib\net47\Catel.MVVM.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="Ceras">
+          <HintPath>..\packages\Ceras\lib\net47\Ceras.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -1140,6 +1166,17 @@
       <ItemGroup>
         <Reference Include="Syroot.KnownFolders">
           <HintPath>..\packages\Syroot.Windows.IO.KnownFolders\lib\net452\Syroot.KnownFolders.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="System.Buffers">
+          <HintPath>..\packages\System.Buffers\lib\netstandard2.0\System.Buffers.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>

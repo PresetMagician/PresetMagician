@@ -8,6 +8,5 @@ namespace PresetMagician.Core.Data
         void CancelEdit(IUserEditable originatingObject);
         void EndEdit(IUserEditable originatingObject);
         bool IsUserModified { get; }
-        bool IsEditing { get; }
     }
 }

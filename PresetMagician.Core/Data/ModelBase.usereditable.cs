@@ -40,6 +40,8 @@ namespace PresetMagician.Core.Data
             if (!_backupProperties.ContainsKey(GetType()))
             {
                 var backupProperties = (from p in GetType().GetProperties() where p.CanRead && p.CanWrite select p.Name).ToList();
+                backupProperties.Remove(nameof(IsUserModified));
+                backupProperties.Remove(nameof(UserModifiedProperties));
                 _backupProperties.Add(GetType(), backupProperties);
             }
             
@@ -69,6 +71,35 @@ namespace PresetMagician.Core.Data
             }
         }
 
+        public ModelBackup CreateBackup()
+        {
+            var backup = new ModelBackup();
+            var accessor = GetTypeAccessor();
+            
+            foreach (var propertyName in GetBackupProperties())
+            {
+                var value = accessor[this, propertyName];
+                backup.BackupValues[propertyName] = value;
+            }
+
+            return backup;
+        }
+
+        public void RestoreBackup(ModelBackup backup)
+        {
+            var accessor = GetTypeAccessor();
+
+            foreach (var propertyName in GetBackupProperties())
+            {
+                var value = backup.BackupValues[propertyName];
+
+                if (!IsEqualToBackup(accessor[this, propertyName], value))
+                {
+                    accessor[this, propertyName] = value;
+                }
+            }
+        }
+
         public virtual void EndEdit()
         {
             EndEdit(null);
@@ -77,8 +108,9 @@ namespace PresetMagician.Core.Data
 
         public virtual void EndEdit(IUserEditable originatingObject)
         {
-            if (!IsEditing || _originatingEditingObject != originatingObject) return;
+            if (!IsEditing ||!ReferenceEquals(_originatingEditingObject, originatingObject)) return;
 
+            IsEditing = false;
             foreach (var propertyName in GetBackupProperties())
             {
                 var value = PropertyHelper.GetPropertyValue(this, propertyName);
@@ -93,7 +125,7 @@ namespace PresetMagician.Core.Data
             UserModifiedProperties.Clear();
             IsUserModified = false;
             
-            IsEditing = false;
+            
             _originatingEditingObject = null;
 
         }
@@ -105,11 +137,9 @@ namespace PresetMagician.Core.Data
 
         public virtual void CancelEdit(IUserEditable originatingObject)
         {
-            if (!IsEditing || _originatingEditingObject != originatingObject) return;
+            if (!IsEditing || !ReferenceEquals(_originatingEditingObject, originatingObject)) return;
             
             IsEditing = false;
-            UserModifiedProperties.Clear();
-            IsUserModified = false;
 
             var accessor = GetTypeAccessor();
             
@@ -123,11 +153,14 @@ namespace PresetMagician.Core.Data
                     accessor[this, propertyName] = value;
                 }
 
-                if (GetEditableProperties().Contains(propertyName) && value is IUserEditable editable)
+                if (value is IUserEditable editable && GetEditableProperties().Contains(propertyName))
                 {
                     editable.CancelEdit(this);
                 }
             }
+            
+            UserModifiedProperties.Clear();
+            IsUserModified = false;
             _originatingEditingObject = null;
         }
 
@@ -139,6 +172,16 @@ namespace PresetMagician.Core.Data
             }
             CheckUserModified(propertyName);
             IsUserModified = UserModifiedProperties.Count > 0;
+        }
+        
+        private bool IsEqualToBackup(object value, object backupValue)
+        {
+            if (value == null)
+            {
+                return backupValue == null;
+            }
+
+            return value.Equals(backupValue);
         }
 
         private bool IsEqualToBackup(object value, string propertyName)
@@ -194,12 +237,13 @@ namespace PresetMagician.Core.Data
         /// editing.
         /// </summary>
         public HashSet<string> UserModifiedProperties { get; } = new HashSet<string>();
-        
+
         /// <summary>
         /// Defines if this model is in editing mode and causes IsUserModified to change
         /// </summary>
-        public bool IsEditing { get; private set; }
-        
+        public bool IsEditing;
+
+       
         #endregion
     }
 }

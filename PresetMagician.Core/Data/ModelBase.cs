@@ -17,7 +17,11 @@ namespace PresetMagician.Core.Data
         {
             var x = new AdvancedPropertyChangedEventArgs(this, propertyName, before, after);
             OnPropertyChanged(x);
-            PropertyChanged?.Invoke(this, x);
+
+            if (!Equals(before, after))
+            {
+                PropertyChanged?.Invoke(this, x);
+            }
         }
 
         public ModelBase()
