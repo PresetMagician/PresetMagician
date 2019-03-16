@@ -4,6 +4,10 @@ namespace PresetMagician.Core.Models
 {
     public class GlobalCharacteristicCollection: EditableCollection<Characteristic>
     {
+        public GlobalCharacteristicCollection(): base(true)
+        {
+        }
+
         public Characteristic GetGlobalCharacteristic(Characteristic item)
         {
             foreach (var item2 in this)

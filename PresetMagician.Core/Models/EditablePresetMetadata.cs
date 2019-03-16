@@ -128,7 +128,10 @@ namespace PresetMagician.Core.Models
 
                 foreach (var type in presetMetadata.Types)
                 {
-                    Types.Add(new Type {TypeName = type.TypeName, SubTypeName = type.SubTypeName});
+                    if (!type.IsIgnored)
+                    {
+                        Types.Add(new Type {TypeName = type.TypeName, SubTypeName = type.SubTypeName});
+                    }
                 }
             }
 
@@ -138,7 +141,11 @@ namespace PresetMagician.Core.Models
 
                 foreach (var characteristic in presetMetadata.Characteristics)
                 {
-                    Characteristics.Add(new Characteristic {CharacteristicName = characteristic.CharacteristicName});
+                    if (!characteristic.IsIgnored)
+                    {
+                        Characteristics.Add(new Characteristic
+                            {CharacteristicName = characteristic.CharacteristicName});
+                    }
                 }
             }
         }

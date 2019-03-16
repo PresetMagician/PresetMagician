@@ -27,12 +27,18 @@ namespace PresetMagician.Core.Models
 
             foreach (var type in preset.Metadata.Types)
             {
-                Types.Add(new List<string> {type.EffectiveTypeName, type.EffectiveSubTypeName});
+                if (!type.IsIgnored)
+                {
+                    Types.Add(new List<string> {type.EffectiveTypeName, type.EffectiveSubTypeName});
+                }
             }
 
             foreach (var mode in preset.Metadata.Characteristics)
             {
-                Modes.Add(mode.EffectiveCharacteristicName);
+                if (!mode.IsIgnored)
+                {
+                    Modes.Add(mode.EffectiveCharacteristicName);
+                }
             }
         }
 

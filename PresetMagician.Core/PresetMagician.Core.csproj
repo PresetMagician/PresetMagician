@@ -48,12 +48,14 @@
   <ItemGroup>
     <Compile Include="ApplicationTask\ApplicationProgress.cs" />
     <Compile Include="Collections\EditableCollection.cs" />
-    <Compile Include="Collections\ObservableHashset.cs" />
+    <Compile Include="Collections\WrappedEditableCollection.cs" />
+    <Compile Include="Core.cs" />
     <Compile Include="Data\IUserEditable.cs" />
     <Compile Include="Data\ModelBackup.cs" />
     <Compile Include="Data\ModelBase.cs" />
     <Compile Include="Data\ModelBase.usereditable.cs" />
     <Compile Include="Data\UserEditableChangeNotificationWrapper.cs" />
+    <Compile Include="Data\WrappedModelBase.cs" />
     <Compile Include="EventArgs\PresetUpdatedEventArgs.cs" />
     <Compile Include="Exceptions\ConnectivityLostException.cs" />
     <Compile Include="Extensions\CharacteristicCollectionExtensions.cs" />
@@ -75,6 +77,7 @@
     <Compile Include="Models\BankFile.cs" />
     <Compile Include="Models\Characteristic.cs" />
     <Compile Include="Models\CharacteristicCollection.cs" />
+    <Compile Include="Models\CharacteristicUsage.cs" />
     <Compile Include="Models\EditablePresetMetadata.cs" />
     <Compile Include="Models\ExportedPresetMetadata.cs" />
     <Compile Include="Models\GlobalCharacteristicCollection.cs" />
@@ -103,13 +106,17 @@
     <Compile Include="Models\PreviewNotePlayer.cs" />
     <Compile Include="Models\Type.cs" />
     <Compile Include="Models\TypeCollection.cs" />
+    <Compile Include="Models\TypeUsage.cs" />
     <Compile Include="Models\VstDirectory.cs" />
     <Compile Include="Models\VstPluginInfoSurrogate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\CharacteristicsService.cs" />
     <Compile Include="Services\DataPersisterService.cs" />
+    <Compile Include="Services\GlobalService.cs" />
     <Compile Include="Services\PluginService.cs" />
     <Compile Include="Services\PresetDataPersisterService.cs" />
     <Compile Include="Services\PreviewNotePlayerService.cs" />
+    <Compile Include="Services\TypesService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />

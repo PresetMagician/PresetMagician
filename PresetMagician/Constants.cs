@@ -9,10 +9,24 @@ namespace PresetMagician
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class HelpLinks
     {
+        #region Commands
         public static string COMMANDS_ANALYZE => "COMMANDS_ANALYZE";
+        #endregion
+        
+        #region Reference
+        public static string REFERENCE_TYPECHARACTERISTICEDITOR_ADDEDIT => "REFERENCE_TYPECHARACTERISTICEDITOR_ADDEDIT";
+        public static string REFERENCE_TYPECHARACTERISTICEDITOR_DELETE => "REFERENCE_TYPECHARACTERISTICEDITOR_DELETE";
+        public static string REFERENCE_TYPECHARACTERISTICEDITOR_SHOWUSAGES => "REFERENCE_TYPECHARACTERISTICEDITOR_SHOWUSAGES";
+        #endregion
+        
+        #region Settings
         public static string SETTINGS_PLUGIN_DLL => "SETTINGS_PLUGIN_DLL";
         public static string SETTINGS_PLUGIN_FXBFXPNOTES = "SETTINGS_PLUGIN_FXBFXPNOTES";
+        #endregion
+        
+        #region Concepts
         public static string CONCEPTS_VST_WORKER_POOL => "CONCEPTS_VST_WORKER_POOL";
+        #endregion
     }
 }
 

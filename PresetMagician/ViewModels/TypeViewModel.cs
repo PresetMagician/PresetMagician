@@ -8,18 +8,23 @@ using Catel.MVVM;
 using PresetMagician.Core.Collections;
 using PresetMagician.Core.Data;
 using PresetMagician.Core.Models;
+using PresetMagician.Core.Services;
 
 namespace PresetMagician.ViewModels
 {
     public class TypeViewModel : ViewModelBase
     {
-        private ModelBackup _modelBackup; 
-        public TypeViewModel(Type type)
+        private ModelBackup _modelBackup;
+        private readonly TypesService _typesService;
+        
+        public TypeViewModel(Type type, TypesService typesService)
         {
             DeferValidationUntilFirstSaveCall = false;
+            
             _modelBackup = type.CreateBackup();
+            _typesService = typesService;
             Type = type;
-            Types = (from t in Type.GlobalTypes where !t.IsRedirect && t != type orderby t.EffectiveFullTypeName select t).ToList();
+            RedirectTargets = _typesService.GetRedirectTargets(type);
             TypesRedirectingToThis = (from t in Type.GlobalTypes
                 where t.RedirectType == type
                 orderby t.FullTypeName
@@ -33,6 +38,21 @@ namespace PresetMagician.ViewModels
             {
                 validationResults.Add(FieldValidationResult.CreateError(nameof(RedirectType),
                     "You need to specify a type to redirect to"));
+            }
+            
+            if (IsIgnored && IsRedirect)
+            {
+                validationResults.Add(FieldValidationResult.CreateError(nameof(RedirectType),
+                    "You cannot ignore and redirect a type at the same time"));
+            }
+
+            if (_typesService.HasType(Type))
+            {
+                validationResults.Add(FieldValidationResult.CreateError(nameof(TypeName),
+                    "Another type with the same name already exists"));
+                
+                validationResults.Add(FieldValidationResult.CreateError(nameof(SubTypeName),
+                    "Another type with the same name already exists"));
             }
             base.ValidateFields(validationResults);
         }
@@ -59,10 +79,11 @@ namespace PresetMagician.ViewModels
         public string SubTypeName { get; set; }
 
         [ViewModelToModel("Type")] public bool IsRedirect { get; set; }
+        [ViewModelToModel("Type")] public bool IsIgnored { get; set; }
 
         [ViewModelToModel("Type")] public Type RedirectType { get; set; }
 
-        public List<Type> Types { get; set; }
+        public List<Type> RedirectTargets { get; set; }
         public List<Type> TypesRedirectingToThis { get; set; }
         public new string Title { get; set; }
         public bool AllowRedirect { get; set; }

@@ -8,9 +8,9 @@
     xmlns:viewModels="clr-namespace:PresetMagician.ViewModels"
     xmlns:dgx="urn:tom-englert.de/DataGridExtensions"
     xmlns:fluent="urn:fluent-ribbon"
+    xmlns:models="clr-namespace:PresetMagician.Core.Models;assembly=PresetMagician.Core"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:behaviors="clr-namespace:PresetMagician.Behaviors"
-    xmlns:orchestra="http://schemas.wildgums.com/orchestra"
     ResizeMode="NoResize"
     Width="1000"
     Height="800"
@@ -19,179 +19,261 @@
     d:DataContext="{d:DesignInstance viewModels:TypesCharacteristicsViewModel}"
     mc:Ignorable="d">
 
-       
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
 
-                <fluent:Ribbon
-                    Grid.Row="0" Grid.ColumnSpan="2"
-                    AutomaticStateManagement="False"
-                    CanCustomizeRibbon="False"
-                    IsQuickAccessToolBarVisible="False">
-                    <fluent:Ribbon.Resources><Style TargetType="{x:Type TextBlock}">
-                        <Setter Property="Margin" Value="0" />
-                    </Style></fluent:Ribbon.Resources>
-                    <fluent:RibbonTabItem Header="Commands">
-                        <fluent:RibbonGroupBox Header="Types">
-                            <fluent:Button
-                                Command="{Binding AddTypeCommand}"
-                                Header="Add Type"
-                                ToolTip="Adds a new type"
-                                LargeIcon="{iconPacks:MaterialDesign Kind=AddBox, Width=32, Height=32}"
-                                Size="Large" />
-                            <fluent:Button
-                                Command="{Binding EditTypeCommand}"
-                                Header="Edit Type"
-                                ToolTip="Edits a type"
-                                LargeIcon="{iconPacks:MaterialDesign Kind=Edit, Width=32, Height=32}"
-                                Size="Large" />
-                            <fluent:Button
-                                Command="{Binding DeleteTypeCommand}"
-                                Header="Delete Type(s)"
-                                ToolTip="Deletes the selected type(s)"
-                                LargeIcon="{iconPacks:MaterialDesign Kind=DeleteForever, Width=32, Height=32}"
-                                Size="Large" />
-                            <fluent:ToggleButton ToolTip="Shows or hides type redirects" IsChecked="{Binding ShowTypeRedirects}" Header="Show Redirects" LargeIcon="{iconPacks:JamIcons Kind=Link, Width=32, Height=32}"/>
-                            </fluent:RibbonGroupBox>
-                        <fluent:RibbonGroupBox Header="Characteristics">
-                            <fluent:Button
-                                Command="{Binding AddCharacteristicCommand}"
-                                Header="Add Characteristic"
-                                ToolTip="Adds a new Characteristic"
-                                LargeIcon="{iconPacks:MaterialDesign Kind=AddBox, Width=32, Height=32}"
-                                Size="Large" />
-                            <fluent:Button
-                                Command="{Binding EditCharacteristicCommand}"
-                                Header="Edit Characteristic"
-                                ToolTip="Edits a Characteristic"
-                                LargeIcon="{iconPacks:MaterialDesign Kind=Edit, Width=32, Height=32}"
-                                Size="Large" />
-                            <fluent:Button
-                                Command="{Binding DeleteCharacteristicCommand}"
-                                Header="Delete Characteristic(s)"
-                                ToolTip="Deletes the selected Characteristic(s)"
-                                LargeIcon="{iconPacks:MaterialDesign Kind=DeleteForever, Width=32, Height=32}"
-                                Size="Large" />
-                            <fluent:ToggleButton ToolTip="Shows or hides type redirects" IsChecked="{Binding ShowCharacteristicRedirects}" Header="Show Redirects" LargeIcon="{iconPacks:JamIcons Kind=Link, Width=32, Height=32}"/>
-                        </fluent:RibbonGroupBox>
-                            </fluent:RibbonTabItem>
-                    
-                </fluent:Ribbon>
-                
-                
-                <GroupBox Header="Types"  Grid.Row="1"
-                          Grid.Column="0">
-                    <DataGrid
-                        Margin="5"
-                        AutoGenerateColumns="False"
-                        dgx:DataGridFilter.IsAutoFilterEnabled="True"
-                        IsReadOnly="True"
-                        dgx:Tools.ApplyInitialSorting="True"
-                        dgx:DataGridFilter.FilterEvaluationDelay="0:0:0.1"
-                        SelectedItem="{Binding SelectedType}"
-                        behaviors:MultiSelectBehavior.SynchronizedSelectedItems="{Binding SelectedTypes}"
-                        ItemsSource="{Binding TypesView}">
-                        <DataGrid.Columns>
-                            <DataGridTemplateColumn
-                                SortDirection="Ascending"
-                                SortMemberPath="FullTypeName"
-                                Width="200"
-                                Header="Type">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate >
-                                        <ContentControl 
-                                            ContentTemplate="{StaticResource TypeWithoutRedirectTemplate}" 
-                                            Content="{Binding}" />
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn
-                                SortDirection="Ascending"
-                                Width="200"
-                                Header="Redirected to">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <ContentControl 
-                                            Content="{Binding RedirectType}">
-                                            <ContentControl.Style>
-                                                <Style TargetType="{x:Type ContentControl}">
-                                                    <Setter Property="ContentTemplate" Value="{StaticResource TypeWithoutRedirectTemplate}"/>
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding RedirectType}" Value="{x:Null}">
-                                                            <Setter Property="Visibility" Value="Collapsed" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </ContentControl.Style>
-                                        </ContentControl>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
 
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </GroupBox>
-               
-                <GroupBox Header="Characteristics"  Grid.Row="1"
-                          Grid.Column="1">
-                    <DataGrid
-                        Margin="5"
-                        AutoGenerateColumns="False"
-                        dgx:DataGridFilter.IsAutoFilterEnabled="True"
-                        IsReadOnly="True"
-                        dgx:Tools.ApplyInitialSorting="True"
-                        dgx:DataGridFilter.FilterEvaluationDelay="0:0:0.1"
-                        SelectedItem="{Binding SelectedCharacteristic}"
-                        behaviors:MultiSelectBehavior.SynchronizedSelectedItems="{Binding SelectedCharacteristics}"
-                        ItemsSource="{Binding CharacteristicsView}">
-                        <DataGrid.Columns>
-                            <DataGridTemplateColumn
-                                SortDirection="Ascending"
-                                SortMemberPath="CharacteristicName"
-                                Width="200"
-                                Header="Characteristic">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate >
-                                        <ContentControl 
-                                            ContentTemplate="{StaticResource CharacteristicWithoutRedirectTemplate}" 
-                                            Content="{Binding}" />
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn
-                                SortDirection="Ascending"
-                                Width="200"
-                                Header="Redirected to">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <ContentControl 
-                                            Content="{Binding RedirectCharacteristic}">
-                                            <ContentControl.Style>
-                                                <Style TargetType="{x:Type ContentControl}">
-                                                    <Setter Property="ContentTemplate" Value="{StaticResource CharacteristicWithoutRedirectTemplate}"/>
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding RedirectCharacteristic}" Value="{x:Null}">
-                                                            <Setter Property="Visibility" Value="Collapsed" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </ContentControl.Style>
-                                        </ContentControl>
+        <fluent:Ribbon
+            Grid.Row="0" Grid.ColumnSpan="2"
+            AutomaticStateManagement="False"
+            CanCustomizeRibbon="False"
+            IsQuickAccessToolBarVisible="False">
+            <fluent:Ribbon.Resources>
+                <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="Margin" Value="0" />
+                </Style>
+            </fluent:Ribbon.Resources>
+            <fluent:RibbonTabItem Header="Commands">
+                <fluent:RibbonGroupBox Header="Types" Width="502">
+                    <fluent:Button
+                        Command="{Binding AddTypeCommand}"
+                        Header="Add Type"
+                        LargeIcon="{iconPacks:MaterialDesign Kind=AddBox, Width=32, Height=32}"
+                        Size="Large">
+                        <fluent:Button.ToolTip>
+                            <fluent:ScreenTip Title="Adds a new type"
+                                              Width="250"
+                                              Text="Adds a new type to the global database."
+                                              HelpTopic="{Binding HelpLinks.REFERENCE_TYPECHARACTERISTICEDITOR_ADDEDIT}" />
+                        </fluent:Button.ToolTip>
+                    </fluent:Button>
+                    <fluent:Button
+                        Command="{Binding EditTypeCommand}"
+                        Header="Edit Type"
+                        LargeIcon="{iconPacks:MaterialDesign Kind=Edit, Width=32, Height=32}"
+                        Size="Large">
+                        <fluent:Button.ToolTip>
+                            <fluent:ScreenTip Title="Edits a type"
+                                              Width="250"
+                                              Text="Edits a type in the global database."
+                                              HelpTopic="{Binding HelpLinks.REFERENCE_TYPECHARACTERISTICEDITOR_ADDEDIT}" />
+                        </fluent:Button.ToolTip>
+                        </fluent:Button>
+                    <fluent:Button
+                        Command="{Binding DeleteTypeCommand}"
+                        Header="Delete Type(s)"
+                        LargeIcon="{iconPacks:MaterialDesign Kind=DeleteForever, Width=32, Height=32}"
+                        Size="Large">
+                        <fluent:Button.ToolTip>
+                            <fluent:ScreenTip Title="Deletes the selected type(s)"
+                                              Width="250"
+                                              Text="Deletes the selected type(s) from the global database."
+                                              HelpTopic="{Binding HelpLinks.REFERENCE_TYPECHARACTERISTICEDITOR_DELETE}" />
+                        </fluent:Button.ToolTip>
+                    </fluent:Button>
+                    <fluent:Button
+                                         Size="Large"
+                                         Header="Show Usage"
+                                         Command="{Binding ShowTypeUsageCommand}"
+                                         LargeIcon="{iconPacks:Material Kind=FileFind, Width=32, Height=32}">
+                        <fluent:Button.ToolTip>
+                            <fluent:ScreenTip Title="Shows the plugins which use this type"
+                                              Width="250"
+                                              HelpTopic="{Binding HelpLinks.REFERENCE_TYPECHARACTERISTICEDITOR_SHOWUSAGES}" />
+                        </fluent:Button.ToolTip>
+                        </fluent:Button>
+                    <fluent:ToggleButton ToolTip="Shows or hides type redirects"
+                                         Size="Middle"
+                                         IsChecked="{Binding ShowTypeRedirects}" Header="Show Redirects"
+                                         Icon="{iconPacks:JamIcons Kind=Link}" />
+                    <fluent:ToggleButton ToolTip="Shows or hides ignored types"
+                                         Size="Middle"
+                                         IsChecked="{Binding ShowIgnoredTypes}" Header="Show Ignored"
+                                         Icon="{iconPacks:Material Kind=Ghost}" />
+                </fluent:RibbonGroupBox>
+                <fluent:RibbonGroupBox Header="Characteristics">
+                    <fluent:Button
+                        Command="{Binding AddCharacteristicCommand}"
+                        Header="Add Characteristic"
+                        LargeIcon="{iconPacks:MaterialDesign Kind=AddBox, Width=32, Height=32}"
+                        Size="Large">
+                        <fluent:Button.ToolTip>
+                            <fluent:ScreenTip Title="Adds a new characteristic"
+                                              Width="250"
+                                              Text="Adds a new characteristic to the global database."
+                                              HelpTopic="{Binding HelpLinks.REFERENCE_TYPECHARACTERISTICEDITOR_ADDEDIT}" />
+                        </fluent:Button.ToolTip>
+                        </fluent:Button>
+                    <fluent:Button
+                        Command="{Binding EditCharacteristicCommand}"
+                        Header="Edit Characteristic"
+                        LargeIcon="{iconPacks:MaterialDesign Kind=Edit, Width=32, Height=32}"
+                        Size="Large">
+                        <fluent:Button.ToolTip>
+                            <fluent:ScreenTip Title="Edits a characteristic"
+                                              Width="250"
+                                              Text="Edits a characteristic in the global database."
+                                              HelpTopic="{Binding HelpLinks.REFERENCE_TYPECHARACTERISTICEDITOR_ADDEDIT}" />
+                        </fluent:Button.ToolTip>
+                    </fluent:Button>
+                    <fluent:Button
+                        Command="{Binding DeleteCharacteristicCommand}"
+                        Header="Delete Characteristic(s)"
+                        LargeIcon="{iconPacks:MaterialDesign Kind=DeleteForever, Width=32, Height=32}"
+                        Size="Large">
+                        <fluent:Button.ToolTip>
+                            <fluent:ScreenTip Title="Deletes the selected characteristic(s)"
+                                              Width="250"
+                                              Text="Deletes the selected characteristic(s) from the global database."
+                                              HelpTopic="{Binding HelpLinks.REFERENCE_TYPECHARACTERISTICEDITOR_DELETE}" />
+                        </fluent:Button.ToolTip>
+                    </fluent:Button>
+                    <fluent:Button
+                        Size="Large"
+                        Header="Show Usage"
+                        Command="{Binding ShowCharacteristicUsageCommand}"
+                        LargeIcon="{iconPacks:Material Kind=FileFind, Width=32, Height=32}">
+                        <fluent:Button.ToolTip>
+                            <fluent:ScreenTip Title="Shows the plugins which use this characteristic"
+                                              Width="250"
+                                              HelpTopic="{Binding HelpLinks.REFERENCE_TYPECHARACTERISTICEDITOR_SHOWUSAGES}" />
+                        </fluent:Button.ToolTip>
+                    </fluent:Button>
+                    <fluent:ToggleButton ToolTip="Shows or hides characteristic redirects"
+                                         Size="Middle"
+                                         MinWidth="115"
+                                         IsChecked="{Binding ShowCharacteristicRedirects}" Header="Show Redirects"
+                                         Icon="{iconPacks:JamIcons Kind=Link}" />
+                    <fluent:ToggleButton ToolTip="Shows or hides ignored characteristics"
+                                         Size="Middle"
+                                         MinWidth="115"
+                                         IsChecked="{Binding ShowIgnoredCharacteristics}" Header="Show Ignored"
+                                         Icon="{iconPacks:Material Kind=Ghost}" />
+                </fluent:RibbonGroupBox>
+            </fluent:RibbonTabItem>
 
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </GroupBox>
-            </Grid>
-               
-      
+        </fluent:Ribbon>
+
+
+        <GroupBox Header="Types" Grid.Row="1"
+                  Grid.Column="0">
+            <DataGrid
+                Margin="5"
+                AutoGenerateColumns="False"
+                dgx:DataGridFilter.IsAutoFilterEnabled="True"
+                IsReadOnly="True"
+                dgx:Tools.ApplyInitialSorting="True"
+                dgx:DataGridFilter.FilterEvaluationDelay="0:0:0.1"
+                SelectedItem="{Binding SelectedType}"
+                behaviors:MultiSelectBehavior.SynchronizedSelectedItems="{Binding SelectedTypes}"
+                d:DataContext="{d:DesignInstance models:TypeUsage, CreateList=True}"
+                ItemsSource="{Binding TypesView}">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn
+                        SortDirection="Ascending"
+                        SortMemberPath="Type.FullTypeName"
+                        Width="200"
+                        Header="Type">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ContentControl
+                                    ContentTemplate="{StaticResource TypeWithoutRedirectTemplate}"
+                                    Content="{Binding Type}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn
+                        CanUserSort="False"
+                        Width="200"
+                        Header="Redirected to">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ContentControl
+                                    Content="{Binding Type.RedirectType}">
+                                    <ContentControl.Style>
+                                        <Style TargetType="{x:Type ContentControl}">
+                                            <Setter Property="ContentTemplate"
+                                                    Value="{StaticResource TypeWithoutRedirectTemplate}" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Type.RedirectType}" Value="{x:Null}">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ContentControl.Style>
+                                </ContentControl>
+
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn dgx:DataGridFilterColumn.IsFilterVisible="False" Header="Usages" Width="50" Binding="{Binding UsageCount}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
+
+        <GroupBox Header="Characteristics" Grid.Row="1"
+                  Grid.Column="1">
+            <DataGrid
+                Margin="5"
+                AutoGenerateColumns="False"
+                dgx:DataGridFilter.IsAutoFilterEnabled="True"
+                IsReadOnly="True"
+                dgx:Tools.ApplyInitialSorting="True"
+                dgx:DataGridFilter.FilterEvaluationDelay="0:0:0.1"
+                SelectedItem="{Binding SelectedCharacteristic}"
+                behaviors:MultiSelectBehavior.SynchronizedSelectedItems="{Binding SelectedCharacteristics}"
+                d:DataContext="{d:DesignInstance models:CharacteristicUsage, CreateList=True}"
+                ItemsSource="{Binding CharacteristicsView}">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn
+                        SortDirection="Ascending"
+                        SortMemberPath="Characteristic.CharacteristicName"
+                        Width="200"
+                        Header="Characteristic">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ContentControl
+                                    ContentTemplate="{StaticResource CharacteristicWithoutRedirectTemplate}"
+                                    Content="{Binding Characteristic}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn
+                        CanUserSort="False"
+                        Width="200"
+                        Header="Redirected to">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ContentControl
+                                    Content="{Binding Characteristic.RedirectCharacteristic}">
+                                    <ContentControl.Style>
+                                        <Style TargetType="{x:Type ContentControl}">
+                                            <Setter Property="ContentTemplate"
+                                                    Value="{StaticResource CharacteristicWithoutRedirectTemplate}" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Characteristic.RedirectCharacteristic}"
+                                                             Value="{x:Null}">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ContentControl.Style>
+                                </ContentControl>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn dgx:DataGridFilterColumn.IsFilterVisible="False" Header="Usages" Width="50" Binding="{Binding UsageCount}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
+    </Grid>
+
+
 </catel:DataWindow>

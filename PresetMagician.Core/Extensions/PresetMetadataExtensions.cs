@@ -47,12 +47,12 @@ namespace PresetMagician.Core.Extensions
                 return false;
             }
 
-            if (!metadata.Characteristics.IsEqualTo(compare.Characteristics))
+            if (!metadata.Characteristics.IsEqualTo(compare.Characteristics, true))
             {
                 return false;
             }
 
-            if (!metadata.Types.IsEqualTo(compare.Types))
+            if (!metadata.Types.IsEqualTo(compare.Types, true))
             {
                 return false;
             }

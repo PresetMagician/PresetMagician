@@ -4,6 +4,10 @@ namespace PresetMagician.Core.Models
 {
     public class GlobalTypeCollection: EditableCollection<Type>
     {
+        public GlobalTypeCollection() : base(true)
+        {
+        }
+
         public Type GetGlobalType(Type item)
         {
             foreach (var item2 in this)

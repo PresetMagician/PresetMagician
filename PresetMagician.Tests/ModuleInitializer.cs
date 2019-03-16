@@ -8,7 +8,6 @@ namespace PresetMagician.Tests
             public static void Initialize()
             {
                 Catel.Reflection.TypeCache.InitializeTypes();
-               Debug.WriteLine("init");
             }
     }
 }

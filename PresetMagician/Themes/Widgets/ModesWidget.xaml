@@ -1,119 +1,64 @@
- <ResourceDictionary
+<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:models="clr-namespace:PresetMagician.Core.Models;assembly=PresetMagician.Core"
     xmlns:catel="http://schemas.catelproject.com">
 
-     <catel:BooleanToCollapsingVisibilityConverter x:Key="BooleanToCollapsingVisibilityConverter" />
+    <catel:BooleanToCollapsingVisibilityConverter x:Key="BooleanToCollapsingVisibilityConverter" />
     <DataTemplate x:Key="CharacteristicTemplate" DataType="{x:Type models:Characteristic}">
-        <Border HorizontalAlignment="Left" 
+        <Border HorizontalAlignment="Left"
+                Margin="1,1,2,1"
+                Padding="2,0,2,0"
+                Background="BlueViolet"
+                ToolTip="{Binding StatusDescription}"
+                CornerRadius="3">
+            <StackPanel Orientation="Horizontal">
+                <iconPacks:PackIconJamIcons Width="10" VerticalAlignment="Center" Height="10" Kind="Link"
+                                            Visibility="{Binding IsRedirect, Mode=OneWay,Converter={StaticResource BooleanToCollapsingVisibilityConverter}}"
+                                            Foreground="White" />
+                <iconPacks:PackIconMaterial Width="10" VerticalAlignment="Center" Height="10" Kind="Ghost"
+                                            Visibility="{Binding IsIgnored, Mode=OneWay,Converter={StaticResource BooleanToCollapsingVisibilityConverter}}"
+                                            Foreground="White" />
+                <TextBlock TextWrapping="NoWrap"
+                           HorizontalAlignment="Left"
+                           Foreground="White"
+                           Text="{Binding EffectiveCharacteristicName, Mode=OneWay}" />
+            </StackPanel>
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="CharacteristicWithoutRedirectTemplate" DataType="{x:Type models:Characteristic}">
+        <Border HorizontalAlignment="Left"
                 Margin="1,1,2,1"
                 Padding="2,0,2,0"
                 Background="BlueViolet"
                 CornerRadius="3">
             <Border.Style>
                 <Style TargetType="{x:Type Border}">
-                    <Setter Property="ToolTip" Value="{x:Null}"/>
+                    <Setter Property="ToolTip" Value="{x:Null}" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsRedirect}" Value="True">
-                            <Setter Property="ToolTip" Value="{Binding RedirectDescription}" />
+                        <DataTrigger Binding="{Binding IsIgnored}" Value="True">
+                            <Setter Property="ToolTip" Value="This characteristic is ignored" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </Border.Style>
             <StackPanel Orientation="Horizontal">
-            <iconPacks:PackIconJamIcons Width="10" VerticalAlignment="Center" Height="10" Kind="Link" Visibility="{Binding IsRedirect, Mode=OneWay,Converter={StaticResource BooleanToCollapsingVisibilityConverter}}" Foreground="White"/>
-            <TextBlock TextWrapping="NoWrap"
-                       HorizontalAlignment="Left"
-                       Foreground="White"
-                       Text="{Binding EffectiveCharacteristicName, Mode=OneWay}" />
+                <iconPacks:PackIconMaterial Width="10" VerticalAlignment="Center" Height="10" Kind="Ghost"
+                                            Visibility="{Binding IsIgnored, Mode=OneWay,Converter={StaticResource BooleanToCollapsingVisibilityConverter}}"
+                                            Foreground="White" />
+                <TextBlock TextWrapping="NoWrap"
+                           HorizontalAlignment="Left"
+                           Foreground="White"
+                           Text="{Binding CharacteristicName, Mode=OneWay}" />
             </StackPanel>
         </Border>
     </DataTemplate>
-     
-     <DataTemplate x:Key="CharacteristicWithoutRedirectTemplate" DataType="{x:Type models:Characteristic}">
-         <Border HorizontalAlignment="Left" 
-                 Margin="1,1,2,1"
-                 Padding="2,0,2,0"
-                 Background="BlueViolet"
-                 CornerRadius="3">
-             <TextBlock TextWrapping="NoWrap"
-                        HorizontalAlignment="Left"
-                        Foreground="White"
-                        Text="{Binding CharacteristicName, Mode=OneWay}" />
-         </Border>
-     </DataTemplate>
 
-     <DataTemplate x:Key="CharacteristicsTemplate" DataType="{x:Type models:Preset}">
-         <ItemsControl ItemsSource="{Binding Path=Metadata.Characteristics,Mode=OneWay}" ItemTemplate="{StaticResource CharacteristicTemplate}">
-             <ItemsControl.ItemsPanel>
-                 <ItemsPanelTemplate>
-                     <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="1,0,0,0" />
-                 </ItemsPanelTemplate>
-             </ItemsControl.ItemsPanel>
-         </ItemsControl>
-     </DataTemplate>
-     
-     <DataTemplate x:Key="TypeTemplate" DataType="{x:Type models:Type}">
-
-         <Border HorizontalAlignment="Left"  
-                 Margin="1,1,2,1"
-                 Padding="2,0,2,0"
-                 Background="BlueViolet"
-                 CornerRadius="3">
-             <Border.Style>
-                 <Style TargetType="{x:Type Border}">
-                     <Setter Property="ToolTip" Value="{x:Null}"/>
-                     <Style.Triggers>
-                         <DataTrigger Binding="{Binding IsRedirect}" Value="True">
-                             <Setter Property="ToolTip" Value="{Binding RedirectDescription}" />
-                         </DataTrigger>
-                     </Style.Triggers>
-                 </Style>
-             </Border.Style>
-             <StackPanel Orientation="Horizontal">
-                 <iconPacks:PackIconJamIcons Width="10" VerticalAlignment="Center" Height="10" Kind="Link" Visibility="{Binding IsRedirect, Mode=OneWay,Converter={StaticResource BooleanToCollapsingVisibilityConverter}}" Foreground="White"/>
-                 <TextBlock
-                 TextWrapping="NoWrap"
-                 HorizontalAlignment="Left"
-                 Foreground="White"  Text="{Binding EffectiveTypeName, Mode=OneWay}"/>
-             <iconPacks:PackIconIonicons Width="10" VerticalAlignment="Center" Height="10" Kind="ArrowDroprightMD" Visibility="{Binding HasSeparator, Mode=OneWay,Converter={StaticResource BooleanToCollapsingVisibilityConverter}}" Foreground="White"/>
-             <TextBlock
-                 TextWrapping="NoWrap"
-                 HorizontalAlignment="Left"
-                 Foreground="White"  Text="{Binding EffectiveSubTypeName, Mode=OneWay}"/>
-                 </StackPanel>
-         </Border>
-     </DataTemplate>
-     
-     <DataTemplate x:Key="TypeWithoutRedirectTemplate" DataType="{x:Type models:Type}">
-
-         <Border HorizontalAlignment="Left"  
-                 Margin="1,1,2,1"
-                 Padding="2,0,2,0"
-                 Background="BlueViolet"
-                 CornerRadius="3">
-            
-             <StackPanel Orientation="Horizontal">
-                 <TextBlock
-                     TextWrapping="NoWrap"
-                     HorizontalAlignment="Left"
-                     Foreground="White"  Text="{Binding TypeName, Mode=OneWay}"/>
-                 <iconPacks:PackIconIonicons Width="10" VerticalAlignment="Center" Height="10" Kind="ArrowDroprightMD" Visibility="{Binding HasSeparator, Mode=OneWay,Converter={StaticResource BooleanToCollapsingVisibilityConverter}}" Foreground="White"/>
-                 <TextBlock
-                     TextWrapping="NoWrap"
-                     HorizontalAlignment="Left"
-                     Foreground="White"  Text="{Binding SubTypeName, Mode=OneWay}"/>
-             </StackPanel>
-         </Border>
-     </DataTemplate>
-    
-   
-    
-    <DataTemplate x:Key="TypesTemplate" DataType="{x:Type models:Preset}">
-        <ItemsControl ItemsSource="{Binding Path=Metadata.Types,Mode=OneWay}" ItemTemplate="{StaticResource TypeTemplate}">
+    <DataTemplate x:Key="CharacteristicsTemplate" DataType="{x:Type models:Preset}">
+        <ItemsControl ItemsSource="{Binding Path=Metadata.Characteristics,Mode=OneWay}"
+                      ItemTemplate="{StaticResource CharacteristicTemplate}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="1,0,0,0" />
@@ -121,6 +66,85 @@
             </ItemsControl.ItemsPanel>
         </ItemsControl>
     </DataTemplate>
-     
-    
+
+    <DataTemplate x:Key="TypeTemplate" DataType="{x:Type models:Type}">
+
+        <Border HorizontalAlignment="Left"
+                Margin="1,1,2,1"
+                Padding="2,0,2,0"
+                Background="BlueViolet"
+                ToolTip="{Binding StatusDescription}"
+                CornerRadius="3">
+            <StackPanel Orientation="Horizontal">
+                <iconPacks:PackIconJamIcons Width="10" VerticalAlignment="Center" Height="10" Kind="Link"
+                                            Visibility="{Binding IsRedirect, Mode=OneWay,Converter={StaticResource BooleanToCollapsingVisibilityConverter}}"
+                                            Foreground="White" />
+                <iconPacks:PackIconMaterial Width="10" VerticalAlignment="Center" Height="10" Kind="Ghost"
+                                            Visibility="{Binding IsIgnored, Mode=OneWay,Converter={StaticResource BooleanToCollapsingVisibilityConverter}}"
+                                            Foreground="White" />
+                <TextBlock
+                    TextWrapping="NoWrap"
+                    HorizontalAlignment="Left"
+                    Foreground="White" Text="{Binding EffectiveTypeName, Mode=OneWay}" />
+                <iconPacks:PackIconIonicons Width="10" VerticalAlignment="Center" Height="10" Kind="ArrowDroprightMD"
+                                            Visibility="{Binding HasSeparator, Mode=OneWay,Converter={StaticResource BooleanToCollapsingVisibilityConverter}}"
+                                            Foreground="White" />
+                <TextBlock
+                    TextWrapping="NoWrap"
+                    HorizontalAlignment="Left"
+                    Foreground="White" Text="{Binding EffectiveSubTypeName, Mode=OneWay}" />
+            </StackPanel>
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="TypeWithoutRedirectTemplate" DataType="{x:Type models:Type}">
+
+        <Border HorizontalAlignment="Left"
+                Margin="1,1,2,1"
+                Padding="2,0,2,0"
+                Background="BlueViolet"
+                CornerRadius="3">
+            <Border.Style>
+                <Style TargetType="{x:Type Border}">
+                    <Setter Property="ToolTip" Value="{x:Null}" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsIgnored}" Value="True">
+                            <Setter Property="ToolTip" Value="This type is ignored" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+
+            <StackPanel Orientation="Horizontal">
+                <iconPacks:PackIconMaterial Width="10" VerticalAlignment="Center" Height="10" Kind="Ghost"
+                                            Visibility="{Binding IsIgnored, Mode=OneWay,Converter={StaticResource BooleanToCollapsingVisibilityConverter}}"
+                                            Foreground="White" />
+                <TextBlock
+                    TextWrapping="NoWrap"
+                    HorizontalAlignment="Left"
+                    Foreground="White" Text="{Binding TypeName, Mode=OneWay}" />
+                <iconPacks:PackIconIonicons Width="10" VerticalAlignment="Center" Height="10" Kind="ArrowDroprightMD"
+                                            Visibility="{Binding HasSeparator, Mode=OneWay,Converter={StaticResource BooleanToCollapsingVisibilityConverter}}"
+                                            Foreground="White" />
+                <TextBlock
+                    TextWrapping="NoWrap"
+                    HorizontalAlignment="Left"
+                    Foreground="White" Text="{Binding SubTypeName, Mode=OneWay}" />
+            </StackPanel>
+        </Border>
+    </DataTemplate>
+
+
+    <DataTemplate x:Key="TypesTemplate" DataType="{x:Type models:Preset}">
+        <ItemsControl ItemsSource="{Binding Path=Metadata.Types,Mode=OneWay}"
+                      ItemTemplate="{StaticResource TypeTemplate}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="1,0,0,0" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+    </DataTemplate>
+
+
 </ResourceDictionary>

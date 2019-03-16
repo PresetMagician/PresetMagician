@@ -11,7 +11,7 @@ namespace PresetMagician
     {
         public ToolsEditTypesCharacteristicsCommandContainer(ICommandManager commandManager, IUIVisualizerService uiVisualizerService,
             IViewModelFactory viewModelFactory, IRuntimeConfigurationService runtimeConfigurationService)
-            : base(Commands.Tools.EditTypesCharacteristics, nameof(TypesCharacteristicsViewModel), true, commandManager, uiVisualizerService, runtimeConfigurationService,
+            : base(Commands.Tools.EditTypesCharacteristics, nameof(TypesCharacteristicsViewModel), false, commandManager, uiVisualizerService, runtimeConfigurationService,
                 viewModelFactory)
         {
         }

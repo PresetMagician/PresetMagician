@@ -19,7 +19,8 @@ namespace PresetMagician.Core.Models
             nameof(TypeName),
             nameof(SubTypeName),
             nameof(IsRedirect),
-            nameof(RedirectType)
+            nameof(RedirectType),
+            nameof(IsIgnored)
         };
 
         public override HashSet<string> GetEditableProperties()
@@ -81,6 +82,8 @@ namespace PresetMagician.Core.Models
                 }
             }
         }
+        
+        [Include] public bool IsIgnored { get; set; }
 
         [Include] public Type RedirectType { get; set; }
 
@@ -149,6 +152,23 @@ namespace PresetMagician.Core.Models
             }
         }
 
-        public string RedirectDescription => IsRedirect ? $"Redirected from {TypeName} {SubTypeName}" : "";
+        public string StatusDescription
+        {
+            get
+            {
+                if (IsRedirect)
+                {
+                    return $"Redirected from {TypeName} {SubTypeName}";
+                }
+
+                if (IsIgnored)
+                {
+                    return "This characteristic is ignored";
+                }
+
+                return null;
+            }
+        }
+        
     }
 }

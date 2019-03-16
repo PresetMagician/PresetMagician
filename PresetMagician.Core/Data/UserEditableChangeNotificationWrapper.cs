@@ -40,13 +40,18 @@ namespace PresetMagician.Core.Data
         private readonly string _sourceProperty;
         private readonly IEditableCollection _sourceCollection;
         private readonly ModelBase _sourceObject;
+        private PropertyChangedEventHandler _sharedPropertyChangedEventHandler;
+        private NotifyCollectionChangedEventHandler _sharedCollectionChangedEventHandler;
 
         public UserEditableChangeNotificationWrapper(IEditableCollection value, string sourceProperty)
         {
             _sourceProperty = sourceProperty;
+
+            _sharedPropertyChangedEventHandler = ValueOnPropertyChanged;
+            _sharedCollectionChangedEventHandler = ChangeNotificationWrapperOnCollectionChanged;
             
-            value.CollectionChanged += ChangeNotificationWrapperOnCollectionChanged;
-            value.PropertyChanged += ValueOnPropertyChanged;
+            value.CollectionChanged += _sharedCollectionChangedEventHandler;
+            value.PropertyChanged += _sharedPropertyChangedEventHandler;
             /*value.ItemPropertyChanged +=
                 ChangeNotificationWrapperOnCollectionItemPropertyChanged;*/
             
@@ -73,15 +78,15 @@ namespace PresetMagician.Core.Data
         {
             if (_sourceCollection != null)
             {
-                _sourceCollection.CollectionChanged -= ChangeNotificationWrapperOnCollectionChanged;
-                _sourceCollection.PropertyChanged -= ValueOnPropertyChanged;
+                _sourceCollection.CollectionChanged -= _sharedCollectionChangedEventHandler;
+                _sourceCollection.PropertyChanged -= _sharedPropertyChangedEventHandler;
                 /*_sourceCollection.ItemPropertyChanged -=
                     ChangeNotificationWrapperOnCollectionItemPropertyChanged;*/
             }
 
             if (_sourceObject != null)
             {
-                _sourceObject.PropertyChanged -= ChangeNotificationWrapperOnCollectionItemPropertyChanged;
+                _sourceObject.PropertyChanged -= _sharedPropertyChangedEventHandler;
             }
         }
 

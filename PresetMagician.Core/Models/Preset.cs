@@ -80,19 +80,28 @@ namespace PresetMagician.Core.Models
 
             foreach (var type in Metadata.Types)
             {
-                LastExportedMetadata.Types.Add(new Type { TypeName = type.TypeName, SubTypeName = type.SubTypeName});
+                if (!type.IsIgnored)
+                {
+                    LastExportedMetadata.Types.Add(new Type {TypeName = type.EffectiveTypeName, SubTypeName = type.EffectiveSubTypeName});
+                }
             }
             
             LastExportedMetadata.Characteristics.Clear();
 
             foreach (var characteristic in Metadata.Characteristics)
             {
-                LastExportedMetadata.Characteristics.Add(new Characteristic { CharacteristicName = characteristic.CharacteristicName});
+                if (!characteristic.IsIgnored)
+                {
+                    LastExportedMetadata.Characteristics.Add(new Characteristic
+                        {CharacteristicName = characteristic.EffectiveCharacteristicName});
+                }
             }
 
             LastExportedMetadata.PreviewNotePlayer = PreviewNotePlayer;
             LastExportedMetadata.PresetHash = PresetHash;
             LastExported = DateTime.Now;
+            
+            UpdateIsMetadataModified();
         }
 
         #region Methods
@@ -162,11 +171,16 @@ namespace PresetMagician.Core.Models
                     return;
                 }
 
+                if (_plugin != null && value == null)
+                {
+                    Debug.WriteLine("FOO");
+                }
+                
                 _plugin = value;
 
                 if (_plugin != null)
                 {
-                    if (!string.IsNullOrEmpty(_bankPath) && PresetBank == null)
+                    if (!string.IsNullOrEmpty(_bankPath) && (PresetBank == null || PresetBank.BankPath != _bankPath))
                     {
                         PresetBank = _plugin.RootBank.First().CreateRecursive(_bankPath);
                         _bankPath = null;
@@ -301,7 +315,7 @@ namespace PresetMagician.Core.Models
 
         private void UpdateIsMetadataModified()
         {
-            IsMetadataModified = !(LastExportedMetadata.IsEqualTo(_metadata) &&
+            IsMetadataModified = !(_metadata.IsEqualTo(LastExportedMetadata) &&
                                    PresetHash == LastExportedMetadata.PresetHash && 
                                  LastExportedMetadata.PreviewNotePlayer.PreviewNotePlayerId ==
                                  PreviewNotePlayer.PreviewNotePlayerId);

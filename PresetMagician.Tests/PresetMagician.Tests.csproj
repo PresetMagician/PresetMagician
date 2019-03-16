@@ -54,6 +54,7 @@
     <Compile Include="ModelTests\PluginTest.cs" />
     <Compile Include="ModelTests\PresetTest.cs" />
     <Compile Include="ModelTests\TrackableModelBaseTest.cs" />
+    <Compile Include="ModelTests\WrappedEditableCollectionTest.cs" />
     <Compile Include="ModuleInitializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestEntities\Company.cs" />
