@@ -1,45 +1,37 @@
 ﻿using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Threading.Tasks;
-using Catel;
-using Catel.Data;
+using Catel.IoC;
 using Catel.MVVM;
-using Catel.Services;
 using MethodTimer;
-using PresetMagician.Core.Interfaces;
-using PresetMagician.Extensions;
+using PresetMagician.Core.Models;
+using PresetMagician.Core.Services;
 using PresetMagician.Helpers;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.ViewModels;
-using PresetMagician.Core.Models;
+
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
 {
     // ReSharper disable once UnusedMember.Global
     public class PluginToolsViewPresetsCommandContainer : ApplicationNotBusyCommandContainer
     {
-        private readonly IUIVisualizerService _uiVisualizerService;
-        private readonly IVstService _vstService;
+        private readonly GlobalFrontendService _globalFrontendService;
         private Plugin _previouslySelectedPlugin;
         private readonly IViewModelFactory _viewModelFactory;
 
-        public PluginToolsViewPresetsCommandContainer(ICommandManager commandManager, IVstService vstService,
-            IUIVisualizerService uiVisualizerService,IRuntimeConfigurationService runtimeConfigurationService,
+        public PluginToolsViewPresetsCommandContainer(ICommandManager commandManager,
+            IRuntimeConfigurationService runtimeConfigurationService,
             IViewModelFactory viewModelFactory
         )
-            : base(Commands.PluginTools.ViewPresets, commandManager,runtimeConfigurationService, true)
+            : base(Commands.PluginTools.ViewPresets, commandManager, runtimeConfigurationService, true)
         {
-            Argument.IsNotNull(() => vstService);
-            Argument.IsNotNull(() => uiVisualizerService);
-
-            _vstService = vstService;
-            _vstService.SelectedPlugins.CollectionChanged += OnSelectedPluginsListChanged;
-            _uiVisualizerService = uiVisualizerService;
+            _globalFrontendService = ServiceLocator.Default.ResolveType<GlobalFrontendService>();
+            _globalFrontendService.SelectedPlugins.CollectionChanged += OnSelectedPluginsListChanged;
             _viewModelFactory = viewModelFactory;
         }
-        
-     
+
+
         private void SelectedPluginOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             InvalidateCommand();
@@ -47,8 +39,8 @@ namespace PresetMagician
 
         protected override bool CanExecute(object parameter)
         {
-            return base.CanExecute(parameter) && _vstService.SelectedPlugins.Count > 0 &&
-                   _vstService.SelectedPlugin != null;
+            return base.CanExecute(parameter) && _globalFrontendService.SelectedPlugins.Count > 0 &&
+                   _globalFrontendService.SelectedPlugin != null;
         }
 
         private void OnSelectedPluginsListChanged(object o, NotifyCollectionChangedEventArgs ev)
@@ -58,10 +50,10 @@ namespace PresetMagician
                 _previouslySelectedPlugin.PropertyChanged -= SelectedPluginOnPropertyChanged;
             }
 
-            if (_vstService.SelectedPlugin != null)
+            if (_globalFrontendService.SelectedPlugin != null)
             {
-                _vstService.SelectedPlugin.PropertyChanged += SelectedPluginOnPropertyChanged;
-                _previouslySelectedPlugin = _vstService.SelectedPlugin;
+                _globalFrontendService.SelectedPlugin.PropertyChanged += SelectedPluginOnPropertyChanged;
+                _previouslySelectedPlugin = _globalFrontendService.SelectedPlugin;
             }
 
             InvalidateCommand();
@@ -75,14 +67,12 @@ namespace PresetMagician
             _vstService.SelectedPlugin.ClearDirtyFlag();*/
 
             var presetsViewModel =
-                _viewModelFactory.CreateViewModel<VstPluginPresetsViewModel>(_vstService.SelectedPlugin);
-            AvalonDockHelper.CreateDocument<VstPluginPresetsViewModel>(presetsViewModel, _vstService.SelectedPlugin,
+                _viewModelFactory.CreateViewModel<VstPluginPresetsViewModel>(_globalFrontendService.SelectedPlugin);
+            AvalonDockHelper.CreateDocument<VstPluginPresetsViewModel>(presetsViewModel,
+                _globalFrontendService.SelectedPlugin,
                 activateDocument: true, isClosable: true, shouldTrackDirty: true);
-            
-            //_vstService.SelectedPlugin.BeginEdit();
-            
-        }
 
-        
+            //_vstService.SelectedPlugin.BeginEdit();
+        }
     }
 }

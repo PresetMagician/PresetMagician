@@ -7,7 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Anotar.Catel;
-using Catel;
 using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
@@ -15,7 +14,6 @@ using Catel.Threading;
 using Catel.Windows;
 using Orchestra;
 using PresetMagician.Core.EventArgs;
-using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
 using PresetMagician.Services.Interfaces;
@@ -26,14 +24,17 @@ namespace PresetMagician
     // ReSharper disable once UnusedMember.Global
     public abstract class AbstractScanPluginsCommandContainer : ThreadedApplicationNotBusyCommandContainer
     {
-        protected readonly IVstService _vstService;
         protected readonly IApplicationService _applicationService;
         protected readonly IDispatcherService _dispatcherService;
         protected readonly ICommandManager _commandManager;
         protected readonly INativeInstrumentsResourceGeneratorService _resourceGeneratorService;
         protected readonly PluginService _pluginService;
+        protected readonly GlobalFrontendService _globalFrontendService;
+        protected readonly GlobalService GlobalService;
         private readonly PresetDataPersisterService _presetDataPersisterService;
+        private readonly DataPersisterService _dataPersisterService;
         private readonly IAdvancedMessageService _messageService;
+        private readonly RemoteVstService _remoteVstService;
         private int _totalPresets;
         private int _currentPresetIndex;
         private int updateThrottle;
@@ -41,29 +42,24 @@ namespace PresetMagician
         private Plugin _currentPlugin;
 
         protected AbstractScanPluginsCommandContainer(string command, ICommandManager commandManager,
-            IRuntimeConfigurationService runtimeConfigurationService, IVstService vstService,
-            IApplicationService applicationService,
-            IDispatcherService dispatcherService, IAdvancedMessageService messageService,
-            INativeInstrumentsResourceGeneratorService resourceGeneratorService,
-            PresetDataPersisterService presetDataPersisterService)
+            IRuntimeConfigurationService runtimeConfigurationService)
             : base(command, commandManager, runtimeConfigurationService)
         {
-            Argument.IsNotNull(() => vstService);
-            Argument.IsNotNull(() => applicationService);
-            Argument.IsNotNull(() => dispatcherService);
-            Argument.IsNotNull(() => resourceGeneratorService);
-            Argument.IsNotNull(() => messageService);
-
-            _messageService = messageService;
-            _vstService = vstService;
-            _applicationService = applicationService;
-            _dispatcherService = dispatcherService;
+            _messageService = ServiceLocator.Default.ResolveType<IAdvancedMessageService>();
+            _applicationService = ServiceLocator.Default.ResolveType<IApplicationService>();
+            _dispatcherService = ServiceLocator.Default.ResolveType<IDispatcherService>();
             _commandManager = commandManager;
-            _presetDataPersisterService = presetDataPersisterService;
-            _resourceGeneratorService = resourceGeneratorService;
+            _dataPersisterService = ServiceLocator.Default.ResolveType<DataPersisterService>();
+            _presetDataPersisterService = ServiceLocator.Default.ResolveType<PresetDataPersisterService>();
+            ;
+            _resourceGeneratorService =
+                ServiceLocator.Default.ResolveType<INativeInstrumentsResourceGeneratorService>();
             _pluginService = ServiceLocator.Default.ResolveType<PluginService>();
+            GlobalService = ServiceLocator.Default.ResolveType<GlobalService>();
+            _globalFrontendService = ServiceLocator.Default.ResolveType<GlobalFrontendService>();
+            _remoteVstService = ServiceLocator.Default.ResolveType<RemoteVstService>();
 
-            _vstService.Plugins.CollectionChanged += OnPluginsListChanged;
+            GlobalService.Plugins.CollectionChanged += OnPluginsListChanged;
 
             Plugin.PresetMagicianVersion = VersionHelper.GetCurrentVersion();
         }
@@ -73,7 +69,7 @@ namespace PresetMagician
 
         protected override bool CanExecute(object parameter)
         {
-            return base.CanExecute(parameter) && _vstService.Plugins.Count > 0;
+            return base.CanExecute(parameter) && GlobalService.Plugins.Count > 0;
         }
 
         protected void OnPluginsListChanged(object o, NotifyCollectionChangedEventArgs ev)
@@ -87,7 +83,7 @@ namespace PresetMagician
 
 
             var pluginsToUpdateMetadata =
-                (from p in _vstService.Plugins
+                (from p in GlobalService.Plugins
                     where p.RequiresMetadataScan
                     orderby p.PluginName, p.DllFilename
                     select p).ToList();
@@ -109,7 +105,7 @@ namespace PresetMagician
                 {
                     foreach (var plugin in pluginsToRemove)
                     {
-                        _vstService.Plugins.Remove(plugin);
+                        GlobalService.Plugins.Remove(plugin);
 
                         if (pluginsToScan.Contains(plugin))
                         {
@@ -144,7 +140,7 @@ namespace PresetMagician
                 if (result == MessageResult.Yes)
                 {
                     // ReSharper disable once MethodSupportsCancellation
-                    _vstService.Save();
+                    _dataPersisterService.Save();
                     _commandManager.ExecuteCommand(Commands.Application.CancelOperation);
                 }
             }
@@ -161,7 +157,7 @@ namespace PresetMagician
                     cancellationToken);
 
                 // ReSharper disable once MethodSupportsCancellation
-                _vstService.Save();
+                _dataPersisterService.Save();
             }
 
 
@@ -175,7 +171,7 @@ namespace PresetMagician
             }
 
             var unreportedPlugins =
-                (from plugin in _vstService.Plugins
+                (from plugin in GlobalService.Plugins
                     where !plugin.IsReported && !plugin.DontReport && !plugin.IsSupported && plugin.HasMetadata &&
                           plugin.IsEnabled
                     select plugin).ToList();
@@ -202,7 +198,7 @@ namespace PresetMagician
                         plugin.DontReport = true;
                     }
 
-                    _vstService.Save();
+                    _dataPersisterService.Save();
                 }
             }
         }
@@ -248,11 +244,11 @@ namespace PresetMagician
                     return;
                 }
 
-                _vstService.SelectedPlugin = plugin;
+                _globalFrontendService.SelectedPlugin = plugin;
 
                 try
                 {
-                    using (var remotePluginInstance = _vstService.GetRemotePluginInstance(plugin))
+                    using (var remotePluginInstance = _remoteVstService.GetRemotePluginInstance(plugin))
                     {
                         _applicationService.UpdateApplicationOperationStatus(
                             pluginsToScan.IndexOf(plugin), $"Scanning {plugin.DllFilename}");
@@ -328,7 +324,7 @@ namespace PresetMagician
                         _applicationService.UpdateApplicationOperationStatus(
                             pluginsToScan.IndexOf(plugin),
                             $"{plugin.DllFilename} - Updating Database");
-                        _vstService.SavePlugin(plugin);
+                        _dataPersisterService.SavePlugin(plugin);
 
 
                         if (wasLoaded)

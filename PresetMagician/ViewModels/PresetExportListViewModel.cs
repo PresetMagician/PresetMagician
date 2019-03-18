@@ -7,35 +7,33 @@ using PresetMagician.Core.Interfaces;
 using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.Core.Models;
+using PresetMagician.Core.Services;
 
 namespace PresetMagician.ViewModels
 {
     public class PresetExportListViewModel : ViewModelBase
     {
         private readonly ILog _logger = LogManager.GetCurrentClassLogger();
-        private readonly IVstService _vstService;
-
-        public PresetExportListViewModel(ICustomStatusService statusService,
-            IRuntimeConfigurationService runtimeConfigurationService, IServiceLocator serviceLocator,
-            IVstService vstService)
+        private readonly GlobalFrontendService _globalFrontendService;
+        
+        public PresetExportListViewModel(IRuntimeConfigurationService runtimeConfigurationService)
         {
-            Argument.IsNotNull(() => statusService);
-            Argument.IsNotNull(() => vstService);
-            _vstService = vstService;
-
-            PresetExportList = vstService.PresetExportList;
+            _globalFrontendService = ServiceLocator.Default.ResolveType<GlobalFrontendService>();
+            
+            PresetExportList = _globalFrontendService.PresetExportList;
             ApplicationState = runtimeConfigurationService.ApplicationState;
-            serviceLocator.RegisterInstance(this);
+            
+            ServiceLocator.Default.RegisterInstance(this);
 
-            SelectedPresets = vstService.SelectedPresets;
+            SelectedPresets = _globalFrontendService.SelectedPresets;
 
             Title = "Preset Export List";
         }
 
         public Preset SelectedExportPreset
         {
-            get => _vstService.SelectedExportPreset;
-            set => _vstService.SelectedExportPreset = value;
+            get => _globalFrontendService.SelectedExportPreset;
+            set => _globalFrontendService.SelectedExportPreset = value;
         }
 
         public FastObservableCollection<Preset> SelectedPresets { get; }

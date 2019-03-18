@@ -149,7 +149,6 @@
     <Compile Include="Commands\PresetExport\PresetExportDoExportCommandContainer.cs" />
     <Compile Include="Commands\PresetTools\PresetToolsShowPresetDataCommandContainer.cs" />
     <Compile Include="Commands\Preset\AbstractCurrentPresetEditorCommandContainer.cs" />
-    <Compile Include="Commands\Preset\PresetApplyMidiNoteCommandContainer.cs" />
     <Compile Include="Commands\Preset\PresetRenamePresetBankCommandContainer.cs" />
     <Compile Include="Commands\ThreadedApplicationNotBusyCommandContainer.cs" />
     <Compile Include="Commands\Tools\ToolsEditTypesCharacteristicsCommandContainer.cs" />

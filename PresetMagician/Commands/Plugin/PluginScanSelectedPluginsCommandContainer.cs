@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Catel.IoC;
 using Catel.MVVM;
-using Catel.Services;
-using PresetMagician.Core.Interfaces;
-using PresetMagician.Services;
-using PresetMagician.Services.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
+using PresetMagician.Services.Interfaces;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -15,26 +13,22 @@ namespace PresetMagician
     public class PluginScanSelectedPluginsCommandContainer : AbstractScanPluginsCommandContainer
     {
         public PluginScanSelectedPluginsCommandContainer(ICommandManager commandManager,
-            IRuntimeConfigurationService runtimeConfigurationService, IVstService vstService,
-            IApplicationService applicationService,
-            IDispatcherService dispatcherService, 
-            IAdvancedMessageService messageService,
-            INativeInstrumentsResourceGeneratorService resourceGeneratorService, PresetDataPersisterService presetDataPersisterService)
-            : base(Commands.Plugin.ScanSelectedPlugins, commandManager, runtimeConfigurationService, vstService,
-                applicationService, dispatcherService, messageService, resourceGeneratorService,presetDataPersisterService )
+            IRuntimeConfigurationService runtimeConfigurationService)
+            : base(Commands.Plugin.ScanSelectedPlugins, commandManager, runtimeConfigurationService)
         {
-            vstService.SelectedPlugins.CollectionChanged += OnPluginsListChanged;
+            _globalFrontendService.SelectedPlugins.CollectionChanged += OnPluginsListChanged;
         }
 
         protected override List<Plugin> GetPluginsToScan()
         {
-            return (from plugin in _vstService.SelectedPlugins where plugin.IsEnabled select plugin).ToList();
+            return (from plugin in _globalFrontendService.SelectedPlugins where plugin.IsEnabled select plugin)
+                .ToList();
         }
 
         protected override bool CanExecute(object parameter)
         {
             return base.CanExecute(parameter) &&
-                   _vstService.SelectedPlugins.Count > 0;
+                   _globalFrontendService.SelectedPlugins.Count > 0;
         }
     }
 }

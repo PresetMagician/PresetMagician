@@ -4,6 +4,7 @@ using Catel;
 using Catel.MVVM;
 using Catel.Services;
 using PresetMagician.Core.Interfaces;
+using PresetMagician.Core.Services;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.ViewModels;
 
@@ -13,25 +14,22 @@ namespace PresetMagician
     // ReSharper disable once UnusedMember.Global
     public class PluginToolsShowPluginInfoCommandContainer : ApplicationNotBusyCommandContainer
     {
-        private readonly IVstService _vstService;
+        private readonly GlobalFrontendService _globalFrontendService;
         private readonly IUIVisualizerService _uiVisualizerService;
 
-        public PluginToolsShowPluginInfoCommandContainer(ICommandManager commandManager, IVstService vstService,
+        public PluginToolsShowPluginInfoCommandContainer(ICommandManager commandManager,GlobalFrontendService globalFrontendService,
             IUIVisualizerService uiVisualizerService, IRuntimeConfigurationService runtimeConfigurationService)
             : base(Commands.PluginTools.ShowPluginInfo, commandManager, runtimeConfigurationService)
         {
-            Argument.IsNotNull(() => vstService);
-            Argument.IsNotNull(() => uiVisualizerService);
-
-            _vstService = vstService;
+            _globalFrontendService = globalFrontendService;
             _uiVisualizerService = uiVisualizerService;
 
-            _vstService.SelectedPlugins.CollectionChanged += OnSelectedPluginsListChanged;
+            _globalFrontendService.SelectedPlugins.CollectionChanged += OnSelectedPluginsListChanged;
         }
 
         protected override bool CanExecute(object parameter)
         {
-            return base.CanExecute(parameter) && _vstService.SelectedPlugins.Count == 1;
+            return base.CanExecute(parameter) && _globalFrontendService.SelectedPlugins.Count == 1;
         }
 
         private void OnSelectedPluginsListChanged(object o, NotifyCollectionChangedEventArgs ev)
@@ -42,7 +40,7 @@ namespace PresetMagician
 
         protected override async Task ExecuteAsync(object parameter)
         {
-            await _uiVisualizerService.ShowDialogAsync<VstPluginInfoViewModel>(_vstService.SelectedPlugin);
+            await _uiVisualizerService.ShowDialogAsync<VstPluginInfoViewModel>(_globalFrontendService.SelectedPlugin);
         }
     }
 }

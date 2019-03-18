@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using Catel.Collections;
 using PresetMagician.Core.EventArgs;
 using PresetMagician.Core.Models;
@@ -22,6 +23,7 @@ namespace PresetMagician.Core.Interfaces
         event PropertyChangedEventHandler PropertyChanged;
         int NumRunningProcesses { get; set; }
         int NumTotalProcesses { get; set; }
+        Task<IRemotePluginInstance> GetRemoteInteractivePluginInstance(Plugin plugin, bool backgroundProcessing = true);
     }
 
 }

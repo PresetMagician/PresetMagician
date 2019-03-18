@@ -8,15 +8,7 @@ namespace PresetMagician.Core.Interfaces
 {
     public interface IVstService
     {
-        event EventHandler SelectedPluginChanged;
-        Plugin SelectedPlugin { get; set; }
-        FastObservableCollection<Plugin> SelectedPlugins { get; }
-        FastObservableCollection<Plugin> Plugins { get; set; }
-
-        FastObservableCollection<Preset> PresetExportList { get; }
-        Preset SelectedExportPreset { get; set; }
-        FastObservableCollection<Preset> SelectedPresets { get; }
-        event EventHandler SelectedExportPresetChanged;
+       
         void Save();
         byte[] GetPresetData(Preset preset);
         IRemotePluginInstance GetRemotePluginInstance(Plugin plugin, bool backgroundProcessing = true);

@@ -9,12 +9,16 @@ namespace PresetMagician.Core
         {
             var serviceLocator = ServiceLocator.Default;
             serviceLocator.RegisterType<GlobalService, GlobalService>();
+            serviceLocator.RegisterType<GlobalFrontendService, GlobalFrontendService>();
             serviceLocator.RegisterType<DataPersisterService, DataPersisterService>();
             serviceLocator.RegisterType<PresetDataPersisterService, PresetDataPersisterService>();
             serviceLocator.RegisterType<PluginService, PluginService>();
             serviceLocator.RegisterType<CharacteristicsService, CharacteristicsService>();
             serviceLocator.RegisterType<TypesService, TypesService>();
             serviceLocator.RegisterType<VendorPresetParserService, VendorPresetParserService>();
+            serviceLocator.RegisterType<RemoteVstService, RemoteVstService>();
+            
+            
         }
     }
 }

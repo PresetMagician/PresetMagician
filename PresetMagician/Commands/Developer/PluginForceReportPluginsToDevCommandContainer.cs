@@ -13,11 +13,8 @@ namespace PresetMagician
     public class PluginForceReportPluginsToDevCommandContainer : AbstractReportPluginsCommandContainer
     {
         public PluginForceReportPluginsToDevCommandContainer(ICommandManager commandManager,
-            IVstService vstService,
-            ILicenseService licenseService, IApplicationService applicationService,
-            IRuntimeConfigurationService runtimeConfigurationService, GlobalService globalService) : base(
-            Commands.Plugin.ForceReportPluginsToDev, commandManager, vstService, licenseService,
-            applicationService, runtimeConfigurationService, globalService)
+            IRuntimeConfigurationService runtimeConfigurationService) : base(
+            Commands.Plugin.ForceReportPluginsToDev, commandManager, runtimeConfigurationService)
         {
             ReportAll = true;
         }
@@ -29,7 +26,7 @@ namespace PresetMagician
 
         protected override List<Plugin> GetPluginsToReport()
         {
-            return (from plugin in _vstService.Plugins
+            return (from plugin in GlobalService.Plugins
                 where plugin.HasMetadata
                 select plugin).ToList();
         }

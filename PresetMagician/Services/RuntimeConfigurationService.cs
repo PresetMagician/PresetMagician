@@ -19,9 +19,6 @@ namespace PresetMagician.Services
             Path.Combine(Path.GetApplicationDataDirectory(ApplicationDataTarget.UserRoaming),
                 "configuration.backup.json");
 
-        private static readonly string _defaultLocalLayoutFilePath =
-            Path.Combine(Path.GetApplicationDataDirectory(ApplicationDataTarget.UserRoaming), "layout.xml");
-
         private readonly JsonSerializer _jsonSerializer;
         private readonly ILog _logger = LogManager.GetCurrentClassLogger();
 
@@ -33,9 +30,9 @@ namespace PresetMagician.Services
             _jsonSerializer = new JsonSerializer {Formatting = Formatting.Indented};
         }
 
-        public RuntimeConfiguration RuntimeConfiguration { get; private set; }
+        public RuntimeConfiguration RuntimeConfiguration { get; }
         public RuntimeConfiguration EditableConfiguration { get; private set; }
-        public ApplicationState ApplicationState { get; private set; }
+        public ApplicationState ApplicationState { get; }
 
         public void Load()
         {

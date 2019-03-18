@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using Anotar.Catel;
@@ -36,6 +37,10 @@ namespace PresetMagician.RemoteVstHost
         public int NumRunningProcesses { get; set; }
         public int NumTotalProcesses { get; set; }
         
+        private IVstHostProcess _interactiveVstHostProcess;
+        private readonly Dictionary<Plugin, IRemotePluginInstance> _interactivePluginInstances =
+            new Dictionary<Plugin, IRemotePluginInstance>();
+        
         private ProxyGenerator _generator = new ProxyGenerator();
         
         public event EventHandler<PoolFailedEventArgs> PoolFailed;
@@ -57,11 +62,15 @@ namespace PresetMagician.RemoteVstHost
         {
             _processWatcher = new Timer(UpdateProcesses, null, 500, 500);
 
-            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            if (Application.Current != null)
             {
-                BindingOperations.EnableCollectionSynchronization(RunningProcesses, _updateLock);
-                BindingOperations.EnableCollectionSynchronization(OldProcesses, _updateLock);
-            }));
+                // Only do this when running as WPF app
+                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    BindingOperations.EnableCollectionSynchronization(RunningProcesses, _updateLock);
+                    BindingOperations.EnableCollectionSynchronization(OldProcesses, _updateLock);
+                }));
+            }
         }
 
         public void StartPool()
@@ -138,6 +147,24 @@ namespace PresetMagician.RemoteVstHost
                     process.ForceStop("Pool shutdown");
                 }
             }
+        }
+
+        public async Task<IRemotePluginInstance> GetRemoteInteractivePluginInstance(Plugin plugin, bool backgroundProcessing = true)
+        {
+            if (_interactiveVstHostProcess == null)
+            {
+                _interactiveVstHostProcess = new VstHostProcess(20, true);
+                _interactiveVstHostProcess.Start();
+                await _interactiveVstHostProcess.WaitUntilStarted();
+            }
+            
+            if (!_interactivePluginInstances.ContainsKey(plugin))
+            {
+
+                _interactivePluginInstances.Add(plugin, new RemotePluginInstance(_interactiveVstHostProcess, plugin, true, true));
+            }
+
+            return _interactivePluginInstances[plugin];
         }
 
         public IRemotePluginInstance GetRemotePluginInstance(Plugin plugin, bool backgroundProcessing = true)

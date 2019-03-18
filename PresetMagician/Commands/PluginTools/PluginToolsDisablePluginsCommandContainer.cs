@@ -1,8 +1,10 @@
 ﻿using System.Collections.Specialized;
 using System.Threading.Tasks;
 using Catel;
+using Catel.IoC;
 using Catel.MVVM;
 using PresetMagician.Core.Interfaces;
+using PresetMagician.Core.Services;
 using PresetMagician.Services.Interfaces;
 
 // ReSharper disable once CheckNamespace
@@ -11,22 +13,22 @@ namespace PresetMagician
     // ReSharper disable once UnusedMember.Global
     public class PluginToolsDisablePluginsCommandContainer : ApplicationNotBusyCommandContainer
     {
-        private readonly IVstService _vstService;
-
-        public PluginToolsDisablePluginsCommandContainer(ICommandManager commandManager, IVstService vstService,
+        private readonly GlobalFrontendService _globalFrontendService;
+        private readonly DataPersisterService _dataPersisterService;
+        
+        public PluginToolsDisablePluginsCommandContainer(ICommandManager commandManager,
             IRuntimeConfigurationService runtimeConfigurationService)
             : base(Commands.PluginTools.DisablePlugins, commandManager, runtimeConfigurationService)
         {
-            Argument.IsNotNull(() => vstService);
 
-            _vstService = vstService;
-
-            _vstService.SelectedPlugins.CollectionChanged += OnSelectedPluginsListChanged;
+            _dataPersisterService = ServiceLocator.Default.ResolveType<DataPersisterService>();
+            _globalFrontendService = ServiceLocator.Default.ResolveType<GlobalFrontendService>();
+            _globalFrontendService.SelectedPlugins.CollectionChanged += OnSelectedPluginsListChanged;
         }
 
         protected override bool CanExecute(object parameter)
         {
-            return base.CanExecute(parameter) && _vstService.SelectedPlugins.Count > 0;
+            return base.CanExecute(parameter) && _globalFrontendService.SelectedPlugins.Count > 0;
         }
         
         private void OnSelectedPluginsListChanged(object o, NotifyCollectionChangedEventArgs ev)
@@ -37,12 +39,12 @@ namespace PresetMagician
 
         protected override async Task ExecuteAsync(object parameter)
         {
-            foreach (var plugin in _vstService.SelectedPlugins)
+            foreach (var plugin in _globalFrontendService.SelectedPlugins)
             {
                 plugin.IsEnabled = false;
             }
 
-            _vstService.Save();
+            _dataPersisterService.SavePlugins();
         }
     }
 }

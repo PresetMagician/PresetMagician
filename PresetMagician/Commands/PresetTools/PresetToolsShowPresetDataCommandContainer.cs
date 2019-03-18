@@ -1,9 +1,11 @@
 using System.Collections.Specialized;
 using System.Threading.Tasks;
 using Catel;
+using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
 using PresetMagician.Core.Interfaces;
+using PresetMagician.Core.Services;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.ViewModels;
 
@@ -13,25 +15,22 @@ namespace PresetMagician
     // ReSharper disable once UnusedMember.Global
     public class PresetToolsShowPresetDataCommandContainer : ApplicationNotBusyCommandContainer
     {
-        private readonly IVstService _vstService;
         private readonly IUIVisualizerService _uiVisualizerService;
+        private readonly GlobalFrontendService _globalFrontendService;
 
-        public PresetToolsShowPresetDataCommandContainer(ICommandManager commandManager, IVstService vstService,
-            IUIVisualizerService uiVisualizerService, IRuntimeConfigurationService runtimeConfigurationService)
+        public PresetToolsShowPresetDataCommandContainer(ICommandManager commandManager,IRuntimeConfigurationService runtimeConfigurationService)
             : base(Commands.PresetTools.ShowPresetData, commandManager, runtimeConfigurationService)
         {
-            Argument.IsNotNull(() => vstService);
-            Argument.IsNotNull(() => uiVisualizerService);
+           
+            _globalFrontendService = ServiceLocator.Default.ResolveType<GlobalFrontendService>();
+            _uiVisualizerService = ServiceLocator.Default.ResolveType<IUIVisualizerService>();
 
-            _vstService = vstService;
-            _uiVisualizerService = uiVisualizerService;
-
-            _vstService.SelectedPresets.CollectionChanged += OnSelectedPresetsListChanged;
+            _globalFrontendService.SelectedPresets.CollectionChanged += OnSelectedPresetsListChanged;
         }
 
         protected override bool CanExecute(object parameter)
         {
-            return base.CanExecute(parameter) &&  _vstService.SelectedPresets.Count == 1;
+            return base.CanExecute(parameter) &&  _globalFrontendService.SelectedPresets.Count == 1;
         }
 
         private void OnSelectedPresetsListChanged(object o, NotifyCollectionChangedEventArgs ev)
@@ -42,7 +41,7 @@ namespace PresetMagician
 
         protected override async Task ExecuteAsync(object parameter)
         {
-            await _uiVisualizerService.ShowDialogAsync<PresetDataViewModel>(_vstService.SelectedExportPreset);
+            await _uiVisualizerService.ShowDialogAsync<PresetDataViewModel>(_globalFrontendService.SelectedExportPreset);
         }
     }
 }

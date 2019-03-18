@@ -3,13 +3,13 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using Catel;
 using Catel.Collections;
+using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
-using PresetMagician.Core.Interfaces;
-using PresetMagician.Services.Interfaces;
 using PresetMagician.Core.Models;
+using PresetMagician.Core.Services;
+using PresetMagician.Services.Interfaces;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -19,33 +19,27 @@ namespace PresetMagician
     {
         private readonly IApplicationService _applicationService;
 
-        private readonly IVstService _vstService;
         private readonly IDispatcherService _dispatcherService;
         private readonly ILicenseService _licenseService;
+        private readonly GlobalFrontendService _globalFrontendService;
 
-        public PluginSelectedToPresetExportListCommandContainer(ICommandManager commandManager, IVstService vstService,
-            IApplicationService applicationService, IDispatcherService dispatcherService,
-            IRuntimeConfigurationService runtimeConfigurationService,
-            ILicenseService licenseService)
+        public PluginSelectedToPresetExportListCommandContainer(ICommandManager commandManager,
+            IRuntimeConfigurationService runtimeConfigurationService
+        )
             : base(Commands.Plugin.SelectedToPresetExportList, commandManager, runtimeConfigurationService)
         {
-            Argument.IsNotNull(() => vstService);
-            Argument.IsNotNull(() => applicationService);
-            Argument.IsNotNull(() => dispatcherService);
-            Argument.IsNotNull(() => licenseService);
+            _applicationService = ServiceLocator.Default.ResolveType<IApplicationService>();
+            _dispatcherService = ServiceLocator.Default.ResolveType<IDispatcherService>();
+            _licenseService = ServiceLocator.Default.ResolveType<ILicenseService>();
+            _globalFrontendService = ServiceLocator.Default.ResolveType<GlobalFrontendService>();
 
-            _vstService = vstService;
-            _applicationService = applicationService;
-            _dispatcherService = dispatcherService;
-            _licenseService = licenseService;
-
-            _vstService.SelectedPlugins.CollectionChanged += OnSelectedPluginsListChanged;
+            _globalFrontendService.SelectedPlugins.CollectionChanged += OnSelectedPluginsListChanged;
         }
 
         protected override bool CanExecute(object parameter)
         {
-            return base.CanExecute(parameter) && 
-                    _vstService.SelectedPlugins.Count > 0;
+            return base.CanExecute(parameter) &&
+                   _globalFrontendService.SelectedPlugins.Count > 0;
         }
 
         private void OnSelectedPluginsListChanged(object o, NotifyCollectionChangedEventArgs ev)
@@ -57,7 +51,7 @@ namespace PresetMagician
         protected override async Task ExecuteAsync(object parameter)
         {
             var pluginsToScan =
-                (from plugin in _vstService.SelectedPlugins where plugin.IsEnabled select plugin).ToList();
+                (from plugin in _globalFrontendService.SelectedPlugins where plugin.IsEnabled select plugin).ToList();
             int addedPresets = 0;
             int totalPresets = 0;
             bool listExceeded = false;
@@ -82,9 +76,9 @@ namespace PresetMagician
                         hs.AddRange(plugin.Presets);
                     }
 
-                    hs.ExceptWith(_vstService.PresetExportList);
+                    hs.ExceptWith(_globalFrontendService.PresetExportList);
 
-                    _vstService.PresetExportList.AddItems(hs.ToList());
+                    _globalFrontendService.PresetExportList.AddItems(hs.ToList());
 
 
                     addedPresets += hs.Count;
