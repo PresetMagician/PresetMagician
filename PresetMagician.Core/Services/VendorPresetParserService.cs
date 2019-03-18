@@ -1,17 +1,38 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Reflection;
 using Anotar.Catel;
 using MethodTimer;
 using PresetMagician.Core.Exceptions;
 using PresetMagician.Core.Interfaces;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser
+namespace PresetMagician.Core.Services
 {
-    public static class VendorPresetParser
+    public class VendorPresetParserService
     {
-        public static Dictionary<int, IVendorPresetParser> GetPresetHandlerListByPlugin()
+        private static Assembly _presetParserAssembly;
+        private static Type _nullPresetParserType;
+
+        private readonly GlobalService _globalService;
+
+        public VendorPresetParserService(GlobalService globalService)
+        {
+            _globalService = globalService;
+        }
+
+        public static void RegisterPresetParserAssembly(Assembly assembly)
+        {
+            _presetParserAssembly = assembly;
+        }
+
+        public static void RegisterNullPresetParserType(Type nullPresetParserType)
+        {
+            _nullPresetParserType = nullPresetParserType;
+        }
+        
+        public Dictionary<int, IVendorPresetParser> GetPresetHandlerListByPlugin()
         {
             var pluginHandlers = new Dictionary<int, IVendorPresetParser>();
 
@@ -28,7 +49,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
         private static List<IVendorPresetParser> _presetParsersCache;
 
-        public static List<IVendorPresetParser> GetPresetParsers()
+        public List<IVendorPresetParser> GetPresetParsers()
         {
             if (_presetParsersCache != null)
             {
@@ -39,7 +60,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
             var interfaceType = typeof(IVendorPresetParser);
 
-            var currentAssembly = Assembly.GetExecutingAssembly();
+            var currentAssembly = _presetParserAssembly;
 
             var types = currentAssembly.GetTypes()
                 .Where(p => p.GetInterfaces().Contains(interfaceType));
@@ -53,8 +74,17 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             return _presetParsersCache;
         }
 
-        [Time]
-        private static IVendorPresetParser GetPresetParser(IRemotePluginInstance pluginInstance)
+        public IVendorPresetParser GetVendorPresetParserByName(string name)
+        {
+            if (name == null)
+            {
+                return null;
+            }
+            
+            return (from p in GetPresetParsers() where p.PresetParserType == name select p).FirstOrDefault();
+        }
+
+        private IVendorPresetParser GetPresetParser(IRemotePluginInstance pluginInstance)
         {
             pluginInstance.Plugin.Logger.Debug("Resolving Preset Parser");
 
@@ -64,15 +94,16 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
                 var directlyFoundParser = list[pluginInstance.Plugin.VstPluginId];
                 directlyFoundParser.PluginInstance = pluginInstance;
                 directlyFoundParser.Init();
-                
+
                 if (directlyFoundParser.CanHandle())
                 {
-                    pluginInstance.Plugin.Logger.Debug($"Directly found PresetHandler {directlyFoundParser.PresetParserType}");
+                    pluginInstance.Plugin.Logger.Debug(
+                        $"Directly found PresetHandler {directlyFoundParser.PresetParserType}");
 
                     return directlyFoundParser;
                 }
             }
-            
+
             var orderedPresetParsers = GetPresetParsers();
 
             foreach (var parser in orderedPresetParsers)
@@ -102,7 +133,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
                 }
                 catch (Exception e)
                 {
-                    LogTo.Error($"Error while trying to use PresetParser {parser.GetType().FullName}: {e.GetType().FullName} {e.Message}.");
+                    LogTo.Error(
+                        $"Error while trying to use PresetParser {parser.GetType().FullName}: {e.GetType().FullName} {e.Message}.");
                     LogTo.Debug(e.StackTrace);
                     continue;
                 }
@@ -111,18 +143,26 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             }
 
             pluginInstance.Plugin.Logger.Debug("No PresetHandler found, using NullPresetParser");
-            return new NullPresetParser();
+
+            return (IVendorPresetParser) Activator.CreateInstance(_nullPresetParserType);
         }
 
-        public static void DeterminatePresetParser(IRemotePluginInstance pluginInstance)
+        public void DeterminatePresetParser(IRemotePluginInstance pluginInstance)
         {
+            if (pluginInstance.Plugin.PresetParser != null)
+            {
+                return;
+            }
+            
             if (!pluginInstance.Plugin.HasMetadata)
             {
                 throw new NoMetadataAvailableException(pluginInstance);
             }
-            
-            pluginInstance.Plugin.PresetParser = GetPresetParser(pluginInstance);
 
+            pluginInstance.Plugin.PluginLocation.PresetParser = GetPresetParser(pluginInstance);
+            pluginInstance.Plugin.PluginLocation.PresetParser.PresetParserConfiguration.LastScanVersion =
+                _globalService.PresetMagicianVersion;
+                
             if (pluginInstance.Plugin.PresetParser == null)
             {
                 pluginInstance.Plugin.IsSupported = false;

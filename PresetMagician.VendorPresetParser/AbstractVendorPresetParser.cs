@@ -4,17 +4,24 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Catel.IoC;
 using Catel.Linq;
 using Catel.Logging;
 using Drachenkatze.PresetMagician.Utils;
 using Jacobi.Vst.Core;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
+using PresetMagician.Core.Services;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser
 {
     public abstract partial class AbstractVendorPresetParser
     {
+        protected AbstractVendorPresetParser()
+        {
+            PresetParserConfiguration = new PresetParserConfiguration();
+        }
+
         protected const string BankNameFactory = "Factory";
         protected const string BankNameUser = "User";
 
@@ -77,7 +84,24 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
         public virtual string BankLoadingNotes { get; set; }
         public IDataPersistence DataPersistence { get; set; }
+        public virtual bool RequiresRescanWithEachRelease { get; } = false;
+        public PresetParserConfiguration PresetParserConfiguration { get; set; }
 
+        public virtual bool RequiresRescan()
+        {
+            if (RequiresRescanWithEachRelease)
+            {
+                var globalService = ServiceLocator.Default.ResolveType<GlobalService>();
+
+                if (PresetParserConfiguration.LastScanVersion != globalService.PresetMagicianVersion)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        
         public virtual int GetNumPresets()
         {
             return GetAdditionalBanksPresetCount();

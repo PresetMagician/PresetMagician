@@ -6,9 +6,9 @@ namespace PresetMagician.RemoteVstHost.Processes
 {
    public class ProcessPoolInterceptor : IInterceptor
     {
-        private readonly NewProcessPool _processPool;
+        private readonly RemoteVstHostProcessPool _processPool;
 
-        public ProcessPoolInterceptor(NewProcessPool processPool)
+        public ProcessPoolInterceptor(RemoteVstHostProcessPool processPool)
         {
             _processPool = processPool;
         }

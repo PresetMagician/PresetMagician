@@ -5,7 +5,7 @@ using Catel.Threading;
 using Jacobi.Vst.Core;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
-using PresetMagician.RemoteVstHost.Processes;
+
 
 namespace PresetMagician.RemoteVstHost
 {
@@ -16,11 +16,11 @@ namespace PresetMagician.RemoteVstHost
         public bool IsLoaded { get; private set; }
         public bool IsEditorOpen { get; private set; }
         private readonly IRemoteVstService _remoteVstService;
-        private readonly VstHostProcess _vstHostProcess;
+        private readonly IVstHostProcess _vstHostProcess;
         private readonly bool _debug;
         
 
-        public RemotePluginInstance(VstHostProcess vstHostProcess, Plugin plugin, bool backgroundProcessing = true, bool debug=false)
+        public RemotePluginInstance(IVstHostProcess vstHostProcess, Plugin plugin, bool backgroundProcessing = true, bool debug=false)
         {
             Plugin = plugin;
             _debug = debug;
@@ -48,18 +48,15 @@ namespace PresetMagician.RemoteVstHost
                 try
                 {
                     _remoteVstService.LoadPlugin(_guid, _debug);
-                    Plugin.PluginName = _remoteVstService.GetEffectivePluginName(_guid);
-                    Plugin.PluginVendor = _remoteVstService.GetPluginVendor(_guid);
                     Plugin.PluginInfo = _remoteVstService.GetPluginInfo(_guid);
                     Plugin.VstPluginId = Plugin.PluginInfo.PluginID;
                     Plugin.PluginLocation.VstPluginId = Plugin.VstPluginId;
                     Plugin.PluginLocation.DllHash = _remoteVstService.GetHash(Plugin.DllPath);
                     Plugin.PluginLocation.LastModifiedDateTime = _remoteVstService.GetLastModifiedDate(Plugin.DllPath);
-                    Plugin.PluginLocation.PluginName = _remoteVstService.GetPluginName(_guid);
-                    Plugin.PluginLocation.PluginVendor = Plugin.PluginVendor;
+                    Plugin.PluginLocation.PluginName = _remoteVstService.GetEffectivePluginName(_guid);
+                    Plugin.PluginLocation.PluginVendor = _remoteVstService.GetPluginVendor(_guid);
                     Plugin.PluginLocation.PluginProduct = _remoteVstService.GetPluginProductString(_guid);
                     Plugin.PluginLocation.VendorVersion = _remoteVstService.GetPluginVendorVersion(_guid).ToString();
-
 
                     Plugin.PluginType = Plugin.PluginInfo.Flags.HasFlag(VstPluginFlags.IsSynth)
                         ? Plugin.PluginTypes.Instrument
@@ -68,11 +65,12 @@ namespace PresetMagician.RemoteVstHost
                     Plugin.PluginCapabilities.Clear();
                     Plugin.PluginCapabilities.AddRange(_remoteVstService.GetPluginInfoItems(_guid));
                     IsLoaded = true;
-                    Plugin.HasMetadata = true;
+                    Plugin.PluginLocation.HasMetadata = true;
                 }
                 catch (Exception e)
                 {
                     Plugin.OnLoadError(e);
+                    throw e;
                 }
             }, true);
         }

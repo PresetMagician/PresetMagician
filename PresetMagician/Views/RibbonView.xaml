@@ -118,37 +118,22 @@
             
             <fluent:RibbonTabItem Header="Plugins">
                 <fluent:RibbonGroupBox Header="Plugins">
-                    <fluent:DropDownButton
-                        Width="60"
+                    <fluent:Button
                         Padding="0"
                         VerticalAlignment="Center"
-                        Header="Analyze"
+                        Command="{catel:CommandManagerBinding Plugin.ScanPlugins}"
+                        Header="Load VST Presets"
                         LargeIcon="{iconPacks:Material Kind=BarcodeScan,
                                                        Width=32,
                                                        Height=32}">
-                        <fluent:MenuItem
-                            Command="{catel:CommandManagerBinding Plugin.ScanPlugins}"
-                            Header="Full Analysis"
-                            Icon="{iconPacks:Material Kind=BarcodeScan}">
-                            <fluent:MenuItem.ToolTip>
-                                <fluent:ScreenTip Title="Full Analysis"
-                                                  Width="250"
-                                                  Text="Loads all plugins, analyzes their capabilities and adds/updates their presets in the database."
-                                                  HelpTopic="{Binding HelpLinks.COMMANDS_ANALYZE}" />
-                            </fluent:MenuItem.ToolTip>
-                        </fluent:MenuItem>
-                        <fluent:MenuItem
-                            Command="{catel:CommandManagerBinding Plugin.QuickScanPlugins}"
-                            Header="Quick Analysis"
-                            Icon="{iconPacks:Ionicons Kind=BarcodeiOS}">
-                            <fluent:MenuItem.ToolTip>
-                                <fluent:ScreenTip Title="Quick Analysis"
-                                                  Width="250"
-                                                  Text="Does a quick analysis. Loads existing presets from the database if this plugin was analyzed previously, and does not check for new/updated presets. Skips plugins previously not analyzed."
-                                                  HelpTopic="{Binding HelpLinks.COMMANDS_ANALYZE}" />
-                            </fluent:MenuItem.ToolTip>
-                        </fluent:MenuItem>
-                    </fluent:DropDownButton>
+                        <fluent:Button.ToolTip>
+                            <fluent:ScreenTip Title="Load VST Presets"
+                                              Width="250"
+                                              Text="Analyzes your plugins and loads/updates all presets if your plugin(s) are supported"
+                                              HelpTopic="{Binding HelpLinks.COMMANDS_ANALYZE}" />
+                        </fluent:Button.ToolTip>
+                      
+                    </fluent:Button>
 
 
                     <fluent:DropDownButton
@@ -227,36 +212,22 @@
                         Icon="{iconPacks:Octicons Kind=DiffAdded}"
                         Size="Middle" />
 
-                    <fluent:DropDownButton
+                    <fluent:Button
                         VerticalAlignment="Center"
                         Size="Middle"
-                        Header="Analyze Selected Plugins"
+                        Command="{catel:CommandManagerBinding Plugin.ScanSelectedPlugins}"
+                        Header="Load Presets for Selection"
                         Icon="{iconPacks:Material Kind=BarcodeScan,
                                                        Width=16,
                                                        Height=16}">
-                        <fluent:MenuItem
-                            Command="{catel:CommandManagerBinding Plugin.ScanSelectedPlugins}"
-                            Header="Full Analysis"
-                            Icon="{iconPacks:Material Kind=BarcodeScan}">
-                            <fluent:MenuItem.ToolTip>
-                                <fluent:ScreenTip Title="Full Analysis"
-                                                  Width="250"
-                                                  Text="Loads selected plugins, analyzes their capabilities and adds/updates their presets in the database."
-                                                  HelpTopic="{Binding HelpLinks.COMMANDS_ANALYZE}" />
-                            </fluent:MenuItem.ToolTip>
-                        </fluent:MenuItem>
-                        <fluent:MenuItem
-                            Command="{catel:CommandManagerBinding Plugin.QuickScanSelectedPlugins}"
-                            Header="Quick Analysis"
-                            Icon="{iconPacks:Ionicons Kind=BarcodeiOS}">
-                            <fluent:MenuItem.ToolTip>
-                                <fluent:ScreenTip Title="Quick Analysis"
-                                                  Width="250"
-                                                  Text="Does a quick analysis. Loads existing presets from the database if this plugin was analyzed previously, and does not check for new/updated presets. Skips plugins previously not analyzed."
-                                                  HelpTopic="{Binding HelpLinks.COMMANDS_ANALYZE}" />
-                            </fluent:MenuItem.ToolTip>
-                        </fluent:MenuItem>
-                    </fluent:DropDownButton>
+                        <fluent:Button.ToolTip>
+                            <fluent:ScreenTip Title="Load Presets for selected Plugins"
+                                              Width="250"
+                                              Text="Analyzes the selected plugins and loads/updates all presets if your plugin(s) are supported"
+                                              HelpTopic="{Binding HelpLinks.COMMANDS_ANALYZE}" />
+                        </fluent:Button.ToolTip>
+                       
+                    </fluent:Button>
                     <fluent:Button
                         Command="{catel:CommandManagerBinding PluginTools.ViewErrors}"
                         Header="View Plugin Log"

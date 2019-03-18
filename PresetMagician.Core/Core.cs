@@ -3,7 +3,7 @@ using PresetMagician.Core.Services;
 
 namespace PresetMagician.Core
 {
-    public class Core
+    public static class CoreInitializer
     {
         public static void RegisterServices()
         {
@@ -14,6 +14,7 @@ namespace PresetMagician.Core
             serviceLocator.RegisterType<PluginService, PluginService>();
             serviceLocator.RegisterType<CharacteristicsService, CharacteristicsService>();
             serviceLocator.RegisterType<TypesService, TypesService>();
+            serviceLocator.RegisterType<VendorPresetParserService, VendorPresetParserService>();
         }
     }
 }

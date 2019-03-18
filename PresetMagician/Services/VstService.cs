@@ -19,6 +19,7 @@ namespace PresetMagician.Services
         private VstHostProcess _interactiveVstHostProcess;
         private readonly PresetDataPersisterService _presetDataPersisterService;
         private readonly DataPersisterService _dataPersister;
+        private readonly GlobalService _globalService;
         private readonly Dictionary<Plugin, IRemotePluginInstance> _pluginInstances =
             new Dictionary<Plugin, IRemotePluginInstance>();
 
@@ -31,9 +32,9 @@ namespace PresetMagician.Services
             _applicationService = applicationService;
             _presetDataPersisterService = presetDataPersisterService;
             _dataPersister = dataPersister;
+            _globalService = globalService;
 
-
-            Plugins = globalService.Plugins;
+            Plugins = _globalService.Plugins;
         }
 
         public void Save()
@@ -53,7 +54,7 @@ namespace PresetMagician.Services
 
         public IRemoteVstService GetRemoteVstService()
         {
-            return _applicationService.NewProcessPool.GetVstService();
+            return _globalService.RemoteVstHostProcessPool.GetVstService();
         }
         
         
@@ -65,7 +66,7 @@ namespace PresetMagician.Services
 
         public IRemotePluginInstance GetRemotePluginInstance(Plugin plugin, bool backgroundProcessing = true)
         {
-            return _applicationService.NewProcessPool.GetRemotePluginInstance(plugin, backgroundProcessing);
+            return _globalService.RemoteVstHostProcessPool.GetRemotePluginInstance(plugin, backgroundProcessing);
         }
 
        

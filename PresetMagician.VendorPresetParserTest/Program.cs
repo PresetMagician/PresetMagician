@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Catel.IoC;
 using Catel.Logging;
 using CsvHelper;
 using CsvHelper.Configuration;
@@ -18,6 +19,7 @@ using PresetMagician.RemoteVstHost;
 using PresetMagician.RemoteVstHost.Processes;
 using PresetMagician.VstHost.VST;
 using PresetMagician.Core.Models;
+using PresetMagician.Core.Services;
 using Type = PresetMagician.Core.Models.Type;
 
 namespace PresetMagician.VendorPresetParserTest
@@ -26,13 +28,17 @@ namespace PresetMagician.VendorPresetParserTest
     {
         public static void Main(string[] args)
         {
+            Core.CoreInitializer.RegisterServices();
+            VendorPresetParserInitializer.Initialize();
+
+            var vendorPresetParserService = ServiceLocator.Default.ResolveType<VendorPresetParserService>();
             var logger = new RollingInMemoryLogListener();
             LogManager.AddListener(logger);
             
             var pluginTestDirectory = @"C:\Program Files\VSTPlugins";
             var testResults = new List<PluginTestResult>();
 
-            var presetParserDictionary = VendorPresetParser.GetPresetHandlerListByPlugin();
+            var presetParserDictionary = vendorPresetParserService.GetPresetHandlerListByPlugin();
 
           
             var testData = ReadTestData();
@@ -119,16 +125,16 @@ namespace PresetMagician.VendorPresetParserTest
                 var foundPreset = false;
                 foreach (var preset in plugin.Presets)
                 {
-                    if (preset.BankPath == "")
+                    if (preset.Metadata.BankPath == "")
                     {
                         testResult.BankMissing++;
                     }
 
                     if (testDataEntry != null)
                     {
-                        if (preset.PresetName == testDataEntry.ProgramName &&
+                        if (preset.Metadata.PresetName == testDataEntry.ProgramName &&
                             preset.PresetHash == testDataEntry.Hash.TrimEnd() &&
-                            preset.BankPath == testDataEntry.BankPath)
+                            preset.Metadata.BankPath == testDataEntry.BankPath)
                         {
                             foundPreset = true;
                         }
@@ -139,8 +145,8 @@ namespace PresetMagician.VendorPresetParserTest
                 {
                     var randomPreset = plugin.Presets.OrderBy(qu => Guid.NewGuid()).First();
                     testResult.RndHash = randomPreset.PresetHash;
-                    testResult.RndPresetName = randomPreset.PresetName;
-                    testResult.RndBankPath = randomPreset.BankPath;
+                    testResult.RndPresetName = randomPreset.Metadata.PresetName;
+                    testResult.RndBankPath = randomPreset.Metadata.BankPath;
                 }
 
                 var mockFxp = Path.Combine(Directory.GetCurrentDirectory(), "mock.fxp");
@@ -432,28 +438,18 @@ namespace PresetMagician.VendorPresetParserTest
     {
         public event EventHandler<PresetUpdatedEventArgs> PresetUpdated;
 #pragma warning disable 1998
-        public async Task PersistPreset(Preset preset, byte[] data)
+        public async Task PersistPreset(PresetParserMetadata presetMetadata, byte[] data)
 #pragma warning restore 1998
         {
+            var preset = new Preset();
             preset.Plugin.Presets.Add(preset);
+            
+            preset.SetFromPresetParser(presetMetadata);
             preset.PresetHash = HashUtils.getIxxHash(data);
+            preset.PresetSize = data.Length;
+            preset.PresetCompressedSize = data.Length;
         }
-
-#pragma warning disable 1998
-        public async Task Flush()
-#pragma warning restore 1998
-        {
-        }
-
-        public Type GetOrCreateType(string typeName, string subTypeName = "")
-        {
-            return new Type();
-        }
-
-        public Characteristic GetOrCreateMode(string modeName)
-        {
-            return new Characteristic();
-        }
+      
     }
 
     class PluginTestResult
@@ -474,15 +470,7 @@ namespace PresetMagician.VendorPresetParserTest
             {
                 if (Presets > 5 && BankMissing < 2 && Presets == ReportedPresets)
                 {
-                    return string.Join(",", new string[]
-                    {
-                        VendorPresetParser,
-                        PluginId.ToString(),
-                        RndPresetName,
-                        RndBankPath,
-                        RndHash,
-                        DateTime.Now.ToString()
-                    });
+                    return string.Join(",", VendorPresetParser, PluginId.ToString(), RndPresetName, RndBankPath, RndHash, DateTime.Now.ToString());
                 }
 
                 return "";

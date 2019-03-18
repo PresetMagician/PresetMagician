@@ -10,6 +10,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
 {
     public abstract class AbstractStandardVstPresetParser : AbstractVendorPresetParser
     {
+        public override bool RequiresRescanWithEachRelease { get; } = true;
+        
         public override int GetNumPresets()
         {
             PluginInstance.LoadPlugin().Wait();

@@ -20,18 +20,20 @@ namespace PresetMagician
     {
         private readonly IUIVisualizerService _uiVisualizerService;
         private readonly IRuntimeConfigurationService _configurationService;
+        private readonly GlobalService _globalService;
 
         public HelpCreateFeatureRequestCommandContainer(ICommandManager commandManager,
-            IUIVisualizerService uiVisualizerService, IRuntimeConfigurationService configurationService)
+            IUIVisualizerService uiVisualizerService, IRuntimeConfigurationService configurationService, GlobalService globalService)
             : base(Commands.Help.CreateFeatureRequest, commandManager)
         {
             _uiVisualizerService = uiVisualizerService;
             _configurationService = configurationService;
+            _globalService = globalService;
         }
 
         protected override async Task ExecuteAsync(object parameter)
         {
-            var report = new IssueReport(IssueReport.TrackerTypes.FEATURE, VersionHelper.GetCurrentVersion(),
+            var report = new IssueReport(IssueReport.TrackerTypes.FEATURE, _globalService.PresetMagicianVersion,
                 _configurationService.ApplicationState.ActiveLicense.Customer.Email, FileLocations.LogFile,
                 DataPersisterService.DefaultPluginStoragePath);
 

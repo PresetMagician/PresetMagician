@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Ceras;
 using PresetMagician.Core.Data;
+using PresetMagician.Core.Interfaces;
 
 namespace PresetMagician.Core.Models
 {
@@ -34,15 +35,46 @@ namespace PresetMagician.Core.Models
         public bool IsPresent { get; set; }
 
         [Include] public int VstPluginId { get; set; }
+        [Include] public bool HasMetadata { get; set; }
 
-        public string ShortTextRepresentation
+        /// <summary>
+        /// Defines the PresetMagician version in which the analysis failed.
+        /// </summary>
+        [Include]
+        public string LastFailedAnalysisVersion { get; set; }
+        
+        public string ShortTextRepresentation => $"{PluginName} by {PluginVendor}, Version {VendorVersion}";
+
+        public string FullTextRepresentation => $"{PluginName} by {PluginVendor}, Version {VendorVersion}, Preset Parser {PresetParser?.PresetParserType} ({DllPath})";
+        
+        public string GetSavedPresetParserClassName()
         {
-            get { return $"{PluginName} by {PluginVendor}, Version {VendorVersion}"; }
+            return _presetParserClassName;
         }
-
-        public string FullTextRepresentation
+        
+        private string _presetParserClassName;
+        
+        [Include] public string PresetParserClassName
         {
-            get { return $"{PluginName} by {PluginVendor}, Version {VendorVersion} ({DllPath}"; }
+            get => PresetParser?.PresetParserType;
+
+            set => _presetParserClassName = value;
+        }
+        
+        private IVendorPresetParser _presetParser;
+
+        public IVendorPresetParser PresetParser
+        {
+            get { return _presetParser; }
+            set
+            {
+                if (value != null)
+                {
+                    _presetParserClassName = null;
+                }
+
+                _presetParser = value;
+            }
         }
     }
 }

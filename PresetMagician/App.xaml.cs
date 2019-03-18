@@ -85,7 +85,8 @@ namespace PresetMagician
             }
 
             var uiVisualiserService = serviceLocator.ResolveType<IUIVisualizerService>();
-            var report = new IssueReport(IssueReport.TrackerTypes.CRASH, VersionHelper.GetCurrentVersion(),
+            var globalService = serviceLocator.ResolveType<GlobalService>();
+            var report = new IssueReport(IssueReport.TrackerTypes.CRASH, globalService.PresetMagicianVersion,
                 email, FileLocations.LogFile,
                 DataPersisterService.DefaultPluginStoragePath);
             report.SetException(e);

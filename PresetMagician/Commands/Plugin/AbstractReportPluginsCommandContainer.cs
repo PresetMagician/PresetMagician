@@ -15,6 +15,7 @@ using Orchestra;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
+using PresetMagician.Core.Services;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -26,11 +27,12 @@ namespace PresetMagician
         private readonly ILicenseService _licenseService;
         protected readonly IVstService _vstService;
         protected bool ReportAll;
+        private readonly GlobalService _globalService;
 
         protected AbstractReportPluginsCommandContainer(string command, ICommandManager commandManager,
             IVstService vstService,
             ILicenseService licenseService, IApplicationService applicationService,
-            IRuntimeConfigurationService runtimeConfigurationService)
+            IRuntimeConfigurationService runtimeConfigurationService, GlobalService globalService)
             : base(command, commandManager, runtimeConfigurationService)
         {
             Argument.IsNotNull(() => vstService);
@@ -40,6 +42,7 @@ namespace PresetMagician
             _vstService = vstService;
             _licenseService = licenseService;
             _applicationService = applicationService;
+            _globalService = globalService;
 
             var wrapper = new ChangeNotificationWrapper(_vstService.Plugins);
             wrapper.CollectionItemPropertyChanged += OnPluginItemPropertyChanged;
@@ -55,13 +58,13 @@ namespace PresetMagician
             if (ReportAll)
             {
                 numPluginsToReport = (from plugin in _vstService.Plugins
-                    where plugin.IsAnalyzed && !plugin.DontReport && !plugin.IsReported
+                    where plugin.HasMetadata && !plugin.DontReport && !plugin.IsReported
                     select plugin).Count();
             }
             else
             {
                 numPluginsToReport = (from plugin in _vstService.Plugins
-                    where plugin.IsAnalyzed && plugin.IsSupported == false && !plugin.DontReport && !plugin.IsReported
+                    where plugin.HasMetadata && plugin.IsSupported == false && !plugin.DontReport && !plugin.IsReported
                     select plugin).Count();
             }
 
@@ -86,13 +89,13 @@ namespace PresetMagician
             if (ReportAll)
             {
                 return (from plugin in _vstService.Plugins
-                    where plugin.IsAnalyzed && plugin.HasMetadata && !plugin.DontReport && !plugin.IsReported
+                    where plugin.HasMetadata && !plugin.DontReport && !plugin.IsReported
                     select plugin).ToList();
             }
 
 
             return (from plugin in _vstService.Plugins
-                where plugin.IsAnalyzed && plugin.HasMetadata && plugin.IsSupported == false && !plugin.DontReport && !plugin.IsReported
+                where plugin.HasMetadata && plugin.IsSupported == false && !plugin.DontReport && !plugin.IsReported
                 select plugin).ToList();
         }
 
@@ -120,7 +123,7 @@ namespace PresetMagician
                             pluginId = p.VstPluginId,
                             pluginSupported = p.IsSupported,
                             pluginPresetParser = p.PresetParser != null ? p.PresetParser.PresetParserType : "",
-                            pluginSupportedSince = VersionHelper.GetCurrentVersion(),
+                            pluginSupportedSince = _globalService.PresetMagicianVersion,
                             pluginType = p.PluginTypeDescription,
                             pluginCapabilities = p.PluginCapabilities,
                             pluginRemarks = p.PresetParser != null ? p.PresetParser.Remarks: ""

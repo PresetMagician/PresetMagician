@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Windows;
@@ -9,6 +10,7 @@ using Castle.DynamicProxy;
 using Catel.Collections;
 using Catel.Data;
 using Catel.Threading;
+using PresetMagician.Core.EventArgs;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.RemoteVstHost.Processes;
@@ -22,26 +24,28 @@ namespace PresetMagician.RemoteVstHost
         {
         }
     }
-    public class NewProcessPool : ObservableObject
+
+    
+    public class RemoteVstHostProcessPool : ObservableObject, IRemoteVstHostProcessPool
     {
         private int _maxProcesses = 4;
         private int _maxStartTimeout = 10;
         private int _failedStartupProcesses;
         private int _totalStartedProcesses;
 
-        public int NumRunningProcesses;
-        public int NumTotalProcesses;
+        public int NumRunningProcesses { get; set; }
+        public int NumTotalProcesses { get; set; }
         
         private ProxyGenerator _generator = new ProxyGenerator();
         
         public event EventHandler<PoolFailedEventArgs> PoolFailed;
         
 
-        public FastObservableCollection<VstHostProcess> RunningProcesses { get; } =
-            new FastObservableCollection<VstHostProcess>();
+        public FastObservableCollection<IVstHostProcess> RunningProcesses { get; } =
+            new FastObservableCollection<IVstHostProcess>();
 
-        public FastObservableCollection<VstHostProcess> OldProcesses { get; } =
-            new FastObservableCollection<VstHostProcess>();
+        public FastObservableCollection<IVstHostProcess> OldProcesses { get; } =
+            new FastObservableCollection<IVstHostProcess>();
 
         private readonly Timer _processWatcher;
         public bool PoolRunning { get; private set; }
@@ -49,7 +53,7 @@ namespace PresetMagician.RemoteVstHost
         private static readonly object _updateLock = new object();
         private bool _updateProcessesRunning;
 
-        public NewProcessPool()
+        public RemoteVstHostProcessPool()
         {
             _processWatcher = new Timer(UpdateProcesses, null, 500, 500);
 
@@ -92,7 +96,7 @@ namespace PresetMagician.RemoteVstHost
             }
         }
 
-        public VstHostProcess GetFreeHostProcess()
+        public IVstHostProcess GetFreeHostProcess()
         {
             for (var i = 0; i < _maxStartTimeout; i++)
             {
@@ -116,10 +120,10 @@ namespace PresetMagician.RemoteVstHost
                 $"Unable to find a free VST worker process within the maximum startup time of {_maxStartTimeout} seconds");
         }
 
-        private VstHostProcess FindFreeHostProcess()
+        private IVstHostProcess FindFreeHostProcess()
         {
             return (from process in RunningProcesses
-                where !process.IsBusy && process.CurrentProcessState == HostProcess.ProcessState.RUNNING
+                where !process.IsBusy && process.CurrentProcessState == ProcessState.RUNNING
                 select process).FirstOrDefault();
         }
 
@@ -153,18 +157,18 @@ namespace PresetMagician.RemoteVstHost
 
                 _updateProcessesRunning = true;
 
-                var pluginsToRemove = new List<VstHostProcess>();
+                var processesToRemove = new List<IVstHostProcess>();
                 foreach (var process in RunningProcesses)
                 {
-                    if (process.CurrentProcessState == HostProcess.ProcessState.EXITED)
+                    if (process.CurrentProcessState == ProcessState.EXITED)
                     {
                         UnwatchProcess(process);
-                        pluginsToRemove.Add(process);
+                        processesToRemove.Add(process);
                         OldProcesses.Add(process);
                     }
                 }
 
-                foreach (var process in pluginsToRemove)
+                foreach (var process in processesToRemove)
                 {
                     RunningProcesses.Remove(process);
                 }
@@ -183,7 +187,7 @@ namespace PresetMagician.RemoteVstHost
                 }
                 
                 NumRunningProcesses = (from process in RunningProcesses
-                    where process.CurrentProcessState == HostProcess.ProcessState.RUNNING
+                    where process.CurrentProcessState == ProcessState.RUNNING
                     select process).Count();
                 NumTotalProcesses = RunningProcesses.Count;
 
@@ -194,7 +198,7 @@ namespace PresetMagician.RemoteVstHost
         }
 
 
-        private void UnwatchProcess(VstHostProcess process)
+        private void UnwatchProcess(IVstHostProcess process)
         {
             process.ProcessStateUpdated -= ProcessOnProcessStateUpdated;
         }
@@ -203,7 +207,7 @@ namespace PresetMagician.RemoteVstHost
         {
            
                 var process = sender as VstHostProcess;
-                if (process.CurrentProcessState == HostProcess.ProcessState.EXITED && !process.StartupSuccessful &&
+                if (process.CurrentProcessState == ProcessState.EXITED && !process.StartupSuccessful &&
                     PoolRunning)
                 {
                     _failedStartupProcesses++;
@@ -229,8 +233,5 @@ namespace PresetMagician.RemoteVstHost
       
     }
 
-    public class PoolFailedEventArgs : EventArgs
-    {
-        public string ShutdownReason { get; set; }
-    }
+    
 }

@@ -1,7 +1,7 @@
 using System;
 using PresetMagician.Core.Interfaces;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser
+namespace PresetMagician.Core.Exceptions
 {
     public class NoMetadataAvailableException: Exception
     {

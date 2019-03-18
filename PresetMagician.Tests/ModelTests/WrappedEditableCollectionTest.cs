@@ -4,11 +4,16 @@ using FluentAssertions;
 using PresetMagician.Core.Collections;
 using PresetMagician.Core.Models;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace PresetMagician.Tests.ModelTests
 {
-    public class WrappedEditableCollectionTest
+    public class WrappedEditableCollectionTest: BaseTest
     {
+        public WrappedEditableCollectionTest(ITestOutputHelper output, DataFixture fixture) : base(output, fixture)
+        {
+        }
+
         [Fact]
         public void TestInit()
         {

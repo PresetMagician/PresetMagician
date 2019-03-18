@@ -4,6 +4,7 @@ using Catel.MVVM;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.Core.Models;
+using PresetMagician.Core.Services;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -14,9 +15,9 @@ namespace PresetMagician
         public PluginForceReportPluginsToDevCommandContainer(ICommandManager commandManager,
             IVstService vstService,
             ILicenseService licenseService, IApplicationService applicationService,
-            IRuntimeConfigurationService runtimeConfigurationService) : base(
+            IRuntimeConfigurationService runtimeConfigurationService, GlobalService globalService) : base(
             Commands.Plugin.ForceReportPluginsToDev, commandManager, vstService, licenseService,
-            applicationService, runtimeConfigurationService)
+            applicationService, runtimeConfigurationService, globalService)
         {
             ReportAll = true;
         }
@@ -29,7 +30,7 @@ namespace PresetMagician
         protected override List<Plugin> GetPluginsToReport()
         {
             return (from plugin in _vstService.Plugins
-                where plugin.IsAnalyzed && plugin.HasMetadata
+                where plugin.HasMetadata
                 select plugin).ToList();
         }
 

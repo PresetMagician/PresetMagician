@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Catel;
 using Catel.MVVM;
 using Catel.Services;
+using PresetMagician.Core.Interfaces;
+using PresetMagician.Core.Services;
 using PresetMagician.RemoteVstHost;
 using PresetMagician.RemoteVstHost.Processes;
 using PresetMagician.Services.Interfaces;
@@ -14,8 +16,9 @@ namespace PresetMagician.ViewModels
     {
         private readonly IApplicationService _applicationService;
         private readonly IUIVisualizerService _uiVisualizerService;
+        private readonly GlobalService _globalService;
 
-        public VstWorkerPoolViewModel(IApplicationService applicationService,
+        public VstWorkerPoolViewModel(IApplicationService applicationService, GlobalService globalService,
             IUIVisualizerService uiVisualizerService)
         {
             Argument.IsNotNull(() => applicationService);
@@ -23,7 +26,8 @@ namespace PresetMagician.ViewModels
             _applicationService = applicationService;
             _uiVisualizerService = uiVisualizerService;
 
-            ProcessPool = _applicationService.NewProcessPool;
+            _globalService = globalService;
+            ProcessPool = _globalService.RemoteVstHostProcessPool;
             
             ShowVstHostProcessLog = new TaskCommand(OnShowVstHostProcessLogExecuteAsync, CanShowVstHostProcessLogExecute);
             KillVstHostProcess = new TaskCommand(OnKillVstHostProcessExecute, CanKillVstHostProcessExecute);
@@ -36,7 +40,7 @@ namespace PresetMagician.ViewModels
 
         private void ProcessPoolOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(NewProcessPool.PoolRunning))
+            if (e.PropertyName == nameof(RemoteVstHostProcessPool.PoolRunning))
             {
                 StopPool.RaiseCanExecuteChanged();
                 StartPool.RaiseCanExecuteChanged();
@@ -44,7 +48,7 @@ namespace PresetMagician.ViewModels
         }
 
 
-        public NewProcessPool ProcessPool { get; }
+        public IRemoteVstHostProcessPool ProcessPool { get; }
         public VstHostProcess SelectedVstHostProcess { get; set; }
         
         public TaskCommand ShowVstHostProcessLog { get; private set; }
@@ -80,7 +84,7 @@ namespace PresetMagician.ViewModels
                 return false;
             }
 
-            return SelectedVstHostProcess.CurrentProcessState != HostProcess.ProcessState.EXITED;
+            return SelectedVstHostProcess.CurrentProcessState != ProcessState.EXITED;
         }
         
         public TaskCommand StopPool { get; }

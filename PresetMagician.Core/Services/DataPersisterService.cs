@@ -29,11 +29,13 @@ namespace PresetMagician.Core.Services
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             @"Drachenkatze\PresetMagician\PluginData");
 
-        private GlobalService _globalService;
+        private readonly GlobalService _globalService;
+        private readonly VendorPresetParserService _vendorPresetParserService;
 
-        public DataPersisterService(GlobalService globalService)
+        public DataPersisterService(GlobalService globalService, VendorPresetParserService vendorPresetParserService)
         {
             _globalService = globalService;
+            _vendorPresetParserService = vendorPresetParserService;
         }
 
         private CerasSerializer GetSerializer()
@@ -115,7 +117,18 @@ namespace PresetMagician.Core.Services
         {
             var dataFile = Path.Combine(DefaultPluginStoragePath, fileName);
 
-            return serializer.Deserialize<Plugin>(File.ReadAllBytes(dataFile));
+            var plugin = serializer.Deserialize<Plugin>(File.ReadAllBytes(dataFile));
+
+            foreach (var pluginLocation in plugin.PluginLocations)
+            {
+                if (pluginLocation.GetSavedPresetParserClassName() != null)
+                {
+                    pluginLocation.PresetParser =
+                        _vendorPresetParserService.GetVendorPresetParserByName(pluginLocation.GetSavedPresetParserClassName());
+                }
+            }
+
+            return plugin;
         }
 
         public List<string> GetStoredPluginFiles()

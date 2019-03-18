@@ -98,9 +98,8 @@
     </Compile>
     <Compile Include="Constants.cs" />
     <Compile Include="ModuleInitializer.cs" />
-    <Compile Include="NewProcessPool.cs" />
+    <Compile Include="RemoteVstHostProcessPool.cs" />
     <Compile Include="Processes\ClientProxyInterceptor.cs" />
-    <Compile Include="Processes\ProcessOperation.cs" />
     <Compile Include="Processes\ProcessPoolInterceptor.cs" />
     <Compile Include="Processes\VstHostProcess.cs" />
     <Compile Include="Processes\HostProcess.cs" />
@@ -156,10 +155,6 @@
       <Project>{e0cc0ccf-a40d-4a53-8fac-b6af7e76eb08}</Project>
       <Name>Jacobi.Vst.Interop.Clr4</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Exceptions" />
-    <Folder Include="Interfaces\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />

@@ -110,8 +110,6 @@ namespace PresetMagician.ViewModels
 
             if (MayIncludePlugins)
             {
-                var plugin = new Plugin {PluginName = "<none>"};
-                Plugins.Add(plugin);
                 Plugins.AddRange(vstService.Plugins.ToList().OrderBy(p => p.PluginName));
             }
 
