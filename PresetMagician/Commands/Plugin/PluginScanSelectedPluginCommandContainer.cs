@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Catel.MVVM;
-using Catel.Services;
-using PresetMagician.Core.Interfaces;
-using PresetMagician.Services;
-using PresetMagician.Services.Interfaces;
 using PresetMagician.Core.Models;
-using PresetMagician.Core.Services;
+using PresetMagician.Services.Interfaces;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -15,15 +11,11 @@ namespace PresetMagician
     public class PluginScanSelectedPluginCommandContainer : AbstractScanPluginsCommandContainer
     {
         public PluginScanSelectedPluginCommandContainer(ICommandManager commandManager,
-            IRuntimeConfigurationService runtimeConfigurationService, IVstService vstService,
-            IApplicationService applicationService,
-            IDispatcherService dispatcherService,
-            IAdvancedMessageService messageService,
-            INativeInstrumentsResourceGeneratorService resourceGeneratorService, PresetDataPersisterService presetDataPersisterService)
-            : base(Commands.Plugin.ScanSelectedPlugin, commandManager, runtimeConfigurationService, vstService,
-                applicationService, dispatcherService, messageService, resourceGeneratorService, presetDataPersisterService)
+            IRuntimeConfigurationService runtimeConfigurationService
+        )
+            : base(Commands.Plugin.ScanSelectedPlugin, commandManager, runtimeConfigurationService)
         {
-            vstService.SelectedPluginChanged += VstServiceOnSelectedPluginChanged;
+            _globalFrontendService.SelectedPluginChanged += VstServiceOnSelectedPluginChanged;
         }
 
         private void VstServiceOnSelectedPluginChanged(object sender, EventArgs e)
@@ -33,18 +25,19 @@ namespace PresetMagician
 
         protected override List<Plugin> GetPluginsToScan()
         {
-            if (_vstService.SelectedPlugin == null || _vstService.SelectedPlugin.IsEnabled == false)
+            if (_globalFrontendService.SelectedPlugin == null ||
+                _globalFrontendService.SelectedPlugin.IsEnabled == false)
             {
                 return new List<Plugin>();
             }
 
-            return new List<Plugin> {_vstService.SelectedPlugin};
+            return new List<Plugin> {_globalFrontendService.SelectedPlugin};
         }
 
         protected override bool CanExecute(object parameter)
         {
             return base.CanExecute(parameter) &&
-                   _vstService.SelectedPlugin != null && _vstService.SelectedPlugin.IsEnabled;
+                   _globalFrontendService.SelectedPlugin != null && _globalFrontendService.SelectedPlugin.IsEnabled;
         }
     }
 }

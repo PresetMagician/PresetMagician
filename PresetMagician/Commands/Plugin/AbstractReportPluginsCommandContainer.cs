@@ -7,15 +7,13 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Anotar.Catel;
-using Catel;
 using Catel.Data;
+using Catel.IoC;
 using Catel.MVVM;
 using Newtonsoft.Json.Linq;
-using Orchestra;
-using PresetMagician.Services.Interfaces;
-using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
+using PresetMagician.Services.Interfaces;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -25,26 +23,22 @@ namespace PresetMagician
     {
         private readonly IApplicationService _applicationService;
         private readonly ILicenseService _licenseService;
-        protected readonly IVstService _vstService;
         protected bool ReportAll;
-        private readonly GlobalService _globalService;
+        protected readonly GlobalService GlobalService;
+        protected readonly GlobalFrontendService GlobalFrontendService;
+        private readonly DataPersisterService _dataPersisterService;
 
         protected AbstractReportPluginsCommandContainer(string command, ICommandManager commandManager,
-            IVstService vstService,
-            ILicenseService licenseService, IApplicationService applicationService,
-            IRuntimeConfigurationService runtimeConfigurationService, GlobalService globalService)
+            IRuntimeConfigurationService runtimeConfigurationService)
             : base(command, commandManager, runtimeConfigurationService)
         {
-            Argument.IsNotNull(() => vstService);
-            Argument.IsNotNull(() => licenseService);
-            Argument.IsNotNull(() => applicationService);
+            _licenseService = ServiceLocator.Default.ResolveType<ILicenseService>();
+            _applicationService = ServiceLocator.Default.ResolveType<IApplicationService>();
+            _dataPersisterService = ServiceLocator.Default.ResolveType<DataPersisterService>();
+            GlobalService = ServiceLocator.Default.ResolveType<GlobalService>();
+            GlobalFrontendService = ServiceLocator.Default.ResolveType<GlobalFrontendService>();
 
-            _vstService = vstService;
-            _licenseService = licenseService;
-            _applicationService = applicationService;
-            _globalService = globalService;
-
-            var wrapper = new ChangeNotificationWrapper(_vstService.Plugins);
+            var wrapper = new ChangeNotificationWrapper(GlobalService.Plugins);
             wrapper.CollectionItemPropertyChanged += OnPluginItemPropertyChanged;
             wrapper.CollectionChanged += OnPluginListChanged;
 
@@ -57,13 +51,13 @@ namespace PresetMagician
 
             if (ReportAll)
             {
-                numPluginsToReport = (from plugin in _vstService.Plugins
+                numPluginsToReport = (from plugin in GlobalService.Plugins
                     where plugin.HasMetadata && !plugin.DontReport && !plugin.IsReported
                     select plugin).Count();
             }
             else
             {
-                numPluginsToReport = (from plugin in _vstService.Plugins
+                numPluginsToReport = (from plugin in GlobalService.Plugins
                     where plugin.HasMetadata && plugin.IsSupported == false && !plugin.DontReport && !plugin.IsReported
                     select plugin).Count();
             }
@@ -88,13 +82,13 @@ namespace PresetMagician
         {
             if (ReportAll)
             {
-                return (from plugin in _vstService.Plugins
+                return (from plugin in GlobalService.Plugins
                     where plugin.HasMetadata && !plugin.DontReport && !plugin.IsReported
                     select plugin).ToList();
             }
 
 
-            return (from plugin in _vstService.Plugins
+            return (from plugin in GlobalService.Plugins
                 where plugin.HasMetadata && plugin.IsSupported == false && !plugin.DontReport && !plugin.IsReported
                 select plugin).ToList();
         }
@@ -123,10 +117,10 @@ namespace PresetMagician
                             pluginId = p.VstPluginId,
                             pluginSupported = p.IsSupported,
                             pluginPresetParser = p.PresetParser != null ? p.PresetParser.PresetParserType : "",
-                            pluginSupportedSince = _globalService.PresetMagicianVersion,
+                            pluginSupportedSince = GlobalService.PresetMagicianVersion,
                             pluginType = p.PluginTypeDescription,
                             pluginCapabilities = p.PluginCapabilities,
-                            pluginRemarks = p.PresetParser != null ? p.PresetParser.Remarks: ""
+                            pluginRemarks = p.PresetParser != null ? p.PresetParser.Remarks : ""
                         }
                 }
             });
@@ -149,8 +143,7 @@ namespace PresetMagician
                 {
                     _applicationService.ReportStatus("Report submitted successfully");
                     pluginsToReport.ForEach(c => c.IsReported = true);
-                    _vstService.Save();
-
+                    _dataPersisterService.Save();
                 }
                 else
                 {

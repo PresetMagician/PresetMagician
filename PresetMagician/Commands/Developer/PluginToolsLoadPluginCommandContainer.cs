@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Catel;
 using Catel.MVVM;
 using PresetMagician.Core.Interfaces;
+using PresetMagician.Core.Services;
 using PresetMagician.Services.Interfaces;
 
 // ReSharper disable once CheckNamespace
@@ -11,21 +12,23 @@ namespace PresetMagician
     // ReSharper disable once UnusedMember.Global
     public class PluginToolsLoadPluginCommandContainer : ApplicationNotBusyCommandContainer
     {
-        private readonly IVstService _vstService;
+        private readonly GlobalFrontendService _globalFrontendService;
+        private readonly RemoteVstService _remoteVstService;
 
-        public PluginToolsLoadPluginCommandContainer(ICommandManager commandManager, IVstService vstService, IRuntimeConfigurationService runtimeConfigurationService)
+        public PluginToolsLoadPluginCommandContainer(ICommandManager commandManager, 
+            IRuntimeConfigurationService runtimeConfigurationService, GlobalFrontendService globalFrontendService, RemoteVstService remoteVstService)
             : base(Commands.PluginTools.LoadPlugin, commandManager, runtimeConfigurationService)
         {
-            Argument.IsNotNull(() => vstService);
+            _globalFrontendService = globalFrontendService;
 
-            _vstService = vstService;
+            _remoteVstService = remoteVstService;
 
-            _vstService.SelectedPlugins.CollectionChanged += OnSelectedPluginsListChanged;
+            _globalFrontendService.SelectedPlugins.CollectionChanged += OnSelectedPluginsListChanged;
         }
 
         protected override bool CanExecute(object parameter)
         {
-            return base.CanExecute(parameter) && _vstService.SelectedPlugins.Count == 1;
+            return base.CanExecute(parameter) && _globalFrontendService.SelectedPlugins.Count == 1;
         }
 
         private void OnSelectedPluginsListChanged(object o, NotifyCollectionChangedEventArgs ev)
@@ -36,7 +39,7 @@ namespace PresetMagician
 
         protected override async Task ExecuteAsync(object parameter)
         {
-            var pluginInstance = await _vstService.GetInteractivePluginInstance(_vstService.SelectedPlugin);
+            var pluginInstance = await _remoteVstService.GetInteractivePluginInstance(_globalFrontendService.SelectedPlugin);
 
             if (!pluginInstance.IsLoaded)
             {

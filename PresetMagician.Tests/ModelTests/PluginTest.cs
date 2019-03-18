@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using Catel.Collections;
 using Catel.IoC;
 using Catel.Reflection;
@@ -9,10 +10,13 @@ using Drachenkatze.PresetMagician.NKSF.NKSF;
 using FluentAssertions;
 using Jacobi.Vst.Core;
 using PresetMagician.Core;
+using PresetMagician.Core.ApplicationTask;
 using PresetMagician.Core.Extensions;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
 using PresetMagician.RemoteVstHost;
+using PresetMagician.Utils.Logger;
+using PresetMagician.Utils.Progress;
 using Xunit;
 using Xunit.Abstractions;
 using Type = PresetMagician.Core.Models.Type;
@@ -493,13 +497,49 @@ namespace PresetMagician.Tests.ModelTests
 
         }
 
+        private ApplicationProgress CreateProgress()
+        {
+            var cts = new CancellationTokenSource();
+            
+            return new ApplicationProgress
+            {
+                Progress = new Progress<CountProgress>(),
+                LogReporter = new LogReporter(new MiniMemoryLogger()),
+                CancellationToken = cts.Token
+            };
+        }
+
         [Fact]
         public void TestPluginMoves()
         {
+            var pluginTestFilename = "synister64.dll";
+            var pluginTestDirectory = Path.Combine(Directory.GetCurrentDirectory(),
+                @"TestData\VstPlugins");
+            var pluginSourceDirectory = Path.Combine(Directory.GetCurrentDirectory(),
+                @"Resources");
+            var pluginSourcePath = Path.Combine(pluginSourceDirectory, pluginTestFilename);
+            
+
+            var pluginTestPath = Path.Combine(pluginTestDirectory, pluginTestFilename);
+
+            Directory.CreateDirectory(pluginTestDirectory);
+            File.Delete(pluginTestPath);
+            File.Copy(pluginSourcePath, pluginTestPath);
+            
+            var pluginService = ServiceLocator.Default.ResolveType<PluginService>();
+            var globalService = ServiceLocator.Default.ResolveType<GlobalService>();
+            var directories = new List<VstDirectory> {new VstDirectory {Path = pluginTestDirectory, Active = true}};
+
+            var pluginDlls = pluginService.GetPluginDlls(directories, CreateProgress());
+
+            pluginDlls.Count.Should().Be(1);
+            
             var pool = new RemoteVstHostProcessPool();
             pool.StartPool();
-            
-            
+
+            var foundPlugins = pluginService.VerifyPlugins(globalService.Plugins, pluginDlls, CreateProgress());
+
+            foundPlugins.Count.Should().Be(1);
         }
     }
 }

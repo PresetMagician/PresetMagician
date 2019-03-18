@@ -15,19 +15,14 @@ namespace PresetMagician
     public class PluginScanPluginsCommandContainer : AbstractScanPluginsCommandContainer
     {
         public PluginScanPluginsCommandContainer(ICommandManager commandManager,
-            IRuntimeConfigurationService runtimeConfigurationService, IVstService vstService,
-            IApplicationService applicationService,
-            IDispatcherService dispatcherService, 
-            IAdvancedMessageService messageService,
-            INativeInstrumentsResourceGeneratorService resourceGeneratorService, PresetDataPersisterService presetDataPersisterService)
-            : base(Commands.Plugin.ScanPlugins, commandManager, runtimeConfigurationService, vstService,
-                applicationService, dispatcherService, messageService, resourceGeneratorService, presetDataPersisterService)
+            IRuntimeConfigurationService runtimeConfigurationService)
+            : base(Commands.Plugin.ScanPlugins, commandManager, runtimeConfigurationService)
         {
         }
 
         protected override List<Plugin> GetPluginsToScan()
         {
-            return (from plugin in _vstService.Plugins where plugin.IsEnabled select plugin).ToList();
+            return (from plugin in GlobalService.Plugins where plugin.IsEnabled select plugin).ToList();
         }
     }
 }

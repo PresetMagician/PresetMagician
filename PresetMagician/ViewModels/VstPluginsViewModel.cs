@@ -11,32 +11,30 @@ using PresetMagician.Core.Interfaces;
 using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.Core.Models;
+using PresetMagician.Core.Services;
 
 namespace PresetMagician.ViewModels
 {
     public class VstPluginsViewModel : ViewModelBase
     {
-        private readonly IVstService _vstService;
-        private readonly ICommandManager _commandManager;
+        private readonly GlobalFrontendService _globalFrontendService;
 
-        public VstPluginsViewModel(ICustomStatusService statusService, IPleaseWaitService pleaseWaitService,
-            IRuntimeConfigurationService runtimeConfigurationService, IServiceLocator serviceLocator,
-            IViewModelFactory viewModelFactory, IUIVisualizerService uiVisualizerService, IVstService vstService,
-            ICommandManager commandManager)
+        public VstPluginsViewModel(
+            IRuntimeConfigurationService runtimeConfigurationService
+            )
         {
-            Argument.IsNotNull(() => vstService);
-            _vstService = vstService;
-            _commandManager = commandManager;
+            _globalFrontendService = ServiceLocator.Default.ResolveType<GlobalFrontendService>();
+            var globalService = ServiceLocator.Default.ResolveType<GlobalService>();
 
 
-            Plugins = vstService.Plugins;
-            SelectedPlugins = vstService.SelectedPlugins;
+            Plugins = globalService.Plugins;
+            SelectedPlugins = _globalFrontendService.SelectedPlugins;
             ApplicationState = runtimeConfigurationService.ApplicationState;
-            serviceLocator.RegisterInstance(this);
+            ServiceLocator.Default.RegisterInstance(this);
 
             Plugins.CollectionChanged += PluginsOnCollectionChanged;
 
-            _vstService.SelectedPluginChanged += VstServiceOnSelectedPluginChanged;
+            _globalFrontendService.SelectedPluginChanged += VstServiceOnSelectedPluginChanged;
 
             Title = "VST Plugins";
         }
@@ -60,8 +58,8 @@ namespace PresetMagician.ViewModels
 
         public Plugin SelectedPlugin
         {
-            get => _vstService.SelectedPlugin;
-            set => _vstService.SelectedPlugin = value;
+            get => _globalFrontendService.SelectedPlugin;
+            set => _globalFrontendService.SelectedPlugin = value;
         }
 
         public ObservableCollection<Plugin> Plugins { get; }

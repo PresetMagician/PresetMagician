@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Anotar.Catel;
 using Catel;
+using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
 using Catel.Threading;
@@ -22,29 +23,22 @@ namespace PresetMagician
     public class PluginRefreshPluginsCommandContainer : ThreadedApplicationNotBusyCommandContainer
     {
         private readonly IApplicationService _applicationService;
-        private readonly IVstService _vstService;
         private readonly IDispatcherService _dispatcherService;
-        private readonly IMessageService _messageService;
         private readonly PluginService _pluginService;
-
+        private readonly GlobalService _globalService;
+        private readonly DataPersisterService _dataPersisterService;
+        
         public PluginRefreshPluginsCommandContainer(ICommandManager commandManager,
-            IVstService vstService, IRuntimeConfigurationService runtimeConfigurationService,
+            IRuntimeConfigurationService runtimeConfigurationService,
             IApplicationService applicationService, IDispatcherService dispatcherService,
-            PluginService pluginService,
-            IMessageService messageService)
+            PluginService pluginService)
             : base(Commands.Plugin.RefreshPlugins, commandManager, runtimeConfigurationService)
         {
-            Argument.IsNotNull(() => vstService);
-            Argument.IsNotNull(() => applicationService);
-            Argument.IsNotNull(() => dispatcherService);
-            Argument.IsNotNull(() => pluginService);
-            Argument.IsNotNull(() => messageService);
-
             _dispatcherService = dispatcherService;
-            _vstService = vstService;
             _pluginService = pluginService;
             _applicationService = applicationService;
-            _messageService = messageService;
+            _globalService = ServiceLocator.Default.ResolveType<GlobalService>();
+            _dataPersisterService = ServiceLocator.Default.ResolveType<DataPersisterService>();
         }
 
 
@@ -63,7 +57,7 @@ namespace PresetMagician
                  var vstPluginDLLFiles =
                     await TaskHelper.Run(() => _pluginService.GetPluginDlls(vstDirectories, progress), false, progress.CancellationToken);
 
-                var plugins = _vstService.Plugins;
+                var plugins = _globalService.Plugins;
                 _applicationService.StopApplicationOperation("VST directory scan completed.");
 
                 if (!progress.CancellationToken.IsCancellationRequested)
@@ -81,7 +75,7 @@ namespace PresetMagician
                     _applicationService.StopApplicationOperation("Verifying plugins complete");
                 }
 
-                _vstService.Save();
+                _dataPersisterService.Save();
             }
             catch (Exception e)
             {

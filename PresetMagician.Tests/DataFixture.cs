@@ -3,6 +3,7 @@ using System.IO;
 using Catel.IoC;
 using PresetMagician.Core.Services;
 using PresetMagician.Legacy;
+using PresetMagician.RemoteVstHost;
 using Xunit;
 
 namespace PresetMagician.Tests
@@ -33,11 +34,17 @@ namespace PresetMagician.Tests
 
             File.Delete(ApplicationDatabaseContext.DefaultDatabasePath);
             File.Copy(@"Resources\PresetMagician.test.sqlite3", ApplicationDatabaseContext.DefaultDatabasePath);
+
+            var globalService = ServiceLocator.Default.ResolveType<GlobalService>();
+            globalService.RemoteVstHostProcessPool = new RemoteVstHostProcessPool();
+            globalService.RemoteVstHostProcessPool.StartPool();
+
         }
 
         public void Dispose()
         {
             ServiceLocator.Default.ResolveType<PresetDataPersisterService>().CloseDatabase().Wait();
+            ServiceLocator.Default.ResolveType<GlobalService>().RemoteVstHostProcessPool.StopPool();
         }
     }
 }

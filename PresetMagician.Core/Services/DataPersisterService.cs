@@ -170,7 +170,7 @@ namespace PresetMagician.Core.Services
             }
         }
 
-        private void SavePlugins()
+        public void SavePlugins()
         {
             var serializer = GetSerializer();
 

@@ -14,6 +14,7 @@ using PresetMagician.Core.Interfaces;
 using PresetMagician.Models;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.Core.Models;
+using PresetMagician.Core.Services;
 using PresetMagician.Utils.IssueReport;
 
 namespace PresetMagician.ViewModels
@@ -69,7 +70,7 @@ namespace PresetMagician.ViewModels
 
         public IssueReport Report { get; set; }
 
-        public ReportIssueViewModel(IssueReport report, IVstService vstService,
+        public ReportIssueViewModel(IssueReport report, GlobalService globalService,
             IAdvancedMessageService advancedMessageService)
         {
             Report = report;
@@ -110,7 +111,7 @@ namespace PresetMagician.ViewModels
 
             if (MayIncludePlugins)
             {
-                Plugins.AddRange(vstService.Plugins.ToList().OrderBy(p => p.PluginName));
+                Plugins.AddRange(globalService.Plugins.ToList().OrderBy(p => p.PluginName));
             }
 
             _advancedMessageService = advancedMessageService;

@@ -21,14 +21,16 @@ namespace PresetMagician.Core.Services
     public class PluginService
     {
         private readonly IDispatcherService _dispatcherService;
-        private readonly IVstService _vstService;
+        private readonly RemoteVstService _remoteVstService;
+        private readonly GlobalFrontendService _globalFrontendService;
         private readonly GlobalService _globalService;
         private Dictionary<string, string> DllHashes = new Dictionary<string, string>();
 
-        public PluginService(IVstService vstService, IDispatcherService dispatcherService, GlobalService globalService)
+        public PluginService(RemoteVstService remoteVstService, IDispatcherService dispatcherService, GlobalFrontendService globalFrontendService, GlobalService globalService)
         {
             _dispatcherService = dispatcherService;
-            _vstService = vstService;
+            _remoteVstService = remoteVstService;
+            _globalFrontendService = globalFrontendService;
             _globalService = globalService;
         }
 
@@ -88,7 +90,7 @@ namespace PresetMagician.Core.Services
         public List<Plugin> VerifyPlugins(IList<Plugin> plugins, HashSet<string> dllPaths,
             ApplicationProgress applicationProgress)
         {
-            var remoteFileService = _vstService.GetRemoteVstService();
+            var remoteFileService = _remoteVstService.GetRemoteVstService();
 
             var pluginsToAdd = new List<Plugin>();
             var progressStatus = new CountProgress(plugins.Count);
@@ -150,7 +152,7 @@ namespace PresetMagician.Core.Services
         /// <param name="plugin"></param>
         private void UpdatePluginLocations(Plugin plugin)
         {
-            var remoteFileService = _vstService.GetRemoteVstService();
+            var remoteFileService = _remoteVstService.GetRemoteVstService();
 
             foreach (var pluginLocation in plugin.PluginLocations)
             {
@@ -182,7 +184,7 @@ namespace PresetMagician.Core.Services
         /// <param name="remoteFileService"></param>
         private string GetDllHash(string dllPath)
         {
-            var remoteFileService = _vstService.GetRemoteVstService();
+            var remoteFileService = _remoteVstService.GetRemoteVstService();
 
 
             var hash = remoteFileService.GetHash(dllPath);
@@ -214,7 +216,7 @@ namespace PresetMagician.Core.Services
 
                 try
                 {
-                    _vstService.SelectedPlugin = plugin;
+                    _globalFrontendService.SelectedPlugin = plugin;
                     progressStatus.Current = pluginsToUpdate.IndexOf(plugin);
                     progressStatus.Status = $"Loading metadata for {plugin.DllFilename}";
                     applicationProgress.Progress.Report(progressStatus);
@@ -224,7 +226,7 @@ namespace PresetMagician.Core.Services
                         if (pluginLocation.IsPresent && pluginLocation.LastFailedAnalysisVersion != _globalService.PresetMagicianVersion && (!pluginLocation.HasMetadata || (pluginLocation.PresetParser != null &&
                             pluginLocation.PresetParser.RequiresRescan())))
                         {
-                            using (var remotePluginInstance = _vstService.GetRemotePluginInstance(plugin, false))
+                            using (var remotePluginInstance = _remoteVstService.GetRemotePluginInstance(plugin, false))
                             {
                                 try
                                 {
@@ -269,7 +271,7 @@ namespace PresetMagician.Core.Services
                     // We now got metadata - check if there's an existing plugin with the same plugin ID. If so,
                     // merge this plugin with the existing one if it has no presets.
                     var existingPlugin =
-                        (from p in _vstService.Plugins
+                        (from p in _globalService.Plugins
                             where p.VstPluginId == plugin.VstPluginId && p.PluginId != plugin.PluginId
                             select p)
                         .FirstOrDefault();

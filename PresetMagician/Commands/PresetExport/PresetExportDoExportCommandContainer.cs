@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Anotar.Catel;
 using Catel;
+using Catel.IoC;
 using Catel.MVVM;
 using Catel.Threading;
 using PresetMagician.Core.Interfaces;
@@ -17,28 +18,29 @@ namespace PresetMagician
     // ReSharper disable once UnusedMember.Global
     public class PresetExportDoExportCommandContainer : ApplicationNotBusyCommandContainer
     {
-        private readonly IVstService _vstService;
         private readonly IApplicationService _applicationService;
         private readonly PresetDataPersisterService _presetDataPersisterService;
-
-        public PresetExportDoExportCommandContainer(ICommandManager commandManager, IVstService vstService,
-            IApplicationService applicationService,
-            IRuntimeConfigurationService runtimeConfigurationService, PresetDataPersisterService presetDataPersisterService)
+        private readonly DataPersisterService _dataPersisterService;
+        private readonly RemoteVstService _remoteVstService;
+        private readonly GlobalFrontendService _globalFrontendService;
+        
+        public PresetExportDoExportCommandContainer(ICommandManager commandManager,
+            IRuntimeConfigurationService runtimeConfigurationService)
             : base(Commands.PresetExport.DoExport, commandManager, runtimeConfigurationService)
         {
-            Argument.IsNotNull(() => vstService);
-            Argument.IsNotNull(() => applicationService);
-            Argument.IsNotNull(() => runtimeConfigurationService);
-
-            _vstService = vstService;
-            _applicationService = applicationService;
-            _presetDataPersisterService = presetDataPersisterService;
+            
+            _globalFrontendService = ServiceLocator.Default.ResolveType<GlobalFrontendService>();
+            _presetDataPersisterService = ServiceLocator.Default.ResolveType<PresetDataPersisterService>();
+            _applicationService = ServiceLocator.Default.ResolveType<IApplicationService>();
+            _remoteVstService = ServiceLocator.Default.ResolveType<RemoteVstService>();
+            _dataPersisterService = ServiceLocator.Default.ResolveType<DataPersisterService>();
+            
         }
 
         [STAThread]
         protected override async Task ExecuteAsync(object parameter)
         {
-            var pluginPresets = from item in _vstService.PresetExportList
+            var pluginPresets = from item in _globalFrontendService.PresetExportList
                 group item by item.Plugin
                 into pluginGroup
                 let first = pluginGroup.First()
@@ -48,7 +50,7 @@ namespace PresetMagician
                     Presets = pluginGroup.Select(gi => new {Preset = gi})
                 };
 
-            int totalPresets = _vstService.PresetExportList.Count;
+            int totalPresets = _globalFrontendService.PresetExportList.Count;
             int currentPreset = 0;
 
             _applicationService.StartApplicationOperation(this, "Exporting Presets",
@@ -72,7 +74,7 @@ namespace PresetMagician
                     {
                         await _presetDataPersisterService.OpenDatabase();
                         using (var remotePluginInstance =
-                            _vstService.GetRemotePluginInstance(pluginPreset.Plugin, false))
+                            _remoteVstService.GetRemotePluginInstance(pluginPreset.Plugin, false))
                         {
                             foreach (var preset in pluginPreset.Presets)
                             {
@@ -86,7 +88,7 @@ namespace PresetMagician
                                     return;
                                 }
 
-                                var presetData = _vstService.GetPresetData(preset.Preset);
+                                var presetData = _presetDataPersisterService.GetPresetData(preset.Preset);
                                 var presetExportInfo = new PresetExportInfo(preset.Preset);
                                 if (_runtimeConfigurationService.RuntimeConfiguration.ExportWithAudioPreviews &&
                                     pluginPreset.Plugin.PluginType == Plugin.PluginTypes.Instrument)
@@ -117,7 +119,7 @@ namespace PresetMagician
                     
                     await _presetDataPersisterService.CloseDatabase();
 
-                    _vstService.Save();
+                    _dataPersisterService.Save();
                 }
             });
 

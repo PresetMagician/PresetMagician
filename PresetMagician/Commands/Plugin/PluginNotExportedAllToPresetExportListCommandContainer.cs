@@ -4,11 +4,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using Catel;
 using Catel.Collections;
+using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
-using PresetMagician.Core.Interfaces;
-using PresetMagician.Services.Interfaces;
 using PresetMagician.Core.Models;
+using PresetMagician.Core.Services;
+using PresetMagician.Services.Interfaces;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -19,27 +20,28 @@ namespace PresetMagician
         private readonly IApplicationService _applicationService;
         private readonly IDispatcherService _dispatcherService;
         private readonly ILicenseService _licenseService;
-        private readonly IVstService _vstService;
+        private readonly GlobalService _globalService;
+        private readonly GlobalFrontendService _globalFrontendService;
 
-        public PluginNotExportedAllToPresetExportListCommandContainer(ICommandManager commandManager, IVstService vstService,
+        public PluginNotExportedAllToPresetExportListCommandContainer(ICommandManager commandManager,
             IApplicationService applicationService, IDispatcherService dispatcherService,
             IRuntimeConfigurationService runtimeConfigurationService, ILicenseService licenseService)
             : base(Commands.Plugin.NotExportedAllToPresetExportList, commandManager, runtimeConfigurationService)
         {
-            Argument.IsNotNull(() => vstService);
             Argument.IsNotNull(() => applicationService);
             Argument.IsNotNull(() => dispatcherService);
             Argument.IsNotNull(() => licenseService);
 
-            _vstService = vstService;
             _applicationService = applicationService;
             _dispatcherService = dispatcherService;
             _licenseService = licenseService;
+            _globalService = ServiceLocator.Default.ResolveType<GlobalService>();
+            _globalFrontendService = ServiceLocator.Default.ResolveType<GlobalFrontendService>();
         }
 
         protected override async Task ExecuteAsync(object parameter)
         {
-            var pluginsToScan = (from plugin in _vstService.Plugins where plugin.IsEnabled select plugin).ToList();
+            var pluginsToScan = (from plugin in _globalService.Plugins where plugin.IsEnabled select plugin).ToList();
             var addedPresets = 0;
             var totalPresets = 0;
             bool listExceeded = false;
@@ -63,10 +65,10 @@ namespace PresetMagician
                         hs.AddRange(plugin.Presets);
                     }
 
-                    hs.ExceptWith(_vstService.PresetExportList);
+                    hs.ExceptWith(_globalFrontendService.PresetExportList);
                     hs.RemoveWhere(p => !p.IsMetadataModified);
 
-                    _vstService.PresetExportList.AddItems(hs.ToList());
+                    _globalFrontendService.PresetExportList.AddItems(hs.ToList());
 
                     addedPresets += hs.Count;
                     totalPresets += plugin.Presets.Count;
