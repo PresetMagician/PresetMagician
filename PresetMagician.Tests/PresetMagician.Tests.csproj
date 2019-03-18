@@ -49,6 +49,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseTest.cs" />
+    <Compile Include="DataFixture.cs" />
     <Compile Include="Helpers\PropertyComparisonHelper.cs" />
     <Compile Include="ModelTests\MigrationTest.cs" />
     <Compile Include="ModelTests\PluginTest.cs" />
@@ -124,9 +126,17 @@
       <Project>{2126df46-7f24-4c2c-b236-514a70b7a3a5}</Project>
       <Name>PresetMagician.NKS</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PresetMagician.RemoteVstHost\PresetMagician.RemoteVstHost.csproj">
+      <Project>{f07c1405-2149-4da5-ace7-54f5278ad2e4}</Project>
+      <Name>PresetMagician.RemoteVstHost</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PresetMagician.Utils\PresetMagician.Utils.csproj">
       <Project>{37abda8a-5ffa-41f9-b880-a272d8c21dff}</Project>
       <Name>PresetMagician.Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PresetMagician.VendorPresetParser\PresetMagician.VendorPresetParser.csproj">
+      <Project>{3f01003f-9e52-4f4d-a5fd-ecdd9017c048}</Project>
+      <Name>PresetMagician.VendorPresetParser</Name>
     </ProjectReference>
     <ProjectReference Include="..\vst.net\Source\Code\Jacobi.Vst.Core\Jacobi.Vst.Core.Clr4.csproj">
       <Project>{5950f8a9-f413-4ace-b6e0-6f458b4c26f9}</Project>

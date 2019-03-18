@@ -15,12 +15,7 @@ namespace PresetMagician.RemoteVstHost.Processes
 {
     public class HostProcess : ObservableObject
     {
-        public enum ProcessState
-        {
-            STARTING,
-            RUNNING,
-            EXITED
-        }
+        
 
         public int Pid { get; private set; }
         public DateTime StartDateTime { get; private set; }

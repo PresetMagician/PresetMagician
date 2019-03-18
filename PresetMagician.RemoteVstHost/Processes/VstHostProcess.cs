@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.Threading.Tasks;
@@ -8,11 +9,14 @@ using Castle.DynamicProxy;
 using MethodTimer;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Interfaces;
+using PresetMagician.Utils.Logger;
 using Type = System.Type;
 
 namespace PresetMagician.RemoteVstHost.Processes
 {
-    public class VstHostProcess : HostProcess
+ 
+
+    public class VstHostProcess : HostProcess, IVstHostProcess
     {
         private string _address;
         private IRemoteVstService _vstService;

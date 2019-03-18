@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Catel.Collections;
+using Catel.IoC;
 using Catel.Services;
 using Drachenkatze.PresetMagician.Utils;
 using Drachenkatze.PresetMagician.Utils.Progress;
@@ -19,15 +20,16 @@ namespace PresetMagician.Core.Services
 {
     public class PluginService
     {
-        private IDispatcherService _dispatcherService;
-        private IVstService _vstService;
+        private readonly IDispatcherService _dispatcherService;
+        private readonly IVstService _vstService;
+        private readonly GlobalService _globalService;
         private Dictionary<string, string> DllHashes = new Dictionary<string, string>();
 
-        public PluginService(IVstService vstService, IDispatcherService dispatcherService,
-            DataPersisterService dataPersisterService)
+        public PluginService(IVstService vstService, IDispatcherService dispatcherService, GlobalService globalService)
         {
             _dispatcherService = dispatcherService;
             _vstService = vstService;
+            _globalService = globalService;
         }
 
         /// <summary>
@@ -36,7 +38,8 @@ namespace PresetMagician.Core.Services
         /// <param name="vstDirectories">The VST directories to scan</param>
         /// <param name="applicationProgress">The progress reporter</param>
         /// <returns></returns>
-        public HashSet<string> GetPluginDlls(IList<VstDirectory> vstDirectories, ApplicationProgress applicationProgress)
+        public HashSet<string> GetPluginDlls(IList<VstDirectory> vstDirectories,
+            ApplicationProgress applicationProgress)
         {
             var vstPluginDLLFiles = new HashSet<string>();
 
@@ -82,10 +85,11 @@ namespace PresetMagician.Core.Services
         /// <param name="plugins"></param>
         /// <param name="cancellationToken"></param>
         /// <returns>List of newly created plugins which were created because their DLL hash has changed</returns>
-        public List<Plugin> VerifyPlugins(IList<Plugin> plugins, HashSet<string> dllPaths, ApplicationProgress applicationProgress)
+        public List<Plugin> VerifyPlugins(IList<Plugin> plugins, HashSet<string> dllPaths,
+            ApplicationProgress applicationProgress)
         {
             var remoteFileService = _vstService.GetRemoteVstService();
-            
+
             var pluginsToAdd = new List<Plugin>();
             var progressStatus = new CountProgress(plugins.Count);
             foreach (var plugin in plugins)
@@ -100,7 +104,7 @@ namespace PresetMagician.Core.Services
                 applicationProgress.Progress.Report(progressStatus);
 
                 UpdatePluginLocations(plugin);
-                
+
                 if (plugin.PluginLocation != null && !plugin.PluginLocation.IsPresent)
                 {
                     var newPluginLocation =
@@ -133,7 +137,7 @@ namespace PresetMagician.Core.Services
                         LastModifiedDateTime = remoteFileService.GetLastModifiedDate(dllPath), IsPresent = true
                     }
                 };
-                
+
                 pluginsToAdd.Add(newPlugin);
             }
 
@@ -176,25 +180,25 @@ namespace PresetMagician.Core.Services
         /// <param name="vstPluginDLLFiles"></param>
         /// <param name="plugins"></param>
         /// <param name="remoteFileService"></param>
-        private string GetDllHash(string dllPath) {
-           
+        private string GetDllHash(string dllPath)
+        {
             var remoteFileService = _vstService.GetRemoteVstService();
 
-           
-                var hash = remoteFileService.GetHash(dllPath);
 
-                if (DllHashes.ContainsKey(dllPath))
-                {
-                    DllHashes[dllPath] = hash;
-                }
-                else
-                {
-                    DllHashes.Add(dllPath, hash);
-                }
+            var hash = remoteFileService.GetHash(dllPath);
 
-                return DllHashes[dllPath];
+            if (DllHashes.ContainsKey(dllPath))
+            {
+                DllHashes[dllPath] = hash;
+            }
+            else
+            {
+                DllHashes.Add(dllPath, hash);
+            }
+
+            return DllHashes[dllPath];
         }
-        
+
         public async Task<List<Plugin>> UpdateMetadata(IList<Plugin> pluginsToUpdate,
             ApplicationProgress applicationProgress)
         {
@@ -215,31 +219,50 @@ namespace PresetMagician.Core.Services
                     progressStatus.Status = $"Loading metadata for {plugin.DllFilename}";
                     applicationProgress.Progress.Report(progressStatus);
 
-                    if (!plugin.HasMetadata)
+                    foreach (var pluginLocation in plugin.PluginLocations)
                     {
-                        if (plugin.PluginLocation == null)
+                        if (pluginLocation.IsPresent && pluginLocation.LastFailedAnalysisVersion != _globalService.PresetMagicianVersion && (!pluginLocation.HasMetadata || (pluginLocation.PresetParser != null &&
+                            pluginLocation.PresetParser.RequiresRescan())))
                         {
-                            // No metadata and no plugin location dll is not present => remove it
-                            if (plugin.Presets.Count == 0)
+                            using (var remotePluginInstance = _vstService.GetRemotePluginInstance(plugin, false))
                             {
-                                applicationProgress.LogReporter.Report(new LogEntry(LogLevel.Info, "Removing unknown plugin entry without metadata, without presets and without plugin dll"));
-                                pluginsToRemove.Add(plugin);
+                                try
+                                {
+                                    await remotePluginInstance.LoadPlugin();
+                                    plugin.Logger.Debug($"Attempting to find presetParser for {plugin.PluginName}");
+
+                                    ServiceLocator.Default.ResolveType<VendorPresetParserService>()
+                                        .DeterminatePresetParser(remotePluginInstance);
+                                    remotePluginInstance.UnloadPlugin();
+                                }
+                                catch (Exception e)
+                                {
+                                    pluginLocation.LastFailedAnalysisVersion = _globalService.PresetMagicianVersion;
+                                }
                             }
-
-                            continue;
                         }
 
-                        using (var remotePluginInstance = _vstService.GetRemotePluginInstance(plugin, false))
+                        if (!plugin.HasMetadata && pluginLocation.HasMetadata)
                         {
-                            await remotePluginInstance.LoadPlugin();
-                            remotePluginInstance.UnloadPlugin();
+                            plugin.PluginLocation = pluginLocation;
+                            break;
                         }
+                    }
+
+                    if (!plugin.HasMetadata && plugin.PluginLocation == null && plugin.Presets.Count == 0)
+                    {
+                        // No metadata and still no plugin location dll => remove it
+
+                        applicationProgress.LogReporter.Report(new LogEntry(LogLevel.Info,
+                            "Removing unknown plugin entry without metadata, without presets and without plugin dll"));
+                        pluginsToRemove.Add(plugin);
+
+                        continue;
                     }
 
                     if (!plugin.HasMetadata)
                     {
-                        plugin.LastFailedAnalysisVersion = VersionHelper.GetCurrentVersion();
-                        // Still no metadata, probably plugin loading failure
+                        // Still no metadata, probably plugin loading failure. Try again in the next version.
                         continue;
                     }
 
@@ -264,11 +287,13 @@ namespace PresetMagician.Core.Services
                                 {
                                     existingPlugin.PluginLocation = plugin.PluginLocation;
                                 });
-                            } else
+                            }
+                            else
                             {
                                 existingPlugin.PluginLocations.Add(plugin.PluginLocation);
                             }
-                        } else if (existingPlugin.Presets.Count == 0)
+                        }
+                        else if (existingPlugin.Presets.Count == 0)
                         {
                             // The existing plugin has no presets - remove it!
                             pluginsToRemove.Add(existingPlugin);
@@ -279,25 +304,18 @@ namespace PresetMagician.Core.Services
                                 {
                                     plugin.PluginLocation = existingPlugin.PluginLocation;
                                 });
-                            } else
+                            }
+                            else
                             {
                                 plugin.PluginLocations.Add(existingPlugin.PluginLocation);
                             }
-                           
                         }
-                    } 
-                   
+                    }
                 }
                 catch (Exception e)
                 {
-                    applicationProgress.LogReporter.Report(new LogEntry(LogLevel.Error, $"Unable to load  metadata for {plugin.DllFilename} because of {e.GetType().FullName} {e.Message}"));
-                   
-                    plugin.OnLoadError(e);
-
-                    if (!plugin.HasMetadata)
-                    {
-                        plugin.LastFailedAnalysisVersion = VersionHelper.GetCurrentVersion();
-                    }
+                    applicationProgress.LogReporter.Report(new LogEntry(LogLevel.Error,
+                        $"Unable to load  metadata for {plugin.DllFilename} because of {e.GetType().FullName} {e.Message}"));
                 }
 
                 await _dispatcherService.InvokeAsync(() => { plugin.NativeInstrumentsResource.Load(plugin); });

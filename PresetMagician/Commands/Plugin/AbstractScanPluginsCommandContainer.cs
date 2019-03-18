@@ -13,7 +13,6 @@ using Catel.MVVM;
 using Catel.Services;
 using Catel.Threading;
 using Catel.Windows;
-using Drachenkatze.PresetMagician.VendorPresetParser;
 using Orchestra;
 using PresetMagician.Core.EventArgs;
 using PresetMagician.Core.Interfaces;
@@ -45,7 +44,8 @@ namespace PresetMagician
             IRuntimeConfigurationService runtimeConfigurationService, IVstService vstService,
             IApplicationService applicationService,
             IDispatcherService dispatcherService, IAdvancedMessageService messageService,
-            INativeInstrumentsResourceGeneratorService resourceGeneratorService, PresetDataPersisterService presetDataPersisterService)
+            INativeInstrumentsResourceGeneratorService resourceGeneratorService,
+            PresetDataPersisterService presetDataPersisterService)
             : base(command, commandManager, runtimeConfigurationService)
         {
             Argument.IsNotNull(() => vstService);
@@ -62,7 +62,6 @@ namespace PresetMagician
             _presetDataPersisterService = presetDataPersisterService;
             _resourceGeneratorService = resourceGeneratorService;
             _pluginService = ServiceLocator.Default.ResolveType<PluginService>();
-            
 
             _vstService.Plugins.CollectionChanged += OnPluginsListChanged;
 
@@ -71,11 +70,6 @@ namespace PresetMagician
 
         protected abstract List<Plugin> GetPluginsToScan();
 
-
-        protected virtual bool IsQuickAnalysisMode()
-        {
-            return false;
-        }
 
         protected override bool CanExecute(object parameter)
         {
@@ -161,7 +155,9 @@ namespace PresetMagician
                     pluginsToScan.Count);
                 cancellationToken = _applicationService.GetApplicationOperationCancellationSource().Token;
 
-                await TaskHelper.Run(async () => await AnalyzePlugins(pluginsToScan.OrderBy(p => p.PluginName).ToList(), cancellationToken), true,
+                await TaskHelper.Run(
+                    async () => await AnalyzePlugins(pluginsToScan.OrderBy(p => p.PluginName).ToList(),
+                        cancellationToken), true,
                     cancellationToken);
 
                 // ReSharper disable once MethodSupportsCancellation
@@ -180,7 +176,7 @@ namespace PresetMagician
 
             var unreportedPlugins =
                 (from plugin in _vstService.Plugins
-                    where !plugin.IsReported && !plugin.DontReport && !plugin.IsSupported && plugin.IsAnalyzed &&
+                    where !plugin.IsReported && !plugin.DontReport && !plugin.IsSupported && plugin.HasMetadata &&
                           plugin.IsEnabled
                     select plugin).ToList();
 
@@ -231,7 +227,6 @@ namespace PresetMagician
             }
         }
 
-       
 
         private async Task AnalyzePlugins(IList<Plugin> pluginsToScan, CancellationToken cancellationToken)
         {
@@ -252,9 +247,9 @@ namespace PresetMagician
                 {
                     return;
                 }
-                
+
                 _vstService.SelectedPlugin = plugin;
-                
+
                 try
                 {
                     using (var remotePluginInstance = _vstService.GetRemotePluginInstance(plugin))
@@ -276,10 +271,9 @@ namespace PresetMagician
                             }
                         }
 
-                        plugin.Logger.Debug($"Attempting to find presetParser for {plugin.PluginName}");
 
-                        VendorPresetParser.DeterminatePresetParser(remotePluginInstance);
                         var wasLoaded = remotePluginInstance.IsLoaded;
+                        plugin.PresetParser.PluginInstance = remotePluginInstance;
                         plugin.PresetParser.DataPersistence = _presetDataPersisterService;
                         await _presetDataPersisterService.OpenDatabase();
 
@@ -287,22 +281,14 @@ namespace PresetMagician
                         _currentPluginIndex = pluginsToScan.IndexOf(plugin);
                         _currentPlugin = plugin;
 
-                        if (!IsQuickAnalysisMode())
-                        {
-                            
-                                    plugin.PresetParser.RootBank = plugin.RootBank.First();
+                        plugin.PresetParser.RootBank = plugin.RootBank.First();
 
-                                    _totalPresets = plugin.PresetParser.GetNumPresets();
-                                    _currentPresetIndex = 0;
+                        _totalPresets = plugin.PresetParser.GetNumPresets();
+                        _currentPresetIndex = 0;
 
-                                    await plugin.PresetParser.DoScan();
-                                
-                            
-                        }
-                        
+                        await plugin.PresetParser.DoScan();
+
                         await _presetDataPersisterService.CloseDatabase();
-
-                        plugin.IsAnalyzed = true;
 
                         if (_runtimeConfigurationService.RuntimeConfiguration.AutoCreateResources &&
                             _resourceGeneratorService.ShouldCreateScreenshot(remotePluginInstance))
@@ -339,13 +325,11 @@ namespace PresetMagician
                         wasLoaded = remotePluginInstance.IsLoaded;
 
 
-                        if (!IsQuickAnalysisMode())
-                        {
-                            _applicationService.UpdateApplicationOperationStatus(
-                                pluginsToScan.IndexOf(plugin),
-                                $"{plugin.DllFilename} - Updating Database");
-                            _vstService.SavePlugin(plugin);
-                        }
+                        _applicationService.UpdateApplicationOperationStatus(
+                            pluginsToScan.IndexOf(plugin),
+                            $"{plugin.DllFilename} - Updating Database");
+                        _vstService.SavePlugin(plugin);
+
 
                         if (wasLoaded)
                         {
@@ -362,7 +346,7 @@ namespace PresetMagician
                         $"Unable to analyze {plugin.DllFilename} because of {e.GetType().FullName}: {e.Message}";
                     _applicationService.AddApplicationOperationError(errorMessage + " - see plugin log for details");
                 }
-                
+
                 // Remove the event handler here, so we can be absolutely sure we removed this.
                 _presetDataPersisterService.PresetUpdated -= ContextOnPresetUpdated;
 

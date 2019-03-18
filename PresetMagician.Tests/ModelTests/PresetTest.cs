@@ -16,7 +16,7 @@ using Type = PresetMagician.Core.Models.Type;
 
 namespace PresetMagician.Tests.ModelTests
 {
-    public class PresetTests 
+    public class PresetTests: BaseTest
     {
         private Dictionary<string, object> PropertiesWhichShouldNotModifyIsMetadataModified =
             new Dictionary<string, object>
@@ -82,11 +82,9 @@ namespace PresetMagician.Tests.ModelTests
                 nameof(Preset.LastExportedMetadata)
             };
 
-        private readonly ITestOutputHelper _output;
-
-        public PresetTests(ITestOutputHelper output)
+        public PresetTests(ITestOutputHelper output, DataFixture fixture) : base(output, fixture)
         {
-            _output = output;
+
         }
 
         private static Preset GetFreshPresetTestSubject()

@@ -96,11 +96,6 @@ namespace PresetMagician.Legacy
             return cs.ConnectionString;
         }
 
-        public static ApplicationDatabaseContext Create()
-        {
-            return new ApplicationDatabaseContext();
-        }
-
         /// <summary>
         /// todo rename to initialize or something
         /// </summary>

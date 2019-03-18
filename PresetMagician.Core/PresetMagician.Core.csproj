@@ -46,6 +46,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="ApplicationTask\ApplicationProgress.cs" />
     <Compile Include="Collections\EditableCollection.cs" />
     <Compile Include="Collections\WrappedEditableCollection.cs" />
@@ -56,8 +59,10 @@
     <Compile Include="Data\ModelBase.usereditable.cs" />
     <Compile Include="Data\UserEditableChangeNotificationWrapper.cs" />
     <Compile Include="Data\WrappedModelBase.cs" />
+    <Compile Include="EventArgs\PoolFailedEventArgs.cs" />
     <Compile Include="EventArgs\PresetUpdatedEventArgs.cs" />
     <Compile Include="Exceptions\ConnectivityLostException.cs" />
+    <Compile Include="Exceptions\NoMetadataAvailableException.cs" />
     <Compile Include="Extensions\CharacteristicCollectionExtensions.cs" />
     <Compile Include="Extensions\PresetMetadataExtensions.cs" />
     <Compile Include="Extensions\TypeCollectionExtensions.cs" />
@@ -71,8 +76,10 @@
     <Compile Include="Interfaces\IDataPersistence.cs" />
     <Compile Include="Interfaces\IPresetMetadata.cs" />
     <Compile Include="Interfaces\IRemotePluginInstance.cs" />
+    <Compile Include="Interfaces\IRemoteVstHostProcessPool.cs" />
     <Compile Include="Interfaces\IRemoteVstService.cs" />
     <Compile Include="Interfaces\IVendorPresetParser.cs" />
+    <Compile Include="Interfaces\IVstHostProcess.cs" />
     <Compile Include="Interfaces\IVstService.cs" />
     <Compile Include="Models\BankFile.cs" />
     <Compile Include="Models\Characteristic.cs" />
@@ -101,9 +108,11 @@
     <Compile Include="Models\PresetExportInfo.cs" />
     <Compile Include="Models\PresetMetadata.cs" />
     <Compile Include="Models\PresetParserCharacteristic.cs" />
+    <Compile Include="Models\PresetParserConfiguration.cs" />
     <Compile Include="Models\PresetParserMetadata.cs" />
     <Compile Include="Models\PresetParserType.cs" />
     <Compile Include="Models\PreviewNotePlayer.cs" />
+    <Compile Include="Models\ProcessOperation.cs" />
     <Compile Include="Models\Type.cs" />
     <Compile Include="Models\TypeCollection.cs" />
     <Compile Include="Models\TypeUsage.cs" />
@@ -117,6 +126,7 @@
     <Compile Include="Services\PresetDataPersisterService.cs" />
     <Compile Include="Services\PreviewNotePlayerService.cs" />
     <Compile Include="Services\TypesService.cs" />
+    <Compile Include="Services\VendorPresetParserService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />

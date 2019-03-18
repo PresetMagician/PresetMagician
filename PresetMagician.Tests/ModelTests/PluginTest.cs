@@ -8,23 +8,26 @@ using Catel.Reflection;
 using Drachenkatze.PresetMagician.NKSF.NKSF;
 using FluentAssertions;
 using Jacobi.Vst.Core;
+using PresetMagician.Core;
 using PresetMagician.Core.Extensions;
-using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
+using PresetMagician.RemoteVstHost;
 using Xunit;
-using PluginInfoItem = PresetMagician.Core.Models.PluginInfoItem;
+using Xunit.Abstractions;
 using Type = PresetMagician.Core.Models.Type;
-using VstPluginInfoSurrogate = PresetMagician.Core.Models.VstPluginInfoSurrogate;
 
 namespace PresetMagician.Tests.ModelTests
 {
-    public class PluginTest
+    public class PluginTest: BaseTest
     {
+        public PluginTest(ITestOutputHelper output, DataFixture fixture) : base(output, fixture)
+        {
+        }
+
         private Dictionary<string, object> PropertiesWhichShouldBePersisted =
             new Dictionary<string, object>
             {
-                {nameof(Plugin.PluginName), "bla"},
                 {nameof(Plugin.PluginId), Guid.NewGuid().ToString()},
                 {nameof(Plugin.IsEnabled), false},
                 {nameof(Plugin.VstPluginId), 12345},
@@ -34,10 +37,7 @@ namespace PresetMagician.Tests.ModelTests
                 {nameof(Plugin.IsReported), true},
                 {nameof(Plugin.DontReport), true},
                 {nameof(Plugin.PluginVendor), "im da vendor"},
-                {nameof(Plugin.IsAnalyzed), true},
-                {nameof(Plugin.HasMetadata), true},
                 {nameof(Plugin.IsSupported), true},
-                {nameof(Plugin.LastFailedAnalysisVersion), "0.5.9"}
             };
 
         private List<string> PropertiesWhichShouldBeIgnored =
@@ -62,7 +62,9 @@ namespace PresetMagician.Tests.ModelTests
                 nameof(Plugin.PluginTypeDescription),
                 nameof(Plugin.NumPresets),
                 nameof(Plugin.PresetParser),
-                nameof(Plugin.RequiresMetadataScan)
+                nameof(Plugin.RequiresMetadataScan),
+                nameof(Plugin.PluginName),
+                nameof(Plugin.HasMetadata)
             };
 
         private Dictionary<string, object> PluginLocationPropertiesWhichShouldBePersisted =
@@ -75,7 +77,11 @@ namespace PresetMagician.Tests.ModelTests
                 {nameof(PluginLocation.PluginProduct), "plugin product"},
                 {nameof(PluginLocation.LastModifiedDateTime), DateTime.Now},
                 {nameof(PluginLocation.VendorVersion), "vendor version"},
-                {nameof(PluginLocation.DllPath), "some path"}
+                {nameof(PluginLocation.DllPath), "some path"},
+                {nameof(PluginLocation.HasMetadata), true},
+                {nameof(PluginLocation.PresetParserClassName), "NullPresetParser"},
+                {nameof(PluginLocation.LastFailedAnalysisVersion), "0.5.9"}
+
             };
 
         private List<string> PluginLocationPropertiesWhichShouldBeIgnored =
@@ -86,7 +92,8 @@ namespace PresetMagician.Tests.ModelTests
                 nameof(PluginLocation.FullTextRepresentation),
                 nameof(PluginLocation.IsUserModified),
                 nameof(PluginLocation.IsEditing),
-                nameof(PluginLocation.UserModifiedProperties)
+                nameof(PluginLocation.UserModifiedProperties),
+                nameof(PluginLocation.PresetParser)
             };
 
         private Dictionary<string, object> PluginInfoPropertiesWhichShouldBePersisted =
@@ -413,10 +420,8 @@ namespace PresetMagician.Tests.ModelTests
         [Fact]
         public void TestPersistence()
         {
-            DataPersisterService.DefaultPluginStoragePath = Directory.GetCurrentDirectory();
-
             var testedProperties = new HashSet<string>();
-            var persister = new DataPersisterService(new GlobalService());
+            var persister = ServiceLocator.Default.ResolveType<DataPersisterService>();
             var plugin = InitializePluginToBeSaved();
 
 
@@ -471,9 +476,6 @@ namespace PresetMagician.Tests.ModelTests
         [Fact]
         public void TestSetFromPresetParser()
         {
-            Core.Core.RegisterServices();
-            PresetDataPersisterService.DefaultDatabasePath = @"TestData\PresetData.sqlite3";
-            
             var plugin = InitializePluginToBeSaved();
             var presetData = new PresetParserMetadata();
             presetData.Plugin = plugin;
@@ -494,6 +496,10 @@ namespace PresetMagician.Tests.ModelTests
         [Fact]
         public void TestPluginMoves()
         {
+            var pool = new RemoteVstHostProcessPool();
+            pool.StartPool();
+            
+            
         }
     }
 }

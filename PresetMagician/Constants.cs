@@ -125,9 +125,7 @@ namespace PresetMagician
         {
             public const string RefreshPlugins = "Plugin.RefreshPlugins";
             public const string ScanPlugins = "Plugin.ScanPlugins";
-            public const string QuickScanPlugins = "Plugin.QuickScanPlugins";
             public const string ScanSelectedPlugins = "Plugin.ScanSelectedPlugins";
-            public const string QuickScanSelectedPlugins = "Plugin.QuickScanSelectedPlugins";
             public const string ScanSelectedPlugin = "Plugin.ScanSelectedPlugin";
             public const string AllToPresetExportList = "Plugin.AllToPresetExportList";
             public const string SelectedToPresetExportList = "Plugin.SelectedToPresetExportList";

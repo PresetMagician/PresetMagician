@@ -18,7 +18,7 @@ namespace PresetMagicianScratchPad
         [STAThread]
         static void Main(string[] args)
         {
-            Core.RegisterServices();
+            CoreInitializer.RegisterServices();
             var sw = new Stopwatch();
             
             

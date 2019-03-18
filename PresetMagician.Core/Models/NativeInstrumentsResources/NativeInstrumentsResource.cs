@@ -222,7 +222,6 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
         {
             if (plugin == null || !plugin.HasMetadata)
             {
-                
                 return;
             }
 

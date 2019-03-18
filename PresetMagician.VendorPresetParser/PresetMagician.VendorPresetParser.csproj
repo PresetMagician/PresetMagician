@@ -2,6 +2,7 @@
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\squirrel.windows\build\squirrel.windows.props" Condition="Exists('..\packages\squirrel.windows\build\squirrel.windows.props')" Label="Paket" />
   <Import Project="..\packages\PropertyChanged.Fody\build\PropertyChanged.Fody.props" Condition="Exists('..\packages\PropertyChanged.Fody\build\PropertyChanged.Fody.props')" Label="Paket" />
+  <Import Project="..\packages\ModuleInit.Fody\build\ModuleInit.Fody.props" Condition="Exists('..\packages\ModuleInit.Fody\build\ModuleInit.Fody.props')" Label="Paket" />
   <Import Project="..\packages\MethodTimer.Fody\build\MethodTimer.Fody.props" Condition="Exists('..\packages\MethodTimer.Fody\build\MethodTimer.Fody.props')" Label="Paket" />
   <Import Project="..\packages\Anotar.Catel.Fody\build\Anotar.Catel.Fody.props" Condition="Exists('..\packages\Anotar.Catel.Fody\build\Anotar.Catel.Fody.props')" Label="Paket" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -250,7 +251,7 @@
     <Compile Include="MeldaProduction\MeldaProduction_MWobbler.cs" />
     <Compile Include="MeldaProduction\MeldaProduction_MWobblerMB.cs" />
     <Compile Include="MeldaProduction\MeldaProduction_MXXX.cs" />
-    <Compile Include="NoMetadataAvailableException.cs" />
+    <Compile Include="VendorPresetParserInitializer.cs" />
     <Compile Include="NullPresetParser.cs" />
     <Compile Include="D16 Group\D16Group.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -311,7 +312,6 @@
     <Compile Include="ValhallaDSP\ValhallaDSP_ValhallaRoom.cs" />
     <Compile Include="ValhallaDSP\ValhallaDSP_ValhallaUberMod.cs" />
     <Compile Include="ValhallaDSP\ValhallaDSP_ValhallaVintageVerb.cs" />
-    <Compile Include="VendorPresetParser.cs" />
     <Compile Include="VoidPresetParser.cs" />
     <Compile Include="Xfer_Records\Xfer_Records_Serum.cs" />
   </ItemGroup>
@@ -511,6 +511,17 @@
       <ItemGroup>
         <Reference Include="MethodTimer">
           <HintPath>..\packages\MethodTimer.Fody\lib\net452\MethodTimer.dll</HintPath>
+          <Private>False</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="ModuleInit">
+          <HintPath>..\packages\ModuleInit.Fody\lib\net452\ModuleInit.dll</HintPath>
           <Private>False</Private>
           <Paket>True</Paket>
         </Reference>

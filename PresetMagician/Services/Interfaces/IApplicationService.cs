@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Catel.MVVM;
 using PresetMagician.Core.ApplicationTask;
+using PresetMagician.Core.Interfaces;
 using PresetMagician.RemoteVstHost;
 using PresetMagician.Utils.Progress;
 
@@ -23,7 +24,6 @@ namespace PresetMagician.Services.Interfaces
         List<string> GetApplicationOperationErrors();
         void ClearLastOperationErrors();
         void ReportStatus(string statusText);
-        NewProcessPool NewProcessPool { get; }
         void StartProcessPool();
         void ShutdownProcessPool();
         void SetApplicationOperationTotalItems(int items);

@@ -161,7 +161,7 @@
                                                             <MultiDataTrigger.Conditions>
                                                                 <Condition Binding="{Binding LoadError, Mode=OneWay}"
                                                                            Value="False" />
-                                                                <Condition Binding="{Binding IsAnalyzed, Mode=OneWay}"
+                                                                <Condition Binding="{Binding HasMetadata, Mode=OneWay}"
                                                                            Value="True" />
                                                                 <Condition Binding="{Binding IsSupported, Mode=OneWay}"
                                                                            Value="True" />
@@ -173,7 +173,7 @@
                                                             <MultiDataTrigger.Conditions>
                                                                 <Condition Binding="{Binding LoadError, Mode=OneWay}"
                                                                            Value="False" />
-                                                                <Condition Binding="{Binding IsAnalyzed, Mode=OneWay}"
+                                                                <Condition Binding="{Binding HasMetadata, Mode=OneWay}"
                                                                            Value="True" />
                                                                 <Condition Binding="{Binding IsSupported, Mode=OneWay}"
                                                                            Value="False" />
@@ -201,7 +201,7 @@
                                                         <MultiDataTrigger.Conditions>
                                                             <Condition Binding="{Binding LoadError, Mode=OneWay}"
                                                                        Value="False" />
-                                                            <Condition Binding="{Binding IsAnalyzed, Mode=OneWay}"
+                                                            <Condition Binding="{Binding HasMetadata, Mode=OneWay}"
                                                                        Value="True" />
                                                             <Condition Binding="{Binding IsSupported, Mode=OneWay}"
                                                                        Value="True" />
@@ -212,7 +212,7 @@
                                                         <MultiDataTrigger.Conditions>
                                                             <Condition Binding="{Binding LoadError, Mode=OneWay}"
                                                                        Value="False" />
-                                                            <Condition Binding="{Binding IsAnalyzed, Mode=OneWay}"
+                                                            <Condition Binding="{Binding HasMetadata, Mode=OneWay}"
                                                                        Value="True" />
                                                             <Condition Binding="{Binding IsSupported, Mode=OneWay}"
                                                                        Value="False" />

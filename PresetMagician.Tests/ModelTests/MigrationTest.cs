@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Catel.IoC;
 using FluentAssertions;
 using PresetMagician.Core.Collections;
 using PresetMagician.Core.Models;
@@ -25,36 +26,20 @@ using Type = PresetMagician.Legacy.Models.Type;
 
 namespace PresetMagician.Tests.ModelTests
 {
-    public class MigrationTest
+    public class MigrationTest: BaseTest
     {
-        private readonly ITestOutputHelper _output;
-
-        public MigrationTest(ITestOutputHelper output)
+        public MigrationTest(ITestOutputHelper output, DataFixture fixture) : base(output, fixture)
         {
-            _output = output;
         }
-        
+
         [Fact]
         public void TestMigration()
         {
-            var testDb = Guid.NewGuid() + ".sqlite3";
-            ApplicationDatabaseContext.DefaultDatabasePath = @"TestDatabases\"+testDb;
-            DataPersisterService.DefaultPluginStoragePath = @"MigrationData\Plugins";
-            PresetDataPersisterService.DefaultDatabasePath = @"MigrationData\PresetData.sqlite3";
-
-            File.Delete(PresetDataPersisterService.DefaultDatabasePath);
-            Directory.CreateDirectory(DataPersisterService.DefaultPluginStoragePath);
-            File.Copy(@"Resources\PresetMagician.test.sqlite3", ApplicationDatabaseContext.DefaultDatabasePath);
-
-            foreach (var file in Directory.EnumerateFiles(DataPersisterService.DefaultPluginStoragePath))
-            {
-                File.Delete(file);
-            }
             var sw = new Stopwatch();
             sw.Start();
             var presetDataPersisterService = new PresetDataPersisterService();
             presetDataPersisterService.OpenDatabase().Wait();
-            var service = new Ef6MigrationService(new DataPersisterService(new GlobalService()), presetDataPersisterService);
+            var service = ServiceLocator.Default.ResolveType<Ef6MigrationService>();
             service.LoadData();
             _output.WriteLine($"Loading took {sw.ElapsedMilliseconds}ms");
 
@@ -88,7 +73,6 @@ namespace PresetMagician.Tests.ModelTests
                nameof(Plugin.IsSupported),
                nameof(Plugin.HasMetadata),
                nameof(Plugin.VstPluginId),
-               nameof(Plugin.IsAnalyzed)
                 
             };
             var comparer = new PropertyComparisonHelper(oldPlugin, newPlugin);
@@ -170,7 +154,7 @@ namespace PresetMagician.Tests.ModelTests
                 nameof(OldPreset.LastExported),
                 nameof(OldPreset.PresetSize),
                 nameof(OldPreset.PresetCompressedSize),
-                nameof(OldPreset.PresetHash),
+                nameof(OldPreset.PresetHash)
             };
             
             var metadataPropertiesToCompare = new HashSet<string>
@@ -178,7 +162,7 @@ namespace PresetMagician.Tests.ModelTests
                 nameof(OldPreset.PresetName),
                 nameof(OldPreset.Author),
                 nameof(OldPreset.Comment),
-                nameof(OldPreset.BankPath),
+                nameof(OldPreset.BankPath)
             };
             
             var originalMetadataPropertiesToCompare = new HashSet<string>
@@ -187,7 +171,7 @@ namespace PresetMagician.Tests.ModelTests
                 nameof(OldPreset.Author),
                 nameof(OldPreset.Comment),
                 nameof(OldPreset.SourceFile),
-                nameof(OldPreset.BankPath),
+                nameof(OldPreset.BankPath)
             };
             
             var comparer = new PropertyComparisonHelper(oldPreset, newPreset);
@@ -235,7 +219,7 @@ namespace PresetMagician.Tests.ModelTests
             }
         }
         
-        private void CompareModes(ICollection<Mode> oldModes, ICollection<Core.Models.Characteristic> newModes)
+        private void CompareModes(ICollection<Mode> oldModes, ICollection<Characteristic> newModes)
         {
             newModes.Count.Should().Be(oldModes.Count);
 

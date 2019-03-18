@@ -8,6 +8,7 @@ using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
 using PresetMagician.Core.ApplicationTask;
+using PresetMagician.Core.EventArgs;
 using PresetMagician.Core.Services;
 using PresetMagician.RemoteVstHost;
 using PresetMagician.Services.Interfaces;
@@ -28,14 +29,15 @@ namespace PresetMagician.Services
         private string _lastUpdateStatus;
         private readonly Timer _updateWorkerPoolStatsTimer;
         private readonly Timer _updateDatabaseSizeTimer;
+        private readonly GlobalService _globalService;
         private ApplicationProgress _applicationProgress;
         private ILog _log;
-        public NewProcessPool NewProcessPool { get; }
+        
 
         private readonly List<string> _applicationOperationErrors = new List<string>();
 
         public ApplicationService(IRuntimeConfigurationService runtimeConfigurationService, DataPersisterService dataPersisterService,
-            ICustomStatusService statusService, IPleaseWaitService pleaseWaitService, IAdvancedMessageService messageService)
+            ICustomStatusService statusService, IPleaseWaitService pleaseWaitService, IAdvancedMessageService messageService, GlobalService globalService)
         {
             Argument.IsNotNull(() => runtimeConfigurationService);
             Argument.IsNotNull(() => statusService);
@@ -47,10 +49,11 @@ namespace PresetMagician.Services
             _runtimeConfigurationService = runtimeConfigurationService;
             _messageService = messageService;
             _dataPersisterService = dataPersisterService;
+            _globalService = globalService;
             
           
-            NewProcessPool = new NewProcessPool();
-            NewProcessPool.PoolFailed += NewProcessPoolOnPoolFailed;
+            _globalService.RemoteVstHostProcessPool = new RemoteVstHostProcessPool();
+            _globalService.RemoteVstHostProcessPool.PoolFailed += NewProcessPoolOnPoolFailed;
             
             _updateWorkerPoolStatsTimer = new Timer(500);
             _updateWorkerPoolStatsTimer.Elapsed += UpdateWorkerPoolStatsTimerOnElapsed;
@@ -72,8 +75,8 @@ namespace PresetMagician.Services
 
         private void UpdateWorkerPoolStatsTimerOnElapsed(object sender, ElapsedEventArgs e)
         {
-            _runtimeConfigurationService.ApplicationState.RunningWorkers = NewProcessPool.NumRunningProcesses;
-            _runtimeConfigurationService.ApplicationState.TotalWorkers = NewProcessPool.NumTotalProcesses;
+            _runtimeConfigurationService.ApplicationState.RunningWorkers = _globalService.RemoteVstHostProcessPool.NumRunningProcesses;
+            _runtimeConfigurationService.ApplicationState.TotalWorkers = _globalService.RemoteVstHostProcessPool.NumTotalProcesses;
             _updateWorkerPoolStatsTimer.Start();
         }
 
@@ -85,14 +88,14 @@ namespace PresetMagician.Services
       
         public void StartProcessPool()
         {
-            NewProcessPool.SetMaxProcesses(_runtimeConfigurationService.RuntimeConfiguration.NumPoolWorkers);
-            NewProcessPool.SetStartTimeout(_runtimeConfigurationService.RuntimeConfiguration.MaxPoolWorkerStartupTime);
-            NewProcessPool.StartPool();
+            _globalService.RemoteVstHostProcessPool.SetMaxProcesses(_runtimeConfigurationService.RuntimeConfiguration.NumPoolWorkers);
+            _globalService.RemoteVstHostProcessPool.SetStartTimeout(_runtimeConfigurationService.RuntimeConfiguration.MaxPoolWorkerStartupTime);
+            _globalService.RemoteVstHostProcessPool.StartPool();
         }
 
         public void ShutdownProcessPool()
         {
-            NewProcessPool.StopPool();
+            _globalService.RemoteVstHostProcessPool.StopPool();
         }
 
         public CancellationTokenSource GetApplicationOperationCancellationSource()

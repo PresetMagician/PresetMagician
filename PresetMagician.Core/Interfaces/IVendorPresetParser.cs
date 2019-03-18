@@ -16,6 +16,9 @@ namespace PresetMagician.Core.Interfaces
 
         string BankLoadingNotes { get; set; }
         bool IsNullParser { get; }
+        PresetParserConfiguration PresetParserConfiguration { get; set; }
+
+        bool RequiresRescan();
         int GetNumPresets();
 
         bool CanHandle();

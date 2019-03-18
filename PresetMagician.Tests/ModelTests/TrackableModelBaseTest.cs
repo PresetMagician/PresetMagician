@@ -6,12 +6,15 @@ using FluentAssertions;
 using PresetMagician.Core.Collections;
 using PresetMagician.Tests.TestEntities;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace PresetMagician.Tests.ModelTests
 {
-    public class ModelBaseTest
+    public class ModelBaseTest: BaseTest
     {
-       
+        public ModelBaseTest(ITestOutputHelper output, DataFixture fixture) : base(output, fixture)
+        {
+        }
 
         [Fact]
         public void TestUserModifiedProperties()

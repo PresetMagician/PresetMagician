@@ -14,11 +14,12 @@ using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
 using Catel.Threading;
+using Drachenkatze.PresetMagician.VendorPresetParser;
 using MethodTimer;
 using Orc.Scheduling;
 using Orc.Squirrel;
 using Orchestra.Services;
-using PresetMagician.Core.Services;
+using PresetMagician.Core;
 using PresetMagician.Legacy.Services;
 using PresetMagician.Legacy.Services.EventArgs;
 using PresetMagician.Services.Interfaces;
@@ -171,12 +172,8 @@ namespace PresetMagician.Services
 
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "ScanPlugins");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin),
-                nameof(Commands.Plugin.QuickScanPlugins));
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin),
                 nameof(Commands.Plugin.ScanSelectedPlugins));
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin),
-                nameof(Commands.Plugin.QuickScanSelectedPlugins));
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin),
+           _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin),
                 nameof(Commands.Plugin.ScanSelectedPlugin));
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "RefreshPlugins");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "AllToPresetExportList");
@@ -251,7 +248,8 @@ namespace PresetMagician.Services
         private void RegisterTypes()
         {
             var serviceLocator = ServiceLocator.Default;
-            Core.Core.RegisterServices();
+            CoreInitializer.RegisterServices();
+            VendorPresetParserInitializer.Initialize();
             serviceLocator.RegisterType<IAboutInfoService, AboutInfoService>();
             serviceLocator.RegisterType<ICustomStatusService, CustomStatusService>();
             serviceLocator.RegisterType<IPleaseWaitService, CustomPleaseWaitService>();

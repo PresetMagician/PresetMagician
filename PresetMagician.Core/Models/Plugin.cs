@@ -79,7 +79,6 @@ namespace PresetMagician.Core.Models
                     ((Preset) item).Plugin = this;
                 }
             }
-            
         }
 
         public int GetAudioPreviewDelay()
@@ -120,6 +119,27 @@ namespace PresetMagician.Core.Models
             {
                 OnPropertyChanged(nameof(IsPresent), adv.OldValue, adv.NewValue);
             }
+
+            if (e.PropertyName == nameof(PluginLocation.PresetParser))
+            {
+                OnPropertyChanged(nameof(PresetParser), adv.OldValue, adv.NewValue);
+            }
+            
+            if (e.PropertyName == nameof(PluginLocation.HasMetadata))
+            {
+                OnPropertyChanged(nameof(HasMetadata), adv.OldValue, adv.NewValue);
+            }
+
+            SyncMetadataFromPluginLocation();
+        }
+
+        private void SyncMetadataFromPluginLocation()
+        {
+            if (PluginLocation != null)
+            {
+                PluginName = PluginLocation.PluginName;
+                PluginVendor = PluginLocation.PluginVendor;
+            }
         }
 
         #endregion
@@ -158,12 +178,12 @@ namespace PresetMagician.Core.Models
         #region Plugin Errors
 
         // todo refactor this
-         public string LoadErrorMessage { get; private set; }
+        public string LoadErrorMessage { get; private set; }
 
         /// <summary>
         /// Defines if the plugin had a load error
         /// </summary>
-        
+
         public bool LoadError { get; private set; }
 
         #endregion
@@ -181,7 +201,7 @@ namespace PresetMagician.Core.Models
         #region Property Plugin Location
 
         [Include] public HashSet<PluginLocation> PluginLocations { get; set; } = new HashSet<PluginLocation>();
-        
+
         private PluginLocation _pluginLocation;
 
         /// <summary>
@@ -205,16 +225,19 @@ namespace PresetMagician.Core.Models
 
                 var oldIsPreset = IsPresent;
                 var oldValue = _pluginLocation;
+                var oldPresetParser = PresetParser;
                 _pluginLocation = value;
                 if (_pluginLocation != null)
                 {
                     _pluginLocation.PropertyChanged += PluginLocationOnPropertyChanged;
                     PluginLocations.Add(_pluginLocation);
                 }
-                
+
+                SyncMetadataFromPluginLocation();
+
                 OnPropertyChanged(nameof(PluginLocation), oldValue, _pluginLocation);
                 OnPropertyChanged(nameof(IsPresent), oldIsPreset, IsPresent);
-                
+                OnPropertyChanged(nameof(PresetParser), oldPresetParser, PresetParser);
             }
         }
 
@@ -229,7 +252,7 @@ namespace PresetMagician.Core.Models
         /// <summary>
         /// Gets or sets the PresetBanks value.
         /// </summary>
-        
+
         public PresetBank RootBank { get; } = new PresetBank();
 
         [Include]
@@ -239,7 +262,7 @@ namespace PresetMagician.Core.Models
         /// <summary>
         /// Defines the full path to the plugin DLL
         /// </summary>
-        
+
         public string DllPath
         {
             get
@@ -274,22 +297,22 @@ namespace PresetMagician.Core.Models
         /// <summary>
         /// Returns the DLL directory in which the DLL is located
         /// </summary>
-        
+
         public string DllDirectory => string.IsNullOrEmpty(DllPath) ? "" : Path.GetDirectoryName(DllPath);
 
         /// <summary>
         /// Returns the Dll Filename without the path
         /// </summary>
-        
+
         public string DllFilename => string.IsNullOrEmpty(DllPath) ? "" : Path.GetFileName(DllPath);
 
-        
+
         public string CanonicalDllFilename =>
             string.IsNullOrEmpty(DllPath)
                 ? "Plugin DLL is missing."
                 : Path.GetFileName(DllPath);
 
-        
+
         public string CanonicalDllDirectory => string.IsNullOrEmpty(DllPath)
             ? "Last known dll path: " + LastKnownGoodDllPath
             : Path.GetDirectoryName(DllPath);
@@ -299,7 +322,7 @@ namespace PresetMagician.Core.Models
         /// Defines if the plugin DLL is present.
         /// A plugin is present if it's DLL Path exists and it is contained within the configured paths
         /// </summary>
-        
+
         public bool IsPresent => PluginLocation != null && PluginLocation.IsPresent;
 
         /// <summary>
@@ -308,73 +331,55 @@ namespace PresetMagician.Core.Models
         [Include]
         public int AudioPreviewPreDelay { get; set; }
 
-        [Include]
-        public ControllerAssignments DefaultControllerAssignments { get; set; }
+        [Include] public ControllerAssignments DefaultControllerAssignments { get; set; }
 
-        [Include]
-        public bool IsReported { get; set; }
-        
-        [Include]
-        public bool DontReport { get; set; }
+        [Include] public bool IsReported { get; set; }
+
+        [Include] public bool DontReport { get; set; }
 
         [Include]
         public EditableCollection<BankFile> AdditionalBankFiles { get; set; } = new EditableCollection<BankFile>();
 
-        [Include]
-        public TypeCollection DefaultTypes { get; set; } = new TypeCollection();
+        [Include] public TypeCollection DefaultTypes { get; set; } = new TypeCollection();
 
-        [Include]
-        public CharacteristicCollection DefaultCharacteristics { get; set; } = new CharacteristicCollection();
+        [Include] public CharacteristicCollection DefaultCharacteristics { get; set; } = new CharacteristicCollection();
 
-        
+
         public string Logs
         {
             get { return string.Join(Environment.NewLine, Logger.LogList); }
         }
 
 
-         public string PluginTypeDescription => PluginType.ToString();
+        public string PluginTypeDescription => PluginType.ToString();
 
 
-         public int NumPresets => Presets?.Count ?? 0;
+        public int NumPresets => Presets?.Count ?? 0;
 
         [Include] public string PluginName { get; set; } = "<unknown>";
-
-         public int PresetParserAudioPreviewPreDelay => PresetParser?.AudioPreviewPreDelay ?? 0;
-
-         [Include]
-        public string PluginVendor { get; set; }
-
-         public IVendorPresetParser PresetParser { get; set; }
-
-        /// <summary>
-        /// Defines if the plugin is or was scanned
-        /// </summary>
-        [Include]
-        public bool IsAnalyzed { get; set; }
-        [Include]
-        public bool HasMetadata { get; set; }
-
-        /// <summary>
-        /// Defines the PresetMagician version in which the analysis failed.
-        /// </summary>
-        [Include]
-        public string LastFailedAnalysisVersion { get; set; }
-
-        public bool RequiresMetadataScan
-        {
-            get { return IsEnabled && !HasMetadata && PresetMagicianVersion != LastFailedAnalysisVersion; }
-        }
         
+        
+        public int PresetParserAudioPreviewPreDelay => PresetParser?.AudioPreviewPreDelay ?? 0;
+
+        [Include] public string PluginVendor { get; set; }
+
+        public IVendorPresetParser PresetParser => PluginLocation?.PresetParser;
+
+        public bool HasMetadata => PluginLocation != null && PluginLocation.HasMetadata;
+
+        
+
+        public bool RequiresMetadataScan => IsEnabled && !HasMetadata; 
+
         /// <summary>
         /// Defines if the plugin is supported
         /// </summary>
         [Include]
         public bool IsSupported { get; set; }
 
-         public MiniMemoryLogger Logger { get; }
+        public MiniMemoryLogger Logger { get; }
 
-        
+
         public NativeInstrumentsResource NativeInstrumentsResource { get; set; } = new NativeInstrumentsResource();
 
         #endregion
