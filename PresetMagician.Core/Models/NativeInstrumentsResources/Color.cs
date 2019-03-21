@@ -9,13 +9,10 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
     public class Color : ModelBase
     {
         [JsonProperty] public string VB_bgcolor { get; set; }
-        [IncludeInSerialization]
-        public System.Windows.Media.Color BackgroundColor { get; set; } 
-        
+        [IncludeInSerialization] public System.Windows.Media.Color BackgroundColor { get; set; }
+
         public void SetRandomColor()
         {
-           
-
             BackgroundColor = GetRandomColor();
         }
 
@@ -30,6 +27,5 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
 
             return color;
         }
-        
     }
 }

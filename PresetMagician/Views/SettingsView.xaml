@@ -68,18 +68,17 @@
                                 SelectedDirectory="{Binding EditableConfiguration.NativeInstrumentsUserContentDirectory}" />
                             <TextBlock>
                                 <Run Text="Default:" />
-                                <Run Text="{Binding DefaultNativeInstrumentsUserContentDirectory, Mode=OneWay}"/>
+                                <Run Text="{Binding DefaultNativeInstrumentsUserContentDirectory, Mode=OneWay}" />
                             </TextBlock>
                         </StackPanel>
-                        
-                        
-                        
-                        
+
+
                         <!-- Auto-create resources -->
                         <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Top">
                             <Label Content="Auto-Create NKS Resources" VerticalAlignment="Top" />
                             <iconPacks:PackIconFontAwesome Margin="0,0,10,0" VerticalAlignment="Center"
-                                                           Kind="QuestionCircleSolid" ToolTipService.ShowDuration="12000">
+                                                           Kind="QuestionCircleSolid"
+                                                           ToolTipService.ShowDuration="12000">
                                 <iconPacks:PackIconFontAwesome.ToolTip>
                                     <StackPanel Margin="5" Width="600">
                                         <TextBlock TextWrapping="Wrap">
@@ -87,7 +86,8 @@
                                             will not be overwritten.<LineBreak />
                                             <LineBreak />
                                             NKS Resources are images (which are shown on their hardware products as well as in Maschine and KK),
-                                            abbreviated plugin names for the hardware, a plugin base color and plugin categories. <LineBreak />
+                                            abbreviated plugin names for the hardware, a plugin base color and plugin categories.
+                                            <LineBreak />
                                             <LineBreak />
                                             By utilizing the latest in Voodoo Ritual Technology™, PresetMagician is able to extract and generate these resources.
                                             The results will not be perfect, but it's better than looking at blank images in the plugin browser.
@@ -97,28 +97,28 @@
                                 </iconPacks:PackIconFontAwesome.ToolTip>
                             </iconPacks:PackIconFontAwesome>
                         </StackPanel>
-                        
+
                         <StackPanel Orientation="Vertical" Grid.Row="2"
                                     Grid.Column="1" VerticalAlignment="Top">
                             <CheckBox
                                 IsChecked="{Binding EditableConfiguration.AutoCreateResources}">
-                                <TextBlock Text="Automatically creates images, colors and other information"/>
+                                <TextBlock Text="Automatically creates images, colors and other information" />
                             </CheckBox>
                             <TextBlock FontStyle="Italic">“brought to you by using the latest in Voodoo Ritual Technology™.”</TextBlock>
                         </StackPanel>
-                        
-                         <!-- Preview Note resources -->
+
+                        <!-- Preview Note resources -->
                         <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal">
                             <Label Content="Default Preview Note" />
                         </StackPanel>
-                        
+
                         <StackPanel Orientation="Vertical" Grid.Row="3"
                                     Grid.Column="1" VerticalAlignment="Top">
-                            
-                            <TextBox Text="{Binding EditableConfiguration.DefaultPreviewMidiNote.FullNoteName}"/>
-                            
+
+                            <TextBox Text="{Binding EditableConfiguration.DefaultPreviewMidiNote.FullNoteName}" />
+
                         </StackPanel>
-                        
+
 
                     </Grid>
                 </ScrollViewer>
@@ -134,21 +134,22 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                    
-                    
-                    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+
+
+                        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
                             <Label Content="Maximum VST Workers" VerticalAlignment="Top" />
                             <iconPacks:PackIconFontAwesome Margin="0,0,10,0" VerticalAlignment="Center"
-                                                           Kind="QuestionCircleSolid" ToolTipService.ShowDuration="12000">
+                                                           Kind="QuestionCircleSolid"
+                                                           ToolTipService.ShowDuration="12000">
                                 <iconPacks:PackIconFontAwesome.ToolTip>
                                     <StackPanel Margin="5" Width="600">
                                         <TextBlock TextWrapping="Wrap">
                                             This setting controls how many VST Workers should be started.<LineBreak />
                                             <LineBreak />
                                             Each VST worker consumes only between 10 and 30 MB of memory when being idle, but this number can raise
-                                            quickly when the VST worker loads a plugin, especially if the plugin doesn't clean up it's resources properly. 
+                                            quickly when the VST worker loads a plugin, especially if the plugin doesn't clean up it's resources properly.
                                             <LineBreak />
                                             PresetMagician will shut down each VST worker after a certain number of loaded plugins to avoid that issue. However,
                                             don't set this number too high if you have a limited amount of RAM. For 8GB of RAM, you can use 8 workers.
@@ -157,7 +158,7 @@
                                 </iconPacks:PackIconFontAwesome.ToolTip>
                             </iconPacks:PackIconFontAwesome>
                         </StackPanel>
-                        
+
                         <StackPanel Orientation="Vertical" Grid.Row="0"
                                     Grid.Column="1">
                             <xctk:IntegerUpDown Width="200" Height="20" MaxWidth="200"
@@ -165,16 +166,18 @@
                                                 AllowTextInput="False"
                                                 Minimum="4"
                                                 Maximum="16" />
-                           
+
                         </StackPanel>
                         <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Top">
                             <Label Content="Max VST Worker Start Time" VerticalAlignment="Top" />
                             <iconPacks:PackIconFontAwesome Margin="0,0,10,0" VerticalAlignment="Center"
-                                                           Kind="QuestionCircleSolid" ToolTipService.ShowDuration="12000">
+                                                           Kind="QuestionCircleSolid"
+                                                           ToolTipService.ShowDuration="12000">
                                 <iconPacks:PackIconFontAwesome.ToolTip>
                                     <StackPanel Margin="5" Width="600">
                                         <TextBlock TextWrapping="Wrap">
-                                            This setting controls how long PresetMagician waits until a VST Workers has been started.<LineBreak />
+                                            This setting controls how long PresetMagician waits until a VST Workers has been started.
+                                            <LineBreak />
                                             <LineBreak />
                                             If a VST worker doesn't start up within the specified time, it will be stopped.
                                         </TextBlock>
@@ -182,7 +185,7 @@
                                 </iconPacks:PackIconFontAwesome.ToolTip>
                             </iconPacks:PackIconFontAwesome>
                         </StackPanel>
-                        
+
                         <StackPanel Orientation="Vertical" Grid.Row="1"
                                     Grid.Column="1" VerticalAlignment="Top">
                             <xctk:IntegerUpDown Width="200" Height="20" MaxWidth="200"
@@ -201,9 +204,9 @@
                                 Content="Open VST Worker Log Directory"
                                 Command="{Binding OpenVstWorkerLogDirectory}" />
                         </DockPanel>
-                        
+
                     </Grid>
-                    </ScrollViewer>
+                </ScrollViewer>
             </TabItem>
             <TabItem VerticalContentAlignment="Top" Header="Database">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -219,26 +222,37 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                    
-                    
-                        <DataGrid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding PresetDatabaseStatistics}" EnableRowVirtualization="True" Height="300">
+
+
+                        <DataGrid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                                  ItemsSource="{Binding PresetDatabaseStatistics}" EnableRowVirtualization="True"
+                                  Height="300">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Binding="{Binding PluginName}" SortDirection="Ascending" Header="Plugin Name"/>
-                                <DataGridTextColumn Binding="{Binding PresetCount}" Header="Number of Presets"/>
-                                <DataGridTextColumn Binding="{Binding PresetUncompressedSize, Mode=OneWay,Converter={StaticResource FormatKbSizeConverter}}" Header="Storage Size (Uncompressed)"/>
-                                <DataGridTextColumn Binding="{Binding PresetCompressedSize, Mode=OneWay,Converter={StaticResource FormatKbSizeConverter}}" Header="Storage Size (Compressed)"/>
-                                <DataGridTextColumn Binding="{Binding SavedSpace, Mode=OneWay,StringFormat={}{0:P2}}" Header="Saved Space"/>
+                                <DataGridTextColumn Binding="{Binding PluginName}" SortDirection="Ascending"
+                                                    Header="Plugin Name" />
+                                <DataGridTextColumn Binding="{Binding PresetCount}" Header="Number of Presets" />
+                                <DataGridTextColumn
+                                    Binding="{Binding PresetUncompressedSize, Mode=OneWay,Converter={StaticResource FormatKbSizeConverter}}"
+                                    Header="Storage Size (Uncompressed)" />
+                                <DataGridTextColumn
+                                    Binding="{Binding PresetCompressedSize, Mode=OneWay,Converter={StaticResource FormatKbSizeConverter}}"
+                                    Header="Storage Size (Compressed)" />
+                                <DataGridTextColumn Binding="{Binding SavedSpace, Mode=OneWay,StringFormat={}{0:P2}}"
+                                                    Header="Saved Space" />
                             </DataGrid.Columns>
                         </DataGrid>
                         <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
                             <Run Text="Total Presets:" />
                             <Run FontWeight="Bold" Text="{Binding TotalPresets}" />
                             <Run Text="Total Preset Size (uncompressed):" />
-                            <Run FontWeight="Bold" Text="{Binding TotalPresetsUncompressedSize,Converter={StaticResource FormatKbSizeConverter}}" />
+                            <Run FontWeight="Bold"
+                                 Text="{Binding TotalPresetsUncompressedSize,Converter={StaticResource FormatKbSizeConverter}}" />
                             <Run Text="Total Preset Size (compressed):" />
-                            <Run FontWeight="Bold" Text="{Binding TotalPresetsCompressedSize,Converter={StaticResource FormatKbSizeConverter}}" />
+                            <Run FontWeight="Bold"
+                                 Text="{Binding TotalPresetsCompressedSize,Converter={StaticResource FormatKbSizeConverter}}" />
                             <Run Text="Saved Space:" />
-                            <Run FontWeight="Bold" Text="{Binding SavedSpace,Converter={StaticResource FormatKbSizeConverter}}" />
+                            <Run FontWeight="Bold"
+                                 Text="{Binding SavedSpace,Converter={StaticResource FormatKbSizeConverter}}" />
                             <Run FontWeight="Bold" Text="(" />
                             <Run FontWeight="Bold" Text="{Binding SavedSpacePercent,Mode=OneWay,StringFormat={}{0:P2}}" />
                             <Run FontWeight="Bold" Text=")" />
@@ -253,9 +267,9 @@
                                 Content="Open Database Location"
                                 Command="{Binding OpenDatabaseLocation}" />
                         </DockPanel>
-                       
+
                     </Grid>
-                    </ScrollViewer>
+                </ScrollViewer>
             </TabItem>
             <TabItem VerticalContentAlignment="Top" Header="Licensing">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -271,44 +285,47 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                    
-                    
-                    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+
+
+                        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
                             <Label Content="Licensed to" VerticalAlignment="Top" />
-                           
+
                         </StackPanel>
-                        
+
                         <StackPanel Orientation="Vertical" Grid.Row="0"
                                     Grid.Column="1">
-                            <TextBox BorderThickness="0" IsReadOnly="True" Background="Transparent" TextWrapping="Wrap" HorizontalAlignment="Stretch" Margin="0 0 0 10"
+                            <TextBox BorderThickness="0" IsReadOnly="True" Background="Transparent" TextWrapping="Wrap"
+                                     HorizontalAlignment="Stretch" Margin="0 0 0 10"
                                      Text="{Binding ApplicationState.LicensedTo, Mode=OneWay}" />
-                           
+
                         </StackPanel>
-                        
+
                         <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
                             <Label Content="License Type" VerticalAlignment="Top" />
                         </StackPanel>
-                        
+
                         <StackPanel Orientation="Vertical" Grid.Row="1"
                                     Grid.Column="1">
-                            <TextBox BorderThickness="0" IsReadOnly="True" Background="Transparent" TextWrapping="Wrap" HorizontalAlignment="Stretch" Margin="0 0 0 10"
+                            <TextBox BorderThickness="0" IsReadOnly="True" Background="Transparent" TextWrapping="Wrap"
+                                     HorizontalAlignment="Stretch" Margin="0 0 0 10"
                                      Text="{Binding ApplicationState.LicenseDescription, Mode=OneWay}" />
-                           
+
                         </StackPanel>
-                        
+
                         <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
                             <Label Content="System Code" VerticalAlignment="Top" />
                         </StackPanel>
-                        
+
                         <StackPanel Orientation="Vertical" Grid.Row="2"
                                     Grid.Column="1" VerticalAlignment="Center">
-                            <TextBox BorderThickness="0" IsReadOnly="True" Background="Transparent" TextWrapping="Wrap" HorizontalAlignment="Stretch" Margin="0 0 0 10"
+                            <TextBox BorderThickness="0" IsReadOnly="True" Background="Transparent" TextWrapping="Wrap"
+                                     HorizontalAlignment="Stretch" Margin="0 0 0 10"
                                      Text="{Binding ApplicationState.SystemCode, Mode=OneWay}" />
-                           
+
                         </StackPanel>
-                        
+
                         <fluent:Button
-                            
+
                             Grid.Row="3" Grid.Column="0"
                             Padding="0"
                             HorizontalAlignment="Center"
@@ -317,11 +334,10 @@
                             Size="Middle"
                             Header="Update License"
                             Icon="{iconPacks:Material Kind=Certificate}" />
-                       
+
                     </Grid>
-                    </ScrollViewer>
+                </ScrollViewer>
             </TabItem>
         </controls:TabControl>
     </Grid>
 </controls:RibbonDataWindow>
-

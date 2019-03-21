@@ -10,14 +10,12 @@ using Catel.Logging;
 using Catel.Services;
 using Drachenkatze.PresetMagician.Utils;
 using Orc.Squirrel;
-using Orchestra;
+using PresetMagician.Core.Services;
 using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
+using PresetMagician.Utils.IssueReport;
 using PresetMagician.ViewModels;
 using PresetMagician.Views;
-using PresetMagician.Core.Interfaces;
-using PresetMagician.Core.Services;
-using PresetMagician.Utils.IssueReport;
 using Squirrel;
 using MessageBox = System.Windows.MessageBox;
 
@@ -33,15 +31,13 @@ namespace PresetMagician
 #warning TODO: add big edit box
 #warning TOOD: add global types/modes editor including display which properties are user overridden
 #warning TODO: add preset functions delete selected, ignore selected
-#warning TODO: cancelling preset editing clears list? HUH?!?
 #warning midi note name slow -> create static lookup ? or even better: only save the note number?  with ivalueconverter?
-#warning modelbasefoo: only attach change listeners when editing, or better: recalc usermodified on timer basis
-    #warning refactor bug report to include the new mechanism and exclude the sqlite database
-    #warning add force metadata scan function
+#warning refactor bug report to include the new mechanism and exclude the sqlite database
+#warning add force metadata scan function
 #warning todo add preview note migration
-    #warning refactor types and characteristics to allow redirects and use ceras to initialize
-    #warning for future: only attach event listeners where really necessary; removing listeners is expensive
-  
+#warning for future: only attach event listeners where really necessary; removing listeners is expensive
+#warning refactor application service reporting via ApplicationProgress
+
     /// <summary>
     ///     Interaction logic for App.xaml
     /// </summary>
@@ -76,12 +72,12 @@ namespace PresetMagician
         {
             var serviceLocator = ServiceLocator.Default;
 
-            var runtimeConfigurationService = serviceLocator.ResolveType<IRuntimeConfigurationService>();
+            var globalFrontendService = serviceLocator.ResolveType<GlobalFrontendService>();
             string email = "";
-            if (runtimeConfigurationService.ApplicationState.ActiveLicense?.Customer != null &&
-                !string.IsNullOrWhiteSpace(runtimeConfigurationService.ApplicationState.ActiveLicense?.Customer?.Email))
+            if (globalFrontendService.ApplicationState.ActiveLicense?.Customer != null &&
+                !string.IsNullOrWhiteSpace(globalFrontendService.ApplicationState.ActiveLicense?.Customer?.Email))
             {
-                email = runtimeConfigurationService.ApplicationState.ActiveLicense.Customer.Email;
+                email = globalFrontendService.ApplicationState.ActiveLicense.Customer.Email;
             }
 
             var uiVisualiserService = serviceLocator.ResolveType<IUIVisualizerService>();

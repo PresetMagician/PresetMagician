@@ -4,7 +4,8 @@ namespace PresetMagician.Core.Extensions
 {
     public static class PresetMetadataExtensions
     {
-        public static bool IsEqualTo<T>(this T metadata, IPresetMetadata compare, string propertyName) where T : IPresetMetadata
+        public static bool IsEqualTo<T>(this T metadata, IPresetMetadata compare, string propertyName)
+            where T : IPresetMetadata
         {
             switch (propertyName)
             {
@@ -25,23 +26,23 @@ namespace PresetMagician.Core.Extensions
             return false;
         }
 
-        public static bool IsEqualTo<T>(this T metadata, IPresetMetadata compare) where T: IPresetMetadata
+        public static bool IsEqualTo<T>(this T metadata, IPresetMetadata compare) where T : IPresetMetadata
         {
             if (metadata.PresetName != compare.PresetName)
             {
                 return false;
             }
-            
+
             if (metadata.Author != compare.Author)
             {
                 return false;
             }
-            
+
             if (metadata.Comment != compare.Comment)
             {
                 return false;
             }
-            
+
             if (metadata.BankPath != compare.BankPath)
             {
                 return false;
@@ -56,6 +57,7 @@ namespace PresetMagician.Core.Extensions
             {
                 return false;
             }
+
             return true;
         }
     }

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Catel.Data;
 using PresetMagician.Core.Data;
 
 namespace PresetMagician.Core.Models

@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using Catel;
 using Catel.Collections;
 using Catel.IoC;
 using Catel.MVVM;
@@ -21,22 +20,15 @@ namespace PresetMagician
         private readonly IDispatcherService _dispatcherService;
         private readonly ILicenseService _licenseService;
         private readonly GlobalService _globalService;
-        private readonly GlobalFrontendService _globalFrontendService;
 
         public PluginNotExportedAllToPresetExportListCommandContainer(ICommandManager commandManager,
-            IApplicationService applicationService, IDispatcherService dispatcherService,
-            IRuntimeConfigurationService runtimeConfigurationService, ILicenseService licenseService)
-            : base(Commands.Plugin.NotExportedAllToPresetExportList, commandManager, runtimeConfigurationService)
+            IServiceLocator serviceLocator)
+            : base(Commands.Plugin.NotExportedAllToPresetExportList, commandManager, serviceLocator)
         {
-            Argument.IsNotNull(() => applicationService);
-            Argument.IsNotNull(() => dispatcherService);
-            Argument.IsNotNull(() => licenseService);
-
-            _applicationService = applicationService;
-            _dispatcherService = dispatcherService;
-            _licenseService = licenseService;
-            _globalService = ServiceLocator.Default.ResolveType<GlobalService>();
-            _globalFrontendService = ServiceLocator.Default.ResolveType<GlobalFrontendService>();
+            _applicationService = ServiceLocator.ResolveType<IApplicationService>();
+            _dispatcherService = ServiceLocator.ResolveType<IDispatcherService>();
+            _licenseService = ServiceLocator.ResolveType<ILicenseService>();
+            _globalService = ServiceLocator.ResolveType<GlobalService>();
         }
 
         protected override async Task ExecuteAsync(object parameter)

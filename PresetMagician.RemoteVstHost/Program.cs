@@ -12,13 +12,14 @@ namespace PresetMagician.RemoteVstHost
         {
             if (elapsed.TotalMilliseconds > 100)
             {
-                Debug.WriteLine($"OVER9000 {methodBase.ReflectedType.Name}.{methodBase.Name} {elapsed.TotalMilliseconds}");
+                Debug.WriteLine(
+                    $"OVER9000 {methodBase.ReflectedType.Name}.{methodBase.Name} {elapsed.TotalMilliseconds}");
             }
         }
     }
+
     public class Program
     {
-       
         [STAThread]
         [HandleProcessCorruptedStateExceptions, SecurityCritical]
         public static void Main(string[] args)

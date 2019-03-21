@@ -10,20 +10,20 @@ namespace PresetMagician.Tests.Helpers
     {
         private object Source;
         private object Target;
-        
+
         private HashSet<string> VisitedProperties = new HashSet<string>();
         private HashSet<string> AllProperties = new HashSet<string>();
-        
+
         public PropertyComparisonHelper(object source, object target)
         {
             Source = source;
             Target = target;
-            
+
             var sourceProperties =
                 (from prop in Source.GetType().GetProperties() select prop.Name).ToList();
             var targetProperties =
                 (from prop in Target.GetType().GetProperties() select prop.Name).ToList();
-            
+
             AllProperties.AddRange(sourceProperties.Intersect(targetProperties));
         }
 

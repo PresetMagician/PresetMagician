@@ -1,9 +1,11 @@
 using System;
 using System.IO;
+using Catel.IoC;
 using Catel.IO;
 using Catel.Logging;
 using Newtonsoft.Json;
-using PresetMagician.Models;
+using PresetMagician.Core.Models;
+using PresetMagician.Core.Services;
 using PresetMagician.Services.Interfaces;
 using Path = Catel.IO.Path;
 
@@ -21,18 +23,18 @@ namespace PresetMagician.Services
 
         private readonly JsonSerializer _jsonSerializer;
         private readonly ILog _logger = LogManager.GetCurrentClassLogger();
+        private readonly GlobalService _globalService;
+        private readonly GlobalFrontendService _globalFrontendService;
 
         public RuntimeConfigurationService()
         {
-            RuntimeConfiguration = new RuntimeConfiguration();
-            ApplicationState = new ApplicationState();
+            _globalFrontendService = ServiceLocator.Default.ResolveType<GlobalFrontendService>();
+            _globalService = ServiceLocator.Default.ResolveType<GlobalService>();
 
             _jsonSerializer = new JsonSerializer {Formatting = Formatting.Indented};
         }
 
-        public RuntimeConfiguration RuntimeConfiguration { get; }
         public RuntimeConfiguration EditableConfiguration { get; private set; }
-        public ApplicationState ApplicationState { get; }
 
         public void Load()
         {
@@ -41,7 +43,7 @@ namespace PresetMagician.Services
 
         public void CreateEditableConfiguration()
         {
-            string output = JsonConvert.SerializeObject(RuntimeConfiguration);
+            string output = JsonConvert.SerializeObject(_globalService.RuntimeConfiguration);
 
             EditableConfiguration = JsonConvert.DeserializeObject<RuntimeConfiguration>(output);
         }
@@ -50,10 +52,10 @@ namespace PresetMagician.Services
         {
             string output = JsonConvert.SerializeObject(EditableConfiguration);
 
-            using (RuntimeConfiguration.SuspendValidations())
+            using (_globalService.RuntimeConfiguration.SuspendValidations())
             {
-                RuntimeConfiguration.VstDirectories.Clear();
-                JsonConvert.PopulateObject(output, RuntimeConfiguration);
+                _globalService.RuntimeConfiguration.VstDirectories.Clear();
+                JsonConvert.PopulateObject(output, _globalService.RuntimeConfiguration);
             }
 
             SaveConfiguration();
@@ -73,10 +75,10 @@ namespace PresetMagician.Services
                 using (var rd = new StreamReader(_defaultLocalConfigFilePath))
                 using (JsonReader jsonReader = new JsonTextReader(rd))
                 {
-                    using (RuntimeConfiguration.SuspendValidations())
+                    using (_globalService.RuntimeConfiguration.SuspendValidations())
                     {
-                        RuntimeConfiguration.VstDirectories.Clear();
-                        _jsonSerializer.Populate(jsonReader, RuntimeConfiguration);
+                        _globalService.RuntimeConfiguration.VstDirectories.Clear();
+                        _jsonSerializer.Populate(jsonReader, _globalService.RuntimeConfiguration);
                     }
                 }
 
@@ -106,7 +108,7 @@ namespace PresetMagician.Services
             using (var sw = new StreamWriter(_defaultLocalConfigFilePath))
             using (JsonWriter jsonWriter = new JsonTextWriter(sw))
             {
-                _jsonSerializer.Serialize(jsonWriter, RuntimeConfiguration);
+                _jsonSerializer.Serialize(jsonWriter, _globalService.RuntimeConfiguration);
             }
         }
 

@@ -8,7 +8,7 @@ using Xunit.Abstractions;
 
 namespace PresetMagician.Tests.ModelTests
 {
-    public class WrappedEditableCollectionTest: BaseTest
+    public class WrappedEditableCollectionTest : BaseTest
     {
         public WrappedEditableCollectionTest(ITestOutputHelper output, DataFixture fixture) : base(output, fixture)
         {
@@ -19,22 +19,23 @@ namespace PresetMagician.Tests.ModelTests
         {
             var characteristics = new EditableCollection<Characteristic>();
             characteristics.Add(new Characteristic());
-            
-            var wrappedCharacteristics = new WrappedEditableCollection<CharacteristicUsage, Characteristic>(characteristics);
+
+            var wrappedCharacteristics =
+                new WrappedEditableCollection<CharacteristicUsage, Characteristic>(characteristics);
 
             wrappedCharacteristics.Count.Should().Be(characteristics.Count);
             wrappedCharacteristics.First().Characteristic.Should().Be(characteristics.First());
-
-
         }
+
         [Fact]
         public void TestAdd()
         {
             var characteristics = new EditableCollection<Characteristic>();
-            var wrappedCharacteristics = new WrappedEditableCollection<CharacteristicUsage, Characteristic>(characteristics);
+            var wrappedCharacteristics =
+                new WrappedEditableCollection<CharacteristicUsage, Characteristic>(characteristics);
 
             characteristics.Add(new Characteristic());
-            
+
             wrappedCharacteristics.Count.Should().Be(characteristics.Count);
             wrappedCharacteristics.First().Characteristic.Should().Be(characteristics.First());
 
@@ -52,30 +53,30 @@ namespace PresetMagician.Tests.ModelTests
             WrappedEditableCollection<CharacteristicUsage, Characteristic> wrapped)
         {
             wrapped.Count.Should().Be(original.Count);
-            
-            for (var i=0;i<wrapped.Count;i++)
+
+            for (var i = 0; i < wrapped.Count; i++)
             {
                 wrapped[i].Characteristic.Should().Be(original[i]);
-
             }
         }
-        
+
         [Fact]
         public void TestRemove()
         {
-            var characteristic1 = new Characteristic() { CharacteristicName = "test1"};
+            var characteristic1 = new Characteristic() {CharacteristicName = "test1"};
             var characteristic2 = new Characteristic() {CharacteristicName = "test2"};
             var characteristic3 = new Characteristic() {CharacteristicName = "test3"};
             var characteristic4 = new Characteristic() {CharacteristicName = "test4"};
             var characteristic5 = new Characteristic() {CharacteristicName = "test5"};
-            
+
             var characteristics = new EditableCollection<Characteristic>();
             characteristics.Add(characteristic1);
             characteristics.Add(characteristic2);
             characteristics.Add(characteristic3);
             characteristics.Add(characteristic4);
             characteristics.Add(characteristic5);
-            var wrappedCharacteristics = new WrappedEditableCollection<CharacteristicUsage, Characteristic>(characteristics);
+            var wrappedCharacteristics =
+                new WrappedEditableCollection<CharacteristicUsage, Characteristic>(characteristics);
 
             characteristics.Count.Should().Be(5);
             wrappedCharacteristics.Count.Should().Be(characteristics.Count);
@@ -86,22 +87,22 @@ namespace PresetMagician.Tests.ModelTests
             characteristics[4].Should().Be(characteristic5);
 
             CompareList(characteristics, wrappedCharacteristics);
-          
+
             wrappedCharacteristics.RemoveAt(2);
             characteristics.Count.Should().Be(4);
             CompareList(characteristics, wrappedCharacteristics);
-            
+
             characteristics.RemoveAt(2);
             wrappedCharacteristics.Count.Should().Be(3);
             CompareList(characteristics, wrappedCharacteristics);
-            
-           wrappedCharacteristics.RemoveFirst();
-           characteristics.Count.Should().Be(2);
-           CompareList(characteristics, wrappedCharacteristics);
-           
-           characteristics.RemoveFirst();
-           wrappedCharacteristics.Count.Should().Be(1);
-           CompareList(characteristics, wrappedCharacteristics);
+
+            wrappedCharacteristics.RemoveFirst();
+            characteristics.Count.Should().Be(2);
+            CompareList(characteristics, wrappedCharacteristics);
+
+            characteristics.RemoveFirst();
+            wrappedCharacteristics.Count.Should().Be(1);
+            CompareList(characteristics, wrappedCharacteristics);
         }
     }
 }

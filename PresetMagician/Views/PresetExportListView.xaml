@@ -59,7 +59,9 @@
                                         <Setter Property="Content" Value="Cancel Operation" />
                                         <Setter Property="IsEnabled" Value="True" />
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=DataContext.ApplicationState.ApplicationOperationCancelRequested, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                            <DataTrigger
+                                                Binding="{Binding Path=DataContext.ApplicationState.ApplicationOperationCancelRequested, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                Value="True">
                                                 <Setter Property="IsEnabled" Value="False" />
                                                 <Setter Property="Content" Value="Cancelling operation..." />
                                             </DataTrigger>
@@ -112,15 +114,15 @@
                         CellStyle="{StaticResource NoPaddingCellStyle}"
                         Header="Types"
                         CellTemplate="{StaticResource TypesTemplate}"
-                        IsReadOnly="True"/>
-                       
-                    
+                        IsReadOnly="True" />
+
+
                     <DataGridTemplateColumn
                         Width="1*"
                         CellStyle="{StaticResource NoPaddingCellStyle}"
                         CellTemplate="{StaticResource CharacteristicsTemplate}"
                         Header="Characteristics"
-                        IsReadOnly="True"/>
+                        IsReadOnly="True" />
                     <DataGridTextColumn
                         Width="150"
                         Binding="{Binding Plugin.PluginName, Mode=OneWay}"

@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel;
-using System.Threading.Tasks;
 using PresetMagician.Core.Models;
 using PresetMagician.RemoteVstHost.Processes;
 using PresetMagician.Utils.Logger;
@@ -13,7 +12,7 @@ namespace PresetMagician.Core.Interfaces
         RUNNING,
         EXITED
     }
-    
+
     public interface IVstHostProcess
     {
         ProcessOperation CurrentOperation { get; }
@@ -30,7 +29,7 @@ namespace PresetMagician.Core.Interfaces
         TimeSpan Uptime { get; }
         string StopReason { get; }
         bool StartupSuccessful { get; }
-        Task WaitUntilStarted();
+        void WaitUntilStarted();
         void Lock(Plugin plugin);
         bool IsLockedToPlugin();
         Plugin GetLockedPlugin();

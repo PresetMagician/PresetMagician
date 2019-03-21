@@ -8,24 +8,27 @@ namespace PresetMagician.Core.Models
     {
         public static PreviewNotePlayer Default
         {
-            get {
+            get
+            {
                 if (_defaultPreviewNotePlayer == null)
                 {
                     _defaultPreviewNotePlayer = new PreviewNotePlayer();
                     _defaultPreviewNotePlayer.PreviewNotePlayerId = "default";
                     _defaultPreviewNotePlayer.Name = "Default C3";
-                    _defaultPreviewNotePlayer.PreviewNotes.Add(new PreviewNote {NoteNumber = 48, Start=0, Duration = 1});
+                    _defaultPreviewNotePlayer.PreviewNotes.Add(new PreviewNote
+                        {NoteNumber = 48, Start = 0, Duration = 1});
                 }
-                
+
                 return _defaultPreviewNotePlayer;
-                
             }
 
             set => _defaultPreviewNotePlayer = value;
         }
 
         private static PreviewNotePlayer _defaultPreviewNotePlayer;
-        public static Dictionary<string, PreviewNotePlayer> PreviewNotePlayers = new Dictionary<string, PreviewNotePlayer>();
+
+        public static Dictionary<string, PreviewNotePlayer> PreviewNotePlayers =
+            new Dictionary<string, PreviewNotePlayer>();
 
         public static PreviewNotePlayer GetPreviewNotePlayer(PreviewNotePlayer player)
         {
@@ -39,6 +42,7 @@ namespace PresetMagician.Core.Models
                 return player;
             }
         }
+
         public PreviewNotePlayer()
         {
             PreviewNotePlayers.Add(PreviewNotePlayerId, this);
@@ -54,6 +58,7 @@ namespace PresetMagician.Core.Models
             {
                 return false;
             }
+
             if (target.Name != Name)
             {
                 return false;

@@ -1,26 +1,23 @@
-using System.Collections.Specialized;
 using System.ComponentModel;
-using Catel;
 using Catel.MVVM;
-using PresetMagician.Models;
-using PresetMagician.Services.Interfaces;
+using PresetMagician.Core.Models;
+using PresetMagician.Core.Services;
 using PresetMagician.ViewModels;
 
 namespace PresetMagician
 {
-    public abstract class AbstractCurrentPresetEditorCommandContainer: CommandContainerBase
+    public abstract class AbstractCurrentPresetEditorCommandContainer : CommandContainerBase
     {
-        protected IRuntimeConfigurationService RuntimeConfigurationService;
         protected VstPluginPresetsViewModel CurrentPresetViewModel;
-        
-        public AbstractCurrentPresetEditorCommandContainer(string command, ICommandManager commandManager, IRuntimeConfigurationService runtimeConfigurationService)
+        private readonly GlobalFrontendService _globalFrontendService;
+
+        public AbstractCurrentPresetEditorCommandContainer(string command, ICommandManager commandManager,
+            GlobalFrontendService globalFrontendService)
             : base(command, commandManager)
         {
-            Argument.IsNotNull(() => runtimeConfigurationService);
+            _globalFrontendService = globalFrontendService;
 
-            RuntimeConfigurationService = runtimeConfigurationService;
-            
-            runtimeConfigurationService.ApplicationState.PropertyChanged += ApplicationStateOnPropertyChanged;
+            _globalFrontendService.ApplicationState.PropertyChanged += ApplicationStateOnPropertyChanged;
         }
 
         private void ApplicationStateOnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -29,15 +26,15 @@ namespace PresetMagician
             {
                 var oldModel = CurrentPresetViewModel;
                 CurrentPresetViewModel =
-                    RuntimeConfigurationService.ApplicationState.CurrentDocumentViewModel as VstPluginPresetsViewModel;
+                    _globalFrontendService.ApplicationState.CurrentDocumentViewModel as VstPluginPresetsViewModel;
                 OnCurrentPresetViewModelChanged(oldModel, CurrentPresetViewModel);
                 InvalidateCommand();
             }
         }
 
-        protected virtual void OnCurrentPresetViewModelChanged(VstPluginPresetsViewModel oldModel, VstPluginPresetsViewModel newModel)
+        protected virtual void OnCurrentPresetViewModelChanged(VstPluginPresetsViewModel oldModel,
+            VstPluginPresetsViewModel newModel)
         {
-            
         }
 
         protected override bool CanExecute(object parameter)

@@ -10,22 +10,32 @@ namespace PresetMagician
     public class HelpLinks
     {
         #region Commands
+
         public static string COMMANDS_ANALYZE => "COMMANDS_ANALYZE";
+
         #endregion
-        
+
         #region Reference
+
         public static string REFERENCE_TYPECHARACTERISTICEDITOR_ADDEDIT => "REFERENCE_TYPECHARACTERISTICEDITOR_ADDEDIT";
         public static string REFERENCE_TYPECHARACTERISTICEDITOR_DELETE => "REFERENCE_TYPECHARACTERISTICEDITOR_DELETE";
-        public static string REFERENCE_TYPECHARACTERISTICEDITOR_SHOWUSAGES => "REFERENCE_TYPECHARACTERISTICEDITOR_SHOWUSAGES";
+
+        public static string REFERENCE_TYPECHARACTERISTICEDITOR_SHOWUSAGES =>
+            "REFERENCE_TYPECHARACTERISTICEDITOR_SHOWUSAGES";
+
         #endregion
-        
+
         #region Settings
+
         public static string SETTINGS_PLUGIN_DLL => "SETTINGS_PLUGIN_DLL";
         public static string SETTINGS_PLUGIN_FXBFXPNOTES = "SETTINGS_PLUGIN_FXBFXPNOTES";
+
         #endregion
-        
+
         #region Concepts
+
         public static string CONCEPTS_VST_WORKER_POOL => "CONCEPTS_VST_WORKER_POOL";
+
         #endregion
     }
 }
@@ -33,7 +43,6 @@ namespace PresetMagician
 
 namespace PresetMagician
 {
-
     public static class FileLocations
     {
         public static string PresetMagicianLocalAppData =
@@ -41,12 +50,12 @@ namespace PresetMagician
                 @"Drachenkatze\PresetMagician");
 
         public static string LogFile = Path.Combine(PresetMagicianLocalAppData, @"Logs\PresetMagician.log");
-        
+
         public static string LegacyDatabasePath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             @"Drachenkatze\PresetMagician\PresetMagician.sqlite3");
     }
-   
+
     public static class Settings
     {
         #region Links
@@ -81,8 +90,6 @@ namespace PresetMagician
 
             public static readonly string Homepage = $"{_masterProtocol}{_masterSite}";
         }
-
-        
 
         #endregion
 
@@ -154,7 +161,6 @@ namespace PresetMagician
 
         public static class Preset
         {
-            
             public const string ApplyMidiNote = "Preset.ApplyMidiNote";
             public const string RenamePresetBank = "Preset.RenamePresetBank";
         }
@@ -176,7 +182,7 @@ namespace PresetMagician
         {
             public const string SetCatelLogging = "Developer.SetCatelLogging";
         }
-        
+
         public static class Tools
         {
             public const string NksfView = "Tools.NksfView";

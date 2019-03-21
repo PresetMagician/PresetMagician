@@ -71,7 +71,8 @@
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="SortDirection" Value="{x:Null}">
-                            <Setter TargetName="BackgroundBorder" Property="Background" Value="{DynamicResource DataGridHeaderBackgroundBrush}" />
+                            <Setter TargetName="BackgroundBorder" Property="Background"
+                                    Value="{DynamicResource DataGridHeaderBackgroundBrush}" />
                             <Setter TargetName="BackgroundBorder" Property="BorderBrush" Value="Transparent" />
                         </Trigger>
                         <MultiTrigger>
@@ -79,16 +80,20 @@
                                 <Condition Property="IsMouseOver" Value="True" />
                                 <Condition Property="SortDirection" Value="{x:Null}" />
                             </MultiTrigger.Conditions>
-                            <Setter TargetName="BackgroundBorder" Property="Background" Value="{DynamicResource DataGridHeaderMouseOverBackgroundBrush}" />
-                            <Setter TargetName="BackgroundBorder" Property="BorderBrush" Value="{DynamicResource DataGridHeaderBorderBrush}" />
+                            <Setter TargetName="BackgroundBorder" Property="Background"
+                                    Value="{DynamicResource DataGridHeaderMouseOverBackgroundBrush}" />
+                            <Setter TargetName="BackgroundBorder" Property="BorderBrush"
+                                    Value="{DynamicResource DataGridHeaderBorderBrush}" />
                         </MultiTrigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsMouseOver" Value="true" />
                                 <Condition Property="SortDirection" Value="{x:Null}" />
                             </MultiTrigger.Conditions>
-                            <Setter TargetName="BackgroundBorder" Property="Background" Value="{DynamicResource DataGridHeaderMouseOverBackgroundBrush}" />
-                            <Setter TargetName="BackgroundBorder" Property="BorderBrush" Value="{DynamicResource DataGridHeaderBorderBrush}" />
+                            <Setter TargetName="BackgroundBorder" Property="Background"
+                                    Value="{DynamicResource DataGridHeaderMouseOverBackgroundBrush}" />
+                            <Setter TargetName="BackgroundBorder" Property="BorderBrush"
+                                    Value="{DynamicResource DataGridHeaderBorderBrush}" />
                         </MultiTrigger>
                         <Trigger Property="SortDirection" Value="Ascending">
                             <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />

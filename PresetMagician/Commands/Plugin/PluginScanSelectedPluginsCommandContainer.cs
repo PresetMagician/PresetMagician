@@ -3,8 +3,6 @@ using System.Linq;
 using Catel.IoC;
 using Catel.MVVM;
 using PresetMagician.Core.Models;
-using PresetMagician.Core.Services;
-using PresetMagician.Services.Interfaces;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -13,8 +11,8 @@ namespace PresetMagician
     public class PluginScanSelectedPluginsCommandContainer : AbstractScanPluginsCommandContainer
     {
         public PluginScanSelectedPluginsCommandContainer(ICommandManager commandManager,
-            IRuntimeConfigurationService runtimeConfigurationService)
-            : base(Commands.Plugin.ScanSelectedPlugins, commandManager, runtimeConfigurationService)
+            IServiceLocator serviceLocator)
+            : base(Commands.Plugin.ScanSelectedPlugins, commandManager, serviceLocator)
         {
             _globalFrontendService.SelectedPlugins.CollectionChanged += OnPluginsListChanged;
         }

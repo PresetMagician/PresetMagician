@@ -52,6 +52,8 @@
     <Compile Include="ApplicationTask\ApplicationProgress.cs" />
     <Compile Include="Collections\EditableCollection.cs" />
     <Compile Include="Collections\WrappedEditableCollection.cs" />
+    <Compile Include="Commands\CommandBase.cs" />
+    <Compile Include="Commands\Plugin\RefreshPluginsCommand.cs" />
     <Compile Include="Core.cs" />
     <Compile Include="Data\IUserEditable.cs" />
     <Compile Include="Data\ModelBackup.cs" />
@@ -73,6 +75,8 @@
     <Compile Include="Faults\PluginNotLoadedFault.cs" />
     <Compile Include="Faults\PluginNotRegisteredFault.cs" />
     <Compile Include="Faults\PresetDataNullFault.cs" />
+    <Compile Include="Interfaces\IApplicationOperationStatus.cs" />
+    <Compile Include="Interfaces\IApplicationService.cs" />
     <Compile Include="Interfaces\IDataPersistence.cs" />
     <Compile Include="Interfaces\IPresetMetadata.cs" />
     <Compile Include="Interfaces\IRemotePluginInstance.cs" />
@@ -81,6 +85,8 @@
     <Compile Include="Interfaces\IVendorPresetParser.cs" />
     <Compile Include="Interfaces\IVstHostProcess.cs" />
     <Compile Include="Interfaces\IVstService.cs" />
+    <Compile Include="Models\ApplicationOperationStatus.cs" />
+    <Compile Include="Models\ApplicationState.cs" />
     <Compile Include="Models\BankFile.cs" />
     <Compile Include="Models\Characteristic.cs" />
     <Compile Include="Models\CharacteristicCollection.cs" />
@@ -113,6 +119,7 @@
     <Compile Include="Models\PresetParserType.cs" />
     <Compile Include="Models\PreviewNotePlayer.cs" />
     <Compile Include="Models\ProcessOperation.cs" />
+    <Compile Include="Models\RuntimeConfiguration.cs" />
     <Compile Include="Models\Type.cs" />
     <Compile Include="Models\TypeCollection.cs" />
     <Compile Include="Models\TypeUsage.cs" />
@@ -343,6 +350,17 @@
       <ItemGroup>
         <Reference Include="Orchestra.Core">
           <HintPath>..\packages\Orchestra.Core\lib\net47\Orchestra.Core.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="Portable.Licensing">
+          <HintPath>..\packages\Portable.Licensing\lib\portable-net40+sl4+wp7+win8\Portable.Licensing.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>

@@ -1,13 +1,12 @@
-using System.Diagnostics;
+using Catel.Reflection;
 
 namespace PresetMagician.Tests
 {
     public class ModuleInitializer
     {
-      
-            public static void Initialize()
-            {
-                Catel.Reflection.TypeCache.InitializeTypes();
-            }
+        public static void Initialize()
+        {
+            TypeCache.InitializeTypes();
+        }
     }
 }

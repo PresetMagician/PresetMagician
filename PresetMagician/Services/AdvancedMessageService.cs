@@ -19,15 +19,18 @@ namespace PresetMagician.Services
     public class AdvancedMessageService : MessageService, IAdvancedMessageService
     {
         #region Fields
+
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();
 
         private readonly IDispatcherService _dispatcherService;
         private readonly IUIVisualizerService _uiVisualizerService;
         private readonly IViewModelFactory _viewModelFactory;
+
         #endregion
 
         #region Constructors
-        public AdvancedMessageService(IDispatcherService dispatcherService, IUIVisualizerService uiVisualizerService, 
+
+        public AdvancedMessageService(IDispatcherService dispatcherService, IUIVisualizerService uiVisualizerService,
             IViewModelFactory viewModelFactory, ILanguageService languageService)
             : base(dispatcherService, languageService)
         {
@@ -39,6 +42,7 @@ namespace PresetMagician.Services
             _uiVisualizerService = uiVisualizerService;
             _viewModelFactory = viewModelFactory;
         }
+
         #endregion
 
         public Task<MessageResult> ShowErrorAsync(string message, string caption = "", string helpLink = "")
@@ -56,7 +60,8 @@ namespace PresetMagician.Services
             return ShowAsync(message, caption, helpLink, MessageButton.OK, MessageImage.Information);
         }
 
-        public Task<MessageResult> ShowAsync(string message, string caption = "", string helpLink = null, MessageButton button = MessageButton.OK, MessageImage icon = MessageImage.None)
+        public Task<MessageResult> ShowAsync(string message, string caption = "", string helpLink = null,
+            MessageButton button = MessageButton.OK, MessageImage icon = MessageImage.None)
         {
             var tcs = new TaskCompletionSource<MessageResult>();
 
@@ -86,8 +91,10 @@ namespace PresetMagician.Services
 
             return tcs.Task;
         }
-        
-        public Task<(MessageResult result, bool dontAskAgainChecked)> ShowAsyncWithDontAskAgain(string message, string caption = "", string helpLink = null, MessageButton button = MessageButton.OK, MessageImage icon = MessageImage.None, string dontAskAgainText = "")
+
+        public Task<(MessageResult result, bool dontAskAgainChecked)> ShowAsyncWithDontAskAgain(string message,
+            string caption = "", string helpLink = null, MessageButton button = MessageButton.OK,
+            MessageImage icon = MessageImage.None, string dontAskAgainText = "")
         {
             Argument.IsNotNullOrWhitespace("message", message);
 
@@ -112,7 +119,7 @@ namespace PresetMagician.Services
                 {
                     dontAskAgainText = "Don't ask again";
                 }
-                
+
                 vm.DontAskAgainText = dontAskAgainText;
 
                 vm.SetTitle(caption);

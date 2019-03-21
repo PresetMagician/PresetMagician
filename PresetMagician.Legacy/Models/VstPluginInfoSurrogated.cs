@@ -10,24 +10,21 @@ namespace PresetMagician.Legacy.Models
     {
         public VstPluginInfoSurrogate()
         {
-            
         }
 
         public VstPluginInfoSurrogate(VstPluginInfo vstPluginInfo)
         {
             FromNonSurrogate(vstPluginInfo);
         }
+
         /// <summary>
         /// Plugin flags.
         /// </summary>
         [DataMember]
-        public string StringFlags {
+        public string StringFlags
+        {
             get { return JsonConvert.SerializeObject(Flags); }
-            set
-            {
-                Flags = JsonConvert.DeserializeObject<VstPluginFlags>(value);
-            }
-            
+            set { Flags = JsonConvert.DeserializeObject<VstPluginFlags>(value); }
         }
 
         public VstPluginFlags Flags { get; set; }
@@ -91,7 +88,7 @@ namespace PresetMagician.Legacy.Models
 
             return vstPluginInfo;
         }
-        
+
         public void FromNonSurrogate(VstPluginInfo vstPluginInfo)
         {
             Flags = vstPluginInfo.Flags;

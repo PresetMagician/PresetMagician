@@ -173,14 +173,13 @@
     <Compile Include="Extensions\FrameworkExtensions.cs" />
     <Compile Include="Extensions\GenericObjectFactoryExtensions.cs" />
     <Compile Include="Extensions\ISuspendableModelExtensions.cs" />
+    <Compile Include="FrontendInitializer.cs" />
     <Compile Include="Helpers\AvalonDockHelper.cs" />
     <Compile Include="Helpers\BindingProxy.cs" />
     <Compile Include="Helpers\ShellDimensionsHelper.cs" />
-    <Compile Include="Models\ApplicationState.cs" />
     <Compile Include="Models\ControllerAssignments\ControllerAssignmentControl.cs" />
     <Compile Include="Models\ControllerAssignments\ControllerAssignmentPage.cs" />
     <Compile Include="Models\CustomLayoutDocument.cs" />
-    <Compile Include="Models\RuntimeConfiguration.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Services\AboutInfoService.cs" />
     <Compile Include="Services\AdvancedMessageService.cs" />
@@ -190,8 +189,8 @@
     <Compile Include="Services\CustomPleaseWaitService.cs" />
     <Compile Include="Services\CustomShellService.cs" />
     <Compile Include="Services\CustomStatusService.cs" />
+    <Compile Include="Services\FrontendService.cs" />
     <Compile Include="Services\Interfaces\IAdvancedMessageService.cs" />
-    <Compile Include="Services\Interfaces\IApplicationService.cs" />
     <Compile Include="Services\Interfaces\ICustomStatusService.cs" />
     <Compile Include="Services\Interfaces\ILicenseService.cs" />
     <Compile Include="Services\Interfaces\INativeInstrumentsResourceGeneratorService.cs" />

@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using Catel;
+using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
 using PresetMagician.Services.Interfaces;
@@ -18,17 +18,12 @@ namespace PresetMagician
         private readonly ILicenseService _licenseService;
         private readonly IMessageService _messageService;
 
-        public ToolsUpdateLicenseCommandContainer(IOpenFileService openFileService, ILicenseService licenseService,
-            IMessageService messageService, ICommandManager commandManager, IRuntimeConfigurationService runtimeConfigurationService)
-            : base(Commands.Tools.UpdateLicense, commandManager, runtimeConfigurationService)
+        public ToolsUpdateLicenseCommandContainer(ICommandManager commandManager, IServiceLocator serviceLocator)
+            : base(Commands.Tools.UpdateLicense, commandManager, serviceLocator)
         {
-            Argument.IsNotNull(() => openFileService);
-            Argument.IsNotNull(() => licenseService);
-            Argument.IsNotNull(() => messageService);
-
-            _openFileService = openFileService;
-            _licenseService = licenseService;
-            _messageService = messageService;
+            _openFileService = ServiceLocator.ResolveType<IOpenFileService>();
+            _licenseService = ServiceLocator.ResolveType<ILicenseService>();
+            _messageService = ServiceLocator.ResolveType<IMessageService>();
         }
 
         protected override async Task ExecuteAsync(object parameter)

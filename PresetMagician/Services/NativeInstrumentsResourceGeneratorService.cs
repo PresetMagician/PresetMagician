@@ -11,10 +11,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ColorThiefDotNet;
 using MethodTimer;
-using PresetMagician.Services.Interfaces;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Models.NativeInstrumentsResources;
+using PresetMagician.Services.Interfaces;
 using Brushes = System.Windows.Media.Brushes;
 using Color = System.Windows.Media.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
@@ -37,7 +37,6 @@ namespace PresetMagician.Services
             }
 
 
-
             if (pluginInstance.Plugin.NativeInstrumentsResource.CategoriesState.State ==
                 NativeInstrumentsResource.ResourceStates.Empty ||
                 pluginInstance.Plugin.NativeInstrumentsResource.ShortNamesState.State ==
@@ -47,9 +46,10 @@ namespace PresetMagician.Services
             {
                 return true;
             }
-            
+
             return false;
         }
+
         [Time]
         public void AutoGenerateResources(IRemotePluginInstance pluginInstance)
         {
@@ -157,10 +157,10 @@ namespace PresetMagician.Services
                 niResource.Categories.Product = pluginInstance.Plugin.PluginName;
                 niResource.CategoriesState.State = NativeInstrumentsResource.ResourceStates.AutomaticallyGenerated;
             }
-            
+
             var pluginName = pluginInstance.Plugin.PluginName;
             var pluginVendor = pluginInstance.Plugin.PluginVendor;
-            
+
             niResource.MST_logo.ReplaceFromStream(
                 RenderBigLogo(pluginName, pluginVendor, niResource.MST_logo.TargetSize, 35, 12),
                 NativeInstrumentsResource.ResourceStates.AutomaticallyGenerated);
@@ -173,10 +173,10 @@ namespace PresetMagician.Services
                 RenderLogo(pluginName, niResource.OSO_logo.TargetSize, 43, new Point(7, 2)),
                 NativeInstrumentsResource.ResourceStates.AutomaticallyGenerated);
 
-           
+
             niResource.Color.SetRandomColor();
             niResource.ColorState.State = NativeInstrumentsResource.ResourceStates.AutomaticallyGenerated;
-            
+
             if (!ShouldCreateScreenshot(pluginInstance) && !force)
             {
                 return;
@@ -185,7 +185,8 @@ namespace PresetMagician.Services
             if (!pluginInstance.IsEditorOpen)
             {
                 // todo: create dummy image and generate random color
-                pluginInstance.Plugin.Logger.Error("Tried to create a screenshot, but the editor was not open (maybe the plugin denied to open the editor)");
+                pluginInstance.Plugin.Logger.Error(
+                    "Tried to create a screenshot, but the editor was not open (maybe the plugin denied to open the editor)");
                 return;
             }
 
@@ -214,8 +215,6 @@ namespace PresetMagician.Services
 
 
             niResource.Color.BackgroundColor = DetectBestColor((Bitmap) bmp);
-
-            
         }
 
         [Time]

@@ -7,7 +7,7 @@ namespace PresetMagician.Core.Services
 {
     public class TypesService
     {
-         private readonly GlobalService _globalService;
+        private readonly GlobalService _globalService;
 
         public TypesService(GlobalService globalService)
         {
@@ -24,7 +24,7 @@ namespace PresetMagician.Core.Services
                 c.Plugins.Clear();
                 c.UsageCount = 0;
             }
-            
+
             foreach (var plugin in plugins)
             {
                 foreach (var preset in plugin.Presets)
@@ -46,7 +46,7 @@ namespace PresetMagician.Core.Services
                 orderby t.FullTypeName
                 select t).ToList();
         }
-        
+
         public bool IsRedirectTarget(Type type)
         {
             return (from t in _globalService.GlobalTypes
@@ -62,20 +62,19 @@ namespace PresetMagician.Core.Services
                 select t).ToList();
         }
 
-        public bool HasType(Type type )
+        public bool HasType(Type type)
         {
             return (from t in _globalService.GlobalTypes
-                where t != type && t.TypeName== type.TypeName && t.SubTypeName == type.SubTypeName
+                where t != type && t.TypeName == type.TypeName && t.SubTypeName == type.SubTypeName
                 select t).Any();
         }
 
-       
 
         public TypeUsage GetTypeUsageByType(Type type)
         {
             return (from c in TypeUsages where c.Type == type select c).SingleOrDefault();
         }
 
-        public WrappedEditableCollection<TypeUsage,Type> TypeUsages { get; }
+        public WrappedEditableCollection<TypeUsage, Type> TypeUsages { get; }
     }
 }

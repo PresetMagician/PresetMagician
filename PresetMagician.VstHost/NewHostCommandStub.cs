@@ -244,7 +244,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
                 case "receiveVstTimeInfo":
                 case "receiveVstMidiEvent":
                 case "acceptIOChanges":
-                    case "notifySessionRestore":
+                case "notifySessionRestore":
                     return VstCanDoResult.No;
                 case "sendVstMidiEvent":
                 case "sizeWindow":
@@ -315,7 +315,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
         {
             var plugin = PluginContext.Find<RemoteVstPlugin>("Plugin");
 
-            #if DEBUG
+#if DEBUG
             /*VstPluginCommandAdapter.Create(plugin.PluginContext.PluginCommandStub)
             if (plugin != null)
             {
@@ -326,12 +326,13 @@ namespace Drachenkatze.PresetMagician.VSTHost
             }*/
 
             var sb = new StringBuilder();
-            
+
             foreach (var intf in plugin.PluginContext.PluginCommandStub.GetType().GetInterfaces())
             {
                 sb.AppendLine(intf.FullName);
             }
-            MessageBox.Show("Plugin wants idle"+sb.ToString());
+
+            MessageBox.Show("Plugin wants idle" + sb.ToString());
 
 #endif
             // todo call idle on plugin there plugin?.PluginContext.PluginCommandStub.idle;   
@@ -406,6 +407,4 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         #endregion
     }
-
-  
 }

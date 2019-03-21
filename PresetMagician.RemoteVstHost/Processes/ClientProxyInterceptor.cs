@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.ServiceModel;
@@ -83,7 +82,8 @@ namespace PresetMagician.RemoteVstHost.Processes
 
                 if (innerException == null)
                 {
-                    LogTo.Warning($"Got a TargetInvocationException but the innerException was null. Please report this as a bug :) Message: {ex.Message}");
+                    LogTo.Warning(
+                        $"Got a TargetInvocationException but the innerException was null. Please report this as a bug :) Message: {ex.Message}");
                     LogTo.Debug(ex.StackTrace);
                 }
 
@@ -95,7 +95,6 @@ namespace PresetMagician.RemoteVstHost.Processes
                     _vstHostProcess.ForceStop(message);
 
                     throw new ConnectivityLostException(message, innerException);
-
                 }
 
                 var exceptionType = innerException.GetType();

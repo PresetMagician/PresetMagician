@@ -46,6 +46,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AsyncFile.cs" />
     <Compile Include="BinaryFile.cs" />
     <Compile Include="ConsoleTables.cs" />
     <Compile Include="DebugMonitor.cs" />

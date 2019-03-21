@@ -5,9 +5,8 @@ namespace PresetMagician.Core
 {
     public static class CoreInitializer
     {
-        public static void RegisterServices()
+        public static void RegisterServices(IServiceLocator serviceLocator)
         {
-            var serviceLocator = ServiceLocator.Default;
             serviceLocator.RegisterType<GlobalService, GlobalService>();
             serviceLocator.RegisterType<GlobalFrontendService, GlobalFrontendService>();
             serviceLocator.RegisterType<DataPersisterService, DataPersisterService>();
@@ -17,8 +16,6 @@ namespace PresetMagician.Core
             serviceLocator.RegisterType<TypesService, TypesService>();
             serviceLocator.RegisterType<VendorPresetParserService, VendorPresetParserService>();
             serviceLocator.RegisterType<RemoteVstService, RemoteVstService>();
-            
-            
         }
     }
 }

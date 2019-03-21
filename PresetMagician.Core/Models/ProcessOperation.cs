@@ -3,7 +3,7 @@ using Catel.Data;
 
 namespace PresetMagician.RemoteVstHost.Processes
 {
-    public class ProcessOperation: ObservableObject
+    public class ProcessOperation : ObservableObject
     {
         public ProcessOperation(string name, DateTime startTime)
         {
@@ -16,15 +16,17 @@ namespace PresetMagician.RemoteVstHost.Processes
             Result = result;
         }
 
-        public void SetStopTime (DateTime stopTime)
+        public void SetStopTime(DateTime stopTime)
         {
             StopTime = stopTime;
             _hasStopTime = true;
         }
-        public void SetCompleted ()
+
+        public void SetCompleted()
         {
             Completed = true;
         }
+
         public string Name { get; }
         public string Result { get; private set; }
         public bool Completed { get; private set; }
@@ -42,7 +44,7 @@ namespace PresetMagician.RemoteVstHost.Processes
             }
         }
 
-        public DateTime StartTime { get;  }
+        public DateTime StartTime { get; }
         public DateTime StopTime { get; private set; }
         private bool _hasStopTime;
     }

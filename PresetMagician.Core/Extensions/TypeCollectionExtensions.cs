@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Catel.Collections;
 using PresetMagician.Core.Models;
 
 namespace PresetMagician.Core.Extensions

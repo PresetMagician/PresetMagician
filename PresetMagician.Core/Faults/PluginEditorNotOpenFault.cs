@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 namespace PresetMagician.RemoteVstHost.Faults
 {
     [DataContract]
-    public class PluginEditorNotOpenFault: GenericFault
+    public class PluginEditorNotOpenFault : GenericFault
     {
         public PluginEditorNotOpenFault()
         {

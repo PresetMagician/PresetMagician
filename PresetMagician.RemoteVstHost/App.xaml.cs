@@ -9,10 +9,9 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Threading;
-using Catel.Logging;
 using Drachenkatze.PresetMagician.Utils;
-using PresetMagician.RemoteVstHost.Services;
 using PresetMagician.Core.Interfaces;
+using PresetMagician.RemoteVstHost.Services;
 using PresetMagician.Utils.Logger;
 
 namespace PresetMagician.RemoteVstHost
@@ -36,20 +35,20 @@ namespace PresetMagician.RemoteVstHost
                                              Process.GetCurrentProcess().Id + ".log");
 
             MiniDiskLogger = new MiniDiskLogger(logFile);
-          
+
             AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
             Current.DispatcherUnhandledException += CurrentOnDispatcherUnhandledException;
             TaskScheduler.UnobservedTaskException += TaskSchedulerOnUnobservedTaskException;
             AppDomain.CurrentDomain.FirstChanceException += CurrentDomainOnFirstChanceException;
-            
+
             string address = Constants.BaseAddress + Process.GetCurrentProcess().Id;
-           
+
             _serviceHost = new ServiceHost(typeof(RemoteVstService));
             var binding = WcfUtils.GetNetNamedPipeBinding();
 
             var dummyWin = new Window();
             Current.MainWindow = dummyWin;
-            
+
             _serviceHost.AddServiceEndpoint(typeof(IRemoteVstService), binding, address);
             _serviceHost.Faulted += ServiceHostOnFaulted;
             _serviceHost.Opened += ServiceHostOnOpened;
@@ -66,10 +65,11 @@ namespace PresetMagician.RemoteVstHost
 
         private void TaskSchedulerOnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
         {
-            var message = $"TaskSchedulerOnUnobservedTaskException {e.Exception.GetType().FullName}: {e.Exception.Message}";
+            var message =
+                $"TaskSchedulerOnUnobservedTaskException {e.Exception.GetType().FullName}: {e.Exception.Message}";
             Console.WriteLine(message);
             Console.WriteLine(e.Exception.StackTrace);
-            
+
             MiniDiskLogger.Error(message);
             MiniDiskLogger.Debug(e.Exception.StackTrace);
         }
@@ -82,14 +82,14 @@ namespace PresetMagician.RemoteVstHost
             {
                 return;
             }
+
             _processedExceptions.Add(e.Exception.GetHashCode());
             var message = $"FirstChanceException {e.Exception.GetType().FullName}: {e.Exception.Message}";
             Console.WriteLine(message);
             Console.WriteLine(e.Exception.StackTrace);
-            
+
             MiniDiskLogger.Error(message);
             MiniDiskLogger.Debug(e.Exception.StackTrace);
-            
         }
 
         private void ServiceHostOnOpened(object sender, EventArgs e)
@@ -97,7 +97,8 @@ namespace PresetMagician.RemoteVstHost
             Console.WriteLine($"PresetMagician.RemoteVstHost.exe:{Process.GetCurrentProcess().Id} ready.");
         }
 
-        private static void CurrentOnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        private static void CurrentOnDispatcherUnhandledException(object sender,
+            DispatcherUnhandledExceptionEventArgs e)
         {
             var exception = e.Exception;
             var message =
@@ -142,15 +143,14 @@ namespace PresetMagician.RemoteVstHost
             _serviceHost.Faulted -= ServiceHostOnFaulted;
             AppDomain.CurrentDomain.UnhandledException -= CurrentDomainOnUnhandledException;
             Current.DispatcherUnhandledException -= CurrentOnDispatcherUnhandledException;
-            
+
             Console.WriteLine($"[{DateTime.Now:HH:mm:ss:fff}] => {Process.GetCurrentProcess().Id} Shutting down");
-            
+
             Process.GetCurrentProcess().Kill();
         }
 
         protected override void OnExit(ExitEventArgs e)
         {
-          
             _serviceHost.Close();
 
             base.OnExit(e);

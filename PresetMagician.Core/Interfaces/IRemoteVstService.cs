@@ -121,7 +121,7 @@ namespace PresetMagician.Core.Interfaces
         [FaultContract(typeof(PluginNotRegisteredFault))]
         [FaultContract(typeof(PluginNotLoadedFault))]
         int GetPluginVendorVersion(Guid pluginGuid);
-        
+
         [OperationContract]
         [FaultContract(typeof(GenericFault))]
         [FaultContract(typeof(PluginNotRegisteredFault))]
@@ -133,25 +133,25 @@ namespace PresetMagician.Core.Interfaces
         [FaultContract(typeof(PluginNotRegisteredFault))]
         [FaultContract(typeof(PluginNotLoadedFault))]
         string GetEffectivePluginName(Guid pluginGuid);
-        
+
         [OperationContract]
         [FaultContract(typeof(GenericFault))]
-        bool Exists (string file);
-        
+        bool Exists(string file);
+
         [OperationContract]
         [FaultContract(typeof(GenericFault))]
-        long GetSize (string file);
-        
+        long GetSize(string file);
+
         [OperationContract]
         [FaultContract(typeof(GenericFault))]
-        string GetHash (string file);
-        
+        string GetHash(string file);
+
         [OperationContract]
         [FaultContract(typeof(GenericFault))]
-        byte[] GetContents (string file);
-        
+        byte[] GetContents(string file);
+
         [OperationContract]
-        void KillSelf ();
+        void KillSelf();
 
         [OperationContract]
         [FaultContract(typeof(GenericFault))]

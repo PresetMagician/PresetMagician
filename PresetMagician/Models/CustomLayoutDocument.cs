@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Timers;
 using Catel.IoC;
 using Catel.MVVM;
@@ -7,7 +6,6 @@ using Catel.Services;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.ViewModels;
 using Xceed.Wpf.AvalonDock.Layout;
-using MessageButton = Catel.Services.MessageButton;
 
 namespace PresetMagician.Models
 {
@@ -65,6 +63,7 @@ namespace PresetMagician.Models
                         break;
                 }
             }
+
             _viewModel?.CancelViewModelAsync().ConfigureAwait(false);
             _viewModel?.CloseViewModelAsync(null).ConfigureAwait(false);
 

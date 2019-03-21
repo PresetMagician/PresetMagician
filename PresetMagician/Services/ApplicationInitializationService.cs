@@ -14,17 +14,16 @@ using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
 using Catel.Threading;
-using Drachenkatze.PresetMagician.VendorPresetParser;
 using MethodTimer;
 using Orc.Scheduling;
 using Orc.Squirrel;
 using Orchestra.Services;
-using PresetMagician.Core;
+using PresetMagician.Core.Commands.Plugin;
+using PresetMagician.Core.Interfaces;
 using PresetMagician.Legacy.Services;
 using PresetMagician.Legacy.Services.EventArgs;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.ViewModels;
-using PresetMagician.Core.Interfaces;
 
 namespace PresetMagician.Services
 {
@@ -35,8 +34,8 @@ namespace PresetMagician.Services
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();
         private readonly IServiceLocator _serviceLocator;
         private readonly ICommandManager _commandManager;
-        private readonly IViewModelFactory _viewModelFactory;
         private readonly IUIVisualizerService _uiVisualizerService;
+        private FrontendService _frontendService;
         private readonly SplashScreenService _splashScreenService;
         private SquirrelResult _squirrelResult;
 
@@ -56,7 +55,6 @@ namespace PresetMagician.Services
             _serviceLocator = serviceLocator;
             _commandManager = commandManager;
             _uiVisualizerService = uiVisualizerService;
-            _viewModelFactory = viewModelFactory;
 
             _splashScreenService = serviceLocator.ResolveType<ISplashScreenService>() as SplashScreenService;
 
@@ -72,7 +70,12 @@ namespace PresetMagician.Services
         public override async Task InitializeBeforeCreatingShellAsync()
         {
             // Non-async first
-            RegisterTypes();
+            FrontendInitializer.RegisterTypes(_serviceLocator);
+            FrontendInitializer.Initialize(_serviceLocator);
+            _frontendService = _serviceLocator.ResolveType<FrontendService>();
+            _splashScreenService.Action = "Loading configuration…";
+            LoadConfiguration();
+
 
             _serviceLocator.ResolveType<IApplicationService>().StartProcessPool();
 
@@ -90,31 +93,30 @@ namespace PresetMagician.Services
                     migrationService.LoadData();
                     migrationService.MigratePlugins();
                 }).ConfigureAwait(false);
-
             }
 
-            _splashScreenService.Action = "Loading configuration…";
-            LoadConfiguration();
 
             _splashScreenService.Action = "Loading database…";
-            InitializeCommands();
 
-            
+            _frontendService.InitializeCommands();
         }
 
+        [Time]
         public override async Task InitializeBeforeShowingShellAsync()
         {
             var vstService = _serviceLocator.ResolveType<IVstService>();
-            vstService.Load(); 
-            
+            vstService.Load();
+
             _splashScreenService.Action = "Almost there…";
+
+            _frontendService.SetupCollectionSynchronizations();
         }
 
         [Time]
         public override async Task InitializeAfterShowingShellAsync()
         {
             LogTo.Debug("Running initialization after showing the shell");
-            
+
             var serviceLocator = ServiceLocator.Default;
             var licenseService = serviceLocator.ResolveType<ILicenseService>();
             if (!licenseService.CheckLicense())
@@ -138,10 +140,10 @@ namespace PresetMagician.Services
 
             schedulerService.AddScheduledTask(updateCheckTask);
 
-            TaskHelper.Run(() => { _commandManager.ExecuteCommand(Commands.Plugin.RefreshPlugins); });
+            TaskHelper.Run(() => { _serviceLocator.ResolveType<RefreshPluginsCommand>().ExecuteAsync(); });
         }
 
-        private async void StartRegistration()
+        private async Task StartRegistration()
         {
             await _uiVisualizerService.ShowDialogAsync<RegistrationViewModel>();
         }
@@ -152,7 +154,7 @@ namespace PresetMagician.Services
             Log.Info("Checking for updates…");
 
             var updateService = _serviceLocator.ResolveType<IUpdateService>();
-         
+
 
             _squirrelResult = await updateService.CheckForUpdatesAsync(new SquirrelContext());
         }
@@ -162,105 +164,12 @@ namespace PresetMagician.Services
             return _squirrelResult;
         }
 
-        [Time]
-        private void InitializeCommands()
-        {
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Application), "CancelOperation");
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Application), "ClearLastOperationErrors");
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Application), "ApplyConfiguration");
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Application), "NotImplemented");
-
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "ScanPlugins");
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin),
-                nameof(Commands.Plugin.ScanSelectedPlugins));
-           _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin),
-                nameof(Commands.Plugin.ScanSelectedPlugin));
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "RefreshPlugins");
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "AllToPresetExportList");
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "SelectedToPresetExportList");
-            
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin),
-                nameof(Commands.Plugin.NotExportedAllToPresetExportList));
-            
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin),
-                nameof(Commands.Plugin.NotExportedSelectedToPresetExportList));
-            
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "ReportUnsupportedPlugins");
-            
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), nameof(Commands.Plugin.ForceReportPluginsToLive));
-            
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), nameof(Commands.Plugin.ForceReportPluginsToDev));
-
-            _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "EnablePlugins");
-            _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "DisablePlugins");
-            _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools),
-                nameof(Commands.PluginTools.ViewSettings));
-            
-            _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools),
-                nameof(Commands.PluginTools.ViewPresets));
-            
-            _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools),
-                nameof(Commands.PluginTools.ViewErrors));
-            _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "ShowPluginInfo");
-            _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "ShowPluginEditor");
-            _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "ShowPluginChunk");
-            _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "LoadPlugin");
-            _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "UnloadPlugin");
-            _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools),
-                nameof(Commands.PluginTools.ReportSinglePluginToLive));
-
-           
-            
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Preset), nameof(Commands.Preset.ApplyMidiNote));
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Preset), nameof(Commands.Preset.RenamePresetBank));
-            
-            
-            _commandManager.CreateCommandWithGesture(typeof(Commands.PresetExport), nameof(Commands.PresetExport.ClearSelected));
-            _commandManager.CreateCommandWithGesture(typeof(Commands.PresetExport), nameof(Commands.PresetExport.ActivatePresetView));
-            _commandManager.CreateCommandWithGesture(typeof(Commands.PresetExport), nameof(Commands.PresetExport.DoExport));
-            _commandManager.CreateCommandWithGesture(typeof(Commands.PresetExport), nameof(Commands.PresetExport.ClearList));
-
-            _commandManager.CreateCommandWithGesture(typeof(Commands.PresetTools),
-                nameof(Commands.PresetTools.ShowPresetData));
-
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Tools), "NksfView");
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Tools), "SettingsView");
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Tools), nameof(Commands.Tools.UpdateLicense));
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Tools), nameof(Commands.Tools.EditTypesCharacteristics));
-
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Help), nameof(Commands.Help.RequestSupport));
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Help), nameof(Commands.Help.CreateBugReport));
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Help), nameof(Commands.Help.CreateFeatureRequest));
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Help), "OpenChatLink");
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Help), "OpenDocumentationLink");
-            
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Developer), nameof(Commands.Developer.SetCatelLogging));
-        }
 
         [Time]
         private void LoadConfiguration()
         {
             var runtimeConfigurationService = _serviceLocator.ResolveType<IRuntimeConfigurationService>();
             runtimeConfigurationService.Load();
-        }
-
-        [Time]
-        private void RegisterTypes()
-        {
-            var serviceLocator = ServiceLocator.Default;
-            CoreInitializer.RegisterServices();
-            VendorPresetParserInitializer.Initialize();
-            serviceLocator.RegisterType<IAboutInfoService, AboutInfoService>();
-            serviceLocator.RegisterType<ICustomStatusService, CustomStatusService>();
-            serviceLocator.RegisterType<IPleaseWaitService, CustomPleaseWaitService>();
-            serviceLocator.RegisterType<ILicenseService, LicenseService>();
-            serviceLocator.RegisterType<IRuntimeConfigurationService, RuntimeConfigurationService>();
-            serviceLocator.RegisterType<IVstService, VstService>();
-            serviceLocator.RegisterType<IApplicationService, ApplicationService>();
-            serviceLocator.RegisterType<IAdvancedMessageService, AdvancedMessageService>();
-
-            serviceLocator
-                .RegisterType<INativeInstrumentsResourceGeneratorService, NativeInstrumentsResourceGeneratorService>();
         }
 
         #endregion Methods

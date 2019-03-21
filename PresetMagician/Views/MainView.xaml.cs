@@ -1,5 +1,4 @@
 ﻿using Catel.IoC;
-using PresetMagician.Services.Interfaces;
 
 namespace PresetMagician.Views
 {

@@ -9,7 +9,7 @@ namespace PresetMagician.Core.Models
     public class PluginLocation : ModelBase
     {
         private static HashSet<string> _editableProperties = new HashSet<string>();
-        
+
         public override HashSet<string> GetEditableProperties()
         {
             return _editableProperties;
@@ -18,7 +18,8 @@ namespace PresetMagician.Core.Models
         /// <summary>
         /// Defines the full path to the plugin DLL
         /// </summary>
-        [Include] public string DllPath { get; set; }
+        [Include]
+        public string DllPath { get; set; }
 
         [Include] public string DllHash { get; set; }
 
@@ -42,25 +43,27 @@ namespace PresetMagician.Core.Models
         /// </summary>
         [Include]
         public string LastFailedAnalysisVersion { get; set; }
-        
+
         public string ShortTextRepresentation => $"{PluginName} by {PluginVendor}, Version {VendorVersion}";
 
-        public string FullTextRepresentation => $"{PluginName} by {PluginVendor}, Version {VendorVersion}, Preset Parser {PresetParser?.PresetParserType} ({DllPath})";
-        
+        public string FullTextRepresentation =>
+            $"{PluginName} by {PluginVendor}, Version {VendorVersion}, Preset Parser {PresetParser?.PresetParserType} ({DllPath})";
+
         public string GetSavedPresetParserClassName()
         {
             return _presetParserClassName;
         }
-        
+
         private string _presetParserClassName;
-        
-        [Include] public string PresetParserClassName
+
+        [Include]
+        public string PresetParserClassName
         {
             get => PresetParser?.PresetParserType;
 
             set => _presetParserClassName = value;
         }
-        
+
         private IVendorPresetParser _presetParser;
 
         public IVendorPresetParser PresetParser

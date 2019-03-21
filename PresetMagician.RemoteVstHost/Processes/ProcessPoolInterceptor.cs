@@ -4,7 +4,7 @@ using Castle.DynamicProxy;
 
 namespace PresetMagician.RemoteVstHost.Processes
 {
-   public class ProcessPoolInterceptor : IInterceptor
+    public class ProcessPoolInterceptor : IInterceptor
     {
         private readonly RemoteVstHostProcessPool _processPool;
 
@@ -13,7 +13,6 @@ namespace PresetMagician.RemoteVstHost.Processes
             _processPool = processPool;
         }
 
-    
 
         public void Intercept(IInvocation invocation)
         {
@@ -30,6 +29,4 @@ namespace PresetMagician.RemoteVstHost.Processes
             }
         }
     }
-   
-  
 }

@@ -141,6 +141,10 @@
       <Project>{3f01003f-9e52-4f4d-a5fd-ecdd9017c048}</Project>
       <Name>PresetMagician.VendorPresetParser</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PresetMagician\PresetMagician.csproj">
+      <Project>{aff54505-ff0c-460d-8870-132e39c970e8}</Project>
+      <Name>PresetMagician</Name>
+    </ProjectReference>
     <ProjectReference Include="..\vst.net\Source\Code\Jacobi.Vst.Core\Jacobi.Vst.Core.Clr4.csproj">
       <Project>{5950f8a9-f413-4ace-b6e0-6f458b4c26f9}</Project>
       <Name>Jacobi.Vst.Core.Clr4</Name>
@@ -254,6 +258,17 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
+        <Reference Include="Ionic.Zip">
+          <HintPath>..\packages\Ionic.Zip\lib\Ionic.Zip.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
         <Reference Include="MessagePack">
           <HintPath>..\packages\MessagePack\lib\net47\MessagePack.dll</HintPath>
           <Private>True</Private>
@@ -296,8 +311,55 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
+        <Reference Include="Orc.Controls">
+          <HintPath>..\packages\Orc.Controls\lib\net47\Orc.Controls.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
         <Reference Include="Orc.EntityFramework">
           <HintPath>..\packages\Orc.EntityFramework6\lib\net47\Orc.EntityFramework.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="Orc.FileSystem">
+          <HintPath>..\packages\Orc.FileSystem\lib\net47\Orc.FileSystem.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="System.Management">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Orc.SystemInfo">
+          <HintPath>..\packages\Orc.SystemInfo\lib\net47\Orc.SystemInfo.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="Orchestra.Core">
+          <HintPath>..\packages\Orchestra.Core\lib\net47\Orchestra.Core.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -447,6 +509,17 @@
       <ItemGroup>
         <Reference Include="System.Data.SQLite.Linq">
           <HintPath>..\packages\System.Data.SQLite.Linq\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="System.IO.FileSystem.Watcher">
+          <HintPath>..\packages\System.IO.FileSystem.Watcher\lib\net46\System.IO.FileSystem.Watcher.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -624,6 +697,23 @@
       <ItemGroup>
         <Reference Include="xunit.execution.desktop">
           <HintPath>..\packages\xunit.extensibility.execution\lib\net452\xunit.execution.desktop.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="System.Windows.Forms">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="WindowsBase">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Xunit.StaFact">
+          <HintPath>..\packages\Xunit.StaFact\lib\net452\Xunit.StaFact.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>

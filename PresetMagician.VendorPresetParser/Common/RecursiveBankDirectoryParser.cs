@@ -91,7 +91,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
                     }
                     catch (Exception e)
                     {
-                        PluginInstance.Plugin.Logger.Error($"Error processing preset {file.FullName} because of {e.GetType().FullName}: {e.Message}");
+                        PluginInstance.Plugin.Logger.Error(
+                            $"Error processing preset {file.FullName} because of {e.GetType().FullName}: {e.Message}");
                         PluginInstance.Plugin.Logger.Debug(e.StackTrace);
                     }
                 }

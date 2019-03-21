@@ -1,21 +1,19 @@
 using System;
-using System.ComponentModel;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using Anotar.Catel;
 using Castle.DynamicProxy;
 using MethodTimer;
-using PresetMagician.Core.Models;
 using PresetMagician.Core.Interfaces;
-using PresetMagician.Utils.Logger;
+using PresetMagician.Core.Models;
+using Timer = System.Timers.Timer;
 using Type = System.Type;
 
 namespace PresetMagician.RemoteVstHost.Processes
 {
- 
-
     public class VstHostProcess : HostProcess, IVstHostProcess
     {
         private string _address;
@@ -30,21 +28,20 @@ namespace PresetMagician.RemoteVstHost.Processes
         public ProcessOperation CurrentOperation { get; private set; }
         private ProcessOperation _currentOperation;
 
-       
+
         public VstHostProcess(int maxStartupTimeSeconds = 20, bool debug = false) : base(maxStartupTimeSeconds, debug)
         {
         }
 
-        
 
-        public async Task WaitUntilStarted()
+        public void WaitUntilStarted()
         {
             var waitCounter = 0;
-            
+
             while (!_vstServiceAvailable)
             {
                 waitCounter++;
-                await Task.Delay(100);
+                Thread.Sleep(100);
 
                 if (waitCounter > 20)
                 {
@@ -52,6 +49,7 @@ namespace PresetMagician.RemoteVstHost.Processes
                 }
             }
         }
+
         public void Lock(Plugin plugin)
         {
             lock (_operationLock)
@@ -73,19 +71,18 @@ namespace PresetMagician.RemoteVstHost.Processes
         {
             return _lockedToPlugin;
         }
-        
+
         public void Unlock()
         {
             lock (_operationLock)
             {
-
                 _isLocked = false;
                 IsBusy = false;
             }
 
             Logger.Debug($"Unlocking from  plugin {_lockedToPlugin.PluginName}, logs are coming back to this process");
             _lockedToPlugin = null;
-            
+
             currentUnloadCount++;
             if (currentUnloadCount > shutdownAfterNumUnloads)
             {
@@ -203,7 +200,7 @@ namespace PresetMagician.RemoteVstHost.Processes
             {
                 // ReSharper disable once SuspiciousTypeConversion.Global
                 var castedVstService = _vstService as IChannel;
-                
+
                 if (castedVstService.State == CommunicationState.Faulted)
                 {
                     castedVstService.Abort();
@@ -236,7 +233,7 @@ namespace PresetMagician.RemoteVstHost.Processes
                 var proxyCreator = GetProxyCreator(proxyCreatorType, binding, ep);
                 var x = _generator.CreateInterfaceProxyWithoutTarget(type, new[] {typeof(IContextChannel)},
                     CreateInterceptor(proxyCreator, type));
-              
+
                 _vstService = x as IRemoteVstService;
 
 
@@ -244,7 +241,6 @@ namespace PresetMagician.RemoteVstHost.Processes
                 _vstServiceAvailable = true;
                 IsBusy = false;
                 _pingTimer.Start();
-
             }
             catch (Exception ex)
             {

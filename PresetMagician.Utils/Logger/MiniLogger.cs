@@ -1,3 +1,5 @@
+using System;
+
 namespace PresetMagician.Utils.Logger
 {
     public abstract class MiniLogger
@@ -6,32 +8,37 @@ namespace PresetMagician.Utils.Logger
         {
             Write(logEntry);
         }
-        
+
         public abstract void Write(LogEntry logEntry);
 
         public void Trace(string message)
         {
             Write(new LogEntry(LogLevel.Trace, message));
         }
-        
+
         public void Debug(string message)
         {
             Write(new LogEntry(LogLevel.Debug, message));
         }
-        
+
         public void Info(string message)
         {
             Write(new LogEntry(LogLevel.Info, message));
         }
-        
+
         public void Warning(string message)
         {
             Write(new LogEntry(LogLevel.Warning, message));
         }
-        
+
         public void Error(string message)
         {
             Write(new LogEntry(LogLevel.Error, message));
+        }
+
+        public void LogException(Exception ex, LogLevel logLevel = LogLevel.Debug)
+        {
+            Write(new LogEntry(logLevel, $"{ex.GetType().FullName}: {ex.Message}{Environment.NewLine}{ex.StackTrace}"));
         }
 
         public string GetLogLevelShortCode(LogLevel logLevel)
@@ -52,6 +59,5 @@ namespace PresetMagician.Utils.Logger
 
             return "";
         }
-        
     }
 }

@@ -31,7 +31,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
             var numPresets = GetPresets(instrumentList).Count();
             _db.Close();
             _db = null;
-            return base.GetNumPresets()+numPresets;
+            return base.GetNumPresets() + numPresets;
         }
 
         private void InitDb()
@@ -80,7 +80,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
 
                     foreach (var name in characteristicsNames)
                     {
-                        preset.Characteristics.Add(new Characteristic { CharacteristicName = name});
+                        preset.Characteristics.Add(new Characteristic {CharacteristicName = name});
                     }
 
                     var fileName = presetData.Preset.file_path.Replace('/', '\\');

@@ -62,8 +62,8 @@
                       Visibility="{Binding AllowRedirect, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}"
                       ItemsSource="{Binding RedirectTargets}" SelectedItem="{Binding RedirectType}"
                       ItemTemplate="{StaticResource TypeTemplate}" IsEnabled="{Binding IsRedirect}" />
-            
-            <CheckBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" IsChecked="{Binding IsIgnored}" 
+
+            <CheckBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" IsChecked="{Binding IsIgnored}"
                       Visibility="{Binding AllowRedirect, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
                 <TextBlock Text="Ignore this type" />
             </CheckBox>

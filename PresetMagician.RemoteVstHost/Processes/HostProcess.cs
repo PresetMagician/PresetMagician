@@ -1,11 +1,8 @@
 using System;
 using System.Diagnostics;
 using System.Timers;
-using Catel;
 using Catel.Data;
-using Catel.Logging;
 using Catel.Threading;
-using Drachenkatze.PresetMagician.Utils;
 using MethodTimer;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Utils.Logger;
@@ -15,8 +12,6 @@ namespace PresetMagician.RemoteVstHost.Processes
 {
     public class HostProcess : ObservableObject
     {
-        
-
         public int Pid { get; private set; }
         public DateTime StartDateTime { get; private set; }
 
@@ -78,7 +73,7 @@ namespace PresetMagician.RemoteVstHost.Processes
 
 
         [Time]
-        public HostProcess(int maxStartupTimeSeconds = 20, bool debug=false)
+        public HostProcess(int maxStartupTimeSeconds = 20, bool debug = false)
         {
             _debug = debug;
             Logger = new MiniMemoryLogger(debug);
@@ -203,7 +198,6 @@ namespace PresetMagician.RemoteVstHost.Processes
 
         protected virtual void OnOutputDataReceived(string data)
         {
-            
         }
 
         protected virtual void OnAfterStart()
@@ -260,10 +254,18 @@ namespace PresetMagician.RemoteVstHost.Processes
                 CleanupBeforeForceStop();
             }
 
-            if (!_process.HasExited)
+            try
             {
                 _process.Kill();
+                if (!_process.HasExited)
+                {
+                    _process.Kill();
+                }
             }
+            catch (InvalidOperationException)
+            {
+            }
+
 
             StopReason = reason;
             StopDateTime = DateTime.Now;

@@ -13,7 +13,7 @@
     ResizeMode="NoResize"
     d:DataContext="{d:DesignInstance viewModels:RenamePresetBankViewModel}"
     mc:Ignorable="d">
-   
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -27,7 +27,7 @@
             <Run FontWeight="Bold" Text="{Binding Plugin.PluginName}" />
             <Run Text=":" />
         </TextBlock>
-        <TextBox Grid.Row="1" Text="{Binding NewBankName, UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True, NotifyOnValidationError=True}"/>
+        <TextBox Grid.Row="1"
+                 Text="{Binding NewBankName, UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
     </Grid>
 </catel:DataWindow>
-

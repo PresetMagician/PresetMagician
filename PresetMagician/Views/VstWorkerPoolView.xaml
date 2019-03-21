@@ -13,7 +13,7 @@
     <catel:UserControl.Resources>
         <converters:FormatKbSizeConverter x:Key="FormatKbSizeConverter" />
     </catel:UserControl.Resources>
-    
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*" />
@@ -25,7 +25,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <GroupBox Header="Runnning Processes" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2">
-            
+
             <DataGrid ItemsSource="{Binding ProcessPool.RunningProcesses}"
                       AutoGenerateColumns="False"
                       CanUserAddRows="False"
@@ -64,18 +64,18 @@
                         Width="Auto"
                         Binding="{Binding CurrentOperation.ElapsedTime, Mode=OneWay, StringFormat=hh\\:mm\\:ss}"
                         Header="Current Operation (Elapsed Time)"
-                        IsReadOnly="True"/>
+                        IsReadOnly="True" />
                     <DataGridTextColumn
                         Width="Auto"
                         Binding="{Binding IsBusy}"
                         Header="Busy"
-                        IsReadOnly="True"/>
+                        IsReadOnly="True" />
                 </DataGrid.Columns>
-            
+
             </DataGrid>
         </GroupBox>
         <GroupBox Header="Terminated Processes" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
-             <DataGrid ItemsSource="{Binding ProcessPool.OldProcesses}"
+            <DataGrid ItemsSource="{Binding ProcessPool.OldProcesses}"
                       AutoGenerateColumns="False"
                       CanUserAddRows="False"
                       CanUserSortColumns="True"
@@ -93,8 +93,7 @@
                         Width="Auto"
                         Binding="{Binding Pid, Mode=OneWay}"
                         Header="PID"
-                        IsReadOnly="True"
-                         />
+                        IsReadOnly="True" />
                     <DataGridTextColumn
                         Width="Auto"
                         Binding="{Binding Uptime, Mode=OneWay, StringFormat=hh\\:mm\\:ss}"
@@ -129,31 +128,28 @@
                 <TextBlock
                     Grid.Row="0"
                     Grid.Column="0"
-                    Text="PID"
-                    />
-               <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SelectedVstHostProcess.Pid}"/>
+                    Text="PID" />
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SelectedVstHostProcess.Pid}" />
 
                 <TextBlock
                     Grid.Row="1"
                     Grid.Column="0"
-                    Text="Required Startup Time"
-                />
-                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SelectedVstHostProcess.StartupTimeFormatted}"/>
-                
+                    Text="Required Startup Time" />
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SelectedVstHostProcess.StartupTimeFormatted}" />
+
                 <TextBlock
                     Grid.Row="2"
                     Grid.Column="0"
-                    Text="Uptime"
-                />
-                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SelectedVstHostProcess.Uptime, Mode=OneWay, StringFormat=hh\\:mm\\:ss}"/>
-                
+                    Text="Uptime" />
+                <TextBlock Grid.Row="2" Grid.Column="1"
+                           Text="{Binding SelectedVstHostProcess.Uptime, Mode=OneWay, StringFormat=hh\\:mm\\:ss}" />
+
                 <TextBlock
                     Grid.Row="3"
                     Grid.Column="0"
-                    Text="State"
-                />
-                <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SelectedVstHostProcess.CurrentProcessState}"/>
-                
+                    Text="State" />
+                <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SelectedVstHostProcess.CurrentProcessState}" />
+
                 <DockPanel Grid.Row="4" Grid.ColumnSpan="2" Grid.Column="0" LastChildFill="False">
                     <Button Command="{Binding ShowVstHostProcessLog}">Show Log</Button>
                     <Button Command="{Binding KillVstHostProcess}">Kill Process</Button>

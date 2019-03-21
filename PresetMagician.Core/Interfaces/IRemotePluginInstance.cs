@@ -5,7 +5,7 @@ using PresetMagician.Core.Models;
 
 namespace PresetMagician.Core.Interfaces
 {
-    public interface IRemotePluginInstance: IDisposable
+    public interface IRemotePluginInstance : IDisposable
     {
         Plugin Plugin { get; }
 
@@ -46,6 +46,5 @@ namespace PresetMagician.Core.Interfaces
         bool OpenEditor();
         bool IsLoaded { get; }
         bool IsEditorOpen { get; }
-
     }
 }

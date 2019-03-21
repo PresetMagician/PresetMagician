@@ -14,7 +14,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
         {
             return "FilterscapeQ6";
         }
-        
+
         protected override string GetDataDirectoryName()
         {
             return "Filterscape.data";

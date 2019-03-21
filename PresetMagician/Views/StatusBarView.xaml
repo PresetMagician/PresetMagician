@@ -29,8 +29,8 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel x:Name="StackPanel">
-            <StackPanel 
-                        Visibility="{Binding ApplicationState.ApplicationOperationLastOperationHadErrors, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
+            <StackPanel
+                Visibility="{Binding ApplicationState.ApplicationOperationLastOperationHadErrors, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
                 <StackPanel>
 
                     <iconPacks:PackIconOcticons

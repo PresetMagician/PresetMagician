@@ -18,3 +18,6 @@ ZeroFormatter
 ZeroFormatter.Interfaces
 MessagePack
 Ceras
+Xunit.StaFact
+Orchestra.Core
+Anotar.Catel.Fody copy_local: false

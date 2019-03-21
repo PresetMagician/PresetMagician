@@ -17,7 +17,7 @@ namespace PresetMagician.VstHost.Util
             var handle = new HWND(hwnd);
             RECT rc = new RECT();
             NativeMethods.GetWindowRect(handle, ref rc);
-            
+
             int width = rc.right - rc.left;
             int height = rc.bottom - rc.top;
 

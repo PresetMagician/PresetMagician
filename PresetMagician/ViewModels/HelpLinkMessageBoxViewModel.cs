@@ -20,6 +20,7 @@ namespace PresetMagician.ViewModels
         private readonly IClipboardService _clipboardService;
 
         #region Constructors
+
         public HelpLinkMessageBoxViewModel(IMessageService messageService, IClipboardService clipboardService)
         {
             Argument.IsNotNull(() => messageService);
@@ -38,15 +39,17 @@ namespace PresetMagician.ViewModels
 
             Result = MessageResult.None;
         }
+
         #endregion
 
         #region Properties
+
         public string Message { get; set; }
-        
+
         public string HelpLink { get; set; }
-        
+
         public string DontAskAgainText { get; set; }
-        
+
         public bool ShowDontAskAgain { get; set; }
 
         public bool DontAskAgainResult { get; set; }
@@ -74,6 +77,7 @@ namespace PresetMagician.ViewModels
         public MessageButton Button { get; set; }
 
         public MessageImage Icon { get; set; }
+
         #endregion
 
         public void SetTitle(string title)
@@ -112,6 +116,7 @@ namespace PresetMagician.ViewModels
         }
 
         #region Commands
+
         public Command CopyToClipboard { get; private set; }
 
         private void OnCopyToClipboardExecute()
@@ -187,6 +192,7 @@ namespace PresetMagician.ViewModels
                     break;
             }
         }
+
         #endregion
     }
 }

@@ -11,6 +11,6 @@ namespace PresetMagician.Utils.Logger.EventArgs
         /// Gets the new value.
         /// </summary>
         /// <value>The new value.</value>
-        public LogEntry LogEntry { get;  }
+        public LogEntry LogEntry { get; }
     }
 }

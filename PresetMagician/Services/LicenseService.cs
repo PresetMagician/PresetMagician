@@ -11,6 +11,7 @@ using Drachenkatze.PresetMagician.Utils;
 using Newtonsoft.Json;
 using Portable.Licensing;
 using Portable.Licensing.Validation;
+using PresetMagician.Core.Services;
 using PresetMagician.Properties;
 using PresetMagician.Services.Interfaces;
 using Path = Catel.IO.Path;
@@ -22,23 +23,22 @@ namespace PresetMagician.Services
         private const int _defaultTrialPresetExportLimit = 50;
 
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();
-        private readonly IRuntimeConfigurationService _runtimeConfigurationService;
+        private readonly GlobalFrontendService _globalFrontendService;
 
         private static readonly string _defaultLocalLicenseFilePath =
             Path.Combine(Path.GetApplicationDataDirectory(ApplicationDataTarget.UserRoaming), "license.lic");
 
-        public LicenseService(IRuntimeConfigurationService runtimeConfigurationService)
+        public LicenseService(GlobalFrontendService globalFrontendService)
         {
-            Argument.IsNotNull(() => runtimeConfigurationService);
+            Argument.IsNotNull(() => globalFrontendService);
 
-            _runtimeConfigurationService = runtimeConfigurationService;
-            _runtimeConfigurationService.ApplicationState.SystemCode = SystemCodeInfo.getSystemInfo();
+            _globalFrontendService = globalFrontendService;
+            _globalFrontendService.ApplicationState.SystemCode = SystemCodeInfo.getSystemInfo();
         }
 
         public License CurrentLicense { get; private set; }
         public License ValidatingLicense { get; private set; }
-        
-        
+
 
         public License GetCurrentLicense()
         {
@@ -109,9 +109,9 @@ namespace PresetMagician.Services
 
             File.Copy(filePath, _defaultLocalLicenseFilePath);
             CurrentLicense = ValidatingLicense;
-            _runtimeConfigurationService.ApplicationState.ValidLicense = true;
-            _runtimeConfigurationService.ApplicationState.ActiveLicense = CurrentLicense;
-            _runtimeConfigurationService.ApplicationState.PresetExportLimit = GetPresetExportLimit();
+            _globalFrontendService.ApplicationState.ValidLicense = true;
+            _globalFrontendService.ApplicationState.ActiveLicense = CurrentLicense;
+            _globalFrontendService.ApplicationState.PresetExportLimit = GetPresetExportLimit();
 
             return updateLicense;
         }
@@ -125,9 +125,9 @@ namespace PresetMagician.Services
                 if (!validationFailures.Any())
                 {
                     CurrentLicense = ValidatingLicense;
-                    _runtimeConfigurationService.ApplicationState.ValidLicense = true;
-                    _runtimeConfigurationService.ApplicationState.ActiveLicense = CurrentLicense;
-                    _runtimeConfigurationService.ApplicationState.PresetExportLimit = GetPresetExportLimit();
+                    _globalFrontendService.ApplicationState.ValidLicense = true;
+                    _globalFrontendService.ApplicationState.ActiveLicense = CurrentLicense;
+                    _globalFrontendService.ApplicationState.PresetExportLimit = GetPresetExportLimit();
 
                     return true;
                 }

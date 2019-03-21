@@ -1,11 +1,8 @@
 ﻿using System.Collections.Specialized;
 using System.Threading.Tasks;
-using Catel;
 using Catel.IoC;
 using Catel.MVVM;
-using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Services;
-using PresetMagician.Services.Interfaces;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -15,14 +12,13 @@ namespace PresetMagician
     {
         private readonly GlobalFrontendService _globalFrontendService;
         private readonly DataPersisterService _dataPersisterService;
-        
-        public PluginToolsDisablePluginsCommandContainer(ICommandManager commandManager,
-            IRuntimeConfigurationService runtimeConfigurationService)
-            : base(Commands.PluginTools.DisablePlugins, commandManager, runtimeConfigurationService)
-        {
 
-            _dataPersisterService = ServiceLocator.Default.ResolveType<DataPersisterService>();
-            _globalFrontendService = ServiceLocator.Default.ResolveType<GlobalFrontendService>();
+        public PluginToolsDisablePluginsCommandContainer(ICommandManager commandManager,
+            IServiceLocator serviceLocator)
+            : base(Commands.PluginTools.DisablePlugins, commandManager, serviceLocator)
+        {
+            _dataPersisterService = ServiceLocator.ResolveType<DataPersisterService>();
+            _globalFrontendService = ServiceLocator.ResolveType<GlobalFrontendService>();
             _globalFrontendService.SelectedPlugins.CollectionChanged += OnSelectedPluginsListChanged;
         }
 
@@ -30,7 +26,7 @@ namespace PresetMagician
         {
             return base.CanExecute(parameter) && _globalFrontendService.SelectedPlugins.Count > 0;
         }
-        
+
         private void OnSelectedPluginsListChanged(object o, NotifyCollectionChangedEventArgs ev)
         {
             InvalidateCommand();

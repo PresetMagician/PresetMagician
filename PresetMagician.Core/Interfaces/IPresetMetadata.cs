@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Catel.Collections;
 using PresetMagician.Core.Models;
 
@@ -35,6 +34,5 @@ namespace PresetMagician.Core.Interfaces
         /// The Native Instruments characteristics used for this preset.
         /// </summary>
         FastObservableCollection<Characteristic> Characteristics { get; set; }
-
     }
 }

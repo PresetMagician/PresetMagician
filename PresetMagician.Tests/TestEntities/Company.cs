@@ -5,7 +5,7 @@ using PresetMagician.Core.Data;
 
 namespace PresetMagician.Tests.TestEntities
 {
-    public class Company: ModelBase
+    public class Company : ModelBase
     {
         public override HashSet<string> GetEditableProperties()
         {
@@ -17,13 +17,10 @@ namespace PresetMagician.Tests.TestEntities
             };
         }
 
-        [Key]
-        public virtual int Id { get; set; }
+        [Key] public virtual int Id { get; set; }
         public virtual string Name { get; set; } = "";
-        
-        public virtual User AdminUser { get; set; }
-        public virtual EditableCollection<User> Users { get; set; }= new EditableCollection<User>();
 
-     
+        public virtual User AdminUser { get; set; }
+        public virtual EditableCollection<User> Users { get; set; } = new EditableCollection<User>();
     }
 }

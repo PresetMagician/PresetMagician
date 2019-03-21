@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PresetMagician.Legacy.Models
 {
-    public class Type 
+    public class Type
     {
         [Key] public int Id { get; set; }
 

@@ -1,21 +1,17 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Data;
 using Anotar.Catel;
 using Castle.DynamicProxy;
 using Catel.Collections;
 using Catel.Data;
-using Catel.Threading;
 using PresetMagician.Core.EventArgs;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.RemoteVstHost.Processes;
-using Timer = System.Threading.Timer;
 
 namespace PresetMagician.RemoteVstHost
 {
@@ -26,25 +22,27 @@ namespace PresetMagician.RemoteVstHost
         }
     }
 
-    
-    public class RemoteVstHostProcessPool : ObservableObject, IRemoteVstHostProcessPool
+
+    public class RemoteVstHostProcessPool : ObservableObject, IRemoteVstHostProcessPool, IDisposable
     {
         private int _maxProcesses = 4;
         private int _maxStartTimeout = 10;
         private int _failedStartupProcesses;
         private int _totalStartedProcesses;
+        private int _minProcesses = 4;
 
         public int NumRunningProcesses { get; set; }
         public int NumTotalProcesses { get; set; }
-        
+
         private IVstHostProcess _interactiveVstHostProcess;
+
         private readonly Dictionary<Plugin, IRemotePluginInstance> _interactivePluginInstances =
             new Dictionary<Plugin, IRemotePluginInstance>();
-        
+
         private ProxyGenerator _generator = new ProxyGenerator();
-        
+
         public event EventHandler<PoolFailedEventArgs> PoolFailed;
-        
+
 
         public FastObservableCollection<IVstHostProcess> RunningProcesses { get; } =
             new FastObservableCollection<IVstHostProcess>();
@@ -61,16 +59,6 @@ namespace PresetMagician.RemoteVstHost
         public RemoteVstHostProcessPool()
         {
             _processWatcher = new Timer(UpdateProcesses, null, 500, 500);
-
-            if (Application.Current != null)
-            {
-                // Only do this when running as WPF app
-                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    BindingOperations.EnableCollectionSynchronization(RunningProcesses, _updateLock);
-                    BindingOperations.EnableCollectionSynchronization(OldProcesses, _updateLock);
-                }));
-            }
         }
 
         public void StartPool()
@@ -78,9 +66,14 @@ namespace PresetMagician.RemoteVstHost
             PoolRunning = true;
         }
 
+        public void SetMinProcesses(int minProcesses)
+        {
+            _minProcesses = minProcesses;
+        }
+
         public void SetMaxProcesses(int maxProcesses)
         {
-            if (maxProcesses >= 4)
+            if (maxProcesses >= _minProcesses)
             {
                 _maxProcesses = maxProcesses;
             }
@@ -91,7 +84,7 @@ namespace PresetMagician.RemoteVstHost
             var type = typeof(IRemoteVstService);
             return _generator.CreateInterfaceProxyWithoutTarget(type, CreateInterceptor()) as IRemoteVstService;
         }
-        
+
         protected virtual IInterceptor CreateInterceptor()
         {
             return new ProcessPoolInterceptor(this);
@@ -109,20 +102,18 @@ namespace PresetMagician.RemoteVstHost
         {
             for (var i = 0; i < _maxStartTimeout; i++)
             {
-                
                 var foundProcess = FindFreeHostProcess();
                 if (foundProcess != null)
                 {
                     return foundProcess;
                 }
-                
+
                 if (i != 0)
                 {
                     LogTo.Debug($"Warning: No free host process after {i} second(s)");
                 }
 
                 Thread.Sleep(1000);
-                
             }
 
             throw new VstWorkerNotFoundException(
@@ -149,30 +140,32 @@ namespace PresetMagician.RemoteVstHost
             }
         }
 
-        public async Task<IRemotePluginInstance> GetRemoteInteractivePluginInstance(Plugin plugin, bool backgroundProcessing = true)
+        public IRemotePluginInstance GetRemoteInteractivePluginInstance(Plugin plugin,
+            bool backgroundProcessing = true)
         {
             if (_interactiveVstHostProcess == null)
             {
                 _interactiveVstHostProcess = new VstHostProcess(20, true);
                 _interactiveVstHostProcess.Start();
-                await _interactiveVstHostProcess.WaitUntilStarted();
+                _interactiveVstHostProcess.WaitUntilStarted();
             }
-            
+
             if (!_interactivePluginInstances.ContainsKey(plugin))
             {
-
-                _interactivePluginInstances.Add(plugin, new RemotePluginInstance(_interactiveVstHostProcess, plugin, true, true));
+                _interactivePluginInstances.Add(plugin,
+                    new RemotePluginInstance(_interactiveVstHostProcess, plugin, true, true));
             }
 
             return _interactivePluginInstances[plugin];
         }
 
-        public IRemotePluginInstance GetRemotePluginInstance(Plugin plugin, bool backgroundProcessing = true)
+        public IRemotePluginInstance GetRemotePluginInstance(Plugin plugin,
+            bool backgroundProcessing = true)
         {
             var hostProcess = GetFreeHostProcess();
             return new RemotePluginInstance(hostProcess, plugin, backgroundProcessing);
         }
-        
+
         private void UpdateProcesses(object o)
         {
             lock (_updateLock)
@@ -206,13 +199,13 @@ namespace PresetMagician.RemoteVstHost
                     {
                         var process = new VstHostProcess(_maxStartTimeout);
                         process.ProcessStateUpdated += ProcessOnProcessStateUpdated;
-                        TaskHelper.Run(() => process.Start());
+                        process.Start();
                         RunningProcesses.Add(process);
 
                         _totalStartedProcesses++;
                     }
                 }
-                
+
                 NumRunningProcesses = (from process in RunningProcesses
                     where process.CurrentProcessState == ProcessState.RUNNING
                     select process).Count();
@@ -221,7 +214,6 @@ namespace PresetMagician.RemoteVstHost
 
                 _updateProcessesRunning = false;
             }
-
         }
 
 
@@ -232,33 +224,34 @@ namespace PresetMagician.RemoteVstHost
 
         private void ProcessOnProcessStateUpdated(object sender, EventArgs e)
         {
-           
-                var process = sender as VstHostProcess;
-                if (process.CurrentProcessState == ProcessState.EXITED && !process.StartupSuccessful &&
-                    PoolRunning)
+            var process = sender as VstHostProcess;
+            Debug.WriteLine("processstate is now " + process.CurrentProcessState);
+            if (process.CurrentProcessState == ProcessState.EXITED && !process.StartupSuccessful &&
+                PoolRunning)
+            {
+                _failedStartupProcesses++;
+                if (_failedStartupProcesses > 5 && (double) _failedStartupProcesses / _totalStartedProcesses > 0.1)
                 {
-                    _failedStartupProcesses++;
-                    if (_failedStartupProcesses > 5 && (double) _failedStartupProcesses / _totalStartedProcesses > 0.1)
+                    StopPool();
+                    var eventArgs = new PoolFailedEventArgs
                     {
-                        StopPool();
-                        var eventArgs = new PoolFailedEventArgs
-                        {
-                            ShutdownReason =
-                                "The VST worker pool has been stopped because: " + Environment.NewLine +
-                                Environment.NewLine +
-                                "More than 10% of all VST process workers failed to startup. Check the logs for each failed " +
-                                " worker (Tab 'VST Workers') and increase the startup time in the settings if necessary. " +
-                                Environment.NewLine + Environment.NewLine +
-                                "Re-start your pool after investigation and configuration."
-                        };
-                        PoolFailed?.Invoke(this, eventArgs);
-                    }
+                        ShutdownReason =
+                            "The VST worker pool has been stopped because: " + Environment.NewLine +
+                            Environment.NewLine +
+                            "More than 10% of all VST process workers failed to startup. Check the logs for each failed " +
+                            " worker (Tab 'VST Workers') and increase the startup time in the settings if necessary. " +
+                            Environment.NewLine + Environment.NewLine +
+                            "Re-start your pool after investigation and configuration."
+                    };
+                    PoolFailed?.Invoke(this, eventArgs);
                 }
-            
+            }
         }
 
-      
+        public void Dispose()
+        {
+            StopPool();
+            _interactiveVstHostProcess?.ForceStop("Application Shutdown");
+        }
     }
-
-    
 }

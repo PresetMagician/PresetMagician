@@ -11,28 +11,24 @@ namespace PresetMagician.Core.Models
     {
         public VstPluginInfoSurrogate()
         {
-            
         }
 
         public VstPluginInfoSurrogate(VstPluginInfo vstPluginInfo)
         {
             FromNonSurrogate(vstPluginInfo);
         }
+
         /// <summary>
         /// Plugin flags.
         /// </summary>
         [DataMember]
-        public string StringFlags {
+        public string StringFlags
+        {
             get { return JsonConvert.SerializeObject(Flags); }
-            set
-            {
-                Flags = JsonConvert.DeserializeObject<VstPluginFlags>(value);
-            }
-            
+            set { Flags = JsonConvert.DeserializeObject<VstPluginFlags>(value); }
         }
 
-        [Include]
-        public VstPluginFlags Flags { get; set; }
+        [Include] public VstPluginFlags Flags { get; set; }
 
         /// <summary>
         /// The number of programs the plugin supports.
@@ -100,7 +96,7 @@ namespace PresetMagician.Core.Models
 
             return vstPluginInfo;
         }
-        
+
         public void FromNonSurrogate(VstPluginInfo vstPluginInfo)
         {
             Flags = vstPluginInfo.Flags;

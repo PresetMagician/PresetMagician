@@ -5,8 +5,6 @@ using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
 using PresetMagician.Core.Models;
-using PresetMagician.Core.Services;
-using PresetMagician.Services.Interfaces;
 using PresetMagician.ViewModels;
 
 // ReSharper disable once CheckNamespace
@@ -16,16 +14,14 @@ namespace PresetMagician
     public class PluginToolsViewSettingsCommandContainer : ApplicationNotBusyCommandContainer
     {
         private readonly IUIVisualizerService _uiVisualizerService;
-        private readonly GlobalFrontendService _globalFrontendService;
         private Plugin _previouslySelectedPlugin;
 
         public PluginToolsViewSettingsCommandContainer(ICommandManager commandManager,
-            IRuntimeConfigurationService runtimeConfigurationService
+            IServiceLocator serviceLocator
         )
-            : base(Commands.PluginTools.ViewSettings, commandManager, runtimeConfigurationService)
+            : base(Commands.PluginTools.ViewSettings, commandManager, serviceLocator)
         {
-            _uiVisualizerService = ServiceLocator.Default.ResolveType<IUIVisualizerService>();
-            _globalFrontendService = ServiceLocator.Default.ResolveType<GlobalFrontendService>();
+            _uiVisualizerService = ServiceLocator.ResolveType<IUIVisualizerService>();
 
             _globalFrontendService.SelectedPlugins.CollectionChanged += OnSelectedPluginsListChanged;
         }

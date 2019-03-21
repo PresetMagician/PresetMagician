@@ -20,6 +20,12 @@ namespace PresetMagician.Core.Collections
     {
     }
 
+    public static class EditableCollectionConfiguration
+    {
+        // For unit tests
+        public static bool DisableDispatch = false;
+    }
+
     public class EditableCollection<T> : FastObservableCollection<T>, IEditableCollection<T>
         where T : class, IUserEditable, INotifyPropertyChanged
     {
@@ -32,26 +38,36 @@ namespace PresetMagician.Core.Collections
         private PropertyChangedEventHandler _sharedPropertyChangedEventHandler;
         private List<T> _backupValues;
 
+
         /// <summary>
         /// Defines if this model is in editing mode and causes IsUserModified to change
         /// </summary>
         public bool IsEditing;
 
         public bool IsUserModified { get; private set; }
-        
+
 
         public EditableCollection()
         {
+            if (EditableCollectionConfiguration.DisableDispatch)
+            {
+                AutomaticallyDispatchChangeNotifications = false;
+            }
+
             _sharedPropertyChangedEventHandler = ChangeNotificationWrapperOnCollectionItemPropertyChanged;
         }
-        
+
         public EditableCollection(bool isUniqueList = false)
         {
+            if (EditableCollectionConfiguration.DisableDispatch)
+            {
+                AutomaticallyDispatchChangeNotifications = false;
+            }
+
             IsUniqueList = isUniqueList;
             _sharedPropertyChangedEventHandler = ChangeNotificationWrapperOnCollectionItemPropertyChanged;
         }
-        
-        
+
 
         public EditableCollection(IEnumerable<T> collection, bool isUniqueList = false) : base(collection)
         {
@@ -115,7 +131,7 @@ namespace PresetMagician.Core.Collections
 
                 _uniqueItems.Add(item);
             }
-            
+
             base.InsertItem(index, item);
 
             if (IsEditing)
@@ -144,7 +160,7 @@ namespace PresetMagician.Core.Collections
                 {
                     _uniqueItems.Remove(oldItem);
                 }
-                
+
                 if (IsEditing)
                 {
                     _userModifiedItems.Remove(oldItem);
@@ -169,7 +185,7 @@ namespace PresetMagician.Core.Collections
                 {
                     _uniqueItems.Remove(oldItem);
                 }
-                
+
                 if (IsEditing)
                 {
                     _userModifiedItems.Remove(oldItem);
@@ -193,7 +209,7 @@ namespace PresetMagician.Core.Collections
 
                 _uniqueItems.Add(item);
             }
-            
+
             var oldItem = this[index];
             base.SetItem(index, item);
 
@@ -302,7 +318,7 @@ namespace PresetMagician.Core.Collections
                 i.PropertyChanged -= _sharedPropertyChangedEventHandler;
                 i.EndEdit(this);
             }
-            
+
             _originatingEditingObject = null;
         }
 
@@ -324,9 +340,9 @@ namespace PresetMagician.Core.Collections
                 i.CancelEdit(this);
             }
 
-           
-                this.SynchronizeCollection(_backupValues);
-            
+
+            this.SynchronizeCollection(_backupValues);
+
 
             foreach (var i in this)
             {

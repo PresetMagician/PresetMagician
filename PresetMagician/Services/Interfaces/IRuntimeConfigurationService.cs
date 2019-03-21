@@ -1,4 +1,4 @@
-using PresetMagician.Models;
+using PresetMagician.Core.Models;
 
 namespace PresetMagician.Services.Interfaces
 {
@@ -16,8 +16,6 @@ namespace PresetMagician.Services.Interfaces
 
         #region Fields
 
-        RuntimeConfiguration RuntimeConfiguration { get; }
-        ApplicationState ApplicationState { get; }
         RuntimeConfiguration EditableConfiguration { get; }
 
         #endregion

@@ -1,20 +1,24 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Catel.Collections;
 using Catel.IoC;
+using Catel.MVVM;
 using Catel.Reflection;
 using Drachenkatze.PresetMagician.NKSF.NKSF;
 using FluentAssertions;
 using Jacobi.Vst.Core;
-using PresetMagician.Core;
 using PresetMagician.Core.ApplicationTask;
+using PresetMagician.Core.Commands.Plugin;
 using PresetMagician.Core.Extensions;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
-using PresetMagician.RemoteVstHost;
+using PresetMagician.Services;
+using PresetMagician.Services.Interfaces;
 using PresetMagician.Utils.Logger;
 using PresetMagician.Utils.Progress;
 using Xunit;
@@ -23,7 +27,7 @@ using Type = PresetMagician.Core.Models.Type;
 
 namespace PresetMagician.Tests.ModelTests
 {
-    public class PluginTest: BaseTest
+    public class PluginTest : BaseTest
     {
         public PluginTest(ITestOutputHelper output, DataFixture fixture) : base(output, fixture)
         {
@@ -85,7 +89,6 @@ namespace PresetMagician.Tests.ModelTests
                 {nameof(PluginLocation.HasMetadata), true},
                 {nameof(PluginLocation.PresetParserClassName), "NullPresetParser"},
                 {nameof(PluginLocation.LastFailedAnalysisVersion), "0.5.9"}
-
             };
 
         private List<string> PluginLocationPropertiesWhichShouldBeIgnored =
@@ -130,7 +133,7 @@ namespace PresetMagician.Tests.ModelTests
                 {nameof(Preset.LastExported), DateTime.Now},
                 {nameof(Preset.IsMetadataModified), true}
             };
-        
+
         private Dictionary<string, object> PresetMetadataPropertiesWhichShouldBePersisted =
             new Dictionary<string, object>
             {
@@ -138,9 +141,8 @@ namespace PresetMagician.Tests.ModelTests
                 {nameof(PresetMetadata.Author), "author"},
                 {nameof(PresetMetadata.Comment), "comment"},
                 {nameof(PresetMetadata.BankPath), "testbank/testbank1"},
-
             };
-        
+
         private Dictionary<string, object> OriginalPresetMetadataPropertiesWhichShouldBePersisted =
             new Dictionary<string, object>
             {
@@ -149,9 +151,8 @@ namespace PresetMagician.Tests.ModelTests
                 {nameof(PresetParserMetadata.Comment), "comment"},
                 {nameof(PresetParserMetadata.BankPath), "testbank/testbank1"},
                 {nameof(PresetParserMetadata.SourceFile), "this is my source file"}
-
             };
-        
+
         private Dictionary<string, object> ExportedPresetMetadataPropertiesWhichShouldBePersisted =
             new Dictionary<string, object>
             {
@@ -159,7 +160,6 @@ namespace PresetMagician.Tests.ModelTests
                 {nameof(ExportedPresetMetadata.Author), "author"},
                 {nameof(ExportedPresetMetadata.Comment), "comment"},
                 {nameof(ExportedPresetMetadata.BankPath), "testbank/testbank1"},
-
             };
 
         private List<string> PresetPropertiesWhichShouldBeIgnored =
@@ -200,17 +200,17 @@ namespace PresetMagician.Tests.ModelTests
             {
                 PropertyHelper.SetPropertyValue(preset, x.Key, x.Value);
             }
-            
+
             foreach (var x in PresetMetadataPropertiesWhichShouldBePersisted)
             {
                 PropertyHelper.SetPropertyValue(preset.Metadata, x.Key, x.Value);
             }
-            
+
             foreach (var x in OriginalPresetMetadataPropertiesWhichShouldBePersisted)
             {
                 PropertyHelper.SetPropertyValue(preset.OriginalMetadata, x.Key, x.Value);
             }
-            
+
             foreach (var x in ExportedPresetMetadataPropertiesWhichShouldBePersisted)
             {
                 PropertyHelper.SetPropertyValue(preset.LastExportedMetadata, x.Key, x.Value);
@@ -221,11 +221,11 @@ namespace PresetMagician.Tests.ModelTests
             preset.Plugin = plugin;
             preset.Metadata.Types.Add(new Type {TypeName = "bla"});
             preset.Metadata.Characteristics.Add(new Characteristic {CharacteristicName = "foo"});
-            
+
             preset.LastExportedMetadata.Types.Add(new Type {TypeName = "ding"});
             preset.LastExportedMetadata.Characteristics.Add(new Characteristic {CharacteristicName = "ding2"});
             preset.LastExportedMetadata.PreviewNotePlayer = new PreviewNotePlayer();
-            
+
             preset.OriginalMetadata.Types.Add(new Type {TypeName = "dingdong"});
             preset.OriginalMetadata.Characteristics.Add(new Characteristic {CharacteristicName = "dingdong22"});
 
@@ -234,7 +234,7 @@ namespace PresetMagician.Tests.ModelTests
             plugin.DefaultControllerAssignments.controllerAssignments.Add(new List<ControllerAssignment>
                 {new ControllerAssignment {name = "test", id = 5, vflag = true, section = "test", autoname = true}});
 
-            plugin.AdditionalBankFiles.Add(new BankFile { Path = "bla", BankName = "foo", ProgramRange = "test"});
+            plugin.AdditionalBankFiles.Add(new BankFile {Path = "bla", BankName = "foo", ProgramRange = "test"});
 
             plugin.DefaultTypes.Add(new Type {TypeName = "kicks", SubTypeName = "hard"});
             plugin.DefaultCharacteristics.Add(new Characteristic {CharacteristicName = "char"});
@@ -309,7 +309,8 @@ namespace PresetMagician.Tests.ModelTests
                 testedProperties.Add(x.Key);
             }
 
-            savedPreset.Metadata.UserOverwrittenProperties.Should().BeEquivalentTo(originalPreset.Metadata.UserOverwrittenProperties);
+            savedPreset.Metadata.UserOverwrittenProperties.Should()
+                .BeEquivalentTo(originalPreset.Metadata.UserOverwrittenProperties);
             testedProperties.Add(nameof(Preset.Metadata.UserOverwrittenProperties));
 
             savedPreset.Plugin.Should().BeSameAs(savedPlugin);
@@ -336,11 +337,11 @@ namespace PresetMagician.Tests.ModelTests
 
             allProperties.Except(testedProperties).Should().BeEmpty("We want to test ALL TEH PROPERTIEZ");
         }
-        
-        private void TestExportedMetadata(ExportedPresetMetadata originalPreset, ExportedPresetMetadata savedPreset )
+
+        private void TestExportedMetadata(ExportedPresetMetadata originalPreset, ExportedPresetMetadata savedPreset)
         {
             var testedProperties = new HashSet<string>();
-            
+
             foreach (var x in ExportedPresetMetadataPropertiesWhichShouldBePersisted)
             {
                 var loadedValue = PropertyHelper.GetPropertyValue(savedPreset, x.Key);
@@ -350,23 +351,23 @@ namespace PresetMagician.Tests.ModelTests
                     $"Loading the property {x.Key} should be the same as the saved one");
                 testedProperties.Add(x.Key);
             }
-            
+
             savedPreset.Characteristics.IsEqualTo(originalPreset.Characteristics).Should().BeTrue();
             testedProperties.Add(nameof(ExportedPresetMetadata.Characteristics));
 
             savedPreset.Types.IsEqualTo(originalPreset.Types).Should().BeTrue();
             testedProperties.Add(nameof(ExportedPresetMetadata.Types));
-            
+
             var allProperties =
                 (from prop in typeof(PresetMetadata).GetProperties() select prop.Name).ToList();
 
             allProperties.Except(testedProperties).Should().BeEmpty("We want to test ALL TEH PROPERTIEZ");
         }
-        
-        private void TestOriginalMetadata(PresetParserMetadata originalPreset, PresetParserMetadata savedPreset )
+
+        private void TestOriginalMetadata(PresetParserMetadata originalPreset, PresetParserMetadata savedPreset)
         {
             var testedProperties = new HashSet<string>();
-            
+
             foreach (var x in OriginalPresetMetadataPropertiesWhichShouldBePersisted)
             {
                 var loadedValue = PropertyHelper.GetPropertyValue(savedPreset, x.Key);
@@ -376,23 +377,23 @@ namespace PresetMagician.Tests.ModelTests
                     $"Loading the property {x.Key} should be the same as the saved one");
                 testedProperties.Add(x.Key);
             }
-            
+
             savedPreset.Characteristics.IsEqualTo(originalPreset.Characteristics).Should().BeTrue();
             testedProperties.Add(nameof(PresetParserMetadata.Characteristics));
 
             savedPreset.Types.IsEqualTo(originalPreset.Types).Should().BeTrue();
             testedProperties.Add(nameof(PresetParserMetadata.Types));
-            
+
             var allProperties =
                 (from prop in typeof(PresetMetadata).GetProperties() select prop.Name).ToList();
 
             allProperties.Except(testedProperties).Should().BeEmpty("We want to test ALL TEH PROPERTIEZ");
         }
 
-        private void TestMetadata(EditablePresetMetadata originalPreset, EditablePresetMetadata savedPreset )
+        private void TestMetadata(EditablePresetMetadata originalPreset, EditablePresetMetadata savedPreset)
         {
             var testedProperties = new HashSet<string>();
-            
+
             foreach (var x in PresetMetadataPropertiesWhichShouldBePersisted)
             {
                 var loadedValue = PropertyHelper.GetPropertyValue(savedPreset, x.Key);
@@ -402,13 +403,13 @@ namespace PresetMagician.Tests.ModelTests
                     $"Loading the property {x.Key} should be the same as the saved one");
                 testedProperties.Add(x.Key);
             }
-            
+
             savedPreset.Characteristics.IsEqualTo(originalPreset.Characteristics).Should().BeTrue();
             testedProperties.Add(nameof(PresetMetadata.Characteristics));
 
             savedPreset.Types.IsEqualTo(originalPreset.Types).Should().BeTrue();
             testedProperties.Add(nameof(PresetMetadata.Types));
-            
+
             var allProperties =
                 (from prop in typeof(PresetMetadata).GetProperties() select prop.Name).ToList();
 
@@ -425,12 +426,14 @@ namespace PresetMagician.Tests.ModelTests
         public void TestPersistence()
         {
             var testedProperties = new HashSet<string>();
-            var persister = ServiceLocator.Default.ResolveType<DataPersisterService>();
+            var persister = Fixture.GetServiceLocator().ResolveType<DataPersisterService>();
             var plugin = InitializePluginToBeSaved();
 
 
             persister.SavePlugin(plugin);
+            persister.SavePresetsForPlugin(plugin);
             var loadedPlugin = persister.LoadPlugin(persister.GetPluginStorageFile(plugin));
+            persister.LoadPresetsForPlugin(loadedPlugin);
 
             foreach (var x in PropertiesWhichShouldBePersisted)
             {
@@ -458,13 +461,13 @@ namespace PresetMagician.Tests.ModelTests
 
             loadedPlugin.DefaultControllerAssignments.Should().BeEquivalentTo(plugin.DefaultControllerAssignments);
             testedProperties.Add(nameof(Plugin.DefaultControllerAssignments));
-            
+
             loadedPlugin.AdditionalBankFiles.Should().BeEquivalentTo(plugin.AdditionalBankFiles);
             testedProperties.Add(nameof(Plugin.AdditionalBankFiles));
-            
+
             loadedPlugin.DefaultCharacteristics.Should().BeEquivalentTo(plugin.DefaultCharacteristics);
             testedProperties.Add(nameof(Plugin.DefaultCharacteristics));
-            
+
             loadedPlugin.DefaultTypes.Should().BeEquivalentTo(plugin.DefaultTypes);
             testedProperties.Add(nameof(Plugin.DefaultTypes));
 
@@ -486,21 +489,20 @@ namespace PresetMagician.Tests.ModelTests
             presetData.SourceFile = "foobar";
             presetData.BankPath = "foo/bar";
 
-            var ps = ServiceLocator.Default.ResolveType<PresetDataPersisterService>();
+            var ps = Fixture.GetServiceLocator().ResolveType<PresetDataPersisterService>();
             ps.OpenDatabase().Wait();
+
             ps.PersistPreset(presetData, new byte[1]).Wait();
 
             var lastPreset = plugin.Presets.Last();
-                lastPreset.OriginalMetadata.SourceFile.Should().Be("foobar");
-                lastPreset.Plugin.Should().Be(plugin);
-
-
+            lastPreset.OriginalMetadata.SourceFile.Should().Be("foobar");
+            lastPreset.Plugin.Should().Be(plugin);
         }
 
         private ApplicationProgress CreateProgress()
         {
             var cts = new CancellationTokenSource();
-            
+
             return new ApplicationProgress
             {
                 Progress = new Progress<CountProgress>(),
@@ -509,8 +511,8 @@ namespace PresetMagician.Tests.ModelTests
             };
         }
 
-        [Fact]
-        public void TestPluginMoves()
+        [WpfFact]
+        public async Task TestPluginMoves()
         {
             var pluginTestFilename = "synister64.dll";
             var pluginTestDirectory = Path.Combine(Directory.GetCurrentDirectory(),
@@ -518,28 +520,28 @@ namespace PresetMagician.Tests.ModelTests
             var pluginSourceDirectory = Path.Combine(Directory.GetCurrentDirectory(),
                 @"Resources");
             var pluginSourcePath = Path.Combine(pluginSourceDirectory, pluginTestFilename);
-            
+
 
             var pluginTestPath = Path.Combine(pluginTestDirectory, pluginTestFilename);
 
             Directory.CreateDirectory(pluginTestDirectory);
             File.Delete(pluginTestPath);
             File.Copy(pluginSourcePath, pluginTestPath);
-            
-            var pluginService = ServiceLocator.Default.ResolveType<PluginService>();
-            var globalService = ServiceLocator.Default.ResolveType<GlobalService>();
-            var directories = new List<VstDirectory> {new VstDirectory {Path = pluginTestDirectory, Active = true}};
 
-            var pluginDlls = pluginService.GetPluginDlls(directories, CreateProgress());
+            var pluginService = Fixture.GetServiceLocator().ResolveType<PluginService>();
+            var globalService = Fixture.GetServiceLocator().ResolveType<GlobalService>();
+            var applicationService = Fixture.GetServiceLocator().ResolveType<IApplicationService>();
+            Fixture.StartPool();
+            globalService.RuntimeConfiguration.VstDirectories.Add(new VstDirectory
+                {Path = pluginTestDirectory, Active = true});
 
-            pluginDlls.Count.Should().Be(1);
-            
-            var pool = new RemoteVstHostProcessPool();
-            pool.StartPool();
 
-            var foundPlugins = pluginService.VerifyPlugins(globalService.Plugins, pluginDlls, CreateProgress());
+            await Fixture.GetServiceLocator().ResolveType<RefreshPluginsCommand>().ExecuteAsync();
+            Fixture.StopPool();
 
-            foundPlugins.Count.Should().Be(1);
+
+            applicationService.GetApplicationOperationErrors().Should().BeEmpty();
+            globalService.Plugins.Count.Should().Be(1);
         }
     }
 }

@@ -1,15 +1,10 @@
-﻿using System.Diagnostics;
-using System.Threading.Tasks;
-using Catel;
+﻿using System.Threading.Tasks;
 using Catel.IoC;
 using Catel.MVVM;
 using Catel.Reflection;
-using Catel.Services;
 using Orchestra.Services;
-using PresetMagician.Core.Interfaces;
+using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
-using PresetMagician.Models;
-using PresetMagician.Services.Interfaces;
 using PresetMagician.Views;
 
 namespace PresetMagician.ViewModels
@@ -18,45 +13,27 @@ namespace PresetMagician.ViewModels
     {
         #region Fields
 
-        private readonly IUIVisualizerService _uiVisualizerService;
-        private readonly IServiceLocator _serviceLocator;
-        private readonly IRuntimeConfigurationService _runtimeConfigurationService;
-        private readonly IVstService _vstService;
-
-        public ApplicationState ApplicationState { get; private set; }
-        public RuntimeConfiguration RuntimeConfiguration { get; private set; }
+        private readonly GlobalService _globalService;
+        public ApplicationState ApplicationState { get; }
+        public RuntimeConfiguration RuntimeConfiguration { get; }
 
         #endregion Fields
 
         #region Constructors
 
         public RibbonViewModel(
-            IUIVisualizerService uiVisualizerService,
-            IServiceLocator serviceLocator,
-            IRuntimeConfigurationService runtimeConfigurationService,
-            IVstService vstService
+            GlobalFrontendService globalFrontendService,
+            GlobalService globalService
         )
         {
-            Argument.IsNotNull(() => uiVisualizerService);
-            Argument.IsNotNull(() => serviceLocator);
-            Argument.IsNotNull(() => runtimeConfigurationService);
-            Argument.IsNotNull(() => vstService);
-
-            _uiVisualizerService = uiVisualizerService;
-            _serviceLocator = serviceLocator;
-            _vstService = vstService;
-            _runtimeConfigurationService = runtimeConfigurationService;
-
-            ApplicationState = runtimeConfigurationService.ApplicationState;
-            RuntimeConfiguration = runtimeConfigurationService.RuntimeConfiguration;
+            ApplicationState = globalFrontendService.ApplicationState;
+            RuntimeConfiguration = globalService.RuntimeConfiguration;
 
             Title = AssemblyHelper.GetEntryAssembly().Title();
             ShowAboutDialog = new TaskCommand(OnShowAboutDialogExecuteAsync);
             ShowThemeTest = new TaskCommand(OnShowThemeTestExecuteAsync);
             DoSomething = new TaskCommand(OnDoSomethingExecuteAsync);
         }
-
-       
 
         #endregion
 
@@ -80,7 +57,6 @@ namespace PresetMagician.ViewModels
 
         #endregion
 
-      
 
         #region Commands
 
@@ -123,13 +99,8 @@ namespace PresetMagician.ViewModels
         /// </summary>
         private async Task OnDoSomethingExecuteAsync()
         {
-
             //Debug.WriteLine(_serviceLocator.ResolveType<DataPersisterService>().Plugins);
-            
-
         }
-
-   
 
         #endregion
     }

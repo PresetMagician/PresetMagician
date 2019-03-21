@@ -1,10 +1,11 @@
+using System.Collections.Generic;
 using PresetMagician.Core.Collections;
 
 namespace PresetMagician.Core.Models
 {
-    public class GlobalCharacteristicCollection: EditableCollection<Characteristic>
+    public class GlobalCharacteristicCollection : EditableCollection<Characteristic>
     {
-        public GlobalCharacteristicCollection(): base(true)
+        public GlobalCharacteristicCollection() : base(true)
         {
         }
 
@@ -17,7 +18,7 @@ namespace PresetMagician.Core.Models
                     return item2;
                 }
             }
-            
+
             Characteristic.GlobalCharacteristics.Add(item);
 
             return item;

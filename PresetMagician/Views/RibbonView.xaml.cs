@@ -1,11 +1,10 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
-using Catel;
 using Fluent;
 using Orchestra;
-using PresetMagician.Models;
-using PresetMagician.Services.Interfaces;
+using PresetMagician.Core.Models;
+using PresetMagician.Core.Services;
 
 namespace PresetMagician.Views
 {
@@ -14,21 +13,19 @@ namespace PresetMagician.Views
     /// </summary>
     public partial class RibbonView
     {
-        private IRuntimeConfigurationService _runtimeConfigurationService;
+        private readonly GlobalFrontendService _globalFrontendService;
 
 
-        public RibbonView(IRuntimeConfigurationService runtimeConfigurationService)
+        public RibbonView(GlobalFrontendService globalFrontendService)
         {
-            Argument.IsNotNull(() => runtimeConfigurationService);
-
+            _globalFrontendService = globalFrontendService;
             InitializeComponent();
             Ribbon.AddAboutButton();
 
-            _runtimeConfigurationService = runtimeConfigurationService;
-
-            _runtimeConfigurationService.ApplicationState.PropertyChanged += ApplicationStateOnPropertyChanged;
+            _globalFrontendService.ApplicationState.PropertyChanged += ApplicationStateOnPropertyChanged;
             ScreenTip.HelpPressed += OnScreenTipHelpPressed;
         }
+
         private static void OnScreenTipHelpPressed(object sender, ScreenTipHelpEventArgs e)
         {
             var link = Settings.Links.HelpLink + (string) e.HelpTopic;
@@ -39,12 +36,12 @@ namespace PresetMagician.Views
         {
             if (e.PropertyName == "SelectedRibbonTabIndex")
             {
-                Ribbon.SelectedTabIndex = _runtimeConfigurationService.ApplicationState.SelectedRibbonTabIndex;
+                Ribbon.SelectedTabIndex = _globalFrontendService.ApplicationState.SelectedRibbonTabIndex;
             }
 
             if (e.PropertyName == nameof(ApplicationState.ShowPresetsRibbon))
             {
-                if (_runtimeConfigurationService.ApplicationState.ShowPresetsRibbon)
+                if (_globalFrontendService.ApplicationState.ShowPresetsRibbon)
                 {
                     PresetsTabGroup.Visibility = Visibility.Visible;
                 }
@@ -52,7 +49,6 @@ namespace PresetMagician.Views
                 {
                     PresetsTabGroup.Visibility = Visibility.Collapsed;
                 }
-                
             }
         }
     }

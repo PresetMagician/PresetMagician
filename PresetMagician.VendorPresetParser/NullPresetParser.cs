@@ -1,6 +1,4 @@
-﻿
-
-using PresetMagician.Core.Interfaces;
+﻿using PresetMagician.Core.Interfaces;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser
 {
@@ -8,7 +6,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
     {
         public override bool IsNullParser => true;
         public override bool RequiresRescanWithEachRelease { get; } = true;
-        
+
         public override bool CanHandle()
         {
             return true;

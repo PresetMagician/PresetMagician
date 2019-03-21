@@ -67,3 +67,4 @@ nuget ZeroFormatter
 nuget ZeroFormatter.Interfaces
 nuget MessagePackAnalyzer
 nuget Ceras
+nuget Xunit.StaFact

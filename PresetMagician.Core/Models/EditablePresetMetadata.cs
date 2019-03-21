@@ -1,10 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
+using Catel.Collections;
 using Ceras;
 using PresetMagician.Core.Data;
-using PresetMagician.Core.Extensions;
 using PresetMagician.Core.Interfaces;
-using Catel.Collections;
 
 namespace PresetMagician.Core.Models
 {
@@ -73,8 +71,8 @@ namespace PresetMagician.Core.Models
                 _lastCharacteristicsUserModifiedValue = false;
                 _lastTypesUserModifiedValue = false;
             }
-            
-            
+
+
             base.BeginEdit(originatingObject);
         }
 
@@ -83,7 +81,7 @@ namespace PresetMagician.Core.Models
         {
             if (e.SourceProperty == nameof(Characteristics) &&
                 e.OriginalPropertyChangedEventArgs.PropertyName == nameof(IsUserModified) &&
-                _lastCharacteristicsUserModifiedValue != ((CharacteristicCollection)Characteristics).IsUserModified)
+                _lastCharacteristicsUserModifiedValue != ((CharacteristicCollection) Characteristics).IsUserModified)
             {
                 OnPropertyChanged(e.SourceProperty, null, Characteristics);
                 _lastCharacteristicsUserModifiedValue = ((CharacteristicCollection) Characteristics).IsUserModified;
@@ -91,7 +89,7 @@ namespace PresetMagician.Core.Models
 
             if (e.SourceProperty == nameof(Types) &&
                 e.OriginalPropertyChangedEventArgs.PropertyName == nameof(IsUserModified) &&
-                _lastTypesUserModifiedValue != ((TypeCollection)Types).IsUserModified)
+                _lastTypesUserModifiedValue != ((TypeCollection) Types).IsUserModified)
             {
                 OnPropertyChanged(e.SourceProperty, null, Types);
                 _lastTypesUserModifiedValue = ((TypeCollection) Types).IsUserModified;

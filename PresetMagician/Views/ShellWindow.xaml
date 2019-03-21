@@ -22,7 +22,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
@@ -36,9 +36,9 @@
             </ContentControl.Resources>
         </ContentControl>
 
-        <ContentControl x:Name="contentControl" Grid.Row="1"/>
+        <ContentControl x:Name="contentControl" Grid.Row="1" />
 
-        <fluent:StatusBar 
+        <fluent:StatusBar
             x:Name="statusBar"
             Grid.Row="2"
             Margin="0,0,0,0"

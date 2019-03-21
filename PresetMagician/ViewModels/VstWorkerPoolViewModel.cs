@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using Catel;
 using Catel.MVVM;
@@ -28,14 +27,14 @@ namespace PresetMagician.ViewModels
 
             _globalService = globalService;
             ProcessPool = _globalService.RemoteVstHostProcessPool;
-            
-            ShowVstHostProcessLog = new TaskCommand(OnShowVstHostProcessLogExecuteAsync, CanShowVstHostProcessLogExecute);
+
+            ShowVstHostProcessLog =
+                new TaskCommand(OnShowVstHostProcessLogExecuteAsync, CanShowVstHostProcessLogExecute);
             KillVstHostProcess = new TaskCommand(OnKillVstHostProcessExecute, CanKillVstHostProcessExecute);
             StopPool = new TaskCommand(OnStopPoolExecute, CanStopPoolExecute);
             StartPool = new TaskCommand(OnStartPoolExecute, CanStartPoolExecute);
-            
-            ProcessPool.PropertyChanged += ProcessPoolOnPropertyChanged;
 
+            ProcessPool.PropertyChanged += ProcessPoolOnPropertyChanged;
         }
 
         private void ProcessPoolOnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -50,7 +49,7 @@ namespace PresetMagician.ViewModels
 
         public IRemoteVstHostProcessPool ProcessPool { get; }
         public VstHostProcess SelectedVstHostProcess { get; set; }
-        
+
         public TaskCommand ShowVstHostProcessLog { get; private set; }
 
         private async Task OnShowVstHostProcessLogExecuteAsync()
@@ -76,7 +75,7 @@ namespace PresetMagician.ViewModels
         {
             SelectedVstHostProcess.ForceStop("User Request");
         }
-        
+
         private bool CanKillVstHostProcessExecute()
         {
             if (SelectedVstHostProcess == null)
@@ -86,31 +85,29 @@ namespace PresetMagician.ViewModels
 
             return SelectedVstHostProcess.CurrentProcessState != ProcessState.EXITED;
         }
-        
+
         public TaskCommand StopPool { get; }
 
-        private async Task OnStopPoolExecute ()
+        private async Task OnStopPoolExecute()
         {
             _applicationService.ShutdownProcessPool();
         }
-        
+
         private bool CanStopPoolExecute()
         {
             return ProcessPool.PoolRunning;
-        } 
-        
+        }
+
         public TaskCommand StartPool { get; }
 
-        private async Task OnStartPoolExecute ()
+        private async Task OnStartPoolExecute()
         {
             _applicationService.StartProcessPool();
         }
-        
+
         private bool CanStartPoolExecute()
         {
             return !ProcessPool.PoolRunning;
         }
-        
-        
     }
 }

@@ -26,7 +26,7 @@ namespace PresetMagician.VstHost.VST
         private Timer _shutdownTimer;
         public bool BackgroundProcessing { get; set; }
         public MiniDiskLogger MiniDiskLogger { get; set; }
-     
+
 
         public string DllPath
         {

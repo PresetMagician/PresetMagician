@@ -5,16 +5,13 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows;
-using System.Windows.Media.Imaging;
 using Catel;
 using Catel.IoC;
 using Catel.MVVM;
 using Catel.MVVM.Views;
 using PresetMagician.Models;
-using PresetMagician.ViewModels;
 using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout;
 
@@ -104,8 +101,9 @@ namespace PresetMagician.Helpers
 
             return document;
         }
-        
-        public static CustomLayoutDocument CreateDocument<TViewModel>(TViewModel viewModel, object tag = null, bool activateDocument = false,
+
+        public static CustomLayoutDocument CreateDocument<TViewModel>(TViewModel viewModel, object tag = null,
+            bool activateDocument = false,
             bool isClosable = false, bool shouldTrackDirty = false)
         {
             var sl = ServiceLocator.Default;
@@ -122,7 +120,6 @@ namespace PresetMagician.Helpers
                 {
                     document.ShouldTrackModified = shouldTrackDirty;
                     document.ViewModel = viewModel as ViewModelBase;
-                    
                 }
             }
 
@@ -135,7 +132,7 @@ namespace PresetMagician.Helpers
 
             return document;
         }
-        
+
         /// <summary>
         /// Activates the document in the docking manager, which makes it the active document.
         /// </summary>
@@ -169,7 +166,7 @@ namespace PresetMagician.Helpers
 
             return layoutDocument;
         }
-        
+
         /// <summary>
         /// Wraps the view in a layout document.
         /// </summary>

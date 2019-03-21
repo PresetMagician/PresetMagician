@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 namespace PresetMagician.RemoteVstHost.Faults
 {
     [DataContract]
-    public class PluginNotLoadedFault: GenericFault
+    public class PluginNotLoadedFault : GenericFault
     {
         public PluginNotLoadedFault()
         {

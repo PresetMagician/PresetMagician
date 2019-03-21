@@ -6,10 +6,12 @@ using System.IO;
 using System.Runtime.ExceptionServices;
 using System.Security;
 using System.ServiceModel;
+using System.Threading.Tasks;
 using Drachenkatze.PresetMagician.Utils;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.RemoteVstHost.Faults;
+using PresetMagician.Utils;
 using PresetMagician.Utils.Logger;
 using PresetMagician.VstHost.VST;
 

@@ -1,8 +1,11 @@
+using System.Collections.Generic;
+using System.ComponentModel;
+using Catel.Data;
 using PresetMagician.Core.Collections;
 
 namespace PresetMagician.Core.Models
 {
-    public class GlobalTypeCollection: EditableCollection<Type>
+    public class GlobalTypeCollection : EditableCollection<Type>
     {
         public GlobalTypeCollection() : base(true)
         {
@@ -10,6 +13,7 @@ namespace PresetMagician.Core.Models
 
         public Type GetGlobalType(Type item)
         {
+            
             foreach (var item2 in this)
             {
                 if (item.TypeName == item2.TypeName && item.SubTypeName == item2.SubTypeName)
@@ -18,8 +22,10 @@ namespace PresetMagician.Core.Models
                 }
             }
 
+          
             Type.GlobalTypes.Add(item);
             return item;
         }
+     
     }
 }

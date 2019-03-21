@@ -6,7 +6,6 @@
 
 using System;
 using System.Windows;
-using Catel;
 using Orchestra.Services;
 using PresetMagician.Services.EventArgs;
 using SplashScreen = PresetMagician.Views.SplashScreen;
@@ -34,7 +33,6 @@ namespace PresetMagician.Services
             {
                 _action = value;
                 ActionChanged?.Invoke(this, new StartupActionChangedEventArgs(value));
-                
             }
         }
     }

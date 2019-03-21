@@ -24,12 +24,10 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
             bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
             bitmapImage.Freeze();
             Image = bitmapImage;
-
         }
 
         private ResourceImage()
         {
-           
         }
 
 
@@ -57,7 +55,8 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
         protected override void OnDeserialized()
         {
             base.OnDeserialized();
-            if (_serializedImage != null ) {
+            if (_serializedImage != null)
+            {
                 using (MemoryStream ms = new MemoryStream(_serializedImage))
                 {
                     var tmpImage = new BitmapImage();
@@ -71,13 +70,10 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
                     Image = tmpImage;
                 }
             }
-
-            
         }
 
-        [IncludeInSerialization]
-        private byte[] _serializedImage { get; set; }
-      
+        [IncludeInSerialization] private byte[] _serializedImage { get; set; }
+
 
         public Size TargetSize { get; set; }
         public string Filename { get; set; }
@@ -96,7 +92,7 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
                 tmpImage.EndInit();
                 tmpImage.Freeze();
             }
-          
+
             Image = tmpImage;
         }
 
@@ -104,9 +100,9 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
             NativeInstrumentsResource.ResourceStates resourceState = NativeInstrumentsResource.ResourceStates.FromWeb)
         {
             State.State = resourceState;
-           
+
             var tmpImage = new BitmapImage();
-            
+
             using (var ms = new MemoryStream(Convert.FromBase64String(base64)))
             {
                 tmpImage.BeginInit();
@@ -123,7 +119,7 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
         public void ReplaceFromStream(MemoryStream memoryStream, NativeInstrumentsResource.ResourceStates resourceState)
         {
             State.State = resourceState;
-           
+
             var tmpImage = new BitmapImage();
             tmpImage.BeginInit();
             tmpImage.CacheOption = BitmapCacheOption.OnLoad;

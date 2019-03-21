@@ -219,7 +219,8 @@
                             CanContentScroll="True"
                             HorizontalScrollBarVisibility="Auto"
                             VerticalScrollBarVisibility="Visible">
-                            <TextBlock Text="dskjhgrkjd hgdkjhg kjdhglkdsjf hgkjfd hghg kjfdgh khg kjdhg ksjhg lksjd hgkjfd hgkjfd hgkdjf hglkfdsj hglkfds jdh" />
+                            <TextBlock
+                                Text="dskjhgrkjd hgdkjhg kjdhglkdsjf hgkjfd hghg kjfdgh khg kjdhg ksjhg lksjd hgkjfd hgkjfd hgkdjf hglkfdsj hglkfds jdh" />
                         </ScrollViewer>
 
                     </StackPanel>
@@ -798,7 +799,8 @@
                                                 <Paragraph FontFamily="Segoe" FontSize="14">
                                                     This is the content of the Journal Pane.<LineBreak />
                                                     A<Bold>RichTextBox</Bold>
-                                                    has been added here</Paragraph>
+                                                    has been added here
+                                                </Paragraph>
                                             </FlowDocument>
                                         </RichTextBox>
                                     </xcad:LayoutAnchorable>

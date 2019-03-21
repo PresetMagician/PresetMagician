@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Catel.Collections;
-using Catel.Data;
-using Catel.IO;
 using Drachenkatze.PresetMagician.NKSF.NKSF;
 using Newtonsoft.Json;
-using Type = PresetMagician.Legacy.Models.Type;
 
 namespace PresetMagician.Legacy.Models
 {
-    public class Plugin  
+    public class Plugin
     {
         public enum PluginTypes
         {
@@ -28,55 +22,53 @@ namespace PresetMagician.Legacy.Models
         {
         }
 
-
         #endregion
 
-        
+
         #region Properties
-        
+
         #region Basic Properties
-        
+
         /// <summary>
         /// The plugin ID for storage in the database
         /// </summary>
         [Key]
         public int Id { get; set; }
-        
+
         /// <summary>
         /// Defines if the current plugin is enabled
         /// </summary>
         public bool IsEnabled { get; set; } = true;
-        
+
         /// <summary>
         /// The Vst Plugin Id, which is used when matching against PluginLocations
         /// </summary>
         public int VstPluginId { get; set; }
-        
+
         /// <summary>
         /// The type of the plugin
         /// </summary>
         public PluginTypes PluginType { get; set; } = PluginTypes.Unknown;
-        
+
         #endregion
-        
+
         #region Plugin Errors
-    
-     
+
         #endregion
-        
+
         #region Property PluginCapabilities
-        
+
         /// <summary>
         /// The plugin capabilities
         /// </summary>
         [NotMapped]
         public virtual IList<PluginInfoItem> PluginCapabilities { get; } = new List<PluginInfoItem>();
-        
+
         /// <summary>
         /// These are the plugin capabilities which will get serialized into the database
         /// todo check if this can be refactored to use EF6 builtin serializer only and get rid of that serializer stuff
         /// </summary>
-        [Column("PluginCapabilities")] 
+        [Column("PluginCapabilities")]
         public string SerializedPluginCapabilities
         {
             get => JsonConvert.SerializeObject(PluginCapabilities);
@@ -90,31 +82,32 @@ namespace PresetMagician.Legacy.Models
                 }
                 catch (JsonReaderException e)
                 {
-                   
                 }
             }
         }
+
         #endregion
-        
+
         #region Property Plugin Location
-        
+
         private PluginLocation _pluginLocation;
 
         /// <summary>
         /// The plugin location to use. Attach event listeners if being set
         /// </summary>
         public PluginLocation PluginLocation { get; set; }
-       
+
         #endregion
-        
+
         #region Plugin Info
-         [NotMapped] public VstPluginInfoSurrogate PluginInfo { get; set; }
+
+        [NotMapped] public VstPluginInfoSurrogate PluginInfo { get; set; }
 
         /// <summary>
         /// These are the plugin infos which will get serialized into the database
         /// todo check if this can be refactored to use EF6 builtin serializer only and get rid of that serializer stuff
         /// </summary>
-        [Column("PluginInfo")] 
+        [Column("PluginInfo")]
         public string SerializedPluginInfo
         {
             get => JsonConvert.SerializeObject(PluginInfo);
@@ -126,21 +119,19 @@ namespace PresetMagician.Legacy.Models
                 }
                 catch (JsonReaderException e)
                 {
-                    
                 }
             }
         }
+
         #endregion
 
-      
 
         public List<Preset> Presets { get; set; } =
             new List<Preset>();
 
-       
 
         public string LastKnownGoodDllPath { get; set; }
-   
+
 
         public int AudioPreviewPreDelay { get; set; }
 
@@ -163,7 +154,7 @@ namespace PresetMagician.Legacy.Models
 
         public ICollection<Mode> DefaultModes { get; set; } = new HashSet<Mode>();
 
-        
+
         public string PluginName { get; set; } = "<unknown>";
 
         public string PluginVendor { get; set; }
@@ -176,7 +167,7 @@ namespace PresetMagician.Legacy.Models
         public bool IsAnalyzed { get; set; }
 
         public bool HasMetadata { get; set; }
-        
+
         /// <summary>
         /// Defines if the plugin is supported
         /// </summary>

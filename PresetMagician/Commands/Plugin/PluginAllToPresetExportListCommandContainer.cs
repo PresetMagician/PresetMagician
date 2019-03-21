@@ -20,18 +20,15 @@ namespace PresetMagician
         private readonly IDispatcherService _dispatcherService;
         private readonly ILicenseService _licenseService;
         private readonly GlobalService _globalService;
-        private readonly GlobalFrontendService _globalFrontendService;
 
         public PluginAllToPresetExportListCommandContainer(ICommandManager commandManager,
-            IApplicationService applicationService, IDispatcherService dispatcherService,
-            IRuntimeConfigurationService runtimeConfigurationService, ILicenseService licenseService)
-            : base(Commands.Plugin.AllToPresetExportList, commandManager, runtimeConfigurationService)
+            IServiceLocator serviceLocator)
+            : base(Commands.Plugin.AllToPresetExportList, commandManager, serviceLocator)
         {
-            _applicationService = applicationService;
-            _dispatcherService = dispatcherService;
-            _licenseService = licenseService;
-            _globalService = ServiceLocator.Default.ResolveType<GlobalService>();
-            _globalFrontendService = ServiceLocator.Default.ResolveType<GlobalFrontendService>();
+            _applicationService = ServiceLocator.ResolveType<IApplicationService>();
+            _dispatcherService = ServiceLocator.ResolveType<IDispatcherService>();
+            _licenseService = ServiceLocator.ResolveType<ILicenseService>();
+            _globalService = ServiceLocator.ResolveType<GlobalService>();
         }
 
         protected override async Task ExecuteAsync(object parameter)

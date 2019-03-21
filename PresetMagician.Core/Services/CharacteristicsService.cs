@@ -1,10 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Sockets;
-using Catel.Collections;
-using Catel.IoC;
 using PresetMagician.Core.Collections;
-using PresetMagician.Core.Data;
 using PresetMagician.Core.Models;
 
 namespace PresetMagician.Core.Services
@@ -16,7 +12,9 @@ namespace PresetMagician.Core.Services
         public CharacteristicsService(GlobalService globalService)
         {
             _globalService = globalService;
-            CharacteristicUsages = new WrappedEditableCollection<CharacteristicUsage, Characteristic>(_globalService.GlobalCharacteristics);
+            CharacteristicUsages =
+                new WrappedEditableCollection<CharacteristicUsage, Characteristic>(_globalService
+                    .GlobalCharacteristics);
         }
 
         public void UpdateCharacteristicsUsages()
@@ -28,7 +26,7 @@ namespace PresetMagician.Core.Services
                 c.Plugins.Clear();
                 c.UsageCount = 0;
             }
-            
+
             foreach (var plugin in plugins)
             {
                 foreach (var preset in plugin.Presets)
@@ -50,7 +48,7 @@ namespace PresetMagician.Core.Services
                 orderby t.CharacteristicName
                 select t).ToList();
         }
-        
+
         public bool IsRedirectTarget(Characteristic characteristic)
         {
             return (from t in _globalService.GlobalCharacteristics
@@ -74,13 +72,12 @@ namespace PresetMagician.Core.Services
                 select t).Any();
         }
 
-       
 
         public CharacteristicUsage GetCharacteristicUsageByCharacteristic(Characteristic characteristic)
         {
             return (from c in CharacteristicUsages where c.Characteristic == characteristic select c).SingleOrDefault();
         }
 
-        public WrappedEditableCollection<CharacteristicUsage,Characteristic> CharacteristicUsages { get; }
+        public WrappedEditableCollection<CharacteristicUsage, Characteristic> CharacteristicUsages { get; }
     }
 }

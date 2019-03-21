@@ -14,7 +14,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
         {
             return "Uhbik-S";
         }
-        
+
         protected override string GetDataDirectoryName()
         {
             return "Uhbik.data";

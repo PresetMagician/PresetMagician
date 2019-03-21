@@ -29,14 +29,14 @@ namespace PresetMagician
         private readonly DataPersisterService _dataPersisterService;
 
         protected AbstractReportPluginsCommandContainer(string command, ICommandManager commandManager,
-            IRuntimeConfigurationService runtimeConfigurationService)
-            : base(command, commandManager, runtimeConfigurationService)
+            IServiceLocator serviceLocator)
+            : base(command, commandManager, serviceLocator)
         {
-            _licenseService = ServiceLocator.Default.ResolveType<ILicenseService>();
-            _applicationService = ServiceLocator.Default.ResolveType<IApplicationService>();
-            _dataPersisterService = ServiceLocator.Default.ResolveType<DataPersisterService>();
-            GlobalService = ServiceLocator.Default.ResolveType<GlobalService>();
-            GlobalFrontendService = ServiceLocator.Default.ResolveType<GlobalFrontendService>();
+            _licenseService = serviceLocator.ResolveType<ILicenseService>();
+            _applicationService = serviceLocator.ResolveType<IApplicationService>();
+            _dataPersisterService = serviceLocator.ResolveType<DataPersisterService>();
+            GlobalService = serviceLocator.ResolveType<GlobalService>();
+            GlobalFrontendService = Catel.IoC.ServiceLocator.Default.ResolveType<GlobalFrontendService>();
 
             var wrapper = new ChangeNotificationWrapper(GlobalService.Plugins);
             wrapper.CollectionItemPropertyChanged += OnPluginItemPropertyChanged;

@@ -5,9 +5,7 @@ using Catel.IoC;
 using Catel.MVVM;
 using MethodTimer;
 using PresetMagician.Core.Models;
-using PresetMagician.Core.Services;
 using PresetMagician.Helpers;
-using PresetMagician.Services.Interfaces;
 using PresetMagician.ViewModels;
 
 // ReSharper disable once CheckNamespace
@@ -16,19 +14,16 @@ namespace PresetMagician
     // ReSharper disable once UnusedMember.Global
     public class PluginToolsViewPresetsCommandContainer : ApplicationNotBusyCommandContainer
     {
-        private readonly GlobalFrontendService _globalFrontendService;
         private Plugin _previouslySelectedPlugin;
         private readonly IViewModelFactory _viewModelFactory;
 
         public PluginToolsViewPresetsCommandContainer(ICommandManager commandManager,
-            IRuntimeConfigurationService runtimeConfigurationService,
-            IViewModelFactory viewModelFactory
+            IServiceLocator serviceLocator
         )
-            : base(Commands.PluginTools.ViewPresets, commandManager, runtimeConfigurationService, true)
+            : base(Commands.PluginTools.ViewPresets, commandManager, serviceLocator)
         {
-            _globalFrontendService = ServiceLocator.Default.ResolveType<GlobalFrontendService>();
             _globalFrontendService.SelectedPlugins.CollectionChanged += OnSelectedPluginsListChanged;
-            _viewModelFactory = viewModelFactory;
+            _viewModelFactory = ServiceLocator.ResolveType<IViewModelFactory>();
         }
 
 

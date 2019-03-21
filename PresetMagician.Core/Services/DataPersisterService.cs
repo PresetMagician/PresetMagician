@@ -1,13 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Linq;
-using System.Net.Sockets;
 using Catel.Collections;
-using Catel.Reflection;
 using Ceras;
-using Ceras.Resolvers;
 using PresetMagician.Core.Collections;
 using PresetMagician.Core.Models;
 using Path = Catel.IO.Path;
@@ -18,6 +14,7 @@ namespace PresetMagician.Core.Services
     public class DataPersisterService
     {
         private const string PluginStorageExtension = ".pmplugin";
+        private const string PresetStorageExtension = ".pmpluginpresets";
         private const string TypesStorageFile = "Types.pmmc";
         private const string CharacteristicsStorageFile = "Characteristics.pmmc";
 
@@ -31,6 +28,7 @@ namespace PresetMagician.Core.Services
 
         private readonly GlobalService _globalService;
         private readonly VendorPresetParserService _vendorPresetParserService;
+        private CerasSerializer _serializer;
 
         public DataPersisterService(GlobalService globalService, VendorPresetParserService vendorPresetParserService)
         {
@@ -40,20 +38,21 @@ namespace PresetMagician.Core.Services
 
         private CerasSerializer GetSerializer()
         {
-            var serializerConfig = new SerializerConfig();
-            serializerConfig.DefaultTargets = TargetMember.None;
-            serializerConfig.VersionTolerance.Mode = VersionToleranceMode.Standard;
-            return new CerasSerializer(serializerConfig);
+            if (_serializer == null)
+            {
+                var serializerConfig = new SerializerConfig();
+                serializerConfig.DefaultTargets = TargetMember.None;
+                serializerConfig.VersionTolerance.Mode = VersionToleranceMode.Standard;
+                _serializer = new CerasSerializer(serializerConfig);
+            }
+
+            return _serializer;
         }
 
 
-        public void SavePlugin(Plugin plugin)
+        public void SaveTypesCharacteristics()
         {
-            SavePlugin(GetSerializer(), plugin);
-        }
-
-        public void SaveTypesCharacteristics(CerasSerializer serializer)
-        {
+            var serializer = GetSerializer();
             Directory.CreateDirectory(DefaultTypesCharacteristicsStoragePath);
 
             var typesDataFile = Path.Combine(DefaultTypesCharacteristicsStoragePath, TypesStorageFile);
@@ -92,20 +91,27 @@ namespace PresetMagician.Core.Services
             }
         }
 
-        public void SavePlugin(CerasSerializer serializer, Plugin plugin)
+        public void SavePlugin(Plugin plugin)
         {
             Directory.CreateDirectory(DefaultPluginStoragePath);
 
             var dataFile = GetPluginStorageFile(plugin);
 
-            var data = serializer.Serialize(plugin);
+            var data = GetSerializer().Serialize(plugin);
 
             File.WriteAllBytes(dataFile, data);
+
+            SaveTypesCharacteristics();
         }
 
         public string GetPluginStorageFile(Plugin plugin)
         {
             return Path.Combine(DefaultPluginStoragePath, plugin.PluginId + PluginStorageExtension);
+        }
+
+        public string GetPresetsStorageFile(Plugin plugin)
+        {
+            return Path.Combine(DefaultPluginStoragePath, plugin.PluginId + PresetStorageExtension);
         }
 
         public Plugin LoadPlugin(string fileName)
@@ -124,7 +130,8 @@ namespace PresetMagician.Core.Services
                 if (pluginLocation.GetSavedPresetParserClassName() != null)
                 {
                     pluginLocation.PresetParser =
-                        _vendorPresetParserService.GetVendorPresetParserByName(pluginLocation.GetSavedPresetParserClassName());
+                        _vendorPresetParserService.GetVendorPresetParserByName(pluginLocation
+                            .GetSavedPresetParserClassName());
                 }
             }
 
@@ -172,12 +179,10 @@ namespace PresetMagician.Core.Services
 
         public void SavePlugins()
         {
-            var serializer = GetSerializer();
-
             var savedPluginFiles = new HashSet<string>();
             foreach (var plugin in _globalService.Plugins)
             {
-                SavePlugin(serializer, plugin);
+                SavePlugin(plugin);
                 savedPluginFiles.Add(GetPluginStorageFile(plugin));
             }
 
@@ -186,8 +191,29 @@ namespace PresetMagician.Core.Services
             {
                 File.Delete(removedPlugin);
             }
+        }
 
-            SaveTypesCharacteristics(serializer);
+        public void SavePresetsForPlugin(Plugin plugin)
+        {
+            var presetsStorageFile = GetPresetsStorageFile(plugin);
+
+            var data = GetSerializer().Serialize(plugin.Presets);
+
+            File.WriteAllBytes(presetsStorageFile, data);
+
+            SaveTypesCharacteristics();
+        }
+
+        public void LoadPresetsForPlugin(Plugin plugin)
+        {
+            var presetsStorageFile = GetPresetsStorageFile(plugin);
+
+            if (File.Exists(presetsStorageFile))
+            {
+                var presets = GetSerializer()
+                    .Deserialize<EditableCollection<Preset>>(File.ReadAllBytes(presetsStorageFile));
+                plugin.Presets = presets;
+            }
         }
 
 

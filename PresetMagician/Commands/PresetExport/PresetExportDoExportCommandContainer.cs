@@ -3,14 +3,12 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Anotar.Catel;
-using Catel;
 using Catel.IoC;
 using Catel.MVVM;
 using Catel.Threading;
-using PresetMagician.Core.Interfaces;
-using PresetMagician.Services.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
+using PresetMagician.Services.Interfaces;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -22,19 +20,17 @@ namespace PresetMagician
         private readonly PresetDataPersisterService _presetDataPersisterService;
         private readonly DataPersisterService _dataPersisterService;
         private readonly RemoteVstService _remoteVstService;
-        private readonly GlobalFrontendService _globalFrontendService;
-        
+        private readonly GlobalService _globalService;
+
         public PresetExportDoExportCommandContainer(ICommandManager commandManager,
-            IRuntimeConfigurationService runtimeConfigurationService)
-            : base(Commands.PresetExport.DoExport, commandManager, runtimeConfigurationService)
+            IServiceLocator serviceLocator)
+            : base(Commands.PresetExport.DoExport, commandManager, serviceLocator)
         {
-            
-            _globalFrontendService = ServiceLocator.Default.ResolveType<GlobalFrontendService>();
-            _presetDataPersisterService = ServiceLocator.Default.ResolveType<PresetDataPersisterService>();
-            _applicationService = ServiceLocator.Default.ResolveType<IApplicationService>();
-            _remoteVstService = ServiceLocator.Default.ResolveType<RemoteVstService>();
-            _dataPersisterService = ServiceLocator.Default.ResolveType<DataPersisterService>();
-            
+            _presetDataPersisterService = ServiceLocator.ResolveType<PresetDataPersisterService>();
+            _applicationService = ServiceLocator.ResolveType<IApplicationService>();
+            _remoteVstService = ServiceLocator.ResolveType<RemoteVstService>();
+            _dataPersisterService = ServiceLocator.ResolveType<DataPersisterService>();
+            _globalService = ServiceLocator.ResolveType<GlobalService>();
         }
 
         [STAThread]
@@ -55,12 +51,11 @@ namespace PresetMagician
 
             _applicationService.StartApplicationOperation(this, "Exporting Presets",
                 totalPresets);
-
-            var cancellationToken = _applicationService.GetApplicationOperationCancellationSource().Token;
+            var progress = _applicationService.GetApplicationProgress();
 
             await TaskHelper.Run(async () =>
             {
-                var exportDirectory = _runtimeConfigurationService.RuntimeConfiguration
+                var exportDirectory = _globalService.RuntimeConfiguration
                     .NativeInstrumentsUserContentDirectory;
 
                 if (!Directory.Exists(exportDirectory))
@@ -73,7 +68,7 @@ namespace PresetMagician
                     try
                     {
                         await _presetDataPersisterService.OpenDatabase();
-                        using (var remotePluginInstance =
+                        using (var remotePluginInstance = 
                             _remoteVstService.GetRemotePluginInstance(pluginPreset.Plugin, false))
                         {
                             foreach (var preset in pluginPreset.Presets)
@@ -83,14 +78,14 @@ namespace PresetMagician
                                     currentPreset,
                                     $"Exporting {pluginPreset.Plugin.PluginName} - {preset.Preset.Metadata.PresetName}");
 
-                                if (cancellationToken.IsCancellationRequested)
+                                if (progress.CancellationToken.IsCancellationRequested)
                                 {
                                     return;
                                 }
 
                                 var presetData = _presetDataPersisterService.GetPresetData(preset.Preset);
                                 var presetExportInfo = new PresetExportInfo(preset.Preset);
-                                if (_runtimeConfigurationService.RuntimeConfiguration.ExportWithAudioPreviews &&
+                                if (_globalService.RuntimeConfiguration.ExportWithAudioPreviews &&
                                     pluginPreset.Plugin.PluginType == Plugin.PluginTypes.Instrument)
                                 {
                                     await remotePluginInstance.LoadPlugin().ConfigureAwait(false);
@@ -116,7 +111,7 @@ namespace PresetMagician
                             $"Unable to update export presets because of {e.GetType().FullName}: {e.Message}");
                         LogTo.Debug(e.StackTrace);
                     }
-                    
+
                     await _presetDataPersisterService.CloseDatabase();
 
                     _dataPersisterService.Save();

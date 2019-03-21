@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PresetMagician.Legacy.Models
 {
-    public class PluginLocation 
+    public class PluginLocation
     {
         [Key] public int Id { get; set; }
 
@@ -25,7 +25,5 @@ namespace PresetMagician.Legacy.Models
         public string PluginProduct { get; set; }
 
         public int VstPluginId { get; set; }
-
-       
     }
 }

@@ -9,8 +9,7 @@ namespace Drachenkatze.PresetMagician.Utils
     {
         public static string getIxxHash(byte[] input)
         {
-            
-            var hashnum =  xxHash32.ComputeHash(input, input.Length);
+            var hashnum = xxHash32.ComputeHash(input, input.Length);
             var byteArray = BitConverter.GetBytes(hashnum);
 
             return Convert.ToBase64String(byteArray);

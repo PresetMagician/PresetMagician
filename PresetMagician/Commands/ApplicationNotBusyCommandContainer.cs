@@ -1,33 +1,36 @@
 using System.ComponentModel;
-using Catel;
+using Catel.IoC;
 using Catel.MVVM;
-using Catel.MVVM.Converters;
-using PresetMagician.Models;
+using PresetMagician.Core.Models;
+using PresetMagician.Core.Services;
 using PresetMagician.Services.Interfaces;
 
 namespace PresetMagician
 {
-    public abstract class ApplicationNotBusyCommandContainer: CommandContainerBase
+    public abstract class ApplicationNotBusyCommandContainer : CommandContainerBase
     {
-        protected readonly IRuntimeConfigurationService _runtimeConfigurationService;
+        protected readonly GlobalFrontendService _globalFrontendService;
+        protected readonly IRuntimeConfigurationService RuntimeConfigurationService;
+        protected readonly IServiceLocator ServiceLocator;
         private bool _allowDuringEditing;
-        
+
         protected ApplicationNotBusyCommandContainer(string command, ICommandManager commandManager,
-            IRuntimeConfigurationService runtimeConfigurationService, bool allowDuringEditing = false)
+            IServiceLocator serviceLocator, bool allowDuringEditing = false)
             : base(command, commandManager)
         {
-            Argument.IsNotNull(() => runtimeConfigurationService);
-            _runtimeConfigurationService = runtimeConfigurationService;
+            ServiceLocator = serviceLocator;
+            RuntimeConfigurationService = ServiceLocator.ResolveType<IRuntimeConfigurationService>();
+            _globalFrontendService = ServiceLocator.ResolveType<GlobalFrontendService>();
             _allowDuringEditing = allowDuringEditing;
-            runtimeConfigurationService.ApplicationState.PropertyChanged += OnApplicationBusyChanged;
+            _globalFrontendService.ApplicationState.PropertyChanged += OnApplicationBusyChanged;
         }
-        
+
         protected override bool CanExecute(object parameter)
         {
-            return base.CanExecute(parameter) && !_runtimeConfigurationService.ApplicationState.IsApplicationBusy &&
-                   (_allowDuringEditing || !_runtimeConfigurationService.ApplicationState.IsApplicationEditing);
+            return base.CanExecute(parameter) && !_globalFrontendService.ApplicationState.IsApplicationBusy &&
+                   (_allowDuringEditing || !_globalFrontendService.ApplicationState.IsApplicationEditing);
         }
-        
+
         private void OnApplicationBusyChanged(object o, PropertyChangedEventArgs ev)
         {
             if (ev.PropertyName == nameof(ApplicationState.IsApplicationBusy) ||

@@ -127,7 +127,7 @@
     <SolidColorBrush x:Key="DataGridRowSelectedFocusedBackgroundBrush" Color="{DynamicResource SelectionColor1}" />
     <SolidColorBrush x:Key="DataGridHeaderGridlinesBrush" Color="{DynamicResource BackgroundColor5}" />
     <SolidColorBrush x:Key="DataGridHeaderBorderBrush" Color="{DynamicResource BackgroundColor5}" />
-    
+
 
     <SolidColorBrush x:Key="DataGridAlternatingRowBrush" Color="{DynamicResource BackgroundColor1}" />
 
@@ -154,7 +154,7 @@
         <GradientStop Color="#FFB8B8B8"
                       Offset="0.996" />
     </LinearGradientBrush>
-    
+
     <LinearGradientBrush x:Key="ProgressWindowBorder" StartPoint="0.5,0"
                          EndPoint="0.5,1">
         <GradientStop Color="#FFA3AEB9"

@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Sockets;
 using System.Threading.Tasks;
 using Drachenkatze.PresetMagician.Utils;
 using PresetMagician.Core.EventArgs;
@@ -12,16 +10,16 @@ using SQLite;
 
 namespace PresetMagician.Core.Services
 {
-    public class PresetDataPersisterService: IDataPersistence
+    public class PresetDataPersisterService : IDataPersistence
     {
         public event EventHandler<PresetUpdatedEventArgs> PresetUpdated;
         private SQLiteAsyncConnection _db;
-        
+
         public static string DefaultDatabasePath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             @"Drachenkatze\PresetMagician\PresetMagicianPresets.sqlite3");
 
-        
+
         public async Task OpenDatabase()
         {
             if (_db == null)
@@ -31,6 +29,7 @@ namespace PresetMagician.Core.Services
                 {
                     Directory.CreateDirectory(dbDir);
                 }
+
                 _db = new SQLiteAsyncConnection(DefaultDatabasePath);
                 await _db.CreateTableAsync<PresetDataStorage>();
             }
@@ -44,11 +43,13 @@ namespace PresetMagician.Core.Services
                 _db = null;
             }
         }
-        
+
         public async Task PersistPreset(PresetParserMetadata presetMetadata, byte[] data)
         {
             var plugin = presetMetadata.Plugin;
-            var preset = (from p in plugin.Presets where p.OriginalMetadata.SourceFile == presetMetadata.SourceFile select p)
+            var preset = (from p in plugin.Presets
+                    where p.OriginalMetadata.SourceFile == presetMetadata.SourceFile
+                    select p)
                 .FirstOrDefault();
 
             if (preset == null)
@@ -56,9 +57,9 @@ namespace PresetMagician.Core.Services
                 preset = new Preset();
                 plugin.Presets.Add(preset);
             }
-           
+
             preset.SetFromPresetParser(presetMetadata);
-            
+
             PresetUpdated?.Invoke(this, new PresetUpdatedEventArgs(preset));
 
             var hash = HashUtils.getIxxHash(data);
@@ -67,22 +68,20 @@ namespace PresetMagician.Core.Services
             {
                 return;
             }
+
             preset.PresetHash = hash;
             preset.PresetSize = data.Length;
-            
+
             var presetData = new PresetDataStorage {PresetData = data, PresetDataId = preset.PresetId};
             await _db.InsertOrReplaceAsync(presetData);
             preset.PresetCompressedSize = presetData.PresetCompressedSize;
         }
-        
+
         public byte[] GetPresetData(Preset preset)
         {
             var data = _db.GetAsync<PresetDataStorage>(preset.PresetId).Result;
 
             return data.PresetData;
-           
         }
-
-        
     }
 }

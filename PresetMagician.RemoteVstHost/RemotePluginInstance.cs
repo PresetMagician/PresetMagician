@@ -6,7 +6,6 @@ using Jacobi.Vst.Core;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 
-
 namespace PresetMagician.RemoteVstHost
 {
     public class RemotePluginInstance : IRemotePluginInstance
@@ -18,9 +17,10 @@ namespace PresetMagician.RemoteVstHost
         private readonly IRemoteVstService _remoteVstService;
         private readonly IVstHostProcess _vstHostProcess;
         private readonly bool _debug;
-        
 
-        public RemotePluginInstance(IVstHostProcess vstHostProcess, Plugin plugin, bool backgroundProcessing = true, bool debug=false)
+
+        public RemotePluginInstance(IVstHostProcess vstHostProcess, Plugin plugin, bool backgroundProcessing = true,
+            bool debug = false)
         {
             Plugin = plugin;
             _debug = debug;
@@ -69,13 +69,11 @@ namespace PresetMagician.RemoteVstHost
                 }
                 catch (Exception e)
                 {
-                    Plugin.OnLoadError(e);
-                    throw e;
+                    Plugin.LogPluginError("loading plugin", e);
                 }
             }, true);
         }
 
-      
 
         public bool OpenEditorHidden()
         {

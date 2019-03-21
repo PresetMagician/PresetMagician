@@ -30,9 +30,11 @@
             <ColumnDefinition Width="50" />
         </Grid.ColumnDefinitions>
 
-        <svgc:SvgViewbox x:Name="svgViewer" Grid.RowSpan="3" Grid.ColumnSpan="2" Source="pack://application:,,,/Resources/Images/Splashscreen.svg" />
+        <svgc:SvgViewbox x:Name="svgViewer" Grid.RowSpan="3" Grid.ColumnSpan="2"
+                         Source="pack://application:,,,/Resources/Images/Splashscreen.svg" />
 
-        <orchestra:BusyIndicator Grid.Row="1" Grid.ColumnSpan="2" Foreground="White" Margin="8" IgnoreUnloadedEventCount="1" />
+        <orchestra:BusyIndicator Grid.Row="1" Grid.ColumnSpan="2" Foreground="White" Margin="8"
+                                 IgnoreUnloadedEventCount="1" />
 
         <TextBlock Grid.Row="2" Grid.Column="0" Text="{Binding Action}"
                    HorizontalAlignment="Left" Style="{StaticResource SplashTextBlockStyle}" />

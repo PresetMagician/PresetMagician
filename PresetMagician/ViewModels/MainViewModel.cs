@@ -1,15 +1,9 @@
 ﻿using System.ComponentModel;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using Catel;
 using Catel.IoC;
 using Catel.MVVM;
-using Catel.MVVM.Views;
-using Catel.Services;
-using Catel.Threading;
+using PresetMagician.Core.Services;
 using PresetMagician.Helpers;
 using PresetMagician.Models;
-using PresetMagician.Services.Interfaces;
 using Xceed.Wpf.AvalonDock.Layout;
 
 namespace PresetMagician.ViewModels
@@ -17,18 +11,15 @@ namespace PresetMagician.ViewModels
     public class MainViewModel : ViewModelBase
     {
         private LayoutDocumentPane _layoutDocumentPane;
-        private IRuntimeConfigurationService _runtimeConfigurationService;
         private ICommandManager _commandManager;
+        private readonly GlobalFrontendService _globalFrontendService;
 
-        public MainViewModel(IRuntimeConfigurationService runtimeConfigurationService, ICommandManager commandManager)
+        public MainViewModel(ICommandManager commandManager, GlobalFrontendService globalFrontendService)
         {
-            Argument.IsNotNull(() => runtimeConfigurationService);
-
-
             _layoutDocumentPane = ServiceLocator.Default.ResolveType<LayoutDocumentPane>();
             _layoutDocumentPane.PropertyChanged += LayoutDocumentPaneOnPropertyChanged;
-            _runtimeConfigurationService = runtimeConfigurationService;
             _commandManager = commandManager;
+            _globalFrontendService = globalFrontendService;
 
             AvalonDockHelper.CreateDocument<VstPluginsViewModel>(activateDocument: true);
             AvalonDockHelper.CreateDocument<PresetExportListViewModel>();
@@ -40,12 +31,9 @@ namespace PresetMagician.ViewModels
             {
                 if (_layoutDocumentPane.SelectedContent?.Content != null)
                 {
-                    var type = _layoutDocumentPane.SelectedContent.Content.GetType();
-                    _runtimeConfigurationService.ApplicationState.CurrentDocumentType = type;
-
                     var content = _layoutDocumentPane.SelectedContent as CustomLayoutDocument;
-                    _runtimeConfigurationService.ApplicationState.CurrentDocumentViewModel =
-                        content.ViewModel as IViewModel;
+                    _globalFrontendService.ApplicationState.CurrentDocumentViewModel =
+                        content.ViewModel;
                 }
             }
         }

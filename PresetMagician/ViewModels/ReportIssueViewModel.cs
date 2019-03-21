@@ -10,11 +10,9 @@ using Catel.Data;
 using Catel.MVVM;
 using Catel.Services;
 using Drachenkatze.PresetMagician.Utils.Progress;
-using PresetMagician.Core.Interfaces;
-using PresetMagician.Models;
-using PresetMagician.Services.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
+using PresetMagician.Services.Interfaces;
 using PresetMagician.Utils.IssueReport;
 
 namespace PresetMagician.ViewModels
@@ -41,6 +39,7 @@ namespace PresetMagician.ViewModels
                 {
                     return false;
                 }
+
                 var includePlugins = false;
 
                 switch (Report.TrackerType)

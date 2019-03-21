@@ -13,11 +13,12 @@ namespace PresetMagician
         public ToolsSettingsViewCommandContainer(IRuntimeConfigurationService runtimeConfigurationService,
             ICommandManager commandManager, IUIVisualizerService uiVisualizerService,
             IViewModelFactory viewModelFactory)
-            : base(Commands.Tools.SettingsView, nameof(SettingsViewModel), false, commandManager, uiVisualizerService, runtimeConfigurationService,
+            : base(Commands.Tools.SettingsView, nameof(SettingsViewModel), false, commandManager, uiVisualizerService,
+                runtimeConfigurationService,
                 viewModelFactory)
         {
         }
-        
+
         protected override void OnBeforeShowDialog(IViewModel viewModel, object parameter)
         {
             var vm = viewModel as SettingsViewModel;

@@ -129,7 +129,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
         {
             List<string> modes = new List<string>();
 
-            var dict = ExtractTags(tags);    
+            var dict = ExtractTags(tags);
             if (dict.ContainsKey("Type"))
             {
                 modes.AddRange(dict["Type"]);

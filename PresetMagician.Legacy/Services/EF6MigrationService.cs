@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.IO;
 using System.Linq;
 using Catel.Reflection;
 using PresetMagician.Core.Collections;
@@ -24,7 +23,7 @@ namespace PresetMagician.Legacy.Services
         public List<Preset> OldPresets;
         private int CurrentPlugin;
         private int UpdateCounter;
-        
+
         public event EventHandler<MigrationProgessEventArgs> MigrationProgressUpdated;
 
         public Ef6MigrationService(DataPersisterService dataPersister, PresetDataPersisterService presetDataPersister)
@@ -46,22 +45,19 @@ namespace PresetMagician.Legacy.Services
 
         public void MigratePlugins()
         {
-            
             foreach (var plugin in OldPlugins)
             {
                 CurrentPlugin = OldPlugins.IndexOf(plugin) + 1;
                 var newPlugin = MigratePlugin(plugin);
                 _dataPersister.SavePlugin(newPlugin);
             }
-            
-            
-            
+
+
             _dbContext.Dispose();
-            GC.Collect(); GC.WaitForPendingFinalizers();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
             /*File.Move(ApplicationDatabaseContext.DefaultDatabasePath,
                 ApplicationDatabaseContext.DefaultDatabasePath + ".old");*/
-
-
         }
 
         public NewModels.Plugin MigratePlugin(Plugin oldPlugin)
@@ -82,10 +78,12 @@ namespace PresetMagician.Legacy.Services
 
                 if (UpdateCounter > 111)
                 {
-                    MigrationProgressUpdated?.Invoke(this, new MigrationProgessEventArgs($"({CurrentPlugin}/{OldPlugins.Count}) {oldPlugin.PluginName} Preset {currentPreset} / {oldPlugin.Presets.Count}"));
+                    MigrationProgressUpdated?.Invoke(this,
+                        new MigrationProgessEventArgs(
+                            $"({CurrentPlugin}/{OldPlugins.Count}) {oldPlugin.PluginName} Preset {currentPreset} / {oldPlugin.Presets.Count}"));
                     UpdateCounter = 0;
                 }
-                
+
                 var newPreset = new NewModels.Preset();
                 newPreset.Plugin = newPlugin;
                 newPlugin.Presets.Add(newPreset);
@@ -96,8 +94,8 @@ namespace PresetMagician.Legacy.Services
                 newPreset.OriginalMetadata.Plugin = newPlugin;
                 _presetDataPersister.PersistPreset(newPreset.OriginalMetadata, data).Wait();
             }
-            
-            
+
+
             var propertiesToMigrate = new HashSet<string>
             {
                 nameof(Plugin.PluginType),
@@ -119,7 +117,7 @@ namespace PresetMagician.Legacy.Services
                 var oldValue = PropertyHelper.GetPropertyValue(oldPlugin, propertyName);
                 PropertyHelper.SetPropertyValue(newPlugin, propertyName, oldValue);
             }
-            
+
             MigrateModes(oldPlugin.DefaultModes, newPlugin.DefaultCharacteristics);
             MigrateTypes(oldPlugin.DefaultTypes, newPlugin.DefaultTypes);
 
@@ -127,6 +125,7 @@ namespace PresetMagician.Legacy.Services
             {
                 newPlugin.PluginInfo = new NewModels.VstPluginInfoSurrogate();
             }
+
             MigratePluginInfo(oldPlugin.PluginInfo, newPlugin.PluginInfo);
             MigratePluginCapabilities(oldPlugin.PluginCapabilities, newPlugin.PluginCapabilities);
             MigrateBankFiles(oldPlugin.AdditionalBankFiles, newPlugin.AdditionalBankFiles);
@@ -134,22 +133,25 @@ namespace PresetMagician.Legacy.Services
             _presetDataPersister.CloseDatabase().Wait();
             return newPlugin;
         }
-        
-        private void MigratePluginCapabilities(IList<PluginInfoItem> oldPluginCapabilities, List<NewModels.PluginInfoItem> newPluginCapabilities)
+
+        private void MigratePluginCapabilities(IList<PluginInfoItem> oldPluginCapabilities,
+            List<NewModels.PluginInfoItem> newPluginCapabilities)
         {
             foreach (var cap in oldPluginCapabilities)
             {
-                newPluginCapabilities.Add(new NewModels.PluginInfoItem { Name = cap.Name, Value = cap.Value, Category = cap.Category});
+                newPluginCapabilities.Add(new NewModels.PluginInfoItem
+                    {Name = cap.Name, Value = cap.Value, Category = cap.Category});
             }
         }
-        
-        private void MigratePluginInfo(VstPluginInfoSurrogate oldPluginInfo, NewModels.VstPluginInfoSurrogate newPluginInfo)
+
+        private void MigratePluginInfo(VstPluginInfoSurrogate oldPluginInfo,
+            NewModels.VstPluginInfoSurrogate newPluginInfo)
         {
             if (oldPluginInfo == null)
             {
                 return;
-                
             }
+
             var propertiesToMigrate = new HashSet<string>
             {
                 nameof(VstPluginInfoSurrogate.Flags),
@@ -191,23 +193,29 @@ namespace PresetMagician.Legacy.Services
             }
         }
 
-        private void MigrateModes(ICollection<PresetMagician.Legacy.Models.Mode> oldModes, ICollection<NewModels.Characteristic> newModes)
+        private void MigrateModes(ICollection<Mode> oldModes,
+            ICollection<NewModels.Characteristic> newModes)
         {
             foreach (var mode in oldModes)
             {
                 newModes.Add(new NewModels.Characteristic {CharacteristicName = mode.Name});
             }
         }
-        
-        private void MigrateBankFiles(ICollection<BankFile> oldBankFiles, EditableCollection<NewModels.BankFile> newBankFiles)
+
+        private void MigrateBankFiles(ICollection<BankFile> oldBankFiles,
+            EditableCollection<NewModels.BankFile> newBankFiles)
         {
             foreach (var oldBankFile in oldBankFiles)
             {
-                newBankFiles.Add(new NewModels.BankFile {Path = oldBankFile.Path, BankName = oldBankFile.BankName, ProgramRange = oldBankFile.ProgramRange});
+                newBankFiles.Add(new NewModels.BankFile
+                {
+                    Path = oldBankFile.Path, BankName = oldBankFile.BankName, ProgramRange = oldBankFile.ProgramRange
+                });
             }
         }
-        
-        private void MigrateTypes(ICollection<PresetMagician.Legacy.Models.Type> oldTypes, ICollection<NewModels.Type> newTypes)
+
+        private void MigrateTypes(ICollection<Type> oldTypes,
+            ICollection<NewModels.Type> newTypes)
         {
             foreach (var type in oldTypes)
             {
@@ -225,7 +233,7 @@ namespace PresetMagician.Legacy.Services
                 nameof(Preset.PresetCompressedSize),
                 nameof(Preset.PresetSize),
             };
-            
+
             var metadataPropertiesToMigrate = new HashSet<string>
             {
                 nameof(Preset.Author),
@@ -240,16 +248,16 @@ namespace PresetMagician.Legacy.Services
                 var oldValue = PropertyHelper.GetPropertyValue(oldPreset, propertyName);
                 PropertyHelper.SetPropertyValue(newPreset, propertyName, oldValue);
             }
-            
+
             foreach (var propertyName in metadataPropertiesToMigrate)
             {
                 var oldValue = PropertyHelper.GetPropertyValue(oldPreset, propertyName);
                 PropertyHelper.SetPropertyValue(newPreset.OriginalMetadata, propertyName, oldValue);
             }
-            
+
             MigrateModes(oldPreset.Modes, newPreset.OriginalMetadata.Characteristics);
             MigrateTypes(oldPreset.Types, newPreset.OriginalMetadata.Types);
-            
+
             newPreset.SetFromPresetParser(newPreset.OriginalMetadata);
         }
     }

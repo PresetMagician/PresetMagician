@@ -7,15 +7,16 @@ using PresetMagician.Core.Models;
 
 namespace PresetMagician.ViewModels
 {
-    public class RenamePresetBankViewModel: ViewModelBase
+    public class RenamePresetBankViewModel : ViewModelBase
     {
         public Plugin Plugin { get; set; }
         public PresetBank PresetBank { get; set; }
-        
+
         [Required]
-        [RegularExpression(@"^[a-zA-Z0-9\s]+$", ErrorMessage="Only alphanumeric characters, numbers and spaces are allowed.")]
+        [RegularExpression(@"^[a-zA-Z0-9\s]+$", ErrorMessage =
+            "Only alphanumeric characters, numbers and spaces are allowed.")]
         public string NewBankName { get; set; }
-        
+
         public RenamePresetBankViewModel((Plugin plugin, PresetBank presetBank) data)
         {
             DeferValidationUntilFirstSaveCall = false;
@@ -23,7 +24,6 @@ namespace PresetMagician.ViewModels
             PresetBank = data.presetBank;
             NewBankName = data.presetBank.BankName;
             Title = "Rename Preset Bank";
-
         }
 
         protected override void ValidateFields(List<IFieldValidationResult> validationResults)
@@ -31,16 +31,16 @@ namespace PresetMagician.ViewModels
             if (PresetBank == null)
             {
                 return;
-                
             }
+
             if (NewBankName != PresetBank.BankName)
             {
                 if (PresetBank.ParentBank.ContainsBankName(NewBankName))
                 {
-                    validationResults.Add(FieldValidationResult.CreateError(nameof(NewBankName), "The bank name already exists on the same level!"));
+                    validationResults.Add(FieldValidationResult.CreateError(nameof(NewBankName),
+                        "The bank name already exists on the same level!"));
                 }
             }
-            
         }
 
         protected override Task<bool> SaveAsync()
@@ -48,7 +48,5 @@ namespace PresetMagician.ViewModels
             PresetBank.BankName = NewBankName;
             return base.SaveAsync();
         }
-
-       
     }
 }

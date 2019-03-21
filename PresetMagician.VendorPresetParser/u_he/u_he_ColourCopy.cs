@@ -14,7 +14,5 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
         {
             return "ColourCopy";
         }
-        
-  
     }
 }

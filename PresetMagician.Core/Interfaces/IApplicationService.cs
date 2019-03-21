@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using Catel.MVVM;
 using PresetMagician.Core.ApplicationTask;
-using PresetMagician.Core.Interfaces;
-using PresetMagician.RemoteVstHost;
-using PresetMagician.Utils.Progress;
+using PresetMagician.Core.Models;
 
 namespace PresetMagician.Services.Interfaces
 {
@@ -18,15 +16,15 @@ namespace PresetMagician.Services.Interfaces
         void StopApplicationOperation(string finalMessage);
         CancellationTokenSource GetApplicationOperationCancellationSource();
 
-        void StartApplicationOperation(CommandContainerBase commandContainer, string operationDescription,
-            int totalItems);
-
         List<string> GetApplicationOperationErrors();
         void ClearLastOperationErrors();
         void ReportStatus(string statusText);
         void StartProcessPool();
         void ShutdownProcessPool();
         void SetApplicationOperationTotalItems(int items);
-        ApplicationProgress CreateApplicationProgress();
+        ApplicationProgress GetApplicationProgress();
+        ApplicationOperationStatus GetApplicationOperationStatus();
+        void Initialize();
+
     }
 }

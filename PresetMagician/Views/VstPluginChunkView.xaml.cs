@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using Be.Windows.Forms;
+﻿using Be.Windows.Forms;
 using Catel.Windows;
 using PresetMagician.ViewModels;
 
@@ -30,7 +29,5 @@ namespace PresetMagician.Views
             var provider2 = new DynamicByteProvider(viewModel.ChunkPresetMemoryStream.ToArray());
             PluginPresetChunkControl.ByteProvider = provider2;
         }
-
-       
     }
 }
