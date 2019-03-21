@@ -127,7 +127,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             }
         }
 
-        
 
         public VstUtils.LoadFxpResult LoadFxp(string filePath)
         {
@@ -138,7 +137,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
                 PluginInstance.Plugin.Logger.Error($"{filePath} {result.message}");
                 return result.result;
             }
-           
+
             // If your plug-in is configured to use chunks
             // the Host will ask for a block of memory describing the current
             // plug-in state for saving.
@@ -245,7 +244,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             {
                 return;
             }
-            
+
             if (PluginInstance.Plugin.PluginType == Plugin.PluginTypes.Unknown)
             {
                 PresetSaveMode = PresetSaveModes.None;
@@ -274,7 +273,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
                     PresetSaveMode = PresetSaveModes.None;
                     return;
                 }
-                
+
                 if (!AreChunksConsistent(false))
                 {
                     PresetSaveMode = PresetSaveModes.Fallback;
@@ -310,26 +309,24 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
                             $"Using preset save mode bank trickery");
                         return;
                     }
-                    
+
                     PresetSaveMode = PresetSaveModes.Fallback;
                     PluginInstance.Plugin.Logger.Info(
                         $"Using preset save mode fallback");
                     return;
                 }
-                
+
                 PresetSaveMode = PresetSaveModes.None;
                 PluginInstance.Plugin.Logger.Info(
                     $"Using preset save mode none");
                 return;
-
-                
             }
 
             PluginInstance.Plugin.Logger.Info(
                 $"Plugin reported a program count of 0 or 1, using preset save mode none");
             PresetSaveMode = PresetSaveModes.None;
         }
-        
+
         /**
          * Checks if the chunks are null
          */
@@ -340,7 +337,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
                 : $"{PluginInstance.Plugin.PluginName}: checking if program chunks are null");
 
             PluginInstance.SetProgram(0);
-            
+
             var chunk = PluginInstance.GetChunk(isPreset);
 
             return chunk == null;

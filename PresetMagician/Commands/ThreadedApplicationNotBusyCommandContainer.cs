@@ -1,37 +1,27 @@
 using System;
-using System.ComponentModel;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Anotar.Catel;
-using Catel;
+using Catel.IoC;
 using Catel.MVVM;
 using Catel.Threading;
-using PresetMagician.Models;
-using PresetMagician.Services.Interfaces;
 
 namespace PresetMagician
 {
-    public abstract class ThreadedApplicationNotBusyCommandContainer: ApplicationNotBusyCommandContainer
+    public abstract class ThreadedApplicationNotBusyCommandContainer : ApplicationNotBusyCommandContainer
     {
-        protected readonly IRuntimeConfigurationService _runtimeConfigurationService;
-        
+// ServiceLocator.ResolveType<IUIVisualizerService>();
         protected ThreadedApplicationNotBusyCommandContainer(string command, ICommandManager commandManager,
-            IRuntimeConfigurationService runtimeConfigurationService)
-            : base(command, commandManager, runtimeConfigurationService)
+            IServiceLocator serviceLocator)
+            : base(command, commandManager, serviceLocator)
         {
-            Argument.IsNotNull(() => runtimeConfigurationService);
-            _runtimeConfigurationService = runtimeConfigurationService;
-            runtimeConfigurationService.ApplicationState.PropertyChanged += OnApplicationBusyChanged;
         }
-        
+
         protected override bool CanExecute(object parameter)
         {
-            return base.CanExecute(parameter) && !_runtimeConfigurationService.ApplicationState.IsApplicationBusy;
+            return base.CanExecute(parameter) && !_globalFrontendService.ApplicationState.IsApplicationBusy;
         }
-        
-        private void OnApplicationBusyChanged(object o, PropertyChangedEventArgs ev)
-        {
-            if (ev.PropertyName == nameof(ApplicationState.IsApplicationBusy)) InvalidateCommand();
-        }
+
 
         protected async virtual Task ExecuteThreaded(object parameter)
         {
@@ -46,9 +36,12 @@ namespace PresetMagician
             }
             catch (Exception e)
             {
-                LogTo.Error($"Error executing command {CommandName} - Got exception {e.GetType().FullName} with message {e.Message}");
+                LogTo.Error(
+                    $"Error executing command {CommandName} - Got exception {e.GetType().FullName} with message {e.Message}");
                 LogTo.Debug(e.StackTrace);
             }
+
+            Debug.WriteLine("completed!");
         }
     }
 }

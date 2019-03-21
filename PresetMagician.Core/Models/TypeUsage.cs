@@ -1,5 +1,5 @@
-using PresetMagician.Core.Data;
 using System.Collections.Generic;
+using PresetMagician.Core.Data;
 
 namespace PresetMagician.Core.Models
 {

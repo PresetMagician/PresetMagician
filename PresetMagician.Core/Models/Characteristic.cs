@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using Ceras;
-using Ceras.Resolvers;
 using PresetMagician.Core.Data;
 
 namespace PresetMagician.Core.Models
@@ -11,9 +9,8 @@ namespace PresetMagician.Core.Models
         string CharacteristicName { get; set; }
     }
 
-    public class Characteristic:ModelBase, ICharacteristic
+    public class Characteristic : ModelBase, ICharacteristic
     {
-       
         public override HashSet<string> GetEditableProperties()
         {
             return _editableProperties;
@@ -26,25 +23,27 @@ namespace PresetMagician.Core.Models
             nameof(RedirectCharacteristic),
             nameof(IsIgnored)
         };
-        
+
         public static GlobalCharacteristicCollection GlobalCharacteristics = new GlobalCharacteristicCollection();
 
         [Include] public string CharacteristicName { get; set; } = "";
-        
+
         private bool _isRedirect;
 
         [Include]
         public bool IsRedirect
         {
             get => _isRedirect;
-            set { _isRedirect = value;
+            set
+            {
+                _isRedirect = value;
                 if (!_isRedirect)
                 {
                     RedirectCharacteristic = null;
                 }
             }
         }
-        
+
         [Include] public bool IsIgnored { get; set; }
 
         [Include] public Characteristic RedirectCharacteristic { get; set; }
@@ -61,7 +60,7 @@ namespace PresetMagician.Core.Models
                 return CharacteristicName;
             }
         }
-        
+
         public string StatusDescription
         {
             get

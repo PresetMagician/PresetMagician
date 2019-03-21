@@ -32,7 +32,7 @@ namespace PresetMagician.ViewModels
         public IRemotePluginInstance PluginInstance { get; protected set; }
 
         public TaskCommand LoadBankChunk { get; set; }
-        
+
         public MemoryStream ChunkPresetMemoryStream { get; } = new MemoryStream();
         public MemoryStream ChunkBankMemoryStream { get; } = new MemoryStream();
 

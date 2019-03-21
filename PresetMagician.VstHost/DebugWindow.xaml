@@ -8,6 +8,6 @@
         Height="100"
         Title="DebugWindow">
     <Grid>
-        <ProgressBar x:Name="Progress" Value="0" Maximum="100" Width="100" Height="100"/>
+        <ProgressBar x:Name="Progress" Value="0" Maximum="100" Width="100" Height="100" />
     </Grid>
 </Window>

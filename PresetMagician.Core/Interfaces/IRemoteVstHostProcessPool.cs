@@ -23,7 +23,7 @@ namespace PresetMagician.Core.Interfaces
         event PropertyChangedEventHandler PropertyChanged;
         int NumRunningProcesses { get; set; }
         int NumTotalProcesses { get; set; }
-        Task<IRemotePluginInstance> GetRemoteInteractivePluginInstance(Plugin plugin, bool backgroundProcessing = true);
+        IRemotePluginInstance GetRemoteInteractivePluginInstance(Plugin plugin, bool backgroundProcessing = true);
+        void SetMinProcesses(int minProcesses);
     }
-
 }

@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Catel.IoC;
-using Catel.Linq;
-using Catel.Logging;
-using Drachenkatze.PresetMagician.Utils;
-using Jacobi.Vst.Core;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
@@ -36,7 +30,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
                 return new List<BankFile>();
             }
-        } 
+        }
 
         private IRemotePluginInstance _pluginInstance;
 
@@ -55,7 +49,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
                     PresetSaveMode = PresetSaveModes.NotYetDetermined;
                     PresetHashes.Clear();
                 }
-                
+
                 _pluginInstance = value;
             }
         }
@@ -101,7 +95,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
             return false;
         }
-        
+
         public virtual int GetNumPresets()
         {
             return GetAdditionalBanksPresetCount();
@@ -116,10 +110,10 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             if (AdditionalBankFiles.Count > 0)
             {
                 await PluginInstance.LoadPlugin();
-                await ParseAdditionalBanks();    
+                await ParseAdditionalBanks();
             }
         }
-        
+
         public virtual bool CanHandle()
         {
             return SupportedPlugins.Contains(PluginInstance.Plugin.VstPluginId);

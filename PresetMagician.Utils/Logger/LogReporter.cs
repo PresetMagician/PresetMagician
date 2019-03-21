@@ -3,7 +3,7 @@ using PresetMagician.Utils.Logger.EventArgs;
 
 namespace PresetMagician.Utils.Logger
 {
-    public class LogReporter: ILogReporter
+    public class LogReporter : ILogReporter
     {
         private MiniLogger _logger;
 

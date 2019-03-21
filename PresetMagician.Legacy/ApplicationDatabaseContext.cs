@@ -2,15 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.SQLite;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 using PresetMagician.Legacy.Migrations;
-using SQLite.CodeFirst;
 using PresetMagician.Legacy.Models;
+using SQLite.CodeFirst;
 using Type = PresetMagician.Legacy.Models.Type;
 
 namespace PresetMagician.Legacy
@@ -23,7 +20,6 @@ namespace PresetMagician.Legacy
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             @"Drachenkatze\PresetMagician\PresetMagician.sqlite3");
 
-      
 
         public ApplicationDatabaseContext() : base(new SQLiteConnection(GetConnectionString()), true)
         {
@@ -33,7 +29,8 @@ namespace PresetMagician.Legacy
             Configuration.AutoDetectChangesEnabled = false;
         }
 
-        public ApplicationDatabaseContext(string overrideDbPath) : base(new SQLiteConnection(GetConnectionString(overrideDbPath)),
+        public ApplicationDatabaseContext(string overrideDbPath) : base(
+            new SQLiteConnection(GetConnectionString(overrideDbPath)),
             true)
         {
             Configuration.LazyLoadingEnabled = false;
@@ -53,13 +50,13 @@ namespace PresetMagician.Legacy
             modelBuilder.Entity<Plugin>().HasMany(p => p.DefaultTypes).WithMany(q => q.Plugins).Map(mc =>
                 mc.MapLeftKey("PluginId").MapRightKey("TypeId").ToTable("PluginTypes"));
             modelBuilder.Entity<Plugin>();
-            
+
             modelBuilder.Entity<Preset>().HasMany(p => p.Types).WithMany(q => q.Presets).Map(mc =>
                 mc.MapLeftKey("PresetId").MapRightKey("TypeId").ToTable("PresetTypes"));
 
             modelBuilder.Entity<Preset>().HasMany(p => p.Modes).WithMany(q => q.Presets).Map(mc =>
                 mc.MapLeftKey("PresetId").MapRightKey("ModeId").ToTable("PresetModes"));
-            
+
             modelBuilder.Entity<Preset>();
             modelBuilder.Entity<Mode>();
             modelBuilder.Entity<Type>();
@@ -68,7 +65,7 @@ namespace PresetMagician.Legacy
             modelBuilder.Entity<PresetDataStorage>();
             modelBuilder.Entity<PluginLocation>();
             modelBuilder.Entity<SchemaVersion>();
-            
+
             Database.SetInitializer(sqliteConnectionInitializer);
         }
 
@@ -90,7 +87,6 @@ namespace PresetMagician.Legacy
                 DataSource = GetDatabasePath(dbPath), ForeignKeys = false, SyncMode = SynchronizationModes.Off,
                 CacheSize = -10240
             };
-            
 
 
             return cs.ConnectionString;
@@ -111,26 +107,23 @@ namespace PresetMagician.Legacy
                 typeof(PluginLocation),
                 typeof(BankFile)
             };
-            
+
             using (var context = new ApplicationDatabaseContext())
             {
                 context.Migrate();
             }
         }
 
-      
 
         public byte[] GetPresetData(Preset preset)
         {
-            
-                var data = PresetDataStorage.Find(preset.PresetId);
-                if (data != null)
-                {
-                    return data.PresetData;
-                }
-                
-                return null;
-            
+            var data = PresetDataStorage.Find(preset.PresetId);
+            if (data != null)
+            {
+                return data.PresetData;
+            }
+
+            return null;
         }
 
 
@@ -184,5 +177,4 @@ namespace PresetMagician.Legacy
         public DbSet<SchemaVersion> SchemaVersions { get; set; }
         public DbSet<PresetDataStorage> PresetDataStorage { get; set; }
     }
-
 }

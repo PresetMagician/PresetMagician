@@ -4,6 +4,6 @@ namespace PresetMagician.Core.Data
 {
     public class ModelBackup
     {
-        public Dictionary<string, object> BackupValues { get;  } = new Dictionary<string, object>();
+        public Dictionary<string, object> BackupValues { get; } = new Dictionary<string, object>();
     }
 }

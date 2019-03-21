@@ -1,17 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
-using Catel.Collections;
 using Catel.Data;
-using Catel.Reflection;
 using Ceras;
-using PresetMagician.Core.Data;
 using PresetMagician.Core.Extensions;
-using PresetMagician.Core.Services;
 using ModelBase = PresetMagician.Core.Data.ModelBase;
-
 
 namespace PresetMagician.Core.Models
 {
@@ -44,8 +38,6 @@ namespace PresetMagician.Core.Models
                 _bankPath = value;
             }
         }
-      
-
 
         #endregion
 
@@ -75,17 +67,18 @@ namespace PresetMagician.Core.Models
             LastExportedMetadata.Author = Metadata.Author;
             LastExportedMetadata.Comment = Metadata.Comment;
             LastExportedMetadata.PresetName = Metadata.PresetName;
-            
+
             LastExportedMetadata.Types.Clear();
 
             foreach (var type in Metadata.Types)
             {
                 if (!type.IsIgnored)
                 {
-                    LastExportedMetadata.Types.Add(new Type {TypeName = type.EffectiveTypeName, SubTypeName = type.EffectiveSubTypeName});
+                    LastExportedMetadata.Types.Add(new Type
+                        {TypeName = type.EffectiveTypeName, SubTypeName = type.EffectiveSubTypeName});
                 }
             }
-            
+
             LastExportedMetadata.Characteristics.Clear();
 
             foreach (var characteristic in Metadata.Characteristics)
@@ -100,7 +93,7 @@ namespace PresetMagician.Core.Models
             LastExportedMetadata.PreviewNotePlayer = PreviewNotePlayer;
             LastExportedMetadata.PresetHash = PresetHash;
             LastExported = DateTime.Now;
-            
+
             UpdateIsMetadataModified();
         }
 
@@ -175,7 +168,7 @@ namespace PresetMagician.Core.Models
                 {
                     Debug.WriteLine("FOO");
                 }
-                
+
                 _plugin = value;
 
                 if (_plugin != null)
@@ -296,7 +289,7 @@ namespace PresetMagician.Core.Models
             {
                 SetBankPath(_metadata.BankPath);
             }
-            
+
             if (IsEditing && Metadata.GetEditableProperties()
                     .Contains(e.PropertyName))
             {
@@ -316,9 +309,9 @@ namespace PresetMagician.Core.Models
         private void UpdateIsMetadataModified()
         {
             IsMetadataModified = !(_metadata.IsEqualTo(LastExportedMetadata) &&
-                                   PresetHash == LastExportedMetadata.PresetHash && 
-                                 LastExportedMetadata.PreviewNotePlayer.PreviewNotePlayerId ==
-                                 PreviewNotePlayer.PreviewNotePlayerId);
+                                   PresetHash == LastExportedMetadata.PresetHash &&
+                                   LastExportedMetadata.PreviewNotePlayer.PreviewNotePlayerId ==
+                                   PreviewNotePlayer.PreviewNotePlayerId);
         }
 
         /// <summary>

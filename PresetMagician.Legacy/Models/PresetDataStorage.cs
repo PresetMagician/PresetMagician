@@ -4,7 +4,7 @@ using K4os.Compression.LZ4;
 
 namespace PresetMagician.Legacy.Models
 {
-    public class PresetDataStorage 
+    public class PresetDataStorage
     {
         [Key] public string PresetDataStorageId { get; set; }
 
@@ -12,11 +12,11 @@ namespace PresetMagician.Legacy.Models
 
         [Column("CompressedPresetData", TypeName = "blob")]
         public byte[] CompressedPresetData { get; set; }
-    
+
 
         [Column("PresetData", TypeName = "blob")]
         public byte[] UncompressedPresetData { get; set; }
-      
+
 
         [NotMapped]
         public byte[] PresetData

@@ -10,11 +10,11 @@ namespace SharedModels.Services
     {
         public static Dictionary<string, PreviewNotePlayer> PreviewNotePlayers =
             new Dictionary<string, PreviewNotePlayer> {{"default", PreviewNotePlayer.Default}};
-        
+
         public static string DefaultPreviewNotePlayerStoragePath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             @"Drachenkatze\PresetMagician\PreviewNotePlayers.presetmagician");
-        
+
         private readonly CerasSerializer _serializer;
 
         public PreviewNotePlayerService()
@@ -31,9 +31,11 @@ namespace SharedModels.Services
         {
             if (File.Exists(DefaultPreviewNotePlayerStoragePath))
             {
-                PreviewNotePlayers = _serializer.Deserialize<Dictionary<string, PreviewNotePlayer>>(File.ReadAllBytes(DefaultPreviewNotePlayerStoragePath));
+                PreviewNotePlayers =
+                    _serializer.Deserialize<Dictionary<string, PreviewNotePlayer>>(
+                        File.ReadAllBytes(DefaultPreviewNotePlayerStoragePath));
             }
-            
+
             if (!PreviewNotePlayers.ContainsKey("default"))
             {
                 PreviewNotePlayers.Add("default", PreviewNotePlayer.Default);
@@ -45,6 +47,5 @@ namespace SharedModels.Services
             var data = _serializer.Serialize(PreviewNotePlayers);
             File.WriteAllBytes(DefaultPreviewNotePlayerStoragePath, data);
         }
-        
     }
 }

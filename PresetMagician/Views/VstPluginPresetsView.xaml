@@ -19,10 +19,10 @@
 
     <catel:UserControl.Resources>
         <converters:NodeSortConverter x:Key="NodeSorter" />
-        <converters:RemoveNewLinesConverter x:Key="RemoveNewLinesConverter"/>
+        <converters:RemoveNewLinesConverter x:Key="RemoveNewLinesConverter" />
         <Style x:Key="EllipsisText" TargetType="{x:Type TextBlock}">
             <Style.Setters>
-                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
             </Style.Setters>
         </Style>
 
@@ -32,10 +32,12 @@
             DataType="{x:Type models:PresetBank}"
             ItemsSource="{Binding PresetBanks, Converter={StaticResource NodeSorter}}">
             <StackPanel Orientation="Horizontal">
-                <iconPacks:PackIconFontAwesome VerticalAlignment="Center" Kind="ExclamationCircleSolid" Foreground="Orange" ToolTip="NKS only supports 2 sublevels. Bank names will be combined, for example Factory/Bass/Deep Bass will become Factory/Bass - Deep Bass">
+                <iconPacks:PackIconFontAwesome VerticalAlignment="Center" Kind="ExclamationCircleSolid"
+                                               Foreground="Orange"
+                                               ToolTip="NKS only supports 2 sublevels. Bank names will be combined, for example Factory/Bass/Deep Bass will become Factory/Bass - Deep Bass">
                     <iconPacks:PackIconFontAwesome.Style>
                         <Style TargetType="{x:Type iconPacks:PackIconFontAwesome}">
-                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsBelowNksThreshold}" Value="true">
                                     <Setter Property="Visibility" Value="Visible" />
@@ -44,12 +46,14 @@
                         </Style>
                     </iconPacks:PackIconFontAwesome.Style>
                 </iconPacks:PackIconFontAwesome>
-                <TextBlock VerticalAlignment="Center"><Run Text="{Binding BankName}"/></TextBlock>
+                <TextBlock VerticalAlignment="Center">
+                    <Run Text="{Binding BankName}" />
+                </TextBlock>
             </StackPanel>
-            
+
         </HierarchicalDataTemplate>
 
-           <ControlTemplate x:Key="BankView">
+        <ControlTemplate x:Key="BankView">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="250" />
@@ -94,7 +98,7 @@
                     dd:DragDrop.UseDefaultEffectDataTemplate="True"
                     dd:DragDrop.UseDefaultDragAdorner="True"
                     dd:DragDrop.DropHandler="{Binding}"
-                   AutoGenerateColumns="False"
+                    AutoGenerateColumns="False"
                     d:DataContext="{d:DesignInstance models:Preset, CreateList=True}"
                     ItemsSource="{Binding PresetsView}">
                     <DataGrid.Columns>
@@ -123,27 +127,26 @@
                             Width="1*"
                             Binding="{Binding Metadata.Author}"
                             ElementStyle="{StaticResource EllipsisText}"
-                            Header="Author"  />
+                            Header="Author" />
                         <DataGridTextColumn
                             Width="1*"
                             IsReadOnly="True"
                             Binding="{Binding Metadata.Comment, Converter={StaticResource RemoveNewLinesConverter}}"
-                            Header="Comment" ElementStyle="{StaticResource EllipsisText}"/>
+                            Header="Comment" ElementStyle="{StaticResource EllipsisText}" />
                         <DataGridTemplateColumn
                             Width="3*"
                             CellStyle="{StaticResource NoPaddingCellStyle}"
                             Header="Types"
                             CanUserSort="False"
                             CellTemplate="{StaticResource TypesTemplate}"
-                            IsReadOnly="True"/>
+                            IsReadOnly="True" />
                         <DataGridTemplateColumn
                             Width="3*"
                             CanUserSort="False"
                             CellStyle="{StaticResource NoPaddingCellStyle}"
                             Header="Characteristics"
                             CellTemplate="{StaticResource CharacteristicsTemplate}"
-                            IsReadOnly="True">
-                        </DataGridTemplateColumn>
+                            IsReadOnly="True" />
                         <DataGridTextColumn
                             Width="40"
                             Binding="{Binding PreviewNote.FullNoteName}"
@@ -170,6 +173,6 @@
         </ControlTemplate>
     </catel:UserControl.Resources>
 
-    <ContentControl Template="{StaticResource BankView}"/>
+    <ContentControl Template="{StaticResource BankView}" />
 
 </catel:UserControl>

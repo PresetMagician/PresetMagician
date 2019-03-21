@@ -2,7 +2,7 @@ using System;
 
 namespace PresetMagician.Core.Exceptions
 {
-    public class ConnectivityLostException: Exception
+    public class ConnectivityLostException : Exception
     {
         public ConnectivityLostException(string message) : base(message)
         {

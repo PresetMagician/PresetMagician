@@ -65,7 +65,7 @@
                                               Text="Edits a type in the global database."
                                               HelpTopic="{Binding HelpLinks.REFERENCE_TYPECHARACTERISTICEDITOR_ADDEDIT}" />
                         </fluent:Button.ToolTip>
-                        </fluent:Button>
+                    </fluent:Button>
                     <fluent:Button
                         Command="{Binding DeleteTypeCommand}"
                         Header="Delete Type(s)"
@@ -79,16 +79,16 @@
                         </fluent:Button.ToolTip>
                     </fluent:Button>
                     <fluent:Button
-                                         Size="Large"
-                                         Header="Show Usage"
-                                         Command="{Binding ShowTypeUsageCommand}"
-                                         LargeIcon="{iconPacks:Material Kind=FileFind, Width=32, Height=32}">
+                        Size="Large"
+                        Header="Show Usage"
+                        Command="{Binding ShowTypeUsageCommand}"
+                        LargeIcon="{iconPacks:Material Kind=FileFind, Width=32, Height=32}">
                         <fluent:Button.ToolTip>
                             <fluent:ScreenTip Title="Shows the plugins which use this type"
                                               Width="250"
                                               HelpTopic="{Binding HelpLinks.REFERENCE_TYPECHARACTERISTICEDITOR_SHOWUSAGES}" />
                         </fluent:Button.ToolTip>
-                        </fluent:Button>
+                    </fluent:Button>
                     <fluent:ToggleButton ToolTip="Shows or hides type redirects"
                                          Size="Middle"
                                          IsChecked="{Binding ShowTypeRedirects}" Header="Show Redirects"
@@ -110,7 +110,7 @@
                                               Text="Adds a new characteristic to the global database."
                                               HelpTopic="{Binding HelpLinks.REFERENCE_TYPECHARACTERISTICEDITOR_ADDEDIT}" />
                         </fluent:Button.ToolTip>
-                        </fluent:Button>
+                    </fluent:Button>
                     <fluent:Button
                         Command="{Binding EditCharacteristicCommand}"
                         Header="Edit Characteristic"
@@ -213,7 +213,8 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTextColumn dgx:DataGridFilterColumn.IsFilterVisible="False" Header="Usages" Width="50" Binding="{Binding UsageCount}" />
+                    <DataGridTextColumn dgx:DataGridFilterColumn.IsFilterVisible="False" Header="Usages" Width="50"
+                                        Binding="{Binding UsageCount}" />
                 </DataGrid.Columns>
             </DataGrid>
         </GroupBox>
@@ -269,7 +270,8 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTextColumn dgx:DataGridFilterColumn.IsFilterVisible="False" Header="Usages" Width="50" Binding="{Binding UsageCount}" />
+                    <DataGridTextColumn dgx:DataGridFilterColumn.IsFilterVisible="False" Header="Usages" Width="50"
+                                        Binding="{Binding UsageCount}" />
                 </DataGrid.Columns>
             </DataGrid>
         </GroupBox>

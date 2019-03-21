@@ -1,7 +1,6 @@
 ﻿using Catel.IoC;
 using Catel.MVVM;
 using PresetMagician.Core.Services;
-using PresetMagician.Services.Interfaces;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -12,10 +11,10 @@ namespace PresetMagician
         private readonly GlobalFrontendService _globalFrontendService;
 
         public PresetExportClearListCommandContainer(ICommandManager commandManager,
-            IRuntimeConfigurationService runtimeConfigurationService)
-            : base(Commands.PresetExport.ClearList, commandManager, runtimeConfigurationService)
+            IServiceLocator serviceLocator)
+            : base(Commands.PresetExport.ClearList, commandManager, serviceLocator)
         {
-            _globalFrontendService = ServiceLocator.Default.ResolveType<GlobalFrontendService>();
+            _globalFrontendService = ServiceLocator.ResolveType<GlobalFrontendService>();
         }
 
         protected override void Execute(object parameter)

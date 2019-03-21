@@ -3,19 +3,19 @@
                     xmlns:controls="http://schemas.wildgums.com/orc/controls">
 
     <Style x:Key="StatusBarLinkLabel" TargetType="{x:Type controls:LinkLabel}">
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="HoverForeground" Value="White"/>
-        <Setter Property="Margin" Value="0"/>
-        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="HoverForeground" Value="White" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Padding" Value="0" />
 
         <Setter Property="HyperlinkStyle">
             <Setter.Value>
                 <Style TargetType="Hyperlink">
-                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="Foreground" Value="White" />
                     <Style.Triggers>
                         <Trigger Property="IsMouseOver" Value="true">
                             <Setter Property="Foreground"
-                                    Value="White"/>
+                                    Value="White" />
                         </Trigger>
                     </Style.Triggers>
                 </Style>
@@ -26,47 +26,47 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:LinkLabel}">
                     <Border Background="{TemplateBinding Background}"
-                  BorderThickness="0"
-                  BorderBrush="{TemplateBinding BorderBrush}"
-                  Padding="0"
-                  Margin="0"
-                  SnapsToDevicePixels="true">
+                            BorderThickness="0"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            Padding="0"
+                            Margin="0"
+                            SnapsToDevicePixels="true">
                         <TextBlock Background="{TemplateBinding Background}"
-                       HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                       VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                       SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
-              <Hyperlink
-                x:Name="PART_InnerHyperlink"
-                NavigateUri="{Binding RelativeSource= {RelativeSource TemplatedParent}, Path=Url}"
-                Style= "{Binding RelativeSource= {RelativeSource TemplatedParent}, Path=HyperlinkStyle}"
-                Command="{Binding RelativeSource= {RelativeSource TemplatedParent}, Path=Command}"
-                CommandParameter="{Binding RelativeSource= {RelativeSource TemplatedParent}, Path=CommandParameter}"
-                CommandTarget="{Binding RelativeSource= {RelativeSource TemplatedParent}, Path=CommandTarget}">
-                  <controls:BindableRun
-                    BoundText="{Binding RelativeSource= {RelativeSource TemplatedParent}, Path=Content}"/>
-              </Hyperlink>
+                                   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                   SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
+                            <Hyperlink
+                                x:Name="PART_InnerHyperlink"
+                                NavigateUri="{Binding RelativeSource= {RelativeSource TemplatedParent}, Path=Url}"
+                                Style="{Binding RelativeSource= {RelativeSource TemplatedParent}, Path=HyperlinkStyle}"
+                                Command="{Binding RelativeSource= {RelativeSource TemplatedParent}, Path=Command}"
+                                CommandParameter="{Binding RelativeSource= {RelativeSource TemplatedParent}, Path=CommandParameter}"
+                                CommandTarget="{Binding RelativeSource= {RelativeSource TemplatedParent}, Path=CommandTarget}">
+                                <controls:BindableRun
+                                    BoundText="{Binding RelativeSource= {RelativeSource TemplatedParent}, Path=Content}" />
+                            </Hyperlink>
                         </TextBlock>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="LinkLabelBehavior" Value="NeverUnderline">
-                            <Setter TargetName="PART_InnerHyperlink" Property="TextDecorations"  Value="None"/>
+                            <Setter TargetName="PART_InnerHyperlink" Property="TextDecorations" Value="None" />
                         </Trigger>
                         <Trigger Property="LinkLabelBehavior" Value="AlwaysUnderline">
-                            <Setter TargetName="PART_InnerHyperlink" Property="TextDecorations" Value="Underline"/>
+                            <Setter TargetName="PART_InnerHyperlink" Property="TextDecorations" Value="Underline" />
                         </Trigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
-                                <Condition Property="IsMouseOver" Value="true"/>
-                                <Condition Property="LinkLabelBehavior" Value="HoverUnderline"/>
+                                <Condition Property="IsMouseOver" Value="true" />
+                                <Condition Property="LinkLabelBehavior" Value="HoverUnderline" />
                             </MultiTrigger.Conditions>
-                            <Setter TargetName="PART_InnerHyperlink" Property="TextDecorations" Value="Underline"/>
+                            <Setter TargetName="PART_InnerHyperlink" Property="TextDecorations" Value="Underline" />
                         </MultiTrigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
-                                <Condition Property="IsMouseOver" Value="false"/>
-                                <Condition Property="LinkLabelBehavior" Value="HoverUnderline"/>
+                                <Condition Property="IsMouseOver" Value="false" />
+                                <Condition Property="LinkLabelBehavior" Value="HoverUnderline" />
                             </MultiTrigger.Conditions>
-                            <Setter TargetName="PART_InnerHyperlink" Property="TextDecorations" Value="None"/>
+                            <Setter TargetName="PART_InnerHyperlink" Property="TextDecorations" Value="None" />
                         </MultiTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

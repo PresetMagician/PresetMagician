@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Catel;
 using Catel.Data;
 
@@ -43,14 +42,13 @@ namespace PresetMagician.Extensions
                 {
                     return;
                 }
-                
-                
-                using (objAsModelBase.SuspendChangeCallbacks()) 
+
+
+                using (objAsModelBase.SuspendChangeCallbacks())
                 using (objAsModelBase.SuspendChangeNotifications())
                 {
-                    
-                        ((IModel) objAsModelBase).SetValue(nameof(ModelBase.IsDirty), false);
-                    
+                    ((IModel) objAsModelBase).SetValue(nameof(ModelBase.IsDirty), false);
+
 
                     handledReferences.Add(objAsModelBase);
 
@@ -67,9 +65,7 @@ namespace PresetMagician.Extensions
             {
                 foreach (var childItem in objAsIEnumerable)
                 {
-                    
-                        ClearIsDirtyOnAllChildsSuspended(childItem, handledReferences);
-                    
+                    ClearIsDirtyOnAllChildsSuspended(childItem, handledReferences);
                 }
             }
         }

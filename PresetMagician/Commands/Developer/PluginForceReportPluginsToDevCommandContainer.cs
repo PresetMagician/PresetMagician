@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Catel.IoC;
 using Catel.MVVM;
-using PresetMagician.Core.Interfaces;
-using PresetMagician.Services.Interfaces;
 using PresetMagician.Core.Models;
-using PresetMagician.Core.Services;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -13,8 +11,8 @@ namespace PresetMagician
     public class PluginForceReportPluginsToDevCommandContainer : AbstractReportPluginsCommandContainer
     {
         public PluginForceReportPluginsToDevCommandContainer(ICommandManager commandManager,
-            IRuntimeConfigurationService runtimeConfigurationService) : base(
-            Commands.Plugin.ForceReportPluginsToDev, commandManager, runtimeConfigurationService)
+            IServiceLocator serviceLocator) : base(
+            Commands.Plugin.ForceReportPluginsToDev, commandManager, serviceLocator)
         {
             ReportAll = true;
         }
@@ -30,6 +28,5 @@ namespace PresetMagician
                 where plugin.HasMetadata
                 select plugin).ToList();
         }
-
     }
 }

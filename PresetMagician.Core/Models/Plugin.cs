@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using System.Net.Sockets;
 using Catel.Data;
 using Catel.IO;
 using Ceras;
 using Drachenkatze.PresetMagician.NKSF.NKSF;
-using Drachenkatze.PresetMagician.Utils;
 using PresetMagician.Core.Collections;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models.NativeInstrumentsResources;
@@ -103,11 +101,11 @@ namespace PresetMagician.Core.Models
             return HasMetadata ? $"{PluginVendor} {PluginName} ({VstPluginId})" : $"{DllPath}";
         }
 
-        public void OnLoadError(Exception e)
+        public void LogPluginError(string action, Exception e)
         {
             LoadError = true;
-            Logger.Error($"Error loading plugin because of {e.GetType().FullName}: {e.Message}");
-            Logger.Debug(e.StackTrace);
+            Logger.Error($"Error while {action}: ({e.GetType().FullName}) {e.Message}");
+            Logger.LogException(e);
             LoadErrorMessage = e.Message;
         }
 
@@ -124,7 +122,7 @@ namespace PresetMagician.Core.Models
             {
                 OnPropertyChanged(nameof(PresetParser), adv.OldValue, adv.NewValue);
             }
-            
+
             if (e.PropertyName == nameof(PluginLocation.HasMetadata))
             {
                 OnPropertyChanged(nameof(HasMetadata), adv.OldValue, adv.NewValue);
@@ -255,9 +253,33 @@ namespace PresetMagician.Core.Models
 
         public PresetBank RootBank { get; } = new PresetBank();
 
-        [Include]
-        public EditableCollection<Preset> Presets { get; set; } =
-            new EditableCollection<Preset>();
+        private EditableCollection<Preset> _presets = new EditableCollection<Preset>();
+
+        public EditableCollection<Preset> Presets
+        {
+            get { return _presets; }
+            set
+            {
+                if (ReferenceEquals(_presets, value))
+                {
+                    return;
+                }
+
+                if (_presets != null)
+                {
+                    _presets.CollectionChanged -= PresetsOnCollectionChanged;
+                }
+
+                _presets = value;
+                foreach (var preset in _presets)
+                {
+                    preset.Plugin = this;
+                }
+
+                _presets.CollectionChanged += PresetsOnCollectionChanged;
+            }
+        }
+
 
         /// <summary>
         /// Defines the full path to the plugin DLL
@@ -357,8 +379,8 @@ namespace PresetMagician.Core.Models
         public int NumPresets => Presets?.Count ?? 0;
 
         [Include] public string PluginName { get; set; } = "<unknown>";
-        
-        
+
+
         public int PresetParserAudioPreviewPreDelay => PresetParser?.AudioPreviewPreDelay ?? 0;
 
         [Include] public string PluginVendor { get; set; }
@@ -367,9 +389,8 @@ namespace PresetMagician.Core.Models
 
         public bool HasMetadata => PluginLocation != null && PluginLocation.HasMetadata;
 
-        
 
-        public bool RequiresMetadataScan => IsEnabled && !HasMetadata; 
+        public bool RequiresMetadataScan => IsEnabled && !HasMetadata;
 
         /// <summary>
         /// Defines if the plugin is supported

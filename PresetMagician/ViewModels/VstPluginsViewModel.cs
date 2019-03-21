@@ -2,16 +2,12 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
-using Catel;
 using Catel.Collections;
 using Catel.IoC;
 using Catel.MVVM;
-using Catel.Services;
-using PresetMagician.Core.Interfaces;
-using PresetMagician.Models;
-using PresetMagician.Services.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
+using PresetMagician.Services.Interfaces;
 
 namespace PresetMagician.ViewModels
 {
@@ -21,15 +17,16 @@ namespace PresetMagician.ViewModels
 
         public VstPluginsViewModel(
             IRuntimeConfigurationService runtimeConfigurationService
-            )
+        )
         {
             _globalFrontendService = ServiceLocator.Default.ResolveType<GlobalFrontendService>();
             var globalService = ServiceLocator.Default.ResolveType<GlobalService>();
 
 
+            ApplicationOperationStatus = ServiceLocator.Default.ResolveType<IApplicationService>()
+                .GetApplicationOperationStatus();
             Plugins = globalService.Plugins;
             SelectedPlugins = _globalFrontendService.SelectedPlugins;
-            ApplicationState = runtimeConfigurationService.ApplicationState;
             ServiceLocator.Default.RegisterInstance(this);
 
             Plugins.CollectionChanged += PluginsOnCollectionChanged;
@@ -38,7 +35,7 @@ namespace PresetMagician.ViewModels
 
             Title = "VST Plugins";
         }
-        
+
         protected override Task OnClosedAsync(bool? result)
         {
             return base.OnClosedAsync(result);
@@ -64,6 +61,6 @@ namespace PresetMagician.ViewModels
 
         public ObservableCollection<Plugin> Plugins { get; }
         public FastObservableCollection<Plugin> SelectedPlugins { get; }
-        public ApplicationState ApplicationState { get; private set; }
+        public ApplicationOperationStatus ApplicationOperationStatus { get; }
     }
 }

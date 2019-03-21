@@ -11,6 +11,5 @@ namespace PresetMagician.ViewModels
         }
 
         [Model] public Preset Preset { get; private set; }
-
     }
 }

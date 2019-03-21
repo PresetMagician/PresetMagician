@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Sockets;
 using System.Reflection;
 using Anotar.Catel;
-using MethodTimer;
 using PresetMagician.Core.Exceptions;
 using PresetMagician.Core.Interfaces;
 
@@ -12,8 +10,8 @@ namespace PresetMagician.Core.Services
 {
     public class VendorPresetParserService
     {
-        private static Assembly _presetParserAssembly;
-        private static Type _nullPresetParserType;
+        private Assembly _presetParserAssembly;
+        private Type _nullPresetParserType;
 
         private readonly GlobalService _globalService;
 
@@ -22,16 +20,16 @@ namespace PresetMagician.Core.Services
             _globalService = globalService;
         }
 
-        public static void RegisterPresetParserAssembly(Assembly assembly)
+        public void RegisterPresetParserAssembly(Assembly assembly)
         {
             _presetParserAssembly = assembly;
         }
 
-        public static void RegisterNullPresetParserType(Type nullPresetParserType)
+        public void RegisterNullPresetParserType(Type nullPresetParserType)
         {
             _nullPresetParserType = nullPresetParserType;
         }
-        
+
         public Dictionary<int, IVendorPresetParser> GetPresetHandlerListByPlugin()
         {
             var pluginHandlers = new Dictionary<int, IVendorPresetParser>();
@@ -80,7 +78,7 @@ namespace PresetMagician.Core.Services
             {
                 return null;
             }
-            
+
             return (from p in GetPresetParsers() where p.PresetParserType == name select p).FirstOrDefault();
         }
 
@@ -153,7 +151,7 @@ namespace PresetMagician.Core.Services
             {
                 return;
             }
-            
+
             if (!pluginInstance.Plugin.HasMetadata)
             {
                 throw new NoMetadataAvailableException(pluginInstance);
@@ -162,7 +160,7 @@ namespace PresetMagician.Core.Services
             pluginInstance.Plugin.PluginLocation.PresetParser = GetPresetParser(pluginInstance);
             pluginInstance.Plugin.PluginLocation.PresetParser.PresetParserConfiguration.LastScanVersion =
                 _globalService.PresetMagicianVersion;
-                
+
             if (pluginInstance.Plugin.PresetParser == null)
             {
                 pluginInstance.Plugin.IsSupported = false;

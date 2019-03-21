@@ -43,10 +43,10 @@ namespace Drachenkatze.PresetMagician.Utils
             }
             else
             {
-                fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);  
+                fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
                 binaryReader = new BinaryReader(fs, Encoding.Default);
             }
-            
+
             this.byteOrder = byteOrder;
         }
 

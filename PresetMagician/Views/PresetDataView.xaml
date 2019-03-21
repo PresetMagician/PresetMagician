@@ -14,24 +14,24 @@
     SizeToContent="Manual"
     mc:Ignorable="d">
 
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <WindowsFormsHost Grid.Row="0">
-                        <wf:HexBox
-                            x:Name="PresetDataControl"
-                            AutoSize="False"
-                            BytesPerLine="16"
-                            ColumnInfoVisible="True"
-                            Font="Courier New"
-                            LineInfoVisible="True"
-                            StringViewVisible="True"
-                            UseFixedBytesPerLine="True"
-                            VScrollBarVisible="True" />
-                    </WindowsFormsHost>
-                    <TextBlock Grid.Row="1" Text="{Binding PresetData.Length}" />
-                </Grid>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <WindowsFormsHost Grid.Row="0">
+            <wf:HexBox
+                x:Name="PresetDataControl"
+                AutoSize="False"
+                BytesPerLine="16"
+                ColumnInfoVisible="True"
+                Font="Courier New"
+                LineInfoVisible="True"
+                StringViewVisible="True"
+                UseFixedBytesPerLine="True"
+                VScrollBarVisible="True" />
+        </WindowsFormsHost>
+        <TextBlock Grid.Row="1" Text="{Binding PresetData.Length}" />
+    </Grid>
 
 </catel:DataWindow>

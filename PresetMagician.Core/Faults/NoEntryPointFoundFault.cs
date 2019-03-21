@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 namespace PresetMagician.RemoteVstHost.Faults
 {
     [DataContract]
-    public class NoEntryPointFoundFault: GenericFault
+    public class NoEntryPointFoundFault : GenericFault
     {
         public NoEntryPointFoundFault()
         {

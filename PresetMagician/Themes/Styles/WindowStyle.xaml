@@ -8,7 +8,8 @@
     <fluent:IconConverter x:Key="IconConvert" />
 
     <ControlTemplate x:Key="RibbonDataWindowControlTemplate" TargetType="{x:Type controls:RibbonDataWindow}">
-        <Grid LayoutTransform="{Binding LayoutTransform, RelativeSource={RelativeSource TemplatedParent}}" RenderTransform="{Binding RenderTransform, RelativeSource={RelativeSource TemplatedParent}}">
+        <Grid LayoutTransform="{Binding LayoutTransform, RelativeSource={RelativeSource TemplatedParent}}"
+              RenderTransform="{Binding RenderTransform, RelativeSource={RelativeSource TemplatedParent}}">
             <AdornerDecorator x:Name="Adorner">
                 <Grid Background="{TemplateBinding Background}">
                     <Grid.RowDefinitions>

@@ -1,15 +1,13 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Catel;
 using Catel.Collections;
+using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
 using PresetMagician.RemoteVstHost;
 using PresetMagician.RemoteVstHost.Processes;
 using PresetMagician.Services.Interfaces;
-using PresetMagician.Core.Interfaces;
-
 
 namespace PresetMagician.Services
 {
@@ -20,10 +18,12 @@ namespace PresetMagician.Services
         private readonly PresetDataPersisterService _presetDataPersisterService;
         private readonly DataPersisterService _dataPersister;
         private readonly GlobalService _globalService;
+
         private readonly Dictionary<Plugin, IRemotePluginInstance> _pluginInstances =
             new Dictionary<Plugin, IRemotePluginInstance>();
 
-        public VstService(IApplicationService applicationService, GlobalService globalService, DataPersisterService dataPersister, PresetDataPersisterService presetDataPersisterService)
+        public VstService(IApplicationService applicationService, GlobalService globalService,
+            DataPersisterService dataPersister, PresetDataPersisterService presetDataPersisterService)
         {
             Argument.IsNotNull(() => applicationService);
             Argument.IsNotNull(() => dataPersister);
@@ -56,32 +56,24 @@ namespace PresetMagician.Services
         {
             return _globalService.RemoteVstHostProcessPool.GetVstService();
         }
-        
-        
+
 
         public byte[] GetPresetData(Preset preset)
         {
             return _presetDataPersisterService.GetPresetData(preset);
         }
 
-        public IRemotePluginInstance GetRemotePluginInstance(Plugin plugin, bool backgroundProcessing = true)
-        {
-            return _globalService.RemoteVstHostProcessPool.GetRemotePluginInstance(plugin, backgroundProcessing);
-        }
-
-       
-        public  async Task<IRemotePluginInstance> GetInteractivePluginInstance(Plugin plugin)
+        public async Task<IRemotePluginInstance> GetInteractivePluginInstance(Plugin plugin)
         {
             if (_interactiveVstHostProcess == null)
             {
                 _interactiveVstHostProcess = new VstHostProcess(20, true);
                 _interactiveVstHostProcess.Start();
-                await _interactiveVstHostProcess.WaitUntilStarted();
+                _interactiveVstHostProcess.WaitUntilStarted();
             }
-            
+
             if (!_pluginInstances.ContainsKey(plugin))
             {
-
                 _pluginInstances.Add(plugin, new RemotePluginInstance(_interactiveVstHostProcess, plugin, true, true));
             }
 
@@ -89,6 +81,5 @@ namespace PresetMagician.Services
         }
 
         public FastObservableCollection<Plugin> Plugins { get; set; } = new FastObservableCollection<Plugin>();
-
     }
 }

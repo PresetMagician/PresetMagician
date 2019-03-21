@@ -14,7 +14,6 @@ namespace PresetMagician.Views
             : base(viewModel, DataWindowMode.Custom)
         {
             InitializeComponent();
-
         }
 
 

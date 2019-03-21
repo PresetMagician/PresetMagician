@@ -5,29 +5,26 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
+using System;
+using System.Threading.Tasks;
+using System.Windows;
+using Catel;
+using Catel.IoC;
+using Catel.Logging;
+using Catel.MVVM;
+using Catel.Reflection;
+using MethodTimer;
 using Orchestra;
 using Orchestra.Services;
 using Orchestra.Views;
+using AssemblyHelper = Catel.Reflection.AssemblyHelper;
 
 namespace PresetMagician.Services
 {
-    using System;
-    using System.Threading.Tasks;
-    using System.Windows;
-    using Catel;
-    using Catel.IoC;
-    using Catel.Logging;
-    using Catel.MVVM;
-    using Catel.Reflection;
-    using Catel.Services;
-    using Catel.Threading;
-    using MethodTimer;
-    using Views;
-    using AssemblyHelper = Orchestra.AssemblyHelper;
-
     public class CustomShellService : IShellService
     {
         #region Fields
+
         /// <summary>
         /// The log.
         /// </summary>
@@ -39,9 +36,11 @@ namespace PresetMagician.Services
         private readonly ISplashScreenService _splashScreenService;
         private readonly IApplicationInitializationService _applicationInitializationService;
         private readonly IDependencyResolver _dependencyResolver;
+
         #endregion
 
         #region Constructors
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ShellService" /> class.
         /// </summary>
@@ -57,8 +56,10 @@ namespace PresetMagician.Services
         /// <exception cref="ArgumentNullException">The <paramref name="splashScreenService" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="applicationInitializationService" /> is <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException">The <paramref name="dependencyResolver" /> is <c>null</c>.</exception>
-        public CustomShellService(ITypeFactory typeFactory, IKeyboardMappingsService keyboardMappingsService, ICommandManager commandManager,
-            ISplashScreenService splashScreenService, IApplicationInitializationService applicationInitializationService, IDependencyResolver dependencyResolver)
+        public CustomShellService(ITypeFactory typeFactory, IKeyboardMappingsService keyboardMappingsService,
+            ICommandManager commandManager,
+            ISplashScreenService splashScreenService,
+            IApplicationInitializationService applicationInitializationService, IDependencyResolver dependencyResolver)
         {
             Argument.IsNotNull(() => typeFactory);
             Argument.IsNotNull(() => keyboardMappingsService);
@@ -74,23 +75,28 @@ namespace PresetMagician.Services
             _applicationInitializationService = applicationInitializationService;
             _dependencyResolver = dependencyResolver;
 
-            var entryAssembly = Catel.Reflection.AssemblyHelper.GetEntryAssembly();
+            var entryAssembly = AssemblyHelper.GetEntryAssembly();
 
-            Log.Info("Starting {0} v{1} ({2})", entryAssembly.Title(), entryAssembly.Version(), entryAssembly.InformationalVersion());
+            Log.Info("Starting {0} v{1} ({2})", entryAssembly.Title(), entryAssembly.Version(),
+                entryAssembly.InformationalVersion());
 
             // Initialize (now we have an application)
         }
+
         #endregion
 
         #region Properties
+
         /// <summary>
         /// Gets the shell.
         /// </summary>
         /// <value>The shell.</value>
         public IShell Shell { get; private set; }
+
         #endregion
 
         #region Methods
+
         /// <summary>
         /// Creates a new shell and shows a splash during the initialization.
         /// </summary>
@@ -104,7 +110,7 @@ namespace PresetMagician.Services
             return CreateAsync<TShell>();
         }
 
-        
+
         /// <summary>
         /// Creates a new shell.
         /// </summary>
@@ -158,7 +164,8 @@ namespace PresetMagician.Services
         {
             if (Shell != null)
             {
-                throw Log.ErrorAndCreateException<OrchestraException>("The shell is already created and cannot be created again");
+                throw Log.ErrorAndCreateException<OrchestraException>(
+                    "The shell is already created and cannot be created again");
             }
 
             Log.Info("Checking if software was correctly closed previously");
@@ -170,29 +177,29 @@ namespace PresetMagician.Services
             try
             {
 #endif
-                await InitializeBeforeCreatingShellAsync();
+            await InitializeBeforeCreatingShellAsync();
 
-                shell = await CreateShellAsync<TShell>();
+            shell = await CreateShellAsync<TShell>();
 
-                _keyboardMappingsService.Load();
+            _keyboardMappingsService.Load();
 
-                // Now we have a new window, resubscribe the command manager
-                _commandManager.SubscribeToKeyboardEvents();
+            // Now we have a new window, resubscribe the command manager
+            _commandManager.SubscribeToKeyboardEvents();
 
-                await InitializeAfterCreatingShellAsync();
+            await InitializeAfterCreatingShellAsync();
 
-                Log.Info("Confirming that application was started successfully");
+            Log.Info("Confirming that application was started successfully");
 
-                await InitializeBeforeShowingShellAsync();
+            await InitializeBeforeShowingShellAsync();
 
-                ShowShell(shell);
+            ShowShell(shell);
 
-                if (postShowShellCallback != null)
-                {
-                    postShowShellCallback();
-                }
+            if (postShowShellCallback != null)
+            {
+                postShowShellCallback();
+            }
 
-                await InitializeAfterShowingShellAsync();
+            await InitializeAfterShowingShellAsync();
 #if !DEBUG
             }
             catch (Exception ex)
@@ -282,6 +289,7 @@ namespace PresetMagician.Services
 
             await _applicationInitializationService.InitializeAfterShowingShellAsync();
         }
+
         #endregion
     }
 }

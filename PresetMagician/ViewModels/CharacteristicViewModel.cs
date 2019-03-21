@@ -1,10 +1,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading.Tasks;
 using Catel.Data;
 using Catel.MVVM;
-using PresetMagician.Core.Collections;
 using PresetMagician.Core.Data;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
@@ -19,10 +17,10 @@ namespace PresetMagician.ViewModels
         public CharacteristicViewModel(Characteristic characteristic, CharacteristicsService characteristicsService)
         {
             DeferValidationUntilFirstSaveCall = false;
-            
+
             _modelBackup = characteristic.CreateBackup();
             _characteristicsService = characteristicsService;
-            
+
             Characteristic = characteristic;
             RedirectTargets = characteristicsService.GetRedirectTargets(characteristic);
             CharacteristicsRedirectingToThis = characteristicsService.GetRedirectSources(characteristic);

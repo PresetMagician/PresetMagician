@@ -6,15 +6,15 @@ using FastMember;
 
 namespace PresetMagician.Core.Data
 {
-    public abstract partial class ModelBase: IUserEditable
+    public abstract partial class ModelBase : IUserEditable
     {
         protected readonly Dictionary<string, object> BackupValues = new Dictionary<string, object>();
         private IUserEditable _originatingEditingObject;
-        private static readonly Dictionary<Type, TypeAccessor> _typeAccessors = new Dictionary<Type, TypeAccessor>(); 
+        private static readonly Dictionary<Type, TypeAccessor> _typeAccessors = new Dictionary<Type, TypeAccessor>();
         private static readonly Dictionary<Type, List<string>> _backupProperties = new Dictionary<Type, List<string>>();
 
         public abstract HashSet<string> GetEditableProperties();
-        
+
         private bool ShouldTrackUserChanges()
         {
             return IsEditing;
@@ -32,21 +32,21 @@ namespace PresetMagician.Core.Data
                 _typeAccessors.Add(GetType(), TypeAccessor.Create(GetType()));
             }
 
-            return _typeAccessors[GetType()]; 
+            return _typeAccessors[GetType()];
         }
 
         private List<string> GetBackupProperties()
         {
             if (!_backupProperties.ContainsKey(GetType()))
             {
-                var backupProperties = (from p in GetType().GetProperties() where p.CanRead && p.CanWrite select p.Name).ToList();
+                var backupProperties = (from p in GetType().GetProperties() where p.CanRead && p.CanWrite select p.Name)
+                    .ToList();
                 backupProperties.Remove(nameof(IsUserModified));
                 backupProperties.Remove(nameof(UserModifiedProperties));
                 _backupProperties.Add(GetType(), backupProperties);
             }
-            
+
             return _backupProperties[GetType()];
-             
         }
 
         public virtual void BeginEdit(IUserEditable originatingObject)
@@ -75,7 +75,7 @@ namespace PresetMagician.Core.Data
         {
             var backup = new ModelBackup();
             var accessor = GetTypeAccessor();
-            
+
             foreach (var propertyName in GetBackupProperties())
             {
                 var value = accessor[this, propertyName];
@@ -104,30 +104,29 @@ namespace PresetMagician.Core.Data
         {
             EndEdit(null);
         }
-        
+
 
         public virtual void EndEdit(IUserEditable originatingObject)
         {
-            if (!IsEditing ||!ReferenceEquals(_originatingEditingObject, originatingObject)) return;
+            if (!IsEditing || !ReferenceEquals(_originatingEditingObject, originatingObject)) return;
 
             IsEditing = false;
             foreach (var propertyName in GetBackupProperties())
             {
                 var value = PropertyHelper.GetPropertyValue(this, propertyName);
-                
+
                 if (GetEditableProperties().Contains(propertyName) && value is IUserEditable editable)
                 {
                     RemoveTracker(propertyName);
                     editable.EndEdit(this);
                 }
             }
-            
+
             UserModifiedProperties.Clear();
             IsUserModified = false;
-            
-            
-            _originatingEditingObject = null;
 
+
+            _originatingEditingObject = null;
         }
 
         public virtual void CancelEdit()
@@ -138,16 +137,16 @@ namespace PresetMagician.Core.Data
         public virtual void CancelEdit(IUserEditable originatingObject)
         {
             if (!IsEditing || !ReferenceEquals(_originatingEditingObject, originatingObject)) return;
-            
+
             IsEditing = false;
 
             var accessor = GetTypeAccessor();
-            
+
             foreach (var propertyName in GetBackupProperties())
             {
                 var value = BackupValues[propertyName];
                 RemoveTracker(propertyName);
-                
+
                 if (!IsEqualToBackup(accessor[this, propertyName], propertyName))
                 {
                     accessor[this, propertyName] = value;
@@ -158,7 +157,7 @@ namespace PresetMagician.Core.Data
                     editable.CancelEdit(this);
                 }
             }
-            
+
             UserModifiedProperties.Clear();
             IsUserModified = false;
             _originatingEditingObject = null;
@@ -170,10 +169,11 @@ namespace PresetMagician.Core.Data
             {
                 return;
             }
+
             CheckUserModified(propertyName);
             IsUserModified = UserModifiedProperties.Count > 0;
         }
-        
+
         private bool IsEqualToBackup(object value, object backupValue)
         {
             if (value == null)
@@ -221,17 +221,16 @@ namespace PresetMagician.Core.Data
                     UserModifiedProperties.Remove(propertyName);
                 }
             }
-            
         }
-        
+
         #region Properties
-        
+
         /// <summary>
         /// Defines if one or more properties were changed by the user during the current edit session. Will be reset
         /// after editing.
         /// </summary>
         public bool IsUserModified { get; private set; }
-        
+
         /// <summary>
         /// Holds all properties which the user actually modified during an edit session. This set will be cleared after
         /// editing.
@@ -243,7 +242,6 @@ namespace PresetMagician.Core.Data
         /// </summary>
         public bool IsEditing;
 
-       
         #endregion
     }
 }

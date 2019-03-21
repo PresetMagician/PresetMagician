@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using Jacobi.Vst.Core;
 using Jacobi.Vst.Core.Plugin;
@@ -22,18 +21,6 @@ namespace Drachenkatze.PresetMagician.Utils
             Array.Reverse(pluginUniqueIDArray);
             int pluginUniqueID = BitConverter.ToInt32(pluginUniqueIDArray, 0);
             return pluginUniqueID;
-        }
-
-        public static List<string> EnumeratePlugins(string pluginDirectory)
-        {
-            var vstPlugins = new List<string>();
-            foreach (var file in Directory.EnumerateFiles(
-                pluginDirectory, "*.dll", SearchOption.AllDirectories))
-            {
-                vstPlugins.Add(file);
-            }
-
-            return vstPlugins;
         }
 
         public static string GetDefaultNativeInstrumentsUserContentDirectory()
@@ -125,11 +112,11 @@ namespace Drachenkatze.PresetMagician.Utils
             if (pluginUniqueId != currentPluginId)
             {
                 return (LoadFxpResult.Error,
-                    "Aborting loading because it was created for a different plugin. "+
+                    "Aborting loading because it was created for a different plugin. " +
                     $"FXP/FXB plugin ID: {pluginUniqueId}, Plugin ID: {currentPluginId}",
                     null);
             }
-            
+
             // Preset (Program) (.fxp) with chunk (magic = 'FPCh')
             // Bank (.fxb) with chunk (magic = 'FBCh')
 
@@ -141,7 +128,7 @@ namespace Drachenkatze.PresetMagician.Utils
                     return (LoadFxpResult.Bank, null, fxp);
                 default:
                     return (LoadFxpResult.Error,
-                        "Cannot load the file because it is neither a bank nor a program. "+
+                        "Cannot load the file because it is neither a bank nor a program. " +
                         $"The magic value {fxp.FxMagic} is unknown.",
                         null);
             }

@@ -11,16 +11,14 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
 using Drachenkatze.PresetMagician.Utils;
-using Drachenkatze.PresetMagician.VendorPresetParser;
 using Jacobi.Vst.Core;
 using PresetMagician.Core.EventArgs;
 using PresetMagician.Core.Interfaces;
+using PresetMagician.Core.Models;
+using PresetMagician.Core.Services;
 using PresetMagician.RemoteVstHost;
 using PresetMagician.RemoteVstHost.Processes;
 using PresetMagician.VstHost.VST;
-using PresetMagician.Core.Models;
-using PresetMagician.Core.Services;
-using Type = PresetMagician.Core.Models.Type;
 
 namespace PresetMagician.VendorPresetParserTest
 {
@@ -28,19 +26,18 @@ namespace PresetMagician.VendorPresetParserTest
     {
         public static void Main(string[] args)
         {
-            Core.CoreInitializer.RegisterServices();
-            VendorPresetParserInitializer.Initialize();
+            FrontendInitializer.RegisterTypes(ServiceLocator.Default);
 
             var vendorPresetParserService = ServiceLocator.Default.ResolveType<VendorPresetParserService>();
             var logger = new RollingInMemoryLogListener();
             LogManager.AddListener(logger);
-            
+
             var pluginTestDirectory = @"C:\Program Files\VSTPlugins";
             var testResults = new List<PluginTestResult>();
 
             var presetParserDictionary = vendorPresetParserService.GetPresetHandlerListByPlugin();
 
-          
+
             var testData = ReadTestData();
             var ignoredPlugins = ReadIgnoredPlugins();
 
@@ -76,7 +73,8 @@ namespace PresetMagician.VendorPresetParserTest
                 var plugin = new Plugin
                 {
                     VstPluginId = pluginId, PluginLocation = pluginLocation,
-                    PluginInfo = new VstPluginInfoSurrogate {ProgramCount = 1, Flags = VstPluginFlags.ProgramChunks, PluginID = pluginId}
+                    PluginInfo = new VstPluginInfoSurrogate
+                        {ProgramCount = 1, Flags = VstPluginFlags.ProgramChunks, PluginID = pluginId}
                 };
 
                 var stubProcess = new StubVstHostProcess();
@@ -161,7 +159,7 @@ namespace PresetMagician.VendorPresetParserTest
 
                 plugin.AdditionalBankFiles.Clear();
                 plugin.AdditionalBankFiles.Add(bankFile);
-                
+
                 bool additionalBankFileCountOk = false;
 
 
@@ -214,8 +212,8 @@ namespace PresetMagician.VendorPresetParserTest
             var config = new Configuration(CultureInfo.InvariantCulture);
             config.MissingFieldFound = null;
             using (var reader = new StreamReader("testdata.csv"))
-                
-            
+
+
             using (var csv = new CsvReader(reader, config))
             {
                 return csv.GetRecords<TestData>().ToList();
@@ -251,6 +249,7 @@ namespace PresetMagician.VendorPresetParserTest
     public class StubVstHostProcess : VstHostProcess
     {
         public int PluginId { get; set; }
+
         public override IRemoteVstService GetVstService()
         {
             return new StubRemoteVstService(PluginId);
@@ -326,7 +325,6 @@ namespace PresetMagician.VendorPresetParserTest
 
         public void UnregisterPlugin(Guid guid)
         {
-            
         }
 
         public string GetPluginHash(Guid guid)
@@ -387,7 +385,8 @@ namespace PresetMagician.VendorPresetParserTest
 
         public VstPluginInfoSurrogate GetPluginInfo(Guid pluginGuid)
         {
-            var info = new VstPluginInfoSurrogate {ProgramCount = 1, Flags = VstPluginFlags.ProgramChunks, PluginID = _pluginId};
+            var info = new VstPluginInfoSurrogate
+                {ProgramCount = 1, Flags = VstPluginFlags.ProgramChunks, PluginID = _pluginId};
             return info;
         }
 
@@ -443,13 +442,12 @@ namespace PresetMagician.VendorPresetParserTest
         {
             var preset = new Preset();
             preset.Plugin.Presets.Add(preset);
-            
+
             preset.SetFromPresetParser(presetMetadata);
             preset.PresetHash = HashUtils.getIxxHash(data);
             preset.PresetSize = data.Length;
             preset.PresetCompressedSize = data.Length;
         }
-      
     }
 
     class PluginTestResult
@@ -470,7 +468,8 @@ namespace PresetMagician.VendorPresetParserTest
             {
                 if (Presets > 5 && BankMissing < 2 && Presets == ReportedPresets)
                 {
-                    return string.Join(",", VendorPresetParser, PluginId.ToString(), RndPresetName, RndBankPath, RndHash, DateTime.Now.ToString());
+                    return string.Join(",", VendorPresetParser, PluginId.ToString(), RndPresetName, RndBankPath,
+                        RndHash, DateTime.Now.ToString());
                 }
 
                 return "";
@@ -492,7 +491,7 @@ namespace PresetMagician.VendorPresetParserTest
         [Name("BankPath")] public string BankPath { get; set; }
 
         [Name("Hash")] public string Hash { get; set; }
-        
+
         [Name("LastUpdated")] [Optional] public string LastUpdated { get; set; }
     }
 

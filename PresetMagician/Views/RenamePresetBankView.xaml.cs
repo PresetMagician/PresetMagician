@@ -1,4 +1,3 @@
-using System.Windows;
 using Catel.Windows;
 using PresetMagician.ViewModels;
 

@@ -12,7 +12,8 @@ namespace PresetMagician.Legacy.Migrations
 
             if (!ColumnExists("Presets", "IsMetadataModified"))
             {
-                Database.ExecuteSqlCommand("ALTER TABLE `Presets` ADD COLUMN `IsMetadataModified` bit not null DEFAULT 0");
+                Database.ExecuteSqlCommand(
+                    "ALTER TABLE `Presets` ADD COLUMN `IsMetadataModified` bit not null DEFAULT 0");
             }
         }
     }

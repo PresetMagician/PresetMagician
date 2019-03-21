@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Catel.MVVM;
 
 // ReSharper disable once CheckNamespace
@@ -10,12 +9,11 @@ namespace PresetMagician
         public DeveloperSetCatelLoggingCommandContainer(ICommandManager commandManager)
             : base(Commands.Developer.SetCatelLogging, commandManager)
         {
-          
         }
 
         protected override void Execute(object parameter)
         {
-            App.SetCatelLogging((bool)parameter);
+            App.SetCatelLogging((bool) parameter);
         }
     }
 }

@@ -22,7 +22,7 @@
     <catel:DataWindow.Resources>
         <fluent:ColorToSolidColorBrushValueConverter x:Key="ColorToSolidColorBrushValueConverter" />
 
-     
+
         <ControlTemplate x:Key="PluginSettings">
 
             <Grid VerticalAlignment="Top">
@@ -71,7 +71,7 @@
                 </StackPanel>
 
                 <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
-                    <Label Content="Additional Banks/Presets (FXP/FXB)"  />
+                    <Label Content="Additional Banks/Presets (FXP/FXB)" />
                 </StackPanel>
 
                 <Grid Grid.Row="1" Grid.Column="1">
@@ -550,11 +550,11 @@
                         <ContentControl Template="{StaticResource PluginResources}" />
                     </ScrollViewer>
                 </TabItem>
-              
+
             </controls:TabControl>
         </ControlTemplate>
     </catel:DataWindow.Resources>
 
-    <ContentControl Template="{StaticResource PluginTabControl}"/>
+    <ContentControl Template="{StaticResource PluginTabControl}" />
 
 </catel:DataWindow>

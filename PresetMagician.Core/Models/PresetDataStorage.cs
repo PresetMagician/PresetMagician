@@ -11,7 +11,8 @@ namespace PresetMagician.Core.Models
 
         private byte[] _compressedPresetDataCache;
 
-        [Ignore] public int PresetCompressedSize
+        [Ignore]
+        public int PresetCompressedSize
         {
             get
             {
@@ -19,6 +20,7 @@ namespace PresetMagician.Core.Models
                 {
                     return 0;
                 }
+
                 return _compressedPresetDataCache.Length;
             }
         }

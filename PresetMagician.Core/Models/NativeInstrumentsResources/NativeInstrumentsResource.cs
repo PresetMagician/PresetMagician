@@ -18,28 +18,26 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
     {
         public Color Color { get; set; } = new Color();
 
-        [IncludeInSerialization]
-        public Categories Categories { get; set; } = new Categories();
-        [IncludeInSerialization]
-        public ShortNames ShortNames { get; set; } = new ShortNames();
+        [IncludeInSerialization] public Categories Categories { get; set; } = new Categories();
+        [IncludeInSerialization] public ShortNames ShortNames { get; set; } = new ShortNames();
 
         public ResourceState ColorState { get; } = new ResourceState();
         public ResourceState ShortNamesState { get; } = new ResourceState();
         public ResourceState CategoriesState { get; } = new ResourceState();
 
         #region Images
-        
+
         public ResourceImage VB_logo { get; private set; } = new ResourceImage(279, 47, "VB_logo.png");
-        public ResourceImage VB_artwork { get; private set;} = new ResourceImage(96, 47, "VB_artwork.png");
-        public ResourceImage MST_artwork { get; private set;} = new ResourceImage(134, 66, "MST_artwork.png");
-        public ResourceImage MST_plugin { get; private set;} = new ResourceImage(127, 70, "MST_plugin.png");
-        public ResourceImage MST_logo { get; private set;} = new ResourceImage(240, 196, "MST_logo.png");
-        public ResourceImage OSO_logo { get; private set;} = new ResourceImage(417, 65, "OSO_logo.png");
+        public ResourceImage VB_artwork { get; private set; } = new ResourceImage(96, 47, "VB_artwork.png");
+        public ResourceImage MST_artwork { get; private set; } = new ResourceImage(134, 66, "MST_artwork.png");
+        public ResourceImage MST_plugin { get; private set; } = new ResourceImage(127, 70, "MST_plugin.png");
+        public ResourceImage MST_logo { get; private set; } = new ResourceImage(240, 196, "MST_logo.png");
+        public ResourceImage OSO_logo { get; private set; } = new ResourceImage(417, 65, "OSO_logo.png");
 
         public List<ResourceImage> ResourceImages { get; } = new List<ResourceImage>();
 
         #endregion
-        
+
         public static string GetNativeInstrumentsResourcesDirectory()
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments),
@@ -235,15 +233,14 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
 
                 Color.BackgroundColor =
                     (System.Windows.Media.Color) ColorConverter.ConvertFromString("#" + Color.VB_bgcolor);
-                
+
                 ColorState.State = ResourceStates.FromDisk;
             }
             else
             {
-                    Color.BackgroundColor = (System.Windows.Media.Color) ColorConverter.ConvertFromString("#FFFFFF");
+                Color.BackgroundColor = (System.Windows.Media.Color) ColorConverter.ConvertFromString("#FFFFFF");
             }
-           
-          
+
 
             if (File.Exists(files["shortname"]))
             {
@@ -256,7 +253,7 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
             if (File.Exists(files["categories"]))
             {
                 Categories.CategoryNames.Clear();
-                
+
                 Categories = JsonConvert.DeserializeObject<Categories>(
                     File.ReadAllText(files["categories"]));
 
@@ -282,7 +279,7 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
 
                 CategoriesState.State = ResourceStates.FromDisk;
             }
-            
+
 
             var imagesDirectory = GetImageDirectory(plugin);
 

@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -12,7 +10,6 @@ using System.Net.Http.Headers;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Data;
 using Anotar.Catel;
 using Catel;
 using Catel.Collections;
@@ -22,16 +19,14 @@ using Catel.MVVM;
 using Catel.Services;
 using Drachenkatze.PresetMagician.NKSF.NKSF;
 using Drachenkatze.PresetMagician.Utils;
-using Jacobi.Vst.Core.Plugin;
-using MethodTimer;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using PresetMagician.Models;
-using PresetMagician.Models.ControllerAssignments;
-using PresetMagician.Services.Interfaces;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Models.NativeInstrumentsResources;
+using PresetMagician.Core.Services;
+using PresetMagician.Models.ControllerAssignments;
+using PresetMagician.Services.Interfaces;
 
 namespace PresetMagician.ViewModels
 {
@@ -44,6 +39,7 @@ namespace PresetMagician.ViewModels
         private readonly ILicenseService _licenseService;
         private readonly IAdvancedMessageService _messageService;
         private readonly ICommandManager _commandManager;
+        private readonly RemoteVstService _remoteVstService;
         private readonly INativeInstrumentsResourceGeneratorService _resourceGeneratorService;
 
 
@@ -51,6 +47,7 @@ namespace PresetMagician.ViewModels
             ISelectDirectoryService selectDirectoryService, ILicenseService licenseService,
             IAdvancedMessageService messageService,
             ICommandManager commandManager,
+            RemoteVstService remoteVstService,
             INativeInstrumentsResourceGeneratorService
                 resourceGeneratorService)
         {
@@ -70,6 +67,7 @@ namespace PresetMagician.ViewModels
             _vstService = vstService;
             _resourceGeneratorService = resourceGeneratorService;
             _messageService = messageService;
+            _remoteVstService = remoteVstService;
 
             OpenNKSFile = new TaskCommand(OnOpenNKSFileExecute);
             ClearMappings = new TaskCommand(OnClearMappingsExecute);
@@ -102,11 +100,8 @@ namespace PresetMagician.ViewModels
             PluginLocations = (from pluginLocation in Plugin.PluginLocations
                 where pluginLocation.IsPresent
                 select pluginLocation).ToList();
-
         }
-        
-        
-       
+
 
         #region Properties
 
@@ -216,8 +211,6 @@ namespace PresetMagician.ViewModels
                 {
                     await AddFxbFxpFiles(_openFileService.FileNames.ToList());
                 }
-                
-               
             }
             catch (Exception ex)
             {
@@ -286,12 +279,12 @@ namespace PresetMagician.ViewModels
 
         private async Task OnAddAdditionalPresetFolderExecute()
         {
-            
             try
             {
                 if (await _selectDirectoryService.DetermineDirectoryAsync())
                 {
-                    var files = GetFxbFxpFiles(_selectDirectoryService.DirectoryName, new List<string> {"*.fxp", "*.fxb"});
+                    var files = GetFxbFxpFiles(_selectDirectoryService.DirectoryName,
+                        new List<string> {"*.fxp", "*.fxb"});
 
                     await AddFxbFxpFiles(files);
 
@@ -307,7 +300,7 @@ namespace PresetMagician.ViewModels
         public async Task AddFxbFxpFiles(List<string> files)
         {
             List<(string fileName, string reason)> failedFiles = new List<(string, string)>();
-            
+
             foreach (var filename in files)
             {
                 var result = VstUtils.LoadFxp(filename, Plugin.PluginInfo.ToNonSurrogate());
@@ -327,14 +320,15 @@ namespace PresetMagician.ViewModels
                 var sb = new StringBuilder();
                 sb.AppendLine("The following FXB/FXP files could not be added:");
                 sb.AppendLine();
-                        
+
                 foreach (var fail in failedFiles)
                 {
                     sb.AppendLine($"{fail.fileName}: {fail.reason}");
                     sb.AppendLine();
                 }
 
-                await _messageService.ShowErrorAsync(sb.ToString(), "Unable to add some FXB/FXP files", HelpLinks.SETTINGS_PLUGIN_FXBFXPNOTES);
+                await _messageService.ShowErrorAsync(sb.ToString(), "Unable to add some FXB/FXP files",
+                    HelpLinks.SETTINGS_PLUGIN_FXBFXPNOTES);
             }
         }
 
@@ -568,7 +562,7 @@ namespace PresetMagician.ViewModels
 
         private async Task OnGenerateResourcesExecute()
         {
-            using (var remotePluginInstance = _vstService.GetRemotePluginInstance(Plugin))
+            using (var remotePluginInstance = _remoteVstService.GetRemotePluginInstance(Plugin))
             {
                 await remotePluginInstance.LoadPlugin();
                 remotePluginInstance.OpenEditorHidden();

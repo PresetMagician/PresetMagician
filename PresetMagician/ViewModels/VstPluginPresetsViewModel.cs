@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
@@ -8,19 +6,17 @@ using System.Windows.Data;
 using Catel.Data;
 using Catel.MVVM;
 using GongSolutions.Wpf.DragDrop;
-using MethodTimer;
 using PresetMagician.Core.Data;
-using PresetMagician.Services.Interfaces;
-using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
+using PresetMagician.Core.Services;
 
 namespace PresetMagician.ViewModels
 {
     public sealed class VstPluginPresetsViewModel : ViewModelBase, IDropTarget, IModelTracker
     {
-        private readonly IRuntimeConfigurationService _runtimeConfigurationService;
-        
-        public VstPluginPresetsViewModel(Plugin plugin, IRuntimeConfigurationService runtimeConfigurationService)
+        private readonly GlobalFrontendService _globalFrontendService;
+
+        public VstPluginPresetsViewModel(Plugin plugin, GlobalFrontendService globalFrontendService)
         {
             Plugin = plugin;
 
@@ -28,16 +24,14 @@ namespace PresetMagician.ViewModels
             PresetsView.IsLiveSorting = false;
             PresetsView.IsLiveFiltering = false;
 
-            PropertyChanged += OnPropertyChanged;
-            
             Title = $"{plugin.PluginName}: Presets";
-            _runtimeConfigurationService = runtimeConfigurationService;
-            _runtimeConfigurationService.ApplicationState.IsApplicationEditing = true;
-            
+            _globalFrontendService = globalFrontendService;
+            _globalFrontendService.ApplicationState.IsApplicationEditing = true;
+
             RenameBankCommand = new TaskCommand(OnRenameBankCommandExecute);
             //ThrottlingRate = new TimeSpan(0, 0, 0, 0, 500);
         }
-        
+
         /// <summary>
         /// Gets the ShowKeyboardMappings command.
         /// </summary>
@@ -53,7 +47,7 @@ namespace PresetMagician.ViewModels
 
         protected override Task OnClosedAsync(bool? result)
         {
-            _runtimeConfigurationService.ApplicationState.IsApplicationEditing = false;
+            _globalFrontendService.ApplicationState.IsApplicationEditing = false;
             return base.OnClosedAsync(result);
         }
 
@@ -67,8 +61,8 @@ namespace PresetMagician.ViewModels
             return true;
         }
 
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {            
+        protected override void OnPropertyChanged(AdvancedPropertyChangedEventArgs e)
+        {
             if (e.PropertyName == nameof(SelectedTreeNode))
             {
                 PresetsView.Filter = o => PresetFilter(o as Preset);
@@ -86,8 +80,7 @@ namespace PresetMagician.ViewModels
 
         public ListCollectionView PresetsView { get; private set; }
 
-        [Model]
-        public Plugin Plugin { get; protected set; }
+        [Model] public Plugin Plugin { get; protected set; }
 
         #endregion
 
@@ -159,20 +152,20 @@ namespace PresetMagician.ViewModels
                     }
                 }
             }
-            
+
             if (dropInfo.Data.GetType() == typeof(Preset) || dropInfo.Data.GetType() == typeof(List<Preset>))
             {
                 List<Preset> presets;
 
                 if (dropInfo.Data.GetType() == typeof(Preset))
                 {
-                    presets = new List<Preset>() { dropInfo.Data as Preset };
+                    presets = new List<Preset>() {dropInfo.Data as Preset};
                 }
                 else
                 {
                     presets = dropInfo.Data as List<Preset>;
                 }
-                
+
                 if (dropInfo.TargetItem.GetType() == typeof(PresetBank))
                 {
                     var targetBank = dropInfo.TargetItem as PresetBank;
@@ -185,7 +178,6 @@ namespace PresetMagician.ViewModels
                     }
                 }
             }
-
         }
     }
 }

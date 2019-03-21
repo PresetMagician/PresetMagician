@@ -30,7 +30,7 @@ namespace PresetMagician.Core.Interfaces
         IDataPersistence DataPersistence { get; set; }
 
         List<int> GetSupportedPlugins();
-      
+
         Task DoScan();
         void OnAfterPresetExport();
     }

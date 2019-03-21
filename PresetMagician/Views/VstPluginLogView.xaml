@@ -19,7 +19,7 @@
         </Grid.RowDefinitions>
 
         <TextBox IsReadOnly="True" FontFamily="Consolas" Text="{Binding Plugin.Logs, Mode=OneWay}"
-                     HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsUndoEnabled="False" UndoLimit="0"
-                     VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsUndoEnabled="False" UndoLimit="0"
+                 VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" />
     </Grid>
 </catel:DataWindow>

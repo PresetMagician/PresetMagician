@@ -1,15 +1,15 @@
 namespace PresetMagician.Legacy.Migrations
 {
-	// ReSharper disable once UnusedMember.Global
-	public class Migration20190303
+    // ReSharper disable once UnusedMember.Global
+    public class Migration20190303
         : BaseMigration
     {
         public override void Up()
         {
             if (ColumnExists("Presets", "IsDeleted"))
             {
-	            Database.ExecuteSqlCommand(@"PRAGMA foreign_keys=0");
-	            Database.ExecuteSqlCommand(@"DROP TABLE IF EXISTS tmp_20190303");
+                Database.ExecuteSqlCommand(@"PRAGMA foreign_keys=0");
+                Database.ExecuteSqlCommand(@"DROP TABLE IF EXISTS tmp_20190303");
                 Database.ExecuteSqlCommand(@"
 CREATE TABLE 'tmp_20190303' (
 				'PresetId'	nvarchar(128) NOT NULL,
@@ -35,7 +35,8 @@ CREATE TABLE 'tmp_20190303' (
 
 ");
                 // PRAGMA defer_foreign_keys = '1';
-                Database.ExecuteSqlCommand(@"INSERT INTO tmp_20190303 SELECT PresetId,PluginId,VstPluginId,LastExported,BankPath,PresetSize,PresetCompressedSize,PresetName,PreviewNoteNumber,Author,Comment,SourceFile,PresetHash,LastExportedPresetHash,IsIgnored,IsMetadataModified,UserModifiedMetadata FROM Presets;
+                Database.ExecuteSqlCommand(
+                    @"INSERT INTO tmp_20190303 SELECT PresetId,PluginId,VstPluginId,LastExported,BankPath,PresetSize,PresetCompressedSize,PresetName,PreviewNoteNumber,Author,Comment,SourceFile,PresetHash,LastExportedPresetHash,IsIgnored,IsMetadataModified,UserModifiedMetadata FROM Presets;
 ");
                 Database.ExecuteSqlCommand(@"DROP TABLE Presets;");
                 Database.ExecuteSqlCommand(@"ALTER TABLE tmp_20190303 RENAME TO Presets");

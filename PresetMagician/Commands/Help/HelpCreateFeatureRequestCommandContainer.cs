@@ -1,16 +1,9 @@
-﻿using System.Diagnostics;
-using System.Threading.Tasks;
-using Catel.Configuration;
-using Catel.Logging;
+﻿using System.Threading.Tasks;
 using Catel.MVVM;
 using Catel.Services;
-using Orchestra;
-using PresetMagician.Models;
-using PresetMagician.Services.Interfaces;
-using PresetMagician.ViewModels;
-using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Services;
 using PresetMagician.Utils.IssueReport;
+using PresetMagician.ViewModels;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -19,22 +12,23 @@ namespace PresetMagician
     public class HelpCreateFeatureRequestCommandContainer : CommandContainerBase
     {
         private readonly IUIVisualizerService _uiVisualizerService;
-        private readonly IRuntimeConfigurationService _configurationService;
+        private readonly GlobalFrontendService _globalFrontendService;
         private readonly GlobalService _globalService;
 
         public HelpCreateFeatureRequestCommandContainer(ICommandManager commandManager,
-            IUIVisualizerService uiVisualizerService, IRuntimeConfigurationService configurationService, GlobalService globalService)
+            IUIVisualizerService uiVisualizerService, GlobalService globalService,
+            GlobalFrontendService globalFrontendService)
             : base(Commands.Help.CreateFeatureRequest, commandManager)
         {
             _uiVisualizerService = uiVisualizerService;
-            _configurationService = configurationService;
+            _globalFrontendService = globalFrontendService;
             _globalService = globalService;
         }
 
         protected override async Task ExecuteAsync(object parameter)
         {
             var report = new IssueReport(IssueReport.TrackerTypes.FEATURE, _globalService.PresetMagicianVersion,
-                _configurationService.ApplicationState.ActiveLicense.Customer.Email, FileLocations.LogFile,
+                _globalFrontendService.ApplicationState.ActiveLicense.Customer.Email, FileLocations.LogFile,
                 DataPersisterService.DefaultPluginStoragePath);
 
             await _uiVisualizerService.ShowDialogAsync<ReportIssueViewModel>(report);

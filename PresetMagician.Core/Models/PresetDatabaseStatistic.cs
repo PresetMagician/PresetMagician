@@ -13,7 +13,7 @@ namespace PresetMagician.Core.Models
             {
                 if (PresetUncompressedSize != 0)
                 {
-                    return 1-PresetCompressedSize / (double) PresetUncompressedSize;
+                    return 1 - PresetCompressedSize / (double) PresetUncompressedSize;
                 }
 
                 return 0;

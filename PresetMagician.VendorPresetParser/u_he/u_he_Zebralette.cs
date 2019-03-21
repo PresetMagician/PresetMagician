@@ -14,7 +14,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
         {
             return "Zebralette";
         }
-        
+
         protected override string GetDataDirectoryName()
         {
             return "Zebra2.data";

@@ -66,14 +66,10 @@ namespace PresetMagician.Utils.IssueReport
             }
         }
 
-        [Required]
-        [MinLength(10)]
-        public string Subject { get; set; }
+        [Required] [MinLength(10)] public string Subject { get; set; }
         public string Description { get; set; }
         private string Version { get; }
-        [Required]
-        [EmailAddress]
-        public string UserEmail { get; set; }
+        [Required] [EmailAddress] public string UserEmail { get; set; }
         public bool SubmitPrivately { get; set; }
         public bool IncludeDatabase { get; set; }
         public bool IncludeSystemLog { get; set; }
@@ -103,6 +99,7 @@ namespace PresetMagician.Utils.IssueReport
             {
                 RequiresEmail = true;
             }
+
             DatabaseLocation = databaseLocation;
             SystemLogLocation = systemLogLocation;
         }
@@ -114,7 +111,7 @@ namespace PresetMagician.Utils.IssueReport
             SystemFile.WriteAllText(tmpFile, e.ToString());
             Attachments.Add(new IssueAttachment
                 {FilePath = tmpFile, Description = "Exception Information", DeleteAfterReport = true});
-            
+
             Subject = $"Crash caused by: {e.GetType().FullName}: {e.Message}";
         }
 
@@ -203,7 +200,7 @@ namespace PresetMagician.Utils.IssueReport
                 };
 
                 pluginName.Values.Add(new CustomFieldValue {Info = PluginName});
-                
+
                 var pluginVendor = new IssueCustomField
                 {
                     Id = 3,
@@ -212,7 +209,7 @@ namespace PresetMagician.Utils.IssueReport
                 };
 
                 pluginVendor.Values.Add(new CustomFieldValue {Info = PluginVendor});
-                
+
                 var pluginVstId = new IssueCustomField
                 {
                     Id = 4,
@@ -232,8 +229,6 @@ namespace PresetMagician.Utils.IssueReport
             _issue.Subject = Subject;
             _issue.Description = Description;
             _issue.Uploads = attachmentUploads;
-
-            
         }
 
         public async Task SubmitIssue()
@@ -349,7 +344,6 @@ namespace PresetMagician.Utils.IssueReport
                     LastName = "from PresetMagician",
                     FirstName = "Reporter",
                     Login = Guid.NewGuid().ToString()
-
                 };
                 var createdUser = await _manager.CreateObjectAsync(user);
 
@@ -364,12 +358,12 @@ namespace PresetMagician.Utils.IssueReport
         {
             throw new Exception("Not implemented");
             var tempDatabasePath = Path.Combine(Path.GetTempPath(), "PresetMagician.Stripped.sqlite3");
-            var tempDatabaseZip = tempDatabasePath + ".zip"; 
+            var tempDatabaseZip = tempDatabasePath + ".zip";
             if (SystemFile.Exists(tempDatabasePath))
             {
                 SystemFile.Delete(tempDatabasePath);
             }
-            
+
             progress.Report(new StringProgress("Copying database to a temporary location"));
             SystemFile.Copy(DatabaseLocation, tempDatabasePath);
 
@@ -382,7 +376,9 @@ namespace PresetMagician.Utils.IssueReport
                 await db.ExecuteAsync("DELETE FROM Plugins WHERE Id != ?", restrictToPlugin);
                 await db.ExecuteAsync("delete from Presets WHERE Presets.PluginId != ?", restrictToPlugin);
             }
-            await db.ExecuteAsync("DELETE FROM Presets where Presets._rowid_ not in (select t2._rowid_ from Presets t2 where t2.PluginId = Presets.PluginId limit 10)");
+
+            await db.ExecuteAsync(
+                "DELETE FROM Presets where Presets._rowid_ not in (select t2._rowid_ from Presets t2 where t2.PluginId = Presets.PluginId limit 10)");
             await db.ExecuteAsync(
                 "DELETE FROM PresetDataStorages where PresetDataStorages.PresetDataStorageId not in (select PresetId from Presets)");
 
@@ -395,7 +391,8 @@ namespace PresetMagician.Utils.IssueReport
             await db.CloseAsync();
 
             // todo Workaround for issue https://github.com/praeclarum/sqlite-net/issues/762
-            GC.Collect(); GC.WaitForPendingFinalizers();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
 
             if (SystemFile.Exists(tempDatabaseZip))
             {

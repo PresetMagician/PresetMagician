@@ -42,22 +42,22 @@ namespace PresetMagician
         private Plugin _currentPlugin;
 
         protected AbstractScanPluginsCommandContainer(string command, ICommandManager commandManager,
-            IRuntimeConfigurationService runtimeConfigurationService)
-            : base(command, commandManager, runtimeConfigurationService)
+            IServiceLocator serviceLocator)
+            : base(command, commandManager, serviceLocator)
         {
-            _messageService = ServiceLocator.Default.ResolveType<IAdvancedMessageService>();
-            _applicationService = ServiceLocator.Default.ResolveType<IApplicationService>();
-            _dispatcherService = ServiceLocator.Default.ResolveType<IDispatcherService>();
+            _messageService = ServiceLocator.ResolveType<IAdvancedMessageService>();
+            _applicationService = ServiceLocator.ResolveType<IApplicationService>();
+            _dispatcherService = ServiceLocator.ResolveType<IDispatcherService>();
             _commandManager = commandManager;
-            _dataPersisterService = ServiceLocator.Default.ResolveType<DataPersisterService>();
-            _presetDataPersisterService = ServiceLocator.Default.ResolveType<PresetDataPersisterService>();
+            _dataPersisterService = ServiceLocator.ResolveType<DataPersisterService>();
+            _presetDataPersisterService = ServiceLocator.ResolveType<PresetDataPersisterService>();
             ;
             _resourceGeneratorService =
-                ServiceLocator.Default.ResolveType<INativeInstrumentsResourceGeneratorService>();
-            _pluginService = ServiceLocator.Default.ResolveType<PluginService>();
-            GlobalService = ServiceLocator.Default.ResolveType<GlobalService>();
-            _globalFrontendService = ServiceLocator.Default.ResolveType<GlobalFrontendService>();
-            _remoteVstService = ServiceLocator.Default.ResolveType<RemoteVstService>();
+                ServiceLocator.ResolveType<INativeInstrumentsResourceGeneratorService>();
+            _pluginService = ServiceLocator.ResolveType<PluginService>();
+            GlobalService = ServiceLocator.ResolveType<GlobalService>();
+            _globalFrontendService = ServiceLocator.ResolveType<GlobalFrontendService>();
+            _remoteVstService = ServiceLocator.ResolveType<RemoteVstService>();
 
             GlobalService.Plugins.CollectionChanged += OnPluginsListChanged;
 
@@ -90,16 +90,15 @@ namespace PresetMagician
 
             _applicationService.StartApplicationOperation(this, "Analyzing VST plugins: Loading missing metadata",
                 pluginsToUpdateMetadata.Count);
-            var cancellationToken = _applicationService.GetApplicationOperationCancellationSource().Token;
 
             var pluginsToRemove = new List<Plugin>();
-            var progress = _applicationService.CreateApplicationProgress();
+            var progress = _applicationService.GetApplicationProgress();
             // First pass: Load missing metadata
             try
             {
                 pluginsToRemove = await TaskHelper.Run(
                     async () => await _pluginService.UpdateMetadata(pluginsToUpdateMetadata, progress), true,
-                    cancellationToken);
+                    progress.CancellationToken);
 
                 await _dispatcherService.InvokeAsync(() =>
                 {
@@ -145,23 +144,23 @@ namespace PresetMagician
                 }
             }
 
-            if (!cancellationToken.IsCancellationRequested)
+            if (!progress.CancellationToken.IsCancellationRequested)
             {
                 _applicationService.StartApplicationOperation(this, "Analyzing VST plugins",
                     pluginsToScan.Count);
-                cancellationToken = _applicationService.GetApplicationOperationCancellationSource().Token;
+
 
                 await TaskHelper.Run(
                     async () => await AnalyzePlugins(pluginsToScan.OrderBy(p => p.PluginName).ToList(),
-                        cancellationToken), true,
-                    cancellationToken);
+                        progress.CancellationToken), true,
+                    progress.CancellationToken);
 
                 // ReSharper disable once MethodSupportsCancellation
                 _dataPersisterService.Save();
             }
 
 
-            if (cancellationToken.IsCancellationRequested)
+            if (progress.CancellationToken.IsCancellationRequested)
             {
                 _applicationService.StopApplicationOperation("Plugin analysis cancelled.");
             }
@@ -285,8 +284,9 @@ namespace PresetMagician
                         await plugin.PresetParser.DoScan();
 
                         await _presetDataPersisterService.CloseDatabase();
+                        _dataPersisterService.SavePresetsForPlugin(plugin);
 
-                        if (_runtimeConfigurationService.RuntimeConfiguration.AutoCreateResources &&
+                        if (GlobalService.RuntimeConfiguration.AutoCreateResources &&
                             _resourceGeneratorService.ShouldCreateScreenshot(remotePluginInstance))
                         {
                             plugin.Logger.Debug(
@@ -306,7 +306,7 @@ namespace PresetMagician
 
                         await _dispatcherService.InvokeAsync(() =>
                         {
-                            if (_runtimeConfigurationService.RuntimeConfiguration.AutoCreateResources &&
+                            if (GlobalService.RuntimeConfiguration.AutoCreateResources &&
                                 _resourceGeneratorService.NeedToGenerateResources(remotePluginInstance))
                             {
                                 plugin.Logger.Debug(
@@ -336,7 +336,7 @@ namespace PresetMagician
                 }
                 catch (Exception e)
                 {
-                    plugin.OnLoadError(e);
+                    plugin.LogPluginError("loading presets", e);
 
                     var errorMessage =
                         $"Unable to analyze {plugin.DllFilename} because of {e.GetType().FullName}: {e.Message}";

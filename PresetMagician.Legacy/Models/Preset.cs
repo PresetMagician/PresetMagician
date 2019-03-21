@@ -6,14 +6,12 @@ using Newtonsoft.Json;
 
 namespace PresetMagician.Legacy.Models
 {
-    public class Preset 
+    public class Preset
     {
         public Preset()
         {
         }
 
-
-        
 
         #region Properties
 
@@ -53,11 +51,9 @@ namespace PresetMagician.Legacy.Models
         /// with the string representation of the bank path 
         /// </summary>
         public Plugin Plugin { get; set; }
-      
 
         #endregion
 
-        
 
         #region Metadata properties
 
@@ -81,9 +77,9 @@ namespace PresetMagician.Legacy.Models
         /// The bank path. Only set via EntityFramework when loading from the database
         /// </summary>
         public string BankPath { get; set; }
-       
+
         public ICollection<Type> Types { get; set; } = new List<Type>();
-        public ICollection<Mode> Modes { get; set; }= new List<Mode>();
+        public ICollection<Mode> Modes { get; set; } = new List<Mode>();
 
         #endregion
 
@@ -133,13 +129,13 @@ namespace PresetMagician.Legacy.Models
 
 
         public int PreviewNoteNumber { get; set; }
-      
 
         #endregion
 
         #region Change Tracking
 
         public List<string> UserOverwrittenProperties = new List<string>();
+
         /// <summary>
         /// Stores all properties which the user has manually modified. These properties will never be updated by a preset parser
         /// </summary>
@@ -158,14 +154,11 @@ namespace PresetMagician.Legacy.Models
                     }
                     catch (JsonReaderException e)
                     {
-                       
                     }
                 }
             }
         }
 
-
         #endregion
-
     }
 }

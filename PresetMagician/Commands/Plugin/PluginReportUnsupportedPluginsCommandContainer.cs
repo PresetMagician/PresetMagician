@@ -1,5 +1,5 @@
-﻿using Catel.MVVM;
-using PresetMagician.Services.Interfaces;
+﻿using Catel.IoC;
+using Catel.MVVM;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -8,8 +8,8 @@ namespace PresetMagician
     public class PluginReportUnsupportedPluginsCommandContainer : AbstractReportPluginsCommandContainer
     {
         public PluginReportUnsupportedPluginsCommandContainer(ICommandManager commandManager,
-            IRuntimeConfigurationService runtimeConfigurationService) : base(Commands.Plugin.ReportUnsupportedPlugins,
-            commandManager, runtimeConfigurationService)
+            IServiceLocator serviceLocator) : base(Commands.Plugin.ReportUnsupportedPlugins,
+            commandManager, serviceLocator)
         {
             ReportAll = true;
         }

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Catel;
+using Catel.IoC;
 using Catel.MVVM;
 using Catel.Threading;
-using PresetMagician.Services.Interfaces;
+using PresetMagician.Core.Services;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -12,30 +12,31 @@ namespace PresetMagician
     public class ApplicationApplyConfigurationCommandContainer : ApplicationNotBusyCommandContainer
     {
         private readonly ICommandManager _commandManager;
+        private readonly GlobalService _globalService;
 
         public ApplicationApplyConfigurationCommandContainer(ICommandManager commandManager,
-            IRuntimeConfigurationService runtimeConfigurationService)
-            : base(Commands.Application.ApplyConfiguration, commandManager, runtimeConfigurationService)
+            IServiceLocator serviceLocator)
+            : base(Commands.Application.ApplyConfiguration, commandManager, serviceLocator)
         {
-            Argument.IsNotNull(() => runtimeConfigurationService);
+            _globalService = ServiceLocator.ResolveType<GlobalService>();
             _commandManager = commandManager;
         }
 
         protected override async Task ExecuteAsync(object parameter)
         {
-            var currentConfiguration = _runtimeConfigurationService.RuntimeConfiguration;
-            var newConfiguration = _runtimeConfigurationService.EditableConfiguration;
+            var currentConfiguration = _globalService.RuntimeConfiguration;
+            var newConfiguration = RuntimeConfigurationService.EditableConfiguration;
 
             var commandsList = new List<string>();
 
-            if (!_runtimeConfigurationService.IsConfigurationValueEqual(currentConfiguration.VstDirectories,
+            if (!RuntimeConfigurationService.IsConfigurationValueEqual(currentConfiguration.VstDirectories,
                 newConfiguration.VstDirectories))
             {
                 commandsList.Add(Commands.Plugin.RefreshPlugins);
             }
 
-            _runtimeConfigurationService.ApplyEditableConfiguration();
-            _runtimeConfigurationService.Save();
+            RuntimeConfigurationService.ApplyEditableConfiguration();
+            RuntimeConfigurationService.Save();
             await TaskHelper.Run(() =>
             {
                 foreach (var command in commandsList)

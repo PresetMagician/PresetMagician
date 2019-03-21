@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using PresetMagician.Core.Collections;
-using PresetMagician.Core.Extensions;
 
 namespace PresetMagician.Core.Models
 {

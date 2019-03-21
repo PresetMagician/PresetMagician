@@ -5,13 +5,13 @@ using System.Linq;
 using Catel.Collections;
 using Catel.Data;
 using Catel.Runtime.Serialization;
-using PresetMagician.Core.Data;
 
 namespace PresetMagician.Core.Models
 {
     public class PresetBank : INotifyPropertyChanged
     {
         public virtual event PropertyChangedEventHandler PropertyChanged;
+
         public void OnPropertyChanged(string propertyName, object before, object after)
         {
             var x = new AdvancedPropertyChangedEventArgs(this, propertyName, before, after);
@@ -31,6 +31,7 @@ namespace PresetMagician.Core.Models
                 {
                     return;
                 }
+
                 var oldValue = _bankName;
                 _bankName = value;
                 OnPropertyChanged(nameof(BankName), oldValue, _bankName);
@@ -67,7 +68,7 @@ namespace PresetMagician.Core.Models
             //if (oldBankPath != BankPath) {
             OnPropertyChanged(nameof(BankPath), oldBankPath, BankPath);
             //}
-           // RaisePropertyChanged(nameof(BankDepth), oldBankDepth, BankDepth);
+            // RaisePropertyChanged(nameof(BankDepth), oldBankDepth, BankDepth);
             //RaisePropertyChanged(nameof(IsBelowNksThreshold), oldBelowNksThreshold, IsBelowNksThreshold);
         }
 
@@ -243,11 +244,9 @@ namespace PresetMagician.Core.Models
         public bool IsVirtualBank { get; set; }
 
 
-        [ExcludeFromSerialization]
-        public bool IsSelected { get; set; }
+        [ExcludeFromSerialization] public bool IsSelected { get; set; }
 
-        [ExcludeFromSerialization]
-        public bool IsExpanded { get; set; }
+        [ExcludeFromSerialization] public bool IsExpanded { get; set; }
 
         public bool ContainsBankName(string bankName)
         {
@@ -289,7 +288,6 @@ namespace PresetMagician.Core.Models
         public int BankDepth { get; private set; }
 
         public bool IsBelowNksThreshold { get; private set; }
-        
 
         #endregion
     }

@@ -72,7 +72,8 @@
                     <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="{x:Type Button}">
                         <Setter Property="IsEnabled" Value="True" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding SelectedItems.Count, ElementName=VstDirectoryGrid}" Value="0">
+                            <DataTrigger Binding="{Binding SelectedItems.Count, ElementName=VstDirectoryGrid}"
+                                         Value="0">
                                 <Setter Property="IsEnabled" Value="False" />
                             </DataTrigger>
                         </Style.Triggers>

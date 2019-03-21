@@ -4,7 +4,8 @@ using System.Threading.Tasks;
 using Catel;
 using Catel.MVVM;
 using Catel.Services;
-using PresetMagician.Models;
+using PresetMagician.Core.Models;
+using PresetMagician.Core.Services;
 using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
 
@@ -15,14 +16,15 @@ namespace PresetMagician.ViewModels
         private readonly INavigationService _navigationService;
         private readonly ICommandManager _commandManager;
         private readonly IRuntimeConfigurationService _runtimeConfigurationService;
+        private readonly GlobalFrontendService _globalFrontendService;
 
         public string SystemCode { get; }
 
-        public bool ValidLicense => _runtimeConfigurationService.ApplicationState.ValidLicense;
+        public bool ValidLicense => _globalFrontendService.ApplicationState.ValidLicense;
 
         public RegistrationViewModel(INavigationService navigationService,
             IRuntimeConfigurationService runtimeConfigurationService,
-            ICommandManager commandManager)
+            ICommandManager commandManager, GlobalFrontendService globalFrontendService)
         {
             Argument.IsNotNull(() => navigationService);
             Argument.IsNotNull(() => runtimeConfigurationService);
@@ -30,9 +32,10 @@ namespace PresetMagician.ViewModels
 
             _navigationService = navigationService;
             _commandManager = commandManager;
+            _globalFrontendService = globalFrontendService;
             _runtimeConfigurationService = runtimeConfigurationService;
-            
-            _runtimeConfigurationService.ApplicationState.PropertyChanged += ApplicationStateOnPropertyChanged;
+
+            _globalFrontendService.ApplicationState.PropertyChanged += ApplicationStateOnPropertyChanged;
 
             CloseApplication = new TaskCommand(OnCloseApplicationExecuteAsync);
             GetLicense = new TaskCommand(OnGetLicenseExecuteAsync);
@@ -44,7 +47,7 @@ namespace PresetMagician.ViewModels
         {
             if (e.PropertyName == nameof(ApplicationState.ValidLicense))
             {
-                if (_runtimeConfigurationService.ApplicationState.ValidLicense)
+                if (_globalFrontendService.ApplicationState.ValidLicense)
                 {
                     this.CancelAndCloseViewModelAsync().Wait();
                 }

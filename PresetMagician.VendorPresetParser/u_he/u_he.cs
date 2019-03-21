@@ -6,9 +6,9 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Catel.Collections;
 using Drachenkatze.PresetMagician.Utils;
+using PresetMagician.Core.Models;
 using Squirrel.Shell;
 using Type = PresetMagician.Core.Models.Type;
-using PresetMagician.Core.Models;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 {
@@ -29,13 +29,12 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 
         public override int GetNumPresets()
         {
-
             var count = H2PScanBanks(GetDataDirectoryName(), GetProductName(), false, false).GetAwaiter().GetResult();
             count += H2PScanBanks(GetDataDirectoryName(), GetProductName(), true, false).GetAwaiter().GetResult();
 
             return base.GetNumPresets() + count;
         }
-        
+
         public override async Task DoScan()
         {
             await H2PScanBanks(GetDataDirectoryName(), GetProductName(), false, true);
@@ -169,11 +168,11 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
                 var splitTypes2 = splitType.Trim().Split(':');
                 if (splitTypes2.Length == 1)
                 {
-                    types.Add(new Type { TypeName = splitTypes2[0]});
+                    types.Add(new Type {TypeName = splitTypes2[0]});
                 }
                 else if (splitTypes.Length > 1)
                 {
-                    types.Add(new Type { TypeName = splitTypes2[0], SubTypeName = splitTypes2[1]});
+                    types.Add(new Type {TypeName = splitTypes2[0], SubTypeName = splitTypes2[1]});
                 }
             }
 
@@ -188,7 +187,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 
             foreach (var splitMode in splitModes)
             {
-                modes.Add(new Characteristic { CharacteristicName = splitMode.Trim()});
+                modes.Add(new Characteristic {CharacteristicName = splitMode.Trim()});
             }
 
             return modes;
@@ -205,6 +204,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
                 // no metadata found, return
                 return result;
             }
+
             var trimmedPresetData = presetData.Substring(0, closingTagLocation);
 
             foreach (Match match in parsingRegex.Matches(trimmedPresetData))
@@ -280,7 +280,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
             }
             catch (IOException e)
             {
-                PluginInstance.Plugin.Logger.Error($"Error while trying to resolve the shortcut {path} because of {e.GetType().FullName}: {e.Message}");
+                PluginInstance.Plugin.Logger.Error(
+                    $"Error while trying to resolve the shortcut {path} because of {e.GetType().FullName}: {e.Message}");
                 PluginInstance.Plugin.Logger.Debug(e.StackTrace);
             }
 
@@ -302,7 +303,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
             }
             catch (IOException e)
             {
-                PluginInstance.Plugin.Logger.Error($"Error while trying to resolve the shortcut {path} because of {e.GetType().FullName}: {e.Message}");
+                PluginInstance.Plugin.Logger.Error(
+                    $"Error while trying to resolve the shortcut {path} because of {e.GetType().FullName}: {e.Message}");
                 PluginInstance.Plugin.Logger.Debug(e.StackTrace);
             }
 

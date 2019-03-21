@@ -40,7 +40,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
             {
                 return new List<(string directory, PresetBank presetBank)>();
             }
-            
+
             var settingsXml = XDocument.Load(settingsFile);
             var banksElement = settingsXml.Element("FogConvolver_GENERAL_SETTINGS").Element("BANKS");
 

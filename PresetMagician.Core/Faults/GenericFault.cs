@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace PresetMagician.RemoteVstHost.Faults
 {
     [DataContract]
-    public class GenericFault: IGenericFault
+    public class GenericFault : IGenericFault
     {
         [DataMember] public string Message { get; set; }
         [DataMember] public Exception InnerException { get; set; }

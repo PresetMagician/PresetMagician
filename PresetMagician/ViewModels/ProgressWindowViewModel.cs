@@ -3,13 +3,12 @@ using Catel.MVVM;
 
 namespace PresetMagician.ViewModels
 {
-    public class ProgressWindowViewModel: ViewModelBase
+    public class ProgressWindowViewModel : ViewModelBase
     {
         public string Title { get; set; }
 
         public void SetOwnerWindow(Window window)
         {
-
             Left = window.Left + (window.ActualWidth / 2 - Width / 2);
             Top = window.Top + (window.ActualHeight / 2 - Height / 2);
         }

@@ -6,7 +6,7 @@
              xmlns:dgx="urn:tom-englert.de/DataGridExtensions"
              d:DataContext="{extensions:GenericObjectFactory Type={x:Type objectModel:ObservableCollection`1},
              T=processes1:HostProcess}"
-             
+
              xmlns:converters="clr-namespace:PresetMagician.Converters"
              xmlns:extensions="clr-namespace:PresetMagician.Extensions"
              xmlns:objectModel="clr-namespace:System.Collections.ObjectModel;assembly=System"
@@ -54,8 +54,8 @@
                 Width="Auto"
                 Binding="{Binding CurrentOperation.ElapsedTime, Mode=OneWay, StringFormat=hh\\:mm\\:ss}"
                 Header="Current Operation (Elapsed Time)"
-                IsReadOnly="True"/>
+                IsReadOnly="True" />
         </DataGrid.Columns>
-            
+
     </DataGrid>
 </UserControl>

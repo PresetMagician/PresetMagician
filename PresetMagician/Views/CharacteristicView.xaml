@@ -17,7 +17,7 @@
 
     <catel:DataWindow.Resources>
         <catel:BooleanToCollapsingVisibilityConverter x:Key="BooleanToCollapsingVisibilityConverter" />
-        
+
         <catel:BooleanToOppositeBooleanConverter x:Key="BooleanToOppositeBooleanConverter" />
 
         <catel:BooleanToCollapsingVisibilityConverter x:Key="InvertedBooleanToCollapsingVisibilityConverter">
@@ -60,8 +60,8 @@
                       SelectedItem="{Binding RedirectCharacteristic}"
                       Visibility="{Binding AllowRedirect, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}"
                       ItemTemplate="{StaticResource CharacteristicTemplate}" IsEnabled="{Binding IsRedirect}" />
-            
-            <CheckBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" IsChecked="{Binding IsIgnored}" 
+
+            <CheckBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" IsChecked="{Binding IsIgnored}"
                       Visibility="{Binding AllowRedirect, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
                 <TextBlock Text="Ignore this characteristic" />
             </CheckBox>

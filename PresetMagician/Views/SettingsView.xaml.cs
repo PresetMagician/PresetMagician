@@ -15,7 +15,7 @@ namespace PresetMagician.Views
             {
                 var x = item as TabItem;
 
-                if ((string)x.Header == viewModel.SelectedTabTitle)
+                if ((string) x.Header == viewModel.SelectedTabTitle)
                 {
                     x.IsSelected = true;
                 }

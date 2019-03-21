@@ -15,6 +15,7 @@ namespace PresetMagician.Views
     public partial class HelpLinkMessageBox
     {
         #region Constructors
+
         public HelpLinkMessageBox()
             : this(null)
         {
@@ -30,6 +31,7 @@ namespace PresetMagician.Views
                 this.DisableCloseButton();
             }
         }
+
         #endregion
     }
 }

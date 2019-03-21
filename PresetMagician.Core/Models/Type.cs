@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using Ceras;
-using Ceras.Resolvers;
 using PresetMagician.Core.Data;
 
 namespace PresetMagician.Core.Models
@@ -82,7 +80,7 @@ namespace PresetMagician.Core.Models
                 }
             }
         }
-        
+
         [Include] public bool IsIgnored { get; set; }
 
         [Include] public Type RedirectType { get; set; }
@@ -112,7 +110,7 @@ namespace PresetMagician.Core.Models
                 return TypeName;
             }
         }
-        
+
         public string EffectiveFullTypeName
         {
             get
@@ -169,6 +167,5 @@ namespace PresetMagician.Core.Models
                 return null;
             }
         }
-        
     }
 }

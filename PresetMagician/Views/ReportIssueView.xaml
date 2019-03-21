@@ -70,10 +70,11 @@
                     </xctk:WatermarkTextBox.Watermark>
                 </xctk:WatermarkTextBox>
 
-                <Border Grid.Row="3" BorderBrush="Red" BorderThickness="2" Visibility="{Binding DisplayBugWarning, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
+                <Border Grid.Row="3" BorderBrush="Red" BorderThickness="2"
+                        Visibility="{Binding DisplayBugWarning, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
                     <TextBlock FontWeight="Bold">Please ensure that you triggered the bug in the current session prior reporting the bug, so that all necessary log files can be included</TextBlock>
                 </Border>
-                
+
                 <Label Grid.Row="4" Content="Report Title" />
 
                 <xctk:WatermarkTextBox Grid.Row="5" Text="{Binding Report.Subject}" AcceptsReturn="False"

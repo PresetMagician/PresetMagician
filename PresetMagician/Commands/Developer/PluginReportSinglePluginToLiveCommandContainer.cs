@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Catel.IoC;
 using Catel.MVVM;
 using PresetMagician.Core.Models;
-using PresetMagician.Services.Interfaces;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -11,8 +11,8 @@ namespace PresetMagician
     public class PluginToolsReportSinglePluginToLiveCommandContainer : AbstractReportPluginsCommandContainer
     {
         public PluginToolsReportSinglePluginToLiveCommandContainer(ICommandManager commandManager,
-            IRuntimeConfigurationService runtimeConfigurationService) : base(
-            Commands.PluginTools.ReportSinglePluginToLive, commandManager, runtimeConfigurationService)
+            IServiceLocator serviceLocator) : base(
+            Commands.PluginTools.ReportSinglePluginToLive, commandManager, serviceLocator)
         {
         }
 

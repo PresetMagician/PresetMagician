@@ -22,7 +22,7 @@ namespace PresetMagician.Converters
 
         protected override bool IsVisible(object value, Type targetType, object parameter)
         {
-            var button = (MessageButton)value;
+            var button = (MessageButton) value;
 
             if (parameter.Equals("OK") && (button == MessageButton.OK || button == MessageButton.OKCancel))
             {

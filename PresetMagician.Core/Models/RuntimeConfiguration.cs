@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using Catel.Collections;
 using Catel.Data;
 using Newtonsoft.Json;
-using PresetMagician.Core.Models;
 
-namespace PresetMagician.Models
+namespace PresetMagician.Core.Models
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class RuntimeConfiguration : ValidatableModelBase
@@ -26,10 +25,9 @@ namespace PresetMagician.Models
         [JsonProperty] public int NumPoolWorkers { get; set; } = 4;
 
         [JsonProperty] public int MaxPoolWorkerStartupTime { get; set; } = 20;
-        
+
         [JsonProperty] public DateTime LastBackupNotificationDateTime { get; set; } = DateTime.Now;
 
-       
 
         protected override void ValidateFields(List<IFieldValidationResult> validationResults)
         {

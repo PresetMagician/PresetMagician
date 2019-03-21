@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using Catel.Data;
-using Ceras;
 using PresetMagician.Core.Collections;
 
 namespace PresetMagician.Core.Data
@@ -26,7 +25,6 @@ namespace PresetMagician.Core.Data
 
         public ModelBase()
         {
-          
         }
 
         private void ApplyTracker(string propertyName, object value)
@@ -73,7 +71,8 @@ namespace PresetMagician.Core.Data
             }
         }
 
-        protected virtual void OnCollectionItemPropertyChanged(object sender, WrappedCollectionItemPropertyChangedEventArgs e)
+        protected virtual void OnCollectionItemPropertyChanged(object sender,
+            WrappedCollectionItemPropertyChangedEventArgs e)
         {
             MarkPropertyModified(e.SourceProperty);
         }

@@ -3,9 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Catel.Data;
-using Catel.Linq;
 using Catel.MVVM;
-using PresetMagician.Core.Collections;
 using PresetMagician.Core.Data;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
@@ -16,11 +14,11 @@ namespace PresetMagician.ViewModels
     {
         private ModelBackup _modelBackup;
         private readonly TypesService _typesService;
-        
+
         public TypeViewModel(Type type, TypesService typesService)
         {
             DeferValidationUntilFirstSaveCall = false;
-            
+
             _modelBackup = type.CreateBackup();
             _typesService = typesService;
             Type = type;
@@ -39,7 +37,7 @@ namespace PresetMagician.ViewModels
                 validationResults.Add(FieldValidationResult.CreateError(nameof(RedirectType),
                     "You need to specify a type to redirect to"));
             }
-            
+
             if (IsIgnored && IsRedirect)
             {
                 validationResults.Add(FieldValidationResult.CreateError(nameof(RedirectType),
@@ -50,10 +48,11 @@ namespace PresetMagician.ViewModels
             {
                 validationResults.Add(FieldValidationResult.CreateError(nameof(TypeName),
                     "Another type with the same name already exists"));
-                
+
                 validationResults.Add(FieldValidationResult.CreateError(nameof(SubTypeName),
                     "Another type with the same name already exists"));
             }
+
             base.ValidateFields(validationResults);
         }
 
@@ -87,7 +86,5 @@ namespace PresetMagician.ViewModels
         public List<Type> TypesRedirectingToThis { get; set; }
         public new string Title { get; set; }
         public bool AllowRedirect { get; set; }
-        
-        
     }
 }

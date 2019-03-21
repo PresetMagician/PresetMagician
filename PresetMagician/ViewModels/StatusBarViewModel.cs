@@ -3,10 +3,9 @@ using System.Threading.Tasks;
 using Catel;
 using Catel.MVVM;
 using Orc.Squirrel;
-using Orchestra;
 using Orchestra.Services;
+using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
-using PresetMagician.Models;
 using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
 
@@ -18,7 +17,8 @@ namespace PresetMagician.ViewModels
 
         public StatusBarViewModel(IUpdateService updateService,
             IApplicationInitializationService applicationInitializationService,
-            IRuntimeConfigurationService runtimeConfigurationService, GlobalService globalService)
+            IRuntimeConfigurationService runtimeConfigurationService, GlobalService globalService,
+            GlobalFrontendService globalFrontendService)
         {
             Argument.IsNotNull(() => updateService);
             Argument.IsNotNull(() => applicationInitializationService);
@@ -27,12 +27,10 @@ namespace PresetMagician.ViewModels
             _updateService = updateService;
             _applicationInitializationService = applicationInitializationService as ApplicationInitializationService;
             _globalService = globalService;
-            ApplicationState = runtimeConfigurationService.ApplicationState;
+            ApplicationState = globalFrontendService.ApplicationState;
 
             InstallUpdate = new TaskCommand(OnInstallUpdateExecute);
         }
-
-     
 
         #endregion Constructors
 
@@ -41,6 +39,7 @@ namespace PresetMagician.ViewModels
         private readonly IUpdateService _updateService;
         private readonly ApplicationInitializationService _applicationInitializationService;
         private readonly GlobalService _globalService;
+
         #endregion Fields
 
         #region Properties

@@ -1,17 +1,15 @@
-using System.Windows.Controls;
-using Be.Windows.Forms;
 using Catel.Windows;
 using PresetMagician.ViewModels;
 
 namespace PresetMagician.Views
 {
-    public partial class ReportIssueView 
+    public partial class ReportIssueView
     {
         public ReportIssueView()
         {
             InitializeComponent();
         }
-        
+
         public ReportIssueView(ReportIssueViewModel viewModel)
             : base(viewModel, DataWindowMode.Custom)
         {

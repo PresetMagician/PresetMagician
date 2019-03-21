@@ -1,8 +1,6 @@
 ﻿using System.Collections.Specialized;
 using Catel.IoC;
 using Catel.MVVM;
-using PresetMagician.Core.Services;
-using PresetMagician.Services.Interfaces;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -10,13 +8,10 @@ namespace PresetMagician
     // ReSharper disable once UnusedMember.Global
     public class PresetExportClearSelectedCommandContainer : ApplicationNotBusyCommandContainer
     {
-        private readonly GlobalFrontendService _globalFrontendService;
-
         public PresetExportClearSelectedCommandContainer(ICommandManager commandManager,
-            IRuntimeConfigurationService runtimeConfigurationService)
-            : base(Commands.PresetExport.ClearSelected, commandManager, runtimeConfigurationService)
+            IServiceLocator serviceLocator)
+            : base(Commands.PresetExport.ClearSelected, commandManager, serviceLocator)
         {
-            _globalFrontendService = ServiceLocator.Default.ResolveType<GlobalFrontendService>();
             _globalFrontendService.SelectedPresets.CollectionChanged += OnSelectedPresetListChanged;
         }
 

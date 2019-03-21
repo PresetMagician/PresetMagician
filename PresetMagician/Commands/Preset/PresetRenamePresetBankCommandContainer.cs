@@ -1,10 +1,9 @@
-﻿using System.Collections.Specialized;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Threading.Tasks;
 using Catel;
 using Catel.MVVM;
 using Catel.Services;
-using PresetMagician.Services.Interfaces;
+using PresetMagician.Core.Services;
 using PresetMagician.ViewModels;
 
 // ReSharper disable once CheckNamespace
@@ -14,9 +13,10 @@ namespace PresetMagician
     public class PresetRenamePresetBankCommandContainer : AbstractCurrentPresetEditorCommandContainer
     {
         private readonly IUIVisualizerService _uiVisualizerService;
-        
-        public PresetRenamePresetBankCommandContainer(ICommandManager commandManager,  IUIVisualizerService uiVisualizerService, IRuntimeConfigurationService runtimeConfigurationService)
-            : base(Commands.Preset.RenamePresetBank, commandManager, runtimeConfigurationService)
+
+        public PresetRenamePresetBankCommandContainer(ICommandManager commandManager,
+            IUIVisualizerService uiVisualizerService, GlobalFrontendService globalFrontendService)
+            : base(Commands.Preset.RenamePresetBank, commandManager, globalFrontendService)
         {
             Argument.IsNotNull(() => uiVisualizerService);
             _uiVisualizerService = uiVisualizerService;
@@ -28,7 +28,8 @@ namespace PresetMagician
                    !CurrentPresetViewModel.SelectedTreeNode.IsVirtualBank;
         }
 
-        protected override void OnCurrentPresetViewModelChanged(VstPluginPresetsViewModel oldModel, VstPluginPresetsViewModel newModel)
+        protected override void OnCurrentPresetViewModelChanged(VstPluginPresetsViewModel oldModel,
+            VstPluginPresetsViewModel newModel)
         {
             if (oldModel != null)
             {
@@ -53,8 +54,8 @@ namespace PresetMagician
 
         protected override async Task ExecuteAsync(object parameter)
         {
-            await _uiVisualizerService.ShowDialogAsync<RenamePresetBankViewModel>((plugin: CurrentPresetViewModel.Plugin , presetBank: CurrentPresetViewModel.SelectedTreeNode) );
-            
+            await _uiVisualizerService.ShowDialogAsync<RenamePresetBankViewModel>((
+                plugin: CurrentPresetViewModel.Plugin, presetBank: CurrentPresetViewModel.SelectedTreeNode));
         }
     }
 }

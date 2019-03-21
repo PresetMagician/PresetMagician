@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using Catel;
 using Catel.Collections;
-using Catel.Data;
 using Catel.Reflection;
 using FluentAssertions;
 using PresetMagician.Core.Models;
@@ -16,7 +14,7 @@ using Type = PresetMagician.Core.Models.Type;
 
 namespace PresetMagician.Tests.ModelTests
 {
-    public class PresetTests: BaseTest
+    public class PresetTests : BaseTest
     {
         private Dictionary<string, object> PropertiesWhichShouldNotModifyIsMetadataModified =
             new Dictionary<string, object>
@@ -29,9 +27,8 @@ namespace PresetMagician.Tests.ModelTests
             {
                 {nameof(Preset.PresetHash), "dingdong"},
                 {nameof(Preset.PreviewNotePlayer), new PreviewNotePlayer()},
-                
             };
-        
+
         private Dictionary<string, object> MetadataPropertiesWhichShouldModifyIsMetadataModified =
             new Dictionary<string, object>
             {
@@ -46,7 +43,7 @@ namespace PresetMagician.Tests.ModelTests
             {
                 {nameof(Preset.PreviewNotePlayer), new PreviewNotePlayer()},
             };
-        
+
         private Dictionary<string, object> MetadataPropertiesWhichShouldModifyIsMetadataModifiedInEditMode =
             new Dictionary<string, object>
             {
@@ -62,10 +59,9 @@ namespace PresetMagician.Tests.ModelTests
                 nameof(Preset.PresetSize),
                 nameof(Preset.PresetCompressedSize),
                 nameof(Preset.PresetHash)
-                
             };
 
-    private HashSet<string> PropertiesWhichAreNotRelevantToMetadataModified =
+        private HashSet<string> PropertiesWhichAreNotRelevantToMetadataModified =
             new HashSet<string>
             {
                 nameof(Preset.IsUserModified),
@@ -84,7 +80,6 @@ namespace PresetMagician.Tests.ModelTests
 
         public PresetTests(ITestOutputHelper output, DataFixture fixture) : base(output, fixture)
         {
-
         }
 
         private static Preset GetFreshPresetTestSubject()
@@ -99,18 +94,18 @@ namespace PresetMagician.Tests.ModelTests
             originalMetadata.Types.Add(type);
             originalMetadata.Characteristics.Add(characteristic);
             originalMetadata.PresetName = "my preset";
-            
+
             var plugin = new Plugin();
             preset.Plugin = plugin;
             preset.SetFromPresetParser(originalMetadata);
-            
+
             plugin.Presets.Add(preset);
-           
+
             preset.PresetHash = "foobar";
-            
+
             preset.PresetSize = 1234;
             preset.PresetCompressedSize = 4567;
-           
+
             preset.IsMetadataModified = false;
             preset.UpdateLastExportedMetadata();
             return preset;
@@ -177,12 +172,10 @@ namespace PresetMagician.Tests.ModelTests
 
                 testedProperties.Add(modifyProperty.Key);
             }
-            
-            
-           
+
 
             TestMetadata(testedProperties);
-           
+
 
             var preset = GetFreshPresetTestSubject();
             (preset as IEditableObject).BeginEdit();
@@ -205,7 +198,7 @@ namespace PresetMagician.Tests.ModelTests
         {
             var testedProperties = new HashSet<string>();
 
-          
+
             foreach (var modifyProperty in MetadataPropertiesWhichShouldModifyIsMetadataModified)
             {
                 var preset2 = GetFreshPresetTestSubject();
@@ -223,7 +216,7 @@ namespace PresetMagician.Tests.ModelTests
 
                 testedProperties.Add(modifyProperty.Key);
             }
-            
+
             foreach (var modifyProperty in PropertiesWhichShouldModifyIsMetadataModified)
             {
                 var preset2 = GetFreshPresetTestSubject();
@@ -231,7 +224,6 @@ namespace PresetMagician.Tests.ModelTests
                 preset2.IsMetadataModified = false;
                 PropertyHelper.SetPropertyValue(preset2, modifyProperty.Key, modifyProperty.Value);
 
-                
 
                 preset2.IsMetadataModified.Should()
                     .BeTrue($"{modifyProperty.Key} should modify IsMetadataModified");
@@ -239,12 +231,11 @@ namespace PresetMagician.Tests.ModelTests
 
                 testedProperties.Add(modifyProperty.Key);
             }
-            
-            
+
 
             TestPresetParserMetadata(testedProperties);
             TestPresetBankPresetParser(testedProperties);
-   
+
             testedProperties.AddRange(PropertiesWhichAreNotRelevantToMetadataModified);
 
 
@@ -256,10 +247,9 @@ namespace PresetMagician.Tests.ModelTests
 
         private void TestPresetBankPresetParser(HashSet<string> testedProperties)
         {
-           
-           var preset = GetFreshPresetTestSubject();
-           var preset2 = GetFreshPresetTestSubject();
-           preset.OriginalMetadata.BankPath = "sldjflsdkj";
+            var preset = GetFreshPresetTestSubject();
+            var preset2 = GetFreshPresetTestSubject();
+            preset.OriginalMetadata.BankPath = "sldjflsdkj";
             preset2.SetFromPresetParser(preset.OriginalMetadata);
             preset2.IsMetadataModified.Should().BeTrue("the bank name was changed and should trigger a change");
 
@@ -273,7 +263,8 @@ namespace PresetMagician.Tests.ModelTests
             {
                 var preset2 = GetFreshPresetTestSubject();
                 (preset2 as IEditableObject).BeginEdit();
-                preset2.Metadata.GetType().GetProperty(modifyProperty.Key).SetValue(preset2.Metadata, modifyProperty.Value);
+                preset2.Metadata.GetType().GetProperty(modifyProperty.Key)
+                    .SetValue(preset2.Metadata, modifyProperty.Value);
 
                 preset2.IsMetadataModified.Should()
                     .BeTrue($"{modifyProperty.Key} should modify IsMetadataModified when edit mode is on");
@@ -281,19 +272,18 @@ namespace PresetMagician.Tests.ModelTests
                 preset2.Metadata.UserOverwrittenProperties.Should().Contain(modifyProperty.Key);
                 metadataTestedProperties.Add(modifyProperty.Key);
             }
-            
+
             TestTypesCollection(metadataTestedProperties);
             TestCharacteristicsCollection(metadataTestedProperties);
-            
+
             var allProperties =
                 (from prop in typeof(PresetMetadata).GetProperties() select prop.Name).ToList();
 
             allProperties.Except(metadataTestedProperties).Should().BeEmpty("We want to test ALL TEH PROPERTIEZ");
-            
-            testedProperties.Add(nameof(Preset.Metadata));
 
+            testedProperties.Add(nameof(Preset.Metadata));
         }
-        
+
         private void TestPresetParserMetadata(HashSet<string> testedProperties)
         {
             var metadataTestedProperties = new HashSet<string>();
@@ -301,7 +291,8 @@ namespace PresetMagician.Tests.ModelTests
             {
                 var preset2 = GetFreshPresetTestSubject();
                 var preset = GetFreshPresetTestSubject();
-                preset.OriginalMetadata.GetType().GetProperty(modifyProperty.Key).SetValue(preset.OriginalMetadata, modifyProperty.Value);
+                preset.OriginalMetadata.GetType().GetProperty(modifyProperty.Key)
+                    .SetValue(preset.OriginalMetadata, modifyProperty.Value);
 
                 preset2.SetFromPresetParser(preset.OriginalMetadata);
                 preset2.IsMetadataModified.Should()
@@ -309,20 +300,18 @@ namespace PresetMagician.Tests.ModelTests
 
                 metadataTestedProperties.Add(modifyProperty.Key);
             }
-            
+
             TestTypesCollectionPresetParser(metadataTestedProperties);
             TestCharacteristicsCollectionPresetParser(metadataTestedProperties);
-            
+
             var allProperties =
                 (from prop in typeof(PresetMetadata).GetProperties() select prop.Name).ToList();
 
             allProperties.Except(metadataTestedProperties).Should().BeEmpty("We want to test ALL TEH PROPERTIEZ");
-            
+
             testedProperties.Add(nameof(Preset.Metadata));
-
-            
-
         }
+
         private void TestPresetBank(HashSet<string> testedProperties)
         {
             var preset = GetFreshPresetTestSubject();
@@ -349,13 +338,13 @@ namespace PresetMagician.Tests.ModelTests
         private void TestCharacteristicsCollection(HashSet<string> testedProperties)
         {
             var preset = GetFreshPresetTestSubject();
-           
+
             (preset as IEditableObject).BeginEdit();
             preset.Metadata.Characteristics.First().CharacteristicName = "dingblafoo";
             preset.IsMetadataModified.Should()
                 .BeTrue("renaming a characteristic should modify IsMetadataModified when edit mode is on");
             preset.Metadata.UserOverwrittenProperties.Should().Contain(nameof(PresetMetadata.Characteristics));
-            
+
             preset = GetFreshPresetTestSubject();
             (preset as IEditableObject).BeginEdit();
             preset.Metadata.Characteristics.RemoveFirst();
@@ -369,14 +358,14 @@ namespace PresetMagician.Tests.ModelTests
             preset.IsMetadataModified.Should()
                 .BeTrue("Adding a mode name should modify IsMetadataModified when edit mode is on");
             preset.Metadata.UserOverwrittenProperties.Should().Contain(nameof(PresetMetadata.Characteristics));
-            
+
             preset = GetFreshPresetTestSubject();
             var preset2 = GetFreshPresetTestSubject();
             (preset as IEditableObject).BeginEdit();
             (preset2 as IEditableObject).BeginEdit();
-            
+
             preset.Metadata.Characteristics.First().Should().Be(preset2.Metadata.Characteristics.First());
-            preset.Metadata.Characteristics.First().CharacteristicName = "dingblafoo";
+            preset.Metadata.Characteristics.First().CharacteristicName = "dingblafoo2";
             ((CharacteristicCollection) preset.Metadata.Characteristics).IsUserModified.Should().BeTrue();
             preset.IsMetadataModified.Should()
                 .BeTrue("renaming a characteristic should modify IsMetadataModified when edit mode is on");
@@ -384,27 +373,27 @@ namespace PresetMagician.Tests.ModelTests
             preset2.IsMetadataModified.Should()
                 .BeTrue("renaming a characteristic should modify IsMetadataModified when edit mode is on");
             preset2.Metadata.UserOverwrittenProperties.Should().Contain(nameof(PresetMetadata.Characteristics));
-            
+
             testedProperties.Add(nameof(PresetMetadata.Characteristics));
         }
 
         private void TestTypesCollection(HashSet<string> testedProperties)
         {
             var preset = GetFreshPresetTestSubject();
-          
+
             (preset as IEditableObject).BeginEdit();
             preset.Metadata.Types.First().TypeName = "blatype";
             preset.IsMetadataModified.Should()
                 .BeTrue("renaming a type should modify IsMetadataModified when edit mode is on");
             preset.Metadata.UserOverwrittenProperties.Should().Contain(nameof(PresetMetadata.Types));
-            
+
             preset = GetFreshPresetTestSubject();
             (preset as IEditableObject).BeginEdit();
             preset.Metadata.Types.First().SubTypeName = "blatype";
             preset.IsMetadataModified.Should()
                 .BeTrue("renaming a type should modify IsMetadataModified when edit mode is on");
             preset.Metadata.UserOverwrittenProperties.Should().Contain(nameof(PresetMetadata.Types));
-            
+
             preset = GetFreshPresetTestSubject();
             (preset as IEditableObject).BeginEdit();
             preset.Metadata.Types.RemoveFirst();
@@ -418,12 +407,12 @@ namespace PresetMagician.Tests.ModelTests
             preset.IsMetadataModified.Should()
                 .BeTrue("Adding a type name should modify IsMetadataModified when edit mode is on");
             preset.Metadata.UserOverwrittenProperties.Should().Contain(nameof(PresetMetadata.Types));
-            
+
             preset = GetFreshPresetTestSubject();
             var preset2 = GetFreshPresetTestSubject();
             (preset as IEditableObject).BeginEdit();
             (preset2 as IEditableObject).BeginEdit();
-            
+
             preset.Metadata.Types.First().Should().Be(preset2.Metadata.Types.First());
             preset.Metadata.Types.First().TypeName = "dingblafoo";
             preset.IsMetadataModified.Should()
@@ -432,12 +421,12 @@ namespace PresetMagician.Tests.ModelTests
             preset2.IsMetadataModified.Should()
                 .BeTrue("renaming a type should modify IsMetadataModified when edit mode is on");
             preset2.Metadata.UserOverwrittenProperties.Should().Contain(nameof(PresetMetadata.Types));
-            
+
             preset = GetFreshPresetTestSubject();
             preset2 = GetFreshPresetTestSubject();
             (preset as IEditableObject).BeginEdit();
             (preset2 as IEditableObject).BeginEdit();
-            
+
             preset.Metadata.Types.First().Should().Be(preset2.Metadata.Types.First());
             preset.Metadata.Types.First().SubTypeName = "dingblafoo";
             preset.IsMetadataModified.Should()
@@ -456,7 +445,7 @@ namespace PresetMagician.Tests.ModelTests
             var preset = GetFreshPresetTestSubject();
             var preset2 = GetFreshPresetTestSubject();
 
-       
+
             preset.OriginalMetadata.Characteristics.RemoveFirst();
             preset2.SetFromPresetParser(preset.OriginalMetadata);
             preset2.IsMetadataModified.Should()
@@ -478,9 +467,8 @@ namespace PresetMagician.Tests.ModelTests
         {
             var preset = GetFreshPresetTestSubject();
             var preset2 = GetFreshPresetTestSubject();
-            
-         
-            
+
+
             preset.OriginalMetadata.Types.RemoveFirst();
             preset2.SetFromPresetParser(preset.OriginalMetadata);
             preset2.IsMetadataModified.Should()

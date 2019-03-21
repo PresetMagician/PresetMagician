@@ -1,51 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using Catel.Data;
 using Catel.MVVM;
 using Portable.Licensing;
-using PresetMagician.Views;
+using PresetMagician.Core.Interfaces;
 
-namespace PresetMagician.Models
+namespace PresetMagician.Core.Models
 {
     /// <summary>
     /// Holds the global application state, including global collections like Plugins, Presets etc.
     /// </summary>
-    public class ApplicationState : ModelBase
+    public class ApplicationState : ModelBase, IApplicationOperationStatus
     {
-        private Type _currentDocumentType;
-
-        public Type CurrentDocumentType
-        {
-            get { return _currentDocumentType; }
-            set
-            {
-                if (value == typeof(PresetExportListView))
-                {
-                    SelectedRibbonTabIndex = 1;
-                    ShowPresetsRibbon = false;
-                }
-
-                if (value == typeof(VstPluginsView))
-                {
-                    SelectedRibbonTabIndex = 0;
-                    ShowPresetsRibbon = false;
-                }
-                
-                if (value == typeof(VstPluginPresetsView))
-                {
-                    ShowPresetsRibbon = true;
-                    SelectedRibbonTabIndex = 3;
-                    
-                }
-
-                RaisePropertyChanged(nameof(SelectedRibbonTabIndex));
-                RaisePropertyChanged(nameof(ShowPresetsRibbon));
-                _currentDocumentType = value;
-            }
-        }
-
         public IViewModel CurrentDocumentViewModel { get; set; }
 
 
@@ -58,27 +25,24 @@ namespace PresetMagician.Models
 
         #region ApplicationBusy
 
-        public bool IsApplicationBusy { get; set; }
-        public bool IsApplicationEditing { get; set; }
-        public int ApplicationBusyCurrentItem { get; set; }
-        public int ApplicationBusyTotalItems { get; set; }
-        public CancellationTokenSource ApplicationBusyCancellationTokenSource { get; set; }
+        public bool IsApplicationBusy { get; private set; }
 
-        public int ApplicationBusyPercent
-        {
-            get { return (int) (ApplicationBusyCurrentItem / (float) ApplicationBusyTotalItems * 100); }
-        }
+        public int ApplicationBusyCurrentItem { get; private set; }
+        public int ApplicationBusyTotalItems { get; private set; }
+        public CancellationTokenSource ApplicationBusyCancellationTokenSource { get; private set; }
 
-        public string ApplicationBusyStatusText { get; set; }
-        public string ApplicationBusyOperationDescription { get; set; }
-        public object ApplicationOperationSourceObject { get; set; }
-        public string ApplicationOperationStatePropertyName { get; set; }
+        public int ApplicationBusyPercent { get; private set; }
+
+        public string ApplicationBusyStatusText { get; private set; }
+        public string ApplicationBusyOperationDescription { get; private set; }
 
         public List<string> ApplicationOperationLastErrors { get; set; }
         public string ApplicationOperationLastErrorsAsText { get; set; }
         public bool ApplicationOperationLastOperationHadErrors { get; set; }
         public string ApplicationOperationLastOperation { get; set; }
-        public bool ApplicationOperationCancelRequested { get; set; }
+        public bool ApplicationOperationCancelRequested { get; private set; }
+
+        public bool IsApplicationEditing { get; set; }
 
         #endregion
 
@@ -117,11 +81,9 @@ namespace PresetMagician.Models
             get
             {
                 var sb = new StringBuilder();
-                
+
                 if (ActiveLicense != null)
                 {
-                    
-
                     if (ActiveLicense.Type == LicenseType.Trial)
                     {
                         sb.AppendLine($"License Type: Trial (Expires {ActiveLicense.Expiration.ToShortDateString()})");
@@ -147,5 +109,17 @@ namespace PresetMagician.Models
         public bool ValidLicense { get; set; }
 
         #endregion
+
+        public void ApplyFromApplicationOperationStatus(ApplicationOperationStatus applicationOperationStatus)
+        {
+            IsApplicationBusy = applicationOperationStatus.IsApplicationBusy;
+            ApplicationBusyCurrentItem = applicationOperationStatus.ApplicationBusyCurrentItem;
+            ApplicationBusyTotalItems = applicationOperationStatus.ApplicationBusyTotalItems;
+            ApplicationBusyCancellationTokenSource = applicationOperationStatus.ApplicationBusyCancellationTokenSource;
+            ApplicationBusyPercent = applicationOperationStatus.ApplicationBusyPercent;
+            ApplicationBusyStatusText = applicationOperationStatus.ApplicationBusyStatusText;
+            ApplicationBusyOperationDescription = applicationOperationStatus.ApplicationBusyOperationDescription;
+            ApplicationOperationCancelRequested = applicationOperationStatus.ApplicationOperationCancelRequested;
+        }
     }
 }

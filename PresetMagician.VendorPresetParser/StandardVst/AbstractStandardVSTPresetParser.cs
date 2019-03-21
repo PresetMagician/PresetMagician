@@ -1,17 +1,11 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-using Catel.Logging;
-using Drachenkatze.PresetMagician.Utils;
-using Jacobi.Vst.Core;
-using PresetMagician.Core.Interfaces;
+﻿using System.Threading.Tasks;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
 {
     public abstract class AbstractStandardVstPresetParser : AbstractVendorPresetParser
     {
         public override bool RequiresRescanWithEachRelease { get; } = true;
-        
+
         public override int GetNumPresets()
         {
             PluginInstance.LoadPlugin().Wait();
@@ -27,6 +21,5 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
         }
 
         protected abstract Task GetFactoryPresets();
-    
     }
 }

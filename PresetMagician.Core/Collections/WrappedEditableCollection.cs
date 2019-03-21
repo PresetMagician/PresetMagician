@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using System.Net.Sockets;
 using Catel.Collections;
 using PresetMagician.Core.Data;
 

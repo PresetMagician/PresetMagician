@@ -1,8 +1,8 @@
 ﻿using System.Collections.Specialized;
 using System.Threading.Tasks;
+using Catel.IoC;
 using Catel.MVVM;
 using PresetMagician.Core.Services;
-using PresetMagician.Services.Interfaces;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -11,16 +11,12 @@ namespace PresetMagician
     public class PluginToolsUnloadPluginCommandContainer : ApplicationNotBusyCommandContainer
     {
         private readonly RemoteVstService _remoteVstService;
-        private readonly GlobalFrontendService _globalFrontendService;
 
         public PluginToolsUnloadPluginCommandContainer(ICommandManager commandManager,
-            GlobalFrontendService globalFrontendService,
-            RemoteVstService remoteVstService,
-            IRuntimeConfigurationService runtimeConfigurationService)
-            : base(Commands.PluginTools.UnloadPlugin, commandManager, runtimeConfigurationService)
+            IServiceLocator serviceLocator)
+            : base(Commands.PluginTools.UnloadPlugin, commandManager, serviceLocator)
         {
-            _remoteVstService = remoteVstService;
-            _globalFrontendService = globalFrontendService;
+            _remoteVstService = ServiceLocator.ResolveType<RemoteVstService>();
             _globalFrontendService.SelectedPlugins.CollectionChanged += OnSelectedPluginsListChanged;
         }
 
@@ -38,7 +34,7 @@ namespace PresetMagician
         protected override async Task ExecuteAsync(object parameter)
         {
             var pluginInstance =
-                await _remoteVstService.GetInteractivePluginInstance(_globalFrontendService.SelectedPlugin);
+                _remoteVstService.GetInteractivePluginInstance(_globalFrontendService.SelectedPlugin);
 
             if (pluginInstance.IsLoaded)
             {

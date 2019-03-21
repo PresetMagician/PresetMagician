@@ -3,13 +3,11 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using Catel;
 using Catel.Collections;
 using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
 using PresetMagician.Core.Models;
-using PresetMagician.Core.Services;
 using PresetMagician.Services.Interfaces;
 
 // ReSharper disable once CheckNamespace
@@ -22,23 +20,14 @@ namespace PresetMagician
 
         private readonly IDispatcherService _dispatcherService;
         private readonly ILicenseService _licenseService;
-        private readonly GlobalFrontendService _globalFrontendService;
 
         public PluginNotExportedSelectedToPresetExportListCommandContainer(ICommandManager commandManager,
-            IApplicationService applicationService, IDispatcherService dispatcherService,
-            IRuntimeConfigurationService runtimeConfigurationService,
-            ILicenseService licenseService)
-            : base(Commands.Plugin.NotExportedSelectedToPresetExportList, commandManager, runtimeConfigurationService)
+            IServiceLocator serviceLocator)
+            : base(Commands.Plugin.NotExportedSelectedToPresetExportList, commandManager, serviceLocator)
         {
-            Argument.IsNotNull(() => applicationService);
-            Argument.IsNotNull(() => dispatcherService);
-            Argument.IsNotNull(() => licenseService);
-
-            _globalFrontendService = ServiceLocator.Default.ResolveType<GlobalFrontendService>();
-
-            _applicationService = applicationService;
-            _dispatcherService = dispatcherService;
-            _licenseService = licenseService;
+            _applicationService = ServiceLocator.ResolveType<IApplicationService>();
+            _dispatcherService = ServiceLocator.ResolveType<IDispatcherService>();
+            _licenseService = ServiceLocator.ResolveType<ILicenseService>();
 
             _globalFrontendService.SelectedPlugins.CollectionChanged += OnSelectedPluginsListChanged;
         }

@@ -13,7 +13,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.DmitrySches
         private byte[] _decodeBuffer;
         private const int DecodeBufferSize = 1024 * 1024 * 100;
 
-    
+
         public override async Task DoScan()
         {
             _decodeBuffer = new byte[DecodeBufferSize];

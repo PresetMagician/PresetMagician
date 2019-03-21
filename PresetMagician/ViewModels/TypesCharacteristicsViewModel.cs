@@ -11,7 +11,6 @@ using Catel.MVVM;
 using Catel.Services;
 using Catel.Threading;
 using MethodTimer;
-using PresetMagician.Core.Collections;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
 using PresetMagician.Services.Interfaces;
@@ -31,7 +30,8 @@ namespace PresetMagician.ViewModels
 
         public TypesCharacteristicsViewModel(DataPersisterService dataPersisterService, GlobalService globalService,
             IUIVisualizerService visualizerService, IViewModelFactory viewModelFactory,
-            CharacteristicsService characteristicsService, TypesService typesService, IAdvancedMessageService advancedMessageService)
+            CharacteristicsService characteristicsService, TypesService typesService,
+            IAdvancedMessageService advancedMessageService)
         {
             _dataPersisterService = dataPersisterService;
             _visualizerService = visualizerService;
@@ -53,7 +53,8 @@ namespace PresetMagician.ViewModels
                 new TaskCommand(OnEditCharacteristicCommandExecuteAsync, EditCharacteristicCanExecute);
             DeleteCharacteristicCommand =
                 new TaskCommand(OnDeleteCharacteristicCommandExecuteAsync, DeleteCharacteristicCanExecute);
-            ShowCharacteristicUsageCommand = new TaskCommand(OnShowCharacteristicUsageCommandExecuteAsync, ShowCharacteristicUsageCanExecute);
+            ShowCharacteristicUsageCommand = new TaskCommand(OnShowCharacteristicUsageCommandExecuteAsync,
+                ShowCharacteristicUsageCanExecute);
 
             SelectedTypes.CollectionChanged += SelectedTypesOnCollectionChanged;
             SelectedCharacteristics.CollectionChanged += SelectedCharacteristicsOnCollectionChanged;
@@ -63,7 +64,7 @@ namespace PresetMagician.ViewModels
 
             _characteristicsService.UpdateCharacteristicsUsages();
             _typesService.UpdateTypesUsages();
-            
+
             TypesView = (ListCollectionView) CollectionViewSource.GetDefaultView(_typesService.TypeUsages);
             TypesView.IsLiveSorting = false;
             TypesView.IsLiveFiltering = false;
@@ -115,10 +116,11 @@ namespace PresetMagician.ViewModels
                 foreach (var plugin in _globalService.Plugins)
                 {
                     plugin.EndEdit();
+                    _dataPersisterService.SavePresetsForPlugin(plugin);
+                    _dataPersisterService.SavePlugin(plugin);
                 }
             });
 
-            _dataPersisterService.Save();
             return await base.SaveAsync();
         }
 
@@ -141,7 +143,8 @@ namespace PresetMagician.ViewModels
 
         protected override void OnPropertyChanged(AdvancedPropertyChangedEventArgs e)
         {
-            if ( TypesView != null && (e.PropertyName == nameof(ShowTypeRedirects) || e.PropertyName == nameof(ShowIgnoredTypes)))
+            if (TypesView != null &&
+                (e.PropertyName == nameof(ShowTypeRedirects) || e.PropertyName == nameof(ShowIgnoredTypes)))
             {
                 TypesView.Filter = o => TypeFilter(o as TypeUsage);
             }
@@ -235,7 +238,7 @@ namespace PresetMagician.ViewModels
             return SelectedType != null;
         }
 
-        
+
         public TaskCommand DeleteTypeCommand { get; private set; }
 
         private async Task OnDeleteTypeCommandExecuteAsync()
@@ -281,7 +284,7 @@ namespace PresetMagician.ViewModels
         {
             return SelectedTypes.Count > 0;
         }
-        
+
         public TaskCommand ShowTypeUsageCommand { get; private set; }
 
         private async Task OnShowTypeUsageCommandExecuteAsync()
@@ -294,7 +297,7 @@ namespace PresetMagician.ViewModels
                 $"{Environment.NewLine}{Environment.NewLine}{pluginNames}",
                 "Show type usage");
         }
-        
+
         private bool ShowTypeUsageCanExecute()
         {
             return SelectedType != null;
@@ -404,7 +407,7 @@ namespace PresetMagician.ViewModels
         {
             return SelectedCharacteristics.Count > 0;
         }
-        
+
         public TaskCommand ShowCharacteristicUsageCommand { get; private set; }
 
         private async Task OnShowCharacteristicUsageCommandExecuteAsync()
@@ -417,7 +420,7 @@ namespace PresetMagician.ViewModels
                 $"{Environment.NewLine}{Environment.NewLine}{pluginNames}",
                 "Show characteristic usage usage");
         }
-        
+
         private bool ShowCharacteristicUsageCanExecute()
         {
             return SelectedCharacteristic != null;

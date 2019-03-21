@@ -1,6 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Catel.Logging;
-using Drachenkatze.PresetMagician.Utils;
 using PresetMagician.Core.Interfaces;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
@@ -24,7 +22,5 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
 
             await GetPresets(factoryBank, 0, PluginInstance.Plugin.PluginInfo.ProgramCount, "Builtin");
         }
-
-        
     }
 }

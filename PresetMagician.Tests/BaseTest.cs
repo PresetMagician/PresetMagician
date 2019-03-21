@@ -1,22 +1,25 @@
-using Drachenkatze.PresetMagician.VendorPresetParser;
+using System;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace PresetMagician.Tests
 {
-    public class BaseTest:IClassFixture<DataFixture>
+    public class BaseTest : IClassFixture<DataFixture>, IDisposable
     {
         protected readonly ITestOutputHelper _output;
-        private DataFixture _fixture;
-        
+        protected DataFixture Fixture;
+
         public BaseTest(ITestOutputHelper output, DataFixture fixture)
         {
             _output = output;
-            _fixture = fixture;
-            
-            Core.CoreInitializer.RegisterServices();
-            VendorPresetParserInitializer.Initialize();
+            Fixture = fixture;
+
+
             fixture.Setup(GetType().Name);
+        }
+
+        public void Dispose()
+        {
         }
     }
 }

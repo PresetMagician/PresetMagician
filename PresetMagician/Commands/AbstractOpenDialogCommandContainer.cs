@@ -3,11 +3,13 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Catel;
+using Catel.IoC;
 using Catel.Logging;
 using Catel.MVVM;
 using Catel.Reflection;
 using Catel.Services;
-using PresetMagician.Models;
+using PresetMagician.Core.Models;
+using PresetMagician.Core.Services;
 using PresetMagician.Services.Interfaces;
 
 // ReSharper disable once CheckNamespace
@@ -20,11 +22,14 @@ namespace PresetMagician
         protected readonly IUIVisualizerService UiVisualizerService;
         protected readonly IRuntimeConfigurationService _runtimeConfigurationService;
         protected readonly IViewModelFactory ViewModelFactory;
+        private readonly GlobalFrontendService _globalFrontendService;
         private readonly string _viewModel;
         private readonly bool _allowDuringApplicationBusy;
 
-        protected AbstractOpenDialogCommandContainer(string commandName, string viewModel, bool allowDuringApplicationBusy,
-            ICommandManager commandManager, IUIVisualizerService uiVisualizerService, IRuntimeConfigurationService runtimeConfigurationService,
+        protected AbstractOpenDialogCommandContainer(string commandName, string viewModel,
+            bool allowDuringApplicationBusy,
+            ICommandManager commandManager, IUIVisualizerService uiVisualizerService,
+            IRuntimeConfigurationService runtimeConfigurationService,
             IViewModelFactory viewModelFactory)
             : base(commandName, commandManager)
         {
@@ -37,20 +42,20 @@ namespace PresetMagician
             _viewModel = viewModel;
             _allowDuringApplicationBusy = allowDuringApplicationBusy;
             _runtimeConfigurationService = runtimeConfigurationService;
-            runtimeConfigurationService.ApplicationState.PropertyChanged += OnApplicationBusyChanged;
+            _globalFrontendService = ServiceLocator.Default.ResolveType<GlobalFrontendService>();
+            _globalFrontendService.ApplicationState.PropertyChanged += OnApplicationBusyChanged;
         }
-        
+
         protected override bool CanExecute(object parameter)
         {
             if (!_allowDuringApplicationBusy)
             {
-                return base.CanExecute(parameter) && !_runtimeConfigurationService.ApplicationState.IsApplicationBusy;
+                return base.CanExecute(parameter) && !_globalFrontendService.ApplicationState.IsApplicationBusy;
             }
 
             return base.CanExecute(parameter);
-
         }
-        
+
         private void OnApplicationBusyChanged(object o, PropertyChangedEventArgs ev)
         {
             if (ev.PropertyName == nameof(ApplicationState.IsApplicationBusy)) InvalidateCommand();
@@ -58,7 +63,6 @@ namespace PresetMagician
 
         protected virtual void OnBeforeShowDialog(IViewModel viewModel, object parameter)
         {
-            
         }
 
         protected override async Task ExecuteAsync(object parameter)
@@ -74,7 +78,7 @@ namespace PresetMagician
             var viewModel = ViewModelFactory.CreateViewModel(viewModelType, null);
 
             OnBeforeShowDialog(viewModel, parameter);
-            
+
             await UiVisualizerService.ShowDialogAsync(viewModel);
         }
     }

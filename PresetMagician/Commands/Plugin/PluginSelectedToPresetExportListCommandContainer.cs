@@ -8,7 +8,6 @@ using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
 using PresetMagician.Core.Models;
-using PresetMagician.Core.Services;
 using PresetMagician.Services.Interfaces;
 
 // ReSharper disable once CheckNamespace
@@ -21,17 +20,15 @@ namespace PresetMagician
 
         private readonly IDispatcherService _dispatcherService;
         private readonly ILicenseService _licenseService;
-        private readonly GlobalFrontendService _globalFrontendService;
 
         public PluginSelectedToPresetExportListCommandContainer(ICommandManager commandManager,
-            IRuntimeConfigurationService runtimeConfigurationService
+            IServiceLocator serviceLocator
         )
-            : base(Commands.Plugin.SelectedToPresetExportList, commandManager, runtimeConfigurationService)
+            : base(Commands.Plugin.SelectedToPresetExportList, commandManager, serviceLocator)
         {
-            _applicationService = ServiceLocator.Default.ResolveType<IApplicationService>();
-            _dispatcherService = ServiceLocator.Default.ResolveType<IDispatcherService>();
-            _licenseService = ServiceLocator.Default.ResolveType<ILicenseService>();
-            _globalFrontendService = ServiceLocator.Default.ResolveType<GlobalFrontendService>();
+            _applicationService = ServiceLocator.ResolveType<IApplicationService>();
+            _dispatcherService = ServiceLocator.ResolveType<IDispatcherService>();
+            _licenseService = ServiceLocator.ResolveType<ILicenseService>();
 
             _globalFrontendService.SelectedPlugins.CollectionChanged += OnSelectedPluginsListChanged;
         }

@@ -1,10 +1,9 @@
 ﻿using System.Collections.Specialized;
 using System.Threading.Tasks;
-using Catel;
+using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
 using PresetMagician.Core.Services;
-using PresetMagician.Services.Interfaces;
 using PresetMagician.ViewModels;
 
 // ReSharper disable once CheckNamespace
@@ -16,22 +15,14 @@ namespace PresetMagician
         private readonly IUIVisualizerService _uiVisualizerService;
         private readonly IViewModelFactory _viewModelFactory;
         private readonly RemoteVstService _remoteVstService;
-        private readonly GlobalFrontendService _globalFrontendService;
 
         public PluginToolsShowPluginChunkCommandContainer(ICommandManager commandManager,
-            GlobalFrontendService globalFrontendService,
-            RemoteVstService remoteVstService,
-            IUIVisualizerService uiVisualizerService, IRuntimeConfigurationService runtimeConfigurationService,
-            IViewModelFactory viewModelFactory)
-            : base(Commands.PluginTools.ShowPluginChunk, commandManager, runtimeConfigurationService)
+            IServiceLocator serviceLocator)
+            : base(Commands.PluginTools.ShowPluginChunk, commandManager, serviceLocator)
         {
-            Argument.IsNotNull(() => uiVisualizerService);
-            Argument.IsNotNull(() => viewModelFactory);
-
-            _uiVisualizerService = uiVisualizerService;
-            _viewModelFactory = viewModelFactory;
-            _globalFrontendService = globalFrontendService;
-            _remoteVstService = remoteVstService;
+            _uiVisualizerService = ServiceLocator.ResolveType<IUIVisualizerService>();
+            _viewModelFactory = ServiceLocator.ResolveType<IViewModelFactory>();
+            _remoteVstService = ServiceLocator.ResolveType<RemoteVstService>();
 
             _globalFrontendService.SelectedPlugins.CollectionChanged += OnSelectedPluginsListChanged;
         }
@@ -50,7 +41,7 @@ namespace PresetMagician
         protected override async Task ExecuteAsync(object parameter)
         {
             var pluginInstance =
-                await _remoteVstService.GetInteractivePluginInstance(_globalFrontendService.SelectedPlugin);
+                _remoteVstService.GetInteractivePluginInstance(_globalFrontendService.SelectedPlugin);
 
             var chunkViewModel = _viewModelFactory.CreateViewModel<VstPluginChunkViewModel>(pluginInstance);
 

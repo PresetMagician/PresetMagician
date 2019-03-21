@@ -15,21 +15,23 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    
+
     <catel:UserControl.Resources>
         <catel:BooleanToCollapsingVisibilityConverter x:Key="BooleanToCollapsingVisibilityConverter" />
     </catel:UserControl.Resources>
 
-<Grid>
-    <Grid.RowDefinitions>
-        <RowDefinition Height="*"></RowDefinition>
-    </Grid.RowDefinitions>
-    <xcad:DockingManager x:Name="DockingManager" AllowMixedOrientation="True" Grid.Row="0">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <xcad:DockingManager x:Name="DockingManager" AllowMixedOrientation="True" Grid.Row="0">
             <xcad:DockingManager.DocumentHeaderTemplate>
                 <DataTemplate DataType="models:CustomLayoutDocument">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding Title}" />
-                        <iconPacks:PackIconFeatherIcons Margin="5,5,0,0" ToolTip="Modified" Width="10" Height="10" Kind="Edit2" Visibility="{Binding IsDirty, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay, FallbackValue=Visible}"/>
+                        <iconPacks:PackIconFeatherIcons Margin="5,5,0,0" ToolTip="Modified" Width="10" Height="10"
+                                                        Kind="Edit2"
+                                                        Visibility="{Binding IsDirty, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay, FallbackValue=Visible}" />
                     </StackPanel>
                 </DataTemplate>
             </xcad:DockingManager.DocumentHeaderTemplate>
@@ -45,7 +47,7 @@
                 <xcad:LayoutRoot.BottomSide>
                     <xcad:LayoutAnchorSide>
                         <xcad:LayoutAnchorGroup>
-                           
+
                             <xcad:LayoutAnchorable
                                 x:Name="LogViewer"
                                 Title="Event Log"
@@ -69,9 +71,7 @@
             </xcad:LayoutRoot>
 
 
-
-
         </xcad:DockingManager>
 
-</Grid>
+    </Grid>
 </catel:UserControl>

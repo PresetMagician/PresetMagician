@@ -69,7 +69,6 @@ namespace PresetMagician.VstHost.VST
             {
                 foreach (var plugin in _plugins.ToArray())
                 {
-
                     var ctx = plugin.PluginContext.Find<NewHostCommandStub>("HostCmdStub");
                     ctx.SetProcessLevel(VstProcessLevels.Realtime);
                     IdleLoop(plugin.PluginContext, 1);
@@ -113,7 +112,7 @@ namespace PresetMagician.VstHost.VST
             LoadVstInternal(remoteVst);
         }
 
-        private static void LoadVstInternal(RemoteVstPlugin remoteVst,bool debug = false)
+        private static void LoadVstInternal(RemoteVstPlugin remoteVst, bool debug = false)
         {
             var hostCommandStub = new NewHostCommandStub(debug);
             hostCommandStub.PluginDll = Path.GetFileName(remoteVst.DllPath);
@@ -122,44 +121,48 @@ namespace PresetMagician.VstHost.VST
             {
                 Console.WriteLine($"{hostCommandStub.PluginDll}: Loading plugin");
             }
-            
+
             var ctx = VstPluginContext.Create(remoteVst.DllPath, hostCommandStub);
             ctx.Set("Plugin", remoteVst);
 
             remoteVst.PluginContext = ctx;
             ctx.Set("PluginPath", remoteVst.DllPath);
             ctx.Set("HostCmdStub", hostCommandStub);
-            
+
             if (debug)
             {
                 Console.WriteLine($"{hostCommandStub.PluginDll}: Opening plugin");
             }
-            
+
             ctx.PluginCommandStub.Open();
 
             if (debug)
             {
                 Console.WriteLine($"{hostCommandStub.PluginDll}: Setting Sample Rate {SampleRate}");
             }
+
             ctx.PluginCommandStub.SetSampleRate(SampleRate);
 
             if (debug)
             {
                 Console.WriteLine($"{hostCommandStub.PluginDll}: Setting Block Size {BlockSize}");
             }
+
             ctx.PluginCommandStub.SetBlockSize(BlockSize);
-            
-            
+
+
             if (debug)
             {
                 Console.WriteLine($"{hostCommandStub.PluginDll}: Activating output");
             }
+
             remoteVst.PluginContext.PluginCommandStub.MainsChanged(true);
 
             if (debug)
             {
                 Console.WriteLine($"{hostCommandStub.PluginDll}: Start Processing");
             }
+
             ctx.PluginCommandStub.StartProcess();
 
             remoteVst.IsLoaded = true;

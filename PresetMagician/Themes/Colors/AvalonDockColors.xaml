@@ -5,7 +5,6 @@
     xmlns:reskeys="clr-namespace:Xceed.Wpf.AvalonDock.Themes.VS2013.Themes;assembly=Xceed.Wpf.AvalonDock.Themes.VS2013">
 
 
-
     <Color x:Key="{x:Static reskeys:ResourceKeys.ControlAccentColorKey}">#FF593196</Color>
 
     <Color x:Key="AccentColorBase">#FF593196</Color>
@@ -20,7 +19,8 @@
     <Color x:Key="HoverColor">#FFd6cee2</Color>
 
     <!--  Accent Keys  -->
-    <SolidColorBrush x:Key="{x:Static reskeys:ResourceKeys.ControlAccentBrushKey}" Color="{DynamicResource {x:Static reskeys:ResourceKeys.ControlAccentColorKey}}" />
+    <SolidColorBrush x:Key="{x:Static reskeys:ResourceKeys.ControlAccentBrushKey}"
+                     Color="{DynamicResource {x:Static reskeys:ResourceKeys.ControlAccentColorKey}}" />
 
 
     <SolidColorBrush
