@@ -253,6 +253,11 @@ namespace PresetMagician.Core.Models
         /// </summary>
         [Include]
         public bool IsMetadataModified { get; set; }
+        
+        [Include]
+        public bool IsMetadataUserModified { get; set; }
+        
+        public PresetMetadataModifiedProperties PresetMetadataModifiedProperties { get; } = new PresetMetadataModifiedProperties();
 
         /// <summary>
         /// The metadata from the preset parser 
@@ -312,6 +317,8 @@ namespace PresetMagician.Core.Models
                                    PresetHash == LastExportedMetadata.PresetHash &&
                                    LastExportedMetadata.PreviewNotePlayer.PreviewNotePlayerId ==
                                    PreviewNotePlayer.PreviewNotePlayerId);
+            _metadata.UpdateModified(OriginalMetadata, PresetMetadataModifiedProperties);
+            IsMetadataUserModified = PresetMetadataModifiedProperties.IsModified();
         }
 
         /// <summary>

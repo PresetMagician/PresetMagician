@@ -64,7 +64,7 @@ namespace PresetMagician.Core.Models
 
             UpdateBankDepth();
 
-            //OnPropertyChanged(nameof(PresetBanks));
+            //OnPropertyChanged(nameof(PresetBanks), null, null);
             //if (oldBankPath != BankPath) {
             OnPropertyChanged(nameof(BankPath), oldBankPath, BankPath);
             //}
@@ -79,7 +79,9 @@ namespace PresetMagician.Core.Models
         public PresetBank(string bankName = "All Banks")
         {
             PresetBanks = new FastObservableCollection<PresetBank>();
-            PresetBanks.AutomaticallyDispatchChangeNotifications = false;
+            
+                PresetBanks.AutomaticallyDispatchChangeNotifications = false;
+            
 
             PresetBanks.CollectionChanged += delegate(object sender, NotifyCollectionChangedEventArgs e)
             {
@@ -90,6 +92,9 @@ namespace PresetMagician.Core.Models
                         ((PresetBank) i).ParentBank = this;
                     }
                 }
+                
+                OnPropertyChanged(nameof(PresetBanks), null, null);
+                
             };
             BankName = bankName;
         }

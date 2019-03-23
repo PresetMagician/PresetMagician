@@ -27,7 +27,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <xctk:BusyIndicator Grid.Row="0" IsBusy="{Binding ApplicationState.IsApplicationBusy, Mode=OneWay}">
+        <xctk:BusyIndicator Grid.Row="0" IsBusy="{Binding ApplicationOperationStatus.IsApplicationBusy, Mode=OneWay}">
 
             <xctk:BusyIndicator.BusyContentTemplate>
                 <DataTemplate>
@@ -35,17 +35,17 @@
                         <TextBlock
                             HorizontalAlignment="Center"
                             FontWeight="Bold"
-                            Text="{Binding Path=DataContext.ApplicationState.ApplicationBusyOperationDescription, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                            Text="{Binding Path=DataContext.ApplicationOperationStatus.ApplicationBusyOperationDescription, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}" />
                         <StackPanel Margin="2">
                             <ProgressBar
                                 Width="550"
                                 Height="15"
-                                Value="{Binding Path=DataContext.ApplicationState.ApplicationBusyPercent, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                                Value="{Binding Path=DataContext.ApplicationOperationStatus.ApplicationBusyPercent, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}" />
                             <TextBlock
                                 Width="550"
                                 Height="30"
                                 HorizontalAlignment="Center"
-                                Text="{Binding Path=DataContext.ApplicationState.ApplicationBusyStatusText, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                Text="{Binding Path=DataContext.ApplicationOperationStatus.ApplicationBusyStatusText, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                 TextAlignment="Left"
                                 TextWrapping="Wrap" />
                         </StackPanel>
@@ -60,7 +60,7 @@
                                         <Setter Property="IsEnabled" Value="True" />
                                         <Style.Triggers>
                                             <DataTrigger
-                                                Binding="{Binding Path=DataContext.ApplicationState.ApplicationOperationCancelRequested, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                Binding="{Binding Path=DataContext.ApplicationOperationStatus.ApplicationOperationCancelRequested, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                 Value="True">
                                                 <Setter Property="IsEnabled" Value="False" />
                                                 <Setter Property="Content" Value="Cancelling operation..." />
@@ -72,7 +72,7 @@
                         </Grid>
                     </StackPanel>
                 </DataTemplate>
-            </xctk:BusyIndicator.BusyContentTemplate>
+                </xctk:BusyIndicator.BusyContentTemplate>
             <xctk:BusyIndicator.ProgressBarStyle>
                 <Style TargetType="ProgressBar">
                     <Setter Property="Visibility" Value="Collapsed" />
@@ -113,14 +113,14 @@
                         Width="1*"
                         CellStyle="{StaticResource NoPaddingCellStyle}"
                         Header="Types"
-                        CellTemplate="{StaticResource TypesTemplate}"
+                        CellTemplate="{StaticResource PresetTypesTemplate}"
                         IsReadOnly="True" />
 
 
                     <DataGridTemplateColumn
                         Width="1*"
                         CellStyle="{StaticResource NoPaddingCellStyle}"
-                        CellTemplate="{StaticResource CharacteristicsTemplate}"
+                        CellTemplate="{StaticResource PresetCharacteristicsTemplate}"
                         Header="Characteristics"
                         IsReadOnly="True" />
                     <DataGridTextColumn

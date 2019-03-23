@@ -167,6 +167,7 @@ namespace PresetMagician.Tests.ModelTests
             {
                 nameof(Preset.IsEditing),
                 nameof(Preset.IsUserModified),
+                nameof(Preset.PresetMetadataModifiedProperties),
                 nameof(Preset.UserModifiedProperties),
             };
 

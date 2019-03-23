@@ -12,25 +12,16 @@ using PresetMagician.ViewModels;
 namespace PresetMagician
 {
     // ReSharper disable once UnusedMember.Global
-    public class PluginToolsViewPresetsCommandContainer : ApplicationNotBusyCommandContainer
+    public class PluginToolsViewPresetsCommandContainer : AbstractOpenDialogCommandContainer
     {
-        private Plugin _previouslySelectedPlugin;
-        private readonly IViewModelFactory _viewModelFactory;
-
         public PluginToolsViewPresetsCommandContainer(ICommandManager commandManager,
             IServiceLocator serviceLocator
         )
-            : base(Commands.PluginTools.ViewPresets, commandManager, serviceLocator)
+            : base(Commands.PluginTools.ViewPresets, nameof(VstPluginPresetsViewModel), true, commandManager, serviceLocator)
         {
             _globalFrontendService.SelectedPlugins.CollectionChanged += OnSelectedPluginsListChanged;
-            _viewModelFactory = ServiceLocator.ResolveType<IViewModelFactory>();
         }
 
-
-        private void SelectedPluginOnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            InvalidateCommand();
-        }
 
         protected override bool CanExecute(object parameter)
         {
@@ -40,34 +31,14 @@ namespace PresetMagician
 
         private void OnSelectedPluginsListChanged(object o, NotifyCollectionChangedEventArgs ev)
         {
-            if (_previouslySelectedPlugin != null)
-            {
-                _previouslySelectedPlugin.PropertyChanged -= SelectedPluginOnPropertyChanged;
-            }
-
-            if (_globalFrontendService.SelectedPlugin != null)
-            {
-                _globalFrontendService.SelectedPlugin.PropertyChanged += SelectedPluginOnPropertyChanged;
-                _previouslySelectedPlugin = _globalFrontendService.SelectedPlugin;
-            }
-
+          
             InvalidateCommand();
         }
 
 
-        [Time]
-        protected override async Task ExecuteAsync(object parameter)
+        protected override object GetModel()
         {
-            /*_vstService.SelectedPlugin.ClearIsDirtyOnAllChildsSuspended();
-            _vstService.SelectedPlugin.ClearDirtyFlag();*/
-
-            var presetsViewModel =
-                _viewModelFactory.CreateViewModel<VstPluginPresetsViewModel>(_globalFrontendService.SelectedPlugin);
-            AvalonDockHelper.CreateDocument<VstPluginPresetsViewModel>(presetsViewModel,
-                _globalFrontendService.SelectedPlugin,
-                activateDocument: true, isClosable: true, shouldTrackDirty: true);
-
-            //_vstService.SelectedPlugin.BeginEdit();
+            return _globalFrontendService.SelectedPlugin;
         }
     }
 }

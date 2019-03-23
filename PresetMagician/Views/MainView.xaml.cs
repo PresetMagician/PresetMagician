@@ -1,4 +1,8 @@
-﻿using Catel.IoC;
+﻿using System.ComponentModel;
+using Catel.IoC;
+using PresetMagician.Core.Services;
+using PresetMagician.Models;
+using PresetMagician.ViewModels;
 
 namespace PresetMagician.Views
 {
@@ -15,6 +19,7 @@ namespace PresetMagician.Views
 
             serviceLocator.RegisterInstance(DockingManager);
             serviceLocator.RegisterInstance(LayoutDocumentPane);
+            
         }
     }
 }

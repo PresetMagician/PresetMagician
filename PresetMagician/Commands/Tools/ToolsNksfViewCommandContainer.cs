@@ -1,4 +1,5 @@
-﻿using Catel.MVVM;
+﻿using Catel.IoC;
+using Catel.MVVM;
 using Catel.Services;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.ViewModels;
@@ -9,11 +10,8 @@ namespace PresetMagician
     // ReSharper disable once UnusedMember.Global
     public class ToolsNksfViewCommandContainer : AbstractOpenDialogCommandContainer
     {
-        public ToolsNksfViewCommandContainer(ICommandManager commandManager, IUIVisualizerService uiVisualizerService,
-            IViewModelFactory viewModelFactory, IRuntimeConfigurationService runtimeConfigurationService)
-            : base(Commands.Tools.NksfView, nameof(NKSFViewModel), true, commandManager, uiVisualizerService,
-                runtimeConfigurationService,
-                viewModelFactory)
+        public ToolsNksfViewCommandContainer(ICommandManager commandManager, IServiceLocator serviceLocator)
+            : base(Commands.Tools.NksfView, nameof(NKSFViewModel), true, commandManager, serviceLocator)
         {
         }
     }

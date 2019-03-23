@@ -34,6 +34,16 @@ namespace PresetMagician.ViewModels
                     var content = _layoutDocumentPane.SelectedContent as CustomLayoutDocument;
                     _globalFrontendService.ApplicationState.CurrentDocumentViewModel =
                         content.ViewModel;
+                    
+                    if (content.ViewModel is VstPluginsViewModel)
+                    {
+                        _globalFrontendService.ApplicationState.SelectedRibbonTabIndex = 0;
+                    }
+                    
+                    if (content.ViewModel is PresetExportListViewModel)
+                    {
+                        _globalFrontendService.ApplicationState.SelectedRibbonTabIndex = 1;
+                    }
                 }
             }
         }

@@ -113,6 +113,7 @@
     <Compile Include="Models\PresetDataStorage.cs" />
     <Compile Include="Models\PresetExportInfo.cs" />
     <Compile Include="Models\PresetMetadata.cs" />
+    <Compile Include="Models\PresetMetadataModifiedProperties.cs" />
     <Compile Include="Models\PresetParserCharacteristic.cs" />
     <Compile Include="Models\PresetParserConfiguration.cs" />
     <Compile Include="Models\PresetParserMetadata.cs" />

@@ -1,4 +1,5 @@
 using PresetMagician.Core.Interfaces;
+using PresetMagician.Core.Models;
 
 namespace PresetMagician.Core.Extensions
 {
@@ -59,6 +60,67 @@ namespace PresetMagician.Core.Extensions
             }
 
             return true;
+        }
+        
+        public static void UpdateModified<T>(this T metadata, IPresetMetadata compare, PresetMetadataModifiedProperties modifiedProperties) where T : IPresetMetadata
+        {
+            if (metadata.PresetName != compare.PresetName)
+            {
+                modifiedProperties.IsPresetNameModified = true;
+            }
+            else
+            {
+
+                modifiedProperties.IsPresetNameModified = false;
+            }
+
+            if (metadata.Author != compare.Author)
+            {
+                modifiedProperties.IsAuthorModified = true;
+            }
+            else
+            {
+
+                modifiedProperties.IsAuthorModified = false;
+            }
+
+            if (metadata.Comment != compare.Comment)
+            {
+                modifiedProperties.IsCommentModified = true;
+            }
+            else
+            {
+
+                modifiedProperties.IsCommentModified = false;
+            }
+
+            if (metadata.BankPath != compare.BankPath)
+            {
+                modifiedProperties.IsBankPathModified = true;
+            }
+            else
+            {
+
+                modifiedProperties.IsBankPathModified = false;
+            }
+
+            if (!metadata.Characteristics.IsEqualTo(compare.Characteristics, true))
+            {
+                modifiedProperties.IsCharacteristicsModified = true;
+            }
+            else
+            {
+                modifiedProperties.IsCharacteristicsModified = false;
+            }
+
+            if (!metadata.Types.IsEqualTo(compare.Types, true))
+            {
+                modifiedProperties.IsTypesModified = true;
+            }
+            else
+            {
+                modifiedProperties.IsTypesModified = false;
+            }
         }
     }
 }

@@ -36,7 +36,6 @@ namespace PresetMagician.Services
         private readonly Timer _updateDatabaseSizeTimer;
         private readonly GlobalService _globalService;
         private readonly GlobalFrontendService _globalFrontendService;
-        public static bool UseDispatcher = true;
         private ApplicationProgress _applicationProgress;
         private ILog _log;
 
@@ -176,7 +175,7 @@ namespace PresetMagician.Services
             _applicationProgress.LogReporter.LogEntryAdded += LogReporterOnLogEntryAdded;
             
 
-            if (UseDispatcher)
+            if (Core.Core.UseDispatcher)
             {
                 _dispatcherService.Invoke(() =>
                 {
@@ -209,7 +208,7 @@ namespace PresetMagician.Services
 
         public void SetApplicationOperationTotalItems(int items)
         {
-            if (UseDispatcher)
+            if (Core.Core.UseDispatcher)
             {
                 _dispatcherService.Invoke(() =>
                 {
@@ -233,7 +232,7 @@ namespace PresetMagician.Services
 
         public void CancelApplicationOperation()
         {
-            if (UseDispatcher)
+            if (Core.Core.UseDispatcher)
             {
                 _dispatcherService.Invoke(() =>
                 {
@@ -264,7 +263,7 @@ namespace PresetMagician.Services
             var appState = _globalFrontendService.ApplicationState;
             var progressText = $"{currentItem} / {appState.ApplicationBusyTotalItems} {statusText}";
 
-            if (UseDispatcher)
+            if (Core.Core.UseDispatcher)
             {
                 _dispatcherService.Invoke(() =>
                 {
@@ -312,7 +311,7 @@ namespace PresetMagician.Services
             ClearApplicationProgress();
             var appState = _globalFrontendService.ApplicationState;
 
-            if (UseDispatcher)
+            if (Core.Core.UseDispatcher)
             {
                 _dispatcherService.Invoke(() => { _applicationOperationStatus.IsApplicationBusy = false; });
             }

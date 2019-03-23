@@ -20,12 +20,6 @@ namespace PresetMagician.Core.Collections
     {
     }
 
-    public static class EditableCollectionConfiguration
-    {
-        // For unit tests
-        public static bool DisableDispatch = false;
-    }
-
     public class EditableCollection<T> : FastObservableCollection<T>, IEditableCollection<T>
         where T : class, IUserEditable, INotifyPropertyChanged
     {
@@ -49,7 +43,7 @@ namespace PresetMagician.Core.Collections
 
         public EditableCollection()
         {
-            if (EditableCollectionConfiguration.DisableDispatch)
+            if (!Core.UseDispatcher)
             {
                 AutomaticallyDispatchChangeNotifications = false;
             }
@@ -59,7 +53,7 @@ namespace PresetMagician.Core.Collections
 
         public EditableCollection(bool isUniqueList = false)
         {
-            if (EditableCollectionConfiguration.DisableDispatch)
+            if (!Core.UseDispatcher)
             {
                 AutomaticallyDispatchChangeNotifications = false;
             }

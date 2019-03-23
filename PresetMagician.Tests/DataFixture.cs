@@ -36,8 +36,7 @@ namespace PresetMagician.Tests
 
         public void Setup(string className)
         {
-            EditableCollectionConfiguration.DisableDispatch = true;
-            ApplicationService.UseDispatcher = false;
+            Core.Core.UseDispatcher = false;
             
             LogManager.AddDebugListener(false);
             var module2 = new CoreModule();
