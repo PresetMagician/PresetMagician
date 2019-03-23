@@ -70,6 +70,7 @@ namespace PresetMagician.Tests.ModelTests
                 nameof(Preset.IsIgnored),
                 nameof(Preset.Plugin),
                 nameof(Preset.IsMetadataModified),
+                nameof(Preset.IsMetadataUserModified),
                 nameof(Preset.LastExported),
                 nameof(Preset.PresetId),
                 nameof(Preset.PresetSize),

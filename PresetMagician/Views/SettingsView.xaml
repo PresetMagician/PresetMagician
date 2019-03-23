@@ -106,23 +106,12 @@
                             </CheckBox>
                             <TextBlock FontStyle="Italic">“brought to you by using the latest in Voodoo Ritual Technology™.”</TextBlock>
                         </StackPanel>
-
-                        <!-- Preview Note resources -->
-                        <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal">
-                            <Label Content="Default Preview Note" />
-                        </StackPanel>
-
-                        <StackPanel Orientation="Vertical" Grid.Row="3"
-                                    Grid.Column="1" VerticalAlignment="Top">
-
-                            <TextBox Text="{Binding EditableConfiguration.DefaultPreviewMidiNote.FullNoteName}" />
-
-                        </StackPanel>
-
-
                     </Grid>
                 </ScrollViewer>
             </TabItem>
+            <TabItem VerticalContentAlignment="Stretch" Header="Preview Note Players">
+                <local:PreviewNotePlayerEditorView />
+                </TabItem>
             <TabItem VerticalContentAlignment="Top" Header="VST Workers">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <Grid>
@@ -267,7 +256,6 @@
                                 Content="Open Database Location"
                                 Command="{Binding OpenDatabaseLocation}" />
                         </DockPanel>
-
                     </Grid>
                 </ScrollViewer>
             </TabItem>

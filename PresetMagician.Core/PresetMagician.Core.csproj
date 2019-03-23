@@ -129,6 +129,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\CharacteristicsService.cs" />
     <Compile Include="Services\DataPersisterService.cs" />
+    <Compile Include="Services\DataPersisterService.Plugins.cs" />
+    <Compile Include="Services\DataPersisterService.Presets.cs" />
+    <Compile Include="Services\DataPersisterService.PreviewNotePlayers.cs" />
+    <Compile Include="Services\DataPersisterService.TypesCharacteristics.cs" />
     <Compile Include="Services\GlobalFrontendService.cs" />
     <Compile Include="Services\GlobalService.cs" />
     <Compile Include="Services\PluginService.cs" />
