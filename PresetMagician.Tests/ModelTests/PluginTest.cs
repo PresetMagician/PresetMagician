@@ -169,6 +169,7 @@ namespace PresetMagician.Tests.ModelTests
                 nameof(Preset.IsUserModified),
                 nameof(Preset.PresetMetadataModifiedProperties),
                 nameof(Preset.UserModifiedProperties),
+                nameof(Preset.IsMetadataUserModified)
             };
 
         private Plugin InitializePluginToBeSaved()

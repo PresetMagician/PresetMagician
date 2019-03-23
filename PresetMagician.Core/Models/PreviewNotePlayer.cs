@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Ceras;
 
 namespace PresetMagician.Core.Models
@@ -27,25 +28,27 @@ namespace PresetMagician.Core.Models
 
         private static PreviewNotePlayer _defaultPreviewNotePlayer;
 
-        public static Dictionary<string, PreviewNotePlayer> PreviewNotePlayers =
-            new Dictionary<string, PreviewNotePlayer>();
+        public static List<PreviewNotePlayer> PreviewNotePlayers =
+            new List<PreviewNotePlayer>();
 
         public static PreviewNotePlayer GetPreviewNotePlayer(PreviewNotePlayer player)
         {
-            if (PreviewNotePlayers.ContainsKey(player.PreviewNotePlayerId))
+            var previewNotePlayer =
+                (from p in PreviewNotePlayers where p.PreviewNotePlayerId == player.PreviewNotePlayerId select p)
+                .FirstOrDefault();
+
+            if (previewNotePlayer != null)
             {
-                return PreviewNotePlayers[player.PreviewNotePlayerId];
+                return previewNotePlayer;
             }
-            else
-            {
-                PreviewNotePlayers.Add(player.PreviewNotePlayerId, player);
-                return player;
-            }
+
+            PreviewNotePlayers.Add(player);
+            return player;
         }
 
         public PreviewNotePlayer()
         {
-            PreviewNotePlayers.Add(PreviewNotePlayerId, this);
+            PreviewNotePlayers.Add(this);
         }
 
         [Include] public string PreviewNotePlayerId { get; private set; } = Guid.NewGuid().ToString();

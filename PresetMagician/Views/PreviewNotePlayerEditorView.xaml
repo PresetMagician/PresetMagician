@@ -1,0 +1,76 @@
+<catel:UserControl x:Class="PresetMagician.Views.PreviewNotePlayerEditorView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModels="clr-namespace:PresetMagician.ViewModels"
+             xmlns:catel="http://schemas.catelproject.com"
+             d:DataContext="{d:DesignInstance viewModels:PreviewNotePlayerEditorViewModel}"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <catel:UserControl.Resources>
+        <catel:ReferenceToCollapsingVisibilityConverter x:Key="ReferenceToCollapsingVisibilityConverter"/>
+    </catel:UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <DataGrid Grid.Column="0" Grid.Row="0" SelectedItem="{Binding SelectedPreviewNotePlayer}"
+                  ItemsSource="{Binding PreviewNotePlayers}" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn
+                    Header="Name"
+                    Width="*"
+                    IsReadOnly="True"
+                    Binding="{Binding Name}" />
+            </DataGrid.Columns>
+        </DataGrid>
+        
+        <DockPanel Grid.Row="1" Grid.Column="0" VerticalAlignment="Bottom">
+            <Button
+                Command="{Binding AddPreviewPlayer}" Content="Add"/>
+            <Button
+                Command="{Binding RemovePreviewPlayer}" Content="Remove"/>
+           
+            </DockPanel>
+
+        <Grid Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"
+              Visibility="{Binding SelectedPreviewNotePlayer, Converter={StaticResource ReferenceToCollapsingVisibilityConverter}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0" Grid.Column="0" Content="Preview Note Player Name" />
+            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SelectedPreviewNotePlayer.Name}" />
+
+            <Label Grid.Row="1" Grid.Column="0" Content="Preview Notes" />
+            <DataGrid Grid.Column="1" Grid.Row="1" ItemsSource="{Binding SelectedPreviewNotePlayer.PreviewNotes}"
+                      AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn
+                        Width="*"
+                        Header="Note"
+                        Binding="{Binding NoteNumber}" />
+                    <DataGridTextColumn
+                        Width="*"
+                        Header="Start"
+                        Binding="{Binding Start}" />
+                    <DataGridTextColumn
+                        Width="*"
+                        Header="Duration"
+                        Binding="{Binding Duration}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </Grid>
+</catel:UserControl>

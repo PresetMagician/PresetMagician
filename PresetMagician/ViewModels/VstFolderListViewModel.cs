@@ -15,20 +15,15 @@ namespace PresetMagician.ViewModels
 {
     public class VstFolderListViewModel : ViewModelBase
     {
-        private readonly IRuntimeConfigurationService _configurationService;
         private readonly ISelectDirectoryService _selectDirectoryService;
-        private readonly IVstService _vstService;
 
         public VstFolderListViewModel(IRuntimeConfigurationService configurationService,
-            ISelectDirectoryService selectDirectoryService, IVstService vstService)
+            ISelectDirectoryService selectDirectoryService)
         {
             Argument.IsNotNull(() => configurationService);
             Argument.IsNotNull(() => selectDirectoryService);
-            Argument.IsNotNull(() => vstService);
 
-            _configurationService = configurationService;
             _selectDirectoryService = selectDirectoryService;
-            _vstService = vstService;
 
             AddDefaultVstFolders = new Command(OnAddDefaultVstFoldersExecute);
             AddFolder = new TaskCommand(OnAddFolderExecute);

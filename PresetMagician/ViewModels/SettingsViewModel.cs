@@ -44,6 +44,7 @@ namespace PresetMagician.ViewModels
             Title = "Settings";
 
             PresetDatabaseStatistics = dataPersisterService.GetStorageStatistics();
+            
             TotalPresets = (from p in PresetDatabaseStatistics select p.PresetCount).Sum();
             TotalPresetsUncompressedSize = (from p in PresetDatabaseStatistics select p.PresetUncompressedSize).Sum();
             TotalPresetsCompressedSize = (from p in PresetDatabaseStatistics select p.PresetCompressedSize).Sum();
@@ -78,6 +79,7 @@ namespace PresetMagician.ViewModels
         public double SavedSpace { get; set; }
         public double SavedSpacePercent { get; set; }
         public List<PresetDatabaseStatistic> PresetDatabaseStatistics { get; }
+        
 
         public string DefaultNativeInstrumentsUserContentDirectory
         {

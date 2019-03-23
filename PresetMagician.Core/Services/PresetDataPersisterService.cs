@@ -15,22 +15,20 @@ namespace PresetMagician.Core.Services
         public event EventHandler<PresetUpdatedEventArgs> PresetUpdated;
         private SQLiteAsyncConnection _db;
 
-        public static string DefaultDatabasePath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            @"Drachenkatze\PresetMagician\PresetMagicianPresets.sqlite3");
+        public static string DefaultDatabaseFile = "PresetMagicianPresets.sqlite3";
 
+        public static string GetDatabaseFile()
+        {
+            Directory.CreateDirectory(DataPersisterService.DefaultDataStoragePath);
+            return Path.Combine(DataPersisterService.DefaultDataStoragePath, DefaultDatabaseFile);
+        }
 
         public async Task OpenDatabase()
         {
             if (_db == null)
             {
-                var dbDir = Path.GetDirectoryName(DefaultDatabasePath);
-                if (!Directory.Exists(dbDir))
-                {
-                    Directory.CreateDirectory(dbDir);
-                }
-
-                _db = new SQLiteAsyncConnection(DefaultDatabasePath);
+               
+                _db = new SQLiteAsyncConnection(GetDatabaseFile());
                 await _db.CreateTableAsync<PresetDataStorage>();
             }
         }

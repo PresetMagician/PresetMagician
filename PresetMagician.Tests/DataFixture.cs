@@ -47,16 +47,15 @@ namespace PresetMagician.Tests
 
             ApplicationDatabaseContext.DefaultDatabasePath = Path.Combine(Directory.GetCurrentDirectory(),
                 $@"TestData\{className}\LegacyDatabases\LegacyDb.sqlite3");
-            DataPersisterService.DefaultPluginStoragePath =
-                Path.Combine(Directory.GetCurrentDirectory(), $@"TestData\{className}\Plugins");
-            DataPersisterService.DefaultTypesCharacteristicsStoragePath =
-                Path.Combine(Directory.GetCurrentDirectory(), $@"TestData\{className}");
-            PresetDataPersisterService.DefaultDatabasePath = Path.Combine(Directory.GetCurrentDirectory(),
+            DataPersisterService.DefaultDataStoragePath =
+                Path.Combine(Directory.GetCurrentDirectory(), $@"TestData\");
+           
+            PresetDataPersisterService.DefaultDatabaseFile = Path.Combine(Directory.GetCurrentDirectory(),
                 $@"TestData\{className}\PresetData.sqlite3");
 
             Directory.CreateDirectory(DataPersisterService.DefaultPluginStoragePath);
             Directory.CreateDirectory(Path.GetDirectoryName(ApplicationDatabaseContext.DefaultDatabasePath));
-            Directory.CreateDirectory(Path.GetDirectoryName(PresetDataPersisterService.DefaultDatabasePath));
+            Directory.CreateDirectory(Path.GetDirectoryName(PresetDataPersisterService.DefaultDatabaseFile));
 
 
             File.Delete(ApplicationDatabaseContext.DefaultDatabasePath);

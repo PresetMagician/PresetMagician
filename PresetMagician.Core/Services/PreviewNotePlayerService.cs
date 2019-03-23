@@ -1,51 +1,39 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Net.Sockets;
 using Ceras;
 using PresetMagician.Core.Models;
 
-namespace SharedModels.Services
+namespace PresetMagician.Core.Services
 {
     public class PreviewNotePlayerService
     {
-        public static Dictionary<string, PreviewNotePlayer> PreviewNotePlayers =
-            new Dictionary<string, PreviewNotePlayer> {{"default", PreviewNotePlayer.Default}};
+       
+        private readonly GlobalService _globalService;
+        
 
-        public static string DefaultPreviewNotePlayerStoragePath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            @"Drachenkatze\PresetMagician\PreviewNotePlayers.presetmagician");
-
-        private readonly CerasSerializer _serializer;
-
-        public PreviewNotePlayerService()
+        public PreviewNotePlayerService(GlobalService globalService)
         {
-            var serializerConfig = new SerializerConfig();
-            serializerConfig.DefaultTargets = TargetMember.None;
-            serializerConfig.KnownTypes.Add(typeof(PreviewNotePlayer));
-
-            serializerConfig.VersionTolerance.Mode = VersionToleranceMode.Standard;
-            _serializer = new CerasSerializer(serializerConfig);
+            _globalService = globalService;
         }
 
-        public void LoadPreviewNotePlayers()
+        public bool IsPreviewNotePlayerInUse(PreviewNotePlayer previewNotePlayer)
         {
-            if (File.Exists(DefaultPreviewNotePlayerStoragePath))
+            foreach (var plugin in _globalService.Plugins)
             {
-                PreviewNotePlayers =
-                    _serializer.Deserialize<Dictionary<string, PreviewNotePlayer>>(
-                        File.ReadAllBytes(DefaultPreviewNotePlayerStoragePath));
+                var hasPreviewNotePlayer = (from preset in plugin.Presets
+                    where ReferenceEquals(preset.PreviewNotePlayer, previewNotePlayer)
+                    select preset).Any();
+
+                if (hasPreviewNotePlayer)
+                {
+                    return true;
+                }
             }
 
-            if (!PreviewNotePlayers.ContainsKey("default"))
-            {
-                PreviewNotePlayers.Add("default", PreviewNotePlayer.Default);
-            }
-        }
-
-        public void SavePreviewNotePlayers()
-        {
-            var data = _serializer.Serialize(PreviewNotePlayers);
-            File.WriteAllBytes(DefaultPreviewNotePlayerStoragePath, data);
+            return false;
         }
     }
 }

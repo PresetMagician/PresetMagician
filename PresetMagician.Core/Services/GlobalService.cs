@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Catel.Collections;
 using Orchestra;
 using PresetMagician.Core.Interfaces;
@@ -13,12 +14,14 @@ namespace PresetMagician.Core.Services
         {
             GlobalCharacteristics = Characteristic.GlobalCharacteristics;
             GlobalTypes = Type.GlobalTypes;
+            PreviewNotePlayers = PreviewNotePlayer.PreviewNotePlayers;
             RuntimeConfiguration = new RuntimeConfiguration();
         }
 
         public FastObservableCollection<Plugin> Plugins { get; } = new FastObservableCollection<Plugin>();
         public GlobalCharacteristicCollection GlobalCharacteristics { get; }
         public GlobalTypeCollection GlobalTypes { get; }
+        public List<PreviewNotePlayer> PreviewNotePlayers { get; }
 
         public IRemoteVstHostProcessPool RemoteVstHostProcessPool { get; private set; }
 
@@ -28,7 +31,6 @@ namespace PresetMagician.Core.Services
             {
                 throw new ArgumentException("Process pool already set, cannot set again");
             }
-
 
             RemoteVstHostProcessPool = remoteVstHostProcessPool;
         }
