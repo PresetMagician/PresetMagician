@@ -1,9 +1,9 @@
 RESTRICTION: == net472
 NUGET
   remote: https://api.nuget.org/v3/index.json
-    Anotar.Catel.Fody (4.6.7)
-      Catel.Core (>= 5.7)
-      Fody (>= 3.2.9)
+    Anotar.Catel.Fody (4.8)
+      Catel.Core (>= 5.9)
+      Fody (>= 4.0.2)
     Antlr (3.5.0.2)
     Be.Windows.Forms.HexBox (1.6.1)
     Castle.Core (4.3.1)
@@ -128,7 +128,7 @@ NUGET
     SharpVectors.Reloaded (1.2)
     SharpZipLib (1.1)
     Simple-MAPI.NET (1.1)
-    Splat (6.1.7)
+    Splat (7.0.1)
       System.Drawing.Primitives (>= 4.3)
     sqlite-net-pcl (1.5.231)
       SQLitePCLRaw.bundle_green (>= 1.1.11)
