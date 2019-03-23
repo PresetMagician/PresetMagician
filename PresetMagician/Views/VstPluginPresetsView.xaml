@@ -30,11 +30,12 @@
         <converters:NodeSortConverter x:Key="NodeSorter" />
         <catel:BooleanToCollapsingVisibilityConverter x:Key="BooleanToCollapsingVisibilityConverter" />
         <converters:RemoveNewLinesConverter x:Key="RemoveNewLinesConverter" />
-        
+
         <ControlTemplate x:Key="MultipleChoiceFilter">
-            <controls:TypesMultipleChoiceFilter Filter="{Binding Path=Filter, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=dgx:DataGridFilterColumnControl}}"/>
+            <controls:TypesMultipleChoiceFilter
+                Filter="{Binding Path=Filter, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=dgx:DataGridFilterColumnControl}}" />
         </ControlTemplate>
-        
+
         <Style x:Key="EllipsisText" TargetType="{x:Type TextBlock}">
             <Style.Setters>
                 <Setter Property="TextTrimming" Value="CharacterEllipsis" />
@@ -188,31 +189,32 @@
                                                 ToolTipService.BetweenShowDelay="0"
                                                 ToolTipService.InitialShowDelay="100">
                                         <TextBlock ToolTip="Edited by user"
-                                                Visibility="{Binding IsMetadataUserModified, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}"
-                                                Margin="2,0,0,0">
-                                        <iconPacks:PackIconMaterial
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            
-                                            Kind="AccountEdit"/>
+                                                   Visibility="{Binding IsMetadataUserModified, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}"
+                                                   Margin="2,0,0,0">
+                                            <iconPacks:PackIconMaterial
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+
+                                                Kind="AccountEdit" />
                                         </TextBlock>
                                         <TextBlock ToolTip="Non-exported changes"
-                                                Visibility="{Binding IsMetadataModified, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}"
-                                                Margin="2,0,0,0">
-                                        <iconPacks:PackIconMaterial
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            Kind="Delta"/>
+                                                   Visibility="{Binding IsMetadataModified, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}"
+                                                   Margin="2,0,0,0">
+                                            <iconPacks:PackIconMaterial
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Kind="Delta" />
                                         </TextBlock>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                       
+
                     </DataGrid.Columns>
                 </DataGrid>
 
-                <TabControl Grid.Row="1" Grid.Column="2" Height="250" Visibility="{Binding HasSelectedPreset, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
+                <TabControl Grid.Row="1" Grid.Column="2" Height="250"
+                            Visibility="{Binding HasSelectedPreset, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
                     <TabItem Header="Edit Preset">
                         <Grid>
                             <Grid.RowDefinitions>
@@ -254,7 +256,7 @@
                                         ToolTip="Revert to imported author"
                                         Visibility="{Binding SelectedPreset.PresetMetadataModifiedProperties.IsAuthorModified, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}" />
                             </Grid>
-                           
+
 
                             <Label Grid.Row="2" Grid.Column="0" Content="Comment" />
                             <Grid Grid.Row="2" Grid.Column="1" VerticalAlignment="Top">
@@ -271,7 +273,7 @@
                                         ToolTip="Revert to imported comment"
                                         Visibility="{Binding SelectedPreset.PresetMetadataModifiedProperties.IsCommentModified, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}" />
                             </Grid>
-                           
+
 
                             <Label Grid.Row="3" Grid.Column="0" Content="Preview Note Player" />
                             <TextBlock Grid.Row="3" Grid.Column="1"
@@ -290,7 +292,7 @@
                                         ToolTip="Revert to imported bank path"
                                         Visibility="{Binding SelectedPreset.PresetMetadataModifiedProperties.IsBankPathModified, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}" />
                             </Grid>
-                        
+
 
                             <Label Grid.Row="1" Grid.Column="2" Content="Characteristics" />
                             <Grid Grid.Row="1" Grid.Column="3">
@@ -298,31 +300,38 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <xctk:CheckComboBox Height="27" Grid.Column="0" ValueMemberPath="EffectiveCharacteristicName" DisplayMemberPath="EffectiveCharacteristicName" ItemsSource="{Binding GlobalCharacteristicCollection}" SelectedItemsOverride="{Binding SelectedPreset.Metadata.Characteristics}"/>
+                                <xctk:CheckComboBox Height="27" Grid.Column="0"
+                                                    ItemTemplate="{StaticResource CharacteristicTemplate}"
+                                                    DisplayMemberPath="EffectiveCharacteristicName"
+                                                    ItemsSource="{Binding GlobalCharacteristicCollection}"
+                                                    SelectedItemsOverride="{Binding SelectedPreset.Metadata.Characteristics}" />
                                 <Button Grid.Column="1" Command="{Binding Revert}" CommandParameter="Characteristics"
                                         Content="{iconPacks:FontAwesome Kind=UndoAltSolid}"
                                         ToolTip="Revert to imported characteristics"
                                         Visibility="{Binding SelectedPreset.PresetMetadataModifiedProperties.IsCharacteristicsModified, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}" />
                             </Grid>
-                            
-                        
 
-                            <Label Grid.Row="2" Grid.Column="2" Content="Types"/>
+
+                            <Label Grid.Row="2" Grid.Column="2" Content="Types" />
                             <Grid Grid.Row="2" Grid.Column="3" VerticalAlignment="Top">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <xctk:CheckComboBox Height="27" Grid.Column="0" VerticalAlignment="Center" ItemTemplate="{StaticResource TypeTemplate}" DisplayMemberPath="EffectiveFullTypeName" ItemsSource="{Binding GlobalTypeCollection}" SelectedItemsOverride="{Binding SelectedPreset.Metadata.Types}"/>
-                                <Button Grid.Column="1" Command="{Binding Revert}" CommandParameter="Types" VerticalAlignment="Center" Margin="0"
+                                <xctk:CheckComboBox Height="27" Grid.Column="0" VerticalAlignment="Center"
+                                                    ItemTemplate="{StaticResource TypeTemplate}"
+                                                    DisplayMemberPath="EffectiveFullTypeName"
+                                                    ItemsSource="{Binding GlobalTypeCollection}"
+                                                    SelectedItemsOverride="{Binding SelectedPreset.Metadata.Types}" />
+                                <Button Grid.Column="1" Command="{Binding Revert}" CommandParameter="Types"
+                                        VerticalAlignment="Center" Margin="0"
                                         Content="{iconPacks:FontAwesome Kind=UndoAltSolid}"
                                         ToolTip="Revert to imported types"
                                         Visibility="{Binding SelectedPreset.PresetMetadataModifiedProperties.IsTypesModified, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}" />
                             </Grid>
-                            
 
-                           
+
                         </Grid>
                     </TabItem>
                     <TabItem Header="Original Preset Data">
@@ -350,7 +359,7 @@
                             <Label Grid.Row="2" Grid.Column="0" Content="Comment" />
                             <TextBlock Grid.Row="2" Grid.Column="1"
                                        Text="{Binding SelectedPreset.OriginalMetadata.Comment}" />
-                            
+
                             <Label Grid.Row="3" Grid.Column="0" Content="Source File" />
                             <TextBlock Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3"
                                        Text="{Binding SelectedPreset.OriginalMetadata.SourceFile}" />
@@ -458,6 +467,6 @@
             </fluent:RibbonTabItem>
 
         </fluent:Ribbon>
-    <ContentControl Grid.Row="1" Template="{StaticResource BankView}" />
-</Grid>
+        <ContentControl Grid.Row="1" Template="{StaticResource BankView}" />
+    </Grid>
 </catel:DataWindow>
