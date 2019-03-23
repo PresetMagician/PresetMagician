@@ -149,7 +149,6 @@
     <Compile Include="Commands\PresetExport\PresetExportDoExportCommandContainer.cs" />
     <Compile Include="Commands\PresetTools\PresetToolsShowPresetDataCommandContainer.cs" />
     <Compile Include="Commands\Preset\AbstractCurrentPresetEditorCommandContainer.cs" />
-    <Compile Include="Commands\Preset\PresetRenamePresetBankCommandContainer.cs" />
     <Compile Include="Commands\ThreadedApplicationNotBusyCommandContainer.cs" />
     <Compile Include="Commands\Tools\ToolsEditTypesCharacteristicsCommandContainer.cs" />
     <Compile Include="Commands\Tools\ToolsNksfViewCommandContainer.cs" />
@@ -161,6 +160,9 @@
     </Compile>
     <Compile Include="Controls\RibbonDataWindow.cs" />
     <Compile Include="Controls\TabControl.cs" />
+    <Compile Include="Controls\TypesMultipleChoiceFilter.xaml.cs">
+      <DependentUpon>TypesMultipleChoiceFilter.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converters\FormatKbSizeConverter.cs" />
     <Compile Include="Converters\MessageButtonToCollapsingVisibilityConverter.cs" />
     <Compile Include="Converters\MessageImageToTextConverter.cs" />
@@ -212,7 +214,7 @@
     <Compile Include="ViewModels\PresetViewModel.cs" />
     <Compile Include="ViewModels\ProgressWindowViewModel.cs" />
     <Compile Include="ViewModels\RegistrationViewModel.cs" />
-    <Compile Include="ViewModels\RenamePresetBankViewModel.cs" />
+    <Compile Include="ViewModels\PresetBankViewModel.cs" />
     <Compile Include="ViewModels\ReportIssueViewModel.cs" />
     <Compile Include="ViewModels\RibbonViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
@@ -248,8 +250,8 @@
     <Compile Include="Views\ProgressWindow.xaml.cs">
       <DependentUpon>ProgressWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\RenamePresetBankView.xaml.cs">
-      <DependentUpon>RenamePresetBankView.xaml</DependentUpon>
+    <Compile Include="Views\PresetBankView.xaml.cs">
+      <DependentUpon>PresetBankView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ReportIssueView.xaml.cs">
       <DependentUpon>ReportIssueView.xaml</DependentUpon>
@@ -316,6 +318,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Controls\ProcessPoolGrid.xaml" />
+    <Page Include="Controls\TypesMultipleChoiceFilter.xaml" />
     <Page Include="Templates\BusyTemplate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -368,7 +371,7 @@
     </Page>
     <Page Include="Views\PresetDataView.xaml" />
     <Page Include="Views\ProgressWindow.xaml" />
-    <Page Include="Views\RenamePresetBankView.xaml" />
+    <Page Include="Views\PresetBankView.xaml" />
     <Page Include="Views\ReportIssueView.xaml" />
     <Page Include="Views\TypesCharacteristicsView.xaml">
       <SubType>Designer</SubType>
@@ -532,8 +535,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets\" />
-    <Folder Include="MarkupExtensions\" />
-    <Folder Include="Models\Settings" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="paket.references" />

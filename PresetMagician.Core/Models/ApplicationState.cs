@@ -19,7 +19,6 @@ namespace PresetMagician.Core.Models
         #region Toolbars
 
         public int SelectedRibbonTabIndex { get; set; } = 1;
-        public bool ShowPresetsRibbon { get; set; }
 
         #endregion
 

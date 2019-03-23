@@ -159,12 +159,6 @@ namespace PresetMagician
             public const string ReportSinglePluginToLive = "PluginTools.ReportSinglePluginToLive";
         }
 
-        public static class Preset
-        {
-            public const string ApplyMidiNote = "Preset.ApplyMidiNote";
-            public const string RenamePresetBank = "Preset.RenamePresetBank";
-        }
-
         public static class PresetExport
         {
             public const string ActivatePresetView = "PresetExport.ActivatePresetView";

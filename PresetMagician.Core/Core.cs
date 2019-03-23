@@ -18,4 +18,9 @@ namespace PresetMagician.Core
             serviceLocator.RegisterType<RemoteVstService, RemoteVstService>();
         }
     }
+
+    public static class Core
+    {
+        public static bool UseDispatcher = true;
+    }
 }

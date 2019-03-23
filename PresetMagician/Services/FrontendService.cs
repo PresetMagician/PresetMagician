@@ -92,10 +92,6 @@ namespace PresetMagician.Services
                 nameof(Commands.PluginTools.ReportSinglePluginToLive));
 
 
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Preset), nameof(Commands.Preset.ApplyMidiNote));
-            _commandManager.CreateCommandWithGesture(typeof(Commands.Preset), nameof(Commands.Preset.RenamePresetBank));
-
-
             _commandManager.CreateCommandWithGesture(typeof(Commands.PresetExport),
                 nameof(Commands.PresetExport.ClearSelected));
             _commandManager.CreateCommandWithGesture(typeof(Commands.PresetExport),

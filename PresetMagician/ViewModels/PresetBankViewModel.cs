@@ -7,22 +7,26 @@ using PresetMagician.Core.Models;
 
 namespace PresetMagician.ViewModels
 {
-    public class RenamePresetBankViewModel : ViewModelBase
+    public class PresetBankViewModel : ViewModelBase
     {
         public Plugin Plugin { get; set; }
         public PresetBank PresetBank { get; set; }
+        public PresetBank ParentBank { get; set; }
+        public new string Title { get; set; }
 
         [Required]
         [RegularExpression(@"^[a-zA-Z0-9\s]+$", ErrorMessage =
             "Only alphanumeric characters, numbers and spaces are allowed.")]
         public string NewBankName { get; set; }
 
-        public RenamePresetBankViewModel((Plugin plugin, PresetBank presetBank) data)
+        public PresetBankViewModel((Plugin plugin, PresetBank presetBank, PresetBank parentBank) data)
         {
-            DeferValidationUntilFirstSaveCall = false;
             Plugin = data.plugin;
+            ParentBank = data.parentBank;
             PresetBank = data.presetBank;
+            
             NewBankName = data.presetBank.BankName;
+            DeferValidationUntilFirstSaveCall = false;
             Title = "Rename Preset Bank";
         }
 
@@ -35,7 +39,7 @@ namespace PresetMagician.ViewModels
 
             if (NewBankName != PresetBank.BankName)
             {
-                if (PresetBank.ParentBank.ContainsBankName(NewBankName))
+                if (ParentBank.ContainsBankName(NewBankName))
                 {
                     validationResults.Add(FieldValidationResult.CreateError(nameof(NewBankName),
                         "The bank name already exists on the same level!"));

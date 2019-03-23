@@ -10,6 +10,7 @@ using Catel.Reflection;
 using Catel.Services;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
+using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;
 
 // ReSharper disable once CheckNamespace
@@ -22,27 +23,21 @@ namespace PresetMagician
         protected readonly IUIVisualizerService UiVisualizerService;
         protected readonly IRuntimeConfigurationService _runtimeConfigurationService;
         protected readonly IViewModelFactory ViewModelFactory;
-        private readonly GlobalFrontendService _globalFrontendService;
+        protected readonly GlobalFrontendService _globalFrontendService;
         private readonly string _viewModel;
         private readonly bool _allowDuringApplicationBusy;
 
         protected AbstractOpenDialogCommandContainer(string commandName, string viewModel,
             bool allowDuringApplicationBusy,
-            ICommandManager commandManager, IUIVisualizerService uiVisualizerService,
-            IRuntimeConfigurationService runtimeConfigurationService,
-            IViewModelFactory viewModelFactory)
+            ICommandManager commandManager, IServiceLocator serviceLocator)
             : base(commandName, commandManager)
         {
-            Argument.IsNotNull(() => uiVisualizerService);
-            Argument.IsNotNull(() => viewModelFactory);
-            Argument.IsNotNull(() => runtimeConfigurationService);
-
-            UiVisualizerService = uiVisualizerService;
-            ViewModelFactory = viewModelFactory;
+            UiVisualizerService = serviceLocator.ResolveType<IUIVisualizerService>();
+            ViewModelFactory = serviceLocator.ResolveType<IViewModelFactory>();
             _viewModel = viewModel;
             _allowDuringApplicationBusy = allowDuringApplicationBusy;
-            _runtimeConfigurationService = runtimeConfigurationService;
-            _globalFrontendService = ServiceLocator.Default.ResolveType<GlobalFrontendService>();
+            _runtimeConfigurationService = serviceLocator.ResolveType<IRuntimeConfigurationService>();
+            _globalFrontendService = serviceLocator.ResolveType<GlobalFrontendService>();
             _globalFrontendService.ApplicationState.PropertyChanged += OnApplicationBusyChanged;
         }
 
@@ -65,6 +60,11 @@ namespace PresetMagician
         {
         }
 
+        protected virtual object GetModel()
+        {
+            return null;
+        }
+
         protected override async Task ExecuteAsync(object parameter)
         {
             await base.ExecuteAsync(parameter);
@@ -75,7 +75,7 @@ namespace PresetMagician
                 throw Log.ErrorAndCreateException<InvalidOperationException>("Cannot find type '{0}'", _viewModel);
             }
 
-            var viewModel = ViewModelFactory.CreateViewModel(viewModelType, null);
+            var viewModel = ViewModelFactory.CreateViewModel(viewModelType, GetModel());
 
             OnBeforeShowDialog(viewModel, parameter);
 

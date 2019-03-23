@@ -1,4 +1,5 @@
-﻿using Catel.MVVM;
+﻿using Catel.IoC;
+using Catel.MVVM;
 using Catel.Services;
 using PresetMagician.Services.Interfaces;
 using PresetMagician.ViewModels;
@@ -9,12 +10,10 @@ namespace PresetMagician
     // ReSharper disable once UnusedMember.Global
     public class ToolsEditTypesCharacteristicsCommandContainer : AbstractOpenDialogCommandContainer
     {
-        public ToolsEditTypesCharacteristicsCommandContainer(ICommandManager commandManager,
-            IUIVisualizerService uiVisualizerService,
-            IViewModelFactory viewModelFactory, IRuntimeConfigurationService runtimeConfigurationService)
+        public ToolsEditTypesCharacteristicsCommandContainer(ICommandManager commandManager,IServiceLocator serviceLocator
+          )
             : base(Commands.Tools.EditTypesCharacteristics, nameof(TypesCharacteristicsViewModel), false,
-                commandManager, uiVisualizerService, runtimeConfigurationService,
-                viewModelFactory)
+                commandManager, serviceLocator)
         {
         }
     }

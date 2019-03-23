@@ -56,7 +56,7 @@
         </Border>
     </DataTemplate>
 
-    <DataTemplate x:Key="CharacteristicsTemplate" DataType="{x:Type models:Preset}">
+    <DataTemplate x:Key="PresetCharacteristicsTemplate" DataType="{x:Type models:Preset}">
         <ItemsControl ItemsSource="{Binding Path=Metadata.Characteristics,Mode=OneWay}"
                       ItemTemplate="{StaticResource CharacteristicTemplate}">
             <ItemsControl.ItemsPanel>
@@ -66,7 +66,29 @@
             </ItemsControl.ItemsPanel>
         </ItemsControl>
     </DataTemplate>
-
+    
+    <DataTemplate x:Key="PresetOriginalCharacteristicsTemplate" DataType="{x:Type models:Preset}">
+        <ItemsControl ItemsSource="{Binding Path=OriginalMetadata.Characteristics,Mode=OneWay}"
+                      ItemTemplate="{StaticResource CharacteristicTemplate}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="1,0,0,0" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+    </DataTemplate>
+    
+    <DataTemplate x:Key="PresetExportedCharacteristicsTemplate" DataType="{x:Type models:Preset}">
+        <ItemsControl ItemsSource="{Binding Path=LastExportedMetadata.Characteristics,Mode=OneWay}"
+                      ItemTemplate="{StaticResource CharacteristicTemplate}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="1,0,0,0" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+    </DataTemplate>
+    
     <DataTemplate x:Key="TypeTemplate" DataType="{x:Type models:Type}">
 
         <Border HorizontalAlignment="Left"
@@ -135,8 +157,30 @@
     </DataTemplate>
 
 
-    <DataTemplate x:Key="TypesTemplate" DataType="{x:Type models:Preset}">
+    <DataTemplate x:Key="PresetTypesTemplate" DataType="{x:Type models:Preset}">
         <ItemsControl ItemsSource="{Binding Path=Metadata.Types,Mode=OneWay}"
+                      ItemTemplate="{StaticResource TypeTemplate}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="1,0,0,0" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+    </DataTemplate>
+    
+    <DataTemplate x:Key="PresetOriginalTypesTemplate" DataType="{x:Type models:Preset}">
+        <ItemsControl ItemsSource="{Binding Path=OriginalMetadata.Types, Mode=OneWay}"
+                      ItemTemplate="{StaticResource TypeTemplate}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="1,0,0,0" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+    </DataTemplate>
+    
+    <DataTemplate x:Key="PresetExportedTypesTemplate" DataType="{x:Type models:Preset}">
+        <ItemsControl ItemsSource="{Binding Path=LastExportedMetadata.Types, Mode=OneWay}"
                       ItemTemplate="{StaticResource TypeTemplate}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>

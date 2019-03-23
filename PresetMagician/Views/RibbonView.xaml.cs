@@ -38,18 +38,6 @@ namespace PresetMagician.Views
             {
                 Ribbon.SelectedTabIndex = _globalFrontendService.ApplicationState.SelectedRibbonTabIndex;
             }
-
-            if (e.PropertyName == nameof(ApplicationState.ShowPresetsRibbon))
-            {
-                if (_globalFrontendService.ApplicationState.ShowPresetsRibbon)
-                {
-                    PresetsTabGroup.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    PresetsTabGroup.Visibility = Visibility.Collapsed;
-                }
-            }
         }
     }
 }

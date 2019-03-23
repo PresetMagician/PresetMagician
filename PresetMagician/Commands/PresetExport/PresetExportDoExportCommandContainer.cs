@@ -114,7 +114,7 @@ namespace PresetMagician
 
                     await _presetDataPersisterService.CloseDatabase();
 
-                    _dataPersisterService.Save();
+                    _dataPersisterService.SavePresetsForPlugin(pluginPreset.Plugin);
                 }
             });
 

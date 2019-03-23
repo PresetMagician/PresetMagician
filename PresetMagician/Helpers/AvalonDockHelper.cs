@@ -90,35 +90,9 @@ namespace PresetMagician.Helpers
             {
                 var view = ViewHelper.ConstructViewWithViewModel(viewType, viewModel);
                 document = CreateDocument(view, tag);
-            }
-
-            document.CanClose = isClosable;
-
-            if (activateDocument)
-            {
-                ActivateDocument(document);
-            }
-
-            return document;
-        }
-
-        public static CustomLayoutDocument CreateDocument<TViewModel>(TViewModel viewModel, object tag = null,
-            bool activateDocument = false,
-            bool isClosable = false, bool shouldTrackDirty = false)
-        {
-            var sl = ServiceLocator.Default;
-            var viewLocator = sl.ResolveType<IViewLocator>();
-            var viewType = viewLocator.ResolveView(viewModel.GetType());
-
-            var document = FindDocument(viewType, tag);
-            if (document == null)
-            {
-                var view = ViewHelper.ConstructViewWithViewModel(viewType, viewModel);
-                document = CreateDocument(view, tag);
-
+                
                 if (viewModel is ViewModelBase)
                 {
-                    document.ShouldTrackModified = shouldTrackDirty;
                     document.ViewModel = viewModel as ViewModelBase;
                 }
             }

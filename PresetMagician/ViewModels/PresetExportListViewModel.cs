@@ -3,6 +3,7 @@ using Catel.IoC;
 using Catel.MVVM;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
+using PresetMagician.Services.Interfaces;
 
 namespace PresetMagician.ViewModels
 {
@@ -16,6 +17,8 @@ namespace PresetMagician.ViewModels
 
             PresetExportList = _globalFrontendService.PresetExportList;
             ApplicationState = _globalFrontendService.ApplicationState;
+            ApplicationOperationStatus = ServiceLocator.Default.ResolveType<IApplicationService>()
+                .GetApplicationOperationStatus();
 
             ServiceLocator.Default.RegisterInstance(this);
 
@@ -33,5 +36,6 @@ namespace PresetMagician.ViewModels
         public FastObservableCollection<Preset> SelectedPresets { get; }
         public FastObservableCollection<Preset> PresetExportList { get; }
         public ApplicationState ApplicationState { get; }
+        public ApplicationOperationStatus ApplicationOperationStatus { get; }
     }
 }

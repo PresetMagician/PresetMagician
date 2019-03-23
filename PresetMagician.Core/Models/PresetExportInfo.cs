@@ -15,9 +15,19 @@ namespace PresetMagician.Core.Models
             PluginVendor = preset.Plugin.PluginVendor;
             PluginId = preset.Plugin.VstPluginId;
             PluginType = preset.Plugin.PluginType;
-            BankPath = preset.PresetBank.GetBankPath().ToList();
-            BankPath.RemoveFirst();
-            BankName = preset.PresetBank.BankName;
+            if (preset.PresetBank != null)
+            {
+                BankPath = preset.PresetBank.GetBankPath().ToList();
+                BankPath.RemoveFirst();
+                BankName = preset.PresetBank.BankName;
+            }
+            else
+            {
+                BankPath = new List<string>();
+                BankName = "";
+            }
+
+            
             PresetName = preset.Metadata.PresetName;
             PreviewNotePlayer = preset.PreviewNotePlayer;
             DefaultControllerAssignments = preset.Plugin.DefaultControllerAssignments;

@@ -1,4 +1,4 @@
-﻿<catel:UserControl
+﻿<catel:DataWindow
     x:Class="PresetMagician.Views.VstPluginPresetsView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -12,14 +12,29 @@
     xmlns:dd="urn:gong-wpf-dragdrop"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:models="clr-namespace:PresetMagician.Core.Models;assembly=PresetMagician.Core"
-    CloseViewModelOnUnloaded="False"
+    xmlns:fluent="urn:fluent-ribbon"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    xmlns:dgx="urn:tom-englert.de/DataGridExtensions"
+    xmlns:controls="clr-namespace:PresetMagician.Controls"
+    xmlns:views="clr-namespace:PresetMagician.Views"
     Padding="2,2,2,2"
+    SizeToContent="Manual"
+    MinWidth="1000"
+    MinHeight="800"
+    ResizeMode="CanResizeWithGrip"
+    WindowState="Maximized"
     d:DataContext="{d:DesignInstance viewModels:VstPluginPresetsViewModel}"
     mc:Ignorable="d">
 
-    <catel:UserControl.Resources>
+    <catel:DataWindow.Resources>
         <converters:NodeSortConverter x:Key="NodeSorter" />
+        <catel:BooleanToCollapsingVisibilityConverter x:Key="BooleanToCollapsingVisibilityConverter" />
         <converters:RemoveNewLinesConverter x:Key="RemoveNewLinesConverter" />
+        
+        <ControlTemplate x:Key="MultipleChoiceFilter">
+            <controls:TypesMultipleChoiceFilter Filter="{Binding Path=Filter, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=dgx:DataGridFilterColumnControl}}"/>
+        </ControlTemplate>
+        
         <Style x:Key="EllipsisText" TargetType="{x:Type TextBlock}">
             <Style.Setters>
                 <Setter Property="TextTrimming" Value="CharacterEllipsis" />
@@ -60,9 +75,15 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
                 <TreeView
                     Grid.Column="0"
+                    Grid.Row="0"
+                    Grid.RowSpan="2"
                     Margin="5"
                     ItemTemplate="{StaticResource Contents}"
                     dd:DragDrop.IsDragSource="True"
@@ -83,6 +104,8 @@
                 </TreeView>
 
                 <GridSplitter
+                    Grid.Row="0"
+                    Grid.RowSpan="2"
                     Grid.Column="1"
                     Width="5"
                     HorizontalAlignment="Center"
@@ -90,27 +113,33 @@
                     ShowsPreview="True" />
 
                 <DataGrid
+                    Grid.Row="0"
                     Grid.Column="2"
                     Margin="5"
                     MaxWidth="4096"
                     MaxHeight="4096"
+                    behaviors:MultiSelectBehavior.SynchronizedSelectedItems="{Binding SelectedPresets}"
+                    SelectedItem="{Binding SelectedPreset}"
                     dd:DragDrop.IsDragSource="True"
                     dd:DragDrop.UseDefaultEffectDataTemplate="True"
                     dd:DragDrop.UseDefaultDragAdorner="True"
                     dd:DragDrop.DropHandler="{Binding}"
+                    dgx:DataGridFilter.IsAutoFilterEnabled="True"
+                    dgx:DataGridFilter.GlobalFilter="{Binding ExternalFilter}"
                     AutoGenerateColumns="False"
                     d:DataContext="{d:DesignInstance models:Preset, CreateList=True}"
                     ItemsSource="{Binding PresetsView}">
                     <DataGrid.Columns>
                         <DataGridTextColumn
-                            Width="1*"
+                            Width="200"
                             Binding="{Binding Metadata.PresetName}"
                             ElementStyle="{StaticResource EllipsisText}"
+                            IsReadOnly="True"
                             Header="Preset">
                             <DataGridTextColumn.CellStyle>
                                 <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultCellStyle}">
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsUserModified}" Value="true">
+                                        <DataTrigger Binding="{Binding IsMetadataUserModified}" Value="true">
                                             <Setter Property="FontStyle" Value="Oblique" />
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -118,61 +147,317 @@
                             </DataGridTextColumn.CellStyle>
                         </DataGridTextColumn>
                         <DataGridTextColumn
-                            Width="1*"
+                            Width="200"
                             Binding="{Binding Metadata.BankPath}"
                             Header="Bank"
                             ElementStyle="{StaticResource EllipsisText}"
                             IsReadOnly="True" />
-                        <DataGridTextColumn
-                            Width="1*"
-                            Binding="{Binding Metadata.Author}"
-                            ElementStyle="{StaticResource EllipsisText}"
-                            Header="Author" />
-                        <DataGridTextColumn
-                            Width="1*"
-                            IsReadOnly="True"
-                            Binding="{Binding Metadata.Comment, Converter={StaticResource RemoveNewLinesConverter}}"
-                            Header="Comment" ElementStyle="{StaticResource EllipsisText}" />
                         <DataGridTemplateColumn
-                            Width="3*"
+                            Width="300"
                             CellStyle="{StaticResource NoPaddingCellStyle}"
                             Header="Types"
                             CanUserSort="False"
-                            CellTemplate="{StaticResource TypesTemplate}"
+                            dgx:DataGridFilterColumn.IsFilterVisible="False"
+                            dgx:DataGridFilterColumn.Template="{StaticResource MultipleChoiceFilter}"
+                            CellTemplate="{StaticResource PresetTypesTemplate}"
                             IsReadOnly="True" />
                         <DataGridTemplateColumn
-                            Width="3*"
+                            Width="300"
                             CanUserSort="False"
                             CellStyle="{StaticResource NoPaddingCellStyle}"
+                            dgx:DataGridFilterColumn.IsFilterVisible="False"
                             Header="Characteristics"
-                            CellTemplate="{StaticResource CharacteristicsTemplate}"
+                            CellTemplate="{StaticResource PresetCharacteristicsTemplate}"
                             IsReadOnly="True" />
                         <DataGridTextColumn
-                            Width="40"
-                            Binding="{Binding PreviewNote.FullNoteName}"
-                            Header="Key"
-                            IsReadOnly="False" />
-                        <DataGridTextColumn
                             Width="80"
+                            dgx:DataGridFilterColumn.IsFilterVisible="False"
                             Binding="{Binding LastExported,StringFormat=d, TargetNullValue='never'}"
                             Header="Exported"
                             IsReadOnly="True" />
-                        <DataGridCheckBoxColumn
+                        <DataGridTemplateColumn
                             Width="60"
-                            Binding="{Binding IsMetadataModified, Mode=OneWay}"
-                            Header="Changed"
-                            IsReadOnly="True" />
-                        <DataGridTextColumn
-                            Width="*"
-                            Binding="{Binding OriginalMetadata.SourceFile, Mode=OneWay}"
-                            Header="SourceFile"
-                            IsReadOnly="True" />
+                            CellStyle="{StaticResource NoPaddingCellStyle}"
+                            dgx:DataGridFilterColumn.IsFilterVisible="False"
+                            Header="Status"
+                            IsReadOnly="True">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal"
+                                                Margin="0"
+                                                ToolTipService.BetweenShowDelay="0"
+                                                ToolTipService.InitialShowDelay="100">
+                                        <TextBlock ToolTip="Edited by user"
+                                                Visibility="{Binding IsMetadataUserModified, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}"
+                                                Margin="2,0,0,0">
+                                        <iconPacks:PackIconMaterial
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            
+                                            Kind="AccountEdit"/>
+                                        </TextBlock>
+                                        <TextBlock ToolTip="Non-exported changes"
+                                                Visibility="{Binding IsMetadataModified, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}"
+                                                Margin="2,0,0,0">
+                                        <iconPacks:PackIconMaterial
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Kind="Delta"/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                       
                     </DataGrid.Columns>
                 </DataGrid>
+
+                <TabControl Grid.Row="1" Grid.Column="2" Height="250" Visibility="{Binding HasSelectedPreset, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
+                    <TabItem Header="Edit Preset">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Row="0" Grid.Column="0" Content="Preset Name" />
+                            <Grid Grid.Row="0" Grid.Column="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0"
+                                         Text="{Binding SelectedPreset.Metadata.PresetName}" />
+                                <Button Grid.Column="1" Command="{Binding Revert}" CommandParameter="PresetName"
+                                        Content="{iconPacks:FontAwesome Kind=UndoAltSolid}"
+                                        ToolTip="Revert to imported preset name"
+                                        Visibility="{Binding SelectedPreset.PresetMetadataModifiedProperties.IsPresetNameModified, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}" />
+                            </Grid>
+
+                            <Label Grid.Row="1" Grid.Column="0" Content="Author" />
+                            <Grid Grid.Row="1" Grid.Column="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0"
+                                         Text="{Binding SelectedPreset.Metadata.Author}" />
+                                <Button Grid.Column="1" Command="{Binding Revert}" CommandParameter="Author"
+                                        Content="{iconPacks:FontAwesome Kind=UndoAltSolid}"
+                                        ToolTip="Revert to imported author"
+                                        Visibility="{Binding SelectedPreset.PresetMetadataModifiedProperties.IsAuthorModified, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}" />
+                            </Grid>
+                           
+
+                            <Label Grid.Row="2" Grid.Column="0" Content="Comment" />
+                            <Grid Grid.Row="2" Grid.Column="1" VerticalAlignment="Top">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0" MinHeight="45" MaxHeight="45" TextWrapping="Wrap"
+                                         AcceptsReturn="True" VerticalScrollBarVisibility="Auto"
+                                         HorizontalScrollBarVisibility="Auto"
+                                         Text="{Binding SelectedPreset.Metadata.Comment}" />
+                                <Button Grid.Column="1" Command="{Binding Revert}" CommandParameter="Comment"
+                                        Content="{iconPacks:FontAwesome Kind=UndoAltSolid}"
+                                        ToolTip="Revert to imported comment"
+                                        Visibility="{Binding SelectedPreset.PresetMetadataModifiedProperties.IsCommentModified, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}" />
+                            </Grid>
+                           
+
+                            <Label Grid.Row="3" Grid.Column="0" Content="Preview Note Player" />
+                            <TextBlock Grid.Row="3" Grid.Column="1"
+                                       Text="{Binding SelectedPreset.LastExportedMetadata.PreviewNotePlayer.Name}" />
+
+                            <Label Grid.Row="0" Grid.Column="2" Content="Bank Path" />
+                            <Grid Grid.Row="0" Grid.Column="3">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0"
+                                         Text="{Binding SelectedPreset.Metadata.BankPath}" />
+                                <Button Grid.Column="1" Command="{Binding Revert}" CommandParameter="BankPath"
+                                        Content="{iconPacks:FontAwesome Kind=UndoAltSolid}"
+                                        ToolTip="Revert to imported bank path"
+                                        Visibility="{Binding SelectedPreset.PresetMetadataModifiedProperties.IsBankPathModified, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}" />
+                            </Grid>
+                        
+
+                            <Label Grid.Row="1" Grid.Column="2" Content="Characteristics" />
+                            <Grid Grid.Row="1" Grid.Column="3">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <xctk:CheckComboBox Height="27" Grid.Column="0" ValueMemberPath="EffectiveCharacteristicName" DisplayMemberPath="EffectiveCharacteristicName" ItemsSource="{Binding GlobalCharacteristicCollection}" SelectedItemsOverride="{Binding SelectedPreset.Metadata.Characteristics}"/>
+                                <Button Grid.Column="1" Command="{Binding Revert}" CommandParameter="Characteristics"
+                                        Content="{iconPacks:FontAwesome Kind=UndoAltSolid}"
+                                        ToolTip="Revert to imported characteristics"
+                                        Visibility="{Binding SelectedPreset.PresetMetadataModifiedProperties.IsCharacteristicsModified, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}" />
+                            </Grid>
+                            
+                        
+
+                            <Label Grid.Row="2" Grid.Column="2" Content="Types"/>
+                            <Grid Grid.Row="2" Grid.Column="3" VerticalAlignment="Top">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <xctk:CheckComboBox Height="27" Grid.Column="0" VerticalAlignment="Center" ItemTemplate="{StaticResource TypeTemplate}" DisplayMemberPath="EffectiveFullTypeName" ItemsSource="{Binding GlobalTypeCollection}" SelectedItemsOverride="{Binding SelectedPreset.Metadata.Types}"/>
+                                <Button Grid.Column="1" Command="{Binding Revert}" CommandParameter="Types" VerticalAlignment="Center" Margin="0"
+                                        Content="{iconPacks:FontAwesome Kind=UndoAltSolid}"
+                                        ToolTip="Revert to imported types"
+                                        Visibility="{Binding SelectedPreset.PresetMetadataModifiedProperties.IsTypesModified, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}" />
+                            </Grid>
+                            
+
+                           
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="Original Preset Data">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Row="0" Grid.Column="0" Content="Preset Name" />
+                            <TextBlock Grid.Row="0" Grid.Column="1"
+                                       Text="{Binding SelectedPreset.OriginalMetadata.PresetName}" />
+
+                            <Label Grid.Row="1" Grid.Column="0" Content="Author" />
+                            <TextBlock Grid.Row="1" Grid.Column="1"
+                                       Text="{Binding SelectedPreset.OriginalMetadata.Author}" />
+
+                            <Label Grid.Row="2" Grid.Column="0" Content="Comment" />
+                            <TextBlock Grid.Row="2" Grid.Column="1"
+                                       Text="{Binding SelectedPreset.OriginalMetadata.Comment}" />
+                            
+                            <Label Grid.Row="3" Grid.Column="0" Content="Source File" />
+                            <TextBlock Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3"
+                                       Text="{Binding SelectedPreset.OriginalMetadata.SourceFile}" />
+
+                            <Label Grid.Row="0" Grid.Column="2" Content="Bank Path" />
+                            <TextBlock Grid.Row="0" Grid.Column="3"
+                                       Text="{Binding SelectedPreset.OriginalMetadata.BankPath}" />
+
+                            <Label Grid.Row="1" Grid.Column="2" Content="Characteristics" />
+                            <ContentControl Grid.Row="1" Grid.Column="3" Height="20" Content="{Binding SelectedPreset}"
+                                            ContentTemplate="{StaticResource PresetOriginalCharacteristicsTemplate}" />
+
+                            <Label Grid.Row="2" Grid.Column="2" Content="Types" />
+                            <ContentControl Grid.Row="2" Grid.Column="3" Height="20" Content="{Binding SelectedPreset}"
+                                            ContentTemplate="{StaticResource PresetOriginalTypesTemplate}" />
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="Last Exported Preset Data">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Row="0" Grid.Column="0" Content="Preset Name" />
+                            <TextBlock Grid.Row="0" Grid.Column="1"
+                                       Text="{Binding SelectedPreset.LastExportedMetadata.PresetName}" />
+
+                            <Label Grid.Row="1" Grid.Column="0" Content="Author" />
+                            <TextBlock Grid.Row="1" Grid.Column="1"
+                                       Text="{Binding SelectedPreset.LastExportedMetadata.Author}" />
+
+                            <Label Grid.Row="2" Grid.Column="0" Content="Comment" />
+                            <TextBlock Grid.Row="2" Grid.Column="1"
+                                       Text="{Binding SelectedPreset.LastExportedMetadata.Comment}" />
+
+                            <Label Grid.Row="3" Grid.Column="0" Content="Preview Note Player" />
+                            <TextBlock Grid.Row="3" Grid.Column="1"
+                                       Text="{Binding SelectedPreset.LastExportedMetadata.PreviewNotePlayer.Name}" />
+
+                            <Label Grid.Row="0" Grid.Column="2" Content="Bank Path" />
+                            <TextBlock Grid.Row="0" Grid.Column="3"
+                                       Text="{Binding SelectedPreset.LastExportedMetadata.BankPath}" />
+
+                            <Label Grid.Row="1" Grid.Column="2" Content="Characteristics" />
+                            <ContentControl Grid.Row="1" Grid.Column="3" Height="20" Content="{Binding SelectedPreset}"
+                                            ContentTemplate="{StaticResource PresetExportedCharacteristicsTemplate}" />
+
+                            <Label Grid.Row="2" Grid.Column="2" Content="Types" />
+                            <ContentControl Grid.Row="2" Grid.Column="3" Height="20" Content="{Binding SelectedPreset}"
+                                            ContentTemplate="{StaticResource PresetExportedTypesTemplate}" />
+
+                            <Label Grid.Row="3" Grid.Column="2" Content="Last Export Date" />
+                            <TextBlock Grid.Row="3" Grid.Column="3"
+                                       Text="{Binding SelectedPreset.LastExported,StringFormat=d, TargetNullValue='never'}" />
+                        </Grid>
+                    </TabItem>
+                </TabControl>
             </Grid>
         </ControlTemplate>
-    </catel:UserControl.Resources>
+    </catel:DataWindow.Resources>
 
-    <ContentControl Template="{StaticResource BankView}" />
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <fluent:Ribbon
+            Grid.Row="0"
+            AutomaticStateManagement="False"
+            CanCustomizeRibbon="False"
+            IsQuickAccessToolBarVisible="False">
+            <fluent:Ribbon.Resources>
+                <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="Margin" Value="0" />
+                </Style>
+            </fluent:Ribbon.Resources>
+            <fluent:RibbonTabItem Header="Commands">
+                <fluent:RibbonGroupBox Header="Preset Banks"
+                                       IsLauncherVisible="False">
 
-</catel:UserControl>
+                    <fluent:Button Header="Rename Bank"
+                                   LargeIcon="{iconPacks:Material Kind=FolderEdit,Width=32,Height=32}"
+                                   Size="Large"
+                                   Command="{Binding RenameBankCommand}" />
+
+                    <fluent:Button Header="Add Bank"
+                                   Icon="{iconPacks:Material Kind=FolderPlus}"
+                                   Command="{Binding AddBankCommand}"
+                                   Size="Middle" />
+
+                    <fluent:Button Header="Delete Bank"
+                                   Icon="{iconPacks:Material Kind=FolderRemove}"
+                                   Command="{Binding DeleteBankCommand}"
+                                   Size="Middle" />
+
+                </fluent:RibbonGroupBox>
+            </fluent:RibbonTabItem>
+
+        </fluent:Ribbon>
+    <ContentControl Grid.Row="1" Template="{StaticResource BankView}" />
+</Grid>
+</catel:DataWindow>

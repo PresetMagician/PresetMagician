@@ -75,7 +75,8 @@ namespace PresetMagician.Tests.ModelTests
                 nameof(Preset.PresetSize),
                 nameof(Preset.PresetCompressedSize),
                 nameof(Preset.OriginalMetadata),
-                nameof(Preset.LastExportedMetadata)
+                nameof(Preset.LastExportedMetadata),
+                nameof(Preset.PresetMetadataModifiedProperties),
             };
 
         public PresetTests(ITestOutputHelper output, DataFixture fixture) : base(output, fixture)

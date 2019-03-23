@@ -3,9 +3,9 @@ using PresetMagician.ViewModels;
 
 namespace PresetMagician.Views
 {
-    public partial class RenamePresetBankView
+    public partial class PresetBankView
     {
-        public RenamePresetBankView(RenamePresetBankViewModel viewModel)
+        public PresetBankView(PresetBankViewModel viewModel)
             : base(viewModel, DataWindowMode.OkCancel)
         {
             InitializeComponent();

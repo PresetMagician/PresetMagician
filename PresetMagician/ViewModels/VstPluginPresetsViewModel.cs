@@ -1,23 +1,40 @@
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using Catel.Collections;
 using Catel.Data;
 using Catel.MVVM;
+using Catel.Services;
 using GongSolutions.Wpf.DragDrop;
 using PresetMagician.Core.Data;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
+using PresetMagician.Services.Interfaces;
+using Type = PresetMagician.Core.Models.Type;
 
 namespace PresetMagician.ViewModels
 {
     public sealed class VstPluginPresetsViewModel : ViewModelBase, IDropTarget, IModelTracker
     {
-        private readonly GlobalFrontendService _globalFrontendService;
+        private readonly IUIVisualizerService _visualizerService;
+        private readonly DataPersisterService _dataPersisterService;
+        private readonly IViewModelFactory _viewModelFactory;
+        private readonly IAdvancedMessageService _messageService;
 
-        public VstPluginPresetsViewModel(Plugin plugin, GlobalFrontendService globalFrontendService)
+        public VstPluginPresetsViewModel(Plugin plugin, GlobalService globalService,
+            IUIVisualizerService visualizerService,
+            DataPersisterService dataPersisterService, IViewModelFactory viewModelFactory,
+            IAdvancedMessageService advancedMessageService)
         {
+            _messageService = advancedMessageService;
+            _visualizerService = visualizerService;
+            _viewModelFactory = viewModelFactory;
+            _dataPersisterService = dataPersisterService;
+
             Plugin = plugin;
 
             PresetsView = (ListCollectionView) CollectionViewSource.GetDefaultView(Plugin.Presets);
@@ -25,31 +42,187 @@ namespace PresetMagician.ViewModels
             PresetsView.IsLiveFiltering = false;
 
             Title = $"{plugin.PluginName}: Presets";
-            _globalFrontendService = globalFrontendService;
-            _globalFrontendService.ApplicationState.IsApplicationEditing = true;
 
-            RenameBankCommand = new TaskCommand(OnRenameBankCommandExecute);
-            //ThrottlingRate = new TimeSpan(0, 0, 0, 0, 500);
+            GlobalCharacteristicCollection =
+                (ListCollectionView) CollectionViewSource.GetDefaultView(globalService.GlobalCharacteristics);
+            GlobalCharacteristicCollection.SortDescriptions.Add(
+                new SortDescription(nameof(Characteristic.EffectiveCharacteristicName), ListSortDirection.Ascending));
+            GlobalCharacteristicCollection.IsLiveSorting = false;
+            GlobalCharacteristicCollection.IsLiveFiltering = false;
+
+            GlobalTypeCollection = (ListCollectionView) CollectionViewSource.GetDefaultView(globalService.GlobalTypes);
+            GlobalTypeCollection.SortDescriptions.Add(new SortDescription(nameof(Type.EffectiveFullTypeName),
+                ListSortDirection.Ascending));
+            GlobalTypeCollection.IsLiveSorting = false;
+            GlobalTypeCollection.IsLiveFiltering = false;
+
+            RenameBankCommand = new TaskCommand(OnRenameBankCommandExecute, RenameBankCommandCanExecute);
+            AddBankCommand = new TaskCommand(OnAddBankCommandExecute, AddBankCommandCanExecute);
+            DeleteBankCommand = new TaskCommand(OnDeleteBankCommandExecute, DeleteBankCommandCanExecute);
+
+            Revert = new Command<string>(OnRevertExecute);
+        }
+        
+        #region Properties
+
+        public PresetBank SelectedTreeNode { get; set; }
+        public ListCollectionView PresetsView { get; }
+        [Model] public Plugin Plugin { get; }
+        public ListCollectionView GlobalTypeCollection { get; }
+        public ListCollectionView GlobalCharacteristicCollection { get; }
+        public Preset SelectedPreset { get; set; }
+        public List<Preset> SelectedPresets { get; set; }
+        public bool HasSelectedPreset { get; set; }
+        #endregion
+
+
+        protected override Task<bool> CancelAsync()
+        {
+            Plugin.CancelEdit();
+            return base.CancelAsync();
         }
 
-        /// <summary>
-        /// Gets the ShowKeyboardMappings command.
-        /// </summary>
-        public TaskCommand RenameBankCommand { get; private set; }
+        protected override Task<bool> SaveAsync()
+        {
+            Plugin.EndEdit();
 
-        /// <summary>
-        /// Method to invoke when the ShowKeyboardMappings command is executed.
-        /// </summary>
+            try
+            {
+                _dataPersisterService.SavePresetsForPlugin(Plugin);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+            }
+
+            return base.SaveAsync();
+        }
+
+        protected override Task InitializeAsync()
+        {
+            Plugin.BeginEdit();
+            return base.InitializeAsync();
+        }
+
+       
+
+        #region Command Rename Bank
+
+        public TaskCommand RenameBankCommand { get; }
+
         private async Task OnRenameBankCommandExecute()
         {
-            Debug.WriteLine("FOO");
+            await _visualizerService.ShowDialogAsync<PresetBankViewModel>((
+                plugin: Plugin, presetBank: SelectedTreeNode, parentBank: SelectedTreeNode.ParentBank));
         }
 
-        protected override Task OnClosedAsync(bool? result)
+        private bool RenameBankCommandCanExecute()
         {
-            _globalFrontendService.ApplicationState.IsApplicationEditing = false;
-            return base.OnClosedAsync(result);
+            return SelectedTreeNode != null && !SelectedTreeNode.IsVirtualBank;
         }
+
+        #endregion
+
+        #region Command Delete Bank
+
+        public TaskCommand DeleteBankCommand { get; }
+
+        private async Task OnDeleteBankCommandExecute()
+        {
+            bool isEmpty = true;
+            foreach (var preset in Plugin.Presets)
+            {
+                if (SelectedTreeNode.IsEqualOrBelow(preset.PresetBank))
+                {
+                    isEmpty = false;
+                    break;
+                }
+            }
+
+            if (!isEmpty)
+            {
+                await _messageService.ShowErrorAsync(
+                    "Cannot delete a preset bank which contains presets. Please move the affected presets to another bank prior deleting.",
+                    "Cannot delete preset bank");
+            }
+            else
+            {
+                SelectedTreeNode.ParentBank.PresetBanks.Remove(SelectedTreeNode);
+            }
+            
+        }
+
+        private bool DeleteBankCommandCanExecute()
+        {
+            return SelectedTreeNode != null && !SelectedTreeNode.IsVirtualBank;
+        }
+
+        #endregion
+
+        #region Command Add Bank
+
+        public TaskCommand AddBankCommand { get; }
+
+        private async Task OnAddBankCommandExecute()
+        {
+            var newBank = new PresetBank {BankName = ""};
+            var viewModel = _viewModelFactory.CreateViewModel<PresetBankViewModel>((
+                plugin: Plugin, presetBank: newBank, parentBank: SelectedTreeNode));
+
+            viewModel.Title = "Add Preset Bank";
+            viewModel.SavedAsync += ViewModelOnSavedAsync;
+            await _visualizerService.ShowDialogAsync(viewModel);
+        }
+
+        private Task ViewModelOnSavedAsync(object sender, EventArgs e)
+        {
+            var presetBank = ((PresetBankViewModel) sender).PresetBank;
+            SelectedTreeNode.PresetBanks.Add(presetBank);
+            return Task.CompletedTask;
+        }
+
+        private bool AddBankCommandCanExecute()
+        {
+            return SelectedTreeNode != null;
+        }
+
+        #endregion
+
+        #region Command Revert
+
+        public Command<string> Revert { get; }
+
+
+        private void OnRevertExecute(string parameter)
+        {
+            switch (parameter)
+            {
+                case nameof(PresetMetadata.PresetName):
+                    SelectedPreset.Metadata.PresetName = SelectedPreset.OriginalMetadata.PresetName;
+                    break;
+                case nameof(PresetMetadata.Author):
+                    SelectedPreset.Metadata.Author = SelectedPreset.OriginalMetadata.Author;
+                    break;
+                case nameof(PresetMetadata.Comment):
+                    SelectedPreset.Metadata.Comment = SelectedPreset.OriginalMetadata.Comment;
+                    break;
+                case nameof(PresetMetadata.BankPath):
+                    SelectedPreset.Metadata.BankPath = SelectedPreset.OriginalMetadata.BankPath;
+                    break;
+                case nameof(PresetMetadata.Characteristics):
+                    SelectedPreset.Metadata.Characteristics.SynchronizeCollection(
+                        SelectedPreset.OriginalMetadata.Characteristics);
+                    break;
+                case nameof(PresetMetadata.Types):
+                    SelectedPreset.Metadata.Types.SynchronizeCollection(
+                        SelectedPreset.OriginalMetadata.Types);
+                    break;
+            }
+        }
+
+        #endregion
+
+        public Predicate<object> ExternalFilter { get; set; }
 
         private bool PresetFilter(Preset preset)
         {
@@ -65,7 +238,16 @@ namespace PresetMagician.ViewModels
         {
             if (e.PropertyName == nameof(SelectedTreeNode))
             {
-                PresetsView.Filter = o => PresetFilter(o as Preset);
+                ExternalFilter =  o => PresetFilter(o as Preset);
+                
+                RenameBankCommand.RaiseCanExecuteChanged();
+                AddBankCommand.RaiseCanExecuteChanged();
+                DeleteBankCommand.RaiseCanExecuteChanged();
+            }
+
+            if (e.PropertyName == nameof(SelectedPreset))
+            {
+                HasSelectedPreset = SelectedPreset != null;
             }
         }
 
@@ -73,16 +255,6 @@ namespace PresetMagician.ViewModels
         {
             return Plugin;
         }
-
-        #region Properties
-
-        public PresetBank SelectedTreeNode { get; set; }
-
-        public ListCollectionView PresetsView { get; private set; }
-
-        [Model] public Plugin Plugin { get; protected set; }
-
-        #endregion
 
         void IDropTarget.DragOver(IDropInfo dropInfo)
         {
@@ -100,10 +272,10 @@ namespace PresetMagician.ViewModels
 
             if (dropInfo.Data.GetType() == typeof(PresetBank))
             {
-                var sourceBank = dropInfo.Data as PresetBank;
+                var sourceBank = (PresetBank)dropInfo.Data;
                 if (dropInfo.TargetItem.GetType() == typeof(PresetBank))
                 {
-                    var targetBank = dropInfo.TargetItem as PresetBank;
+                    var targetBank = (PresetBank) dropInfo.TargetItem;
                     var sourceParentBank = sourceBank.ParentBank;
                     if (!targetBank.IsVirtualBank && sourceParentBank != targetBank)
                     {
@@ -117,7 +289,7 @@ namespace PresetMagician.ViewModels
             {
                 if (dropInfo.TargetItem.GetType() == typeof(PresetBank))
                 {
-                    var targetBank = dropInfo.TargetItem as PresetBank;
+                    var targetBank = (PresetBank) dropInfo.TargetItem;
                     if (!targetBank.IsVirtualBank)
                     {
                         dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
@@ -136,12 +308,12 @@ namespace PresetMagician.ViewModels
 
             if (dropInfo.Data.GetType() == typeof(PresetBank))
             {
-                var sourceBank = dropInfo.Data as PresetBank;
+                var sourceBank = (PresetBank)dropInfo.Data;
                 var sourceParentBank = sourceBank.ParentBank;
 
                 if (dropInfo.TargetItem.GetType() == typeof(PresetBank))
                 {
-                    var targetBank = dropInfo.TargetItem as PresetBank;
+                    var targetBank = (PresetBank)dropInfo.TargetItem;
 
                     if (!targetBank.IsVirtualBank && sourceBank != targetBank)
                     {
@@ -159,16 +331,16 @@ namespace PresetMagician.ViewModels
 
                 if (dropInfo.Data.GetType() == typeof(Preset))
                 {
-                    presets = new List<Preset>() {dropInfo.Data as Preset};
+                    presets = new List<Preset>() {(Preset)dropInfo.Data};
                 }
                 else
                 {
-                    presets = dropInfo.Data as List<Preset>;
+                    presets = (List<Preset>)dropInfo.Data;
                 }
 
                 if (dropInfo.TargetItem.GetType() == typeof(PresetBank))
                 {
-                    var targetBank = dropInfo.TargetItem as PresetBank;
+                    var targetBank = (PresetBank)dropInfo.TargetItem;
                     if (!targetBank.IsVirtualBank)
                     {
                         foreach (var preset in presets)
