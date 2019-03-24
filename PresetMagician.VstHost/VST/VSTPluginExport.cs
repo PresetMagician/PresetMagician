@@ -32,6 +32,14 @@ namespace PresetMagician.VstHost.VST
             var guid = Guid.NewGuid();
             string fileExtension;
 
+            if (preset.BankPath.Count > 2)
+            {
+                var d = preset.BankPath.GetRange(1, preset.BankPath.Count - 1);
+                var lastBankPath = string.Join("/", d);
+                
+                preset.BankPath.RemoveRange(1, preset.BankPath.Count - 1);
+                preset.BankPath.Add(lastBankPath);
+            }
             nksf.kontaktSound.summaryInformation.summaryInformation.vendor = preset.PluginVendor;
             nksf.kontaktSound.summaryInformation.summaryInformation.uuid = guid;
             nksf.kontaktSound.summaryInformation.summaryInformation.name = preset.PresetName;
@@ -90,7 +98,7 @@ namespace PresetMagician.VstHost.VST
             }
 
             var bankDirectory = Path.Combine(userContentDirectory, GetNKSFPluginName(preset.PluginName),
-                GetNKSFBankName(preset.BankName));
+                GetNKSFBankName(preset.BankPath));
             Directory.CreateDirectory(bankDirectory);
             return bankDirectory;
         }
@@ -140,19 +148,27 @@ namespace PresetMagician.VstHost.VST
                 GetNKSFPresetName(vstPreset.PresetName));
         }
 
-        public string GetNKSFBankName(string bankName)
+        public string GetNKSFBankName(List<string> bankPath)
         {
-            foreach (var c in Path.GetInvalidPathChars())
+            List<string> bankNames = new List<string>();
+            foreach (var bn in bankPath)
             {
-                bankName = bankName.Replace(c, '_');
+                var bankName = bn;
+                foreach (var c in Path.GetInvalidPathChars())
+                {
+                    bankName = bankName.Replace(c, '_');
+                }
+
+                foreach (var c in Path.GetInvalidFileNameChars())
+                {
+                    bankName.Replace(c, '_');
+                }
+
+                bankName = bankName.Replace("/", "-");
+                bankNames.Add(bankName);
             }
 
-            foreach (var c in Path.GetInvalidFileNameChars())
-            {
-                bankName = bankName.Replace(c, '_');
-            }
-
-            return bankName;
+            return string.Join(@"\", bankNames);
         }
 
         private void ConvertToOGG(string inputWave, string outputOGG)
