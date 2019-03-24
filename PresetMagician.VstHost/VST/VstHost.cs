@@ -189,7 +189,7 @@ namespace PresetMagician.VstHost.VST
             }
         }
 
-        private void MIDI(RemoteVstPlugin plugin, byte Cmd, byte Val1, byte Val2)
+        private void MIDI(RemoteVstPlugin plugin, byte Cmd, byte Val1, byte Val2, int deltaFrames = 0)
         {
             /*
 			 * Just a small note on the code for setting up a midi event:
@@ -211,7 +211,7 @@ namespace PresetMagician.VstHost.VST
             midiData[2] = Val2;
             midiData[3] = 0; // Reserved, unused
 
-            var vse = new VstMidiEvent( /*DeltaFrames*/ 0,
+            var vse = new VstMidiEvent(deltaFrames,
                 /*NoteLength*/ 0,
                 /*NoteOffset*/ 0,
                 midiData,
@@ -230,16 +230,16 @@ namespace PresetMagician.VstHost.VST
             MIDI(plugin, Cmd, Number, Value);
         }
 
-        public void MIDI_NoteOff(RemoteVstPlugin plugin, byte Note, byte Velocity)
+        public void MIDI_NoteOff(RemoteVstPlugin plugin, byte Note, byte Velocity, int deltaFrames = 0)
         {
             byte Cmd = 0x80;
-            MIDI(plugin, Cmd, Note, Velocity);
+            MIDI(plugin, Cmd, Note, Velocity, deltaFrames);
         }
 
-        public void MIDI_NoteOn(RemoteVstPlugin plugin, byte Note, byte Velocity)
+        public void MIDI_NoteOn(RemoteVstPlugin plugin, byte Note, byte Velocity, int deltaFrames = 0)
         {
             byte Cmd = 0x90;
-            MIDI(plugin, Cmd, Note, Velocity);
+            MIDI(plugin, Cmd, Note, Velocity, deltaFrames);
         }
 
         public void UnloadVst(RemoteVstPlugin remoteVst)

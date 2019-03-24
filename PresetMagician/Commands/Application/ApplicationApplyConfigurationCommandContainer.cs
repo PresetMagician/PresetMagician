@@ -13,12 +13,14 @@ namespace PresetMagician
     {
         private readonly ICommandManager _commandManager;
         private readonly GlobalService _globalService;
+        private readonly DataPersisterService _dataPersisterService;
 
         public ApplicationApplyConfigurationCommandContainer(ICommandManager commandManager,
             IServiceLocator serviceLocator)
             : base(Commands.Application.ApplyConfiguration, commandManager, serviceLocator)
         {
             _globalService = ServiceLocator.ResolveType<GlobalService>();
+            _dataPersisterService = ServiceLocator.ResolveType<DataPersisterService>();
             _commandManager = commandManager;
         }
 
@@ -37,6 +39,7 @@ namespace PresetMagician
 
             RuntimeConfigurationService.ApplyEditableConfiguration();
             RuntimeConfigurationService.Save();
+            _dataPersisterService.SavePreviewNotePlayers();
             await TaskHelper.Run(() =>
             {
                 foreach (var command in commandsList)

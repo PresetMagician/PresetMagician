@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Catel.Collections;
 using Catel.Services;
+using Catel.Windows.Threading;
 using PresetMagician.Core.ApplicationTask;
 using PresetMagician.Core.Models;
 using PresetMagician.Utils.Logger;
@@ -112,11 +113,10 @@ namespace PresetMagician.Core.Services
 
                 try
                 {
-                    progressStatus.Status = $"Verifying / Loading Presets {plugin.PluginLocation.DllPath}";
+                    progressStatus.Status = $"Verifying {plugin.PluginLocation.DllPath}";
                     progressStatus.Current = plugins.IndexOf(plugin);
 
                     applicationProgress.Progress.Report(progressStatus);
-
                     await UpdatePluginLocations(plugin);
 
                     if (plugin.PluginLocation != null && !plugin.PluginLocation.IsPresent)
@@ -135,9 +135,6 @@ namespace PresetMagician.Core.Services
                     }
 
                     plugin.NativeInstrumentsResource.Load(plugin);
-                    _dataPersisterService.LoadPresetsForPlugin(plugin);
-                    await Task.Delay(10);
-
                 }
                 catch (Exception e)
                 {

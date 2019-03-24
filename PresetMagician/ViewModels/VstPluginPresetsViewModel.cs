@@ -56,6 +56,7 @@ namespace PresetMagician.ViewModels
             GlobalTypeCollection.IsLiveSorting = false;
             GlobalTypeCollection.IsLiveFiltering = false;
 
+            PreviewNotePlayers = globalService.PreviewNotePlayers;
             RenameBankCommand = new TaskCommand(OnRenameBankCommandExecute, RenameBankCommandCanExecute);
             AddBankCommand = new TaskCommand(OnAddBankCommandExecute, AddBankCommandCanExecute);
             DeleteBankCommand = new TaskCommand(OnDeleteBankCommandExecute, DeleteBankCommandCanExecute);
@@ -69,6 +70,7 @@ namespace PresetMagician.ViewModels
         public ListCollectionView PresetsView { get; }
         [Model] public Plugin Plugin { get; }
         public ListCollectionView GlobalTypeCollection { get; }
+        public FastObservableCollection<PreviewNotePlayer> PreviewNotePlayers { get; }
         public ListCollectionView GlobalCharacteristicCollection { get; }
         public Preset SelectedPreset { get; set; }
         public List<Preset> SelectedPresets { get; set; }

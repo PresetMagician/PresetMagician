@@ -68,7 +68,7 @@ namespace PresetMagician.Legacy.Services
             if (oldPlugin.PluginLocation != null)
             {
                 newPlugin.PluginLocation = new NewModels.PluginLocation();
-                MigratePluginLocation(oldPlugin.PluginLocation, newPlugin.PluginLocation);
+                MigratePluginLocation(oldPlugin, oldPlugin.PluginLocation, newPlugin.PluginLocation);
             }
 
             foreach (var preset in oldPlugin.Presets)
@@ -106,8 +106,6 @@ namespace PresetMagician.Legacy.Services
                 nameof(Plugin.IsEnabled),
                 nameof(Plugin.IsReported),
                 nameof(Plugin.IsSupported),
-                nameof(Plugin.HasMetadata),
-                nameof(Plugin.IsAnalyzed),
                 nameof(Plugin.DontReport),
                 nameof(Plugin.DefaultControllerAssignments),
             };
@@ -171,7 +169,7 @@ namespace PresetMagician.Legacy.Services
             }
         }
 
-        private void MigratePluginLocation(PluginLocation oldLocation, NewModels.PluginLocation newLocation)
+        private void MigratePluginLocation(Plugin oldPlugin, PluginLocation oldLocation, NewModels.PluginLocation newLocation)
         {
             var propertiesToMigrate = new HashSet<string>
             {
@@ -191,6 +189,8 @@ namespace PresetMagician.Legacy.Services
                 var oldValue = PropertyHelper.GetPropertyValue(oldLocation, propertyName);
                 PropertyHelper.SetPropertyValue(newLocation, propertyName, oldValue);
             }
+
+            newLocation.HasMetadata = oldPlugin.HasMetadata;
         }
 
         private void MigrateModes(ICollection<Mode> oldModes,

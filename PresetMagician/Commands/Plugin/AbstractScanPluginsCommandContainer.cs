@@ -60,8 +60,6 @@ namespace PresetMagician
             _remoteVstService = ServiceLocator.ResolveType<RemoteVstService>();
 
             GlobalService.Plugins.CollectionChanged += OnPluginsListChanged;
-
-            Plugin.PresetMagicianVersion = VersionHelper.GetCurrentVersion();
         }
 
         protected abstract List<Plugin> GetPluginsToScan();
@@ -148,6 +146,7 @@ namespace PresetMagician
             {
                 _applicationService.StartApplicationOperation(this, "Analyzing VST plugins",
                     pluginsToScan.Count);
+progress = _applicationService.GetApplicationProgress();
 
 
                 await TaskHelper.Run(

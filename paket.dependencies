@@ -68,3 +68,4 @@ nuget ZeroFormatter.Interfaces
 nuget MessagePackAnalyzer
 nuget Ceras
 nuget Xunit.StaFact
+nuget System.Collections.Immutable

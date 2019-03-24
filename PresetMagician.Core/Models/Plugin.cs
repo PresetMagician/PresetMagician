@@ -22,8 +22,6 @@ namespace PresetMagician.Core.Models
         public readonly Dictionary<(string hash, string sourceFile), Preset> PresetHashCache =
             new Dictionary<(string, string), Preset>();
 
-        public static string PresetMagicianVersion;
-
         public override HashSet<string> GetEditableProperties()
         {
             return _editableProperties;
@@ -75,6 +73,14 @@ namespace PresetMagician.Core.Models
                 foreach (var item in e.NewItems)
                 {
                     ((Preset) item).Plugin = this;
+                }
+            }
+
+            if (e.Action == NotifyCollectionChangedAction.Reset)
+            {
+                foreach (var item in Presets)
+                {
+                    item.Plugin = this;
                 }
             }
         }
@@ -403,6 +409,21 @@ namespace PresetMagician.Core.Models
 
         public NativeInstrumentsResource NativeInstrumentsResource { get; set; } = new NativeInstrumentsResource();
 
+        public void OnBeforeCerasSerialize()
+        {
+            foreach (var preset in Presets)
+            {
+                preset.OnBeforeCerasSerialize();
+            }
+        }
+        
+        public void OnAfterCerasDeserialize()
+        {
+            foreach (var preset in Presets)
+            {
+                preset.OnAfterCerasDeserialize();
+            }
+        }
         #endregion
     }
 }

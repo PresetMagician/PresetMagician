@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Catel.Collections;
 using Ceras;
 using PresetMagician.Core.Data;
@@ -55,15 +56,40 @@ namespace PresetMagician.Core.Models
         /// <summary>
         /// The Native Instruments types used for this preset.
         /// </summary>
-        [Include]
         public FastObservableCollection<Type> Types { get; set; } = new TypeCollection();
 
         /// <summary>
         /// The Native Instruments characteristics used for this preset.
         /// </summary>
-        [Include]
         public FastObservableCollection<Characteristic> Characteristics { get; set; } = new CharacteristicCollection();
 
+        [Include]
+        public List<Type> SerializedTypes { get; set; }
+        
+        [Include]
+        public List<Characteristic> SerializedCharacteristics { get; set; }
+        
+        public void OnBeforeCerasSerialize()
+        {
+            SerializedTypes = Types.ToList();
+            SerializedCharacteristics = Characteristics.ToList();
+        }
+        
+        public void OnAfterCerasDeserialize()
+        {
+            using (Types.SuspendChangeNotifications())
+            {
+                Types.Clear();
+                Types.AddItems(SerializedTypes);
+            }
+            
+            using (Characteristics.SuspendChangeNotifications())
+            {
+                Characteristics.Clear();
+                Characteristics.AddItems(SerializedCharacteristics);
+            }
+        }
+        
         public override void BeginEdit(IUserEditable originatingObject)
         {
             if (!IsEditing)
@@ -122,27 +148,33 @@ namespace PresetMagician.Core.Models
 
             if (!UserOverwrittenProperties.Contains(nameof(Types)))
             {
-                Types.Clear();
-
-                foreach (var type in presetMetadata.Types)
+                using (Types.SuspendChangeNotifications(SuspensionMode.None))
                 {
-                    if (!type.IsIgnored)
+                    Types.Clear();
+
+                    foreach (var type in presetMetadata.Types)
                     {
-                        Types.Add(new Type {TypeName = type.TypeName, SubTypeName = type.SubTypeName});
+                        if (!type.IsIgnored)
+                        {
+                            Types.Add(new Type {TypeName = type.TypeName, SubTypeName = type.SubTypeName});
+                        }
                     }
                 }
             }
 
             if (!UserOverwrittenProperties.Contains(nameof(Characteristics)))
             {
-                Characteristics.Clear();
-
-                foreach (var characteristic in presetMetadata.Characteristics)
+                using (Characteristics.SuspendChangeNotifications(SuspensionMode.None))
                 {
-                    if (!characteristic.IsIgnored)
+                    Characteristics.Clear();
+
+                    foreach (var characteristic in presetMetadata.Characteristics)
                     {
-                        Characteristics.Add(new Characteristic
-                            {CharacteristicName = characteristic.CharacteristicName});
+                        if (!characteristic.IsIgnored)
+                        {
+                            Characteristics.Add(new Characteristic
+                                {CharacteristicName = characteristic.CharacteristicName});
+                        }
                     }
                 }
             }

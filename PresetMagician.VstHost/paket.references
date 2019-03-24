@@ -3,4 +3,5 @@ PropertyChanged.Fody copy_local: false
 Anotar.Catel.Fody copy_local: false
 MethodTimer.Fody copy_local: false
 Catel.Core
+Catel.MVVM
 System.ValueTuple

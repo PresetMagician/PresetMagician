@@ -40,7 +40,8 @@ namespace PresetMagician.ViewModels
 
             ApplicationState = globalFrontendService.ApplicationState;
 
-            OpenVstWorkerLogDirectory = new TaskCommand(OnOpenVstWorkerLogDirectoryExecute);
+            OpenVstWorkerLogDirectory = new Command(OnOpenVstWorkerLogDirectoryExecute);
+            OpenDataDirectory = new Command(OnOpenDataDirectoryExecute);
             Title = "Settings";
 
             PresetDatabaseStatistics = dataPersisterService.GetStorageStatistics();
@@ -53,11 +54,18 @@ namespace PresetMagician.ViewModels
         }
 
 
-        public TaskCommand OpenVstWorkerLogDirectory { get; set; }
+        public Command OpenVstWorkerLogDirectory { get;  }
 
-        private async Task OnOpenVstWorkerLogDirectoryExecute()
+        private void OnOpenVstWorkerLogDirectoryExecute()
         {
             Process.Start(Path.GetDirectoryName(VstUtils.GetVstWorkerLogDirectory()));
+        }
+        
+        public Command OpenDataDirectory { get;  }
+
+        private void OnOpenDataDirectoryExecute()
+        {
+            Process.Start(DataPersisterService.DefaultDataStoragePath);
         }
 
 
