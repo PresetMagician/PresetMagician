@@ -66,9 +66,6 @@
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />
     <Content Include="paket.references" />
-    <Content Include="Resources\PresetMagician.test.sqlite3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Resources\synister64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
