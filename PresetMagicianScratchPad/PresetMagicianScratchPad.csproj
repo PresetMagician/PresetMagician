@@ -86,6 +86,10 @@
       <Project>{da1b856f-d92e-49e9-a80a-48e62135f909}</Project>
       <Name>PresetMagician.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PresetMagician.Legacy\PresetMagician.Legacy.csproj">
+      <Project>{3a586416-148e-47e4-8612-87a7c9561ba7}</Project>
+      <Name>PresetMagician.Legacy</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PresetMagician.NKS\PresetMagician.NKS.csproj">
       <Project>{2126df46-7f24-4c2c-b236-514a70b7a3a5}</Project>
       <Name>PresetMagician.NKS</Name>

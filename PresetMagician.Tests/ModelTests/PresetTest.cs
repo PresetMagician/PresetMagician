@@ -58,7 +58,8 @@ namespace PresetMagician.Tests.ModelTests
             {
                 nameof(Preset.PresetSize),
                 nameof(Preset.PresetCompressedSize),
-                nameof(Preset.PresetHash)
+                nameof(Preset.PresetHash),
+                nameof(Preset.PreviewNotePlayerId)
             };
 
         private HashSet<string> PropertiesWhichAreNotRelevantToMetadataModified =
@@ -74,6 +75,7 @@ namespace PresetMagician.Tests.ModelTests
                 nameof(Preset.LastExported),
                 nameof(Preset.PresetId),
                 nameof(Preset.PresetSize),
+                nameof(Preset.PreviewNotePlayerId),
                 nameof(Preset.PresetCompressedSize),
                 nameof(Preset.OriginalMetadata),
                 nameof(Preset.LastExportedMetadata),

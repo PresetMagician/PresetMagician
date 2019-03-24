@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using Catel.Reflection;
 using PresetMagician.Core.Collections;
@@ -56,8 +57,8 @@ namespace PresetMagician.Legacy.Services
             _dbContext.Dispose();
             GC.Collect();
             GC.WaitForPendingFinalizers();
-            /*File.Move(ApplicationDatabaseContext.DefaultDatabasePath,
-                ApplicationDatabaseContext.DefaultDatabasePath + ".old");*/
+            File.Move(ApplicationDatabaseContext.DefaultDatabasePath,
+                ApplicationDatabaseContext.DefaultDatabasePath + ".old");
         }
 
         public NewModels.Plugin MigratePlugin(Plugin oldPlugin)

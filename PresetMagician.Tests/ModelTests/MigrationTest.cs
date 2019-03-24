@@ -36,6 +36,7 @@ namespace PresetMagician.Tests.ModelTests
         {
             var sw = new Stopwatch();
             sw.Start();
+            File.Delete(ApplicationDatabaseContext.DefaultDatabasePath + ".old");
             var presetDataPersisterService = new PresetDataPersisterService();
             presetDataPersisterService.OpenDatabase().Wait();
             var service = Fixture.GetServiceLocator().ResolveType<Ef6MigrationService>();
@@ -53,7 +54,6 @@ namespace PresetMagician.Tests.ModelTests
 
             File.Exists(ApplicationDatabaseContext.DefaultDatabasePath).Should().BeFalse();
             File.Exists(ApplicationDatabaseContext.DefaultDatabasePath + ".old").Should().BeTrue();
-            presetDataPersisterService.CloseDatabase().Wait();
         }
 
         private void ComparePlugin(OldPlugin oldPlugin, Plugin newPlugin)

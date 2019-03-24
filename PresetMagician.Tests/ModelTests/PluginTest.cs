@@ -212,6 +212,8 @@ namespace PresetMagician.Tests.ModelTests
             {
                 PropertyHelper.SetPropertyValue(preset.OriginalMetadata, x.Key, x.Value);
             }
+            
+            
 
             foreach (var x in ExportedPresetMetadataPropertiesWhichShouldBePersisted)
             {
@@ -220,6 +222,7 @@ namespace PresetMagician.Tests.ModelTests
 
             preset.Metadata.UserOverwrittenProperties.Add("test");
             preset.PreviewNotePlayer = new PreviewNotePlayer();
+            PreviewNotePlayer.PreviewNotePlayers.Add(preset.PreviewNotePlayer);
             preset.Plugin = plugin;
             preset.Metadata.Types.Add(new Type {TypeName = "bla"});
             preset.Metadata.Characteristics.Add(new Characteristic {CharacteristicName = "foo"});
@@ -324,6 +327,7 @@ namespace PresetMagician.Tests.ModelTests
             savedPreset.PreviewNotePlayer.PreviewNotePlayerId.Should()
                 .Be(originalPreset.PreviewNotePlayer.PreviewNotePlayerId);
             testedProperties.Add(nameof(Preset.PreviewNotePlayer));
+            testedProperties.Add(nameof(Preset.PreviewNotePlayerId));
 
             TestMetadata(originalPreset.Metadata, savedPreset.Metadata);
             testedProperties.Add(nameof(Preset.Metadata));
