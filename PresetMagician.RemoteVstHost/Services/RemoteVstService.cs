@@ -157,7 +157,7 @@ namespace PresetMagician.RemoteVstHost.Services
             return result;
         }
 
-        public bool OpenEditor(Guid pluginGuid)
+        public bool OpenEditor(Guid pluginGuid, bool topmost = true)
         {
             App.Ping();
             var plugin = GetPluginByGuid(pluginGuid);
@@ -171,7 +171,7 @@ namespace PresetMagician.RemoteVstHost.Services
 
             try
             {
-                result = plugin.OpenEditor();
+                result = plugin.OpenEditor(topmost);
             }
             catch (Exception e)
             {

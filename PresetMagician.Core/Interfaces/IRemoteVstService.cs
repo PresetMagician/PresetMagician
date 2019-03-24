@@ -114,7 +114,7 @@ namespace PresetMagician.Core.Interfaces
         [FaultContract(typeof(GenericFault))]
         [FaultContract(typeof(PluginNotRegisteredFault))]
         [FaultContract(typeof(PluginNotLoadedFault))]
-        bool OpenEditor(Guid pluginGuid);
+        bool OpenEditor(Guid pluginGuid, bool topmost = true);
 
         [OperationContract]
         [FaultContract(typeof(GenericFault))]
