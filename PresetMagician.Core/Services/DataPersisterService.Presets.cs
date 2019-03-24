@@ -1,6 +1,8 @@
 using System.IO;
+using System.Threading.Tasks;
 using PresetMagician.Core.Collections;
 using PresetMagician.Core.Models;
+using PresetMagician.Utils;
 
 namespace PresetMagician.Core.Services
 {
@@ -15,6 +17,7 @@ namespace PresetMagician.Core.Services
         {
             var presetsStorageFile = GetPresetsStorageFile(plugin);
 
+            plugin.OnBeforeCerasSerialize();
             var data = GetSaveSerializer().Serialize(plugin.Presets);
 
             File.WriteAllBytes(presetsStorageFile, data);
@@ -22,15 +25,21 @@ namespace PresetMagician.Core.Services
             SaveTypesCharacteristics();
         }
 
-        public void LoadPresetsForPlugin(Plugin plugin)
+        public async Task LoadPresetsForPlugin(Plugin plugin)
         {
             var presetsStorageFile = GetPresetsStorageFile(plugin);
 
             if (File.Exists(presetsStorageFile))
             {
                 var presets = GetLoadSerializer()
-                    .Deserialize<EditableCollection<Preset>>(File.ReadAllBytes(presetsStorageFile));
+                    .Deserialize<EditableCollection<Preset>>(await AsyncFile.ReadAllBytesAsync(presetsStorageFile));
+
+                foreach (var preset in presets)
+                {
+                    preset.Plugin = plugin;
+                }
                 plugin.Presets = presets;
+                plugin.OnAfterCerasDeserialize();
             }
         }
     }

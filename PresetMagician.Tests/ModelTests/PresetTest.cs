@@ -278,6 +278,9 @@ namespace PresetMagician.Tests.ModelTests
             TestTypesCollection(metadataTestedProperties);
             TestCharacteristicsCollection(metadataTestedProperties);
 
+            metadataTestedProperties.Add(nameof(PresetMetadata.SerializedCharacteristics));
+            metadataTestedProperties.Add(nameof(PresetMetadata.SerializedTypes));
+            
             var allProperties =
                 (from prop in typeof(PresetMetadata).GetProperties() select prop.Name).ToList();
 
@@ -309,6 +312,8 @@ namespace PresetMagician.Tests.ModelTests
             var allProperties =
                 (from prop in typeof(PresetMetadata).GetProperties() select prop.Name).ToList();
 
+            metadataTestedProperties.Add(nameof(PresetMetadata.SerializedCharacteristics));
+            metadataTestedProperties.Add(nameof(PresetMetadata.SerializedTypes));
             allProperties.Except(metadataTestedProperties).Should().BeEmpty("We want to test ALL TEH PROPERTIEZ");
 
             testedProperties.Add(nameof(Preset.Metadata));

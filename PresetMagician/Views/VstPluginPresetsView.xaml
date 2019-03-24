@@ -276,8 +276,16 @@
 
 
                             <Label Grid.Row="3" Grid.Column="0" Content="Preview Note Player" />
-                            <TextBlock Grid.Row="3" Grid.Column="1"
-                                       Text="{Binding SelectedPreset.LastExportedMetadata.PreviewNotePlayer.Name}" />
+                            <ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding PreviewNotePlayers}" SelectedItem="{Binding SelectedPreset.PreviewNotePlayer}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Name}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                         
 
                             <Label Grid.Row="0" Grid.Column="2" Content="Bank Path" />
                             <Grid Grid.Row="0" Grid.Column="3">

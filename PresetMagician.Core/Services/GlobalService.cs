@@ -21,7 +21,7 @@ namespace PresetMagician.Core.Services
         public FastObservableCollection<Plugin> Plugins { get; } = new FastObservableCollection<Plugin>();
         public GlobalCharacteristicCollection GlobalCharacteristics { get; }
         public GlobalTypeCollection GlobalTypes { get; }
-        public List<PreviewNotePlayer> PreviewNotePlayers { get; }
+        public FastObservableCollection<PreviewNotePlayer> PreviewNotePlayers { get; }
 
         public IRemoteVstHostProcessPool RemoteVstHostProcessPool { get; private set; }
 

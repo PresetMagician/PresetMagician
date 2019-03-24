@@ -1,15 +1,37 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Media.Imaging;
 using Anotar.Catel;
-using Catel.Data;
 using Catel.Runtime.Serialization;
+using PresetMagician.Core.Data;
 
 namespace PresetMagician.Core.Models.NativeInstrumentsResources
 {
     public class ResourceImage : ModelBase
     {
+        private static HashSet<string> _editableProperties = new HashSet<string>();
+
+        public override HashSet<string> GetEditableProperties()
+        {
+            return _editableProperties;
+        }
+
+        private static BitmapImage EmptyImage;
+        private static BitmapImage GetEmptyImage()
+        {
+            if (EmptyImage == null)
+            {
+                var bitmapImage = new BitmapImage(
+                    new Uri("pack://application:,,,/PresetMagician.Core;component/Resources/Images/empty.png"));
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.Freeze();
+                EmptyImage = bitmapImage;
+            }
+
+            return EmptyImage;
+        }
         public ResourceState State { get; } = new ResourceState();
 
         public ResourceImage(int width, int height, string fileName)
@@ -19,11 +41,8 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
             targetSize.Height = height;
             TargetSize = targetSize;
             Filename = fileName;
-            var bitmapImage = new BitmapImage(
-                new Uri("pack://application:,,,/PresetMagician.Core;component/Resources/Images/empty.png"));
-            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-            bitmapImage.Freeze();
-            Image = bitmapImage;
+            
+            Image = GetEmptyImage();
         }
 
         private ResourceImage()
@@ -44,7 +63,7 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
             return ms.ToArray();
         }
 
-        protected override void OnSerializing()
+        /*protected override void OnSerializing()
         {
             if (Image == null) return;
 
@@ -70,7 +89,7 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
                     Image = tmpImage;
                 }
             }
-        }
+        }*/
 
         [IncludeInSerialization] private byte[] _serializedImage { get; set; }
 

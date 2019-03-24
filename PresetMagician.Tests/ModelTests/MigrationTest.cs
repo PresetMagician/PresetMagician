@@ -68,8 +68,8 @@ namespace PresetMagician.Tests.ModelTests
                 nameof(Plugin.DontReport),
                 nameof(Plugin.PluginName),
                 nameof(Plugin.PluginVendor),
-                nameof(Plugin.IsSupported),
                 nameof(Plugin.HasMetadata),
+                nameof(Plugin.IsSupported),
                 nameof(Plugin.VstPluginId),
             };
             var comparer = new PropertyComparisonHelper(oldPlugin, newPlugin);

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Catel.Collections;
 using Ceras;
 
 namespace PresetMagician.Core.Models
@@ -28,13 +29,13 @@ namespace PresetMagician.Core.Models
 
         private static PreviewNotePlayer _defaultPreviewNotePlayer;
 
-        public static List<PreviewNotePlayer> PreviewNotePlayers =
-            new List<PreviewNotePlayer>();
+        public static FastObservableCollection<PreviewNotePlayer> PreviewNotePlayers =
+            new FastObservableCollection<PreviewNotePlayer>();
 
-        public static PreviewNotePlayer GetPreviewNotePlayer(PreviewNotePlayer player)
+        public static PreviewNotePlayer GetPreviewNotePlayer(string id)
         {
             var previewNotePlayer =
-                (from p in PreviewNotePlayers where p.PreviewNotePlayerId == player.PreviewNotePlayerId select p)
+                (from p in PreviewNotePlayers where p.PreviewNotePlayerId == id select p)
                 .FirstOrDefault();
 
             if (previewNotePlayer != null)
@@ -42,18 +43,16 @@ namespace PresetMagician.Core.Models
                 return previewNotePlayer;
             }
 
-            PreviewNotePlayers.Add(player);
-            return player;
+            return Default;
         }
 
         public PreviewNotePlayer()
         {
-            PreviewNotePlayers.Add(this);
         }
 
-        [Include] public string PreviewNotePlayerId { get; private set; } = Guid.NewGuid().ToString();
+        [Include] public string PreviewNotePlayerId { get; set; } = Guid.NewGuid().ToString();
         [Include] public string Name { get; set; }
-        [Include] public List<PreviewNote> PreviewNotes { get; } = new List<PreviewNote>();
+        [Include] public FastObservableCollection<PreviewNote> PreviewNotes { get; set; } = new FastObservableCollection<PreviewNote>();
 
         public bool IsEqualTo(PreviewNotePlayer target)
         {

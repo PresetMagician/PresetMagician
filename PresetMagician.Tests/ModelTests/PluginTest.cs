@@ -359,6 +359,9 @@ namespace PresetMagician.Tests.ModelTests
 
             savedPreset.Types.IsEqualTo(originalPreset.Types).Should().BeTrue();
             testedProperties.Add(nameof(ExportedPresetMetadata.Types));
+            
+            testedProperties.Add(nameof(ExportedPresetMetadata.SerializedCharacteristics));
+            testedProperties.Add(nameof(ExportedPresetMetadata.SerializedTypes));
 
             var allProperties =
                 (from prop in typeof(PresetMetadata).GetProperties() select prop.Name).ToList();
@@ -385,7 +388,11 @@ namespace PresetMagician.Tests.ModelTests
 
             savedPreset.Types.IsEqualTo(originalPreset.Types).Should().BeTrue();
             testedProperties.Add(nameof(PresetParserMetadata.Types));
+            
+            testedProperties.Add(nameof(PresetParserMetadata.SerializedCharacteristics));
+            testedProperties.Add(nameof(PresetParserMetadata.SerializedTypes));
 
+            
             var allProperties =
                 (from prop in typeof(PresetMetadata).GetProperties() select prop.Name).ToList();
 
@@ -411,6 +418,9 @@ namespace PresetMagician.Tests.ModelTests
 
             savedPreset.Types.IsEqualTo(originalPreset.Types).Should().BeTrue();
             testedProperties.Add(nameof(PresetMetadata.Types));
+            
+            testedProperties.Add(nameof(PresetMetadata.SerializedCharacteristics));
+            testedProperties.Add(nameof(PresetMetadata.SerializedTypes));
 
             var allProperties =
                 (from prop in typeof(PresetMetadata).GetProperties() select prop.Name).ToList();
@@ -435,7 +445,7 @@ namespace PresetMagician.Tests.ModelTests
             persister.SavePlugin(plugin);
             persister.SavePresetsForPlugin(plugin);
             var loadedPlugin = persister.LoadPlugin(persister.GetPluginStorageFile(plugin));
-            persister.LoadPresetsForPlugin(loadedPlugin);
+            persister.LoadPresetsForPlugin(loadedPlugin).Wait();
 
             foreach (var x in PropertiesWhichShouldBePersisted)
             {

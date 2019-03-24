@@ -20,6 +20,7 @@ using Orc.Squirrel;
 using Orchestra.Services;
 using PresetMagician.Core.Commands.Plugin;
 using PresetMagician.Core.Interfaces;
+using PresetMagician.Core.Services;
 using PresetMagician.Legacy.Services;
 using PresetMagician.Legacy.Services.EventArgs;
 using PresetMagician.Services.Interfaces;
@@ -96,17 +97,30 @@ namespace PresetMagician.Services
             }
 
 
-            _splashScreenService.Action = "Loading database…";
+            _splashScreenService.Action = "Initializing commands…";
 
             _frontendService.InitializeCommands();
+            
+            var dataPersistenceService = _serviceLocator.ResolveType<DataPersisterService>();
+            var globalService = _serviceLocator.ResolveType<GlobalService>();
+            var pluginFiles = dataPersistenceService.GetStoredPluginFiles();
+
+            dataPersistenceService.LoadTypesCharacteristics();
+            dataPersistenceService.LoadPreviewNotePlayers();
+            
+            foreach (var pluginFile in pluginFiles)
+            {
+                var plugin = dataPersistenceService.LoadPlugin(pluginFile);
+                _splashScreenService.Action = $"({pluginFiles.IndexOf(pluginFile)+1}/{pluginFiles.Count}) Loading data for plugin {plugin.PluginName}";
+                await dataPersistenceService.LoadPresetsForPlugin(plugin);
+                
+                globalService.Plugins.Add(plugin);
+            }
         }
 
         [Time]
         public override async Task InitializeBeforeShowingShellAsync()
         {
-            var vstService = _serviceLocator.ResolveType<IVstService>();
-            vstService.Load();
-
             _splashScreenService.Action = "Almost there…";
 
             _frontendService.SetupCollectionSynchronizations();

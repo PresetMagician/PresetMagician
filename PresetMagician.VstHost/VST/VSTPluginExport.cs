@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using Catel.Collections;
@@ -208,6 +209,20 @@ namespace PresetMagician.VstHost.VST
 
             var tempFileName = GetPreviewFilename(preset) + ".nksf.wav";
 
+            var noteOnEvents = new List<(int loop, int offset, byte note)>();
+            var noteOffEvents = new List<(int loop, int offset, byte note)>();
+            
+            foreach (var note in preset.PreviewNotePlayer.PreviewNotes)
+            {
+                var onLoop = (double)VstHost.SampleRate * note.Start / VstHost.BlockSize;
+                var onOffset = (int) ((onLoop - (int) onLoop) * VstHost.BlockSize);
+                
+                noteOnEvents.Add((loop: (int)onLoop, offset:onOffset, note: (byte)(note.NoteNumber+12)));
+                var offLoop = (double)VstHost.SampleRate * (note.Start + note.Duration) / VstHost.BlockSize;
+                var offOffset = (int) ((offLoop - (int) offLoop) * VstHost.BlockSize);
+                
+                noteOffEvents.Add((loop: (int)offLoop, offset:offOffset, note: (byte)(note.NoteNumber+12)));
+            }
             using (var inputMgr = new VstAudioBufferManager(inputCount, VstHost.BlockSize))
             {
                 using (var outputMgr = new VstAudioBufferManager(outputCount, VstHost.BlockSize))
@@ -219,7 +234,6 @@ namespace PresetMagician.VstHost.VST
                     var targetLength = 6;
                     var noteOffSecond = 1;
                     var loops = (int) VstHost.SampleRate * targetLength / VstHost.BlockSize;
-                    var noteOffLoop = (int) VstHost.SampleRate * noteOffSecond / VstHost.BlockSize;
 
                     var writer = new WaveFileWriter(tempFileName, p);
 
@@ -232,18 +246,29 @@ namespace PresetMagician.VstHost.VST
                         ctx.PluginCommandStub.ProcessReplacing(inputBuffers, outputBuffers);
                     }
 
-                    //VstHost.MIDI_NoteOn(plugin, (byte) preset.PreviewNoteNumber, 127);
-                    throw new Exception("FIX THIS");
+
+                   
 
 
                     for (k = 0; k < loops; k++)
                     {
-                        if (k == noteOffLoop)
+                        foreach (var i in noteOnEvents)
                         {
-                            //VstHost.MIDI_NoteOff(plugin, (byte) preset.PreviewNoteNumber, 127);
-                            throw new Exception("FIX THIS");
+                            if (i.loop == k)
+                            {
+                                VstHost.MIDI_NoteOn(plugin, (byte) i.note, 127, i.offset);
+                            }
                         }
-
+                        
+                        foreach (var i in noteOffEvents)
+                        {
+                            if (i.loop == k)
+                            {
+                                VstHost.MIDI_NoteOff(plugin, (byte) i.note, 127, i.offset);
+                            }
+                        }
+                        
+                     
                         ctx.PluginCommandStub.ProcessReplacing(inputBuffers, outputBuffers);
                         for (var j = 0; j < VstHost.BlockSize; j++)
                         {

@@ -253,8 +253,8 @@
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Stretch"
                                 VerticalContentAlignment="Center"
-                                Content="Open Database Location"
-                                Command="{Binding OpenDatabaseLocation}" />
+                                Content="Open Data Directory"
+                                Command="{Binding OpenDataDirectory}" />
                         </DockPanel>
                     </Grid>
                 </ScrollViewer>

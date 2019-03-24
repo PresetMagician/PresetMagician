@@ -15,6 +15,7 @@ namespace PresetMagician.Core.Models
         public void OnPropertyChanged(string propertyName, object before, object after)
         {
             var x = new AdvancedPropertyChangedEventArgs(this, propertyName, before, after);
+            
             PropertyChanged?.Invoke(this, x);
         }
 

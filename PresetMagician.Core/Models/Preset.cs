@@ -68,25 +68,31 @@ namespace PresetMagician.Core.Models
             LastExportedMetadata.Comment = Metadata.Comment;
             LastExportedMetadata.PresetName = Metadata.PresetName;
 
-            LastExportedMetadata.Types.Clear();
-
-            foreach (var type in Metadata.Types)
+            using (LastExportedMetadata.Types.SuspendChangeNotifications())
             {
-                if (!type.IsIgnored)
+                LastExportedMetadata.Types.Clear();
+
+                foreach (var type in Metadata.Types)
                 {
-                    LastExportedMetadata.Types.Add(new Type
-                        {TypeName = type.EffectiveTypeName, SubTypeName = type.EffectiveSubTypeName});
+                    if (!type.IsIgnored)
+                    {
+                        LastExportedMetadata.Types.Add(new Type
+                            {TypeName = type.EffectiveTypeName, SubTypeName = type.EffectiveSubTypeName});
+                    }
                 }
             }
 
-            LastExportedMetadata.Characteristics.Clear();
-
-            foreach (var characteristic in Metadata.Characteristics)
+            using (LastExportedMetadata.Characteristics.SuspendChangeNotifications())
             {
-                if (!characteristic.IsIgnored)
+                LastExportedMetadata.Characteristics.Clear();
+
+                foreach (var characteristic in Metadata.Characteristics)
                 {
-                    LastExportedMetadata.Characteristics.Add(new Characteristic
-                        {CharacteristicName = characteristic.EffectiveCharacteristicName});
+                    if (!characteristic.IsIgnored)
+                    {
+                        LastExportedMetadata.Characteristics.Add(new Characteristic
+                            {CharacteristicName = characteristic.EffectiveCharacteristicName});
+                    }
                 }
             }
 
@@ -125,6 +131,20 @@ namespace PresetMagician.Core.Models
             {
                 UpdateIsMetadataModified();
             }
+        }
+        
+        public void OnBeforeCerasSerialize()
+        {
+            Metadata.OnBeforeCerasSerialize();
+            OriginalMetadata.OnBeforeCerasSerialize();
+            LastExportedMetadata.OnBeforeCerasSerialize();
+        }
+        
+        public void OnAfterCerasDeserialize()
+        {
+            Metadata.OnAfterCerasDeserialize();
+            OriginalMetadata.OnAfterCerasDeserialize();
+            LastExportedMetadata.OnAfterCerasDeserialize();
         }
 
         #endregion
@@ -253,11 +273,11 @@ namespace PresetMagician.Core.Models
         /// </summary>
         [Include]
         public bool IsMetadataModified { get; set; }
-        
-        [Include]
-        public bool IsMetadataUserModified { get; set; }
-        
-        public PresetMetadataModifiedProperties PresetMetadataModifiedProperties { get; } = new PresetMetadataModifiedProperties();
+
+        [Include] public bool IsMetadataUserModified { get; set; }
+
+        public PresetMetadataModifiedProperties PresetMetadataModifiedProperties { get; } =
+            new PresetMetadataModifiedProperties();
 
         /// <summary>
         /// The metadata from the preset parser 
@@ -333,7 +353,7 @@ namespace PresetMagician.Core.Models
 
         private PreviewNotePlayer _previewNotePlayer = PreviewNotePlayer.Default;
 
-        [Include]
+        
         public PreviewNotePlayer PreviewNotePlayer
         {
             get { return _previewNotePlayer; }
@@ -344,13 +364,15 @@ namespace PresetMagician.Core.Models
                     return;
                 }
 
-                _previewNotePlayer = PreviewNotePlayer.GetPreviewNotePlayer(value);
+                _previewNotePlayer = value;
             }
         }
 
-        #endregion
-
-        #region Change Tracking
+        [Include]
+        public string PreviewNotePlayerId {
+            get { return _previewNotePlayer.PreviewNotePlayerId; }
+            set { PreviewNotePlayer = PreviewNotePlayer.GetPreviewNotePlayer(value); }
+        }
 
         #endregion
 

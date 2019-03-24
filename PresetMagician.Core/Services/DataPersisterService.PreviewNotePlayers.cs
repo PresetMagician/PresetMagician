@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using Catel.Collections;
 using PresetMagician.Core.Models;
 
 namespace PresetMagician.Core.Services
@@ -30,6 +32,7 @@ namespace PresetMagician.Core.Services
             {
                 if (previewNotePlayer.PreviewNotePlayerId == "default")
                 {
+                    PreviewNotePlayer.Default = previewNotePlayer;
                     defaultPlayerFound = true;
                 }
             }
@@ -42,7 +45,7 @@ namespace PresetMagician.Core.Services
 
         public void SavePreviewNotePlayers()
         {
-            var data = GetSaveSerializer().Serialize(_globalService.PreviewNotePlayers);
+            var data = GetSaveSerializer().Serialize(_globalService.PreviewNotePlayers.ToList());
             File.WriteAllBytes(GetPreviewNotePlayersFile(), data);
         }
     }

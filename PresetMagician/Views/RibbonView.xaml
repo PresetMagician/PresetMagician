@@ -311,19 +311,6 @@
                                                      Width=32,
                                                      Height=32}"
                             Size="Large" />
-                        <StackPanel Orientation="Horizontal">
-                            <fluent:TextBox MinWidth="96" Width="96" Header="MIDI Note"
-                                            Text="{Binding ApplyMidiNote.FullNoteName}"
-                                            IsEnabled="{Binding HasPresetSelection}" />
-                            <fluent:Button
-                                Icon="{iconPacks:FontAwesome Kind=ClipboardCheckSolid,
-                                                     Width=16,
-                                                     Height=16}"
-                                ToolTip="Apply MIDI note to selected presets"
-                                Command="{catel:CommandManagerBinding Preset.ApplyMidiNote}"
-                                CommandParameter="{Binding Path=ApplyMidiNote.FullNoteName}"
-                                Size="Small" Header="Apply" />
-                        </StackPanel>
 
                         <fluent:Button
                             Command="{catel:CommandManagerBinding PresetExport.ClearList}"

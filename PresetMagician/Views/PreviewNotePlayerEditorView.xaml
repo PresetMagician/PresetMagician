@@ -54,7 +54,16 @@
             <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SelectedPreviewNotePlayer.Name}" />
 
             <Label Grid.Row="1" Grid.Column="0" Content="Preview Notes" />
-            <DataGrid Grid.Column="1" Grid.Row="1" ItemsSource="{Binding SelectedPreviewNotePlayer.PreviewNotes}"
+            <Grid Grid.Column="1" Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <DataGrid Grid.Row="0" ItemsSource="{Binding SelectedPreviewNotePlayer.PreviewNotes}"
+                          SelectedItem="{Binding SelectedPreviewNote}"
                       AutoGenerateColumns="False">
                 <DataGrid.Columns>
                     <DataGridTextColumn
@@ -71,6 +80,15 @@
                         Binding="{Binding Duration}" />
                 </DataGrid.Columns>
             </DataGrid>
+                <DockPanel Grid.Row="1" VerticalAlignment="Bottom">
+                    <Button
+                        Command="{Binding AddNote}" Content="Add"/>
+                    <Button
+                        Command="{Binding RemoveNote}" Content="Remove"/>
+           
+                </DockPanel>
+                </Grid>
+            
         </Grid>
     </Grid>
 </catel:UserControl>

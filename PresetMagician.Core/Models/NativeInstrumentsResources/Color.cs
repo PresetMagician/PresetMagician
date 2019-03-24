@@ -1,13 +1,21 @@
 using System;
-using Catel.Data;
+using System.Collections.Generic;
 using Catel.Runtime.Serialization;
 using Newtonsoft.Json;
+using PresetMagician.Core.Data;
 
 namespace PresetMagician.Core.Models.NativeInstrumentsResources
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class Color : ModelBase
     {
+        private static HashSet<string> _editableProperties = new HashSet<string>();
+
+        public override HashSet<string> GetEditableProperties()
+        {
+            return _editableProperties;
+        }
+        
         [JsonProperty] public string VB_bgcolor { get; set; }
         [IncludeInSerialization] public System.Windows.Media.Color BackgroundColor { get; set; }
 

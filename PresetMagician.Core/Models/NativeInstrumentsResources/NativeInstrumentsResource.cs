@@ -5,17 +5,24 @@ using System.Linq;
 using System.Windows.Media;
 using System.Xml.Linq;
 using Anotar.Catel;
-using Catel.Data;
 using Catel.MVVM;
 using Catel.Runtime.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PresetMagician.Core.Data;
 
 namespace PresetMagician.Core.Models.NativeInstrumentsResources
 {
     [Model]
     public class NativeInstrumentsResource : ModelBase
     {
+        private static HashSet<string> _editableProperties = new HashSet<string>();
+
+        public override HashSet<string> GetEditableProperties()
+        {
+            return _editableProperties;
+        }
+        
         public Color Color { get; set; } = new Color();
 
         [IncludeInSerialization] public Categories Categories { get; set; } = new Categories();
