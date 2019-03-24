@@ -42,7 +42,7 @@ namespace PresetMagician
                 await pluginInstance.LoadPlugin();
             }
 
-            pluginInstance.OpenEditor();
+            pluginInstance.OpenEditor(false);
         }
     }
 }

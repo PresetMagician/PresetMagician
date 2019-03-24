@@ -157,9 +157,9 @@ namespace PresetMagician.RemoteVstHost
             _remoteVstService.ExportNks(_guid, preset, presetData, userContentDirectory);
         }
 
-        public bool OpenEditor()
+        public bool OpenEditor(bool topmost = true)
         {
-            IsEditorOpen = _remoteVstService.OpenEditor(_guid);
+            IsEditorOpen = _remoteVstService.OpenEditor(_guid, topmost);
             return IsEditorOpen;
         }
 

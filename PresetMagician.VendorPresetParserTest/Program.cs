@@ -354,7 +354,7 @@ namespace PresetMagician.VendorPresetParserTest
             return true;
         }
 
-        public bool OpenEditor(Guid pluginGuid)
+        public bool OpenEditor(Guid pluginGuid, bool topmost = true)
         {
             return true;
         }

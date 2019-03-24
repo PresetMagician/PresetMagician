@@ -124,7 +124,7 @@ namespace PresetMagician.VstHost.VST
             return true;
         }
 
-        public bool OpenEditor()
+        public bool OpenEditor(bool topmost)
         {
             if (!PluginContext.PluginCommandStub.EditorGetRect(out Rectangle wndRect))
             {
@@ -145,7 +145,7 @@ namespace PresetMagician.VstHost.VST
                 Margin = new Thickness(0),
                 SnapsToDevicePixels = true,
                 UseLayoutRounding = false,
-                Topmost = true,
+                Topmost = topmost,
                 SizeToContent = SizeToContent.WidthAndHeight,
             };
 

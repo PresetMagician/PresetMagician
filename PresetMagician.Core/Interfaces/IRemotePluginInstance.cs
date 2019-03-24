@@ -43,7 +43,7 @@ namespace PresetMagician.Core.Interfaces
 
         void ExportNks(PresetExportInfo preset, byte[] presetData, string userContentDirectory);
 
-        bool OpenEditor();
+        bool OpenEditor(bool topmost = true);
         bool IsLoaded { get; }
         bool IsEditorOpen { get; }
     }
