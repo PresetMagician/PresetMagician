@@ -58,6 +58,11 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
         protected async Task<int> ProcessPresetDirectory(string presetDirectory, PresetBank bank, bool persist = true)
         {
             int count = 0;
+            if (!Directory.Exists(presetDirectory))
+            {
+                return count;
+            }
+            
             PluginInstance.Plugin.Logger.Debug($"ProcessPresetDirectory {presetDirectory}");
             var dirInfo = new DirectoryInfo(presetDirectory);
 
