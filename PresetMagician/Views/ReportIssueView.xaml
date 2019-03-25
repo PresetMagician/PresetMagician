@@ -110,10 +110,10 @@
                           Visibility="{Binding DisplayPluginLogCheckbox, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}">
                     Include Plugin Log
                 </CheckBox>
-                <CheckBox Grid.Row="11" IsChecked="{Binding Report.IncludeDatabase}"
+                <CheckBox Grid.Row="11" IsChecked="{Binding Report.IncludeData}"
                           Visibility="{Binding DisplayIncludeSupportFiles, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}"
-                          ToolTip="Includes a stripped-down database for debugging purposes. Leaves 10 presets per plugin. Removes all other plugin data if a specific plugin is selected.">
-                    Include Stripped-Down Database (Recommended)
+                          ToolTip="Includes the PresetMagician data for debugging purposes.">
+                    Include PresetMagician Data (Recommended)
                 </CheckBox>
                 <CheckBox Grid.Row="12" IsChecked="{Binding Report.IncludeSystemLog}"
                           Visibility="{Binding DisplayIncludeSupportFiles, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}"

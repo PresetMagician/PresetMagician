@@ -12,7 +12,6 @@ using Drachenkatze.PresetMagician.Utils.Progress;
 using Redmine.Net.Api;
 using Redmine.Net.Api.Async;
 using Redmine.Net.Api.Types;
-using SQLite;
 using SystemFile = System.IO.File;
 using Version = Redmine.Net.Api.Types.Version;
 
@@ -71,12 +70,12 @@ namespace PresetMagician.Utils.IssueReport
         private string Version { get; }
         [Required] [EmailAddress] public string UserEmail { get; set; }
         public bool SubmitPrivately { get; set; }
-        public bool IncludeDatabase { get; set; }
+        public bool IncludeData { get; set; }
         public bool IncludeSystemLog { get; set; }
         public bool IncludePluginLog { get; set; }
 
         private string SystemLogLocation { get; }
-        private string DatabaseLocation { get; }
+        private string DataLocation { get; }
         public string PluginId { get; set; }
         public string PluginLog { get; set; }
         public string PluginName { get; set; }
@@ -89,7 +88,7 @@ namespace PresetMagician.Utils.IssueReport
         public ObservableCollection<IssueAttachment> Attachments { get; } = new ObservableCollection<IssueAttachment>();
 
         public IssueReport(TrackerTypes trackerType, string version, string userEmail, string systemLogLocation,
-            string databaseLocation)
+            string dataLocation)
         {
             TrackerType = trackerType;
             Version = version;
@@ -100,7 +99,7 @@ namespace PresetMagician.Utils.IssueReport
                 RequiresEmail = true;
             }
 
-            DatabaseLocation = databaseLocation;
+            DataLocation = dataLocation;
             SystemLogLocation = systemLogLocation;
         }
 
@@ -108,7 +107,7 @@ namespace PresetMagician.Utils.IssueReport
         {
             var tmpFile = Path.GetTempPath() + Guid.NewGuid() + ".txt";
 
-            SystemFile.WriteAllText(tmpFile, e.ToString());
+            SystemFile.WriteAllText(tmpFile, ExceptionFormatter.GetFormattedException(e));
             Attachments.Add(new IssueAttachment
                 {FilePath = tmpFile, Description = "Exception Information", DeleteAfterReport = true});
 
@@ -149,9 +148,9 @@ namespace PresetMagician.Utils.IssueReport
 
             versionCustomField.Values.Add(new CustomFieldValue {Info = version.Id.ToString()});
 
-            if (IncludeDatabase)
+            if (IncludeData)
             {
-                await CreateStrippedDatabaseCopy(PluginId, progress);
+                CreateDataZip(progress);
             }
 
             if (IncludePluginLog)
@@ -354,61 +353,32 @@ namespace PresetMagician.Utils.IssueReport
             return impersonateUser;
         }
 
-        public async Task CreateStrippedDatabaseCopy(string restrictToPlugin, IProgress<StringProgress> progress)
+        public void CreateDataZip(IProgress<StringProgress> progress)
         {
-            throw new Exception("Not implemented");
-            var tempDatabasePath = Path.Combine(Path.GetTempPath(), "PresetMagician.Stripped.sqlite3");
-            var tempDatabaseZip = tempDatabasePath + ".zip";
-            if (SystemFile.Exists(tempDatabasePath))
+            var tempZip = Path.Combine(Path.GetTempPath(), "PresetMagician.Data.zip");
+            if (SystemFile.Exists(tempZip))
             {
-                SystemFile.Delete(tempDatabasePath);
+                SystemFile.Delete(tempZip);
             }
 
-            progress.Report(new StringProgress("Copying database to a temporary location"));
-            SystemFile.Copy(DatabaseLocation, tempDatabasePath);
-
-            var db = new SQLiteAsyncConnection(tempDatabasePath, SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create);
-            await db.ExecuteAsync("PRAGMA foreign_keys = OFF;");
-
-            progress.Report(new StringProgress("Cleaning/stripping temporary database"));
-            if (restrictToPlugin != null)
-            {
-                await db.ExecuteAsync("DELETE FROM Plugins WHERE Id != ?", restrictToPlugin);
-                await db.ExecuteAsync("delete from Presets WHERE Presets.PluginId != ?", restrictToPlugin);
-            }
-
-            await db.ExecuteAsync(
-                "DELETE FROM Presets where Presets._rowid_ not in (select t2._rowid_ from Presets t2 where t2.PluginId = Presets.PluginId limit 10)");
-            await db.ExecuteAsync(
-                "DELETE FROM PresetDataStorages where PresetDataStorages.PresetDataStorageId not in (select PresetId from Presets)");
-
-            if (restrictToPlugin == null)
-            {
-                await db.ExecuteAsync("UPDATE PresetDataStorages SET PresetData='', CompressedPresetData='';");
-            }
-
-            await db.ExecuteAsync("VACUUM;");
-            await db.CloseAsync();
-
-            // todo Workaround for issue https://github.com/praeclarum/sqlite-net/issues/762
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-
-            if (SystemFile.Exists(tempDatabaseZip))
-            {
-                SystemFile.Delete(tempDatabaseZip);
-            }
 
             progress.Report(new StringProgress("Compressing database"));
-            using (var zip = ZipFile.Open(tempDatabaseZip, ZipArchiveMode.Create))
+            
+            
+            using (var zip = ZipFile.Open(tempZip, ZipArchiveMode.Create))
             {
-                zip.CreateEntryFromFile(tempDatabasePath, Path.GetFileName(tempDatabasePath));
+                foreach (var file in Directory.EnumerateFiles(DataLocation, "*.*", SearchOption.AllDirectories))
+                {
+                    if (!file.Contains("sqlite3"))
+                    {
+                        zip.CreateEntryFromFile(file, file.Replace(DataLocation, ""));
+                    }
+                }
+                
             }
 
-            SystemFile.Delete(tempDatabasePath);
-
             Attachments.Add(new IssueAttachment
-                {FilePath = tempDatabaseZip, Description = "Stripped Database", DeleteAfterReport = true});
+                {FilePath = tempZip, Description = "Data Directory", DeleteAfterReport = true});
         }
     }
 }
