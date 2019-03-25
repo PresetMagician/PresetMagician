@@ -85,7 +85,7 @@ namespace PresetMagician
             var globalService = serviceLocator.ResolveType<GlobalService>();
             var report = new IssueReport(IssueReport.TrackerTypes.CRASH, globalService.PresetMagicianVersion,
                 email, FileLocations.LogFile,
-                DataPersisterService.DefaultPluginStoragePath);
+                DataPersisterService.DefaultDataStoragePath);
             report.SetException(e);
 
             uiVisualiserService.ShowDialogAsync<ReportIssueViewModel>(report).ConfigureAwait(false);

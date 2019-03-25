@@ -29,7 +29,7 @@ namespace PresetMagician
         {
             var report = new IssueReport(IssueReport.TrackerTypes.SUPPORT, _globalService.PresetMagicianVersion,
                 _globalFrontendService.ApplicationState.ActiveLicense.Customer.Email, FileLocations.LogFile,
-                DataPersisterService.DefaultPluginStoragePath);
+                DataPersisterService.DefaultDataStoragePath);
 
             await _uiVisualizerService.ShowDialogAsync<ReportIssueViewModel>(report);
         }

@@ -51,6 +51,7 @@
     <Compile Include="BinaryFile.cs" />
     <Compile Include="ConsoleTables.cs" />
     <Compile Include="DebugMonitor.cs" />
+    <Compile Include="ExceptionFormatter.cs" />
     <Compile Include="FXP.cs" />
     <Compile Include="HashUtils.cs" />
     <Compile Include="HexDump.cs" />

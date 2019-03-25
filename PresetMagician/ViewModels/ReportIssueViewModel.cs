@@ -141,7 +141,7 @@ namespace PresetMagician.ViewModels
                     {
                         Report.IncludePluginLog = true;
                         Report.PluginLog = SelectedPlugin.Logs;
-                        Report.IncludeDatabase = true;
+                        Report.IncludeData = true;
                     }
 
                     Report.PluginId = SelectedPlugin.PluginId;
@@ -159,9 +159,9 @@ namespace PresetMagician.ViewModels
 
         private void ReportOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IssueReport.IncludeDatabase))
+            if (e.PropertyName == nameof(IssueReport.IncludeData))
             {
-                if (Report.IncludeDatabase)
+                if (Report.IncludeData)
                 {
                     Report.SubmitPrivately = true;
                 }
