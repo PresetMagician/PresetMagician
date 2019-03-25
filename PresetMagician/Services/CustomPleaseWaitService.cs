@@ -43,7 +43,10 @@ namespace PresetMagician.Services
             var progressBar = InitializeProgressBar();
             _statusService.UpdateStatus("");
 
-            _dispatcherService.BeginInvoke(() => { progressBar.Visibility = Visibility.Collapsed; });
+            if (progressBar != null)
+            {
+                _dispatcherService.BeginInvoke(() => { progressBar.Visibility = Visibility.Collapsed; });
+            }
         }
 
         public override void UpdateStatus(int currentItem, int totalItems, string statusFormat = "")

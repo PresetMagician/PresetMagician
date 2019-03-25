@@ -27,7 +27,7 @@ namespace PresetMagician.VendorPresetParserTest
         public static void Main(string[] args)
         {
             FrontendInitializer.RegisterTypes(ServiceLocator.Default);
-
+            FrontendInitializer.Initialize(ServiceLocator.Default);
             var vendorPresetParserService = ServiceLocator.Default.ResolveType<VendorPresetParserService>();
             var logger = new RollingInMemoryLogListener();
             LogManager.AddListener(logger);
@@ -441,6 +441,7 @@ namespace PresetMagician.VendorPresetParserTest
 #pragma warning restore 1998
         {
             var preset = new Preset();
+            preset.Plugin = presetMetadata.Plugin;
             preset.Plugin.Presets.Add(preset);
 
             preset.SetFromPresetParser(presetMetadata);

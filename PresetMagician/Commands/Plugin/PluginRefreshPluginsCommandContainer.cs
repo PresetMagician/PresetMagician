@@ -5,6 +5,7 @@ using Anotar.Catel;
 using Catel.IoC;
 using Catel.MVVM;
 using PresetMagician.Core.Commands.Plugin;
+using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Services;
 using PresetMagician.Services.Interfaces;
 

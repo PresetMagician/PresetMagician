@@ -12,6 +12,7 @@ using Catel.MVVM;
 using Catel.Services;
 using PresetMagician.Core.ApplicationTask;
 using PresetMagician.Core.EventArgs;
+using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
 using PresetMagician.RemoteVstHost;
@@ -232,19 +233,10 @@ namespace PresetMagician.Services
 
         public void CancelApplicationOperation()
         {
-            if (Core.Core.UseDispatcher)
-            {
-                _dispatcherService.Invoke(() =>
-                {
-                    _applicationOperationStatus.ApplicationBusyCancellationTokenSource.Cancel();
-                    _applicationOperationStatus.ApplicationOperationCancelRequested = true;
-                });
-            }
-            else
-            {
+          
                 _applicationOperationStatus.ApplicationBusyCancellationTokenSource.Cancel();
                 _applicationOperationStatus.ApplicationOperationCancelRequested = true;
-            }
+            
 
             _globalFrontendService.ApplicationState.ApplyFromApplicationOperationStatus(_applicationOperationStatus);
 

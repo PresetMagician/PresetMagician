@@ -17,7 +17,7 @@ namespace PresetMagician
         public PluginToolsViewPresetsCommandContainer(ICommandManager commandManager,
             IServiceLocator serviceLocator
         )
-            : base(Commands.PluginTools.ViewPresets, nameof(VstPluginPresetsViewModel), true, commandManager, serviceLocator)
+            : base(Commands.PluginTools.ViewPresets, nameof(VstPluginPresetsViewModel), false, commandManager, serviceLocator)
         {
             _globalFrontendService.SelectedPlugins.CollectionChanged += OnSelectedPluginsListChanged;
         }

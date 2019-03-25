@@ -18,10 +18,9 @@ namespace PresetMagician.Core.Services
         {
             return Path.Combine(GetPluginsStoragePath(), plugin.PluginId + PluginStorageExtension);
         }
-        
+
         public List<string> GetStoredPluginFiles()
         {
-
             var list = new List<string>();
 
             foreach (var file in Directory.EnumerateFiles(
@@ -32,7 +31,7 @@ namespace PresetMagician.Core.Services
 
             return list;
         }
-        
+
         public void SavePlugin(Plugin plugin)
         {
             Directory.CreateDirectory(DefaultPluginStoragePath);
@@ -46,8 +45,7 @@ namespace PresetMagician.Core.Services
             SaveTypesCharacteristics();
             SavePreviewNotePlayers();
         }
-        
-      
+
 
         public Plugin LoadPlugin(string fileName)
         {
@@ -67,7 +65,7 @@ namespace PresetMagician.Core.Services
 
             return plugin;
         }
-        
+
         private void LoadPlugins()
         {
             LoadTypesCharacteristics();

@@ -342,7 +342,7 @@
 
                         </Grid>
                     </TabItem>
-                    <TabItem Header="Original Preset Data">
+                    <TabItem Header="Imported Preset Data">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />

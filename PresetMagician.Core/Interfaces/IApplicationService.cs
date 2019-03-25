@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
-using Catel.MVVM;
 using PresetMagician.Core.ApplicationTask;
 using PresetMagician.Core.Models;
 
-namespace PresetMagician.Services.Interfaces
+namespace PresetMagician.Core.Interfaces
 {
     public interface IApplicationService
     {

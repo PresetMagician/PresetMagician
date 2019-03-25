@@ -75,10 +75,21 @@ namespace PresetMagician.Core.Services
             preset.PresetCompressedSize = presetData.PresetCompressedSize;
         }
 
-        public byte[] GetPresetData(Preset preset)
+        public async Task<byte[]> GetPresetData(Preset preset)
         {
-            var data = _db.GetAsync<PresetDataStorage>(preset.PresetId).Result;
+            bool closeDb = false;
+            if (_db == null)
+            {
+                await OpenDatabase();
+                closeDb = true;
+            }
 
+            var data = await _db.GetAsync<PresetDataStorage>(preset.PresetId);
+
+            if (closeDb)
+            {
+                await CloseDatabase();
+            }
             return data.PresetData;
         }
     }

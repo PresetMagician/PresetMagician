@@ -6,6 +6,7 @@ using Anotar.Catel;
 using Catel.IoC;
 using Catel.MVVM;
 using Catel.Threading;
+using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
 using PresetMagician.Services.Interfaces;
@@ -83,7 +84,7 @@ namespace PresetMagician
                                     return;
                                 }
 
-                                var presetData = _presetDataPersisterService.GetPresetData(preset.Preset);
+                                var presetData = await _presetDataPersisterService.GetPresetData(preset.Preset);
                                 var presetExportInfo = new PresetExportInfo(preset.Preset);
                                 if (_globalService.RuntimeConfiguration.ExportWithAudioPreviews &&
                                     pluginPreset.Plugin.PluginType == Plugin.PluginTypes.Instrument)

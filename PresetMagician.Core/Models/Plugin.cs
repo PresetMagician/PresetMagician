@@ -59,6 +59,27 @@ namespace PresetMagician.Core.Models
             Logger = new MiniMemoryLogger();
         }
 
+        /// <summary>
+        /// Ensures that if the current plugin location isn't present, but another plugin location is,
+        /// that the present plugin location is set.
+        /// </summary>
+        public void EnsurePluginLocationIsPresent()
+        {
+            if (IsPresent)
+            {
+                return;
+            }
+
+            foreach (var pluginLocation in PluginLocations)
+            {
+                if (pluginLocation.IsPresent && pluginLocation.HasMetadata)
+                {
+                    PluginLocation = pluginLocation;
+                    return;
+                }
+            }
+        }
+
         private void PresetsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (_collectionChangedCounter != Presets.Count)

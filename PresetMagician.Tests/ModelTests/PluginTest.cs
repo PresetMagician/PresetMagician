@@ -15,6 +15,7 @@ using Jacobi.Vst.Core;
 using PresetMagician.Core.ApplicationTask;
 using PresetMagician.Core.Commands.Plugin;
 using PresetMagician.Core.Extensions;
+using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
 using PresetMagician.Services;
@@ -212,8 +213,7 @@ namespace PresetMagician.Tests.ModelTests
             {
                 PropertyHelper.SetPropertyValue(preset.OriginalMetadata, x.Key, x.Value);
             }
-            
-            
+
 
             foreach (var x in ExportedPresetMetadataPropertiesWhichShouldBePersisted)
             {
@@ -363,7 +363,7 @@ namespace PresetMagician.Tests.ModelTests
 
             savedPreset.Types.IsEqualTo(originalPreset.Types).Should().BeTrue();
             testedProperties.Add(nameof(ExportedPresetMetadata.Types));
-            
+
             testedProperties.Add(nameof(ExportedPresetMetadata.SerializedCharacteristics));
             testedProperties.Add(nameof(ExportedPresetMetadata.SerializedTypes));
 
@@ -392,11 +392,11 @@ namespace PresetMagician.Tests.ModelTests
 
             savedPreset.Types.IsEqualTo(originalPreset.Types).Should().BeTrue();
             testedProperties.Add(nameof(PresetParserMetadata.Types));
-            
+
             testedProperties.Add(nameof(PresetParserMetadata.SerializedCharacteristics));
             testedProperties.Add(nameof(PresetParserMetadata.SerializedTypes));
 
-            
+
             var allProperties =
                 (from prop in typeof(PresetMetadata).GetProperties() select prop.Name).ToList();
 
@@ -422,7 +422,7 @@ namespace PresetMagician.Tests.ModelTests
 
             savedPreset.Types.IsEqualTo(originalPreset.Types).Should().BeTrue();
             testedProperties.Add(nameof(PresetMetadata.Types));
-            
+
             testedProperties.Add(nameof(PresetMetadata.SerializedCharacteristics));
             testedProperties.Add(nameof(PresetMetadata.SerializedTypes));
 
@@ -530,7 +530,7 @@ namespace PresetMagician.Tests.ModelTests
         [WpfFact]
         public async Task TestPluginMoves()
         {
-            var pluginTestFilename = "synister64.dll";
+            var pluginTestFilename = "Surge-new.dll";
             var pluginTestDirectory = Path.Combine(Directory.GetCurrentDirectory(),
                 @"TestData\VstPlugins");
             var pluginSourceDirectory = Path.Combine(Directory.GetCurrentDirectory(),
@@ -544,8 +544,8 @@ namespace PresetMagician.Tests.ModelTests
             File.Delete(pluginTestPath);
             File.Copy(pluginSourcePath, pluginTestPath);
 
-            var pluginService = Fixture.GetServiceLocator().ResolveType<PluginService>();
             var globalService = Fixture.GetServiceLocator().ResolveType<GlobalService>();
+            globalService.Plugins.Clear();
             var applicationService = Fixture.GetServiceLocator().ResolveType<IApplicationService>();
             Fixture.StartPool();
             globalService.RuntimeConfiguration.VstDirectories.Add(new VstDirectory
@@ -553,11 +553,91 @@ namespace PresetMagician.Tests.ModelTests
 
 
             await Fixture.GetServiceLocator().ResolveType<RefreshPluginsCommand>().ExecuteAsync();
+
+            applicationService.GetApplicationOperationErrors().Should().BeEmpty();
+            globalService.Plugins.Count.Should().Be(1);
+            globalService.Plugins.First().IsPresent.Should().BeTrue();
+
+            File.Delete(pluginTestPath);
+            await Fixture.GetServiceLocator().ResolveType<RefreshPluginsCommand>().ExecuteAsync();
+
+            applicationService.GetApplicationOperationErrors().Should().BeEmpty();
+            globalService.Plugins.Count.Should().Be(1);
+            globalService.Plugins.First().IsPresent.Should().BeFalse();
+
             Fixture.StopPool();
+        }
+
+        [WpfFact]
+        public async Task TestPluginUpdate()
+        {
+            var pluginTestFilename = "Surge-new.dll";
+            var newPluginTestFilename = "Surge-old.dll";
+            var pluginTestDirectory = Path.Combine(Directory.GetCurrentDirectory(),
+                @"TestData\VstPlugins");
+            var pluginSourceDirectory = Path.Combine(Directory.GetCurrentDirectory(),
+                @"Resources");
+            var pluginSourcePath = Path.Combine(pluginSourceDirectory, pluginTestFilename);
+            var newPluginSourcePath = Path.Combine(pluginSourceDirectory, newPluginTestFilename);
+
+            var pluginTestPath = Path.Combine(pluginTestDirectory, pluginTestFilename);
+
+            Directory.CreateDirectory(pluginTestDirectory);
+            File.Delete(pluginTestPath);
+            File.Copy(pluginSourcePath, pluginTestPath);
+
+            var pluginService = Fixture.GetServiceLocator().ResolveType<PluginService>();
+            var globalService = Fixture.GetServiceLocator().ResolveType<GlobalService>();
+            globalService.Plugins.Clear();
+            var applicationService = Fixture.GetServiceLocator().ResolveType<IApplicationService>();
+            Fixture.StartPool();
+            globalService.RuntimeConfiguration.VstDirectories.Add(new VstDirectory
+                {Path = pluginTestDirectory, Active = true});
+
+
+            _output.WriteLine("Refreshing plugins 1/2");
+            await Fixture.GetServiceLocator().ResolveType<RefreshPluginsCommand>().ExecuteAsync();
+
+            var progress = new ApplicationProgress
+            {
+                Progress = new Progress<CountProgress>(),
+                LogReporter = new LogReporter(new MiniMemoryLogger()),
+                CancellationToken = new CancellationTokenSource().Token
+            };
+
+            _output.WriteLine("Updating metadata 1/2");
+            await pluginService.UpdateMetadata(globalService.Plugins, progress);
 
 
             applicationService.GetApplicationOperationErrors().Should().BeEmpty();
             globalService.Plugins.Count.Should().Be(1);
+            globalService.Plugins.First().IsPresent.Should().BeTrue();
+            globalService.Plugins.First().HasMetadata.Should().BeTrue();
+
+            Fixture.StopPool();
+            await Task.Delay(5000);
+            Fixture.StartPool();
+            File.Delete(pluginTestPath);
+            File.Copy(newPluginSourcePath, pluginTestPath);
+
+            _output.WriteLine("Refreshing plugins 2/2");
+            await Fixture.GetServiceLocator().ResolveType<RefreshPluginsCommand>().ExecuteAsync();
+
+
+            applicationService.GetApplicationOperationErrors().Should().BeEmpty();
+            globalService.Plugins.Count.Should().Be(2);
+            globalService.Plugins.First().IsPresent.Should().BeFalse();
+            globalService.Plugins[1].IsPresent.Should().BeTrue();
+
+            _output.WriteLine("Updating metadata 2/2");
+            var pluginsToRemove = await pluginService.UpdateMetadata(globalService.Plugins, progress);
+            globalService.Plugins.RemoveItems(pluginsToRemove);
+
+            applicationService.GetApplicationOperationErrors().Should().BeEmpty();
+            globalService.Plugins.Count.Should().Be(1);
+            globalService.Plugins.First().IsPresent.Should().BeTrue();
+
+            Fixture.StopPool();
         }
     }
 }

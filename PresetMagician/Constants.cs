@@ -141,6 +141,7 @@ namespace PresetMagician
             public const string ReportUnsupportedPlugins = "Plugin.ReportUnsupportedPlugins";
             public const string ForceReportPluginsToLive = "Plugin.ForceReportPluginsToLive";
             public const string ForceReportPluginsToDev = "Plugin.ForceReportPluginsToDev";
+            public const string ForceReloadMetadata = "Plugin.ForceReloadMetadata";
         }
 
         public static class PluginTools

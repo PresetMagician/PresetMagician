@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\squirrel.windows\build\squirrel.windows.props" Condition="Exists('..\packages\squirrel.windows\build\squirrel.windows.props')" Label="Paket" />
   <Import Project="..\packages\Catel.Fody\build\Catel.Fody.props" Condition="Exists('..\packages\Catel.Fody\build\Catel.Fody.props')" Label="Paket" />
   <Import Project="..\packages\Anotar.Catel.Fody\build\Anotar.Catel.Fody.props" Condition="Exists('..\packages\Anotar.Catel.Fody\build\Anotar.Catel.Fody.props')" Label="Paket" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -64,6 +65,7 @@
     <Compile Include="Progress\CountProgress.cs" />
     <Compile Include="Progress\StringProgress.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShortcutUtils.cs" />
     <Compile Include="VstUtils.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -147,6 +149,27 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
+        <Reference Include="DeltaCompressionDotNet">
+          <HintPath>..\packages\DeltaCompressionDotNet\lib\net20\DeltaCompressionDotNet.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="DeltaCompressionDotNet.MsDelta">
+          <HintPath>..\packages\DeltaCompressionDotNet\lib\net20\DeltaCompressionDotNet.MsDelta.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="DeltaCompressionDotNet.PatchApi">
+          <HintPath>..\packages\DeltaCompressionDotNet\lib\net20\DeltaCompressionDotNet.PatchApi.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
         <Reference Include="Microsoft.Expression.Interactions">
           <HintPath>..\packages\Expression.Blend.Sdk.WPF\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
           <Private>True</Private>
@@ -183,8 +206,68 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
+        <Reference Include="Mono.Cecil">
+          <HintPath>..\packages\Mono.Cecil\lib\net40\Mono.Cecil.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Mono.Cecil.Mdb">
+          <HintPath>..\packages\Mono.Cecil\lib\net40\Mono.Cecil.Mdb.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Mono.Cecil.Pdb">
+          <HintPath>..\packages\Mono.Cecil\lib\net40\Mono.Cecil.Pdb.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Mono.Cecil.Rocks">
+          <HintPath>..\packages\Mono.Cecil\lib\net40\Mono.Cecil.Rocks.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
         <Reference Include="redmine-net452-api">
           <HintPath>..\packages\redmine-api\lib\net452\redmine-net452-api.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="SharpCompress">
+          <HintPath>..\packages\SharpCompress\lib\net45\SharpCompress.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="PresentationCore">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="PresentationFramework">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="System.Xaml">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="WindowsBase">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Splat">
+          <HintPath>..\packages\Splat\lib\net461\Splat.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -234,6 +317,22 @@
       <ItemGroup>
         <Reference Include="SQLitePCLRaw.provider.e_sqlite3">
           <HintPath>..\packages\SQLitePCLRaw.provider.e_sqlite3.net45\lib\net45\SQLitePCLRaw.provider.e_sqlite3.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="NuGet.Squirrel">
+          <HintPath>..\packages\squirrel.windows\lib\Net45\NuGet.Squirrel.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Squirrel">
+          <HintPath>..\packages\squirrel.windows\lib\Net45\Squirrel.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -305,6 +404,17 @@
         <Reference Include="System.Configuration.ConfigurationManager">
           <HintPath>..\packages\System.Configuration.ConfigurationManager\lib\net461\System.Configuration.ConfigurationManager.dll</HintPath>
           <Private>False</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="System.Drawing.Primitives">
+          <HintPath>..\packages\System.Drawing.Primitives\lib\net45\System.Drawing.Primitives.dll</HintPath>
+          <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -476,4 +586,5 @@
   <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.linux\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_linux_targets).targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.linux\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_linux_targets).targets')" Label="Paket" />
   <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.osx\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_osx_targets).targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.osx\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_osx_targets).targets')" Label="Paket" />
   <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_xp\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_v110_xp_targets).targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_xp\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_v110_xp_targets).targets')" Label="Paket" />
+  <Import Project="..\packages\squirrel.windows\build\squirrel.windows.targets" Condition="Exists('..\packages\squirrel.windows\build\squirrel.windows.targets')" Label="Paket" />
 </Project>

@@ -11,6 +11,7 @@ nuget Newtonsoft.Json
 nuget Orchestra.Shell.Ribbon.Fluent
 nuget PropertyChanged.Fody
 nuget Svg
+nuget Splat 6.1.7
 nuget Syroot.Windows.IO.KnownFolders
 nuget System.Net.Http
 nuget WPFHexaEditor 1.3.6.2

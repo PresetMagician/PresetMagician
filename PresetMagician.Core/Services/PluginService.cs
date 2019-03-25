@@ -152,7 +152,7 @@ namespace PresetMagician.Core.Services
                         LastModifiedDateTime = remoteFileService.GetLastModifiedDate(dllPath), IsPresent = true
                     }
                 };
-                
+
                 progressStatus.Status = $"Adding Plugin {newPlugin.PluginLocation.DllPath}";
                 applicationProgress.Progress.Report(progressStatus);
                 pluginsToAdd.Add(newPlugin);
@@ -233,6 +233,7 @@ namespace PresetMagician.Core.Services
                     progressStatus.Status = $"Loading metadata for {plugin.DllFilename}";
                     applicationProgress.Progress.Report(progressStatus);
 
+                    var originalPluginLocation = plugin.PluginLocation;
                     foreach (var pluginLocation in plugin.PluginLocations)
                     {
                         if (pluginLocation.IsPresent &&
@@ -240,6 +241,8 @@ namespace PresetMagician.Core.Services
                             (!pluginLocation.HasMetadata || (pluginLocation.PresetParser != null &&
                                                              pluginLocation.PresetParser.RequiresRescan())))
                         {
+                            plugin.PluginLocation = pluginLocation;
+
                             using (var remotePluginInstance =
                                 _remoteVstService.GetRemotePluginInstance(plugin, false))
                             {
@@ -247,7 +250,7 @@ namespace PresetMagician.Core.Services
                                 {
                                     await remotePluginInstance.LoadPlugin();
                                     plugin.Logger.Debug($"Attempting to find presetParser for {plugin.PluginName}");
-
+                                    pluginLocation.PresetParser = null;
                                     _vendorPresetParserService.DeterminatePresetParser(remotePluginInstance);
                                     remotePluginInstance.UnloadPlugin();
                                 }
@@ -257,13 +260,10 @@ namespace PresetMagician.Core.Services
                                 }
                             }
                         }
-
-                        if (!plugin.HasMetadata && pluginLocation.HasMetadata)
-                        {
-                            plugin.PluginLocation = pluginLocation;
-                            break;
-                        }
                     }
+
+                    plugin.PluginLocation = originalPluginLocation;
+                    plugin.EnsurePluginLocationIsPresent();
 
                     if (!plugin.HasMetadata && plugin.PluginLocation == null && plugin.Presets.Count == 0)
                     {
@@ -286,7 +286,8 @@ namespace PresetMagician.Core.Services
                     // merge this plugin with the existing one if it has no presets.
                     var existingPlugin =
                         (from p in _globalService.Plugins
-                            where p.VstPluginId == plugin.VstPluginId && p.PluginId != plugin.PluginId
+                            where p.VstPluginId == plugin.VstPluginId && p.PluginId != plugin.PluginId && p.IsPresent &&
+                                  !pluginsToRemove.Contains(p)
                             select p)
                         .FirstOrDefault();
 
@@ -299,14 +300,22 @@ namespace PresetMagician.Core.Services
 
                             if (existingPlugin.PluginLocation == null)
                             {
-                                await _dispatcherService.InvokeAsync(() =>
+                                if (Core.UseDispatcher)
+                                {
+                                    await _dispatcherService.InvokeAsync(() =>
+                                    {
+                                        existingPlugin.PluginLocation = plugin.PluginLocation;
+                                    });
+                                }
+                                else
                                 {
                                     existingPlugin.PluginLocation = plugin.PluginLocation;
-                                });
+                                }
                             }
                             else
                             {
                                 existingPlugin.PluginLocations.Add(plugin.PluginLocation);
+                                existingPlugin.EnsurePluginLocationIsPresent();
                             }
                         }
                         else if (existingPlugin.Presets.Count == 0)
@@ -316,14 +325,22 @@ namespace PresetMagician.Core.Services
 
                             if (plugin.PluginLocation == null)
                             {
-                                await _dispatcherService.InvokeAsync(() =>
+                                if (Core.UseDispatcher)
+                                {
+                                    await _dispatcherService.InvokeAsync(() =>
+                                    {
+                                        plugin.PluginLocation = existingPlugin.PluginLocation;
+                                    });
+                                }
+                                else
                                 {
                                     plugin.PluginLocation = existingPlugin.PluginLocation;
-                                });
+                                }
                             }
                             else
                             {
                                 plugin.PluginLocations.Add(existingPlugin.PluginLocation);
+                                existingPlugin.EnsurePluginLocationIsPresent();
                             }
                         }
                     }
