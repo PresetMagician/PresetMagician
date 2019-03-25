@@ -55,6 +55,8 @@ namespace PresetMagician.Services
                 nameof(Commands.Plugin.ScanSelectedPlugins));
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin),
                 nameof(Commands.Plugin.ScanSelectedPlugin));
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin),
+                nameof(Commands.Plugin.ForceReloadMetadata));
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "RefreshPlugins");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "AllToPresetExportList");
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin), "SelectedToPresetExportList");

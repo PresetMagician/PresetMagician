@@ -6,3 +6,4 @@ redmine-api
 MimeTypeMap.List
 sqlite-net-pcl
 Catel.Fody
+squirrel.windows

@@ -9,6 +9,7 @@ using Orchestra.Collections;
 using Orchestra.Layers;
 using Orchestra.Services;
 using PresetMagician.Core.Collections;
+using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Services;
 using PresetMagician.Legacy;
 using PresetMagician.Services;
@@ -73,6 +74,7 @@ namespace PresetMagician.Tests
             var applicationService = _serviceLocator.ResolveType<IApplicationService>();
             var globalService = _serviceLocator.ResolveType<GlobalService>();
             globalService.RemoteVstHostProcessPool.SetMinProcesses(1);
+            globalService.RemoteVstHostProcessPool.SetMaxProcesses(1);
 
             applicationService.StartProcessPool();
 
@@ -123,6 +125,8 @@ namespace PresetMagician.Tests
             serviceLocator.RegisterType<IHintsProvider, HintsProvider>();
 
             serviceLocator.RegisterType<IAdornerLayer, HintsAdornerLayer>(RegistrationType.Transient);
+            
+            serviceLocator.RegisterType<IDispatcherService, StubDispatcherService>();
         }
 
         public void Dispose()

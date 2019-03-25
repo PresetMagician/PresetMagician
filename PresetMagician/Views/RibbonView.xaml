@@ -122,14 +122,14 @@
                             Padding="0"
                             VerticalAlignment="Center"
                             Command="{catel:CommandManagerBinding Plugin.ScanPlugins}"
-                            Header="Load VST Presets"
+                            Header="Import VST Presets"
                             LargeIcon="{iconPacks:Material Kind=BarcodeScan,
                                                        Width=32,
                                                        Height=32}">
                             <fluent:Button.ToolTip>
                                 <fluent:ScreenTip Title="Load VST Presets"
                                                   Width="250"
-                                                  Text="Analyzes your plugins and loads/updates all presets if your plugin(s) are supported"
+                                                  Text="Analyzes your plugins and imports/updates all presets if your plugin(s) are supported"
                                                   HelpTopic="{Binding HelpLinks.COMMANDS_ANALYZE}" />
                             </fluent:Button.ToolTip>
 
@@ -216,12 +216,12 @@
                             VerticalAlignment="Center"
                             Size="Middle"
                             Command="{catel:CommandManagerBinding Plugin.ScanSelectedPlugins}"
-                            Header="Load Presets for Selection"
+                            Header="Import Presets for Selection"
                             Icon="{iconPacks:Material Kind=BarcodeScan,
                                                        Width=16,
                                                        Height=16}">
                             <fluent:Button.ToolTip>
-                                <fluent:ScreenTip Title="Load Presets for selected Plugins"
+                                <fluent:ScreenTip Title="Import Presets for selected Plugins"
                                                   Width="250"
                                                   Text="Analyzes the selected plugins and loads/updates all presets if your plugin(s) are supported"
                                                   HelpTopic="{Binding HelpLinks.COMMANDS_ANALYZE}" />
@@ -233,6 +233,17 @@
                             Header="View Plugin Log"
                             Icon="{iconPacks:FontAwesome Kind=ListAltSolid}"
                             Size="Middle" />
+                        <fluent:Button
+                            Command="{catel:CommandManagerBinding Plugin.ForceReloadMetadata}"
+                            Header="Force-Reload Metadata"
+                            Icon="{iconPacks:Modern Kind=ForkliftLoad}"
+                            Size="Middle" >
+                            <fluent:Button.ToolTip>
+                                <fluent:ScreenTip Title="Forces reloading the metadata for the selected Plugins"
+                                                  Width="250"
+                                                  Text="Discards all metadata information for the plugin and forces reload. Useful if a plugin crashed during metadata analysis and you wish to try again. Also checks for any preset parser changes."
+                                                  HelpTopic="{Binding HelpLinks.COMMANDS_ANALYZE}" />
+                            </fluent:Button.ToolTip></fluent:Button>
                     </fluent:RibbonGroupBox>
                     <fluent:RibbonGroupBox Header="Global" ItemsSource="{StaticResource GlobalEdit}" />
                     <fluent:RibbonGroupBox Header="Help" ItemsSource="{StaticResource HelpSection}" />

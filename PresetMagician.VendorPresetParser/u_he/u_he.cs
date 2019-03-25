@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Catel.Collections;
 using Drachenkatze.PresetMagician.Utils;
 using PresetMagician.Core.Models;
+using PresetMagician.Utils;
 using Squirrel.Shell;
 using Type = PresetMagician.Core.Models.Type;
 
@@ -108,11 +109,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
             var presetData = File.ReadAllBytes(file.FullName);
             var sourceFile = file.FullName;
 
-            if (PluginInstance.Plugin.HasPreset(sourceFile, HashUtils.getIxxHash(presetData)))
-            {
-                return;
-            }
-
+           
             var preset = new PresetParserMetadata
             {
                 PresetName = file.Name.Replace(".h2p", ""), Plugin = PluginInstance.Plugin, BankPath = bank.BankPath,
@@ -240,9 +237,22 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 
             string dataDirectory;
 
-            if (IsShortcut(shortCutDataDirectoryName))
+            var isShortcut = false;
+
+            try
             {
-                dataDirectory = ResolveShortcut(shortCutDataDirectoryName);
+                isShortcut = ShortcutUtils.IsShortcut(shortCutDataDirectoryName);
+            }
+            catch (IOException e)
+            {
+                PluginInstance.Plugin.Logger.Error(
+                    $"Error while trying to resolve the shortcut {shortCutDataDirectoryName} because of {e.GetType().FullName}: {e.Message}");
+                PluginInstance.Plugin.Logger.Debug(e.StackTrace);
+            }
+            
+            if (isShortcut)
+            {
+                dataDirectory = ShortcutUtils.ResolveShortcut(shortCutDataDirectoryName);
             }
             else
             {
@@ -257,70 +267,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
             PluginInstance.Plugin.Logger.Error("Unable to find the data directory, aborting.");
             PluginInstance.Plugin.Logger.Debug("Estimated shortcut directory name is " + shortCutDataDirectoryName);
             return null;
-        }
-
-        private bool IsShortcut(string path)
-        {
-            if (!File.Exists(path))
-            {
-                return false;
-            }
-
-            try
-            {
-                var shellLink = new ShellLink(path);
-
-                if (shellLink.Target.Length > 0 && Directory.Exists(shellLink.Target))
-                {
-                    shellLink.Dispose();
-                    return true;
-                }
-
-                shellLink.Dispose();
-            }
-            catch (IOException e)
-            {
-                PluginInstance.Plugin.Logger.Error(
-                    $"Error while trying to resolve the shortcut {path} because of {e.GetType().FullName}: {e.Message}");
-                PluginInstance.Plugin.Logger.Debug(e.StackTrace);
-            }
-
-            return false;
-        }
-
-        private string ResolveShortcutSquirrel(string path)
-        {
-            try
-            {
-                var shellLink = new ShellLink(path);
-
-                if (shellLink.Target.Length > 0 && Directory.Exists(shellLink.Target))
-                {
-                    return shellLink.Target;
-                }
-
-                shellLink.Dispose();
-            }
-            catch (IOException e)
-            {
-                PluginInstance.Plugin.Logger.Error(
-                    $"Error while trying to resolve the shortcut {path} because of {e.GetType().FullName}: {e.Message}");
-                PluginInstance.Plugin.Logger.Debug(e.StackTrace);
-            }
-
-            return null;
-        }
-
-        private string ResolveShortcut(string path)
-        {
-            if (!IsShortcut(path))
-            {
-                return string.Empty;
-            }
-
-            var targetPath = ResolveShortcutSquirrel(path);
-
-            return targetPath;
         }
     }
 }

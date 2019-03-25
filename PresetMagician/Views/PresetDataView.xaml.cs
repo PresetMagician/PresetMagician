@@ -1,3 +1,6 @@
+using System;
+using System.ComponentModel;
+using System.Threading.Tasks;
 using Be.Windows.Forms;
 using Catel.Windows;
 using PresetMagician.ViewModels;
@@ -18,8 +21,20 @@ namespace PresetMagician.Views
 
             InitializeComponent();
 
-            var provider = new DynamicByteProvider(viewModel.PresetData);
-            PresetDataControl.ByteProvider = provider;
+           
+            viewModel.InitializedAsync += ViewModelOnInitializedAsync;
+        }
+
+        private Task ViewModelOnInitializedAsync(object sender, EventArgs e)
+        {
+            var vm = ViewModel as PresetDataViewModel;
+            if (vm.PresetData != null)
+            {
+                var provider = new DynamicByteProvider(vm.PresetData);
+                PresetDataControl.ByteProvider = provider;
+            }
+
+            return Task.CompletedTask;
         }
     }
 }

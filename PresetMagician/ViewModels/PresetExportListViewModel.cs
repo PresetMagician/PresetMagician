@@ -1,6 +1,7 @@
 ﻿using Catel.Collections;
 using Catel.IoC;
 using Catel.MVVM;
+using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
 using PresetMagician.Services.Interfaces;

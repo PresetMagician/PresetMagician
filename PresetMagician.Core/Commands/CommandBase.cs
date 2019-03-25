@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Catel.IoC;
+using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Services;
-using PresetMagician.Services.Interfaces;
 
 namespace PresetMagician.Core.Commands
 {

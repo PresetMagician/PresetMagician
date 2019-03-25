@@ -81,10 +81,13 @@ namespace PresetMagician.Services
                 }
             }
 
-            _dispatcherService.BeginInvoke(() =>
+            if (_statusBarItem != null)
             {
-                _statusBarItem.SetCurrentValue(StatusBarItem.ValueProperty, status);
-            });
+                _dispatcherService.BeginInvoke(() =>
+                {
+                    _statusBarItem.SetCurrentValue(StatusBarItem.ValueProperty, status);
+                });
+            }
         }
 
         #endregion

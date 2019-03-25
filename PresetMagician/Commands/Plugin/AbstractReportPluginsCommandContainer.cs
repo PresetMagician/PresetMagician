@@ -11,6 +11,7 @@ using Catel.Data;
 using Catel.IoC;
 using Catel.MVVM;
 using Newtonsoft.Json.Linq;
+using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
 using PresetMagician.Services.Interfaces;

@@ -10,6 +10,7 @@ using Catel.Logging;
 using Catel.Services;
 using Drachenkatze.PresetMagician.Utils;
 using Orc.Squirrel;
+using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Services;
 using PresetMagician.Services;
 using PresetMagician.Services.Interfaces;

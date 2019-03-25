@@ -14,6 +14,7 @@ using Catel.Threading;
 using Catel.Windows;
 using Orchestra;
 using PresetMagician.Core.EventArgs;
+using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
 using PresetMagician.Services.Interfaces;

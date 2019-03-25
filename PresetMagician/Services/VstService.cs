@@ -58,11 +58,6 @@ namespace PresetMagician.Services
         }
 
 
-        public byte[] GetPresetData(Preset preset)
-        {
-            return _presetDataPersisterService.GetPresetData(preset);
-        }
-
         public async Task<IRemotePluginInstance> GetInteractivePluginInstance(Plugin plugin)
         {
             if (_interactiveVstHostProcess == null)

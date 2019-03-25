@@ -250,6 +250,12 @@
     <Compile Include="MeldaProduction\MeldaProduction_MWobbler.cs" />
     <Compile Include="MeldaProduction\MeldaProduction_MWobblerMB.cs" />
     <Compile Include="MeldaProduction\MeldaProduction_MXXX.cs" />
+    <Compile Include="Properties\Resource1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource1.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Spectrasonics\Spectrasonics_Omnisphere.cs" />
     <Compile Include="VendorPresetParserInitializer.cs" />
     <Compile Include="NullPresetParser.cs" />
     <Compile Include="D16 Group\D16Group.cs" />
@@ -366,6 +372,16 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="paket.references" />
+    <Resource Include="Resources\OmnispherePatchTemplate.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resource1.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Choose>
