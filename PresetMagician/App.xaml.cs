@@ -22,20 +22,10 @@ using MessageBox = System.Windows.MessageBox;
 
 namespace PresetMagician
 {
-#warning TODO: FIXED: changed flag only respects preset data and not metadata. needs to be fixed.
-#warning TODO: research if it's possible to work on a copy. Also ensure that while presets being edited no other operation may run!
 #warning TODO: replace developer stuff with ugly company logos
 #warning TODO: implement effIdle per https://www.kvraudio.com/forum/viewtopic.php?t=349866
-#warning TODO: add warning in the ribbon that preset editing is active
 #warning TODO: add filters for "modified presets", types, modes, probably via quick filters? hide/show ignored and mark them somehow
-#warning TODO: add icons for changed since last export, preset modified
-#warning TODO: add big edit box
-#warning TOOD: add global types/modes editor including display which properties are user overridden
 #warning TODO: add preset functions delete selected, ignore selected
-#warning midi note name slow -> create static lookup ? or even better: only save the note number?  with ivalueconverter?
-#warning refactor bug report to include the new mechanism and exclude the sqlite database
-#warning add force metadata scan function
-#warning todo add preview note migration
 #warning for future: only attach event listeners where really necessary; removing listeners is expensive
 #warning refactor application service reporting via ApplicationProgress
 

@@ -131,9 +131,9 @@
                         SortDirection="Descending" />
                     <DataGridTextColumn
                         Width="80"
-                        Binding="{Binding PreviewNote.FullNoteName}"
+                        Binding="{Binding PreviewNotePlayer.Name, Mode=OneWay}"
                         Header="Key"
-                        IsReadOnly="False" />
+                        IsReadOnly="True" />
                 </DataGrid.Columns>
             </DataGrid>
         </xctk:BusyIndicator>
