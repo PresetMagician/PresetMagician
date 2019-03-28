@@ -52,7 +52,7 @@ namespace PresetMagician.RemoteVstHost.Services
             var plugin = new RemoteVstPlugin
             {
                 DllPath = dllPath, BackgroundProcessing = backgroundProcessing,
-                MiniDiskLogger = new MiniDiskLogger(logFile)
+                Logger = new MiniDiskLogger(logFile)
             };
 
             _plugins.Add(guid, plugin);
@@ -71,9 +71,14 @@ namespace PresetMagician.RemoteVstHost.Services
             }
 
             _plugins.Remove(guid);
-            if (File.Exists(plugin.MiniDiskLogger.LogFilePath))
-            {
-                File.Delete(plugin.MiniDiskLogger.LogFilePath);
+            
+            
+            if (plugin.Logger is MiniDiskLogger miniDiskLogger) {
+            
+                if (File.Exists(miniDiskLogger.LogFilePath))
+                {
+                    File.Delete(miniDiskLogger.LogFilePath);
+                }
             }
         }
 
@@ -83,7 +88,7 @@ namespace PresetMagician.RemoteVstHost.Services
         {
             App.Ping();
             var plugin = GetPluginByGuid(guid);
-            plugin.MiniDiskLogger.Debug($"LoadPlugin()");
+            plugin.Logger.Debug($"LoadPlugin()");
 
             try
             {
@@ -108,7 +113,7 @@ namespace PresetMagician.RemoteVstHost.Services
             App.Ping();
             var plugin = GetPluginByGuid(guid);
 
-            plugin.MiniDiskLogger.Debug($"UnloadPlugin()");
+            plugin.Logger.Debug($"UnloadPlugin()");
             if (plugin.IsLoaded)
             {
                 _vstHost.UnloadVst(plugin);
@@ -351,7 +356,7 @@ namespace PresetMagician.RemoteVstHost.Services
         {
             App.Ping();
             var plugin = GetPluginByGuid(pluginGuid);
-            plugin.MiniDiskLogger.Debug($"SetProgram()");
+            plugin.Logger.Debug($"SetProgram()");
             if (!plugin.IsLoaded)
             {
                 throw GetFaultException<PluginNotLoadedFault>();

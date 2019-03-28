@@ -3,6 +3,7 @@ source https://api.nuget.org/v3/index.json
 
 nuget Fody
 nuget GSF.Media
+nuget GSF.Core
 nuget JetBrains.Annotations
 nuget MahApps.Metro.IconPacks 3.0.0-alpha0096 prerelease
 nuget MessagePack

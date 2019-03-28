@@ -10,3 +10,4 @@ MethodTimer.Fody copy_local: false
 sqlite-net-pcl
 K4os.Compression.LZ4 
 Ceras
+GSF.Core

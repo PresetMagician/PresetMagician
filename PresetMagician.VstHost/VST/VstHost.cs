@@ -27,6 +27,9 @@ namespace PresetMagician.VstHost.VST
     {
         private Timer _audioTimer;
         private Timer _guiTimer;
+        
+        private readonly object _guiLock = new object();
+        private readonly object _audioLock = new object();
 
         public VstHost(bool useTimer = false)
         {
@@ -48,7 +51,7 @@ namespace PresetMagician.VstHost.VST
 
         private void GuiTimerOnElapsed(object sender, ElapsedEventArgs e)
         {
-            lock (_guiTimer)
+            lock (_guiLock)
             {
                 foreach (var plugin in _plugins.ToArray())
                 {
@@ -65,7 +68,7 @@ namespace PresetMagician.VstHost.VST
 
         private void AudioTimerOnElapsed(object sender, ElapsedEventArgs e)
         {
-            lock (_audioTimer)
+            lock (_audioLock)
             {
                 foreach (var plugin in _plugins.ToArray())
                 {
@@ -96,9 +99,9 @@ namespace PresetMagician.VstHost.VST
 
             if (remoteVst.BackgroundProcessing)
             {
-                lock (_audioTimer)
+                lock (_audioLock)
                 {
-                    lock (_guiTimer)
+                    lock (_guiLock)
                     {
                         _plugins.Add(remoteVst);
                     }
@@ -114,13 +117,11 @@ namespace PresetMagician.VstHost.VST
 
         private static void LoadVstInternal(RemoteVstPlugin remoteVst, bool debug = false)
         {
-            var hostCommandStub = new NewHostCommandStub(debug);
+            var hostCommandStub = new NewHostCommandStub(remoteVst.Logger);
             hostCommandStub.PluginDll = Path.GetFileName(remoteVst.DllPath);
 
-            if (debug)
-            {
-                Console.WriteLine($"{hostCommandStub.PluginDll}: Loading plugin");
-            }
+            remoteVst.Logger.Debug($"{hostCommandStub.PluginDll}: Loading plugin");
+         
 
             var ctx = VstPluginContext.Create(remoteVst.DllPath, hostCommandStub);
             ctx.Set("Plugin", remoteVst);
@@ -129,39 +130,26 @@ namespace PresetMagician.VstHost.VST
             ctx.Set("PluginPath", remoteVst.DllPath);
             ctx.Set("HostCmdStub", hostCommandStub);
 
-            if (debug)
-            {
-                Console.WriteLine($"{hostCommandStub.PluginDll}: Opening plugin");
-            }
+            remoteVst.Logger.Debug($"{hostCommandStub.PluginDll}: Opening plugin");
 
             ctx.PluginCommandStub.Open();
 
-            if (debug)
-            {
-                Console.WriteLine($"{hostCommandStub.PluginDll}: Setting Sample Rate {SampleRate}");
-            }
+            remoteVst.Logger.Debug($"{hostCommandStub.PluginDll}: Setting Sample Rate {SampleRate}");
+            
 
             ctx.PluginCommandStub.SetSampleRate(SampleRate);
 
-            if (debug)
-            {
-                Console.WriteLine($"{hostCommandStub.PluginDll}: Setting Block Size {BlockSize}");
-            }
+            remoteVst.Logger.Debug($"{hostCommandStub.PluginDll}: Setting Block Size {BlockSize}");
 
             ctx.PluginCommandStub.SetBlockSize(BlockSize);
 
 
-            if (debug)
-            {
-                Console.WriteLine($"{hostCommandStub.PluginDll}: Activating output");
-            }
+            remoteVst.Logger.Debug($"{hostCommandStub.PluginDll}: Activating output");
+            
 
             remoteVst.PluginContext.PluginCommandStub.MainsChanged(true);
 
-            if (debug)
-            {
-                Console.WriteLine($"{hostCommandStub.PluginDll}: Start Processing");
-            }
+            remoteVst.Logger.Debug($"{hostCommandStub.PluginDll}: Start Processing");
 
             ctx.PluginCommandStub.StartProcess();
 
@@ -244,9 +232,9 @@ namespace PresetMagician.VstHost.VST
 
         public void UnloadVst(RemoteVstPlugin remoteVst)
         {
-            lock (_audioTimer)
+            lock (_audioLock)
             {
-                lock (_guiTimer)
+                lock (_guiLock)
                 {
                     if (remoteVst.BackgroundProcessing)
                     {
