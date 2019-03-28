@@ -32,14 +32,7 @@ namespace PresetMagician.VstHost.VST
             var guid = Guid.NewGuid();
             string fileExtension;
 
-            if (preset.BankPath.Count > 2)
-            {
-                var d = preset.BankPath.GetRange(1, preset.BankPath.Count - 1);
-                var lastBankPath = string.Join("/", d);
-                
-                preset.BankPath.RemoveRange(1, preset.BankPath.Count - 1);
-                preset.BankPath.Add(lastBankPath);
-            }
+            
             nksf.kontaktSound.summaryInformation.summaryInformation.vendor = preset.PluginVendor;
             nksf.kontaktSound.summaryInformation.summaryInformation.uuid = guid;
             nksf.kontaktSound.summaryInformation.summaryInformation.name = preset.PresetName;
@@ -135,6 +128,7 @@ namespace PresetMagician.VstHost.VST
             return presetName;
         }
 
+        
 
         private string GetPreviewFilename(PresetExportInfo vstPreset)
         {

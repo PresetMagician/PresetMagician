@@ -79,6 +79,11 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
                 }
             }
 
+            foreach (var directory in dirInfo.EnumerateDirectories())
+            {
+                count += await ProcessPresetDirectory(directory.FullName, bank.CreateRecursive(directory.Name), persist);
+            }
+
             return count;
         }
 

@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Timers;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Threading;
-using Catel.IO;
 using Drachenkatze.PresetMagician.Utils;
 using Jacobi.Vst.Core;
 using Jacobi.Vst.Core.Host;
@@ -25,7 +25,7 @@ namespace PresetMagician.VstHost.VST
         private string _dllPath;
         private Timer _shutdownTimer;
         public bool BackgroundProcessing { get; set; }
-        public MiniDiskLogger MiniDiskLogger { get; set; }
+        public MiniLogger Logger { get; set; }
 
 
         public string DllPath

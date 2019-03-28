@@ -14,9 +14,9 @@ namespace PresetMagician.Core.Services
             _globalService = globalService;
         }
 
-        public IRemotePluginInstance GetInteractivePluginInstance(Plugin plugin)
+        public IRemotePluginInstance GetInteractivePluginInstance(Plugin plugin, bool backgroundProcessing = true)
         {
-            return _globalService.RemoteVstHostProcessPool.GetRemoteInteractivePluginInstance(plugin);
+            return _globalService.RemoteVstHostProcessPool.GetRemoteInteractivePluginInstance(plugin, backgroundProcessing);
         }
 
         public IRemotePluginInstance GetRemotePluginInstance(Plugin plugin,

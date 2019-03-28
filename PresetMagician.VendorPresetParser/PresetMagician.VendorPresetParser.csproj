@@ -54,6 +54,18 @@
   <ItemGroup>
     <Compile Include="AbstractVendorPresetParser.cs" />
     <Compile Include="AbstractVendorPresetParser_StandardVst.cs" />
+    <Compile Include="AIRMusicTechnology\Air.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_Hybrid3.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_LoomClassic.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_VacuumPro.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_Xpand2.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\MagicBlock.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\Tfx.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxHybrid3.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxLoomClassic.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxVacuumPro.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxXpand2.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\WzooBlock.cs" />
     <Compile Include="Arturia\Arturia.cs" />
     <Compile Include="Arturia\Arturia_AnalogLab3.cs" />
     <Compile Include="Arturia\Arturia_Arp2600.cs" />
@@ -133,6 +145,7 @@
     <Compile Include="Common\RecursiveFXPDirectoryParser.cs" />
     <Compile Include="Common\RecursiveVC2Parser.cs" />
     <Compile Include="D16 Group\D16_Frontier.cs" />
+    <Compile Include="D16 Group\D16_LuSH101.cs" />
     <Compile Include="D16 Group\D16_PunchBox.cs" />
     <Compile Include="D16 Group\D16_Repeater.cs" />
     <Compile Include="DmitrySches\DmitrySchesPresetParser.cs" />
@@ -346,6 +359,9 @@
     <Resource Include="FodyWeavers.xml">
       <SubType>Designer</SubType>
     </Resource>
+    <Resource Include="Resources\Spectrasonics\OmnispherePatchTemplate.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="IWshRuntimeLibrary">
@@ -372,9 +388,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="paket.references" />
-    <Resource Include="Resources\OmnispherePatchTemplate.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    <Content Include="Resources\AIRMusicTechnology\Hybrid3EndChunk.bin" />
+    <Content Include="Resources\AIRMusicTechnology\LoomClassicEndChunk.bin" />
+    <Content Include="Resources\AIRMusicTechnology\VacuumProEndChunk.bin" />
+    <Content Include="Resources\AIRMusicTechnology\Xpand2EndChunk.bin" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resource1.resx">

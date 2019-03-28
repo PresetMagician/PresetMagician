@@ -19,7 +19,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resource1 {
@@ -61,15 +61,55 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Hybrid3EndChunk {
+            get {
+                object obj = ResourceManager.GetObject("Hybrid3EndChunk", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] LoomClassicEndChunk {
+            get {
+                object obj = ResourceManager.GetObject("LoomClassicEndChunk", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;SynthMaster  vers=&quot;2.5.0d&quot; &gt;
         ///&lt;ENTRYDESCR  name=&quot;{{PATCHNAME}}&quot;  library=&quot;{{LIBRARYNAME}}&quot;  ATTRIB_VALUE_DATA=&quot;Description=2.5 default multi;size=0;&quot; &gt;
         ///&lt;/ENTRYDESCR&gt;
         /// &lt;SynthMasterEngineParamBlock &gt;
-        ///&lt;MasterEngineBaseParamBlock  scaleName=&quot;Settings Library/Presets/Tuning File/Western/Equal Temperament.tun&quot;  HWprofile=&quot;&quot;  version=&quot;1&quot;  gain=&quot;3f3f7188&quot;  autoLdPatch=&quot;0&quot;  panic=&quot;0&quot;  mpe=&quot;0&quot;  tunV=&quot;43dc0000&quot;  pPan0=&quot;3f000000&quot;  pPan1=&quot;3f000000&quot;  pPan2=&quot;3f000000&quot;  pPan3=&quot;3f000000&quot;  pPan4=&quot;3f000000&quot;  pPan5=&quot;3f000000&quot;  [rest of string was truncated]&quot;;.
+        ///&lt;MasterEngineBaseParamBlock  scaleName=&quot;Settings Library/Presets/Tuning File/Western/Equal Temperament.tun&quot;  HWprofile=&quot;&quot;  version=&quot;1&quot;  gain=&quot;3f3f7188&quot;  autoLdPatch=&quot;0&quot;  panic=&quot;0&quot;  mpe=&quot;0&quot;  tunV=&quot;43dc0000&quot;  pPan0=&quot;3f000000&quot;  pPan1=&quot;3f000000&quot;  pPan2=&quot;3f000000&quot;  pPan3=&quot;3f000000&quot;  pPan4=&quot;3f000000&quot;  pPan5=&quot;3f0000 [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string OmnispherePatchTemplate {
             get {
                 return ResourceManager.GetString("OmnispherePatchTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] VacuumProEndChunk {
+            get {
+                object obj = ResourceManager.GetObject("VacuumProEndChunk", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Xpand2EndChunk {
+            get {
+                object obj = ResourceManager.GetObject("Xpand2EndChunk", resourceCulture);
+                return ((byte[])(obj));
             }
         }
     }

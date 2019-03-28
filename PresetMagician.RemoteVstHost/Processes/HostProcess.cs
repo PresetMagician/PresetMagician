@@ -83,7 +83,7 @@ namespace PresetMagician.RemoteVstHost.Processes
             var processStartInfo = new ProcessStartInfo(_processImageName)
             {
                 CreateNoWindow = true, UseShellExecute = false, RedirectStandardOutput = true,
-                RedirectStandardError = true
+                RedirectStandardError = false    // Don't redirect stderr, as this causes Xpand to hang on startupb
             };
 
             CurrentProcessState = ProcessState.STARTING;

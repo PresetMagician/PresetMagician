@@ -26,6 +26,15 @@ namespace PresetMagician.Core.Models
                 BankPath = new List<string>();
                 BankName = "";
             }
+            
+            if (BankPath.Count > 2)
+            {
+                var d = BankPath.GetRange(1, BankPath.Count - 1);
+                var lastBankPath = string.Join("/", d);
+                
+                BankPath.RemoveRange(1, BankPath.Count - 1);
+                BankPath.Add(lastBankPath);
+            }
 
             
             PresetName = preset.Metadata.PresetName;
