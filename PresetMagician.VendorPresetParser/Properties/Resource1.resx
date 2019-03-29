@@ -124,6 +124,9 @@
   <data name="VacuumProEndChunk" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\AIRMusicTechnology\VacuumProEndChunk.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
+  <data name="VacuumEndChunk" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AIRMusicTechnology\VacuumEndChunk.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
   <data name="Xpand2EndChunk" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\AIRMusicTechnology\Xpand2EndChunk.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
@@ -133,4 +136,30 @@
   <data name="LoomClassicEndChunk" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\AIRMusicTechnology\LoomClassicEndChunk.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
+  <data name="BoomEndChunk" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AIRMusicTechnology\BoomEndChunk.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Db33EndChunk" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AIRMusicTechnology\Db33EndChunk.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="TheRiserEndChunk" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AIRMusicTechnology\TheRiserEndChunk.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="MiniGrandEndChunk" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AIRMusicTechnology\MiniGrandEndChunk.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Xpand2DefaultMidi" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AIRMusicTechnology\Xpand2DefaultMidi.airMIDI;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Db33DefaultMidi" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AIRMusicTechnology\Db33DefaultMidi.airMIDI;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="MiniGrandDefaultMidi" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AIRMusicTechnology\MiniGrandDefaultMidi.airMIDI;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="VacuumDefaultMidi" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AIRMusicTechnology\VacuumDefaultMidi.airMIDI;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+
+  
 </root>

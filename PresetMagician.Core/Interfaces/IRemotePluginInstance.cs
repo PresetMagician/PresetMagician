@@ -46,5 +46,6 @@ namespace PresetMagician.Core.Interfaces
         bool OpenEditor(bool topmost = true);
         bool IsLoaded { get; }
         bool IsEditorOpen { get; }
+        float GetParameter(int parameterIndex);
     }
 }

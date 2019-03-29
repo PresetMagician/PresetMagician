@@ -54,16 +54,28 @@
   <ItemGroup>
     <Compile Include="AbstractVendorPresetParser.cs" />
     <Compile Include="AbstractVendorPresetParser_StandardVst.cs" />
-    <Compile Include="AIRMusicTechnology\Air.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_Boom.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_Db33.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_Db33Fx.cs" />
     <Compile Include="AIRMusicTechnology\AirTech_Hybrid3.cs" />
-    <Compile Include="AIRMusicTechnology\AirTech_LoomClassic.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_Loom.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_MiniGrand.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_TheRiser.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_Vacuum.cs" />
     <Compile Include="AIRMusicTechnology\AirTech_VacuumPro.cs" />
     <Compile Include="AIRMusicTechnology\AirTech_Xpand2.cs" />
     <Compile Include="AIRMusicTechnology\Tfx\MagicBlock.cs" />
     <Compile Include="AIRMusicTechnology\Tfx\Tfx.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxBoom.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxDb33.cs" />
     <Compile Include="AIRMusicTechnology\Tfx\TfxHybrid3.cs" />
-    <Compile Include="AIRMusicTechnology\Tfx\TfxLoomClassic.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxLoom.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxMiniGrand.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxTheRiser.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxVacuum.cs" />
     <Compile Include="AIRMusicTechnology\Tfx\TfxVacuumPro.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxVelvet.cs" />
     <Compile Include="AIRMusicTechnology\Tfx\TfxXpand2.cs" />
     <Compile Include="AIRMusicTechnology\Tfx\WzooBlock.cs" />
     <Compile Include="Arturia\Arturia.cs" />
@@ -388,9 +400,16 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="paket.references" />
+    <Content Include="Resources\AIRMusicTechnology\BoomEndChunk.bin" />
+    <Content Include="Resources\AIRMusicTechnology\Db33DefaultMidi.airMIDI" />
+    <Content Include="Resources\AIRMusicTechnology\Db33EndChunk.bin" />
     <Content Include="Resources\AIRMusicTechnology\Hybrid3EndChunk.bin" />
     <Content Include="Resources\AIRMusicTechnology\LoomClassicEndChunk.bin" />
+    <Content Include="Resources\AIRMusicTechnology\MiniGrandEndChunk.bin" />
+    <Content Include="Resources\AIRMusicTechnology\TheRiserEndChunk.bin" />
+    <Content Include="Resources\AIRMusicTechnology\VacuumEndChunk.bin" />
     <Content Include="Resources\AIRMusicTechnology\VacuumProEndChunk.bin" />
+    <Content Include="Resources\AIRMusicTechnology\Xpand2DefaultMidi.airMIDI" />
     <Content Include="Resources\AIRMusicTechnology\Xpand2EndChunk.bin" />
   </ItemGroup>
   <ItemGroup>

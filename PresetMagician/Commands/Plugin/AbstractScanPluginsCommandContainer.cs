@@ -41,7 +41,8 @@ namespace PresetMagician
         private int updateThrottle;
         private int _currentPluginIndex;
         private Plugin _currentPlugin;
-
+        protected bool SkipPresetLoading = false;
+        
         protected AbstractScanPluginsCommandContainer(string command, ICommandManager commandManager,
             IServiceLocator serviceLocator)
             : base(command, commandManager, serviceLocator)
@@ -142,8 +143,8 @@ namespace PresetMagician
                     _commandManager.ExecuteCommand(Commands.Application.CancelOperation);
                 }
             }
-
-            if (!progress.CancellationToken.IsCancellationRequested)
+            
+            if (!progress.CancellationToken.IsCancellationRequested && !SkipPresetLoading)
             {
                 _applicationService.StartApplicationOperation(this, "Analyzing VST plugins",
                     pluginsToScan.Count);

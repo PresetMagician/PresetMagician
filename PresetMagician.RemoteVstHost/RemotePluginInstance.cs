@@ -163,6 +163,11 @@ namespace PresetMagician.RemoteVstHost
             return IsEditorOpen;
         }
 
+        public float GetParameter(int parameterIndex)
+        {
+            return _remoteVstService.GetParameter(_guid, parameterIndex);
+        }
+
         public void Dispose()
         {
             if (_vstHostProcess.IsRemoteVstServiceAvailable())

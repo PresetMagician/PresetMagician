@@ -18,8 +18,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
         public byte[] PatchName;
 
         public List<WzooBlock> WzooBlocks;
-        public abstract byte[] WzooPluginId { get; }
-
 
         public abstract byte[] BlockMagic { get; }
         public MagicBlock MidiBlock { get; set; }
@@ -74,17 +72,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
 
         public WzooBlock FindBlock(string type)
         {
-            var blockBuffer = new byte[8];
-
-            if (WzooPluginId == null || WzooPluginId.Length != 4)
-            {
-                throw new Exception("WzooPluginId must be length 4");
-            }
-
-            for (var i = 0; i < 4; i++)
-            {
-                blockBuffer[i] = WzooPluginId[i];
-            }
+            var blockBuffer = new byte[4];
 
             var typeBytes = Encoding.ASCII.GetBytes(type);
 
@@ -95,7 +83,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
 
             for (var i = 0; i < 4; i++)
             {
-                blockBuffer[i + 4] = typeBytes[i];
+                blockBuffer[i] = typeBytes[i];
             }
 
             foreach (var block in WzooBlocks)
@@ -147,8 +135,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
             ms.Read(sizeBuffer, 0, 4);
             block.BlockVersion = BigEndian.ToInt32(sizeBuffer, 0);
 
-            ms.Read(block.DeviceType, 0, 8);
-            ms.Read(block.ConfigType, 0, 8);
+            ms.Read(block.DeviceType, 0, 12);
+            ms.Read(block.ConfigType, 0, 4);
 
             var dataLength = block.BlockLength - 24;
             block.BlockData = new byte[dataLength];
@@ -227,12 +215,12 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
 
             if (block == null)
             {
-                throw new Exception("Unable to find parameters block");
+                throw new Exception("Unable to find midi block");
             }
 
             MidiBlock = ParseMagicBlock(block);
         }
-
+        
         public MagicBlock ParseMagicBlock(WzooBlock block)
         {
             var magicBlock = new MagicBlock();

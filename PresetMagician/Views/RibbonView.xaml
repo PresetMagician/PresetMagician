@@ -187,6 +187,12 @@
                             ToolTip="Scans the configured VST directories for new and updated plugin files"
                             Icon="{iconPacks:Modern Kind=Refresh}"
                             Size="Middle" />
+                        <fluent:Button
+                            Command="{catel:CommandManagerBinding Plugin.RemoveSelectedPlugins}"
+                            Header="Remove selected plugin(s)"
+                            ToolTip="Removes the selected plugins from the PresetMagician database"
+                            Icon="{iconPacks:Modern Kind=Delete}"
+                            Size="Middle" />
                     </fluent:RibbonGroupBox>
 
 

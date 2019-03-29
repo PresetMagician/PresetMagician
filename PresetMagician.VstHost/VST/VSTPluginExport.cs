@@ -242,7 +242,6 @@ namespace PresetMagician.VstHost.VST
 
                     var p = WaveFormat.CreateIeeeFloatWaveFormat((int) VstHost.SampleRate, 2);
                     var targetLength = 6;
-                    var noteOffSecond = 1;
                     var loops = (int) VstHost.SampleRate * targetLength / VstHost.BlockSize;
 
                     var writer = new WaveFileWriter(tempFileName, p);
@@ -255,10 +254,6 @@ namespace PresetMagician.VstHost.VST
                     {
                         ctx.PluginCommandStub.ProcessReplacing(inputBuffers, outputBuffers);
                     }
-
-
-                   
-
 
                     for (k = 0; k < loops; k++)
                     {
