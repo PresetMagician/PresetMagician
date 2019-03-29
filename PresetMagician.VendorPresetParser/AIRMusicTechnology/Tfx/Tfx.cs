@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Catel.IO;
 using GSF;
 using PresetMagician.Utils;
-using Catel.IO;
 using Path = Catel.IO.Path;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
+namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
 {
     public abstract class Tfx
     {
@@ -213,12 +213,20 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
         {
             var block = FindBlock("midi");
 
-            if (block == null)
+            if (block != null)
             {
-                throw new Exception("Unable to find midi block");
+                MidiBlock = ParseMagicBlock(block);
+            }
+            else
+            {
+                MidiBlock = new MagicBlock();
+                MidiBlock.BlockMagic = BlockMagic;
+                MidiBlock.BlockData = new byte[0];
+                MidiBlock.PluginName = new byte[0];
+                MidiBlock.IsMagicBlock = false;
             }
 
-            MidiBlock = ParseMagicBlock(block);
+            
         }
         
         public MagicBlock ParseMagicBlock(WzooBlock block)

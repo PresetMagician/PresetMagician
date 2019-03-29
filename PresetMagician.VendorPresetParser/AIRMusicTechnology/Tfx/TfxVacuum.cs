@@ -1,10 +1,10 @@
 using System.IO;
 using System.Linq;
 using Catel.IO;
-using Drachenkatze.PresetMagician.VendorPresetParser.Properties;
 using GSF;
+using PresetMagician.VendorPresetParser.Properties;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
+namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
 {
     public class TfxVacuum : Tfx
     {
@@ -18,7 +18,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
                 ms.Write(PatchName, 0, PatchName.Length);
                 ms.WriteByte(0);
 
-                EndChunk = Resource1.VacuumEndChunk
+                EndChunk = VendorResources.VacuumEndChunk
                     .Concat(ms.ToByteArray()).ToArray();
             }
             
@@ -50,8 +50,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
                     ms.WriteByte(0xFF);
 
                     //add block length
-                    ms.Write(BigEndian.GetBytes(Resource1.VacuumDefaultMidi.Length), 0, 4);
-                    ms.Write(Resource1.VacuumDefaultMidi, 0, Resource1.VacuumDefaultMidi.Length);
+                    ms.Write(BigEndian.GetBytes(VendorResources.VacuumDefaultMidi.Length), 0, 4);
+                    ms.Write(VendorResources.VacuumDefaultMidi, 0, VendorResources.VacuumDefaultMidi.Length);
 
                     //add deadbeef
                     ms.WriteByte(0xDE);

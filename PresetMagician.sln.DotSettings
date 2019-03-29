@@ -11,6 +11,7 @@
 	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=3BA75ABC07FADD4C8746946D6D60939A/RelativePath/@EntryValue">..\..\..\..\Downloads\CatelReSharperCodeTemplates.DotSettings</s:String>
 	<s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File3BA75ABC07FADD4C8746946D6D60939A/@KeyIndexDefined">True</s:Boolean>
 	<s:Double x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File3BA75ABC07FADD4C8746946D6D60939A/RelativePriority/@EntryValue">1</s:Double>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=airtech/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Alignpresets/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Alignpresetspresets/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Amppresets/@EntryIndexedValue">True</s:Boolean>
@@ -102,6 +103,7 @@
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Maximizerpresetspresets/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Melda/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Mikro/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=MINIGRAND/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=MKII/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=mlpreset/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=MMXXX/@EntryIndexedValue">True</s:Boolean>
@@ -173,6 +175,7 @@
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=taldub/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=talmod/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=tbio/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=TESTSETUP/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Togu/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Trackable/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Transformerpresets/@EntryIndexedValue">True</s:Boolean>

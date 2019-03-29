@@ -1,10 +1,10 @@
 using System.IO;
 using System.Linq;
 using Catel.IO;
-using Drachenkatze.PresetMagician.VendorPresetParser.Properties;
 using GSF;
+using PresetMagician.VendorPresetParser.Properties;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
+namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
 {
     public class TfxBoom : Tfx
     {
@@ -18,7 +18,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
                 ms.Write(PatchName, 0, PatchName.Length);
                 ms.WriteByte(0);
 
-                EndChunk = Resource1.BoomEndChunk
+                EndChunk = VendorResources.BoomEndChunk
                     .Concat(ms.ToByteArray()).ToArray();
             }
         }

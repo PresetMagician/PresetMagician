@@ -6,16 +6,15 @@ using PresetMagician.VendorPresetParser.Properties;
 
 namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
 {
-    public class TfxDb33 : Tfx
+    public class TfxDb33Fx : Tfx
     {
         public override byte[] BlockMagic { get; }=  {0x06, 0x15, 0xc1, 0x28};
 
         public override void PostProcess()
         {
-            if (Parameters.Count == 32)
+            for (var i = 0; i < 18; i++)
             {
-                Parameters.RemoveAt(19);
-                Parameters[19] = Parameters[1];
+                Parameters.RemoveAt(0);
             }
             using (var ms = new MemoryStream())
             {
@@ -23,7 +22,7 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
                 ms.Write(PatchName, 0, PatchName.Length);
                 ms.WriteByte(0);
 
-                EndChunk = VendorResources.Db33EndChunk
+                EndChunk = VendorResources.Db33FxEndChunk
                     .Concat(ms.ToByteArray()).ToArray();
             }
 
@@ -32,10 +31,12 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
 
         public override byte[] GetBlockDataToWrite()
         {
+            
+            
             if (!MidiBlock.IsMagicBlock)
             {
                 MidiBlock.PluginName = new byte[]
-                    {0x00, 0x44, 0x00, 0x42, 0x00, 0x2d, 0x00, 0x33, 0x00, 0x33};
+                    {0x00, 0x44, 0x00, 0x42, 0x00, 0x2d, 0x00, 0x33, 0x00, 0x33,0x00,0x46,0x00,0x58};
                 MidiBlock.IsMagicBlock = true;
 
                 using (var ms = new MemoryStream())
@@ -53,8 +54,8 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
                     ms.WriteByte(0xFF);
 
                     //add block length
-                    ms.Write(BigEndian.GetBytes(VendorResources.Db33DefaultMidi.Length), 0, 4);
-                    ms.Write(VendorResources.Db33DefaultMidi, 0, VendorResources.Db33DefaultMidi.Length);
+                    ms.Write(BigEndian.GetBytes(VendorResources.Db33FxDefaultMidi.Length), 0, 4);
+                    ms.Write(VendorResources.Db33FxDefaultMidi, 0, VendorResources.Db33FxDefaultMidi.Length);
 
                     //add deadbeef
                     ms.WriteByte(0xDE);
@@ -65,8 +66,7 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
                     MidiBlock.BlockData = ms.ToByteArray();
                 }
             }
-
-
+            
             var data = WzooBlock.GetDataToWrite().Concat(MidiBlock.GetDataToWrite()).ToArray();
             return data;
         }

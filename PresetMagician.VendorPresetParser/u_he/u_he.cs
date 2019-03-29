@@ -5,10 +5,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Catel.Collections;
-using Drachenkatze.PresetMagician.Utils;
 using PresetMagician.Core.Models;
 using PresetMagician.Utils;
-using Squirrel.Shell;
 using Type = PresetMagician.Core.Models.Type;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he

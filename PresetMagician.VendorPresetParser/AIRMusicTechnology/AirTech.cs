@@ -3,11 +3,11 @@ using Drachenkatze.PresetMagician.VendorPresetParser.Common;
 using Microsoft.Win32;
 using PresetMagician.Core.Models;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology
+namespace PresetMagician.VendorPresetParser.AIRMusicTechnology
 {
     public abstract class AirTech: RecursiveBankDirectoryParser
     {
-        public string GetContentRegistryValue(string key, string name)
+        protected string GetContentRegistryValue(string key, string name)
         {
             using (RegistryKey regKey = Registry.CurrentUser.OpenSubKey(key))
             {
@@ -33,7 +33,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology
             }
         }
 
-        public (string directory, string filename) GetSplittedParseFile(string fileName)
+        private (string directory, string filename) GetSplittedParseFile(string fileName)
         {
             var parseDirectories = GetParseDirectories();
             var patchDirectory = "";

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.Properties {
+namespace PresetMagician.VendorPresetParser.Properties {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resource1 {
+    internal class VendorResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resource1() {
+        internal VendorResources() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Drachenkatze.PresetMagician.VendorPresetParser.Properties.Resource1", typeof(Resource1).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PresetMagician.VendorPresetParser.Properties.VendorResources", typeof(VendorResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -86,6 +86,26 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Properties {
         internal static byte[] Db33EndChunk {
             get {
                 object obj = ResourceManager.GetObject("Db33EndChunk", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Db33FxDefaultMidi {
+            get {
+                object obj = ResourceManager.GetObject("Db33FxDefaultMidi", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Db33FxEndChunk {
+            get {
+                object obj = ResourceManager.GetObject("Db33FxEndChunk", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -179,6 +199,16 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Properties {
         internal static byte[] VacuumProEndChunk {
             get {
                 object obj = ResourceManager.GetObject("VacuumProEndChunk", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] VelvetEndChunk {
+            get {
+                object obj = ResourceManager.GetObject("VelvetEndChunk", resourceCulture);
                 return ((byte[])(obj));
             }
         }
