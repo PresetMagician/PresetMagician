@@ -5,15 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Drachenkatze.PresetMagician.Utils;
-using Drachenkatze.PresetMagician.VendorPresetParser.Properties;
+using Drachenkatze.PresetMagician.VendorPresetParser;
 using JetBrains.Annotations;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.Utils;
+using PresetMagician.VendorPresetParser.Properties;
 using Type = PresetMagician.Core.Models.Type;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.Spectrasonics
+namespace PresetMagician.VendorPresetParser.Spectrasonics
 {
 // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
@@ -81,7 +81,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Spectrasonics
             {
                 var presetData = Encoding.ASCII.GetString(library.GetFileContent(patch));
 
-                var template = Resource1.OmnispherePatchTemplate;
+                var template = VendorResources.OmnispherePatchTemplate;
                 presetData = presetData.Replace("<AmberPart >", "");
                 presetData = presetData.Replace("<AmberPart>", "");
                 presetData = presetData.Replace("</AmberPart>", "");

@@ -1,12 +1,10 @@
 using System;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Windows.Controls;
-using Drachenkatze.PresetMagician.VendorPresetParser.Properties;
+using PresetMagician.VendorPresetParser.Properties;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
+namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
 {
     public class TfxHybrid3 : Tfx
     {
@@ -24,39 +22,15 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
                 ms2.Seek(5556, SeekOrigin.Begin);
 
                 var pos = ms2.Position;
-                var end = 0;
-                var found = true;
-                while (true)
+
+                for (var i = pos; i < pos + 1024; i++)
                 {
-                    if (ms2.ReadByte() == 0)
-                    {
-                        break;
-                    }
-
-                    if (end + pos >= ms2.Length)
-                    {
-                        found = false;
-                        break;
-                    }
-
-                    end++;
+                    WzooBlock.BlockData[i] = 0;
                 }
 
-                if (found)
+                for (var i = 0; i < PatchName.Length; i++)
                 {
-                    for (var i = pos; i < pos + end; i++)
-                    {
-                        WzooBlock.BlockData[i] = 0;
-                    }
-
-                    for (var i = 0; i < PatchName.Length; i++)
-                    {
-                        WzooBlock.BlockData[pos + i] = PatchName[i];
-                    }
-                }
-                else
-                {
-                    throw new Exception("end of preset name not found");
+                    WzooBlock.BlockData[pos + i] = PatchName[i];
                 }
             }
             else if (WzooBlock.BlockData.Length == 5080)
@@ -80,7 +54,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
                 Parameters[239] = MigratePitchModSource(Parameters[239]);
                 Parameters[245] = MigratePitchModSource(Parameters[245]);
                 Parameters[252] = MigratePitchModSource(Parameters[252]);
-                
+
                 Parameters.Insert(291, 0);
                 Parameters.Insert(292, 0);
                 Parameters.Insert(293, 0.7);
@@ -114,7 +88,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
                 Parameters[321] = 0.6;
                 Parameters[322] = 0.1;
                 Parameters[323] = 0.5;
-                
+
                 Parameters[334] = MigratePitchModSource(Parameters[334]);
                 Parameters[441] = MigratePitchModSource(Parameters[441]);
                 Parameters[442] = MigratePitchModSource(Parameters[442]);
@@ -134,7 +108,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
                 Parameters[558] = MigratePitchModSource(Parameters[558]);
                 Parameters[564] = MigratePitchModSource(Parameters[564]);
                 Parameters[571] = MigratePitchModSource(Parameters[571]);
-                
+
                 Parameters.Insert(610, 0);
                 Parameters.Insert(611, 0);
                 Parameters.Insert(612, 0.7);
@@ -168,13 +142,13 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
                 Parameters[640] = 0.6;
                 Parameters[641] = 0.1;
                 Parameters[642] = 0.5;
-              
-                var buf1 = new byte[2532+12];
+
+                var buf1 = new byte[2532 + 12];
                 var buf2 = new byte[2532];
                 var buf3 = new byte[1028];
                 ms2.Seek(0, SeekOrigin.Begin);
 
-                ms2.Read(buf1, 0, 2532+12);
+                ms2.Read(buf1, 0, 2532 + 12);
                 ms2.Read(buf2, 0, 2532);
 
                 using (var msbuf1 = new MemoryStream())
@@ -195,7 +169,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
 
                     buf1 = msbuf1.ToArray();
                 }
-                
+
                 using (var msbuf2 = new MemoryStream())
                 {
                     msbuf2.Write(buf2, 0, buf2.Length);
@@ -214,22 +188,20 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
                     {
                         msbuf3.WriteByte(PatchName[i]);
                     }
-                    
-                    for (var i=0;i<1024-PatchName.Length;i++)
+
+                    for (var i = 0; i < 1024 - PatchName.Length; i++)
                     {
                         msbuf3.WriteByte(0x00);
                     }
-                    
+
                     msbuf3.WriteByte(0xDE);
                     msbuf3.WriteByte(0xAD);
                     msbuf3.WriteByte(0xBE);
                     msbuf3.WriteByte(0xEF);
 
                     buf3 = msbuf3.ToArray();
-
                 }
 
-                
 
                 WzooBlock.BlockData = buf1.Concat(buf2).Concat(buf3).ToArray();
             }
@@ -238,12 +210,12 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
                 throw new Exception("Unknown block length");
             }
 
-            EndChunk = Resource1.Hybrid3EndChunk;
+            EndChunk = VendorResources.Hybrid3EndChunk;
         }
 
         private double MigratePitchModSource(double value)
         {
-            var roundedValue = value.ToString("F2", 
+            var roundedValue = value.ToString("F2",
                 CultureInfo.InvariantCulture);
 
             switch (roundedValue)

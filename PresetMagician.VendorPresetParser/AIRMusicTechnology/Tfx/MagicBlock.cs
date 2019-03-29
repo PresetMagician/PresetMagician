@@ -2,7 +2,7 @@ using System.IO;
 using Catel.IO;
 using GSF;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
+namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
 {
     public class MagicBlock
     {

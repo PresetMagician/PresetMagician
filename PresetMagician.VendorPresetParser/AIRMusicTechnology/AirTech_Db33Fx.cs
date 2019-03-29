@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
 using Catel.IO;
-using Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx;
-using Drachenkatze.PresetMagician.VendorPresetParser.Common;
 using JetBrains.Annotations;
 using PresetMagician.Core.Interfaces;
-using PresetMagician.Core.Models;
+using PresetMagician.VendorPresetParser.AIRMusicTechnology;
+using PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology
 {
@@ -26,9 +25,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology
                 @"AIR Music Technology\DB-33FX\Presets");
         }
 
-        protected override Tfx.Tfx GetTfxParser()
+        protected override Tfx GetTfxParser()
         {
-            return new TfxDb33();
+            return new TfxDb33Fx();
         }
     }
 }

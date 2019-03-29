@@ -1,7 +1,7 @@
 using System.IO;
-using Drachenkatze.PresetMagician.VendorPresetParser.Properties;
+using PresetMagician.VendorPresetParser.Properties;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
+namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
 {
     public class TfxLoom : Tfx
     {
@@ -35,7 +35,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
             }
 
 
-            EndChunk = Resource1.LoomClassicEndChunk;
+            EndChunk = VendorResources.LoomClassicEndChunk;
         }
     }
 }

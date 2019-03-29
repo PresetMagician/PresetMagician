@@ -7,13 +7,14 @@ using System.ServiceModel;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Catel.IoC;
-using Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx;
 using GSF;
 using PresetMagician;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
 using PresetMagician.Utils.Logger;
+using PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx;
 using PresetMagician.VstHost.VST;
+using PresetMagicianScratchPad.Stuff;
 
 namespace PresetMagicianScratchPad
 {
@@ -22,7 +23,10 @@ namespace PresetMagicianScratchPad
         [STAThread]
         static void Main(string[] args)
         {
-            TestAirMusicStuff();
+            AirMusicTech.ConvertFiles(AirMusicTech.TESTSETUP_VELVET);
+            
+            
+            //AirMusicTech.TestLoadInPlugin(AirMusicTech.TESTSETUP_HYBRID);
 
             /*var culture = new System.Globalization.CultureInfo("en-US");
             Thread.CurrentThread.CurrentCulture = culture;
@@ -71,6 +75,8 @@ namespace PresetMagicianScratchPad
             } */
 
         }
+        
+        
 
         public static void CompareStuff()
         {
@@ -105,62 +111,8 @@ namespace PresetMagicianScratchPad
             }
         }
 
-        public static void TestAirMusicStuff()
-        {
-                var _serviceLocator = ServiceLocator.Default;
+        
 
-            FrontendInitializer.RegisterTypes(_serviceLocator);
-            FrontendInitializer.Initialize(_serviceLocator);
-
-            var pluginDll = @"C:\Program Files\Steinberg\VstPlugins\MiniGrand.dll";
-            var content = @"C:\ProgramData\AIR Music Technology\Vacuum\Presets";
-            var outputFile = @"C:\Users\Drachenkatze\Desktop\output.bin";
-            var hexEditor = @"C:\Users\Drachenkatze\AppData\Local\HHD Software\Hex Editor Neo\HexFrame.exe";
-            
-
-            var remoteVstService = _serviceLocator.ResolveType<RemoteVstService>();
-
-            var plugin = new Plugin();
-            plugin.PluginLocation = new PluginLocation();
-            plugin.PluginLocation.DllPath = pluginDll;
-
-            var pluginInstance = remoteVstService.GetInteractivePluginInstance(plugin, false);
-
-            pluginInstance.LoadPlugin().Wait();
-            var x = new List<double>();
-            foreach (var file in Directory.EnumerateFiles(content, "*.tfx", SearchOption.AllDirectories))
-            {
-                Debug.WriteLine(file);
-                var parser = new TfxVacuum();
-                var fileName = file.Replace(content + "\\", "");
-               
-                    parser.Parse(content, fileName);
-
-                    //Debug.WriteLine("num parameters: " + parser.Parameters.Count);
-
-                    if (parser.Parameters.Count == 627)
-                    {
-                        var p = Math.Round(parser.Parameters[15], 6);
-                        if (!x.Contains(p))
-                        {
-                            Debug.WriteLine(file + " " + p);
-                            x.Add(p);
-                        }
-                    }
-                    var data = parser.GetDataToWrite();
-                    File.WriteAllBytes(outputFile, data);
-                    break;
-                if (file == @"C:\Program Files (x86)\AIR Music Technology\Hybrid\Presets\06 Bright Pads\25 Open Up.tfx")
-                {
-                    return;
-                }
-            }
-
-            x.Sort();
-            foreach (var i in x)
-            {
-                Debug.WriteLine(i);
-            }
-        }
+        
     }
 }

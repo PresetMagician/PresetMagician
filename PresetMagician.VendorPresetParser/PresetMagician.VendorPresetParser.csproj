@@ -12,7 +12,7 @@
     <ProjectGuid>{3F01003F-9E52-4F4D-A5FD-ECDD9017C048}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Drachenkatze.PresetMagician.VendorPresetParser</RootNamespace>
+    <RootNamespace>PresetMagician.VendorPresetParser</RootNamespace>
     <AssemblyName>PresetMagician.VendorPresetParser</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -69,6 +69,7 @@
     <Compile Include="AIRMusicTechnology\Tfx\Tfx.cs" />
     <Compile Include="AIRMusicTechnology\Tfx\TfxBoom.cs" />
     <Compile Include="AIRMusicTechnology\Tfx\TfxDb33.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxDb33Fx.cs" />
     <Compile Include="AIRMusicTechnology\Tfx\TfxHybrid3.cs" />
     <Compile Include="AIRMusicTechnology\Tfx\TfxLoom.cs" />
     <Compile Include="AIRMusicTechnology\Tfx\TfxMiniGrand.cs" />
@@ -275,10 +276,10 @@
     <Compile Include="MeldaProduction\MeldaProduction_MWobbler.cs" />
     <Compile Include="MeldaProduction\MeldaProduction_MWobblerMB.cs" />
     <Compile Include="MeldaProduction\MeldaProduction_MXXX.cs" />
-    <Compile Include="Properties\Resource1.Designer.cs">
+    <Compile Include="Properties\VendorResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Resource1.resx</DependentUpon>
+      <DependentUpon>VendorResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Spectrasonics\Spectrasonics_Omnisphere.cs" />
     <Compile Include="VendorPresetParserInitializer.cs" />
@@ -403,19 +404,24 @@
     <Content Include="Resources\AIRMusicTechnology\BoomEndChunk.bin" />
     <Content Include="Resources\AIRMusicTechnology\Db33DefaultMidi.airMIDI" />
     <Content Include="Resources\AIRMusicTechnology\Db33EndChunk.bin" />
+    <Content Include="Resources\AIRMusicTechnology\Db33FxDefaultMidi.airMIDI" />
+    <Content Include="Resources\AIRMusicTechnology\Db33FxEndChunk.bin" />
     <Content Include="Resources\AIRMusicTechnology\Hybrid3EndChunk.bin" />
     <Content Include="Resources\AIRMusicTechnology\LoomClassicEndChunk.bin" />
+    <Content Include="Resources\AIRMusicTechnology\MiniGrandDefaultMidi.airMIDI" />
     <Content Include="Resources\AIRMusicTechnology\MiniGrandEndChunk.bin" />
     <Content Include="Resources\AIRMusicTechnology\TheRiserEndChunk.bin" />
+    <Content Include="Resources\AIRMusicTechnology\VacuumDefaultMidi.airMIDI" />
     <Content Include="Resources\AIRMusicTechnology\VacuumEndChunk.bin" />
     <Content Include="Resources\AIRMusicTechnology\VacuumProEndChunk.bin" />
+    <Content Include="Resources\AIRMusicTechnology\VelvetEndChunk.bin" />
     <Content Include="Resources\AIRMusicTechnology\Xpand2DefaultMidi.airMIDI" />
     <Content Include="Resources\AIRMusicTechnology\Xpand2EndChunk.bin" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Properties\Resource1.resx">
+    <EmbeddedResource Include="Properties\VendorResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
+      <LastGenOutput>VendorResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>

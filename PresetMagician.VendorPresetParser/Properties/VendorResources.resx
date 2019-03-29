@@ -148,6 +148,9 @@
   <data name="MiniGrandEndChunk" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\AIRMusicTechnology\MiniGrandEndChunk.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
+  <data name="Db33FxEndChunk" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AIRMusicTechnology\Db33FxEndChunk.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
   <data name="Xpand2DefaultMidi" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\AIRMusicTechnology\Xpand2DefaultMidi.airMIDI;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
@@ -160,6 +163,11 @@
   <data name="VacuumDefaultMidi" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\AIRMusicTechnology\VacuumDefaultMidi.airMIDI;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-
+  <data name="Db33FxDefaultMidi" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AIRMusicTechnology\Db33FxDefaultMidi.airMIDI;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="VelvetEndChunk" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AIRMusicTechnology\VelvetEndChunk.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data> 
   
 </root>

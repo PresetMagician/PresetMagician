@@ -1,6 +1,6 @@
-using Drachenkatze.PresetMagician.VendorPresetParser.Properties;
+using PresetMagician.VendorPresetParser.Properties;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
+namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
 {
     public class TfxTheRiser : Tfx
     {
@@ -10,7 +10,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
         {
 
 
-            EndChunk = Resource1.TheRiserEndChunk;
+            EndChunk = VendorResources.TheRiserEndChunk;
         }
     }
 
