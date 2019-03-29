@@ -9,7 +9,7 @@ using PresetMagician.Core.Models;
 using PresetMagician.Utils;
 using Type = PresetMagician.Core.Models.Type;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
+namespace PresetMagician.VendorPresetParser.u_he
 {
     public abstract class u_he : AbstractVendorPresetParser
     {

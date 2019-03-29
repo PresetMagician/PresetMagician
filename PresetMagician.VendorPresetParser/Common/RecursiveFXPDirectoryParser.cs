@@ -1,7 +1,7 @@
 using Drachenkatze.PresetMagician.Utils;
 using PresetMagician.Core.Models;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
+namespace PresetMagician.VendorPresetParser.Common
 {
     public abstract class RecursiveFXPDirectoryParser : RecursiveBankDirectoryParser
     {

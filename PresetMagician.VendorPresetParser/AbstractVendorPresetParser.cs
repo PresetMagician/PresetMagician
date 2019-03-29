@@ -7,7 +7,7 @@ using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser
+namespace PresetMagician.VendorPresetParser
 {
     public abstract partial class AbstractVendorPresetParser
     {

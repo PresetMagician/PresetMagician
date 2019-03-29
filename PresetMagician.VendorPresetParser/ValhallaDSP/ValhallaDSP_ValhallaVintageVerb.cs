@@ -4,7 +4,7 @@ using System.IO;
 using JetBrains.Annotations;
 using PresetMagician.Core.Interfaces;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.ValhallaDSP
+namespace PresetMagician.VendorPresetParser.ValhallaDSP
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]

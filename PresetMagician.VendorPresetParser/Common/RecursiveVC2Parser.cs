@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using GSF;
 using PresetMagician.Core.Models;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
+namespace PresetMagician.VendorPresetParser.Common
 {
     public abstract class RecursiveVC2Parser : RecursiveBankDirectoryParser
     {

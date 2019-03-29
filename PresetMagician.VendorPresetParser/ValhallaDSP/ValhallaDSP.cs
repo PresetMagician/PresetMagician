@@ -1,6 +1,6 @@
-using Drachenkatze.PresetMagician.VendorPresetParser.Common;
+using PresetMagician.VendorPresetParser.Common;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.ValhallaDSP
+namespace PresetMagician.VendorPresetParser.ValhallaDSP
 {
     public abstract class ValhallaDSP : RecursiveVC2Parser
     {

@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using PresetMagician.Core.Services;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser
+namespace PresetMagician.VendorPresetParser
 {
     /// <summary>
     /// Used by the ModuleInit. All code inside the Initialize method is ran as soon as the assembly is loaded.

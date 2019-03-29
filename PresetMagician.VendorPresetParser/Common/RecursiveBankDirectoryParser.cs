@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using PresetMagician.Core.Models;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
+namespace PresetMagician.VendorPresetParser.Common
 {
     public abstract class RecursiveBankDirectoryParser : AbstractVendorPresetParser
     {

@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Drachenkatze.PresetMagician.VendorPresetParser.Common;
+using PresetMagician.VendorPresetParser.Common;
 using JetBrains.Annotations;
 using PresetMagician.Core.Interfaces;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.Xfer_Records
+namespace PresetMagician.VendorPresetParser.Xfer_Records
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]

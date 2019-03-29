@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital;
+using PresetMagician.VendorPresetParser.SlateDigital;
 using JetBrains.Annotations;
 using PresetMagician.Core.Interfaces;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.Eiosis
+namespace PresetMagician.VendorPresetParser.Eiosis
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]

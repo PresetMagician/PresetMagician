@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
+namespace PresetMagician.VendorPresetParser.AudioThing
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]

@@ -1,5 +1,5 @@
 using System;
-using Drachenkatze.PresetMagician.VendorPresetParser.Common;
+using PresetMagician.VendorPresetParser.Common;
 using Microsoft.Win32;
 using PresetMagician.Core.Models;
 
