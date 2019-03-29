@@ -1,12 +1,12 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Drachenkatze.PresetMagician.VendorPresetParser.Common;
+using PresetMagician.VendorPresetParser.Common;
 using GSF.Collections;
 using ICSharpCode.SharpZipLib.Zip.Compression;
 using PresetMagician.Core.Models;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.DmitrySches
+namespace PresetMagician.VendorPresetParser.DmitrySches
 {
     public abstract class DmitrySchesPresetParser : RecursiveBankDirectoryParser
     {

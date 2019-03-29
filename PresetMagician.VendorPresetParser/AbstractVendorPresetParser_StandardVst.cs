@@ -4,7 +4,7 @@ using Drachenkatze.PresetMagician.Utils;
 using Jacobi.Vst.Core;
 using PresetMagician.Core.Models;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser
+namespace PresetMagician.VendorPresetParser
 {
     public partial class AbstractVendorPresetParser
     {

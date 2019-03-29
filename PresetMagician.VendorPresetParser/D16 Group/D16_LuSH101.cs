@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Drachenkatze.PresetMagician.VendorPresetParser.Common;
+using PresetMagician.VendorPresetParser.Common;
 using JetBrains.Annotations;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
+namespace PresetMagician.VendorPresetParser.D16_Group
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]

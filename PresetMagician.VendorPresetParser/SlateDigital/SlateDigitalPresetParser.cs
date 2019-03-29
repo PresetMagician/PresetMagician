@@ -3,10 +3,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.XPath;
-using Drachenkatze.PresetMagician.VendorPresetParser.Common;
+using PresetMagician.VendorPresetParser.Common;
 using PresetMagician.Core.Models;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
+namespace PresetMagician.VendorPresetParser.SlateDigital
 {
     public abstract class SlateDigitalPresetParser : RecursiveBankDirectoryParser
     {

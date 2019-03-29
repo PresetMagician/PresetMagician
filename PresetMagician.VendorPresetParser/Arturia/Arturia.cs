@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using GSF;
 using PresetMagician.Core.Models;
 using SQLite;
-using ArturiaModels = Drachenkatze.PresetMagician.VendorPresetParser.Arturia.Models;
+using ArturiaModels = PresetMagician.VendorPresetParser.Arturia.Models;
 using Type = PresetMagician.Core.Models.Type;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
+namespace PresetMagician.VendorPresetParser.Arturia
 {
     public abstract class Arturia : AbstractVendorPresetParser
     {

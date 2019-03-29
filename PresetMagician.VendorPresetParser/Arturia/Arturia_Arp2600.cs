@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using PresetMagician.Core.Interfaces;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia
+namespace PresetMagician.VendorPresetParser.Arturia
 {
     [UsedImplicitly]
     public class Arturia_Arp2600 : Arturia, IVendorPresetParser

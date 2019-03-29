@@ -6,7 +6,7 @@ using PresetMagician.Core.Interfaces;
 using PresetMagician.VendorPresetParser.AIRMusicTechnology;
 using PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology
+namespace PresetMagician.VendorPresetParser.AIRMusicTechnology
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
@@ -25,7 +25,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology
                 @"AIR Music Technology\Hybrid\Presets");
         }
 
-        protected override Tfx GetTfxParser()
+        protected override Tfx.Tfx GetTfxParser()
         {
             return new TfxHybrid3();
         }

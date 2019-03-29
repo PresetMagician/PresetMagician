@@ -1,6 +1,6 @@
 using SQLite;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia.Models
+namespace PresetMagician.VendorPresetParser.Arturia.Models
 {
     [Table("Preset_Characteristics", WithoutRowId = true)]
     internal class PresetCharacteristic

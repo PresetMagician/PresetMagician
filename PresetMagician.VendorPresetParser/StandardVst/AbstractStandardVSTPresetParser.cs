@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
+namespace PresetMagician.VendorPresetParser.StandardVST
 {
     public abstract class AbstractStandardVstPresetParser : AbstractVendorPresetParser
     {

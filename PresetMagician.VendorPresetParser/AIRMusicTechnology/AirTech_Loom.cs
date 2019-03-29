@@ -7,7 +7,7 @@ using PresetMagician.Core.Models;
 using PresetMagician.VendorPresetParser.AIRMusicTechnology;
 using PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology
+namespace PresetMagician.VendorPresetParser.AIRMusicTechnology
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
@@ -38,7 +38,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology
             throw new NotImplementedException();
         }
 
-        protected override Tfx GetTfxParser()
+        protected override Tfx.Tfx GetTfxParser()
         {
             return new TfxLoom();
         }

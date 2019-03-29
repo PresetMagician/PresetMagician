@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using PresetMagician.Core.Models;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
+namespace PresetMagician.VendorPresetParser.MeldaProduction
 {
     public abstract class MeldaProduction : AbstractVendorPresetParser
     {
