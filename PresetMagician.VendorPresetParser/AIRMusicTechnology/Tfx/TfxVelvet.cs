@@ -7,10 +7,9 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
 {
     public class TfxVelvet : Tfx
     {
-        public override byte[] BlockMagic { get; }=  {0x00, 0x00, 0x1f, 0xd6};
-
         private static readonly int EXPECTED_NUM_PARAMETERS = 109;
-            
+        public override byte[] BlockMagic { get; } = {0x00, 0x00, 0x1f, 0xd6};
+
         public override void PostProcess()
         {
             if (Parameters.Count > EXPECTED_NUM_PARAMETERS)
@@ -54,7 +53,6 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
                     msbuf3.Write(subBlockData, 0, subBlockData.Length);
 
 
-
                     msbuf3.WriteByte(0xDE);
                     msbuf3.WriteByte(0xAD);
                     msbuf3.WriteByte(0xBE);
@@ -65,9 +63,7 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
             }
 
 
-
             EndChunk = VendorResources.VelvetEndChunk;
         }
     }
-
 }

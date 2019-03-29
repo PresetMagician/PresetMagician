@@ -9,11 +9,10 @@ namespace PresetMagician.VendorPresetParser.D16_Group
     [UsedImplicitly]
     public class D16_Repeater : D16Group, IVendorPresetParser
     {
-        protected override string XmlPluginName { get; } = "Repeater";
-        protected override string Extension { get; } = ".rpprs";
-
         private const string FactoryBankPath = @"D16 Group\Repeater\Presets\FactoryPresets.d16pkg";
         private const string UserBankPath = @"D16 Group\Repeater\UserStore\Presets\";
+        protected override string XmlPluginName { get; } = "Repeater";
+        protected override string Extension { get; } = ".rpprs";
 
         public override List<int> SupportedPlugins => new List<int> {1380988728};
 

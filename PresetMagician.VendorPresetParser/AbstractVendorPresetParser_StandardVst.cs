@@ -8,10 +8,6 @@ namespace PresetMagician.VendorPresetParser
 {
     public partial class AbstractVendorPresetParser
     {
-        protected readonly List<string> PresetHashes = new List<string>();
-
-        protected PresetSaveModes PresetSaveMode = PresetSaveModes.NotYetDetermined;
-
         public enum PresetSaveModes
         {
             // Default mode, just serialize the full bank. Active program is stored within the full bank
@@ -29,6 +25,10 @@ namespace PresetMagician.VendorPresetParser
             // Not yet checked
             NotYetDetermined = 4
         }
+
+        protected readonly List<string> PresetHashes = new List<string>();
+
+        protected PresetSaveModes PresetSaveMode = PresetSaveModes.NotYetDetermined;
 
 
         protected int GetAdditionalBanksPresetCount()
@@ -201,7 +201,7 @@ namespace PresetMagician.VendorPresetParser
                 return;
             }
 
-            for (int index = start; index < endIndex; index++)
+            for (var index = start; index < endIndex; index++)
             {
                 PluginInstance.SetProgram(0);
                 var programBackup = PluginInstance.GetChunk(true);
@@ -216,7 +216,7 @@ namespace PresetMagician.VendorPresetParser
                 };
 
 
-                byte[] realProgram = PluginInstance.GetChunk(true);
+                var realProgram = PluginInstance.GetChunk(true);
                 PluginInstance.SetProgram(0);
 
                 PluginInstance.SetChunk(realProgram, true);
@@ -249,7 +249,7 @@ namespace PresetMagician.VendorPresetParser
             {
                 PresetSaveMode = PresetSaveModes.None;
                 PluginInstance.Plugin.Logger.Info(
-                    $"Unknown plugin type, setting preset save mode to none");
+                    "Unknown plugin type, setting preset save mode to none");
                 return;
             }
 
@@ -257,7 +257,7 @@ namespace PresetMagician.VendorPresetParser
             {
                 PresetSaveMode = PresetSaveModes.None;
                 PluginInstance.Plugin.Logger.Info(
-                    $"Plugin does not support program chunks, setting preset save mode to none");
+                    "Plugin does not support program chunks, setting preset save mode to none");
                 return;
             }
 
@@ -278,7 +278,7 @@ namespace PresetMagician.VendorPresetParser
                 {
                     PresetSaveMode = PresetSaveModes.Fallback;
                     PluginInstance.Plugin.Logger.Info(
-                        $"Using preset save mode fallback");
+                        "Using preset save mode fallback");
                     return;
                 }
 
@@ -290,7 +290,7 @@ namespace PresetMagician.VendorPresetParser
                                                        ": current program is stored in the bank chunk");
                     PresetSaveMode = PresetSaveModes.FullBank;
                     PluginInstance.Plugin.Logger.Info(
-                        $"Using preset save mode full bank");
+                        "Using preset save mode full bank");
                     return;
 
                     // Perfect, just put out the full bank chunk. Nothing to do here.
@@ -306,24 +306,24 @@ namespace PresetMagician.VendorPresetParser
                                                            ": program chunks are consistent");
                         PresetSaveMode = PresetSaveModes.BankTrickery;
                         PluginInstance.Plugin.Logger.Info(
-                            $"Using preset save mode bank trickery");
+                            "Using preset save mode bank trickery");
                         return;
                     }
 
                     PresetSaveMode = PresetSaveModes.Fallback;
                     PluginInstance.Plugin.Logger.Info(
-                        $"Using preset save mode fallback");
+                        "Using preset save mode fallback");
                     return;
                 }
 
                 PresetSaveMode = PresetSaveModes.None;
                 PluginInstance.Plugin.Logger.Info(
-                    $"Using preset save mode none");
+                    "Using preset save mode none");
                 return;
             }
 
             PluginInstance.Plugin.Logger.Info(
-                $"Plugin reported a program count of 0 or 1, using preset save mode none");
+                "Plugin reported a program count of 0 or 1, using preset save mode none");
             PresetSaveMode = PresetSaveModes.None;
         }
 
@@ -365,13 +365,13 @@ namespace PresetMagician.VendorPresetParser
                 return false;
             }
 
-            string firstPresetHash =
+            var firstPresetHash =
                 HashUtils.getIxxHash(chunk);
 
             PluginInstance.Plugin.Logger.Debug(PluginInstance.Plugin.PluginName + ": hash for program 0 is " +
                                                firstPresetHash);
 
-            for (int i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
                 PluginInstance.SetProgram(0);
                 chunk = PluginInstance.GetChunk(isPreset);

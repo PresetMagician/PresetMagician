@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using PresetMagician.VendorPresetParser;
 using JetBrains.Annotations;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
@@ -19,26 +18,26 @@ namespace PresetMagician.VendorPresetParser.Spectrasonics
     [UsedImplicitly]
     public class Spectrasonics_Omnisphere : AbstractVendorPresetParser, IVendorPresetParser
     {
-        public const string LIBRARYTYPE_MULTIS = "Multis";
-        public const string LIBRARYTYPE_PATCHES = "Patches";
-        public const string FILESYSTEM_TAG = "FileSystem";
-        public const string FILESYSTEM_START_TAG = "<" + FILESYSTEM_TAG + ">";
-        public const string FILESYSTEM_END_TAG = "</" + FILESYSTEM_TAG + ">";
-        public const string DIR_TAG = "DIR";
-        public const string FILE_TAG = "FILE";
-        public const string XML_TAG = "<?xml version=\"1.0\"?>";
+        private const string LIBRARYTYPE_MULTIS = "Multis";
+        private const string LIBRARYTYPE_PATCHES = "Patches";
+        private const string FILESYSTEM_TAG = "FileSystem";
+        private const string FILESYSTEM_START_TAG = "<" + FILESYSTEM_TAG + ">";
+        private const string FILESYSTEM_END_TAG = "</" + FILESYSTEM_TAG + ">";
+        private const string DIR_TAG = "DIR";
+        private const string FILE_TAG = "FILE";
+        private const string XML_TAG = "<?xml version=\"1.0\"?>";
         public const string PATCH_EXTENSION = ".prt_omn";
         public const string MULTI_EXTENSION = ".mlt_omn";
         public const string MULTI_INDEXFILE = "mlt_omn.index";
         public const string PATCH_INDEXFILE = "prt_omn.index";
-        
-        public override List<int> SupportedPlugins => new List<int> {1097687666};
 
-        private readonly Dictionary<string, OmnisphereLibrary> OmnisphereLibraryCache =
+        private readonly Dictionary<string, OmnisphereLibrary> _omnisphereLibraryCache =
             new Dictionary<string, OmnisphereLibrary>();
 
-        private readonly Dictionary<string, OmnisphereUserLibrary> OmnisphereUserLibraryCache =
+        private readonly Dictionary<string, OmnisphereUserLibrary> _omnisphereUserLibraryCache =
             new Dictionary<string, OmnisphereUserLibrary>();
+
+        public override List<int> SupportedPlugins => new List<int> {1097687666};
 
         public override void Init()
         {
@@ -57,6 +56,19 @@ namespace PresetMagician.VendorPresetParser.Spectrasonics
             await base.DoScan();
         }
 
+        public override int GetNumPresets()
+        {
+            var count = 0;
+
+            foreach (var library in GetLibraries())
+            {
+                count += library.GetMultis().Count;
+                count += library.GetPatches().Count;
+            }
+
+            return base.GetNumPresets() + count;
+        }
+
         public async Task DoLibraryScan(OmnisphereLibrary library)
         {
             library.BuildMetadata();
@@ -65,15 +77,16 @@ namespace PresetMagician.VendorPresetParser.Spectrasonics
                 var presetData = library.GetFileContent(multi);
                 var sourceFile = library.Path + "/" + multi.Directory.DirectoryPath + multi.Filename;
 
-                
+
                 var preset = new PresetParserMetadata
                 {
-                    PresetName = multi.FilenameWithoutExtension, Plugin = PluginInstance.Plugin, BankPath = library.Name + "/"+multi.Directory.DirectoryPath,
+                    PresetName = multi.FilenameWithoutExtension, Plugin = PluginInstance.Plugin,
+                    BankPath = library.Name + "/" + multi.Directory.DirectoryPath,
                     SourceFile = sourceFile
                 };
-                
+
                 ApplyMetadata(multi, preset);
-                
+
                 await DataPersistence.PersistPreset(preset, presetData);
             }
 
@@ -93,13 +106,14 @@ namespace PresetMagician.VendorPresetParser.Spectrasonics
 
                 var preset = new PresetParserMetadata
                 {
-                    PresetName = patch.FilenameWithoutExtension, Plugin = PluginInstance.Plugin, BankPath = library.Name + "/"+patch.Directory.DirectoryPath,
+                    PresetName = patch.FilenameWithoutExtension, Plugin = PluginInstance.Plugin,
+                    BankPath = library.Name + "/" + patch.Directory.DirectoryPath,
                     SourceFile = sourceFile
                 };
 
                 ApplyMetadata(patch, preset);
-                
-                await DataPersistence.PersistPreset(preset, Encoding.ASCII.GetBytes(template+"\0"));
+
+                await DataPersistence.PersistPreset(preset, Encoding.ASCII.GetBytes(template + "\0"));
             }
         }
 
@@ -109,64 +123,51 @@ namespace PresetMagician.VendorPresetParser.Spectrasonics
             {
                 metadata.Author = string.Join(", ", file.Attributes["Author"]);
             }
-            
+
             if (file.Attributes.ContainsKey("Description") && file.Attributes["Description"].Count > 0)
             {
                 metadata.Comment = string.Join(Environment.NewLine, file.Attributes["Description"]);
             }
-            
+
             if (file.Attributes.ContainsKey("Category"))
             {
                 foreach (var category in file.Attributes["Category"])
                 {
-                    metadata.Types.Add(new Type { TypeName = category});
+                    metadata.Types.Add(new Type {TypeName = category});
                 }
             }
-            
+
             if (file.Attributes.ContainsKey("Complexity"))
             {
                 foreach (var category in file.Attributes["Complexity"])
                 {
-                    metadata.Characteristics.Add(new Characteristic { CharacteristicName = category});
+                    metadata.Characteristics.Add(new Characteristic {CharacteristicName = category});
                 }
             }
-            
+
             if (file.Attributes.ContainsKey("Gender"))
             {
                 foreach (var category in file.Attributes["Gender"])
                 {
-                    metadata.Characteristics.Add(new Characteristic { CharacteristicName = category});
+                    metadata.Characteristics.Add(new Characteristic {CharacteristicName = category});
                 }
             }
-            
+
             if (file.Attributes.ContainsKey("Technique"))
             {
                 foreach (var category in file.Attributes["Technique"])
                 {
-                    metadata.Characteristics.Add(new Characteristic { CharacteristicName = category});
+                    metadata.Characteristics.Add(new Characteristic {CharacteristicName = category});
                 }
             }
-            
+
             if (file.Attributes.ContainsKey("Type"))
             {
                 foreach (var category in file.Attributes["Type"])
                 {
-                    metadata.Types.Add(new Type { TypeName = category});
+                    metadata.Types.Add(new Type {TypeName = category});
                 }
             }
-        }
-
-        public override int GetNumPresets()
-        {
-            var count = 0;
-
-            foreach (var library in GetLibraries())
-            {
-                count += library.GetMultis().Count;
-                count += library.GetPatches().Count;
-            }
-
-            return base.GetNumPresets() + count;
         }
 
         private string GetSteamFolder()
@@ -230,22 +231,22 @@ namespace PresetMagician.VendorPresetParser.Spectrasonics
 
         public OmnisphereUserLibrary GetLibraryUser(string path)
         {
-            if (OmnisphereUserLibraryCache.ContainsKey(path))
+            if (_omnisphereUserLibraryCache.ContainsKey(path))
             {
-                return OmnisphereUserLibraryCache[path];
+                return _omnisphereUserLibraryCache[path];
             }
 
             var library = new OmnisphereUserLibrary();
             library.Path = path;
 
             var rootDirectory = new FileSystemDirectory();
-          
+
 
             ParseUserDirectory(path, rootDirectory, library.Files);
 
-            if (!OmnisphereUserLibraryCache.ContainsKey(path))
+            if (!_omnisphereUserLibraryCache.ContainsKey(path))
             {
-                OmnisphereUserLibraryCache.Add(path, library);
+                _omnisphereUserLibraryCache.Add(path, library);
             }
 
             return library;
@@ -268,7 +269,7 @@ namespace PresetMagician.VendorPresetParser.Spectrasonics
                 }
 
 
-                ParseUserDirectory(Path.Combine(dirPath, subDirectory.DirectoryName ),subDirectory, entries);
+                ParseUserDirectory(Path.Combine(dirPath, subDirectory.DirectoryName), subDirectory, entries);
                 subDirectory.ParentDirectory = directory;
                 directory.Directories.Add(subDirectory);
             }
@@ -288,9 +289,9 @@ namespace PresetMagician.VendorPresetParser.Spectrasonics
 
         public OmnisphereLibrary GetLibraryFilesystem(string libraryFile)
         {
-            if (OmnisphereLibraryCache.ContainsKey(libraryFile))
+            if (_omnisphereLibraryCache.ContainsKey(libraryFile))
             {
-                return OmnisphereLibraryCache[libraryFile];
+                return _omnisphereLibraryCache[libraryFile];
             }
 
             var file = File.ReadAllText(libraryFile, Encoding.ASCII);
@@ -312,9 +313,9 @@ namespace PresetMagician.VendorPresetParser.Spectrasonics
 
             ParseFileSystemDirectory(rootElement, rootDirectory, library.Files);
 
-            if (!OmnisphereLibraryCache.ContainsKey(libraryFile))
+            if (!_omnisphereLibraryCache.ContainsKey(libraryFile))
             {
-                OmnisphereLibraryCache.Add(libraryFile, library);
+                _omnisphereLibraryCache.Add(libraryFile, library);
             }
 
             return library;
@@ -382,15 +383,13 @@ namespace PresetMagician.VendorPresetParser.Spectrasonics
 
     public class OmnisphereLibrary
     {
-        public string Path;
         public long ContentOffset;
-        public List<string> MetadataTypes = new List<string>();
         public List<FileSystemFile> Files = new List<FileSystemFile>();
+        public List<string> MetadataTypes = new List<string>();
+        public string Path;
 
-        public string Name
-        {
-            get { return System.IO.Path.GetFileNameWithoutExtension(Path); }
-        }
+        public string Name => System.IO.Path.GetFileNameWithoutExtension(Path);
+
         public virtual byte[] GetFileContent(FileSystemFile file)
         {
             var buffer = new byte[file.Length];
@@ -420,13 +419,16 @@ namespace PresetMagician.VendorPresetParser.Spectrasonics
         {
             foreach (var file in Files)
             {
-                if (file.Filename == Spectrasonics_Omnisphere.PATCH_INDEXFILE || file.Filename == Spectrasonics_Omnisphere.MULTI_INDEXFILE)
+                if (file.Filename == Spectrasonics_Omnisphere.PATCH_INDEXFILE ||
+                    file.Filename == Spectrasonics_Omnisphere.MULTI_INDEXFILE)
                 {
                     var content = GetFileContent(file);
                     var data = Encoding.ASCII.GetString(content).Replace((char) 16, (char) 32);
                     var document = XDocument.Parse(data);
 
-                    var extension = file.Filename == Spectrasonics_Omnisphere.PATCH_INDEXFILE ? Spectrasonics_Omnisphere.PATCH_EXTENSION : Spectrasonics_Omnisphere.MULTI_EXTENSION;
+                    var extension = file.Filename == Spectrasonics_Omnisphere.PATCH_INDEXFILE
+                        ? Spectrasonics_Omnisphere.PATCH_EXTENSION
+                        : Spectrasonics_Omnisphere.MULTI_EXTENSION;
 
                     var indexElement = document.Element("INDEX");
                     if (indexElement.Attribute("VERSION")?.Value == "2")
@@ -513,17 +515,15 @@ namespace PresetMagician.VendorPresetParser.Spectrasonics
 
     public class FileSystemFile
     {
-        public string Filename;
-
-        public string FilenameWithoutExtension
-        {
-            get { return Filename.Replace(Spectrasonics_Omnisphere.MULTI_EXTENSION, "").Replace(Spectrasonics_Omnisphere.PATCH_EXTENSION, ""); }
-        }
-        public FileSystemDirectory Directory;
-        public long Offset;
-        public long Length;
-
         public Dictionary<string, List<string>> Attributes = new Dictionary<string, List<string>>();
+        public FileSystemDirectory Directory;
+        public string Filename;
+        public long Length;
+        public long Offset;
+
+        public string FilenameWithoutExtension => Filename.Replace(Spectrasonics_Omnisphere.MULTI_EXTENSION, "")
+            .Replace(Spectrasonics_Omnisphere.PATCH_EXTENSION, "");
+
         public string Extension => Filename.Substring(Filename.LastIndexOf("."));
 
         public override string ToString()
@@ -534,11 +534,11 @@ namespace PresetMagician.VendorPresetParser.Spectrasonics
 
     public class FileSystemDirectory
     {
+        public List<FileSystemDirectory> Directories = new List<FileSystemDirectory>();
         public string DirectoryName;
         public string DirectoryPath;
-        public FileSystemDirectory ParentDirectory = null;
         public List<FileSystemFile> Files = new List<FileSystemFile>();
-        public List<FileSystemDirectory> Directories = new List<FileSystemDirectory>();
+        public FileSystemDirectory ParentDirectory;
 
         public override string ToString()
         {

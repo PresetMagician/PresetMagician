@@ -8,7 +8,7 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
 {
     public class TfxDb33 : Tfx
     {
-        public override byte[] BlockMagic { get; }=  {0x06, 0x15, 0xc1, 0x28};
+        public override byte[] BlockMagic { get; } = {0x06, 0x15, 0xc1, 0x28};
 
         public override void PostProcess()
         {
@@ -17,9 +17,10 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
                 Parameters.RemoveAt(19);
                 Parameters[19] = Parameters[1];
             }
+
             using (var ms = new MemoryStream())
             {
-                ms.Write(LittleEndian.GetBytes(PatchName.Length+1), 0, 4);
+                ms.Write(LittleEndian.GetBytes(PatchName.Length + 1), 0, 4);
                 ms.Write(PatchName, 0, PatchName.Length);
                 ms.WriteByte(0);
 
@@ -71,5 +72,4 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
             return data;
         }
     }
-
 }

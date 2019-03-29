@@ -6,8 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using PresetMagician.VendorPresetParser.Common;
 using PresetMagician.Core.Models;
+using PresetMagician.VendorPresetParser.Common;
 
 namespace PresetMagician.VendorPresetParser.D16_Group
 {
@@ -57,12 +57,12 @@ namespace PresetMagician.VendorPresetParser.D16_Group
 
         protected async Task<int> ProcessPresetDirectory(string presetDirectory, PresetBank bank, bool persist = true)
         {
-            int count = 0;
+            var count = 0;
             if (!Directory.Exists(presetDirectory))
             {
                 return count;
             }
-            
+
             PluginInstance.Plugin.Logger.Debug($"ProcessPresetDirectory {presetDirectory}");
             var dirInfo = new DirectoryInfo(presetDirectory);
 
@@ -81,7 +81,8 @@ namespace PresetMagician.VendorPresetParser.D16_Group
 
             foreach (var directory in dirInfo.EnumerateDirectories())
             {
-                count += await ProcessPresetDirectory(directory.FullName, bank.CreateRecursive(directory.Name), persist);
+                count += await ProcessPresetDirectory(directory.FullName, bank.CreateRecursive(directory.Name),
+                    persist);
             }
 
             return count;
@@ -137,7 +138,7 @@ namespace PresetMagician.VendorPresetParser.D16_Group
 
         protected List<string> GetModes(string tags)
         {
-            List<string> modes = new List<string>();
+            var modes = new List<string>();
 
             var dict = ExtractTags(tags);
             if (dict.ContainsKey("Type"))

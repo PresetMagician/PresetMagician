@@ -3,8 +3,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.XPath;
-using PresetMagician.VendorPresetParser.Common;
 using PresetMagician.Core.Models;
+using PresetMagician.VendorPresetParser.Common;
 
 namespace PresetMagician.VendorPresetParser.SlateDigital
 {

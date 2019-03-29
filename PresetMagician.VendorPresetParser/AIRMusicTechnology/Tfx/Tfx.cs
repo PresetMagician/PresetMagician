@@ -225,10 +225,8 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
                 MidiBlock.PluginName = new byte[0];
                 MidiBlock.IsMagicBlock = false;
             }
-
-            
         }
-        
+
         public MagicBlock ParseMagicBlock(WzooBlock block)
         {
             var magicBlock = new MagicBlock();
@@ -247,7 +245,7 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
                 var empty = new byte[] {0xDE, 0xAD, 0xBE, 0xEF};
 
                 ms.Seek(-4, SeekOrigin.End);
-                
+
                 ms.Read(emptyBuffer, 0, 4);
 
                 if (!emptyBuffer.SequenceEqual(empty))
@@ -284,7 +282,7 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
         }
 
         /// <summary>
-        /// Is called after the main parse process.
+        ///     Is called after the main parse process.
         /// </summary>
         public virtual void PostProcess()
         {

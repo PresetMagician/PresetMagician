@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Drachenkatze.PresetMagician.Utils;
-using PresetMagician.VendorPresetParser.Common;
 using GSF;
 using JetBrains.Annotations;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
+using PresetMagician.VendorPresetParser.Common;
 
 namespace PresetMagician.VendorPresetParser.HumanoidSoundSystems
 {

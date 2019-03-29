@@ -11,13 +11,15 @@ namespace PresetMagician.VendorPresetParser
 {
     public abstract partial class AbstractVendorPresetParser
     {
+        protected const string BankNameFactory = "Factory";
+        protected const string BankNameUser = "User";
+
+        private IRemotePluginInstance _pluginInstance;
+
         protected AbstractVendorPresetParser()
         {
             PresetParserConfiguration = new PresetParserConfiguration();
         }
-
-        protected const string BankNameFactory = "Factory";
-        protected const string BankNameUser = "User";
 
         protected List<BankFile> AdditionalBankFiles
         {
@@ -31,8 +33,6 @@ namespace PresetMagician.VendorPresetParser
                 return new List<BankFile>();
             }
         }
-
-        private IRemotePluginInstance _pluginInstance;
 
         public IRemotePluginInstance PluginInstance
         {
@@ -56,11 +56,6 @@ namespace PresetMagician.VendorPresetParser
 
         public virtual List<int> SupportedPlugins => new List<int>();
 
-        public List<int> GetSupportedPlugins()
-        {
-            return SupportedPlugins;
-        }
-
         public virtual int AudioPreviewPreDelay { get; set; } = 40;
 
         public virtual string Remarks { get; set; }
@@ -80,6 +75,11 @@ namespace PresetMagician.VendorPresetParser
         public IDataPersistence DataPersistence { get; set; }
         public virtual bool RequiresRescanWithEachRelease { get; } = false;
         public PresetParserConfiguration PresetParserConfiguration { get; set; }
+
+        public List<int> GetSupportedPlugins()
+        {
+            return SupportedPlugins;
+        }
 
         public virtual bool RequiresRescan()
         {

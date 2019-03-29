@@ -6,25 +6,25 @@ using PresetMagician.VendorPresetParser.Properties;
 
 namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
 {
-    public class TfxMiniGrand: Tfx
+    public class TfxMiniGrand : Tfx
     {
-        public override byte[] BlockMagic { get; }=  {0x06, 0x15, 0x99, 0xff};
+        public override byte[] BlockMagic { get; } = {0x06, 0x15, 0x99, 0xff};
 
         public override void PostProcess()
         {
             using (var ms = new MemoryStream())
             {
-                ms.Write(LittleEndian.GetBytes(PatchName.Length+1), 0, 4);
+                ms.Write(LittleEndian.GetBytes(PatchName.Length + 1), 0, 4);
                 ms.Write(PatchName, 0, PatchName.Length);
                 ms.WriteByte(0);
 
                 EndChunk = VendorResources.MiniGrandEndChunk
                     .Concat(ms.ToByteArray()).ToArray();
             }
-            
+
             ParseMidi();
         }
-        
+
         public override byte[] GetBlockDataToWrite()
         {
             if (!MidiBlock.IsMagicBlock)
@@ -69,5 +69,4 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
             return data;
         }
     }
-
 }

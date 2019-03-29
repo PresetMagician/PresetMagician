@@ -8,9 +8,6 @@ namespace PresetMagician.VendorPresetParser.MeldaProduction
 {
     public abstract class MeldaProduction : AbstractVendorPresetParser
     {
-        protected abstract string PresetFile { get; }
-        protected abstract string RootTag { get; }
-
         protected static readonly string ParseDirectory = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             @"MeldaProduction\");
@@ -18,6 +15,9 @@ namespace PresetMagician.VendorPresetParser.MeldaProduction
         protected static readonly string FallbackParseDirectory = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
             @"MeldaProduction\");
+
+        protected abstract string PresetFile { get; }
+        protected abstract string RootTag { get; }
 
         public override int GetNumPresets()
         {
@@ -56,7 +56,7 @@ namespace PresetMagician.VendorPresetParser.MeldaProduction
         public async Task<int> ScanPresetXml(XElement rootElement, string fileName, PresetBank presetBank,
             bool persist = true)
         {
-            int count = 0;
+            var count = 0;
             var directories = rootElement.Elements("Directory");
 
             foreach (var directory in directories)
