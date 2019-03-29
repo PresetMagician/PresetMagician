@@ -9,7 +9,7 @@ using Catel.Collections;
 using Catel.IoC;
 using Catel.MVVM;
 using Catel.Reflection;
-using Drachenkatze.PresetMagician.NKSF.NKSF;
+using PresetMagician.NKS;
 using FluentAssertions;
 using Jacobi.Vst.Core;
 using PresetMagician.Core.ApplicationTask;

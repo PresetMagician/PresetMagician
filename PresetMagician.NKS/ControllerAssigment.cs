@@ -2,7 +2,7 @@
 using Ceras;
 using MessagePack;
 
-namespace Drachenkatze.PresetMagician.NKSF.NKSF
+namespace PresetMagician.NKS
 {
     [MessagePackObject]
     [Serializable]

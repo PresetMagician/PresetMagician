@@ -2,7 +2,7 @@
 using System.IO;
 using GSF;
 
-namespace Drachenkatze.PresetMagician.NKSF.NKSF
+namespace PresetMagician.NKS
 {
     /// <summary>
     /// Represents the format chunk in a WAVE media format file.

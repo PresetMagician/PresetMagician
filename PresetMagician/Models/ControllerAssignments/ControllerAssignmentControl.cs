@@ -1,4 +1,4 @@
-using Drachenkatze.PresetMagician.NKSF.NKSF;
+using PresetMagician.NKS;
 
 namespace PresetMagician.Models.ControllerAssignments
 {

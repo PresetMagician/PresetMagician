@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Drachenkatze.PresetMagician.NKSF.NKSF
+namespace PresetMagician.NKS
 {
     public class KontaktSound : RIFFBase
     {

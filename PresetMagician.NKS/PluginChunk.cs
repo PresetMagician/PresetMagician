@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using GSF;
 
-namespace Drachenkatze.PresetMagician.NKSF.NKSF
+namespace PresetMagician.NKS
 {
     public class PluginChunk : RIFFBase
     {

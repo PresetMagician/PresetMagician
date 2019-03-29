@@ -2,7 +2,7 @@
 using System.IO;
 using MessagePack;
 
-namespace Drachenkatze.PresetMagician.NKSF.NKSF
+namespace PresetMagician.NKS
 {
     public class PluginIdChunk : AbstractMessagePack
     {
