@@ -18,7 +18,7 @@ using Catel.Fody;
 using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
-using Drachenkatze.PresetMagician.NKSF.NKSF;
+using PresetMagician.NKS;
 using Drachenkatze.PresetMagician.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using MessagePack;
 
-namespace Drachenkatze.PresetMagician.NKSF.NKSF
+namespace PresetMagician.NKS
 {
     [MessagePackObject]
     public class SummaryInformation

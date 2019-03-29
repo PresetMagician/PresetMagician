@@ -1,6 +1,6 @@
 ﻿using MessagePack;
 
-namespace Drachenkatze.PresetMagician.NKSF.NKSF
+namespace PresetMagician.NKS
 {
     [MessagePackObject]
     public class PluginId

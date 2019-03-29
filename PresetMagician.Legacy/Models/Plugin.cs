@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Catel.Collections;
-using Drachenkatze.PresetMagician.NKSF.NKSF;
+using PresetMagician.NKS;
 using Newtonsoft.Json;
 
 namespace PresetMagician.Legacy.Models

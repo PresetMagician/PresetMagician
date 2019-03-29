@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using Catel.Collections;
-using Drachenkatze.PresetMagician.NKSF.NKSF;
+using PresetMagician.NKS;
 
 namespace PresetMagician.Core.Models
 {

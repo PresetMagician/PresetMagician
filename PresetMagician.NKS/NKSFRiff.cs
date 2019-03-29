@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using GSF;
 
-namespace Drachenkatze.PresetMagician.NKSF.NKSF
+namespace PresetMagician.NKS
 {
     public class NKSFRiff : RIFFBase
     {

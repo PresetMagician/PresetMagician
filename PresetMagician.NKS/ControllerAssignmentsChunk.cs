@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using MessagePack;
 
-namespace Drachenkatze.PresetMagician.NKSF.NKSF
+namespace PresetMagician.NKS
 {
     public class ControllerAssignmentsChunk : AbstractMessagePack
     {

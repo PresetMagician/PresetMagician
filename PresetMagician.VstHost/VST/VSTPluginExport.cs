@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using Catel.Collections;
-using Drachenkatze.PresetMagician.NKSF.NKSF;
+using PresetMagician.NKS;
 using Drachenkatze.PresetMagician.Utils;
 using Drachenkatze.PresetMagician.VSTHost.Properties;
 using Jacobi.Vst.Core;

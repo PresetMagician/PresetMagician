@@ -6,7 +6,7 @@ using System.Linq;
 using Catel.Data;
 using Catel.IO;
 using Ceras;
-using Drachenkatze.PresetMagician.NKSF.NKSF;
+using PresetMagician.NKS;
 using PresetMagician.Core.Collections;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models.NativeInstrumentsResources;
