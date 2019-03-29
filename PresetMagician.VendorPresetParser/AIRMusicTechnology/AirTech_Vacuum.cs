@@ -11,9 +11,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
-    public class AirTech_Hybrid3: AirTech, IVendorPresetParser
+    public class AirTech_Vacuum: AirTech, IVendorPresetParser
     {
-        public override List<int> SupportedPlugins => new List<int> {1685217864};
+        public override List<int> SupportedPlugins => new List<int> {1969447254};
         protected override string Extension { get; } = "tfx";
         
         public override string Remarks { get; set; } =
@@ -22,14 +22,13 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology
         protected override string GetParseDirectory()
         {
             return Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
-                @"AIR Music Technology\Hybrid\Presets");
+                Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+                @"AIR Music Technology\Vacuum\Presets");
         }
 
         protected override Tfx.Tfx GetTfxParser()
         {
-            return new TfxHybrid3();
+            return new TfxVacuum();
         }
-
     }
 }

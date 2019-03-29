@@ -74,6 +74,9 @@ namespace PresetMagician.Services
 
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin),
                 nameof(Commands.Plugin.ForceReportPluginsToDev));
+            
+            _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin),
+                nameof(Commands.Plugin.RemoveSelectedPlugins));
 
             _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "EnablePlugins");
             _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "DisablePlugins");

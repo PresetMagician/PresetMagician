@@ -3,9 +3,8 @@ using Drachenkatze.PresetMagician.VendorPresetParser.Properties;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
 {
-    public class TfxLoomClassic : Tfx
+    public class TfxLoom : Tfx
     {
-        public override byte[] WzooPluginId { get; } = {0x4c, 0x6f, 0x6f, 0x6d};
         public override byte[] BlockMagic { get; } = {0x05, 0xf7, 0x3c, 0xa8};
 
         public override void PostProcess()

@@ -424,6 +424,22 @@ namespace PresetMagician.RemoteVstHost.Services
                 throw GetFaultException<AccessViolationFault>();
             }
         }
+        
+        public float GetParameter(Guid pluginGuid, int parameterIndex)
+        {
+            
+
+            App.Ping();
+            var plugin = GetPluginByGuid(pluginGuid);
+            if (!plugin.IsLoaded)
+            {
+                throw GetFaultException<PluginNotLoadedFault>();
+            }
+
+           
+              return  plugin.PluginContext.PluginCommandStub.GetParameter(parameterIndex);
+          
+        }
 
         public void ExportNksAudioPreview(Guid pluginGuid, PresetExportInfo preset, byte[] presetData,
             string userContentDirectory, int initialDelay)

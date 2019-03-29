@@ -1,5 +1,6 @@
 using System.IO;
 using System.Linq;
+using System.Net.Sockets;
 using Catel.IO;
 using Drachenkatze.PresetMagician.VendorPresetParser.Properties;
 using GSF;
@@ -8,7 +9,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
 {
     public class TfxXpand2 : Tfx
     {
-        public override byte[] WzooPluginId { get; } = {0x57, 0x53, 0x4C, 0x31};
         public override byte[] BlockMagic { get; } = {0x0C, 0x0B, 0xA2, 0x28};
 
         public override void PostProcess()
@@ -56,24 +56,94 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
 
             using (var ms = new MemoryStream())
             {
-                ms.Write(LittleEndian.GetBytes(PatchName.Length), 0, 4);
+                ms.Write(LittleEndian.GetBytes(PatchName.Length+1), 0, 4);
                 ms.Write(PatchName, 0, PatchName.Length);
                 ms.WriteByte(0);
 
                 EndChunk = Resource1.Xpand2EndChunk
                     .Concat(ms.ToByteArray()).ToArray();
             }
+
+            ParseMidi();
         }
 
         public override byte[] GetBlockDataToWrite()
         {
-            if (WzooBlock.IsMagicBlock)
+            if (!WzooBlock.IsMagicBlock)
+            {
+                WzooBlock.PluginName = new byte[]
+                    {0x00, 0x58, 0x00, 0x70, 0x00, 0x61, 0x00, 0x6e, 0x00, 0x64, 0x00, 0x21, 0x00, 0x32};
+                WzooBlock.IsMagicBlock = true;
+
+                var oldData = WzooBlock.BlockData;
+
+                using (var ms = new MemoryStream())
+                {
+                    // add 4 null bytes
+                    ms.WriteByte(0x00);
+                    ms.WriteByte(0x00);
+                    ms.WriteByte(0x00);
+                    ms.WriteByte(0x00);
+                    
+                    //add block length
+                    ms.Write(BigEndian.GetBytes(oldData.Length), 0, 4);
+                    ms.Write(oldData, 0, oldData.Length);
+                    
+                    //add deadbeef
+                    ms.WriteByte(0xDE);
+                    ms.WriteByte(0xAD);
+                    ms.WriteByte(0xBE);
+                    ms.WriteByte(0xEF);
+
+                    WzooBlock.BlockData = ms.ToByteArray();
+                }
+                 
+                
+            }
+            else
             {
                 WzooBlock.PluginName = WzooBlock.PluginName.Concat(new byte[] {0x00, 0x32}).ToArray();
             }
 
+            if (!MidiBlock.IsMagicBlock)
+            {
+                MidiBlock.PluginName = new byte[]
+                    {0x00, 0x58, 0x00, 0x70, 0x00, 0x61, 0x00, 0x6e, 0x00, 0x64, 0x00, 0x21, 0x00, 0x32};
+                MidiBlock.IsMagicBlock = true;
+                
+                using (var ms = new MemoryStream())
+                {
+                    // add 4 null bytes
+                    ms.WriteByte(0x00);
+                    ms.WriteByte(0x00);
+                    ms.WriteByte(0x00);
+                    ms.WriteByte(0x00);
+                    
+                    // add 4 FF bytes
+                    ms.WriteByte(0xFF);
+                    ms.WriteByte(0xFF);
+                    ms.WriteByte(0xFF);
+                    ms.WriteByte(0xFF);
+                    
+                    //add block length
+                    ms.Write(BigEndian.GetBytes(Resource1.Xpand2DefaultMidi.Length), 0, 4);
+                    ms.Write(Resource1.Xpand2DefaultMidi, 0, Resource1.Xpand2DefaultMidi.Length);
+                    
+                    //add deadbeef
+                    ms.WriteByte(0xDE);
+                    ms.WriteByte(0xAD);
+                    ms.WriteByte(0xBE);
+                    ms.WriteByte(0xEF);
 
-            var data = WzooBlock.GetDataToWrite();
+                    MidiBlock.BlockData = ms.ToByteArray();
+                }
+            }else
+            {
+                MidiBlock.PluginName = MidiBlock.PluginName.Concat(new byte[] {0x00, 0x32}).ToArray();
+            }
+
+
+            var data = WzooBlock.GetDataToWrite().Concat(MidiBlock.GetDataToWrite()).ToArray();
 
 
             return data;

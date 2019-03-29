@@ -268,6 +268,11 @@ namespace PresetMagician.VendorPresetParserTest
             _pluginId = pluginId;
         }
 
+        public float GetParameter(Guid pluginGuid, int parameterIndex)
+        {
+            return 0;
+        }
+
         public void KillSelf()
         {
         }

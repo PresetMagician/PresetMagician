@@ -136,6 +136,12 @@ namespace PresetMagician.Core.Interfaces
 
         [OperationContract]
         [FaultContract(typeof(GenericFault))]
+        [FaultContract(typeof(PluginNotRegisteredFault))]
+        [FaultContract(typeof(PluginNotLoadedFault))]
+        float GetParameter(Guid pluginGuid, int parameterIndex);
+        
+        [OperationContract]
+        [FaultContract(typeof(GenericFault))]
         bool Exists(string file);
 
         [OperationContract]
@@ -159,5 +165,7 @@ namespace PresetMagician.Core.Interfaces
 
         [OperationContract]
         void UnregisterPlugin(Guid guid);
+
+        
     }
 }

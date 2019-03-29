@@ -11,26 +11,24 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
-    public class AirTech_LoomClassic: RecursiveBankDirectoryParser, IVendorPresetParser
+    public class AirTech_TheRiser: AirTech, IVendorPresetParser
     {
-        public override List<int> SupportedPlugins => new List<int> {1836019532};
+        public override List<int> SupportedPlugins => new List<int> {1920160372};
         protected override string Extension { get; } = "tfx";
+        
+        public override string Remarks { get; set; } =
+            "Audio Previews are non-functional for this plugin";
         
         protected override string GetParseDirectory()
         {
             return Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
-                @"AIR Music Technology\Loom\Presets");
+                @"AIR Music Technology\theRiser\Presets");
         }
-        
-        protected override byte[] ProcessFile(string fileName, PresetParserMetadata preset)
+
+        protected override Tfx.Tfx GetTfxParser()
         {
-            var tfx = new TfxLoomClassic();
-            var patchDirectory = GetParseDirectory();
-            tfx.Parse(patchDirectory, fileName.Replace(patchDirectory + "\"", ""));
-
-
-            return tfx.GetDataToWrite();
+            return new TfxTheRiser();
         }
     }
 }

@@ -63,6 +63,36 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] BoomEndChunk {
+            get {
+                object obj = ResourceManager.GetObject("BoomEndChunk", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Db33DefaultMidi {
+            get {
+                object obj = ResourceManager.GetObject("Db33DefaultMidi", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Db33EndChunk {
+            get {
+                object obj = ResourceManager.GetObject("Db33EndChunk", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] Hybrid3EndChunk {
             get {
                 object obj = ResourceManager.GetObject("Hybrid3EndChunk", resourceCulture);
@@ -76,6 +106,26 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Properties {
         internal static byte[] LoomClassicEndChunk {
             get {
                 object obj = ResourceManager.GetObject("LoomClassicEndChunk", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] MiniGrandDefaultMidi {
+            get {
+                object obj = ResourceManager.GetObject("MiniGrandDefaultMidi", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] MiniGrandEndChunk {
+            get {
+                object obj = ResourceManager.GetObject("MiniGrandEndChunk", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -96,9 +146,49 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] TheRiserEndChunk {
+            get {
+                object obj = ResourceManager.GetObject("TheRiserEndChunk", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] VacuumDefaultMidi {
+            get {
+                object obj = ResourceManager.GetObject("VacuumDefaultMidi", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] VacuumEndChunk {
+            get {
+                object obj = ResourceManager.GetObject("VacuumEndChunk", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] VacuumProEndChunk {
             get {
                 object obj = ResourceManager.GetObject("VacuumProEndChunk", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Xpand2DefaultMidi {
+            get {
+                object obj = ResourceManager.GetObject("Xpand2DefaultMidi", resourceCulture);
                 return ((byte[])(obj));
             }
         }

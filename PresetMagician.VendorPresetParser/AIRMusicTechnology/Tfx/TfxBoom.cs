@@ -6,9 +6,9 @@ using GSF;
 
 namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
 {
-    public class TfxVacuumPro : Tfx
+    public class TfxBoom : Tfx
     {
-        public override byte[] BlockMagic { get; }=  {0x05, 0xf7, 0x3c, 0xa8};
+        public override byte[] BlockMagic { get; }=  {0x06, 0x16, 0x13, 0x30};
 
         public override void PostProcess()
         {
@@ -18,7 +18,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
                 ms.Write(PatchName, 0, PatchName.Length);
                 ms.WriteByte(0);
 
-                EndChunk = Resource1.VacuumProEndChunk
+                EndChunk = Resource1.BoomEndChunk
                     .Concat(ms.ToByteArray()).ToArray();
             }
         }

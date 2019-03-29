@@ -113,7 +113,7 @@ namespace PresetMagician.Core.Services
 
                 try
                 {
-                    progressStatus.Status = $"Verifying {plugin.PluginLocation.DllPath}";
+                    progressStatus.Status = $"Verifying {plugin.DllPath}";
                     progressStatus.Current = plugins.IndexOf(plugin);
 
                     applicationProgress.Progress.Report(progressStatus);
@@ -286,62 +286,64 @@ namespace PresetMagician.Core.Services
                     // merge this plugin with the existing one if it has no presets.
                     var existingPlugin =
                         (from p in _globalService.Plugins
-                            where p.VstPluginId == plugin.VstPluginId && p.PluginId != plugin.PluginId && p.IsPresent &&
+                            where p.VstPluginId == plugin.VstPluginId && p.PluginId != plugin.PluginId && plugin.IsPresent &&
                                   !pluginsToRemove.Contains(p)
                             select p)
                         .FirstOrDefault();
 
-                    if (existingPlugin != null)
+                    if (existingPlugin == null)
                     {
-                        if (plugin.Presets.Count == 0)
-                        {
-                            // There's an existing plugin which this plugin can be merged into. Schedule it for removal
-                            pluginsToRemove.Add(plugin);
+                        continue;
+                    }
 
-                            if (existingPlugin.PluginLocation == null)
+                    if (plugin.Presets.Count == 0)
+                    {
+                        // There's an existing plugin which this plugin can be merged into. Schedule it for removal
+                        pluginsToRemove.Add(plugin);
+
+                        if (existingPlugin.PluginLocation == null)
+                        {
+                            if (Core.UseDispatcher)
                             {
-                                if (Core.UseDispatcher)
-                                {
-                                    await _dispatcherService.InvokeAsync(() =>
-                                    {
-                                        existingPlugin.PluginLocation = plugin.PluginLocation;
-                                    });
-                                }
-                                else
+                                await _dispatcherService.InvokeAsync(() =>
                                 {
                                     existingPlugin.PluginLocation = plugin.PluginLocation;
-                                }
+                                });
                             }
                             else
                             {
-                                existingPlugin.PluginLocations.Add(plugin.PluginLocation);
-                                existingPlugin.EnsurePluginLocationIsPresent();
+                                existingPlugin.PluginLocation = plugin.PluginLocation;
                             }
                         }
-                        else if (existingPlugin.Presets.Count == 0)
+                        else
                         {
-                            // The existing plugin has no presets - remove it!
-                            pluginsToRemove.Add(existingPlugin);
+                            existingPlugin.PluginLocations.Add(plugin.PluginLocation);
+                            existingPlugin.EnsurePluginLocationIsPresent();
+                        }
+                    }
+                    else if (existingPlugin.Presets.Count == 0)
+                    {
+                        // The existing plugin has no presets - remove it!
+                        pluginsToRemove.Add(existingPlugin);
 
-                            if (plugin.PluginLocation == null)
+                        if (plugin.PluginLocation == null)
+                        {
+                            if (Core.UseDispatcher)
                             {
-                                if (Core.UseDispatcher)
-                                {
-                                    await _dispatcherService.InvokeAsync(() =>
-                                    {
-                                        plugin.PluginLocation = existingPlugin.PluginLocation;
-                                    });
-                                }
-                                else
+                                await _dispatcherService.InvokeAsync(() =>
                                 {
                                     plugin.PluginLocation = existingPlugin.PluginLocation;
-                                }
+                                });
                             }
                             else
                             {
-                                plugin.PluginLocations.Add(existingPlugin.PluginLocation);
-                                existingPlugin.EnsurePluginLocationIsPresent();
+                                plugin.PluginLocation = existingPlugin.PluginLocation;
                             }
+                        }
+                        else
+                        {
+                            plugin.PluginLocations.Add(existingPlugin.PluginLocation);
+                            existingPlugin.EnsurePluginLocationIsPresent();
                         }
                     }
                 }
