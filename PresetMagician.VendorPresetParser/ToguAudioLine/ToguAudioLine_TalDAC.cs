@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using PresetMagician.VendorPresetParser.Common;
 using JetBrains.Annotations;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
+using PresetMagician.VendorPresetParser.Common;
 
 namespace PresetMagician.VendorPresetParser.ToguAudioLine
 {

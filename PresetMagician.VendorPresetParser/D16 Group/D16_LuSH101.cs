@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using PresetMagician.VendorPresetParser.Common;
 using JetBrains.Annotations;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
+using PresetMagician.VendorPresetParser.Common;
 
 namespace PresetMagician.VendorPresetParser.D16_Group
 {
@@ -12,10 +12,9 @@ namespace PresetMagician.VendorPresetParser.D16_Group
     [UsedImplicitly]
     public class D16_LuSH101 : D16Group, IVendorPresetParser
     {
+        private const string UserBankPath = @"D16 Group\LuSH-101\Presets\";
         protected override string XmlPluginName { get; } = "LuSH-101";
         protected override string Extension { get; } = ".shprst";
-
-        private const string UserBankPath = @"D16 Group\LuSH-101\Presets\";
 
         public override List<int> SupportedPlugins => new List<int>
         {
@@ -34,7 +33,7 @@ namespace PresetMagician.VendorPresetParser.D16_Group
             await ProcessPresetDirectory(GetUserBankPath(UserBankPath), RootBank);
             await base.DoScan();
         }
-        
+
         protected override (PresetParserMetadata preset, byte[] presetData) GetPreset(string name, string presetData,
             PresetBank presetBank)
         {
@@ -43,7 +42,6 @@ namespace PresetMagician.VendorPresetParser.D16_Group
             var midiControlMap = new XElement("MidiControlMap");
             midiControlMap.SetAttributeValue("name", XmlPluginName);
 
-            
 
             var xmlPreset = XDocument.Parse(presetData);
             var presetElement = xmlPreset.Element("Preset");
@@ -72,14 +70,14 @@ namespace PresetMagician.VendorPresetParser.D16_Group
 
 
             pluginState.Add(presetElement);
-            
+
             var presetElement2 = new XElement("Preset");
             presetElement2.SetAttributeValue("name", "OtherParameters");
 
             var param = new XElement("param");
             param.SetAttributeValue("name", "Preset Name");
             param.SetAttributeValue("value", presetName);
-            
+
             presetElement2.Add(param);
             pluginState.Add(presetElement2);
 

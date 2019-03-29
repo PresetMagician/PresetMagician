@@ -12,12 +12,12 @@ namespace PresetMagician.VendorPresetParser.SlateDigital
     {
         public override List<int> SupportedPlugins => new List<int> {1450402640};
 
+        protected override string PresetSectionName { get; } = "VscP";
+
         protected override string GetParseDirectory()
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 @"Slate Digital\VerbSuite Classics\Presets");
         }
-
-        protected override string PresetSectionName { get; } = "VscP";
     }
 }

@@ -12,13 +12,6 @@ namespace PresetMagician.VendorPresetParser.ValhallaDSP
     {
         public override List<int> SupportedPlugins => new List<int> {1383429485};
 
-        protected override string GetParseDirectory()
-        {
-            return Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-                @"Valhalla DSP, LLC\ValhallaRoom\Factory Presets");
-        }
-
         public override void Init()
         {
             base.Init();
@@ -28,6 +21,13 @@ namespace PresetMagician.VendorPresetParser.ValhallaDSP
 
             DefaultModes.Add("Reverb");
             DefaultModes.Add("Room");
+        }
+
+        protected override string GetParseDirectory()
+        {
+            return Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+                @"Valhalla DSP, LLC\ValhallaRoom\Factory Presets");
         }
     }
 }

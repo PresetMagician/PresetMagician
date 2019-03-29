@@ -8,7 +8,7 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
 {
     public class TfxDb33Fx : Tfx
     {
-        public override byte[] BlockMagic { get; }=  {0x06, 0x15, 0xc1, 0x28};
+        public override byte[] BlockMagic { get; } = {0x06, 0x15, 0xc1, 0x28};
 
         public override void PostProcess()
         {
@@ -16,9 +16,10 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
             {
                 Parameters.RemoveAt(0);
             }
+
             using (var ms = new MemoryStream())
             {
-                ms.Write(LittleEndian.GetBytes(PatchName.Length+1), 0, 4);
+                ms.Write(LittleEndian.GetBytes(PatchName.Length + 1), 0, 4);
                 ms.Write(PatchName, 0, PatchName.Length);
                 ms.WriteByte(0);
 
@@ -31,12 +32,10 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
 
         public override byte[] GetBlockDataToWrite()
         {
-            
-            
             if (!MidiBlock.IsMagicBlock)
             {
                 MidiBlock.PluginName = new byte[]
-                    {0x00, 0x44, 0x00, 0x42, 0x00, 0x2d, 0x00, 0x33, 0x00, 0x33,0x00,0x46,0x00,0x58};
+                    {0x00, 0x44, 0x00, 0x42, 0x00, 0x2d, 0x00, 0x33, 0x00, 0x33, 0x00, 0x46, 0x00, 0x58};
                 MidiBlock.IsMagicBlock = true;
 
                 using (var ms = new MemoryStream())
@@ -66,10 +65,9 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
                     MidiBlock.BlockData = ms.ToByteArray();
                 }
             }
-            
+
             var data = WzooBlock.GetDataToWrite().Concat(MidiBlock.GetDataToWrite()).ToArray();
             return data;
         }
     }
-
 }

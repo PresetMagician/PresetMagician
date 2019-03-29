@@ -13,7 +13,7 @@ namespace PresetMagician.VendorPresetParser.Common
 
         public override void Init()
         {
-            var directories = string.Join(",", (from dir in GetParseDirectories() select dir.directory));
+            var directories = string.Join(",", from dir in GetParseDirectories() select dir.directory);
             BankLoadingNotes = $"Presets are loaded from {directories}. First sub-folder defines the bank.";
         }
 
@@ -53,7 +53,7 @@ namespace PresetMagician.VendorPresetParser.Common
 
         public async Task<int> DoScanInternal(PresetBank rootBank, string directory, bool persist = true)
         {
-            int count = 0;
+            var count = 0;
 
             if (!Directory.Exists(directory))
             {

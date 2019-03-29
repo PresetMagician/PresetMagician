@@ -12,12 +12,12 @@ namespace PresetMagician.VendorPresetParser.SlateDigital
     {
         public override List<int> SupportedPlugins => new List<int> {1447183211};
 
+        protected override string PresetSectionName { get; } = "VBCk";
+
         protected override string GetParseDirectory()
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 @"Slate Digital\Virtual Buss Compressors Rack\Presets");
         }
-
-        protected override string PresetSectionName { get; } = "VBCk";
     }
 }

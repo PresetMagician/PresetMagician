@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using PresetMagician.VendorPresetParser.Common;
 using JetBrains.Annotations;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
+using PresetMagician.VendorPresetParser.Common;
 
 namespace PresetMagician.VendorPresetParser.AudioThing
 {
@@ -15,6 +15,8 @@ namespace PresetMagician.VendorPresetParser.AudioThing
     public class AudioThing_FogConvolver : RecursiveVC2Parser, IVendorPresetParser
     {
         public override List<int> SupportedPlugins => new List<int> {1716479811};
+
+        protected override string Extension { get; } = "atp";
 
         public override void Init()
         {
@@ -27,8 +29,6 @@ namespace PresetMagician.VendorPresetParser.AudioThing
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 @"AudioThing\Presets\FogConvolver\settings.ats");
         }
-
-        protected override string Extension { get; } = "atp";
 
         protected override List<(string directory, PresetBank presetBank)> GetParseDirectories()
         {

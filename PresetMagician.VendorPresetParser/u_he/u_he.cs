@@ -73,7 +73,7 @@ namespace PresetMagician.VendorPresetParser.u_he
 
             var bank = RootBank.CreateRecursive(bankName);
             var count = await H2PScanBank(bank, directoryInfo, persist);
-            PluginInstance.Plugin.Logger.Debug($"End H2PScanBanks");
+            PluginInstance.Plugin.Logger.Debug("End H2PScanBanks");
 
             return count;
         }
@@ -107,7 +107,7 @@ namespace PresetMagician.VendorPresetParser.u_he
             var presetData = File.ReadAllBytes(file.FullName);
             var sourceFile = file.FullName;
 
-           
+
             var preset = new PresetParserMetadata
             {
                 PresetName = file.Name.Replace(".h2p", ""), Plugin = PluginInstance.Plugin, BankPath = bank.BankPath,
@@ -121,7 +121,7 @@ namespace PresetMagician.VendorPresetParser.u_he
                 preset.Author = metadata["Author"];
             }
 
-            List<string> comments = new List<string>();
+            var comments = new List<string>();
 
             if (metadata.ContainsKey("Description") && metadata["Description"].Length > 0)
             {
@@ -190,7 +190,7 @@ namespace PresetMagician.VendorPresetParser.u_he
 
         private Dictionary<string, string> ExtractMetadata(string presetData)
         {
-            Dictionary<string, string> result = new Dictionary<string, string>();
+            var result = new Dictionary<string, string>();
 
             var closingTagLocation = presetData.IndexOf("*/", StringComparison.InvariantCulture);
 
@@ -247,7 +247,7 @@ namespace PresetMagician.VendorPresetParser.u_he
                     $"Error while trying to resolve the shortcut {shortCutDataDirectoryName} because of {e.GetType().FullName}: {e.Message}");
                 PluginInstance.Plugin.Logger.Debug(e.StackTrace);
             }
-            
+
             if (isShortcut)
             {
                 dataDirectory = ShortcutUtils.ResolveShortcut(shortCutDataDirectoryName);
