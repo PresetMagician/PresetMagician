@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Catel.IoC;
@@ -12,20 +13,30 @@ using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
 using Drachenkatze.PresetMagician.Utils;
 using Jacobi.Vst.Core;
+using K4os.Compression.LZ4;
 using PresetMagician.Core.EventArgs;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
 using PresetMagician.RemoteVstHost;
 using PresetMagician.RemoteVstHost.Processes;
+using PresetMagician.Utils;
+using PresetMagician.Utils.Logger;
 using PresetMagician.VstHost.VST;
 
 namespace PresetMagician.VendorPresetParserTest
 {
+    
     internal class Program
     {
+        public static Dictionary<int, int> NumBankMissingsOk = new Dictionary<int, int>()
+        {
+            {1917283917, 30},
+            { 1836019532, 2}
+        };
         public static void Main(string[] args)
         {
+            
             FrontendInitializer.RegisterTypes(ServiceLocator.Default);
             FrontendInitializer.Initialize(ServiceLocator.Default);
             var vendorPresetParserService = ServiceLocator.Default.ResolveType<VendorPresetParserService>();
@@ -41,13 +52,19 @@ namespace PresetMagician.VendorPresetParserTest
             var testData = ReadTestData();
             var ignoredPlugins = ReadIgnoredPlugins();
 
-            Console.WriteLine(testData);
-
             List<string> IgnoredPresetParsers = new List<string>();
             IgnoredPresetParsers.Add("VoidPresetParser");
 
+            var localLogger = new MiniConsoleLogger();
+            localLogger.SetConsoleLogLevelFilter(new HashSet<LogLevel> { LogLevel.Error, LogLevel.Warning});
+            
             foreach (var presetParserKeyValue in presetParserDictionary)
             {
+                if (!presetParserKeyValue.Value.PresetParserType.StartsWith("AirTech"))
+                {
+                    continue;
+                    
+                }
                 var presetParser = presetParserKeyValue.Value;
                 var pluginId = presetParserKeyValue.Key;
 
@@ -85,7 +102,9 @@ namespace PresetMagician.VendorPresetParserTest
                 presetParser.DataPersistence = new NullPresetPersistence();
                 presetParser.PluginInstance = remoteInstance;
                 presetParser.RootBank = plugin.RootBank.First();
-
+                presetParser.Logger.Clear();
+                presetParser.Logger.MirrorTo(localLogger);
+                
                 var testResult = new PluginTestResult
                 {
                     VendorPresetParser = presetParser.PresetParserType,
@@ -119,8 +138,9 @@ namespace PresetMagician.VendorPresetParserTest
                 Console.WriteLine(
                     $"{testResult.Presets} parsed in {totalTime:F3}s (avg {timePerPreset:F3}ms / Preset, DoScan {timeForDoScan:F3}s, NumPresets {timeForNumPresets:F3}s");
 
-                var testDataEntry = GetTestDataEntry(testData, presetParser.PresetParserType, pluginId);
-                var foundPreset = false;
+                var testDataEntries = GetTestDataEntries(testData, presetParser.PresetParserType, pluginId);
+                var hasTestDataEntries = testDataEntries.Count > 0;
+                var testDataOk = true;
                 foreach (var preset in plugin.Presets)
                 {
                     if (preset.Metadata.BankPath == "")
@@ -128,15 +148,96 @@ namespace PresetMagician.VendorPresetParserTest
                         testResult.BankMissing++;
                     }
 
-                    if (testDataEntry != null)
+                    foreach (var testDataEntry in testDataEntries.ToList())
                     {
                         if (preset.Metadata.PresetName == testDataEntry.ProgramName &&
-                            preset.PresetHash == testDataEntry.Hash.TrimEnd() &&
                             preset.Metadata.BankPath == testDataEntry.BankPath)
                         {
-                            foundPreset = true;
+                            var testFilename = PathUtils.SanitizeFilename(testDataEntry.PresetParser + "." + preset.OriginalMetadata.PresetName +
+                                               ".testdata");
+                            var myDocumentsTestDataFile = Path.Combine(GetPatchFilesDirectory(), testFilename);
+                            var localTestDataFile = Path.Combine("TestData", testFilename);
+
+
+                            var presetHash = testDataEntry.Hash.TrimEnd();
+                            if (preset.PresetHash != presetHash)
+                            {
+                                var fileMessage = "";
+                                var wrongPresetData = myDocumentsTestDataFile + ".wrong";
+                                testDataOk = false;
+
+                                if (File.Exists(myDocumentsTestDataFile))
+                                {
+                                    fileMessage = $"Original preset data in {myDocumentsTestDataFile}" + Environment.NewLine +
+                                                  $"Current (wrong) preset data in {wrongPresetData}";
+                                }
+                                else
+                                {
+                                    fileMessage = $"Original preset data not found (expected in {myDocumentsTestDataFile})" +
+                                                  Environment.NewLine +
+                                                  $"Current (wrong) preset data in {wrongPresetData}";
+                                }
+
+                                File.WriteAllBytes(wrongPresetData, LZ4Pickler.Unpickle(
+                                    NullPresetPersistence.PresetData[preset.OriginalMetadata.SourceFile]));
+                                testResult.DetailedErrors.Add(
+                                    $"Found preset {testDataEntry.ProgramName} with bank path " +
+                                    $"{testDataEntry.BankPath} but the preset hashes were different. " +
+                                    $"Expected hash {presetHash} but found hash {preset.PresetHash}" +
+                                    Environment.NewLine + Environment.NewLine + $"{fileMessage}");
+                            }
+                            else
+                            {
+                                // Check if the file exists in the output directory
+                                if (!File.Exists(myDocumentsTestDataFile))
+                                {
+                                    if (File.Exists(localTestDataFile))
+                                    {
+                                        File.Copy(localTestDataFile,myDocumentsTestDataFile );
+                                    }
+                                    else
+                                    {
+                                        File.WriteAllBytes(myDocumentsTestDataFile,
+                                            LZ4Pickler.Unpickle(NullPresetPersistence.PresetData[preset.OriginalMetadata.SourceFile]));
+                                    }
+                                }
+                                else
+                                {
+                                    if (!File.Exists(localTestDataFile))
+                                    {
+                                        testResult.DetailedErrors.Add(
+                                            $"Warning: The preset data file {testFilename} exists in the documents "+
+                                            "folder but not in the source folder. Copy from documents to git folder");
+                                    }
+                                    
+                                }
+
+                                var hash = HashUtils.getIxxHash(File.ReadAllBytes(myDocumentsTestDataFile));
+
+                                if (hash != presetHash)
+                                {
+                                    testResult.DetailedErrors.Add(
+                                        $"Warning: The preset data file {myDocumentsTestDataFile} exists but does not match the "+
+                                        $"preset hash from the reference presets. Expected: {testDataEntry.Hash} found {hash}");
+                                }
+                            }
+
+                            testDataEntries.Remove(testDataEntry);
                         }
                     }
+                }
+
+                if (testDataEntries.Count > 0)
+                {
+                    foreach (var missingTestDataEntry in testDataEntries)
+                    {
+                        var presetHash = missingTestDataEntry.Hash.TrimEnd();
+                        testResult.DetailedErrors.Add(
+                            $"Did not find preset {missingTestDataEntry.ProgramName} with bank path " +
+                            $"{missingTestDataEntry.BankPath} and hash {presetHash}");
+                    }
+
+                    testResult.IsOK = false;
                 }
 
                 if (plugin.Presets.Count > 0)
@@ -173,7 +274,8 @@ namespace PresetMagician.VendorPresetParserTest
                 }
 
                 plugin.Presets.Clear();
-                presetParser.DoScan().Wait();
+                NullPresetPersistence.PresetData.Clear();
+                presetParser.DoScan().GetAwaiter().GetResult();
 
                 var additionalBankFileScanOk = false;
 
@@ -186,7 +288,22 @@ namespace PresetMagician.VendorPresetParserTest
                     testResult.Error += " additionalBankFileScan failed";
                 }
 
-                if (foundPreset && testResult.Presets > 5 && testResult.BankMissing < 2 &&
+                bool bankMissingOk = false;
+                if (NumBankMissingsOk.ContainsKey(testResult.PluginId))
+                {
+                    if (testResult.BankMissing <= NumBankMissingsOk[testResult.PluginId])
+                    {
+                        bankMissingOk = true;
+                    }
+                }
+                else
+                {
+                    if (testResult.BankMissing < 2)
+                    {
+                        bankMissingOk = true;
+                    }
+                }
+                if (hasTestDataEntries && testDataOk && testResult.Presets > 5 && bankMissingOk &&
                     testResult.Presets == testResult.ReportedPresets && additionalBankFileCountOk &&
                     additionalBankFileScanOk)
                 {
@@ -194,6 +311,8 @@ namespace PresetMagician.VendorPresetParserTest
                 }
 
                 testResults.Add(testResult);
+
+                NullPresetPersistence.PresetData.Clear();
             }
 
 
@@ -204,7 +323,39 @@ namespace PresetMagician.VendorPresetParserTest
 
             Console.WriteLine(consoleTable.ToMinimalString());
 
+            foreach (var testRes in (from testRes in testResults
+                where testRes.DetailedErrors.Count > 0
+                orderby testRes.Presets
+                select testRes))
+            {
+                Console.WriteLine(Environment.NewLine);
+                Console.WriteLine($"Detailed Errors for {testRes.VendorPresetParser}");
+                Console.WriteLine($"------------------------------------------------------------");
+
+                foreach (var detailedError in testRes.DetailedErrors)
+                {
+                    Console.WriteLine(Environment.NewLine);
+                    Console.WriteLine($"Error #{testRes.DetailedErrors.IndexOf(detailedError)}: {detailedError}");
+                }
+            }
+
             Console.WriteLine($"Stuff left: {consoleTable.Rows.Count} / {presetParserDictionary.Count}");
+
+            foreach (var data in GlobalMethodTimeLogger.GetTopMethods())
+            {
+                Console.WriteLine($"{data.Name}: {data.Duration.TotalSeconds.ToString()}ms");
+            }
+        
+        }
+
+        public static string GetPatchFilesDirectory()
+        {
+            var directory = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                $@"PresetMagician\VendorPresetParserTest\");
+
+            Directory.CreateDirectory(directory);
+            return directory;
         }
 
         public static List<TestData> ReadTestData()
@@ -229,12 +380,12 @@ namespace PresetMagician.VendorPresetParserTest
             }
         }
 
-        public static TestData GetTestDataEntry(List<TestData> testData, string presetParser, int pluginId)
+        public static List<TestData> GetTestDataEntries(List<TestData> testData, string presetParser, int pluginId)
         {
             return (from testDataEntry in testData
                 where
                     testDataEntry.PluginId == pluginId && testDataEntry.PresetParser == presetParser
-                select testDataEntry).FirstOrDefault();
+                select testDataEntry).ToList();
         }
 
         public static bool IsIgnored(List<IgnoredPlugins> ignoredPlugins, string presetParser, int pluginId)
@@ -440,6 +591,8 @@ namespace PresetMagician.VendorPresetParserTest
 
     internal class NullPresetPersistence : IDataPersistence
     {
+        public static Dictionary<string, byte[]> PresetData = new Dictionary<string, byte[]>();
+
         public event EventHandler<PresetUpdatedEventArgs> PresetUpdated;
 #pragma warning disable 1998
         public async Task PersistPreset(PresetParserMetadata presetMetadata, byte[] data)
@@ -453,6 +606,16 @@ namespace PresetMagician.VendorPresetParserTest
             preset.PresetHash = HashUtils.getIxxHash(data);
             preset.PresetSize = data.Length;
             preset.PresetCompressedSize = data.Length;
+
+            try
+            {
+                PresetData.Add(preset.OriginalMetadata.SourceFile, LZ4Pickler.Pickle(data));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error while trying to add {preset.OriginalMetadata.SourceFile}");
+                throw e;
+            }
         }
     }
 
@@ -467,12 +630,28 @@ namespace PresetMagician.VendorPresetParserTest
         public string RndPresetName { get; set; }
         public string RndBankPath { get; set; }
         public string RndHash { get; set; }
+        public List<string> DetailedErrors = new List<string>();
 
         public string CsvData
         {
             get
             {
-                if (Presets > 5 && BankMissing < 2 && Presets == ReportedPresets)
+                bool bankMissingOk = false;
+                if (Program.NumBankMissingsOk.ContainsKey(PluginId))
+                {
+                    if (BankMissing <= Program.NumBankMissingsOk[PluginId])
+                    {
+                        bankMissingOk = true;
+                    }
+                }
+                else
+                {
+                    if (BankMissing < 2)
+                    {
+                        bankMissingOk = true;
+                    }
+                }
+                if (Presets > 5 && bankMissingOk && Presets == ReportedPresets)
                 {
                     return string.Join(",", VendorPresetParser, PluginId.ToString(), RndPresetName, RndBankPath,
                         RndHash, DateTime.Now.ToString());

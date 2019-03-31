@@ -53,17 +53,17 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
                     msbuf3.Write(subBlockData, 0, subBlockData.Length);
 
 
-                    msbuf3.WriteByte(0xDE);
-                    msbuf3.WriteByte(0xAD);
-                    msbuf3.WriteByte(0xBE);
-                    msbuf3.WriteByte(0xEF);
+                    msbuf3.Write(DEADBEEF, 0, DEADBEEF.Length);
 
                     WzooBlock.BlockData = msbuf3.ToArray();
                 }
             }
 
-
-            EndChunk = VendorResources.VelvetEndChunk;
+        }
+        
+        public override byte[] GetEndChunk()
+        {
+            return VendorResources.VelvetEndChunk;
         }
     }
 }

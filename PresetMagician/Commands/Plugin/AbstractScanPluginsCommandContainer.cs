@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -18,6 +19,7 @@ using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
 using PresetMagician.Services.Interfaces;
+using PresetMagician.Utils.Logger;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -92,13 +94,17 @@ namespace PresetMagician
                 pluginsToUpdateMetadata.Count);
 
             var pluginsToRemove = new List<Plugin>();
+            var mergedPlugins = new List<(Plugin oldPlugin, Plugin mergedIntoPlugin)>();
             var progress = _applicationService.GetApplicationProgress();
             // First pass: Load missing metadata
             try
             {
-                pluginsToRemove = await TaskHelper.Run(
+                var result = await TaskHelper.Run(
                     async () => await _pluginService.UpdateMetadata(pluginsToUpdateMetadata, progress), true,
                     progress.CancellationToken);
+
+                pluginsToRemove = result.removedPlugins;
+                mergedPlugins = result.mergedPlugins;
 
                 await _dispatcherService.InvokeAsync(() =>
                 {
@@ -122,17 +128,21 @@ namespace PresetMagician
 
             _applicationService.StopApplicationOperation("Analyzing VST plugins Metadata analysis complete.");
 
-            if (pluginsToRemove.Count > 0)
+            if (mergedPlugins.Count > 0)
             {
-                var pluginNames = string.Join(Environment.NewLine,
-                    (from plugin in pluginsToRemove orderby plugin.PluginName select plugin.PluginName).Distinct()
-                    .ToList());
+                var sb = new StringBuilder();
+                foreach (var merge in (from p in mergedPlugins orderby p.oldPlugin.LastKnownGoodDllPath select p))
+                {
+                    sb.AppendLine(
+                        $"{merge.oldPlugin.LastKnownGoodDllPath} => {merge.mergedIntoPlugin.LastKnownGoodDllPath}");
+                }
+                
 
 
                 var result = await _messageService.ShowAsync(
                     "Automatically merged different plugin DLLs to the same plugin. Affected plugin(s):" +
                     Environment.NewLine + Environment.NewLine +
-                    pluginNames + Environment.NewLine + Environment.NewLine +
+                    sb + Environment.NewLine + Environment.NewLine +
                     "Would you like to abort the analysis now, so that you can review the settings for each affected plugin? (Highly recommended!)",
                     "Auto-merged Plugins", HelpLinks.SETTINGS_PLUGIN_DLL, MessageButton.YesNo, MessageImage.Question);
 
@@ -279,6 +289,7 @@ progress = _applicationService.GetApplicationProgress();
 
                         plugin.PresetParser.RootBank = plugin.RootBank.First();
 
+                        plugin.PresetParser.Logger.MirrorTo(plugin.Logger);
                         _totalPresets = plugin.PresetParser.GetNumPresets();
                         _currentPresetIndex = 0;
 
@@ -342,6 +353,16 @@ progress = _applicationService.GetApplicationProgress();
                     var errorMessage =
                         $"Unable to analyze {plugin.DllFilename} because of {e.GetType().FullName}: {e.Message}";
                     _applicationService.AddApplicationOperationError(errorMessage + " - see plugin log for details");
+                }
+
+                if (plugin.PresetParser.Logger.HasLoggedEntries(LogLevel.Error))
+                {
+                    var errors = plugin.PresetParser.Logger.GetFilteredLogEntries(new List<LogLevel> {LogLevel.Error});
+
+                    foreach (var error in errors)
+                    {
+                        _applicationService.AddApplicationOperationError(error.Message);
+                    }
                 }
 
                 // Remove the event handler here, so we can be absolutely sure we removed this.

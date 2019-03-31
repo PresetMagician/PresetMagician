@@ -1,5 +1,11 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
 using Catel.IoC;
 using PresetMagician.Core.Services;
+using PresetMagician.Utils;
 
 namespace PresetMagician.Core
 {
@@ -22,5 +28,17 @@ namespace PresetMagician.Core
     public static class Core
     {
         public static bool UseDispatcher = true;
+    }
+    
+    public static class MethodTimeLogger
+    {
+         
+        public static void Log(MethodBase methodBase, TimeSpan elapsed, string message)
+        {
+            GlobalMethodTimeLogger.Log(methodBase, elapsed);
+           
+        }
+
+        
     }
 }

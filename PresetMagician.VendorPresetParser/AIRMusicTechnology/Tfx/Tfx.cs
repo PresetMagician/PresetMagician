@@ -12,14 +12,79 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
 {
     public abstract class Tfx
     {
+        public static readonly byte[] DEADBEEF = {0xDE, 0xAD, 0xBE, 0xEF};
         public readonly List<double> Parameters = new List<double>();
 
-        public byte[] EndChunk;
         public byte[] PatchName;
+        
+        public virtual bool IncludePatchNameAtEnd { get; }
+        public virtual bool IncludeMidi { get; }
+
+        public virtual byte[] GetMidiData()
+        {
+            return new byte[0];
+        }
+        
+        public virtual string GetMagicBlockPluginName()
+        {
+            return "";
+        }
+
+        public abstract byte[] GetEndChunk();
+     
+
+        private byte[] GetCompiledEndPatchName()
+        {
+            using (var ms = new MemoryStream())
+            {
+                ms.Write(LittleEndian.GetBytes(PatchName.Length + 1), 0, 4);
+                ms.Write(PatchName, 0, PatchName.Length);
+                ms.WriteByte(0);
+                return ms.ToByteArray();
+            }
+        }
+
+        private void ProcessMidiBlock()
+        {
+            if (!MidiBlock.IsMagicBlock)
+            {
+                MidiBlock.PluginName = Encoding.BigEndianUnicode.GetBytes(GetMagicBlockPluginName());
+                MidiBlock.IsMagicBlock = true;
+
+                using (var ms = new MemoryStream())
+                {
+                    // add 4 null bytes
+                    ms.WriteByte(0x00);
+                    ms.WriteByte(0x00);
+                    ms.WriteByte(0x00);
+                    ms.WriteByte(0x00);
+
+                    // add 4 FF bytes
+                    ms.WriteByte(0xFF);
+                    ms.WriteByte(0xFF);
+                    ms.WriteByte(0xFF);
+                    ms.WriteByte(0xFF);
+
+                    var midiData = GetMidiData();
+                    //add block length
+                    ms.Write(BigEndian.GetBytes(midiData.Length), 0, 4);
+                    ms.Write(midiData, 0, midiData.Length);
+
+                    ms.Write(DEADBEEF, 0, DEADBEEF.Length);
+
+                    MidiBlock.BlockData = ms.ToByteArray();
+                }
+            }
+            else
+            {
+                MidiBlock.PluginName = Encoding.BigEndianUnicode.GetBytes(GetMagicBlockPluginName());
+            }
+        }
 
         public List<WzooBlock> WzooBlocks;
 
         public abstract byte[] BlockMagic { get; }
+
         public MagicBlock MidiBlock { get; set; }
         public MagicBlock WzooBlock { get; set; }
 
@@ -27,10 +92,32 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
         {
             var parameterBytes = GetParameters();
             var blockData = GetBlockDataToWrite();
+            byte[] midiData = new byte[0];
+            byte[] endChunk;
+            
+            using (var endChunkStream = new MemoryStream())
+            {
+                var endChunkData = GetEndChunk();
+                endChunkStream.Write(endChunkData,0,endChunkData.Length);
+
+                if (IncludePatchNameAtEnd)
+                {
+                    var patchEndName = GetCompiledEndPatchName();
+                    endChunkStream.Write(patchEndName, 0, patchEndName.Length);
+                }
+
+                endChunk = endChunkStream.ToByteArray();
+            }
 
             var totalLength = parameterBytes.Length +
                               blockData.Length +
-                              EndChunk.Length; // end chunk
+                              endChunk.Length; // end chunk
+            
+            if (IncludeMidi)
+            {
+                midiData = MidiBlock.GetDataToWrite();
+                totalLength += midiData.Length;
+            }
 
             var ms = new MemoryStream();
 
@@ -45,7 +132,13 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
 
             ms.Write(parameterBytes, 0, parameterBytes.Length);
             ms.Write(blockData, 0, blockData.Length);
-            ms.Write(EndChunk, 0, EndChunk.Length);
+
+            if (IncludeMidi)
+            {
+                ms.Write(midiData,0,midiData.Length);
+            }
+            
+            ms.Write(endChunk, 0, endChunk.Length);
             var data = ms.ToByteArray();
 
             ms.Close();
@@ -67,6 +160,11 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
             ParseWzoo();
 
 
+            if (IncludeMidi)
+            {
+                ParseMidi();
+                ProcessMidiBlock();
+            }
             PostProcess();
         }
 
@@ -227,6 +325,26 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
             }
         }
 
+        public bool ContainsMagicBlock(WzooBlock block)
+        {
+            using (var ms = new MemoryStream(block.BlockData))
+            {
+                var emptyBuffer = new byte[4];
+                var empty = new byte[] {0xDE, 0xAD, 0xBE, 0xEF};
+
+                ms.Seek(-4, SeekOrigin.End);
+
+                ms.Read(emptyBuffer, 0, 4);
+
+                if (!emptyBuffer.SequenceEqual(empty))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         public MagicBlock ParseMagicBlock(WzooBlock block)
         {
             var magicBlock = new MagicBlock();
@@ -241,14 +359,7 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
 
             using (var ms = new MemoryStream(block.BlockData))
             {
-                var emptyBuffer = new byte[4];
-                var empty = new byte[] {0xDE, 0xAD, 0xBE, 0xEF};
-
-                ms.Seek(-4, SeekOrigin.End);
-
-                ms.Read(emptyBuffer, 0, 4);
-
-                if (!emptyBuffer.SequenceEqual(empty))
+                if (!ContainsMagicBlock(block))
                 {
                     // Block without magic
                     magicBlock.IsMagicBlock = false;
@@ -275,6 +386,8 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
 
                     magicBlock.BlockData = new byte[blockDataLength];
                     ms.Read(magicBlock.BlockData, 0, blockDataLength);
+                    
+                    
                 }
             }
 

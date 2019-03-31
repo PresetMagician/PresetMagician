@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.ServiceModel;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -11,6 +12,7 @@ using GSF;
 using PresetMagician;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
+using PresetMagician.Utils;
 using PresetMagician.Utils.Logger;
 using PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx;
 using PresetMagician.VstHost.VST;
@@ -23,56 +25,10 @@ namespace PresetMagicianScratchPad
         [STAThread]
         static void Main(string[] args)
         {
-            AirMusicTech.ConvertFiles(AirMusicTech.TESTSETUP_VELVET);
-            
-            
-            //AirMusicTech.TestLoadInPlugin(AirMusicTech.TESTSETUP_HYBRID);
 
-            /*var culture = new System.Globalization.CultureInfo("en-US");
-            Thread.CurrentThread.CurrentCulture = culture;
-            TestAirMusicStuff();*/
+            AirMusicTech.ConvertFiles(AirMusicTech.TESTSETUP_VACUUMPRO);
 
-            //CompareStuff();
-
-            /*var outFile = @"C:\Program Files (x86)\AIR Music Technology\Hybrid\Presets\User\foo095.tfx";
-
-            var data = File.ReadAllBytes(@"C:\Program Files (x86)\AIR Music Technology\Hybrid\Presets\User\foo.tfx");
-            var floatVal = 0.95d;
-            
-            using (var ms = new MemoryStream(data))
-            {
-                ms.Seek(0x40, SeekOrigin.Begin);
-
-                for (var i = 0; i < 627; i++)
-                {
-                    var data2 = BigEndian.GetBytes(floatVal);
-                    ms.Write(data2, 0, data2.Length);
-                    ms.Seek(4, SeekOrigin.Current);
-                }
-                
-                File.WriteAllBytes(outFile, ms.ToArray());
-            }*/
-
-            /*var content = @"C:\Program Files (x86)\AIR Music Technology\Hybrid\Presets";
-            var file = @"User\foo10-2.tfx";
-            var parser = new TfxHybrid3();
-            parser.Parse(content, file);
-            
-            var index = 0;
-            var origValue = 1.0d;
-            foreach (var parameter in parser.Parameters)
-            {
-                if (Math.Round(parameter, 4) != Math.Round(origValue, 4))
-                {
-                    var change = (parameter / origValue) - 1;
-                    var absDiff = parameter - origValue;
-                    
-                    Debug.WriteLine($"{index} Parameter (orig): {Math.Round(origValue, 4)} found: {Math.Round(parameter, 4)} Change%: {Math.Round(change,4)} changeAbs: {absDiff}");
-                }
-
-
-                index++;
-            } */
+           
 
         }
         

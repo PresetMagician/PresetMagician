@@ -63,6 +63,16 @@ namespace PresetMagician.VendorPresetParser.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] AirFxSuiteEndChunk {
+            get {
+                object obj = ResourceManager.GetObject("AirFxSuiteEndChunk", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] BoomEndChunk {
             get {
                 object obj = ResourceManager.GetObject("BoomEndChunk", resourceCulture);

@@ -51,17 +51,17 @@ namespace PresetMagician.VendorPresetParser.u_he
         protected async Task<int> H2PScanBanks(string dataDirectoryName, string productName, bool userPresets,
             bool persist)
         {
-            PluginInstance.Plugin.Logger.Debug(
+            Logger.Debug(
                 $"Begin H2PScanBanks with dataDirectoryName {dataDirectoryName} product name {productName} and userPresets {userPresets}");
 
             var rootDirectory = GetPresetDirectory(dataDirectoryName, productName, userPresets);
-            PluginInstance.Plugin.Logger.Debug($"Parsing PresetDirectory {rootDirectory}");
+            Logger.Debug($"Parsing PresetDirectory {rootDirectory}");
 
             var directoryInfo = new DirectoryInfo(rootDirectory);
 
             if (!directoryInfo.Exists)
             {
-                PluginInstance.Plugin.Logger.Debug($"Directory {rootDirectory} does not exist");
+                Logger.Debug($"Directory {rootDirectory} does not exist");
                 return 0;
             }
 
@@ -73,7 +73,7 @@ namespace PresetMagician.VendorPresetParser.u_he
 
             var bank = RootBank.CreateRecursive(bankName);
             var count = await H2PScanBank(bank, directoryInfo, persist);
-            PluginInstance.Plugin.Logger.Debug("End H2PScanBanks");
+            Logger.Debug("End H2PScanBanks");
 
             return count;
         }
@@ -212,7 +212,7 @@ namespace PresetMagician.VendorPresetParser.u_he
                 }
                 catch (ArgumentException)
                 {
-                    PluginInstance.Plugin.Logger.Debug(
+                    Logger.Debug(
                         $"Unable to add metadata for type {type} with value {value} because {type} already exists.");
                 }
             }
@@ -243,9 +243,9 @@ namespace PresetMagician.VendorPresetParser.u_he
             }
             catch (IOException e)
             {
-                PluginInstance.Plugin.Logger.Error(
-                    $"Error while trying to resolve the shortcut {shortCutDataDirectoryName} because of {e.GetType().FullName}: {e.Message}");
-                PluginInstance.Plugin.Logger.Debug(e.StackTrace);
+                Logger.Error(
+                    $"Error while trying to resolve the shortcut {shortCutDataDirectoryName}: {e.GetType().FullName}: {e.Message}");
+                Logger.Debug(e.StackTrace);
             }
 
             if (isShortcut)
@@ -262,8 +262,8 @@ namespace PresetMagician.VendorPresetParser.u_he
                 return Path.Combine(dataDirectory, userPresets ? "UserPresets" : "Presets", productName);
             }
 
-            PluginInstance.Plugin.Logger.Error("Unable to find the data directory, aborting.");
-            PluginInstance.Plugin.Logger.Debug("Estimated shortcut directory name is " + shortCutDataDirectoryName);
+            Logger.Error($"Unable to find the data directory because {dataDirectoryName} is not a directory and no "+
+                         $"shortcut {shortCutDataDirectoryName} exists.");
             return null;
         }
     }

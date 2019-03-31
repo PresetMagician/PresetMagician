@@ -6,6 +6,7 @@ using Catel.IoC;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
+using PresetMagician.Utils.Logger;
 
 namespace PresetMagician.VendorPresetParser
 {
@@ -75,6 +76,7 @@ namespace PresetMagician.VendorPresetParser
         public IDataPersistence DataPersistence { get; set; }
         public virtual bool RequiresRescanWithEachRelease { get; } = false;
         public PresetParserConfiguration PresetParserConfiguration { get; set; }
+        public MiniLogger Logger { get; } = new MiniMemoryLogger();
 
         public List<int> GetSupportedPlugins()
         {

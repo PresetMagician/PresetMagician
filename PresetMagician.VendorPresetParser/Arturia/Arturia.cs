@@ -41,7 +41,7 @@ namespace PresetMagician.VendorPresetParser.Arturia
                 return;
             }
 
-            PluginInstance.Plugin.Logger.Debug($"Attempting to load arturia presets using {GetDatabasePath()}");
+            Logger.Debug($"Attempting to load arturia presets using the database at {GetDatabasePath()}");
             _db = new SQLiteConnection(GetDatabasePath());
         }
 

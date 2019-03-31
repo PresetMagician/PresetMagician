@@ -1,10 +1,11 @@
 using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Controls;
 
 namespace PresetMagician.Utils.Logger
 {
     public class MiniMemoryLogger : MiniLogger
     {
-        private const string _timeFormat = "yyyy-MM-dd HH:mm:ss:fff";
         private readonly bool _logToConsole;
 
         public MiniMemoryLogger(bool logToConsole = false)
@@ -12,18 +13,22 @@ namespace PresetMagician.Utils.Logger
             _logToConsole = logToConsole;
         }
 
-        public List<string> LogList = new List<string>();
+        public readonly List<string> LogList = new List<string>();
+        
 
         public override void Write(LogEntry logEntry)
         {
-            var logMessage =
-                $"{logEntry.DateTime.ToString(_timeFormat)} [{GetLogLevelShortCode(logEntry.LogLevel)}] {logEntry.Message}";
+            var logMessage = GetLogEntryAsText(logEntry);
             LogList.Add(logMessage);
+            
+            
 
             if (_logToConsole)
             {
                 System.Diagnostics.Debug.WriteLine(logMessage);
             }
+            
+            base.Write(logEntry);
         }
     }
 }

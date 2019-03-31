@@ -57,7 +57,7 @@ namespace PresetMagician.VendorPresetParser.Common
 
             if (!Directory.Exists(directory))
             {
-                PluginInstance.Plugin.Logger.Info($"Directory {directory} does not exist, skipping");
+                Logger.Info($"Directory {directory} does not exist, skipping");
                 return 0;
             }
 
@@ -91,9 +91,9 @@ namespace PresetMagician.VendorPresetParser.Common
                     }
                     catch (Exception e)
                     {
-                        PluginInstance.Plugin.Logger.Error(
+                        Logger.Error(
                             $"Error processing preset {file.FullName} because of {e.GetType().FullName}: {e.Message}");
-                        PluginInstance.Plugin.Logger.Debug(e.StackTrace);
+                        Logger.Debug(e.StackTrace);
                     }
                 }
             }

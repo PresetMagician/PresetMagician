@@ -19,7 +19,7 @@ namespace PresetMagician.VendorPresetParser.D16_Group
         protected async Task<int> ProcessD16PkgArchive(string archiveName, PresetBank bank, bool persist = true)
         {
             var count = 0;
-            PluginInstance.Plugin.Logger.Debug($"ProcessD16PKGArchive {archiveName}");
+            Logger.Debug($"ProcessD16PKGArchive {archiveName}");
             using (var archive = ZipFile.OpenRead(archiveName))
             {
                 var entry = archive.GetEntry("content");
@@ -63,7 +63,7 @@ namespace PresetMagician.VendorPresetParser.D16_Group
                 return count;
             }
 
-            PluginInstance.Plugin.Logger.Debug($"ProcessPresetDirectory {presetDirectory}");
+            Logger.Debug($"ProcessPresetDirectory {presetDirectory}");
             var dirInfo = new DirectoryInfo(presetDirectory);
 
             foreach (var file in dirInfo.EnumerateFiles("*" + Extension))

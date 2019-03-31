@@ -168,6 +168,8 @@
   </data>
   <data name="VelvetEndChunk" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\AIRMusicTechnology\VelvetEndChunk.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data> 
-  
+  </data>
+  <data name="AirFxSuiteEndChunk" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AIRMusicTechnology\AirFxSuiteEndChunk.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
 </root>

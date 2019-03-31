@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using JetBrains.Annotations;
+using MethodTimer;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.Utils;
@@ -286,7 +287,7 @@ namespace PresetMagician.VendorPresetParser.Spectrasonics
             }
         }
 
-
+[Time]
         public OmnisphereLibrary GetLibraryFilesystem(string libraryFile)
         {
             if (_omnisphereLibraryCache.ContainsKey(libraryFile))
@@ -415,6 +416,7 @@ namespace PresetMagician.VendorPresetParser.Spectrasonics
             return null;
         }
 
+        [Time]
         public void BuildMetadata()
         {
             foreach (var file in Files)

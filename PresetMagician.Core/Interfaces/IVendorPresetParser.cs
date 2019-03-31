@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using PresetMagician.Core.Models;
+using PresetMagician.Utils.Logger;
 
 namespace PresetMagician.Core.Interfaces
 {
@@ -30,6 +31,7 @@ namespace PresetMagician.Core.Interfaces
         IDataPersistence DataPersistence { get; set; }
 
         List<int> GetSupportedPlugins();
+        MiniLogger Logger { get; }
 
         Task DoScan();
         void OnAfterPresetExport();
