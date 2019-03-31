@@ -631,7 +631,7 @@ namespace PresetMagician.Tests.ModelTests
 
             _output.WriteLine("Updating metadata 2/2");
             var pluginsToRemove = await pluginService.UpdateMetadata(globalService.Plugins, progress);
-            globalService.Plugins.RemoveItems(pluginsToRemove);
+            globalService.Plugins.RemoveItems(pluginsToRemove.removedPlugins);
 
             applicationService.GetApplicationOperationErrors().Should().BeEmpty();
             globalService.Plugins.Count.Should().Be(1);

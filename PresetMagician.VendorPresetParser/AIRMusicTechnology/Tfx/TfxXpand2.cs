@@ -1,5 +1,5 @@
 using System.IO;
-using System.Linq;
+using System.Text;
 using Catel.IO;
 using GSF;
 using PresetMagician.VendorPresetParser.Properties;
@@ -9,7 +9,9 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
     public class TfxXpand2 : Tfx
     {
         public override byte[] BlockMagic { get; } = {0x0C, 0x0B, 0xA2, 0x28};
-
+        public override bool IncludeMidi { get; } = true;
+        public override bool IncludePatchNameAtEnd { get; } = true;
+        
         public override void PostProcess()
         {
             // Fix for some tfx files not containing all required parameters
@@ -52,25 +54,9 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
                 Parameters.Add(0.16666); // Part D PB Range
             }
 
-            using (var ms = new MemoryStream())
-            {
-                ms.Write(LittleEndian.GetBytes(PatchName.Length + 1), 0, 4);
-                ms.Write(PatchName, 0, PatchName.Length);
-                ms.WriteByte(0);
-
-                EndChunk = VendorResources.Xpand2EndChunk
-                    .Concat(ms.ToByteArray()).ToArray();
-            }
-
-            ParseMidi();
-        }
-
-        public override byte[] GetBlockDataToWrite()
-        {
             if (!WzooBlock.IsMagicBlock)
             {
-                WzooBlock.PluginName = new byte[]
-                    {0x00, 0x58, 0x00, 0x70, 0x00, 0x61, 0x00, 0x6e, 0x00, 0x64, 0x00, 0x21, 0x00, 0x32};
+                WzooBlock.PluginName = Encoding.BigEndianUnicode.GetBytes(GetMagicBlockPluginName());
                 WzooBlock.IsMagicBlock = true;
 
                 var oldData = WzooBlock.BlockData;
@@ -88,62 +74,30 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
                     ms.Write(oldData, 0, oldData.Length);
 
                     //add deadbeef
-                    ms.WriteByte(0xDE);
-                    ms.WriteByte(0xAD);
-                    ms.WriteByte(0xBE);
-                    ms.WriteByte(0xEF);
+                    ms.Write(DEADBEEF, 0, DEADBEEF.Length);
 
                     WzooBlock.BlockData = ms.ToByteArray();
                 }
             }
             else
             {
-                WzooBlock.PluginName = WzooBlock.PluginName.Concat(new byte[] {0x00, 0x32}).ToArray();
+                WzooBlock.PluginName = Encoding.BigEndianUnicode.GetBytes(GetMagicBlockPluginName());
             }
+        }
 
-            if (!MidiBlock.IsMagicBlock)
-            {
-                MidiBlock.PluginName = new byte[]
-                    {0x00, 0x58, 0x00, 0x70, 0x00, 0x61, 0x00, 0x6e, 0x00, 0x64, 0x00, 0x21, 0x00, 0x32};
-                MidiBlock.IsMagicBlock = true;
+        public override byte[] GetMidiData()
+        {
+            return VendorResources.Xpand2DefaultMidi;
+        }
 
-                using (var ms = new MemoryStream())
-                {
-                    // add 4 null bytes
-                    ms.WriteByte(0x00);
-                    ms.WriteByte(0x00);
-                    ms.WriteByte(0x00);
-                    ms.WriteByte(0x00);
-
-                    // add 4 FF bytes
-                    ms.WriteByte(0xFF);
-                    ms.WriteByte(0xFF);
-                    ms.WriteByte(0xFF);
-                    ms.WriteByte(0xFF);
-
-                    //add block length
-                    ms.Write(BigEndian.GetBytes(VendorResources.Xpand2DefaultMidi.Length), 0, 4);
-                    ms.Write(VendorResources.Xpand2DefaultMidi, 0, VendorResources.Xpand2DefaultMidi.Length);
-
-                    //add deadbeef
-                    ms.WriteByte(0xDE);
-                    ms.WriteByte(0xAD);
-                    ms.WriteByte(0xBE);
-                    ms.WriteByte(0xEF);
-
-                    MidiBlock.BlockData = ms.ToByteArray();
-                }
-            }
-            else
-            {
-                MidiBlock.PluginName = MidiBlock.PluginName.Concat(new byte[] {0x00, 0x32}).ToArray();
-            }
-
-
-            var data = WzooBlock.GetDataToWrite().Concat(MidiBlock.GetDataToWrite()).ToArray();
-
-
-            return data;
+        public override string GetMagicBlockPluginName()
+        {
+            return "Xpand!2";
+        }
+        
+        public override byte[] GetEndChunk()
+        {
+            return VendorResources.Xpand2EndChunk;
         }
     }
 }

@@ -2,10 +2,9 @@ using System.IO;
 
 namespace PresetMagician.Utils.Logger
 {
-    public class MiniDiskLogger : MiniLogger
+    public class MiniDiskLogger : MiniMemoryLogger
     {
-        private const string _timeFormat = "yyyy-MM-dd HH:mm:ss:fff";
-        private static object _fileLock = new object();
+        private static readonly object _fileLock = new object();
         public string LogFilePath { get; }
 
         public MiniDiskLogger(string logFilePath)
@@ -18,14 +17,17 @@ namespace PresetMagician.Utils.Logger
         {
             lock (_fileLock)
             {
-                var logMessage =
-                    $"{logEntry.DateTime.ToString(_timeFormat)} [{GetLogLevelShortCode(logEntry.LogLevel)}] {logEntry.Message}";
+                var logMessage = GetLogEntryAsText(logEntry);
 
                 var logStream = new FileStream(LogFilePath, FileMode.Append);
                 var logStreamWriter = new StreamWriter(logStream);
                 logStreamWriter.WriteLine(logMessage);
                 logStreamWriter.Close();
             }
+            
+            base.Write(logEntry);
         }
+        
+        
     }
 }

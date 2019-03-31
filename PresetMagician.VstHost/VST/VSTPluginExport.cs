@@ -11,6 +11,7 @@ using Jacobi.Vst.Interop.Host;
 using MethodTimer;
 using NAudio.Wave;
 using PresetMagician.Core.Models;
+using PresetMagician.Utils;
 
 namespace PresetMagician.VstHost.VST
 {
@@ -98,15 +99,8 @@ namespace PresetMagician.VstHost.VST
 
         public string GetNKSFPluginName(string pluginName)
         {
-            foreach (var c in Path.GetInvalidPathChars())
-            {
-                pluginName = pluginName.Replace(c, '_');
-            }
-
-            foreach (var c in Path.GetInvalidFileNameChars())
-            {
-                pluginName = pluginName.Replace(c, '_');
-            }
+            pluginName = PathUtils.SanitizeDirectory(pluginName);
+            pluginName = PathUtils.SanitizeFilename(pluginName);
 
             return pluginName;
         }
@@ -115,16 +109,9 @@ namespace PresetMagician.VstHost.VST
         {
             // Returns the sanitized preset name
 
-            foreach (var c in Path.GetInvalidFileNameChars())
-            {
-                presetName = presetName.Replace(c, '_');
-            }
-
-            foreach (var c in Path.GetInvalidPathChars())
-            {
-                presetName = presetName.Replace(c, '_');
-            }
-
+            presetName = PathUtils.SanitizeDirectory(presetName);
+            presetName = PathUtils.SanitizeFilename(presetName);
+           
             return presetName;
         }
 
@@ -148,16 +135,10 @@ namespace PresetMagician.VstHost.VST
             foreach (var bn in bankPath)
             {
                 var bankName = bn;
-                foreach (var c in Path.GetInvalidPathChars())
-                {
-                    bankName = bankName.Replace(c, '_');
-                }
-
-                foreach (var c in Path.GetInvalidFileNameChars())
-                {
-                    bankName.Replace(c, '_');
-                }
-
+                
+                bankName = PathUtils.SanitizeDirectory(bankName);
+                bankName = PathUtils.SanitizeFilename(bankName);
+              
                 bankName = bankName.Replace("/", "-");
                 bankNames.Add(bankName);
             }

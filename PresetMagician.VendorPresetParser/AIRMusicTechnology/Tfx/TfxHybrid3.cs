@@ -209,8 +209,11 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
             {
                 throw new Exception("Unknown block length");
             }
-
-            EndChunk = VendorResources.Hybrid3EndChunk;
+        }
+        
+        public override byte[] GetEndChunk()
+        {
+            return VendorResources.Hybrid3EndChunk;
         }
 
         private double MigratePitchModSource(double value)

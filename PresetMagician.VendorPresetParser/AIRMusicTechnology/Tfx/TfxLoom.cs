@@ -33,9 +33,11 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
             {
                 WzooBlock.BlockData[pos + i] = PatchName[i];
             }
+        }
 
-
-            EndChunk = VendorResources.LoomClassicEndChunk;
+        public override byte[] GetEndChunk()
+        {
+            return VendorResources.LoomClassicEndChunk;
         }
     }
 }

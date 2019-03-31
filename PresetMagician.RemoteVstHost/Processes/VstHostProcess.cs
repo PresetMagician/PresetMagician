@@ -43,7 +43,7 @@ namespace PresetMagician.RemoteVstHost.Processes
                 waitCounter++;
                 Thread.Sleep(100);
 
-                if (waitCounter > 40)
+                if (waitCounter > 100)
                 {
                     throw new Exception("Did not start within the timeout period");
                 }

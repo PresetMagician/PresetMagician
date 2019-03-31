@@ -48,7 +48,7 @@ namespace PresetMagician.VendorPresetParser.AudioThing
 
             if (pathsAttribute == null)
             {
-                PluginInstance.Plugin.Logger.Error("The settings file does not contain bank paths.");
+                Logger.Error($"The settings file {settingsFile} does not contain bank paths.");
                 return dirs;
             }
 

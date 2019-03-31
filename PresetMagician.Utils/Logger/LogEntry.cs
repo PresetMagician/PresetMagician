@@ -28,14 +28,16 @@ namespace PresetMagician.Utils.Logger
             LogLevel = LogLevel.Info;
         }
 
-        public LogEntry(LogLevel logLevel, string message)
+        public LogEntry(LogLevel logLevel, string message, LogOperation operation = null)
         {
             DateTime = DateTime.Now;
             Message = message;
-            LogLevel = LogLevel.Info;
+            LogLevel = logLevel;
+            Operation = operation;
         }
 
 
+        public LogOperation Operation { get; set; }
         public LogLevel LogLevel { get; set; }
         public DateTime DateTime { get; set; }
         public string Message { get; set; }
