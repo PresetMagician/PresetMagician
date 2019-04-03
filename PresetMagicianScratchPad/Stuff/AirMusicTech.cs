@@ -27,10 +27,85 @@ namespace PresetMagicianScratchPad.Stuff
             throw new NotImplementedException();
         }
     }
-
+    
     [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
     public static class AirMusicTech
     {
+        public static void CreatePresetParserCode()
+        {
+            var testSetups = AirMusicTech.GetTestSetups();
+
+            var ppDirectory =
+                @"C:\Users\Drachenkatze\source\repos\presetmagician\PresetMagician.VendorPresetParser\AIRMusicTechnology";
+            var ppTemplate = Path.Combine(ppDirectory, "AirTech_Template.txt");
+            var tfxDirectory = Path.Combine(ppDirectory, "Tfx");
+            var tfxTemplate = Path.Combine(tfxDirectory, "TfxTemplate.txt");
+
+            foreach (var testSetup in testSetups)
+            {
+                var parser = AirMusicTech.GetTfxByName(testSetup.TfxParserType);
+                if (parser != null)
+                {
+                    continue;
+                }
+
+                var result = AirMusicTech.GetChunkFromPlugin(testSetup);
+                var chunkResult = AirMusicTech.AnalyzeChunk(result.Item1, testSetup.TfxParserType);
+                var tfxResult = AirMusicTech.AnalyzeTfx(Path.Combine(testSetup.PresetDirectory, "Default.tfx"));
+                if (chunkResult.HasMidi && chunkResult.HasPresetNameAtEnd
+                                        && chunkResult.HasEmptyMidi &&
+                                        chunkResult.NumParameters == tfxResult.NumParameters)
+                {
+                    //if (chunkResult.EndChunk.SequenceEqual(PresetMagician.VendorPresetParser.VendorResources.AirFxSuiteEndChunk))
+                    var className = testSetup.TfxParserType.Replace("Tfx", "");
+                    var pluginDir = testSetup.PresetDirectory
+                        .Replace(@"C:\Program Files (x86)\AIR Music Technology\", "").Replace(@"\Presets", "");
+                    var text = File.ReadAllText(ppTemplate);
+                    var outputFile = Path.Combine(ppDirectory, $"AirTech_{className}.cs");
+                    text = text.Replace("--PPCLASSNAME--", className);
+                    text = text.Replace("--PLUGINID--", result.Item2.ToString());
+                    text = text.Replace("--PLUGINDIR--", pluginDir);
+                    text = text.Replace("--TFXPARSER--", testSetup.TfxParserType);
+
+                    if (!File.Exists(outputFile))
+                    {
+                        File.WriteAllText(outputFile, text);
+                    }
+                    else
+                    {
+                        throw new Exception("Output file exists");
+                    }
+                    
+                    var text2 = File.ReadAllText(tfxTemplate);
+                    var outputFile2 = Path.Combine(tfxDirectory, $"{testSetup.TfxParserType}.cs");
+                    
+                    text2 = text2.Replace("--TFXPARSER--", testSetup.TfxParserType);
+
+                    for (var i = 0; i < chunkResult.BlockMagic.Length; i++)
+                    {
+                        text2 = text2.Replace($"--BLOCKMAGIC{i+1}--", string.Format("{0:x2}",chunkResult.BlockMagic[i]));
+                    }
+                    
+                    text2 = text2.Replace("--MAGICPLUGINNAME--", chunkResult.PluginName);
+                    
+                    if (!File.Exists(outputFile2))
+                    {
+                        File.WriteAllText(outputFile2, text2);
+                    }
+                    else
+                    {
+                        throw new Exception("Output file 2 exists");
+                    }
+
+                }
+                Console.WriteLine($"HasMidi: {chunkResult.HasMidi}");
+                Console.WriteLine($"HasPresetNameAtEnd: {chunkResult.HasPresetNameAtEnd}");
+                Console.WriteLine($"PluginName: {chunkResult.PluginName}");
+                Console.WriteLine($"BlockMagic: {StringUtils.ByteArrayToString(chunkResult.BlockMagic)}");
+                
+//                @"C:\Users\Drachenkatze\Documents\PresetMagician\ScratchPad\test.bin");
+            }
+        }
         public static void TestLoadInPlugin(AirMusicTechTestSetup testSetup)
         {
             var directory = GetTestDirectory(testSetup);
