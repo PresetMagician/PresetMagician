@@ -101,8 +101,8 @@ namespace PresetMagician.Core.Services
                 var stat = new PresetDatabaseStatistic();
                 stat.PluginName = plugin.PluginName;
                 stat.PresetCount = plugin.Presets.Count;
-                stat.PresetUncompressedSize = (from p in plugin.Presets select p.PresetSize).Sum();
-                stat.PresetCompressedSize = (from p in plugin.Presets select p.PresetCompressedSize).Sum();
+                stat.PresetUncompressedSize = (from p in plugin.Presets select (long)p.PresetSize).Sum();
+                stat.PresetCompressedSize = (from p in plugin.Presets select (long)p.PresetCompressedSize).Sum();
                 stats.Add(stat);
             }
 

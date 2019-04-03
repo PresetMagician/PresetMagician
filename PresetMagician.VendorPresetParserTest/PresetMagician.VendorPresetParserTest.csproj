@@ -90,7 +90,7 @@
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />
     <Content Include="TestData\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="test.fxp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
