@@ -417,7 +417,7 @@ namespace PresetMagician.Core.Models
         public bool HasMetadata => PluginLocation != null && PluginLocation.HasMetadata;
 
 
-        public bool RequiresMetadataScan => IsEnabled && !HasMetadata;
+        public bool RequiresMetadataScan => IsEnabled && (!HasMetadata || PluginLocation?.PresetParser == null);
 
         /// <summary>
         /// Defines if the plugin is supported

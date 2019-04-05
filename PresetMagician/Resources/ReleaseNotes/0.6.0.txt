@@ -4,7 +4,8 @@ Release Notes for PresetMagician 0.6.0
 This release includes many changes, which could also introduce many new bugs. I took my time to test many possible
 scenarios, but due to the complexity PresetMagician now has, it's impossible to test everything.
 
-Please make sure you report bugs using the new "Report Bug" functionality, so I can fix these bugs quickly.
+Please make sure you report bugs using the new "Report Bug" functionality, so I can fix these bugs quickly. Should the
+bug reporter crash for any reason, you can also email me at felicia@drachenkatze.org.
 
 Note to users of previous versions
 ==================================

@@ -68,6 +68,13 @@ namespace PresetMagician
                     try
                     {
                         await _presetDataPersisterService.OpenDatabase();
+
+                        if (pluginPreset.Plugin.PresetParser == null)
+                        {
+                            _applicationService.AddApplicationOperationError(
+                                $"Unable to update export presets for {pluginPreset.Plugin.PluginName} because it has no Preset Parser. Try to force-reload metadata for this plugin.");
+                            continue;
+                        }
                         using (var remotePluginInstance =
                             _remoteVstService.GetRemotePluginInstance(pluginPreset.Plugin, false))
                         {
@@ -122,7 +129,7 @@ namespace PresetMagician
                     catch (Exception e)
                     {
                         _applicationService.AddApplicationOperationError(
-                            $"Unable to update export presets because of {e.GetType().FullName}: {e.Message}");
+                            $"Unable to update export presets for {pluginPreset.Plugin.PluginName} because of {e.GetType().FullName}: {e.Message}");
                         LogTo.Debug(e.StackTrace);
                     }
 

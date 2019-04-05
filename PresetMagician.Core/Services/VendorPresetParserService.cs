@@ -152,7 +152,7 @@ namespace PresetMagician.Core.Services
                 return;
             }
 
-            if (!pluginInstance.Plugin.HasMetadata)
+            if (!pluginInstance.Plugin.PluginLocation.HasMetadata)
             {
                 throw new NoMetadataAvailableException(pluginInstance);
             }
