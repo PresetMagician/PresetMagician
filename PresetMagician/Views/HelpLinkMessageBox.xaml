@@ -37,23 +37,33 @@
             <Label Style="{DynamicResource MessageBoxLabelStyle}" VerticalAlignment="Top"
                    Tag="{Binding Icon, Converter={converters:MessageImageToTextConverter}}" />
             <DockPanel>
-                <ScrollViewer DockPanel.Dock="Top" MaxHeight="400" VerticalScrollBarVisibility="Auto"
-                              HorizontalScrollBarVisibility="Hidden">
-                    <StackPanel Orientation="Vertical">
+                <Grid DockPanel.Dock="Top" MaxHeight="400">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Orientation="Vertical" CanVerticallyScroll="True">
                         <TextBox BorderThickness="0" IsReadOnly="True" Background="Transparent" TextWrapping="Wrap"
                                  MaxWidth="360" HorizontalAlignment="Stretch" Margin="0 0 0 10"
                                  Text="{Binding Message}" />
+                       
                     </StackPanel>
-                </ScrollViewer>
+                    <StackPanel Grid.Row="1" Margin="0,15,0,0" Orientation="Vertical">
+                       
 
-                <orccontrols:LinkLabel
-                    Visibility="{Binding HasHelpLink, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}"
-                    Content="View information in the online manual"
-                    Url="{Binding FinalHelpLink}"
-                    ClickBehavior="OpenUrlInBrowser" />
+                        <CheckBox Content="{Binding DontText}" IsChecked="{Binding DontResult}" Margin="0,0,0,4"
+                                  Visibility="{Binding ShowDont, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}" />
+                        
+                        <orccontrols:LinkLabel
+                            Visibility="{Binding HasHelpLink, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}"
+                            Content="View information in the online manual"
+                            Url="{Binding FinalHelpLink}"
+                            ClickBehavior="OpenUrlInBrowser" />
+                    </StackPanel>
+                </Grid>
 
-                <CheckBox Content="{Binding DontAskAgainText}" IsChecked="{Binding DontAskAgainResult}"
-                          Visibility="{Binding ShowDontAskAgain, Converter={StaticResource BooleanToCollapsingVisibilityConverter}}" />
+                
+                
                 <StackPanel Orientation="Horizontal" Margin="0 10 0 0" HorizontalAlignment="Right"
                             VerticalAlignment="Bottom">
                     <Button Content="{catel:LanguageBinding OK}" Command="{Binding OkCommand}" Width="80"

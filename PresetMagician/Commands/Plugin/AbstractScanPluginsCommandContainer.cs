@@ -188,7 +188,7 @@ progress = _applicationService.GetApplicationProgress();
 
             if (unreportedPlugins.Any())
             {
-                var result = await _messageService.ShowAsyncWithDontAskAgain(
+                var result = await _messageService.ShowCustomRememberMyChoiceDialogAsync(
                     "There are unsupported plugins which are not reported." +
                     Environment.NewLine +
                     "Would you like to report them, so we can implement support for them?",
@@ -201,7 +201,7 @@ progress = _applicationService.GetApplicationProgress();
                     _commandManager.ExecuteCommand(Commands.Plugin.ReportUnsupportedPlugins);
                 }
 
-                if (result.dontAskAgainChecked)
+                if (result.dontChecked)
                 {
                     foreach (var plugin in unreportedPlugins)
                     {

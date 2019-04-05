@@ -29,7 +29,7 @@ namespace PresetMagician.Views
             var serviceLocator = ServiceLocator.Default;
 
             var themeService = serviceLocator.ResolveType<IThemeService>();
-            ThemeHelper.EnsureApplicationThemes(GetType().Assembly, themeService.ShouldCreateStyleForwarders());
+            //ThemeHelper.EnsureApplicationThemes(GetType().Assembly, themeService.ShouldCreateStyleForwarders());
 
             InitializeComponent();
 

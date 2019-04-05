@@ -442,7 +442,7 @@ namespace PresetMagician.RemoteVstHost.Services
         }
 
         public void ExportNksAudioPreview(Guid pluginGuid, PresetExportInfo preset, byte[] presetData,
-            string userContentDirectory, int initialDelay)
+            int initialDelay)
         {
             App.Ping();
             var plugin = GetPluginByGuid(pluginGuid);
@@ -453,7 +453,7 @@ namespace PresetMagician.RemoteVstHost.Services
 
             try
             {
-                var exporter = new NKSExport(_vstHost) {UserContentDirectory = userContentDirectory};
+                var exporter = new NKSExport(_vstHost);
                 exporter.ExportPresetAudioPreviewRealtime(plugin, preset, presetData, initialDelay);
             }
             catch (Exception e)
@@ -462,12 +462,12 @@ namespace PresetMagician.RemoteVstHost.Services
             }
         }
 
-        public void ExportNks(Guid pluginGuid, PresetExportInfo preset, byte[] presetData, string userContentDirectory)
+        public void ExportNks(Guid pluginGuid, PresetExportInfo preset, byte[] presetData)
         {
             App.Ping();
             try
             {
-                var exporter = new NKSExport(_vstHost) {UserContentDirectory = userContentDirectory};
+                var exporter = new NKSExport(_vstHost);
                 exporter.ExportNKSPreset(preset, presetData);
             }
             catch (Exception e)

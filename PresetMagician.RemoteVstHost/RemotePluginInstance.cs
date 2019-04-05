@@ -146,15 +146,15 @@ namespace PresetMagician.RemoteVstHost
             return _remoteVstService.GetCurrentProgramName(_guid);
         }
 
-        public void ExportNksAudioPreview(PresetExportInfo preset, byte[] presetData, string userContentDirectory,
+        public void ExportNksAudioPreview(PresetExportInfo preset, byte[] presetData,
             int initialDelay)
         {
-            _remoteVstService.ExportNksAudioPreview(_guid, preset, presetData, userContentDirectory, initialDelay);
+            _remoteVstService.ExportNksAudioPreview(_guid, preset, presetData, initialDelay);
         }
 
-        public void ExportNks(PresetExportInfo preset, byte[] presetData, string userContentDirectory)
+        public void ExportNks(PresetExportInfo preset, byte[] presetData)
         {
-            _remoteVstService.ExportNks(_guid, preset, presetData, userContentDirectory);
+            _remoteVstService.ExportNks(_guid, preset, presetData);
         }
 
         public bool OpenEditor(bool topmost = true)

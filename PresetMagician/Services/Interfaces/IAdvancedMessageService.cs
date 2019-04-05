@@ -12,7 +12,16 @@ namespace PresetMagician.Services.Interfaces
         Task<MessageResult> ShowAsync(string message, string caption = "", string helpLink = null,
             MessageButton button = MessageButton.OK, MessageImage icon = MessageImage.None);
 
-        Task<(MessageResult result, bool dontAskAgainChecked)> ShowAsyncWithDontAskAgain(string message,
+
+        Task<MessageResult> ShowRememberMyChoiceDialogAsync(string message,string rememberMyChoiceId,
+            string caption = "", string helpLink = null, MessageButton button = MessageButton.OK,
+            MessageImage icon = MessageImage.None, string dontAskAgainText = "");
+
+        Task<MessageResult> ShowAsyncWithDontShowAgain(string message,string dontShowAgainId,
+            string caption = "", string helpLink = null,
+            MessageImage icon = MessageImage.None, string dontText = "");
+
+        Task<(MessageResult result, bool dontChecked)> ShowCustomRememberMyChoiceDialogAsync(string message,
             string caption = "", string helpLink = null, MessageButton button = MessageButton.OK,
             MessageImage icon = MessageImage.None, string dontAskAgainText = "");
     }

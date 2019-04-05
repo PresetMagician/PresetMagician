@@ -5,6 +5,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Anotar.Catel;
@@ -20,6 +21,7 @@ using Orc.Squirrel;
 using Orchestra.Services;
 using PresetMagician.Core.Commands.Plugin;
 using PresetMagician.Core.Interfaces;
+using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
 using PresetMagician.Legacy.Services;
 using PresetMagician.Legacy.Services.EventArgs;
@@ -66,6 +68,8 @@ namespace PresetMagician.Services
         #endregion Constructors
 
         #region Methods
+        
+       
 
         [Time]
         public override async Task InitializeBeforeCreatingShellAsync()
@@ -94,6 +98,11 @@ namespace PresetMagician.Services
                     migrationService.LoadData();
                     migrationService.MigratePlugins();
                 }).ConfigureAwait(false);
+
+                _serviceLocator.ResolveType<GlobalService>().RuntimeConfiguration.FileOverwriteMode =
+                    PresetExportInfo.FileOverwriteMode.FORCE_OVERWRITE;
+                _serviceLocator.ResolveType<GlobalService>().RuntimeConfiguration.FolderExportMode =
+                    PresetExportInfo.FolderExportMode.ONE_LEVEL_LAST_BANK;
             }
 
 
@@ -116,6 +125,9 @@ namespace PresetMagician.Services
                 
                 globalService.Plugins.Add(plugin);
             }
+
+            dataPersistenceService.LoadDontShowAgainDialogs();
+            dataPersistenceService.LoadRememberMyChoiceResults();
         }
 
         [Time]

@@ -635,11 +635,11 @@ namespace PresetMagician.VendorPresetParserTest
         }
 
         public void ExportNksAudioPreview(Guid pluginGuid, PresetExportInfo preset, byte[] presetData,
-            string userContentDirectory, int initialDelay)
+             int initialDelay)
         {
         }
 
-        public void ExportNks(Guid pluginGuid, PresetExportInfo preset, byte[] presetData, string userContentDirectory)
+        public void ExportNks(Guid pluginGuid, PresetExportInfo preset, byte[] presetData)
         {
         }
     }
