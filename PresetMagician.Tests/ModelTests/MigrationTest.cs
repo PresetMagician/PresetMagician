@@ -39,18 +39,23 @@ namespace PresetMagician.Tests.ModelTests
             File.Delete(ApplicationDatabaseContext.DefaultDatabasePath + ".old");
             var presetDataPersisterService = new PresetDataPersisterService();
             presetDataPersisterService.OpenDatabase().Wait();
-            var service = Fixture.GetServiceLocator().ResolveType<Ef6MigrationService>();
-            service.LoadData();
+            var migrationService = Fixture.GetServiceLocator().ResolveType<Ef6MigrationService>();
+            var persisterService = Fixture.GetServiceLocator().ResolveType<DataPersisterService>();
+            
+            migrationService.LoadData();
             _output.WriteLine($"Loading took {sw.ElapsedMilliseconds}ms");
 
-            foreach (var oldPlugin in service.OldPlugins)
+            foreach (var oldPlugin in migrationService.OldPlugins)
             {
-                var newPlugin = service.MigratePlugin(oldPlugin);
+                var newPlugin = migrationService.MigratePlugin(oldPlugin);
 
-                ComparePlugin(oldPlugin, newPlugin);
+                var storageFile = persisterService.GetPluginStorageFile(newPlugin);
+                var loadedPlugin = persisterService.LoadPlugin(storageFile);
+                persisterService.LoadPresetsForPlugin(loadedPlugin).Wait();
+                ComparePlugin(oldPlugin, loadedPlugin);
             }
 
-            service.MigratePlugins();
+            migrationService.MigratePlugins();
 
             File.Exists(ApplicationDatabaseContext.DefaultDatabasePath).Should().BeFalse();
             File.Exists(ApplicationDatabaseContext.DefaultDatabasePath + ".old").Should().BeTrue();

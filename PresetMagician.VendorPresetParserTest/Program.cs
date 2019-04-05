@@ -650,7 +650,7 @@ namespace PresetMagician.VendorPresetParserTest
 
         public event EventHandler<PresetUpdatedEventArgs> PresetUpdated;
 #pragma warning disable 1998
-        public async Task PersistPreset(PresetParserMetadata presetMetadata, byte[] data)
+        public async Task PersistPreset(PresetParserMetadata presetMetadata, byte[] data, bool force = false)
 #pragma warning restore 1998
         {
             var preset = new Preset();
