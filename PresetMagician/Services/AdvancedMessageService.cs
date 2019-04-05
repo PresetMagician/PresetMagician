@@ -234,5 +234,49 @@ namespace PresetMagician.Services
 
             return tcs.Task;
         }
+        
+        public Task<MessageResult> ShowOnceAsync(string message,string dontShowAgainId,
+            string caption = "", string helpLink = null,
+            MessageImage icon = MessageImage.None)
+        {
+            Argument.IsNotNullOrWhitespace("message", message);
+
+            var tcs = new TaskCompletionSource<MessageResult>();
+
+            if (_globalService.DontShowAgainDialogs.Contains(dontShowAgainId))
+            {
+                tcs.TrySetResult(MessageResult.OK);
+                return tcs.Task;
+            }
+
+#pragma warning disable AvoidAsyncVoid
+            _dispatcherService.BeginInvoke(async () =>
+#pragma warning restore AvoidAsyncVoid
+            {
+                var previousCursor = Mouse.OverrideCursor;
+                Mouse.OverrideCursor = null;
+
+                var vm = _viewModelFactory.CreateViewModel<HelpLinkMessageBoxViewModel>(null, null);
+
+                vm.Message = message;
+                vm.Button = MessageButton.OK;
+                vm.Icon = icon;
+                vm.HelpLink = helpLink;
+                vm.DontMode = DontMode.SHOW_ONCE;
+                vm.DontId = dontShowAgainId;
+
+              
+
+                vm.SetTitle(caption);
+
+                await _uiVisualizerService.ShowDialogAsync(vm);
+
+                Mouse.OverrideCursor = previousCursor;
+
+                tcs.TrySetResult(vm.Result);
+            });
+
+            return tcs.Task;
+        }
     }
 }
