@@ -36,6 +36,7 @@ namespace PresetMagician.Legacy.Services
         public void LoadData()
         {
             _dbContext = new ApplicationDatabaseContext();
+            _dbContext.Migrate();
             OldPlugins = _dbContext.Plugins.Include(plugin => plugin.AdditionalBankFiles)
                 .Include(plugin => plugin.PluginLocation).ToList();
             OldModes = _dbContext.Modes.ToList();
