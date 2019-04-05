@@ -253,14 +253,19 @@ namespace PresetMagician.Tests.ModelTests
             existingPresetExportInfo.UserContentDirectory = outputDir;
             existingPresetExportInfo.FolderMode = PresetExportInfo.FolderExportMode.ONE_LEVEL_LAST_BANK;
 
-            exporter.Invoking(p => p.ExportNKSPreset(existingPresetExportInfo, new byte[] {0xFF})).Should()
-                .Throw<NksExportException>();
+            existingPresetExportInfo.CanExport().Should().BeFalse();
 
+            existingPresetExportInfo = new PresetExportInfo(existingDefaultPreset);
+            existingPresetExportInfo.UserContentDirectory = outputDir;
+            existingPresetExportInfo.FolderMode = PresetExportInfo.FolderExportMode.ONE_LEVEL_LAST_BANK;
             existingPresetExportInfo.OverwriteMode = PresetExportInfo.FileOverwriteMode.APPEND_GUID;
 
             MakeRelative(existingPresetExportInfo).Should()
                 .Be(@"SuperDuperPlugin\Crazy\Default.ffffff11-6856-ffff-863b-d90b3240b085"+expectedExtension);
             
+            existingPresetExportInfo = new PresetExportInfo(existingDefaultPreset);
+            existingPresetExportInfo.UserContentDirectory = outputDir;
+            existingPresetExportInfo.FolderMode = PresetExportInfo.FolderExportMode.ONE_LEVEL_LAST_BANK;
             existingPresetExportInfo.OverwriteMode = PresetExportInfo.FileOverwriteMode.FORCE_OVERWRITE;
 
             MakeRelative(existingPresetExportInfo).Should()

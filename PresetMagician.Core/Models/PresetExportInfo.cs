@@ -95,7 +95,7 @@ namespace PresetMagician.Core.Models
         }
         
         public string CannotExportReason { get; private set; }= "";
-        private bool _canExport;
+        private bool _canExport = true;
         private string _outputFilename;
 
         [DataMember]

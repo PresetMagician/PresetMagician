@@ -68,7 +68,7 @@ namespace PresetMagician
                     try
                     {
                         await _presetDataPersisterService.OpenDatabase();
-                        using (var remotePluginInstance = 
+                        using (var remotePluginInstance =
                             _remoteVstService.GetRemotePluginInstance(pluginPreset.Plugin, false))
                         {
                             foreach (var preset in pluginPreset.Presets)
@@ -94,7 +94,8 @@ namespace PresetMagician
                                 if (!presetExportInfo.CanExport())
                                 {
                                     _applicationService.AddApplicationOperationError(
-                                        presetExportInfo.CannotExportReason);
+                                        $"Cannot export {preset.Preset.Plugin} -{preset.Preset.Metadata.PresetName}. "+
+                                        $"Reason: {presetExportInfo.CannotExportReason}");
                                     continue;
                                 }
 
