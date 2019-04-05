@@ -277,6 +277,12 @@ progress = _applicationService.GetApplicationProgress();
                             }
                         }
 
+                        if (plugin.PresetParser == null)
+                        {
+                            throw new Exception(
+                                $"Plugin {plugin.DllPath} has no preset parser. Please report this as a bug.");
+                        }
+
 
                         var wasLoaded = remotePluginInstance.IsLoaded;
                         plugin.PresetParser.PluginInstance = remotePluginInstance;
@@ -354,8 +360,8 @@ progress = _applicationService.GetApplicationProgress();
                         $"Unable to analyze {plugin.DllFilename} because of {e.GetType().FullName}: {e.Message}";
                     _applicationService.AddApplicationOperationError(errorMessage + " - see plugin log for details");
                 }
-
-                if (plugin.PresetParser.Logger.HasLoggedEntries(LogLevel.Error))
+                
+                if (plugin.PresetParser != null && plugin.PresetParser.Logger.HasLoggedEntries(LogLevel.Error))
                 {
                     var errors = plugin.PresetParser.Logger.GetFilteredLogEntries(new List<LogLevel> {LogLevel.Error});
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Anotar.Catel;
 using Catel.Collections;
 using Catel.Services;
 using Catel.Windows.Threading;
@@ -239,7 +240,7 @@ namespace PresetMagician.Core.Services
                     {
                         if (pluginLocation.IsPresent &&
                             pluginLocation.LastFailedAnalysisVersion != _globalService.PresetMagicianVersion &&
-                            (!pluginLocation.HasMetadata || (pluginLocation.PresetParser != null &&
+                            (!pluginLocation.HasMetadata || pluginLocation.PresetParser == null || (pluginLocation.PresetParser != null &&
                                                              pluginLocation.PresetParser.RequiresRescan())))
                         {
                             plugin.PluginLocation = pluginLocation;
@@ -255,8 +256,11 @@ namespace PresetMagician.Core.Services
                                     _vendorPresetParserService.DeterminatePresetParser(remotePluginInstance);
                                     remotePluginInstance.UnloadPlugin();
                                 }
-                                catch (Exception)
+                                catch (Exception e)
                                 {
+                                    applicationProgress.LogReporter.Report(new LogEntry(LogLevel.Error,
+                                        $"Error while loading metadata for {plugin.DllPath}: {e.GetType().FullName} {e.Message}"));
+                                    LogTo.Debug(e.StackTrace);
                                     pluginLocation.LastFailedAnalysisVersion = _globalService.PresetMagicianVersion;
                                 }
                             }

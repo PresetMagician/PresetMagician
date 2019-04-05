@@ -53,6 +53,7 @@ namespace PresetMagician.Core.Services
             if (preset == null)
             {
                 preset = new Preset();
+                preset.Plugin = plugin;
                 plugin.Presets.Add(preset);
             }
 
@@ -75,7 +76,7 @@ namespace PresetMagician.Core.Services
             preset.PresetCompressedSize = presetData.PresetCompressedSize;
         }
 
-        public async Task DeletePresetsForPlugin(Plugin plugin)
+        public async Task DeletePresetDataForPlugin(Plugin plugin)
         {
             bool closeDb = false;
             if (_db == null)

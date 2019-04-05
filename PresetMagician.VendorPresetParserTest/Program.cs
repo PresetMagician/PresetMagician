@@ -89,17 +89,16 @@ namespace PresetMagician.VendorPresetParserTest
             var hasIgnored = false;
             localLogger.SetConsoleLogLevelFilter(new HashSet<LogLevel> {LogLevel.Error, LogLevel.Warning});
 
-            foreach (var line in args)
+            if (args.Length > 0)
             {
-                Debug.WriteLine(line);
-            }
 
-            foreach (var key in presetParserDictionary.Keys.ToList())
-            {
-                if (!presetParserDictionary[key].PresetParserType.ToLower().Contains(args[0].ToLower()))
+                foreach (var key in presetParserDictionary.Keys.ToList())
                 {
-                    presetParserDictionary.Remove(key);
-                    hasIgnored = true;
+                    if (!presetParserDictionary[key].PresetParserType.ToLower().Contains(args[0].ToLower()))
+                    {
+                        presetParserDictionary.Remove(key);
+                        hasIgnored = true;
+                    }
                 }
             }
 

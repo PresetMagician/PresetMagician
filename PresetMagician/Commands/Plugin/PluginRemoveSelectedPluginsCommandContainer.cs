@@ -61,7 +61,8 @@ namespace PresetMagician
                     foreach (var plugin in pluginsToRemove)
                     {
                         _globalService.Plugins.Remove(plugin);
-                        await _presetDataPersister.DeletePresetsForPlugin(plugin);
+                        _dataPersister.DeletePresetsForPlugin(plugin);
+                        await _presetDataPersister.DeletePresetDataForPlugin(plugin);
                     }
                 });
                 _dataPersister.Save();
