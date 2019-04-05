@@ -43,7 +43,7 @@
                         <RowDefinition Height="Auto"></RowDefinition>
                     </Grid.RowDefinitions>
                         <TextBox Grid.Row="0" BorderThickness="0" IsReadOnly="True" Background="Transparent" TextWrapping="Wrap"
-                                 MaxWidth="360" HorizontalAlignment="Stretch" Margin="0 0 0 10" HorizontalScrollBarVisibility="Auto"
+                                 MaxWidth="360" HorizontalAlignment="Stretch" Margin="0 0 0 10" VerticalScrollBarVisibility="Auto"
                                  Text="{Binding Message}" />
                        
                     <StackPanel Grid.Row="1" Margin="0,15,0,0" Orientation="Vertical">
