@@ -1,0 +1,14 @@
+Release Notes for PresetMagician 0.6.0
+======================================
+
+This release includes many changes, which could also introduce many new bugs. I took my time to test many possible
+scenarios, but due to the complexity PresetMagician now has, it's impossible to test everything.
+
+Please make sure you report bugs using the new "Report Bug" functionality, so I can fix these bugs quickly.
+
+Note to users of previous versions
+==================================
+
+If you have upgraded from a previous version, make sure you review the folder export and file overwriting modes in the
+settings. These are set to defaults found in PresetMagician up until 0.5.8.
+

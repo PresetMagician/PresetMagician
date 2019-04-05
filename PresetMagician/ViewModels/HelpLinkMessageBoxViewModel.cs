@@ -21,7 +21,8 @@ namespace PresetMagician.ViewModels
         NONE,
         DONT_SHOW_AGAIN,
         DONT_ASK_AGAIN,
-        DONT_CUSTOM
+        DONT_CUSTOM,
+        SHOW_ONCE
     }
     
     public class HelpLinkMessageBoxViewModel : ViewModelBase
@@ -94,6 +95,11 @@ namespace PresetMagician.ViewModels
                 {
                     throw new ArgumentException("Missing DontId");
                 }
+            }
+
+            if (DontMode == DontMode.SHOW_ONCE)
+            {
+                ShowDont = false;
             }
 
             if (DontMode == DontMode.DONT_ASK_AGAIN && Button == MessageButton.OK)
@@ -181,6 +187,12 @@ namespace PresetMagician.ViewModels
 
         private void SetDontResult(MessageResult result)
         {
+            if (DontMode == DontMode.SHOW_ONCE)
+            {
+                _globalService.DontShowAgainDialogs.Add(DontId);
+                _dataPersisterService.SaveDontShowAgainDialogs();
+                return;
+            }
             if (!_saveDont)
             {
                 return;

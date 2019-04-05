@@ -473,6 +473,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\ThirdPartyNotices\*.txt" />
     <Resource Include="Resources\Icons\PresetMagician.ico" />
+    <Content Include="Resources\ReleaseNotes\**">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="FodyWeavers.xml">

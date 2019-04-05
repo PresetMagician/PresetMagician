@@ -24,5 +24,9 @@ namespace PresetMagician.Services.Interfaces
         Task<(MessageResult result, bool dontChecked)> ShowCustomRememberMyChoiceDialogAsync(string message,
             string caption = "", string helpLink = null, MessageButton button = MessageButton.OK,
             MessageImage icon = MessageImage.None, string dontAskAgainText = "");
+
+        Task<MessageResult> ShowOnceAsync(string message,string dontShowAgainId,
+            string caption = "", string helpLink = null,
+            MessageImage icon = MessageImage.None);
     }
 }
