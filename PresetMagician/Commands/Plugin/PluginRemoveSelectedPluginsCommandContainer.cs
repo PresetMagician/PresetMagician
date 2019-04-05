@@ -15,6 +15,7 @@ namespace PresetMagician
     {
         private readonly IAdvancedMessageService _messageService;
         private readonly DataPersisterService _dataPersister;
+        private readonly PresetDataPersisterService _presetDataPersister;
         private readonly IDispatcherService _dispatcherService;
         private readonly GlobalService _globalService;
         
@@ -24,6 +25,7 @@ namespace PresetMagician
         {
             _messageService = serviceLocator.ResolveType<IAdvancedMessageService>();
             _dataPersister = serviceLocator.ResolveType<DataPersisterService>();
+            _presetDataPersister = serviceLocator.ResolveType<PresetDataPersisterService>();
             _dispatcherService = serviceLocator.ResolveType<IDispatcherService>();
             _globalService = serviceLocator.ResolveType<GlobalService>();
             _globalFrontendService.SelectedPlugins.CollectionChanged += SelectedPluginsOnCollectionChanged;
@@ -54,11 +56,12 @@ namespace PresetMagician
             if (result == MessageResult.Yes)
             {
                 var pluginsToRemove = _globalFrontendService.SelectedPlugins.ToList();
-                await _dispatcherService.InvokeAsync(() =>
+                await _dispatcherService.InvokeAsync(async () =>
                 {
                     foreach (var plugin in pluginsToRemove)
                     {
                         _globalService.Plugins.Remove(plugin);
+                        await _presetDataPersister.DeletePresetsForPlugin(plugin);
                     }
                 });
                 _dataPersister.Save();

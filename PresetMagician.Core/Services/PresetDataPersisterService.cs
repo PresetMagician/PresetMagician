@@ -42,7 +42,7 @@ namespace PresetMagician.Core.Services
             }
         }
 
-        public async Task PersistPreset(PresetParserMetadata presetMetadata, byte[] data)
+        public async Task PersistPreset(PresetParserMetadata presetMetadata, byte[] data, bool force = false)
         {
             var plugin = presetMetadata.Plugin;
             var preset = (from p in plugin.Presets
@@ -62,7 +62,7 @@ namespace PresetMagician.Core.Services
 
             var hash = HashUtils.getIxxHash(data);
 
-            if (hash == preset.PresetHash && preset.PresetSize == data.Length)
+            if (hash == preset.PresetHash && preset.PresetSize == data.Length && !force)
             {
                 return;
             }
@@ -70,9 +70,26 @@ namespace PresetMagician.Core.Services
             preset.PresetHash = hash;
             preset.PresetSize = data.Length;
 
-            var presetData = new PresetDataStorage {PresetData = data, PresetDataId = preset.PresetId};
+            var presetData = new PresetDataStorage {PresetData = data, PluginId = preset.Plugin.PluginId, PresetDataId = preset.PresetId};
             await _db.InsertOrReplaceAsync(presetData);
             preset.PresetCompressedSize = presetData.PresetCompressedSize;
+        }
+
+        public async Task DeletePresetsForPlugin(Plugin plugin)
+        {
+            bool closeDb = false;
+            if (_db == null)
+            {
+                await OpenDatabase();
+                closeDb = true;
+            }
+
+            await _db.ExecuteAsync("DELETE FROM PresetData WHERE PluginId = ?", plugin.PluginId);
+            
+            if (closeDb)
+            {
+                await CloseDatabase();
+            }
         }
 
         public async Task<byte[]> GetPresetData(Preset preset)
