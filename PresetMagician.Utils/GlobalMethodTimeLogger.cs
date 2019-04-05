@@ -19,15 +19,20 @@ namespace PresetMagician.Utils
     
     public static class GlobalMethodTimeLogger
     {
+        private static readonly object _lock = new object();
         public static readonly Dictionary<string, GlobalMethodTimeLoggerEntry> MethodTimings = new Dictionary<string, GlobalMethodTimeLoggerEntry>();
         public static void Log(MethodBase methodBase, TimeSpan elapsed)
         {
             
             var methodName = $"{methodBase.ReflectedType.Name}.{methodBase.Name}";
 
-            if (!MethodTimings.ContainsKey(methodName))
+            lock (_lock)
             {
-                MethodTimings.Add(methodName, new GlobalMethodTimeLoggerEntry() { Method = methodBase, Name = methodName});
+                if (!MethodTimings.ContainsKey(methodName))
+                {
+                    MethodTimings.Add(methodName,
+                        new GlobalMethodTimeLoggerEntry() {Method = methodBase, Name = methodName});
+                }
             }
 
             MethodTimings[methodName].CallCount++;

@@ -165,6 +165,7 @@
     <Compile Include="Controls\TypesMultipleChoiceFilter.xaml.cs">
       <DependentUpon>TypesMultipleChoiceFilter.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\EnumMatchToBooleanConverter.cs" />
     <Compile Include="Converters\FormatKbSizeConverter.cs" />
     <Compile Include="Converters\MessageButtonToCollapsingVisibilityConverter.cs" />
     <Compile Include="Converters\MessageImageToTextConverter.cs" />
@@ -329,6 +330,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Themes\Sizes.xaml" />
     <Page Include="Themes\Styles\TabControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

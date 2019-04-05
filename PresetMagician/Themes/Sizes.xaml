@@ -1,0 +1,7 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    <system:Double x:Key="MarginSize.RadioButton.X">0</system:Double>
+    <system:Double x:Key="MarginSize.RadioButton.Y">0</system:Double>
+    <Thickness x:Key="Margin.RadioButton" Left="{StaticResource MarginSize.RadioButton.X}" Top="{StaticResource MarginSize.RadioButton.Y}" Right="{StaticResource MarginSize.RadioButton.X}" Bottom="{StaticResource MarginSize.RadioButton.Y}" />
+</ResourceDictionary>

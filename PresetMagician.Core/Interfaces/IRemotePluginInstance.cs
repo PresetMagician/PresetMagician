@@ -38,10 +38,10 @@ namespace PresetMagician.Core.Interfaces
 
         string GetCurrentProgramName();
 
-        void ExportNksAudioPreview(PresetExportInfo preset, byte[] presetData, string userContentDirectory,
+        void ExportNksAudioPreview(PresetExportInfo preset, byte[] presetData,
             int initialDelay);
 
-        void ExportNks(PresetExportInfo preset, byte[] presetData, string userContentDirectory);
+        void ExportNks(PresetExportInfo preset, byte[] presetData);
 
         bool OpenEditor(bool topmost = true);
         bool IsLoaded { get; }

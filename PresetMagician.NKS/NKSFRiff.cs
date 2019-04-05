@@ -80,5 +80,16 @@ namespace PresetMagician.NKS
                 m_FileFormat = value;
             }
         }
+
+        public static Guid GetPresetGuid(string filePath)
+        {
+            using (var fileStream = new MemoryStream(File.ReadAllBytes(filePath)))
+            {
+                var n = new NKSFRiff();
+                n.Read(fileStream);
+
+                return n.kontaktSound.summaryInformation.summaryInformation.uuid;
+            }
+        }
     }
 }

@@ -9,7 +9,6 @@ using Catel.Threading;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
-using PresetMagician.Services.Interfaces;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -85,17 +84,30 @@ namespace PresetMagician
                                 }
 
                                 var presetData = await _presetDataPersisterService.GetPresetData(preset.Preset);
-                                var presetExportInfo = new PresetExportInfo(preset.Preset);
+                                var presetExportInfo = new PresetExportInfo(preset.Preset)
+                                {
+                                    FolderMode = _globalService.RuntimeConfiguration.FolderExportMode,
+                                    OverwriteMode = _globalService.RuntimeConfiguration.FileOverwriteMode,
+                                    UserContentDirectory = exportDirectory
+                                };
+
+                                if (!presetExportInfo.CanExport())
+                                {
+                                    _applicationService.AddApplicationOperationError(
+                                        presetExportInfo.CannotExportReason);
+                                    continue;
+                                }
+
+
                                 if (_globalService.RuntimeConfiguration.ExportWithAudioPreviews &&
                                     pluginPreset.Plugin.PluginType == Plugin.PluginTypes.Instrument)
                                 {
                                     await remotePluginInstance.LoadPlugin().ConfigureAwait(false);
                                     remotePluginInstance.ExportNksAudioPreview(presetExportInfo, presetData,
-                                        exportDirectory,
                                         preset.Preset.Plugin.GetAudioPreviewDelay());
                                 }
 
-                                remotePluginInstance.ExportNks(presetExportInfo, presetData, exportDirectory);
+                                remotePluginInstance.ExportNks(presetExportInfo, presetData);
 
                                 pluginPreset.Plugin.PresetParser.PluginInstance = remotePluginInstance;
                                 pluginPreset.Plugin.PresetParser.OnAfterPresetExport();

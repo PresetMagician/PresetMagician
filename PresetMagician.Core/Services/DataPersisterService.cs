@@ -16,8 +16,11 @@ namespace PresetMagician.Core.Services
         private const string PluginStorageExtension = ".pmplugin";
         private const string PresetStorageExtension = ".pmpluginpresets";
         private const string TypesStorageFile = "Types.pmmc";
+        
         private const string CharacteristicsStorageFile = "Characteristics.pmmc";
         private const string PreviewNotePlayersStorageFile = "PreviewNotePlayers.pmmc";
+        private const string DontShowAgainDialogsStorageFile = "DontShowAgainDialogs.pmmc";
+        private const string RememberMyChoiceResults = "RememberMyChoiceResults.pmmc";
 
         public static string DefaultDataStoragePath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),

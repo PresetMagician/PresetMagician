@@ -13,13 +13,14 @@
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     xmlns:fluent="urn:fluent-ribbon"
     xmlns:converters="clr-namespace:PresetMagician.Converters"
-    MinWidth="800"
+    MinWidth="900"
     MinHeight="600"
-    Width="800"
+    Width="900"
     Height="600"
     d:DataContext="{d:DesignInstance viewModels:SettingsViewModel}"
     mc:Ignorable="d">
     <controls:RibbonDataWindow.Resources>
+        <converters:EnumMatchToBooleanConverter x:Key="enumConverter" />
         <converters:FormatKbSizeConverter x:Key="FormatKbSizeConverter" />
     </controls:RibbonDataWindow.Resources>
     <Grid>
@@ -61,7 +62,7 @@
                             Grid.Column="0"
                             Content="NI User Content Directory" />
                         <StackPanel Grid.Row="1"
-                                    Grid.Column="1" Orientation="Vertical">
+                                    Grid.Column="1" Orientation="Vertical" Margin="0,0,0,15">
                             <orccontrols:DirectoryPicker
                                 LabelText=""
                                 LabelWidth="0"
@@ -72,9 +73,228 @@
                             </TextBlock>
                         </StackPanel>
 
+                        <Label
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Content="Bank Export Mode" />
 
+                        <Grid Grid.Row="2" Grid.Column="1" Margin="0,0,0,15">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" /><ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                                <RadioButton GroupName="BankExportMode"
+                                             IsChecked="{Binding Path=EditableConfiguration.FolderExportMode, Mode=TwoWay, 
+                                 Converter={StaticResource enumConverter},
+                                 ConverterParameter=SUBFOLDERS_TRIMMED}">
+                                    Subfolders (trimmed)
+                                </RadioButton>
+                                <iconPacks:PackIconFontAwesome Margin="0,0,10,0" VerticalAlignment="Center"
+                                                               Kind="QuestionCircleSolid"
+                                                               ToolTipService.ShowDuration="12000">
+                                    <iconPacks:PackIconFontAwesome.ToolTip>
+                                        <StackPanel Margin="5" Width="600">
+                                            <TextBlock TextWrapping="Wrap">
+                                                Creates the directory structure for NKS presets equal to the display name for Maschine/Komplete Kontrol
+                                                <LineBreak />
+                                                <LineBreak />
+                                                Since Maschine/KK only support 2 levels for bank names, PresetMagician combines the remaining bank names. Example:
+                                                <LineBreak />
+                                                <LineBreak />
+                                                The MySuperPlugin preset Factory/Basses/Fancy will result in a bank name Factory/Basses - Fancy. The resulting
+                                                directory structure will be UserContent\MySuperPlugin\Factory\Basses - Fancy.
+                                            </TextBlock>
+
+                                        </StackPanel>
+                                    </iconPacks:PackIconFontAwesome.ToolTip>
+                                </iconPacks:PackIconFontAwesome>
+                            </StackPanel>
+                            <StackPanel  Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                                <RadioButton GroupName="BankExportMode"
+                                             IsChecked="{Binding Path=EditableConfiguration.FolderExportMode, Mode=TwoWay, 
+                                 Converter={StaticResource enumConverter},
+                                 ConverterParameter=SUBFOLDERS}">
+                                    Subfolders
+                                </RadioButton>
+                                <iconPacks:PackIconFontAwesome Margin="0,0,10,0" VerticalAlignment="Center"
+                                                               Kind="QuestionCircleSolid"
+                                                               ToolTipService.ShowDuration="12000">
+                                    <iconPacks:PackIconFontAwesome.ToolTip>
+                                        <StackPanel Margin="5" Width="600">
+                                            <TextBlock TextWrapping="Wrap">
+                                                Creates the directory structure for NKS presets equal to the non-trimmed bank names.
+                                                <LineBreak />
+                                                <LineBreak />
+                                                The MySuperPlugin preset Factory/Basses/Fancy will result in a bank name Factory/Basses - Fancy. The resulting
+                                                directory structure will be UserContent\MySuperPlugin\Factory\Basses\Fancy.
+                                            </TextBlock>
+
+                                        </StackPanel>
+                                    </iconPacks:PackIconFontAwesome.ToolTip>
+                                </iconPacks:PackIconFontAwesome>
+                            </StackPanel>
+                            <StackPanel  Grid.Row="0" Grid.Column="2" Orientation="Horizontal">
+                                <RadioButton GroupName="BankExportMode"
+                                             IsChecked="{Binding Path=EditableConfiguration.FolderExportMode, Mode=TwoWay, 
+                                 Converter={StaticResource enumConverter},
+                                 ConverterParameter=SINGLE_FOLDER}">
+                                    Single Folder
+                                </RadioButton>
+                                <iconPacks:PackIconFontAwesome Margin="0,0,10,0" VerticalAlignment="Center"
+                                                               Kind="QuestionCircleSolid"
+                                                               ToolTipService.ShowDuration="12000">
+                                    <iconPacks:PackIconFontAwesome.ToolTip>
+                                        <StackPanel Margin="5" Width="600">
+                                            <TextBlock TextWrapping="Wrap">
+                                                Places all NKS presets directly in the plugin directory. Note that you should use the File Overwrite Mode "Append Preset ID" in
+                                                conjunction with this bank directory export mode to avoid accidental overwriting of presets with the same name.
+                                                <LineBreak />
+                                                <LineBreak />
+                                                The MySuperPlugin preset Factory/Basses/Fancy will result in a bank name Factory/Basses - Fancy. The resulting
+                                                directory structure will be UserContent\MySuperPlugin\.
+                                            </TextBlock>
+
+                                        </StackPanel>
+                                    </iconPacks:PackIconFontAwesome.ToolTip>
+                                </iconPacks:PackIconFontAwesome>
+                            </StackPanel>
+                            <StackPanel  Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                                <RadioButton GroupName="BankExportMode"
+                                             IsChecked="{Binding Path=EditableConfiguration.FolderExportMode, Mode=TwoWay, 
+                                 Converter={StaticResource enumConverter},
+                                 ConverterParameter=ONE_LEVEL_LAST_BANK}">
+                                    Single Sub-Folder (Last Bank)
+                                </RadioButton>
+                                <iconPacks:PackIconFontAwesome Margin="0,0,10,0" VerticalAlignment="Center"
+                                                               Kind="QuestionCircleSolid"
+                                                               ToolTipService.ShowDuration="12000">
+                                    <iconPacks:PackIconFontAwesome.ToolTip>
+                                        <StackPanel Margin="5" Width="600">
+                                            <TextBlock TextWrapping="Wrap">
+                                                Places all NKS presets in a single directory. The directory name will be the last bank level. This was the default
+                                                up until PresetMagician 0.5.8. Example: <LineBreak />
+                                                <LineBreak />
+                                                The MySuperPlugin preset Factory/Basses/Fancy will result in a bank name Factory/Basses - Fancy. The resulting
+                                                directory structure will be UserContent\MySuperPlugin\Fancy.
+                                            </TextBlock>
+
+                                        </StackPanel>
+                                    </iconPacks:PackIconFontAwesome.ToolTip>
+                                </iconPacks:PackIconFontAwesome>
+                            </StackPanel>
+                            <StackPanel  Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                                <RadioButton GroupName="BankExportMode"
+                                             IsChecked="{Binding Path=EditableConfiguration.FolderExportMode, Mode=TwoWay, 
+                                 Converter={StaticResource enumConverter},
+                                 ConverterParameter=ONE_LEVEL_FIRST_BANK}">
+                                    Single Sub-Folder (First Bank)
+                                </RadioButton>
+                                <iconPacks:PackIconFontAwesome Margin="0,0,10,0" VerticalAlignment="Center"
+                                                               Kind="QuestionCircleSolid"
+                                                               ToolTipService.ShowDuration="12000">
+                                    <iconPacks:PackIconFontAwesome.ToolTip>
+                                        <StackPanel Margin="5" Width="600">
+                                            <TextBlock TextWrapping="Wrap">
+                                                Places all NKS presets in a single directory. The directory name will be the first bank level. Example:
+                                                <LineBreak />
+                                                <LineBreak />
+                                                The MySuperPlugin preset Factory/Basses/Fancy will result in a bank name Factory/Basses - Fancy. The resulting
+                                                directory structure will be UserContent\MySuperPlugin\Factory.
+                                            </TextBlock>
+
+                                        </StackPanel>
+                                    </iconPacks:PackIconFontAwesome.ToolTip>
+                                </iconPacks:PackIconFontAwesome>
+                            </StackPanel>
+                        </Grid>
+
+                         <Label
+                            Grid.Row="3"
+                            Grid.Column="0"
+                            Content="File Overwrite Mode" />
+
+                        <Grid Grid.Row="3" Grid.Column="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" /><ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            
+                            <StackPanel  Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                                <RadioButton GroupName="FileOverwriteMode"
+                                             IsChecked="{Binding Path=EditableConfiguration.FileOverwriteMode, Mode=TwoWay, 
+                                 Converter={StaticResource enumConverter},
+                                 ConverterParameter=REPORT_ERROR}">
+                                    Don't overwrite, report
+                                </RadioButton>
+                                <iconPacks:PackIconFontAwesome Margin="0,0,10,0" VerticalAlignment="Center"
+                                                               Kind="QuestionCircleSolid"
+                                                               ToolTipService.ShowDuration="12000">
+                                    <iconPacks:PackIconFontAwesome.ToolTip>
+                                        <StackPanel Margin="5" Width="600">
+                                            <TextBlock TextWrapping="Wrap">
+                                                Does not overwrite existing files unless the Preset ID matches the one in PresetMagician and thus ensures
+                                                that the existing NKS file is the same preset as being exported. Logs an error if the file will not be overwritten. 
+                                               
+                                            </TextBlock>
+
+                                        </StackPanel>
+                                    </iconPacks:PackIconFontAwesome.ToolTip>
+                                </iconPacks:PackIconFontAwesome>
+                            </StackPanel>
+                            <StackPanel  Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                                <RadioButton GroupName="FileOverwriteMode"
+                                             IsChecked="{Binding Path=EditableConfiguration.FileOverwriteMode, Mode=TwoWay, 
+                                 Converter={StaticResource enumConverter},
+                                 ConverterParameter=APPEND_GUID}">
+                                    Append Preset ID
+                                </RadioButton>
+                                <iconPacks:PackIconFontAwesome Margin="0,0,10,0" VerticalAlignment="Center"
+                                                               Kind="QuestionCircleSolid"
+                                                               ToolTipService.ShowDuration="12000">
+                                    <iconPacks:PackIconFontAwesome.ToolTip>
+                                        <StackPanel Margin="5" Width="600">
+                                            <TextBlock TextWrapping="Wrap">
+                                                Does not overwrite existing files unless the Preset ID matches the one in PresetMagician and thus ensures
+                                                that the existing NKS file is the same preset as being exported. If the existing file can't be overwritten,
+                                                saves the preset appended with it's Preset ID.  
+                                            </TextBlock>
+
+                                        </StackPanel>
+                                    </iconPacks:PackIconFontAwesome.ToolTip>
+                                </iconPacks:PackIconFontAwesome>
+                            </StackPanel>
+                            <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal">
+                                <RadioButton GroupName="FileOverwriteMode"
+                                             IsChecked="{Binding Path=EditableConfiguration.FileOverwriteMode, Mode=TwoWay, 
+                                 Converter={StaticResource enumConverter},
+                                 ConverterParameter=FORCE_OVERWRITE}">
+                                    Force overwrite
+                                </RadioButton>
+                                <iconPacks:PackIconFontAwesome Margin="0,0,10,0" VerticalAlignment="Center"
+                                                               Kind="QuestionCircleSolid"
+                                                               ToolTipService.ShowDuration="12000">
+                                    <iconPacks:PackIconFontAwesome.ToolTip>
+                                        <StackPanel Margin="5" Width="600">
+                                            <TextBlock TextWrapping="Wrap">
+                                                Overwrites existing files with the same filename and without any further checks. This was the default up until PresetMagician 0.5.8.
+                                            </TextBlock>
+
+                                        </StackPanel>
+                                    </iconPacks:PackIconFontAwesome.ToolTip>
+                                </iconPacks:PackIconFontAwesome>
+                            </StackPanel>
+                         
+                        </Grid>
                         <!-- Auto-create resources -->
-                        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Top">
+                        <StackPanel Grid.Row="4" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Top">
                             <Label Content="Auto-Create NKS Resources" VerticalAlignment="Top" />
                             <iconPacks:PackIconFontAwesome Margin="0,0,10,0" VerticalAlignment="Center"
                                                            Kind="QuestionCircleSolid"
@@ -82,7 +302,7 @@
                                 <iconPacks:PackIconFontAwesome.ToolTip>
                                     <StackPanel Margin="5" Width="600">
                                         <TextBlock TextWrapping="Wrap">
-                                            This setting controls if PresetMagician should automatically create the NKS. Exiting resources
+                                            This setting controls if PresetMagician should automatically create the NKS Resources. Exiting resources
                                             will not be overwritten.<LineBreak />
                                             <LineBreak />
                                             NKS Resources are images (which are shown on their hardware products as well as in Maschine and KK),
@@ -98,7 +318,7 @@
                             </iconPacks:PackIconFontAwesome>
                         </StackPanel>
 
-                        <StackPanel Orientation="Vertical" Grid.Row="2"
+                        <StackPanel Orientation="Vertical" Grid.Row="4"
                                     Grid.Column="1" VerticalAlignment="Top">
                             <CheckBox
                                 IsChecked="{Binding EditableConfiguration.AutoCreateResources}">
@@ -111,7 +331,7 @@
             </TabItem>
             <TabItem VerticalContentAlignment="Stretch" Header="Preview Note Players">
                 <local:PreviewNotePlayerEditorView />
-                </TabItem>
+            </TabItem>
             <TabItem VerticalContentAlignment="Top" Header="VST Workers">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <Grid>

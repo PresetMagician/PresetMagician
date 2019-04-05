@@ -144,6 +144,9 @@
     <Compile Include="Arturia\Arturia_BuchlaEasel.cs" />
     <Compile Include="Arturia\Arturia_Clavinet.cs" />
     <Compile Include="Arturia\Arturia_CMI.cs" />
+    <Compile Include="Arturia\Arturia_CompFET76.cs" />
+    <Compile Include="Arturia\Arturia_CompTubeSTA.cs" />
+    <Compile Include="Arturia\Arturia_CompVCA65.cs" />
     <Compile Include="Arturia\Arturia_CS80.cs" />
     <Compile Include="Arturia\Arturia_DX7.cs" />
     <Compile Include="Arturia\Arturia_Farfisa.cs" />
