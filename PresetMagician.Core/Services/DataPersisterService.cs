@@ -83,8 +83,15 @@ namespace PresetMagician.Core.Services
 
             foreach (var file in files)
             {
-                fileInfo = new FileInfo(file);
-                totalCount += fileInfo.Length;
+                try
+                {
+                    fileInfo = new FileInfo(file);
+                    totalCount += fileInfo.Length;
+                }
+                catch (FileNotFoundException)
+                {
+                    // In case the file is moved during the update process
+                }
             }
 
             if (File.Exists(PresetDataPersisterService.GetDatabaseFile()))

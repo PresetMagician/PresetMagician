@@ -39,7 +39,7 @@ namespace PresetMagician.Core.Commands.Plugin
 
                 if (!progress.CancellationToken.IsCancellationRequested)
                 {
-                    ApplicationService.StartApplicationOperation(this, "Verifying plugins",
+                    ApplicationService.StartApplicationOperation(this, "Adding / Verifying plugins",
                         plugins.Count);
                     var pluginsToAdd = await _pluginService.VerifyPlugins(plugins, vstPluginDLLFiles, ApplicationService.GetApplicationProgress())
                         .ConfigureAwait(false);
