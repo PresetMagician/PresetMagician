@@ -104,11 +104,11 @@ namespace PresetMagician.Core.Interfaces
         [FaultContract(typeof(PluginNotRegisteredFault))]
         [FaultContract(typeof(PluginNotLoadedFault))]
         void ExportNksAudioPreview(Guid pluginGuid, PresetExportInfo preset, byte[] presetData,
-            string userContentDirectory, int initialDelay);
+            int initialDelay);
 
         [OperationContract]
         [FaultContract(typeof(GenericFault))]
-        void ExportNks(Guid pluginGuid, PresetExportInfo preset, byte[] presetData, string userContentDirectory);
+        void ExportNks(Guid pluginGuid, PresetExportInfo preset, byte[] presetData);
 
         [OperationContract]
         [FaultContract(typeof(GenericFault))]
@@ -136,6 +136,12 @@ namespace PresetMagician.Core.Interfaces
 
         [OperationContract]
         [FaultContract(typeof(GenericFault))]
+        [FaultContract(typeof(PluginNotRegisteredFault))]
+        [FaultContract(typeof(PluginNotLoadedFault))]
+        float GetParameter(Guid pluginGuid, int parameterIndex);
+        
+        [OperationContract]
+        [FaultContract(typeof(GenericFault))]
         bool Exists(string file);
 
         [OperationContract]
@@ -159,5 +165,7 @@ namespace PresetMagician.Core.Interfaces
 
         [OperationContract]
         void UnregisterPlugin(Guid guid);
+
+        
     }
 }

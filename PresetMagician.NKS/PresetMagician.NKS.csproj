@@ -9,7 +9,7 @@
     <ProjectGuid>{2126DF46-7F24-4C2C-B236-514A70B7A3A5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Drachenkatze.PresetMagician.NKSF</RootNamespace>
+    <RootNamespace>PresetMagician.NKS</RootNamespace>
     <AssemblyName>PresetMagician.NKS</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -43,20 +43,20 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NKSF\AbstractMessagePack.cs" />
-    <Compile Include="NKSF\ControllerAssigment.cs" />
-    <Compile Include="NKSF\ControllerAssignmentGroup.cs" />
-    <Compile Include="NKSF\ControllerAssignments.cs" />
-    <Compile Include="NKSF\ControllerAssignmentsChunk.cs" />
-    <Compile Include="NKSF\KontaktSound.cs" />
-    <Compile Include="NKSF\NKSFRiff.cs" />
-    <Compile Include="NKSF\PluginChunk.cs" />
-    <Compile Include="NKSF\PluginId.cs" />
-    <Compile Include="NKSF\PluginIdChunk.cs" />
-    <Compile Include="NKSF\RIFFBase.cs" />
-    <Compile Include="NKSF\SummaryInformation.cs" />
-    <Compile Include="NKSF\SummaryInformationChunk.cs" />
+    <Compile Include="AbstractMessagePack.cs" />
+    <Compile Include="ControllerAssigment.cs" />
+    <Compile Include="ControllerAssignmentGroup.cs" />
+    <Compile Include="ControllerAssignments.cs" />
+    <Compile Include="ControllerAssignmentsChunk.cs" />
+    <Compile Include="KontaktSound.cs" />
+    <Compile Include="NKSFRiff.cs" />
+    <Compile Include="PluginChunk.cs" />
+    <Compile Include="PluginId.cs" />
+    <Compile Include="PluginIdChunk.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RIFFBase.cs" />
+    <Compile Include="SummaryInformation.cs" />
+    <Compile Include="SummaryInformationChunk.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

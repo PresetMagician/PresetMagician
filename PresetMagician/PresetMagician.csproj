@@ -137,6 +137,7 @@
     <Compile Include="Commands\Plugin\AbstractReportPluginsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginForceReloadMetadataCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginNotExportedAllToPresetExportListCommandContainer.cs" />
+    <Compile Include="Commands\Plugin\PluginRemoveSelectedPluginsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginReportUnsupportedPluginsCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginScanSelectedPluginCommandContainer.cs" />
     <Compile Include="Commands\Plugin\PluginScanSelectedPluginsCommandContainer.cs" />
@@ -164,6 +165,7 @@
     <Compile Include="Controls\TypesMultipleChoiceFilter.xaml.cs">
       <DependentUpon>TypesMultipleChoiceFilter.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\EnumMatchToBooleanConverter.cs" />
     <Compile Include="Converters\FormatKbSizeConverter.cs" />
     <Compile Include="Converters\MessageButtonToCollapsingVisibilityConverter.cs" />
     <Compile Include="Converters\MessageImageToTextConverter.cs" />
@@ -328,6 +330,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Themes\Sizes.xaml" />
     <Page Include="Themes\Styles\TabControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -470,6 +473,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\ThirdPartyNotices\*.txt" />
     <Resource Include="Resources\Icons\PresetMagician.ico" />
+    <Content Include="Resources\ReleaseNotes\**">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="FodyWeavers.xml">

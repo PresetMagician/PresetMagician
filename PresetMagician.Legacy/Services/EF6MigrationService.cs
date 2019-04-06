@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Catel.Reflection;
@@ -36,6 +37,7 @@ namespace PresetMagician.Legacy.Services
         public void LoadData()
         {
             _dbContext = new ApplicationDatabaseContext();
+            _dbContext.Migrate();
             OldPlugins = _dbContext.Plugins.Include(plugin => plugin.AdditionalBankFiles)
                 .Include(plugin => plugin.PluginLocation).ToList();
             OldModes = _dbContext.Modes.ToList();
@@ -50,7 +52,7 @@ namespace PresetMagician.Legacy.Services
             {
                 CurrentPlugin = OldPlugins.IndexOf(plugin) + 1;
                 var newPlugin = MigratePlugin(plugin);
-                _dataPersister.SavePlugin(newPlugin);
+                
             }
 
 
@@ -93,7 +95,7 @@ namespace PresetMagician.Legacy.Services
                 var data = _dbContext.GetPresetData(preset);
                 newPreset.Plugin = newPlugin;
                 newPreset.OriginalMetadata.Plugin = newPlugin;
-                _presetDataPersister.PersistPreset(newPreset.OriginalMetadata, data).Wait();
+                _presetDataPersister.PersistPreset(newPreset.OriginalMetadata, data, true).Wait();
             }
 
 
@@ -129,6 +131,8 @@ namespace PresetMagician.Legacy.Services
             MigratePluginCapabilities(oldPlugin.PluginCapabilities, newPlugin.PluginCapabilities);
             MigrateBankFiles(oldPlugin.AdditionalBankFiles, newPlugin.AdditionalBankFiles);
 
+            _dataPersister.SavePlugin(newPlugin);
+            _dataPersister.SavePresetsForPlugin(newPlugin);
             _presetDataPersister.CloseDatabase().Wait();
             return newPlugin;
         }

@@ -12,7 +12,7 @@
     <ProjectGuid>{3F01003F-9E52-4F4D-A5FD-ECDD9017C048}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Drachenkatze.PresetMagician.VendorPresetParser</RootNamespace>
+    <RootNamespace>PresetMagician.VendorPresetParser</RootNamespace>
     <AssemblyName>PresetMagician.VendorPresetParser</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -54,6 +54,89 @@
   <ItemGroup>
     <Compile Include="AbstractVendorPresetParser.cs" />
     <Compile Include="AbstractVendorPresetParser_StandardVst.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_AIRChorus.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_AIRCompressor.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_AIRDiffuserDelay.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_AIRDistortion.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_AIRDynamicDelay.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_AIREnhancer.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_AIREnsemble.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_AIRFilterGate.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_AIRFlanger.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_AIRFrequencyShifter.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_AIRFuzzWah.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_AIRKillEQ.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_AIRLoFi.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_AIRMaximizer.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_AIRMulti_Chorus.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_AIRMULTI_Delay.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_AIRNonLinearReverb.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_AIRParametricEQ.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_AIRPhaser.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_AIRPumper.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_AIRReverb.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_AIRSaturationFilter.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_AIRSpectral.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_AIRSpringReverb.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_AIRStereoWidth.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_AIRTalkbox.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_AIRTubeDrive.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_AIRVintageFilter.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_Boom.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_Db33.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_Db33Fx.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_Hybrid3.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_Loom.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_MiniGrand.cs" />
+    <Content Include="AIRMusicTechnology\AirTech_Template.txt" />
+    <Compile Include="AIRMusicTechnology\AirTech_TheRiser.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_Vacuum.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_VacuumPro.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_Velvet.cs" />
+    <Compile Include="AIRMusicTechnology\AirTech_Xpand2.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\MagicBlock.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\Tfx.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxAIRChorus.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxAIRCompressor.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxAIRDiffuserDelay.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxAIRDistortion.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxAIRDynamicDelay.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxAIREnhancer.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxAIREnsemble.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxAIRFilterGate.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxAIRFlanger.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxAIRFrequencyShifter.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxAIRFuzzWah.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxAIRKillEQ.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxAIRLoFi.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxAIRMaximizer.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxAIRMulti_Chorus.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxAIRMULTI_Delay.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxAIRNonLinearReverb.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxAIRParametricEQ.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxAIRPhaser.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxAIRPumper.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxAIRReverb.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxAIRSaturationFilter.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxAIRSpectral.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxAIRSpringReverb.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxAIRStereoWidth.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxAIRTalkbox.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxAIRTubeDrive.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxAIRVintageFilter.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxBoom.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxDb33.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxDb33Fx.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxHybrid3.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxLoom.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxMiniGrand.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxTheRiser.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxVacuum.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxVacuumPro.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxVelvet.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\TfxXpand2.cs" />
+    <Compile Include="AIRMusicTechnology\Tfx\WzooBlock.cs" />
     <Compile Include="Arturia\Arturia.cs" />
     <Compile Include="Arturia\Arturia_AnalogLab3.cs" />
     <Compile Include="Arturia\Arturia_Arp2600.cs" />
@@ -61,6 +144,9 @@
     <Compile Include="Arturia\Arturia_BuchlaEasel.cs" />
     <Compile Include="Arturia\Arturia_Clavinet.cs" />
     <Compile Include="Arturia\Arturia_CMI.cs" />
+    <Compile Include="Arturia\Arturia_CompFET76.cs" />
+    <Compile Include="Arturia\Arturia_CompTubeSTA.cs" />
+    <Compile Include="Arturia\Arturia_CompVCA65.cs" />
     <Compile Include="Arturia\Arturia_CS80.cs" />
     <Compile Include="Arturia\Arturia_DX7.cs" />
     <Compile Include="Arturia\Arturia_Farfisa.cs" />
@@ -133,6 +219,7 @@
     <Compile Include="Common\RecursiveFXPDirectoryParser.cs" />
     <Compile Include="Common\RecursiveVC2Parser.cs" />
     <Compile Include="D16 Group\D16_Frontier.cs" />
+    <Compile Include="D16 Group\D16_LuSH101.cs" />
     <Compile Include="D16 Group\D16_PunchBox.cs" />
     <Compile Include="D16 Group\D16_Repeater.cs" />
     <Compile Include="DmitrySches\DmitrySchesPresetParser.cs" />
@@ -250,10 +337,10 @@
     <Compile Include="MeldaProduction\MeldaProduction_MWobbler.cs" />
     <Compile Include="MeldaProduction\MeldaProduction_MWobblerMB.cs" />
     <Compile Include="MeldaProduction\MeldaProduction_MXXX.cs" />
-    <Compile Include="Properties\Resource1.Designer.cs">
+    <Compile Include="Properties\VendorResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Resource1.resx</DependentUpon>
+      <DependentUpon>VendorResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Spectrasonics\Spectrasonics_Omnisphere.cs" />
     <Compile Include="VendorPresetParserInitializer.cs" />
@@ -346,6 +433,9 @@
     <Resource Include="FodyWeavers.xml">
       <SubType>Designer</SubType>
     </Resource>
+    <Resource Include="Resources\Spectrasonics\OmnispherePatchTemplate.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="IWshRuntimeLibrary">
@@ -371,15 +461,30 @@
     <Folder Include="MadronaLabs\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AIRMusicTechnology\Tfx\TfxTemplate.txt" />
     <Content Include="paket.references" />
-    <Resource Include="Resources\OmnispherePatchTemplate.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    <Content Include="Resources\AIRMusicTechnology\AirFxSuiteEndChunk.bin" />
+    <Content Include="Resources\AIRMusicTechnology\BoomEndChunk.bin" />
+    <Content Include="Resources\AIRMusicTechnology\Db33DefaultMidi.airMIDI" />
+    <Content Include="Resources\AIRMusicTechnology\Db33EndChunk.bin" />
+    <Content Include="Resources\AIRMusicTechnology\Db33FxDefaultMidi.airMIDI" />
+    <Content Include="Resources\AIRMusicTechnology\Db33FxEndChunk.bin" />
+    <Content Include="Resources\AIRMusicTechnology\Hybrid3EndChunk.bin" />
+    <Content Include="Resources\AIRMusicTechnology\LoomClassicEndChunk.bin" />
+    <Content Include="Resources\AIRMusicTechnology\MiniGrandDefaultMidi.airMIDI" />
+    <Content Include="Resources\AIRMusicTechnology\MiniGrandEndChunk.bin" />
+    <Content Include="Resources\AIRMusicTechnology\TheRiserEndChunk.bin" />
+    <Content Include="Resources\AIRMusicTechnology\VacuumDefaultMidi.airMIDI" />
+    <Content Include="Resources\AIRMusicTechnology\VacuumEndChunk.bin" />
+    <Content Include="Resources\AIRMusicTechnology\VacuumProEndChunk.bin" />
+    <Content Include="Resources\AIRMusicTechnology\VelvetEndChunk.bin" />
+    <Content Include="Resources\AIRMusicTechnology\Xpand2DefaultMidi.airMIDI" />
+    <Content Include="Resources\AIRMusicTechnology\Xpand2EndChunk.bin" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Properties\Resource1.resx">
+    <EmbeddedResource Include="Properties\VendorResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
+      <LastGenOutput>VendorResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>

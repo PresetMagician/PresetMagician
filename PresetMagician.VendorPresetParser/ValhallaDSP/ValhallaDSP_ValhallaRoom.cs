@@ -4,20 +4,13 @@ using System.IO;
 using JetBrains.Annotations;
 using PresetMagician.Core.Interfaces;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.ValhallaDSP
+namespace PresetMagician.VendorPresetParser.ValhallaDSP
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
     public class ValhallaDSP_ValhallaRoom : ValhallaDSP, IVendorPresetParser
     {
         public override List<int> SupportedPlugins => new List<int> {1383429485};
-
-        protected override string GetParseDirectory()
-        {
-            return Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-                @"Valhalla DSP, LLC\ValhallaRoom\Factory Presets");
-        }
 
         public override void Init()
         {
@@ -28,6 +21,13 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.ValhallaDSP
 
             DefaultModes.Add("Reverb");
             DefaultModes.Add("Room");
+        }
+
+        protected override string GetParseDirectory()
+        {
+            return Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+                @"Valhalla DSP, LLC\ValhallaRoom\Factory Presets");
         }
     }
 }

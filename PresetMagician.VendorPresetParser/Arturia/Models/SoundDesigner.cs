@@ -1,6 +1,6 @@
 using SQLite;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia.Models
+namespace PresetMagician.VendorPresetParser.Arturia.Models
 {
     [Table("Sound_Designers", WithoutRowId = true)]
     internal class SoundDesigner

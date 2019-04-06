@@ -8,6 +8,8 @@ namespace PresetMagician.Core.Models
     {
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
         [PrimaryKey] public string PresetDataId { get; set; }
+        
+        [Column("PluginId")] public string PluginId { get; set; }
 
         private byte[] _compressedPresetDataCache;
 

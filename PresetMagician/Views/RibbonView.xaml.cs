@@ -14,11 +14,12 @@ namespace PresetMagician.Views
     public partial class RibbonView
     {
         private readonly GlobalFrontendService _globalFrontendService;
+        private readonly GlobalService _globalService; 
 
-
-        public RibbonView(GlobalFrontendService globalFrontendService)
+        public RibbonView(GlobalFrontendService globalFrontendService, GlobalService globalService)
         {
             _globalFrontendService = globalFrontendService;
+            _globalService = globalService;
             InitializeComponent();
             Ribbon.AddAboutButton();
 
@@ -26,9 +27,9 @@ namespace PresetMagician.Views
             ScreenTip.HelpPressed += OnScreenTipHelpPressed;
         }
 
-        private static void OnScreenTipHelpPressed(object sender, ScreenTipHelpEventArgs e)
+        private void OnScreenTipHelpPressed(object sender, ScreenTipHelpEventArgs e)
         {
-            var link = Settings.Links.HelpLink + (string) e.HelpTopic;
+            var link = Settings.Links.HelpLink + (string) e.HelpTopic + "?version="+_globalService.PresetMagicianVersion;
             Process.Start(link);
         }
 

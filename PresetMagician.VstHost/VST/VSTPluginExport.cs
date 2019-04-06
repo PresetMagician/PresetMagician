@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using Catel.Collections;
-using Drachenkatze.PresetMagician.NKSF.NKSF;
+using PresetMagician.NKS;
 using Drachenkatze.PresetMagician.Utils;
 using Drachenkatze.PresetMagician.VSTHost.Properties;
 using Jacobi.Vst.Core;
@@ -11,13 +11,12 @@ using Jacobi.Vst.Interop.Host;
 using MethodTimer;
 using NAudio.Wave;
 using PresetMagician.Core.Models;
+using PresetMagician.Utils;
 
 namespace PresetMagician.VstHost.VST
 {
     public class NKSExport
     {
-        public string UserContentDirectory { get; set; }
-
         public NKSExport(VstHost vstHost)
         {
             VstHost = vstHost;
@@ -29,30 +28,19 @@ namespace PresetMagician.VstHost.VST
         public void ExportNKSPreset(PresetExportInfo preset, byte[] data)
         {
             var nksf = new NKSFRiff();
-            var guid = Guid.NewGuid();
-            string fileExtension;
 
-            if (preset.BankPath.Count > 2)
-            {
-                var d = preset.BankPath.GetRange(1, preset.BankPath.Count - 1);
-                var lastBankPath = string.Join("/", d);
-                
-                preset.BankPath.RemoveRange(1, preset.BankPath.Count - 1);
-                preset.BankPath.Add(lastBankPath);
-            }
+            
             nksf.kontaktSound.summaryInformation.summaryInformation.vendor = preset.PluginVendor;
-            nksf.kontaktSound.summaryInformation.summaryInformation.uuid = guid;
+            nksf.kontaktSound.summaryInformation.summaryInformation.uuid = preset.PresetGuid;
             nksf.kontaktSound.summaryInformation.summaryInformation.name = preset.PresetName;
 
             if (preset.PluginType == Plugin.PluginTypes.Instrument)
             {
                 nksf.kontaktSound.summaryInformation.summaryInformation.deviceType = "INST";
-                fileExtension = ".nksf";
             }
             else if (preset.PluginType == Plugin.PluginTypes.Effect)
             {
                 nksf.kontaktSound.summaryInformation.summaryInformation.deviceType = "FX";
-                fileExtension = ".nksfx";
             }
             else
             {
@@ -78,98 +66,18 @@ namespace PresetMagician.VstHost.VST
                     preset.DefaultControllerAssignments;
             }
 
-            var outputFilename = Path.Combine(GetUserContentDirectory(preset),
-                GetNKSFPresetName(preset.PresetName) + fileExtension);
+            var outputFilename = preset.GetFullOutputPath();
+            Directory.CreateDirectory(Path.GetDirectoryName(outputFilename));
             var fileStream2 = new FileStream(outputFilename, FileMode.Create);
             nksf.Write(fileStream2);
             fileStream2.Close();
         }
 
-        public string GetUserContentDirectory(PresetExportInfo preset)
-        {
-            string userContentDirectory;
-            if (!Directory.Exists(UserContentDirectory))
-            {
-                userContentDirectory = VstUtils.GetDefaultNativeInstrumentsUserContentDirectory();
-            }
-            else
-            {
-                userContentDirectory = UserContentDirectory;
-            }
+       
 
-            var bankDirectory = Path.Combine(userContentDirectory, GetNKSFPluginName(preset.PluginName),
-                GetNKSFBankName(preset.BankPath));
-            Directory.CreateDirectory(bankDirectory);
-            return bankDirectory;
-        }
+      
 
-        public string GetNKSFPluginName(string pluginName)
-        {
-            foreach (var c in Path.GetInvalidPathChars())
-            {
-                pluginName = pluginName.Replace(c, '_');
-            }
-
-            foreach (var c in Path.GetInvalidFileNameChars())
-            {
-                pluginName = pluginName.Replace(c, '_');
-            }
-
-            return pluginName;
-        }
-
-        public string GetNKSFPresetName(string presetName)
-        {
-            // Returns the sanitized preset name
-
-            foreach (var c in Path.GetInvalidFileNameChars())
-            {
-                presetName = presetName.Replace(c, '_');
-            }
-
-            foreach (var c in Path.GetInvalidPathChars())
-            {
-                presetName = presetName.Replace(c, '_');
-            }
-
-            return presetName;
-        }
-
-
-        private string GetPreviewFilename(PresetExportInfo vstPreset)
-        {
-            var bankDirectory = GetUserContentDirectory(vstPreset);
-
-            var previewDirectory = Path.Combine(bankDirectory, ".previews");
-
-            Directory.CreateDirectory(previewDirectory);
-
-            return Path.Combine(previewDirectory,
-                GetNKSFPresetName(vstPreset.PresetName));
-        }
-
-        public string GetNKSFBankName(List<string> bankPath)
-        {
-            List<string> bankNames = new List<string>();
-            foreach (var bn in bankPath)
-            {
-                var bankName = bn;
-                foreach (var c in Path.GetInvalidPathChars())
-                {
-                    bankName = bankName.Replace(c, '_');
-                }
-
-                foreach (var c in Path.GetInvalidFileNameChars())
-                {
-                    bankName.Replace(c, '_');
-                }
-
-                bankName = bankName.Replace("/", "-");
-                bankNames.Add(bankName);
-            }
-
-            return string.Join(@"\", bankNames);
-        }
+       
 
         private void ConvertToOGG(string inputWave, string outputOGG)
         {
@@ -223,7 +131,8 @@ namespace PresetMagician.VstHost.VST
             var inputCount = ctx.PluginInfo.AudioInputCount;
 
 
-            var tempFileName = GetPreviewFilename(preset) + ".nksf.wav";
+            var tempFileName = preset.GetPreviewFilename(true);
+            Directory.CreateDirectory(Path.GetDirectoryName(tempFileName));
 
             var noteOnEvents = new List<(int loop, int offset, byte note)>();
             var noteOffEvents = new List<(int loop, int offset, byte note)>();
@@ -248,7 +157,6 @@ namespace PresetMagician.VstHost.VST
 
                     var p = WaveFormat.CreateIeeeFloatWaveFormat((int) VstHost.SampleRate, 2);
                     var targetLength = 6;
-                    var noteOffSecond = 1;
                     var loops = (int) VstHost.SampleRate * targetLength / VstHost.BlockSize;
 
                     var writer = new WaveFileWriter(tempFileName, p);
@@ -261,10 +169,6 @@ namespace PresetMagician.VstHost.VST
                     {
                         ctx.PluginCommandStub.ProcessReplacing(inputBuffers, outputBuffers);
                     }
-
-
-                   
-
 
                     for (k = 0; k < loops; k++)
                     {
@@ -299,7 +203,7 @@ namespace PresetMagician.VstHost.VST
                 }
             }
 
-            ConvertToOGG(tempFileName, GetPreviewFilename(preset) + ".nksf.ogg");
+            ConvertToOGG(tempFileName, preset.GetPreviewFilename());
             File.Delete(tempFileName);
         }
     }

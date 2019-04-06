@@ -142,6 +142,7 @@ namespace PresetMagician
             public const string ForceReportPluginsToLive = "Plugin.ForceReportPluginsToLive";
             public const string ForceReportPluginsToDev = "Plugin.ForceReportPluginsToDev";
             public const string ForceReloadMetadata = "Plugin.ForceReloadMetadata";
+            public const string RemoveSelectedPlugins = "Plugin.RemoveSelectedPlugins";
         }
 
         public static class PluginTools

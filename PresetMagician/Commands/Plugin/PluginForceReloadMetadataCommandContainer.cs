@@ -31,6 +31,7 @@ namespace PresetMagician
 
         protected override async Task ExecuteThreaded(object parameter)
         {
+            SkipPresetLoading = true;
             foreach (var plugin in _globalFrontendService.SelectedPlugins)
             {
                 if (plugin.PluginLocation != null)

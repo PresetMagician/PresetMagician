@@ -10,6 +10,7 @@ using System.Net.Http.Headers;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using Anotar.Catel;
 using Catel;
 using Catel.Collections;
@@ -17,7 +18,7 @@ using Catel.Fody;
 using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
-using Drachenkatze.PresetMagician.NKSF.NKSF;
+using PresetMagician.NKS;
 using Drachenkatze.PresetMagician.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -236,11 +237,27 @@ namespace PresetMagician.ViewModels
 
             var result = await base.SaveAsync();
 
-            NativeInstrumentsResource.ColorState.State = NativeInstrumentsResource.ResourceStates.UserModified;
-            NativeInstrumentsResource.CategoriesState.State =
-                NativeInstrumentsResource.ResourceStates.UserModified;
-            NativeInstrumentsResource.ShortNamesState.State =
-                NativeInstrumentsResource.ResourceStates.UserModified;
+            if (NativeInstrumentsResource.ColorState.State == NativeInstrumentsResource.ResourceStates.Empty &&
+                !NativeInstrumentsResource.Color.BackgroundColor.Equals(Colors.White))
+            {
+                NativeInstrumentsResource.ColorState.State = NativeInstrumentsResource.ResourceStates.UserModified;
+            }
+
+            if (NativeInstrumentsResource.Categories.CategoryNames.Count != 0)
+            {
+                NativeInstrumentsResource.CategoriesState.State =
+                    NativeInstrumentsResource.ResourceStates.UserModified;
+            }
+
+            if (NativeInstrumentsResource.ShortNamesState.State == NativeInstrumentsResource.ResourceStates.Empty &&
+                (!string.IsNullOrEmpty(NativeInstrumentsResource.ShortNames.VB_shortname) ||
+                 !string.IsNullOrEmpty(NativeInstrumentsResource.ShortNames.MST_shortname) ||
+            !string.IsNullOrEmpty(NativeInstrumentsResource.ShortNames.MKII_shortname) ||
+           !string.IsNullOrEmpty(NativeInstrumentsResource.ShortNames.MIKRO_shortname)
+                 )) {
+                NativeInstrumentsResource.ShortNamesState.State =
+                    NativeInstrumentsResource.ResourceStates.UserModified;
+            }
             NativeInstrumentsResource.Save(Plugin);
 
 

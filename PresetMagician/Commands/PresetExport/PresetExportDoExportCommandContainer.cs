@@ -9,7 +9,6 @@ using Catel.Threading;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
-using PresetMagician.Services.Interfaces;
 
 // ReSharper disable once CheckNamespace
 namespace PresetMagician
@@ -69,7 +68,14 @@ namespace PresetMagician
                     try
                     {
                         await _presetDataPersisterService.OpenDatabase();
-                        using (var remotePluginInstance = 
+
+                        if (pluginPreset.Plugin.PresetParser == null)
+                        {
+                            _applicationService.AddApplicationOperationError(
+                                $"Unable to update export presets for {pluginPreset.Plugin.PluginName} because it has no Preset Parser. Try to force-reload metadata for this plugin.");
+                            continue;
+                        }
+                        using (var remotePluginInstance =
                             _remoteVstService.GetRemotePluginInstance(pluginPreset.Plugin, false))
                         {
                             foreach (var preset in pluginPreset.Presets)
@@ -85,17 +91,31 @@ namespace PresetMagician
                                 }
 
                                 var presetData = await _presetDataPersisterService.GetPresetData(preset.Preset);
-                                var presetExportInfo = new PresetExportInfo(preset.Preset);
+                                var presetExportInfo = new PresetExportInfo(preset.Preset)
+                                {
+                                    FolderMode = _globalService.RuntimeConfiguration.FolderExportMode,
+                                    OverwriteMode = _globalService.RuntimeConfiguration.FileOverwriteMode,
+                                    UserContentDirectory = exportDirectory
+                                };
+
+                                if (!presetExportInfo.CanExport())
+                                {
+                                    _applicationService.AddApplicationOperationError(
+                                        $"Cannot export {preset.Preset.Plugin} -{preset.Preset.Metadata.PresetName}. "+
+                                        $"Reason: {presetExportInfo.CannotExportReason}");
+                                    continue;
+                                }
+
+
                                 if (_globalService.RuntimeConfiguration.ExportWithAudioPreviews &&
                                     pluginPreset.Plugin.PluginType == Plugin.PluginTypes.Instrument)
                                 {
                                     await remotePluginInstance.LoadPlugin().ConfigureAwait(false);
                                     remotePluginInstance.ExportNksAudioPreview(presetExportInfo, presetData,
-                                        exportDirectory,
                                         preset.Preset.Plugin.GetAudioPreviewDelay());
                                 }
 
-                                remotePluginInstance.ExportNks(presetExportInfo, presetData, exportDirectory);
+                                remotePluginInstance.ExportNks(presetExportInfo, presetData);
 
                                 pluginPreset.Plugin.PresetParser.PluginInstance = remotePluginInstance;
                                 pluginPreset.Plugin.PresetParser.OnAfterPresetExport();
@@ -109,7 +129,7 @@ namespace PresetMagician
                     catch (Exception e)
                     {
                         _applicationService.AddApplicationOperationError(
-                            $"Unable to update export presets because of {e.GetType().FullName}: {e.Message}");
+                            $"Unable to update export presets for {pluginPreset.Plugin.PluginName} because of {e.GetType().FullName}: {e.Message}");
                         LogTo.Debug(e.StackTrace);
                     }
 

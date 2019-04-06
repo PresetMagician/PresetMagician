@@ -4,20 +4,13 @@ using System.IO;
 using JetBrains.Annotations;
 using PresetMagician.Core.Interfaces;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.ValhallaDSP
+namespace PresetMagician.VendorPresetParser.ValhallaDSP
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
     public class ValhallaDSP_ValhallaUberMod : ValhallaDSP, IVendorPresetParser
     {
         public override List<int> SupportedPlugins => new List<int> {1969382770};
-
-        protected override string GetParseDirectory()
-        {
-            return Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-                @"Valhalla DSP, LLC\ValhallaUberMod\Factory Presets");
-        }
 
         public override void Init()
         {
@@ -27,6 +20,13 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.ValhallaDSP
                 "currently not supported, if you know where user presets are saved please let me know";
 
             DefaultModes.Add("Delay");
+        }
+
+        protected override string GetParseDirectory()
+        {
+            return Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+                @"Valhalla DSP, LLC\ValhallaUberMod\Factory Presets");
         }
     }
 }

@@ -7,7 +7,10 @@
     xmlns:controls="http://schemas.wildgums.com/orc/controls"
     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
+   
+    
     <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Themes/Sizes.xaml" />
         <ResourceDictionary
             Source="pack://application:,,,/Xceed.Wpf.AvalonDock.Themes.VS2013;component/LightTheme.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Themes/Colors/LightColors.xaml" />

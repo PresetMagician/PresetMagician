@@ -6,18 +6,21 @@ using Catel.IoC;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
+using PresetMagician.Utils.Logger;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser
+namespace PresetMagician.VendorPresetParser
 {
     public abstract partial class AbstractVendorPresetParser
     {
+        protected const string BankNameFactory = "Factory";
+        protected const string BankNameUser = "User";
+
+        private IRemotePluginInstance _pluginInstance;
+
         protected AbstractVendorPresetParser()
         {
             PresetParserConfiguration = new PresetParserConfiguration();
         }
-
-        protected const string BankNameFactory = "Factory";
-        protected const string BankNameUser = "User";
 
         protected List<BankFile> AdditionalBankFiles
         {
@@ -31,8 +34,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
                 return new List<BankFile>();
             }
         }
-
-        private IRemotePluginInstance _pluginInstance;
 
         public IRemotePluginInstance PluginInstance
         {
@@ -56,11 +57,6 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
         public virtual List<int> SupportedPlugins => new List<int>();
 
-        public List<int> GetSupportedPlugins()
-        {
-            return SupportedPlugins;
-        }
-
         public virtual int AudioPreviewPreDelay { get; set; } = 40;
 
         public virtual string Remarks { get; set; }
@@ -80,6 +76,12 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         public IDataPersistence DataPersistence { get; set; }
         public virtual bool RequiresRescanWithEachRelease { get; } = false;
         public PresetParserConfiguration PresetParserConfiguration { get; set; }
+        public MiniLogger Logger { get; } = new MiniMemoryLogger();
+
+        public List<int> GetSupportedPlugins()
+        {
+            return SupportedPlugins;
+        }
 
         public virtual bool RequiresRescan()
         {

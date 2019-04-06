@@ -4,19 +4,18 @@ using System.Xml.Linq;
 using JetBrains.Annotations;
 using PresetMagician.Core.Interfaces;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
+namespace PresetMagician.VendorPresetParser.D16_Group
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
     public class D16_PunchBox : D16Group, IVendorPresetParser
     {
-        protected override string XmlPluginName { get; } = "PunchBox";
-        protected override string Extension { get; } = ".pbprs";
-
         private const string FactoryBankPath = @"D16 Group\PunchBox\Presets\Master.d16pkg";
         private const string UserBankPath = @"D16 Group\PunchBox\UserStore\Presets\Master";
 
         private int _presetExportCount;
+        protected override string XmlPluginName { get; } = "PunchBox";
+        protected override string Extension { get; } = ".pbprs";
 
         public override List<int> SupportedPlugins => new List<int> {1347306072};
 

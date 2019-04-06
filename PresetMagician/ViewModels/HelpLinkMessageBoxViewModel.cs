@@ -5,29 +5,47 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
+using System;
 using System.Threading.Tasks;
 using Catel;
 using Catel.MVVM;
 using Catel.Reflection;
 using Catel.Services;
 using Orchestra.Services;
+using PresetMagician.Core.Services;
 
 namespace PresetMagician.ViewModels
 {
+    public enum DontMode
+    {
+        NONE,
+        DONT_SHOW_AGAIN,
+        DONT_ASK_AGAIN,
+        DONT_CUSTOM,
+        SHOW_ONCE
+    }
+    
     public class HelpLinkMessageBoxViewModel : ViewModelBase
     {
         private readonly IMessageService _messageService;
         private readonly IClipboardService _clipboardService;
+        private readonly GlobalService _globalService;
+        private readonly DataPersisterService _dataPersisterService;
+
+        
 
         #region Constructors
 
-        public HelpLinkMessageBoxViewModel(IMessageService messageService, IClipboardService clipboardService)
+        public HelpLinkMessageBoxViewModel(IMessageService messageService, IClipboardService clipboardService,
+            GlobalService globalService, DataPersisterService dataPersisterService)
         {
             Argument.IsNotNull(() => messageService);
             Argument.IsNotNull(() => clipboardService);
 
             _messageService = messageService;
             _clipboardService = clipboardService;
+            _globalService = globalService;
+            _dataPersisterService = dataPersisterService;
 
             CopyToClipboard = new Command(OnCopyToClipboardExecute);
 
@@ -48,16 +66,57 @@ namespace PresetMagician.ViewModels
 
         public string HelpLink { get; set; }
 
-        public string DontAskAgainText { get; set; }
+        #region Dont stuff
 
-        public bool ShowDontAskAgain { get; set; }
+        public DontMode DontMode { get; set; } = DontMode.NONE;
+        public string DontText { get; set; }
+        public string DontId { get; set; }
+        public bool ShowDont { get; set; }
+        public bool DontResult { get; set; }
+        private bool _saveDont = true;
+        #endregion
+        
+       
 
-        public bool DontAskAgainResult { get; set; }
 
         public string FinalHelpLink
         {
-            get { return Settings.Links.HelpLink + HelpLink; }
+            get { return Settings.Links.HelpLink + HelpLink + "?version=" + _globalService.PresetMagicianVersion; }
         }
+
+        protected override Task InitializeAsync()
+        {
+           
+            if (DontMode != DontMode.NONE)
+            {
+                ShowDont = true;
+
+                if (DontMode != DontMode.DONT_CUSTOM && DontId == null)
+                {
+                    throw new ArgumentException("Missing DontId");
+                }
+            }
+
+            if (DontMode == DontMode.SHOW_ONCE)
+            {
+                ShowDont = false;
+            }
+
+            if (DontMode == DontMode.DONT_ASK_AGAIN && Button == MessageButton.OK)
+            {
+                throw new ArgumentException($"Can't apply DONT_ASK_AGAIN to {Button}");
+            }
+            
+            if (DontMode == DontMode.DONT_SHOW_AGAIN && Button != MessageButton.OK)
+            {
+                throw new ArgumentException($"Can apply DONT_SHOW_AGAIN only to {MessageButton.OK}, got {Button}");
+            }
+
+
+            return base.InitializeAsync();
+        }
+        
+        
 
         public bool HasHelpLink
         {
@@ -126,6 +185,41 @@ namespace PresetMagician.ViewModels
             _clipboardService.CopyToClipboard(text);
         }
 
+        private void SetDontResult(MessageResult result)
+        {
+            if (DontMode == DontMode.SHOW_ONCE)
+            {
+                _globalService.DontShowAgainDialogs.Add(DontId);
+                _dataPersisterService.SaveDontShowAgainDialogs();
+                return;
+            }
+            if (!_saveDont)
+            {
+                return;
+            }
+
+            if (!DontResult)
+            {
+                return;
+            }
+            
+            switch (DontMode)
+            {
+                case DontMode.DONT_ASK_AGAIN:
+                    _globalService.SetRememberMyChoiceResult(DontId, result);
+                    _dataPersisterService.SaveRememberMyChoiceResults();
+                    break;
+                case DontMode.DONT_SHOW_AGAIN:
+                    _globalService.DontShowAgainDialogs.Add(DontId);
+                    _dataPersisterService.SaveDontShowAgainDialogs();
+                    break;
+                case DontMode.DONT_CUSTOM:
+                case DontMode.NONE:
+                    break;
+               
+                        
+            }
+        }
         public TaskCommand OkCommand { get; private set; }
 
         private async Task OnOkCommandExecuteAsync()
@@ -133,6 +227,11 @@ namespace PresetMagician.ViewModels
             if (Button == MessageButton.OK || Button == MessageButton.OKCancel)
             {
                 Result = MessageResult.OK;
+
+                SetDontResult(Result);
+                
+               
+
                 await CloseViewModelAsync(null);
             }
         }
@@ -144,6 +243,7 @@ namespace PresetMagician.ViewModels
             if (Button == MessageButton.YesNo || Button == MessageButton.YesNoCancel)
             {
                 Result = MessageResult.Yes;
+                SetDontResult(Result);
                 await CloseViewModelAsync(null);
             }
         }
@@ -155,6 +255,7 @@ namespace PresetMagician.ViewModels
             if (Button == MessageButton.YesNo || Button == MessageButton.YesNoCancel)
             {
                 Result = MessageResult.No;
+                SetDontResult(Result);
                 await CloseViewModelAsync(null);
             }
         }
@@ -166,6 +267,7 @@ namespace PresetMagician.ViewModels
             if (Button == MessageButton.YesNoCancel || Button == MessageButton.OKCancel)
             {
                 Result = MessageResult.Cancel;
+                SetDontResult(Result);
                 await CloseViewModelAsync(null);
             }
         }
@@ -174,6 +276,7 @@ namespace PresetMagician.ViewModels
 
         private async Task OnEscapeCommandExecuteAsync()
         {
+            _saveDont = false;
             switch (Button)
             {
                 case MessageButton.OK:

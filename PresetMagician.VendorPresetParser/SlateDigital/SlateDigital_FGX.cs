@@ -4,11 +4,11 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using Drachenkatze.PresetMagician.VendorPresetParser.Common;
 using JetBrains.Annotations;
 using PresetMagician.Core.Interfaces;
+using PresetMagician.VendorPresetParser.Common;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
+namespace PresetMagician.VendorPresetParser.SlateDigital
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
@@ -16,18 +16,18 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
     {
         public override List<int> SupportedPlugins => new List<int> {1179069784};
 
-        protected override string GetParseDirectory()
-        {
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-                @"Slate Digital\FG-X Virtual Mastering Console\Presets");
-        }
-
         protected override string Extension { get; } = "";
 
         public override void Init()
         {
             SetPreProcessXmlFunction(PreProcessXML);
             base.Init();
+        }
+
+        protected override string GetParseDirectory()
+        {
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+                @"Slate Digital\FG-X Virtual Mastering Console\Presets");
         }
 
         private string PreProcessXML(string data)
@@ -40,7 +40,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
             {
                 if (attr.Name.LocalName.StartsWith("FG", false, CultureInfo.InvariantCulture))
                 {
-                    XAttribute newAtt = new XAttribute(attr.Name.LocalName + "0", attr.Value);
+                    var newAtt = new XAttribute(attr.Name.LocalName + "0", attr.Value);
                     attr.Remove();
                     rootElement.Add(newAtt);
                 }

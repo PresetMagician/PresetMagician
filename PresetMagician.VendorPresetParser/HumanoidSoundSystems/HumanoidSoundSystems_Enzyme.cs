@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Drachenkatze.PresetMagician.Utils;
-using Drachenkatze.PresetMagician.VendorPresetParser.Common;
 using GSF;
 using JetBrains.Annotations;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
+using PresetMagician.VendorPresetParser.Common;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.HumanoidSoundSystems
+namespace PresetMagician.VendorPresetParser.HumanoidSoundSystems
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]

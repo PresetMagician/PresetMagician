@@ -1,59 +1,74 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
-using Catel.Collections;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.ServiceModel;
+using System.Text.RegularExpressions;
+using System.Threading;
 using Catel.IoC;
-using Drachenkatze.PresetMagician.VendorPresetParser.Spectrasonics;
+using GSF;
 using PresetMagician;
+using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
-using PresetMagician.Legacy.Models;
-using SQLite;
-using Type = PresetMagician.Core.Models.Type;
+using PresetMagician.Utils;
+using PresetMagician.Utils.Logger;
+using PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx;
+using PresetMagician.VstHost.VST;
+using PresetMagicianScratchPad.Stuff;
 
 namespace PresetMagicianScratchPad
 {
     public class Program
     {
-      
         [STAThread]
         static void Main(string[] args)
         {
-            var omnisphere = new Spectrasonics_Omnisphere();
 
-            var libraries = omnisphere.GetLibraryFiles(Spectrasonics_Omnisphere.LIBRARYTYPE_PATCHES);
+            AirMusicTech.ConvertFiles(AirMusicTech.TESTSETUP_VACUUMPRO);
 
-            foreach (var libraryFile in libraries)
-            {
-                Debug.WriteLine(libraryFile);
-            }
+           
 
-            var lib = @"C:\Spectrasonics\STEAM\Omnisphere\Settings Library\Patches\Factory\Omnisphere Library.db";
-
-            var libs = omnisphere.GetLibraries();
-            var zi = 0;
-            foreach (var library in libs)
-            {
-                library.BuildMetadata();
-                foreach (var file in library.Files)
-                {
-                    
-                    if (file.Extension == ".prt_omn" || file.Extension == ".mlt_omn")
-                    {
-                        if (file.Attributes.Count == 0)
-                        {
-                            zi++;
-                            Debug.WriteLine(library.Path + " " + library.ContentOffset + " " + file.Filename + " " +
-                                            file.Offset);
-                        }
-
-                    }
-                }
-            }
-            
-            Debug.WriteLine(zi);
-
-         
         }
+        
+        
+
+        public static void CompareStuff()
+        {
+            var content = @"C:\Program Files (x86)\AIR Music Technology\Hybrid\Presets";
+            var file = @"05 Leads\Soft Lead 05.tfx";
+            var outputFile = @"C:\Users\Drachenkatze\Desktop\output.bin";
+            var parser = new TfxHybrid3();
+            parser.Parse(content, file);
+            
+            var parser2 = new TfxHybrid3();
+            parser2.Parse(content, @"User\foo234.tfx");
+
+            Debug.WriteLine("ParamCount1:" +parser.Parameters.Count);
+            Debug.WriteLine("ParamCount2:" +parser2.Parameters.Count);
+            
+            //File.WriteAllBytes(outputFile, parser.GetDataToWrite());
+            var index = 0;
+            foreach (var parameter in parser.Parameters)
+            {
+                var parameter2 = parser2.Parameters[index];
+
+                var roundedValue1 = parameter.ToString("F2", 
+                    CultureInfo.InvariantCulture);
+                var roundedValue2 = parameter2.ToString("F2", 
+                    CultureInfo.InvariantCulture);
+                if (roundedValue1 != roundedValue2)
+                {
+                    Debug.WriteLine($"{index} Parameter (orig): {parameter} Parameter2 (user): {parameter2}");
+                }
+
+                index++;
+            }
+        }
+
+        
+
+        
     }
 }
