@@ -5,6 +5,7 @@ using System.Windows;
 using Jacobi.Vst.Core;
 using Jacobi.Vst.Core.Deprecated;
 using Jacobi.Vst.Core.Host;
+using PresetMagician.Utils.Logger;
 using PresetMagician.VstHost.VST;
 
 namespace Drachenkatze.PresetMagician.VSTHost
@@ -13,12 +14,15 @@ namespace Drachenkatze.PresetMagician.VSTHost
     {
         public string Directory;
         public string PluginDll;
+        private MiniLogger _logger;
         private bool _debug;
         private VstProcessLevels _currentProcessLevel;
 
-        public NewHostCommandStub(bool debug = false)
+        public NewHostCommandStub(MiniLogger logger)
         {
-            _debug = debug;
+            _debug = true;
+
+            _logger = logger;
             _currentProcessLevel = VstProcessLevels.User;
         }
 
@@ -30,7 +34,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
         {
             if (_debug)
             {
-                Console.WriteLine($"{PluginDll} called: {message}");
+                _logger.Debug($"{PluginDll} called: {message}");
             }
         }
 

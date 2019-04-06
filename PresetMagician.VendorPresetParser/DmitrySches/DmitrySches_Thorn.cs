@@ -4,7 +4,7 @@ using System.IO;
 using JetBrains.Annotations;
 using PresetMagician.Core.Interfaces;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.DmitrySches
+namespace PresetMagician.VendorPresetParser.DmitrySches
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]

@@ -4,7 +4,7 @@ using System.IO;
 using JetBrains.Annotations;
 using PresetMagician.Core.Interfaces;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
+namespace PresetMagician.VendorPresetParser.SlateDigital
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
@@ -12,13 +12,13 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.SlateDigital
     {
         public override List<int> SupportedPlugins => new List<int> {1448365427};
 
+
+        protected override string PresetSectionName { get; } = "VTMs";
+
         protected override string GetParseDirectory()
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 @"Slate Digital\Virtual Tape Machines\Presets");
         }
-
-
-        protected override string PresetSectionName { get; } = "VTMs";
     }
 }

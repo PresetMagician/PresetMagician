@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using PresetMagician.Core.Interfaces;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.MeldaProduction
+namespace PresetMagician.VendorPresetParser.MeldaProduction
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]

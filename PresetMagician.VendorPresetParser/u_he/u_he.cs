@@ -5,13 +5,11 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Catel.Collections;
-using Drachenkatze.PresetMagician.Utils;
 using PresetMagician.Core.Models;
 using PresetMagician.Utils;
-using Squirrel.Shell;
 using Type = PresetMagician.Core.Models.Type;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
+namespace PresetMagician.VendorPresetParser.u_he
 {
     public abstract class u_he : AbstractVendorPresetParser
     {
@@ -53,17 +51,17 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
         protected async Task<int> H2PScanBanks(string dataDirectoryName, string productName, bool userPresets,
             bool persist)
         {
-            PluginInstance.Plugin.Logger.Debug(
+            Logger.Debug(
                 $"Begin H2PScanBanks with dataDirectoryName {dataDirectoryName} product name {productName} and userPresets {userPresets}");
 
             var rootDirectory = GetPresetDirectory(dataDirectoryName, productName, userPresets);
-            PluginInstance.Plugin.Logger.Debug($"Parsing PresetDirectory {rootDirectory}");
+            Logger.Debug($"Parsing PresetDirectory {rootDirectory}");
 
             var directoryInfo = new DirectoryInfo(rootDirectory);
 
             if (!directoryInfo.Exists)
             {
-                PluginInstance.Plugin.Logger.Debug($"Directory {rootDirectory} does not exist");
+                Logger.Debug($"Directory {rootDirectory} does not exist");
                 return 0;
             }
 
@@ -75,7 +73,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 
             var bank = RootBank.CreateRecursive(bankName);
             var count = await H2PScanBank(bank, directoryInfo, persist);
-            PluginInstance.Plugin.Logger.Debug($"End H2PScanBanks");
+            Logger.Debug("End H2PScanBanks");
 
             return count;
         }
@@ -109,7 +107,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
             var presetData = File.ReadAllBytes(file.FullName);
             var sourceFile = file.FullName;
 
-           
+
             var preset = new PresetParserMetadata
             {
                 PresetName = file.Name.Replace(".h2p", ""), Plugin = PluginInstance.Plugin, BankPath = bank.BankPath,
@@ -123,7 +121,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
                 preset.Author = metadata["Author"];
             }
 
-            List<string> comments = new List<string>();
+            var comments = new List<string>();
 
             if (metadata.ContainsKey("Description") && metadata["Description"].Length > 0)
             {
@@ -192,7 +190,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
 
         private Dictionary<string, string> ExtractMetadata(string presetData)
         {
-            Dictionary<string, string> result = new Dictionary<string, string>();
+            var result = new Dictionary<string, string>();
 
             var closingTagLocation = presetData.IndexOf("*/", StringComparison.InvariantCulture);
 
@@ -214,7 +212,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
                 }
                 catch (ArgumentException)
                 {
-                    PluginInstance.Plugin.Logger.Debug(
+                    Logger.Debug(
                         $"Unable to add metadata for type {type} with value {value} because {type} already exists.");
                 }
             }
@@ -245,11 +243,11 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
             }
             catch (IOException e)
             {
-                PluginInstance.Plugin.Logger.Error(
-                    $"Error while trying to resolve the shortcut {shortCutDataDirectoryName} because of {e.GetType().FullName}: {e.Message}");
-                PluginInstance.Plugin.Logger.Debug(e.StackTrace);
+                Logger.Error(
+                    $"Error while trying to resolve the shortcut {shortCutDataDirectoryName}: {e.GetType().FullName}: {e.Message}");
+                Logger.Debug(e.StackTrace);
             }
-            
+
             if (isShortcut)
             {
                 dataDirectory = ShortcutUtils.ResolveShortcut(shortCutDataDirectoryName);
@@ -264,8 +262,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.u_he
                 return Path.Combine(dataDirectory, userPresets ? "UserPresets" : "Presets", productName);
             }
 
-            PluginInstance.Plugin.Logger.Error("Unable to find the data directory, aborting.");
-            PluginInstance.Plugin.Logger.Debug("Estimated shortcut directory name is " + shortCutDataDirectoryName);
+            Logger.Error($"Unable to find the data directory because {dataDirectoryName} is not a directory and no "+
+                         $"shortcut {shortCutDataDirectoryName} exists.");
             return null;
         }
     }

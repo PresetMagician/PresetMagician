@@ -4,14 +4,10 @@ using Drachenkatze.PresetMagician.Utils;
 using Jacobi.Vst.Core;
 using PresetMagician.Core.Models;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser
+namespace PresetMagician.VendorPresetParser
 {
     public partial class AbstractVendorPresetParser
     {
-        protected readonly List<string> PresetHashes = new List<string>();
-
-        protected PresetSaveModes PresetSaveMode = PresetSaveModes.NotYetDetermined;
-
         public enum PresetSaveModes
         {
             // Default mode, just serialize the full bank. Active program is stored within the full bank
@@ -29,6 +25,10 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             // Not yet checked
             NotYetDetermined = 4
         }
+
+        protected readonly Dictionary<string, string> PresetHashes = new Dictionary<string, string>();
+
+        protected PresetSaveModes PresetSaveMode = PresetSaveModes.NotYetDetermined;
 
 
         protected int GetAdditionalBanksPresetCount()
@@ -134,7 +134,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
             if (result.result == VstUtils.LoadFxpResult.Error)
             {
-                PluginInstance.Plugin.Logger.Error($"{filePath} {result.message}");
+                Logger.Error($"Error loading FXB/FXP {filePath}: {result.message}");
                 return result.result;
             }
 
@@ -155,7 +155,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         {
             if (start < 0)
             {
-                PluginInstance.Plugin.Logger.Error("GetPresets start index is less than 0, ignoring.");
+                Logger.Error("GetPresets start index is less than 0, ignoring. This is probably a bug or a " +
+                    "misconfiguration. Please report this including the full log file.");
                 return;
             }
 
@@ -163,8 +164,10 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
             if (endIndex > PluginInstance.Plugin.PluginInfo.ProgramCount)
             {
-                PluginInstance.Plugin.Logger.Error(
-                    $"GetPresets between {start} and {endIndex} would exceed maximum program count of {PluginInstance.Plugin.PluginInfo.ProgramCount}, ignoring.");
+                Logger.Error(
+                    $"Tried to retrieve presets between the index {start} and {endIndex}, but this would exceed maximum "+
+                    $"program count of {PluginInstance.Plugin.PluginInfo.ProgramCount}, ignoring. You might wish to "+
+                    "report this as a bug.");
                 return;
             }
 
@@ -188,7 +191,8 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
         {
             if (start < 0)
             {
-                PluginInstance.Plugin.Logger.Error("GetPresets start index is less than 0, ignoring.");
+                Logger.Error("GetPresets start index is less than 0, ignoring. This is probably a bug or a " +
+                             "misconfiguration. Please report this including the full log file.");
                 return;
             }
 
@@ -196,27 +200,30 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
             if (endIndex > PluginInstance.Plugin.PluginInfo.ProgramCount)
             {
-                PluginInstance.Plugin.Logger.Error(
-                    $"GetPresets between {start} and {endIndex} would exceed maximum program count of {PluginInstance.Plugin.PluginInfo.ProgramCount}, ignoring.");
+                Logger.Error(
+                    $"Tried to retrieve presets between the index {start} and {endIndex}, but this would exceed maximum "+
+                    $"program count of {PluginInstance.Plugin.PluginInfo.ProgramCount}, ignoring. You might wish to "+
+                    "report this as a bug.");
                 return;
             }
 
-            for (int index = start; index < endIndex; index++)
+            for (var index = start; index < endIndex; index++)
             {
                 PluginInstance.SetProgram(0);
                 var programBackup = PluginInstance.GetChunk(true);
                 PluginInstance.SetProgram(index);
-
+                var programName = PluginInstance.GetCurrentProgramName();
+                var fullSourceFile = sourceFile + ":" + index;
                 var vstPreset = new PresetParserMetadata
                 {
-                    SourceFile = sourceFile + ":" + index,
+                    SourceFile = fullSourceFile,
                     BankPath = bank.BankPath,
-                    PresetName = PluginInstance.GetCurrentProgramName(),
+                    PresetName = programName,
                     Plugin = PluginInstance.Plugin
                 };
 
 
-                byte[] realProgram = PluginInstance.GetChunk(true);
+                var realProgram = PluginInstance.GetChunk(true);
                 PluginInstance.SetProgram(0);
 
                 PluginInstance.SetChunk(realProgram, true);
@@ -225,14 +232,15 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
 
                 var hash = HashUtils.getIxxHash(realProgram);
 
-                if (PresetHashes.Contains(hash))
+                if (PresetHashes.ContainsKey(hash))
                 {
-                    PluginInstance.Plugin.Logger.Debug(
-                        $"Skipping program {index} because the preset already seem to exist");
+                    Logger.Warning(
+                        $"Skipping program {index} with name {programName} because a program with the same data "+
+                        $"was already added ({PresetHashes[hash]}. Please report this if you think if it's a bug.");
                 }
                 else
                 {
-                    PresetHashes.Add(hash);
+                    PresetHashes.Add(hash, fullSourceFile + " "+programName);
                     await DataPersistence.PersistPreset(vstPreset, presetData);
                 }
             }
@@ -248,23 +256,23 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             if (PluginInstance.Plugin.PluginType == Plugin.PluginTypes.Unknown)
             {
                 PresetSaveMode = PresetSaveModes.None;
-                PluginInstance.Plugin.Logger.Info(
-                    $"Unknown plugin type, setting preset save mode to none");
+                Logger.Info(
+                    "Unknown plugin type, setting preset save mode to none");
                 return;
             }
 
             if ((PluginInstance.Plugin.PluginInfo.Flags & VstPluginFlags.ProgramChunks) == 0)
             {
                 PresetSaveMode = PresetSaveModes.None;
-                PluginInstance.Plugin.Logger.Info(
-                    $"Plugin does not support program chunks, setting preset save mode to none");
+                Logger.Info(
+                    "Plugin does not support program chunks, setting preset save mode to none");
                 return;
             }
 
             if (PluginInstance.Plugin.PluginInfo.ProgramCount > 1)
             {
                 PluginInstance.LoadPlugin().Wait();
-                PluginInstance.Plugin.Logger.Debug(PluginInstance.Plugin.PluginName +
+                Logger.Debug(PluginInstance.Plugin.PluginName +
                                                    ": Program count is greater than 1, checking for preset save mode");
 
                 if (AreChunksNull(false))
@@ -277,20 +285,20 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
                 if (!AreChunksConsistent(false))
                 {
                     PresetSaveMode = PresetSaveModes.Fallback;
-                    PluginInstance.Plugin.Logger.Info(
-                        $"Using preset save mode fallback");
+                    Logger.Info(
+                        "Using preset save mode fallback");
                     return;
                 }
 
-                PluginInstance.Plugin.Logger.Debug(PluginInstance.Plugin.PluginName + ": bank chunks are consistent");
+                Logger.Debug(PluginInstance.Plugin.PluginName + ": bank chunks are consistent");
 
                 if (IsCurrentProgramStoredInBankChunk())
                 {
-                    PluginInstance.Plugin.Logger.Debug(PluginInstance.Plugin.PluginName +
+                    Logger.Debug(PluginInstance.Plugin.PluginName +
                                                        ": current program is stored in the bank chunk");
                     PresetSaveMode = PresetSaveModes.FullBank;
-                    PluginInstance.Plugin.Logger.Info(
-                        $"Using preset save mode full bank");
+                    Logger.Info(
+                        "Using preset save mode full bank");
                     return;
 
                     // Perfect, just put out the full bank chunk. Nothing to do here.
@@ -302,28 +310,28 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
                 {
                     if (AreChunksConsistent(true))
                     {
-                        PluginInstance.Plugin.Logger.Debug(PluginInstance.Plugin.PluginName +
+                        Logger.Debug(PluginInstance.Plugin.PluginName +
                                                            ": program chunks are consistent");
                         PresetSaveMode = PresetSaveModes.BankTrickery;
-                        PluginInstance.Plugin.Logger.Info(
-                            $"Using preset save mode bank trickery");
+                        Logger.Info(
+                            "Using preset save mode bank trickery");
                         return;
                     }
 
                     PresetSaveMode = PresetSaveModes.Fallback;
-                    PluginInstance.Plugin.Logger.Info(
-                        $"Using preset save mode fallback");
+                    Logger.Info(
+                        "Using preset save mode fallback");
                     return;
                 }
 
                 PresetSaveMode = PresetSaveModes.None;
-                PluginInstance.Plugin.Logger.Info(
-                    $"Using preset save mode none");
+                Logger.Info(
+                    "Using preset save mode none");
                 return;
             }
 
-            PluginInstance.Plugin.Logger.Info(
-                $"Plugin reported a program count of 0 or 1, using preset save mode none");
+            Logger.Info(
+                "Plugin reported a program count of 0 or 1, using preset save mode none");
             PresetSaveMode = PresetSaveModes.None;
         }
 
@@ -332,7 +340,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
          */
         public bool AreChunksNull(bool isPreset)
         {
-            PluginInstance.Plugin.Logger.Debug(isPreset
+            Logger.Debug(isPreset
                 ? $"{PluginInstance.Plugin.PluginName}: checking if bank chunks are null"
                 : $"{PluginInstance.Plugin.PluginName}: checking if program chunks are null");
 
@@ -352,7 +360,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
          */
         public bool AreChunksConsistent(bool isPreset)
         {
-            PluginInstance.Plugin.Logger.Debug(isPreset
+            Logger.Debug(isPreset
                 ? $"{PluginInstance.Plugin.PluginName}: checking if bank chunks are consistent"
                 : $"{PluginInstance.Plugin.PluginName}: checking if program chunks are consistent");
 
@@ -365,13 +373,13 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
                 return false;
             }
 
-            string firstPresetHash =
+            var firstPresetHash =
                 HashUtils.getIxxHash(chunk);
 
-            PluginInstance.Plugin.Logger.Debug(PluginInstance.Plugin.PluginName + ": hash for program 0 is " +
+            Logger.Debug(PluginInstance.Plugin.PluginName + ": hash for program 0 is " +
                                                firstPresetHash);
 
-            for (int i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
                 PluginInstance.SetProgram(0);
                 chunk = PluginInstance.GetChunk(isPreset);

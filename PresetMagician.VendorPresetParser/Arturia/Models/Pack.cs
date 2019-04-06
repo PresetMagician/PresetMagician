@@ -1,6 +1,6 @@
 using SQLite;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.Arturia.Models
+namespace PresetMagician.VendorPresetParser.Arturia.Models
 {
     [Table("Packs", WithoutRowId = true)]
     internal class Pack

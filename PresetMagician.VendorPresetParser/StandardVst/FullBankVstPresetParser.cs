@@ -2,7 +2,7 @@
 using JetBrains.Annotations;
 using PresetMagician.Core.Interfaces;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
+namespace PresetMagician.VendorPresetParser.StandardVST
 {
     [UsedImplicitly]
     public class FullBankVstPresetParser : AbstractStandardVstPresetParser, IVendorPresetParser

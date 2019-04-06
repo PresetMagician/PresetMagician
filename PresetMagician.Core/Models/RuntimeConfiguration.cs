@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Catel.Collections;
 using Catel.Data;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace PresetMagician.Core.Models
 {
@@ -27,6 +28,16 @@ namespace PresetMagician.Core.Models
         [JsonProperty] public int MaxPoolWorkerStartupTime { get; set; } = 20;
 
         [JsonProperty] public DateTime LastBackupNotificationDateTime { get; set; } = DateTime.Now;
+
+        [JsonProperty]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public PresetExportInfo.FolderExportMode FolderExportMode { get; set; } =
+            PresetExportInfo.FolderExportMode.SUBFOLDERS_TRIMMED;
+
+        [JsonProperty]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public PresetExportInfo.FileOverwriteMode FileOverwriteMode { get; set; } =
+            PresetExportInfo.FileOverwriteMode.REPORT_ERROR;
 
 
         protected override void ValidateFields(List<IFieldValidationResult> validationResults)

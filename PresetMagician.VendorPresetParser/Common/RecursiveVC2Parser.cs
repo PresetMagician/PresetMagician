@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using GSF;
 using PresetMagician.Core.Models;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
+namespace PresetMagician.VendorPresetParser.Common
 {
     public abstract class RecursiveVC2Parser : RecursiveBankDirectoryParser
     {
@@ -36,7 +36,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
             var ms = new MemoryStream();
 
             ms.Write(new byte[] {0x56, 0x43, 0x32, 0x21}, 0, 4);
-            byte[] data = Encoding.UTF8.GetBytes(pluginData);
+            var data = Encoding.UTF8.GetBytes(pluginData);
             ms.Write(LittleEndian.GetBytes(data.Length), 0, 4);
             ms.Write(data, 0, data.Length);
             ms.WriteByte(0);

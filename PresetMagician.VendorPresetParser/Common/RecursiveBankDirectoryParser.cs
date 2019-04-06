@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using PresetMagician.Core.Models;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
+namespace PresetMagician.VendorPresetParser.Common
 {
     public abstract class RecursiveBankDirectoryParser : AbstractVendorPresetParser
     {
@@ -13,7 +13,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
 
         public override void Init()
         {
-            var directories = string.Join(",", (from dir in GetParseDirectories() select dir.directory));
+            var directories = string.Join(",", from dir in GetParseDirectories() select dir.directory);
             BankLoadingNotes = $"Presets are loaded from {directories}. First sub-folder defines the bank.";
         }
 
@@ -53,11 +53,11 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
 
         public async Task<int> DoScanInternal(PresetBank rootBank, string directory, bool persist = true)
         {
-            int count = 0;
+            var count = 0;
 
             if (!Directory.Exists(directory))
             {
-                PluginInstance.Plugin.Logger.Info($"Directory {directory} does not exist, skipping");
+                Logger.Info($"Directory {directory} does not exist, skipping");
                 return 0;
             }
 
@@ -91,9 +91,9 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.Common
                     }
                     catch (Exception e)
                     {
-                        PluginInstance.Plugin.Logger.Error(
+                        Logger.Error(
                             $"Error processing preset {file.FullName} because of {e.GetType().FullName}: {e.Message}");
-                        PluginInstance.Plugin.Logger.Debug(e.StackTrace);
+                        Logger.Debug(e.StackTrace);
                     }
                 }
             }

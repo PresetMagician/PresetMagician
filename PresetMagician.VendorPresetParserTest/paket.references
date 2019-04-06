@@ -5,3 +5,5 @@ System.Data.SQLite
 SQLitePCLRaw.bundle_e_sqlite3
 sqlite-net-pcl
 CsvHelper
+K4os.Compression.LZ4
+MethodTimer.Fody copy_local: false

@@ -6,7 +6,7 @@ using System.Linq;
 using Catel.Data;
 using Catel.IO;
 using Ceras;
-using Drachenkatze.PresetMagician.NKSF.NKSF;
+using PresetMagician.NKS;
 using PresetMagician.Core.Collections;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models.NativeInstrumentsResources;
@@ -417,7 +417,7 @@ namespace PresetMagician.Core.Models
         public bool HasMetadata => PluginLocation != null && PluginLocation.HasMetadata;
 
 
-        public bool RequiresMetadataScan => IsEnabled && !HasMetadata;
+        public bool RequiresMetadataScan => IsEnabled && (!HasMetadata || PluginLocation?.PresetParser == null);
 
         /// <summary>
         /// Defines if the plugin is supported

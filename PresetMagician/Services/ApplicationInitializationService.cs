@@ -5,7 +5,9 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 using Anotar.Catel;
 using Catel;
@@ -20,6 +22,7 @@ using Orc.Squirrel;
 using Orchestra.Services;
 using PresetMagician.Core.Commands.Plugin;
 using PresetMagician.Core.Interfaces;
+using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
 using PresetMagician.Legacy.Services;
 using PresetMagician.Legacy.Services.EventArgs;
@@ -66,6 +69,8 @@ namespace PresetMagician.Services
         #endregion Constructors
 
         #region Methods
+        
+       
 
         [Time]
         public override async Task InitializeBeforeCreatingShellAsync()
@@ -94,6 +99,11 @@ namespace PresetMagician.Services
                     migrationService.LoadData();
                     migrationService.MigratePlugins();
                 }).ConfigureAwait(false);
+
+                _serviceLocator.ResolveType<GlobalService>().RuntimeConfiguration.FileOverwriteMode =
+                    PresetExportInfo.FileOverwriteMode.FORCE_OVERWRITE;
+                _serviceLocator.ResolveType<GlobalService>().RuntimeConfiguration.FolderExportMode =
+                    PresetExportInfo.FolderExportMode.ONE_LEVEL_LAST_BANK;
             }
 
 
@@ -116,6 +126,9 @@ namespace PresetMagician.Services
                 
                 globalService.Plugins.Add(plugin);
             }
+
+            dataPersistenceService.LoadDontShowAgainDialogs();
+            dataPersistenceService.LoadRememberMyChoiceResults();
         }
 
         [Time]
@@ -136,7 +149,7 @@ namespace PresetMagician.Services
             if (!licenseService.CheckLicense())
             {
                 LogTo.Debug("No valid license found, showing registration dialog");
-                StartRegistration();
+                await StartRegistration();
             }
 
 
@@ -155,6 +168,18 @@ namespace PresetMagician.Services
             schedulerService.AddScheduledTask(updateCheckTask);
 
             TaskHelper.Run(() => { _serviceLocator.ResolveType<RefreshPluginsCommand>().ExecuteAsync(); });
+
+            var globalService = _serviceLocator.ResolveType<GlobalService>();
+            
+            var location = Assembly.GetExecutingAssembly().Location;
+            var releaseNotesFile = Path.Combine(Path.GetDirectoryName(location), @"Resources\ReleaseNotes\",
+                globalService.PresetMagicianVersion + ".txt");
+
+            if (File.Exists(releaseNotesFile))
+            {
+                var ms = _serviceLocator.ResolveType<IAdvancedMessageService>();
+                await ms.ShowOnceAsync(File.ReadAllText(releaseNotesFile), "RELEASENOTES_"+globalService.PresetMagicianVersion, "Release Notes");
+            }
         }
 
         private async Task StartRegistration()

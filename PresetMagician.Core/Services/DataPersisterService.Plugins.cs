@@ -2,11 +2,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using PresetMagician.Core.Models;
+using PresetMagician.Utils;
 
 namespace PresetMagician.Core.Services
 {
     public partial class DataPersisterService
     {
+        /// <summary>
+        /// Returns the full path to where the plugins are stored
+        /// </summary>
+        /// <returns></returns>
         public string GetPluginsStoragePath()
         {
             var pluginsStoragePath = Path.Combine(DefaultDataStoragePath, DefaultPluginStoragePath);
@@ -14,9 +19,19 @@ namespace PresetMagician.Core.Services
             return pluginsStoragePath;
         }
 
+        /// <summary>
+        /// Returns the full storage path for a plugin
+        /// </summary>
+        /// <param name="plugin"></param>
+        /// <returns></returns>
         public string GetPluginStorageFile(Plugin plugin)
         {
-            return Path.Combine(GetPluginsStoragePath(), plugin.PluginId + PluginStorageExtension);
+            return Path.Combine(GetPluginsStoragePath(), GetPluginStorageFilePrefix(plugin) + "."+ plugin.PluginId +  PluginStorageExtension);
+        }
+
+        public string GetPluginStorageFilePrefix(Plugin plugin)
+        {
+            return PathUtils.SanitizeFilename(plugin.PluginVendor + " - " + plugin.PluginName);
         }
 
         public List<string> GetStoredPluginFiles()
@@ -32,6 +47,28 @@ namespace PresetMagician.Core.Services
             return list;
         }
 
+        /// <summary>
+        /// Cleans up old plugin storage files
+        /// </summary>
+        /// <param name="plugin"></param>
+        public void CleanOldPluginStorageFiles(Plugin plugin)
+        {
+            var currentStorageFile = GetPluginStorageFile(plugin);
+
+            foreach (var file in GetStoredPluginFiles())
+            {
+                if (file.Contains(plugin.PluginId) && file != currentStorageFile)
+                {
+                    File.Move(file, file+".old");
+                }
+            }
+
+        }
+        
+        /// <summary>
+        /// Saves a plugin including characteristics, modes and preview note players. Does not include presets! 
+        /// </summary>
+        /// <param name="plugin"></param>
         public void SavePlugin(Plugin plugin)
         {
             Directory.CreateDirectory(DefaultPluginStoragePath);
@@ -44,9 +81,16 @@ namespace PresetMagician.Core.Services
 
             SaveTypesCharacteristics();
             SavePreviewNotePlayers();
+
+            CleanOldPluginStorageFiles(plugin);
         }
 
 
+        /// <summary>
+        /// Loads a plugin by it's filename
+        /// </summary>
+        /// <param name="fileName">An absolute filename or a relative one. Needs to include the extension.</param>
+        /// <returns></returns>
         public Plugin LoadPlugin(string fileName)
         {
             var dataFile = Path.Combine(GetPluginsStoragePath(), fileName);

@@ -2,14 +2,11 @@
 using JetBrains.Annotations;
 using PresetMagician.Core.Interfaces;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser
+namespace PresetMagician.VendorPresetParser
 {
     [UsedImplicitly]
     public class VoidPresetParser : AbstractVendorPresetParser, IVendorPresetParser
     {
-        public override string Remarks { get; set; } =
-            "Plugin doesn't seem to have preset loading/saving capabilities";
-
         public override List<int> SupportedPlugins => new List<int>
         {
             1951355500,
@@ -26,7 +23,10 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser
             1297052499, // MeldaProduction Oscilloscope
             1297245539, // MeldaProduction Recorder
             1297306467, // MeldaProduction StereoScope
-            1297380718, // MeldaProduction Tuner
+            1297380718 // MeldaProduction Tuner
         };
+
+        public override string Remarks { get; set; } =
+            "Plugin doesn't seem to have preset loading/saving capabilities";
     }
 }

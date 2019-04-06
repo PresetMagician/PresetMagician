@@ -16,8 +16,11 @@ namespace PresetMagician.Core.Services
         private const string PluginStorageExtension = ".pmplugin";
         private const string PresetStorageExtension = ".pmpluginpresets";
         private const string TypesStorageFile = "Types.pmmc";
+        
         private const string CharacteristicsStorageFile = "Characteristics.pmmc";
         private const string PreviewNotePlayersStorageFile = "PreviewNotePlayers.pmmc";
+        private const string DontShowAgainDialogsStorageFile = "DontShowAgainDialogs.pmmc";
+        private const string RememberMyChoiceResults = "RememberMyChoiceResults.pmmc";
 
         public static string DefaultDataStoragePath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -80,8 +83,15 @@ namespace PresetMagician.Core.Services
 
             foreach (var file in files)
             {
-                fileInfo = new FileInfo(file);
-                totalCount += fileInfo.Length;
+                try
+                {
+                    fileInfo = new FileInfo(file);
+                    totalCount += fileInfo.Length;
+                }
+                catch (FileNotFoundException)
+                {
+                    // In case the file is moved during the update process
+                }
             }
 
             if (File.Exists(PresetDataPersisterService.GetDatabaseFile()))
@@ -101,8 +111,8 @@ namespace PresetMagician.Core.Services
                 var stat = new PresetDatabaseStatistic();
                 stat.PluginName = plugin.PluginName;
                 stat.PresetCount = plugin.Presets.Count;
-                stat.PresetUncompressedSize = (from p in plugin.Presets select p.PresetSize).Sum();
-                stat.PresetCompressedSize = (from p in plugin.Presets select p.PresetCompressedSize).Sum();
+                stat.PresetUncompressedSize = (from p in plugin.Presets select (long)p.PresetSize).Sum();
+                stat.PresetCompressedSize = (from p in plugin.Presets select (long)p.PresetCompressedSize).Sum();
                 stats.Add(stat);
             }
 

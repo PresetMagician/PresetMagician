@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Catel.Collections;
+using Catel.Services;
 using Orchestra;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
@@ -22,6 +23,8 @@ namespace PresetMagician.Core.Services
         public GlobalCharacteristicCollection GlobalCharacteristics { get; }
         public GlobalTypeCollection GlobalTypes { get; }
         public FastObservableCollection<PreviewNotePlayer> PreviewNotePlayers { get; }
+        public HashSet<string> DontShowAgainDialogs { get; } = new HashSet<string>();
+        public Dictionary<string, MessageResult> RememberMyChoiceResults { get; } = new Dictionary<string, MessageResult>();
 
         public IRemoteVstHostProcessPool RemoteVstHostProcessPool { get; private set; }
 
@@ -33,6 +36,18 @@ namespace PresetMagician.Core.Services
             }
 
             RemoteVstHostProcessPool = remoteVstHostProcessPool;
+        }
+
+        public void SetRememberMyChoiceResult(string id, MessageResult result)
+        {
+            if (!RememberMyChoiceResults.ContainsKey(id))
+            {
+                RememberMyChoiceResults.Add(id, result);
+            }
+            else
+            {
+                RememberMyChoiceResults[id] = result;
+            }
         }
 
         public RuntimeConfiguration RuntimeConfiguration { get; set; }

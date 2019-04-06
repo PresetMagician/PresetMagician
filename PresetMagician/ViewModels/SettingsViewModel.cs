@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Catel;
 using Catel.MVVM;
+using Catel.Services;
 using Drachenkatze.PresetMagician.Utils;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
@@ -18,7 +19,9 @@ namespace PresetMagician.ViewModels
 
         private readonly IRuntimeConfigurationService _configurationService;
         private readonly ICommandManager _commandManager;
+        private readonly GlobalService _globalService;
         private readonly ILicenseService _licenseService;
+        private readonly IAdvancedMessageService _advancedMessageService;
         public ApplicationState ApplicationState { get; private set; }
 
 
@@ -28,7 +31,8 @@ namespace PresetMagician.ViewModels
             IRuntimeConfigurationService configurationService,
             ILicenseService licenseService,
             ICommandManager commandManager, DataPersisterService dataPersisterService,
-            GlobalFrontendService globalFrontendService
+            GlobalFrontendService globalFrontendService, GlobalService globalService,
+            IAdvancedMessageService advancedMessageService
         )
         {
             Argument.IsNotNull(() => configurationService);
@@ -37,6 +41,8 @@ namespace PresetMagician.ViewModels
 
             _configurationService = configurationService;
             _commandManager = commandManager;
+            _globalService = globalService;
+            _advancedMessageService = advancedMessageService;
 
             ApplicationState = globalFrontendService.ApplicationState;
 
@@ -76,6 +82,15 @@ namespace PresetMagician.ViewModels
 
         protected override async Task<bool> SaveAsync()
         {
+            if (EditableConfiguration.FolderExportMode != _globalService.RuntimeConfiguration.FolderExportMode ||
+                EditableConfiguration.FileOverwriteMode != _globalService.RuntimeConfiguration.FileOverwriteMode)
+            {
+                await _advancedMessageService.ShowAsyncWithDontShowAgain(
+                    "You have changed the folder export mode and/or the file overwrite mode. Note that PresetMagician " +
+                    "does not move old files - please backup/clean up old bank folders to ensure no NKS files are " +
+                    "accidentally deleted or duplicated.", "ChangedFolderExportFileOverwriteMode",
+                    "Changed Folder Export / File Overwrite Mode", null, MessageImage.Information);
+            }
             _commandManager.ExecuteCommand("Application.ApplyConfiguration");
 
             return await base.SaveAsync();

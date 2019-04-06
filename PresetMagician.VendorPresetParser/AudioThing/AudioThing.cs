@@ -1,6 +1,6 @@
-﻿using Drachenkatze.PresetMagician.VendorPresetParser.Common;
+﻿using PresetMagician.VendorPresetParser.Common;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.AudioThing
+namespace PresetMagician.VendorPresetParser.AudioThing
 {
     public abstract class AudioThing : RecursiveVC2Parser
     {

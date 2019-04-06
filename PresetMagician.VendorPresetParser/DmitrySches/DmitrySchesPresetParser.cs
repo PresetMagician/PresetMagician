@@ -1,17 +1,17 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Drachenkatze.PresetMagician.VendorPresetParser.Common;
 using GSF.Collections;
 using ICSharpCode.SharpZipLib.Zip.Compression;
 using PresetMagician.Core.Models;
+using PresetMagician.VendorPresetParser.Common;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.DmitrySches
+namespace PresetMagician.VendorPresetParser.DmitrySches
 {
     public abstract class DmitrySchesPresetParser : RecursiveBankDirectoryParser
     {
-        private byte[] _decodeBuffer;
         private const int DecodeBufferSize = 1024 * 1024 * 100;
+        private byte[] _decodeBuffer;
 
 
         public override async Task DoScan()

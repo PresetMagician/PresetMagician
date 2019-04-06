@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using PresetMagician.Core.Interfaces;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVST
+namespace PresetMagician.VendorPresetParser.StandardVST
 {
     public class BankTrickeryVstPresetParser : AbstractStandardVstPresetParser, IVendorPresetParser
     {

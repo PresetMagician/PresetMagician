@@ -241,10 +241,10 @@
                                                    VerticalAlignment="Center"
                                                    Margin="0,0,5,0"
                                                    ToolTip="{Binding CanonicalDllFilename}">
-                                            <iconPacks:PackIconFontAwesome Kind="ExclamationTriangleSolid"
+                                            <iconPacks:PackIconFontAwesome Kind="SearchenginBrands"
                                                                            HorizontalAlignment="Center"
                                                                            VerticalAlignment="Center"
-                                                                           Foreground="Red" />
+                                                                           Foreground="Orange" />
                                             <TextBlock.Style>
                                                 <Style TargetType="{x:Type TextBlock}">
                                                     <Setter Property="Visibility" Value="Collapsed" />

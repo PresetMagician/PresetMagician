@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\MethodTimer.Fody\build\MethodTimer.Fody.props" Condition="Exists('..\packages\MethodTimer.Fody\build\MethodTimer.Fody.props')" Label="Paket" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -37,6 +38,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <Prefer32bit>false</Prefer32bit>
     <DebugType>full</DebugType>
+    <DefineConstants>DEBUG</DefineConstants>
   </PropertyGroup>
   <PropertyGroup>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -86,6 +88,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="FodyWeavers.xml" />
+    <Content Include="TestData\**">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="test.fxp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -205,6 +211,28 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
+        <Reference Include="K4os.Compression.LZ4">
+          <HintPath>..\packages\K4os.Compression.LZ4\lib\net46\K4os.Compression.LZ4.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="MethodTimer">
+          <HintPath>..\packages\MethodTimer.Fody\lib\net452\MethodTimer.dll</HintPath>
+          <Private>False</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
         <Reference Include="SQLite-net">
           <HintPath>..\packages\sqlite-net-pcl\lib\netstandard1.1\SQLite-net.dll</HintPath>
           <Private>True</Private>
@@ -261,6 +289,17 @@
       <ItemGroup>
         <Reference Include="SQLitePCLRaw.provider.e_sqlite3">
           <HintPath>..\packages\SQLitePCLRaw.provider.e_sqlite3.net45\lib\net45\SQLitePCLRaw.provider.e_sqlite3.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="System.Buffers">
+          <HintPath>..\packages\System.Buffers\lib\netstandard2.0\System.Buffers.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -348,8 +387,44 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
+        <Reference Include="System.Memory">
+          <HintPath>..\packages\System.Memory\lib\netstandard2.0\System.Memory.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="System.Numerics">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="System.Numerics.Vectors">
+          <HintPath>..\packages\System.Numerics.Vectors\lib\net46\System.Numerics.Vectors.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
         <Reference Include="System.Reflection">
           <HintPath>..\packages\System.Reflection\lib\net462\System.Reflection.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="System.Runtime.CompilerServices.Unsafe">
+          <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -457,6 +532,7 @@
       </ItemGroup>
     </When>
   </Choose>
+  <Import Project="..\packages\Fody\build\Fody.targets" Condition="Exists('..\packages\Fody\build\Fody.targets')" Label="Paket" />
   <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.linux\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_linux_targets).targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.linux\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_linux_targets).targets')" Label="Paket" />
   <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.osx\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_osx_targets).targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.osx\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_osx_targets).targets')" Label="Paket" />
   <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_xp\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_v110_xp_targets).targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_xp\build\$(__paket__SQLitePCLRaw_lib_e_sqlite3_v110_xp_targets).targets')" Label="Paket" />

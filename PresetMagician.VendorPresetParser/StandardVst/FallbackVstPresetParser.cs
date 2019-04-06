@@ -1,6 +1,6 @@
-﻿using Drachenkatze.PresetMagician.VendorPresetParser.StandardVST;
+﻿using PresetMagician.VendorPresetParser.StandardVST;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.StandardVst
+namespace PresetMagician.VendorPresetParser.StandardVst
 {
     public class FallbackVstPresetParser : BankTrickeryVstPresetParser
     {

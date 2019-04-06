@@ -6,7 +6,7 @@ using Catel;
 using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
-using Drachenkatze.PresetMagician.NKSF.NKSF;
+using PresetMagician.NKS;
 using Newtonsoft.Json;
 
 namespace PresetMagician.ViewModels

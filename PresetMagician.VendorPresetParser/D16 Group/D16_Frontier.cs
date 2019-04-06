@@ -3,16 +3,15 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 using PresetMagician.Core.Interfaces;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
+namespace PresetMagician.VendorPresetParser.D16_Group
 {
     // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
     public class D16_Frontier : D16Group, IVendorPresetParser
     {
+        private const string UserBankPath = @"D16 Group\Frontier\UserStore\Presets\";
         protected override string XmlPluginName { get; } = "Frontier";
         protected override string Extension { get; } = ".frprs";
-
-        private const string UserBankPath = @"D16 Group\Frontier\UserStore\Presets\";
 
         public override List<int> SupportedPlugins => new List<int>
         {

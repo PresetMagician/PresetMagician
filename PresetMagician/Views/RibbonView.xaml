@@ -229,6 +229,12 @@
 
                         </fluent:Button>
                         <fluent:Button
+                            Command="{catel:CommandManagerBinding Plugin.RemoveSelectedPlugins}"
+                            Header="Remove selected plugin(s)"
+                            ToolTip="Removes the selected plugins from the PresetMagician database"
+                            Icon="{iconPacks:Modern Kind=Delete}"
+                            Size="Middle" />
+                        <fluent:Button
                             Command="{catel:CommandManagerBinding PluginTools.ViewErrors}"
                             Header="View Plugin Log"
                             Icon="{iconPacks:FontAwesome Kind=ListAltSolid}"
@@ -365,7 +371,7 @@
                             VerticalAlignment="Center"
                             Command="{catel:CommandManagerBinding Tools.NksfView}"
                             Content=""
-                            Header="NKSF Inspector"
+                            Header="NKS Inspector"
                             LargeIcon="{iconPacks:PackIcon {x:Static iconPacks:PackIconOcticonsKind.Telescope},
                                                        Width=32,
                                                        Height=32}" />

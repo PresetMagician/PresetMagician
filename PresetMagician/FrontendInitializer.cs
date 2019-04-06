@@ -1,6 +1,6 @@
 using Catel.IoC;
 using Catel.Services;
-using Drachenkatze.PresetMagician.VendorPresetParser;
+using PresetMagician.VendorPresetParser;
 using Orchestra.Services;
 using PresetMagician.Core;
 using PresetMagician.Core.Interfaces;

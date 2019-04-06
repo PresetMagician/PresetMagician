@@ -6,10 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Drachenkatze.PresetMagician.VendorPresetParser.Common;
 using PresetMagician.Core.Models;
+using PresetMagician.VendorPresetParser.Common;
 
-namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
+namespace PresetMagician.VendorPresetParser.D16_Group
 {
     public abstract class D16Group : AbstractVendorPresetParser
     {
@@ -19,7 +19,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
         protected async Task<int> ProcessD16PkgArchive(string archiveName, PresetBank bank, bool persist = true)
         {
             var count = 0;
-            PluginInstance.Plugin.Logger.Debug($"ProcessD16PKGArchive {archiveName}");
+            Logger.Debug($"ProcessD16PKGArchive {archiveName}");
             using (var archive = ZipFile.OpenRead(archiveName))
             {
                 var entry = archive.GetEntry("content");
@@ -57,8 +57,13 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
 
         protected async Task<int> ProcessPresetDirectory(string presetDirectory, PresetBank bank, bool persist = true)
         {
-            int count = 0;
-            PluginInstance.Plugin.Logger.Debug($"ProcessPresetDirectory {presetDirectory}");
+            var count = 0;
+            if (!Directory.Exists(presetDirectory))
+            {
+                return count;
+            }
+
+            Logger.Debug($"ProcessPresetDirectory {presetDirectory}");
             var dirInfo = new DirectoryInfo(presetDirectory);
 
             foreach (var file in dirInfo.EnumerateFiles("*" + Extension))
@@ -72,6 +77,12 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
                     presetInfo.preset.SourceFile = file.FullName;
                     await DataPersistence.PersistPreset(presetInfo.preset, presetInfo.presetData);
                 }
+            }
+
+            foreach (var directory in dirInfo.EnumerateDirectories())
+            {
+                count += await ProcessPresetDirectory(directory.FullName, bank.CreateRecursive(directory.Name),
+                    persist);
             }
 
             return count;
@@ -127,7 +138,7 @@ namespace Drachenkatze.PresetMagician.VendorPresetParser.D16_Group
 
         protected List<string> GetModes(string tags)
         {
-            List<string> modes = new List<string>();
+            var modes = new List<string>();
 
             var dict = ExtractTags(tags);
             if (dict.ContainsKey("Type"))
