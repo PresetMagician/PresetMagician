@@ -214,7 +214,12 @@ namespace PresetMagician.VendorPresetParser.Spectrasonics
 
             foreach (var file in files)
             {
-                libraries.Add(GetLibraryFilesystem(file));
+                var library = GetLibraryFilesystem(file);
+
+                if (library != null)
+                {
+                    libraries.Add(library);
+                }
             }
 
             libraries.Add(GetLibraryUser(GetUserLibraryFolder(LIBRARYTYPE_MULTIS)));
@@ -287,7 +292,7 @@ namespace PresetMagician.VendorPresetParser.Spectrasonics
             }
         }
 
-[Time]
+        [Time]
         public OmnisphereLibrary GetLibraryFilesystem(string libraryFile)
         {
             if (_omnisphereLibraryCache.ContainsKey(libraryFile))
@@ -295,9 +300,23 @@ namespace PresetMagician.VendorPresetParser.Spectrasonics
                 return _omnisphereLibraryCache[libraryFile];
             }
 
+            Logger.Info($"Parsing {libraryFile}");
+
             var file = File.ReadAllText(libraryFile, Encoding.ASCII);
             var startFileSystemLocation = file.IndexOf(FILESYSTEM_START_TAG, StringComparison.OrdinalIgnoreCase);
             var endFileSystemLocation = file.IndexOf(FILESYSTEM_END_TAG, StringComparison.OrdinalIgnoreCase);
+
+            if (startFileSystemLocation == -1)
+            {
+                Logger.Error("Unable to find the filesystem start tag");
+                return null;
+            }
+
+            if (startFileSystemLocation == -1)
+            {
+                Logger.Error("Unable to find the filesystem end tag");
+                return null;
+            }
 
             var fileSystemString = XML_TAG + Environment.NewLine + file.Substring(startFileSystemLocation,
                                        endFileSystemLocation - startFileSystemLocation + FILESYSTEM_END_TAG.Length);
