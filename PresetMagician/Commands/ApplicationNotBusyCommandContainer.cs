@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using Catel.IoC;
 using Catel.MVVM;
+using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
 using PresetMagician.Services.Interfaces;
@@ -12,6 +13,7 @@ namespace PresetMagician
         protected readonly GlobalFrontendService _globalFrontendService;
         protected readonly IRuntimeConfigurationService RuntimeConfigurationService;
         protected readonly IServiceLocator ServiceLocator;
+        protected readonly IApplicationService ApplicationService;
         private bool _allowDuringEditing;
 
         protected ApplicationNotBusyCommandContainer(string command, ICommandManager commandManager,
@@ -20,6 +22,7 @@ namespace PresetMagician
         {
             ServiceLocator = serviceLocator;
             RuntimeConfigurationService = ServiceLocator.ResolveType<IRuntimeConfigurationService>();
+            ApplicationService = ServiceLocator.ResolveType<IApplicationService>();
             _globalFrontendService = ServiceLocator.ResolveType<GlobalFrontendService>();
             _allowDuringEditing = allowDuringEditing;
             _globalFrontendService.ApplicationState.PropertyChanged += OnApplicationBusyChanged;

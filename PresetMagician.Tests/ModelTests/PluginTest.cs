@@ -89,7 +89,7 @@ namespace PresetMagician.Tests.ModelTests
                 {nameof(PluginLocation.DllPath), "some path"},
                 {nameof(PluginLocation.HasMetadata), true},
                 {nameof(PluginLocation.PresetParserClassName), "NullPresetParser"},
-                {nameof(PluginLocation.LastFailedAnalysisVersion), "0.5.9"}
+                {nameof(PluginLocation.LastMetadataAnalysisVersion), "0.5.9"}
             };
 
         private List<string> PluginLocationPropertiesWhichShouldBeIgnored =
@@ -611,6 +611,12 @@ namespace PresetMagician.Tests.ModelTests
 
             applicationService.GetApplicationOperationErrors().Should().BeEmpty();
             globalService.Plugins.Count.Should().Be(1);
+            globalService.Plugins.First().PluginLocations.Count.Should().Be(1);
+            globalService.Plugins.First().PluginLocations.First().IsPresent.Should().BeTrue();
+            globalService.Plugins.First().PluginLocations.First().LastMetadataAnalysisVersion.Should()
+                .Be(globalService.PresetMagicianVersion);
+            globalService.Plugins.First().PluginLocations.First().HasMetadata.Should().BeTrue();
+            
             globalService.Plugins.First().IsPresent.Should().BeTrue();
             globalService.Plugins.First().HasMetadata.Should().BeTrue();
 

@@ -61,6 +61,7 @@
     <Compile Include="Data\ModelBase.usereditable.cs" />
     <Compile Include="Data\UserEditableChangeNotificationWrapper.cs" />
     <Compile Include="Data\WrappedModelBase.cs" />
+    <Compile Include="Enums\PresetParserPriorityEnum.cs" />
     <Compile Include="EventArgs\PoolFailedEventArgs.cs" />
     <Compile Include="EventArgs\PresetUpdatedEventArgs.cs" />
     <Compile Include="Exceptions\ConnectivityLostException.cs" />

@@ -39,10 +39,10 @@ namespace PresetMagician.Core.Models
         [Include] public bool HasMetadata { get; set; }
 
         /// <summary>
-        /// Defines the PresetMagician version in which the analysis failed.
+        /// Defines the PresetMagician version in which the last analysis was done.
         /// </summary>
         [Include]
-        public string LastFailedAnalysisVersion { get; set; }
+        public string LastMetadataAnalysisVersion { get; set; }
 
         public string ShortTextRepresentation => $"{PluginName} by {PluginVendor}, Version {VendorVersion}";
 

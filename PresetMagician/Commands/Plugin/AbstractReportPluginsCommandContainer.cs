@@ -110,6 +110,7 @@ namespace PresetMagician
                     email = _licenseService.GetCurrentLicense().Customer.Email,
                     plugins =
                         from p in pluginsToReport
+                        where p.PluginLocation != null
                         orderby p.VstPluginId
                         select new
                         {
@@ -120,6 +121,7 @@ namespace PresetMagician
                             pluginPresetParser = p.PresetParser != null ? p.PresetParser.PresetParserType : "",
                             pluginSupportedSince = GlobalService.PresetMagicianVersion,
                             pluginType = p.PluginTypeDescription,
+                            dllHash = p.PluginLocation.DllHash,
                             pluginCapabilities = p.PluginCapabilities,
                             pluginRemarks = p.PresetParser != null ? p.PresetParser.Remarks : ""
                         }

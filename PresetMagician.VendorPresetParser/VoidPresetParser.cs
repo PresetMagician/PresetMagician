@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using JetBrains.Annotations;
+using PresetMagician.Core.Enums;
 using PresetMagician.Core.Interfaces;
 
 namespace PresetMagician.VendorPresetParser
@@ -25,6 +26,8 @@ namespace PresetMagician.VendorPresetParser
             1297306467, // MeldaProduction StereoScope
             1297380718 // MeldaProduction Tuner
         };
+        
+        public override PresetParserPriorityEnum Priority { get; } = PresetParserPriorityEnum.VOID_PRIORITY;
 
         public override string Remarks { get; set; } =
             "Plugin doesn't seem to have preset loading/saving capabilities";

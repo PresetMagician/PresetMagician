@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Catel.IoC;
+using PresetMagician.Core.Enums;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
@@ -58,6 +59,8 @@ namespace PresetMagician.VendorPresetParser
         public virtual List<int> SupportedPlugins => new List<int>();
 
         public virtual int AudioPreviewPreDelay { get; set; } = 40;
+        
+        public virtual PresetParserPriorityEnum Priority { get; } = PresetParserPriorityEnum.DEFAULT_PRIORITY;
 
         public virtual string Remarks { get; set; }
 
@@ -74,7 +77,6 @@ namespace PresetMagician.VendorPresetParser
 
         public virtual string BankLoadingNotes { get; set; }
         public IDataPersistence DataPersistence { get; set; }
-        public virtual bool RequiresRescanWithEachRelease { get; } = false;
         public PresetParserConfiguration PresetParserConfiguration { get; set; }
         public MiniLogger Logger { get; } = new MiniMemoryLogger();
 
@@ -83,20 +85,6 @@ namespace PresetMagician.VendorPresetParser
             return SupportedPlugins;
         }
 
-        public virtual bool RequiresRescan()
-        {
-            if (RequiresRescanWithEachRelease)
-            {
-                var globalService = ServiceLocator.Default.ResolveType<GlobalService>();
-
-                if (PresetParserConfiguration.LastScanVersion != globalService.PresetMagicianVersion)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
 
         public virtual int GetNumPresets()
         {

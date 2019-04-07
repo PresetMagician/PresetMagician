@@ -45,7 +45,7 @@ namespace PresetMagician
         }
 
 
-        protected override async Task ExecuteAsync(object parameter)
+        protected override void Execute(object parameter)
         {
             var pluginsToScan =
                 (from plugin in _globalFrontendService.SelectedPlugins where plugin.IsEnabled select plugin).ToList();

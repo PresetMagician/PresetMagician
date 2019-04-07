@@ -31,7 +31,7 @@ namespace PresetMagician
         }
 
 
-        protected override async Task ExecuteAsync(object parameter)
+        protected override void Execute(object parameter)
         {
             var pluginInstance =
                 _remoteVstService.GetInteractivePluginInstance(_globalFrontendService.SelectedPlugin);

@@ -86,7 +86,8 @@ namespace PresetMagician.Core.Services
             }
 
             await _db.ExecuteAsync("DELETE FROM PresetData WHERE PluginId = ?", plugin.PluginId);
-            
+
+            await _db.ExecuteAsync("VACUUM;");
             if (closeDb)
             {
                 await CloseDatabase();
