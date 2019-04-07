@@ -15,7 +15,7 @@ using Type = PresetMagician.Core.Models.Type;
 
 namespace PresetMagician.VendorPresetParser.Spectrasonics
 {
-// ReSharper disable once InconsistentNaming
+    // ReSharper disable once InconsistentNaming
     [UsedImplicitly]
     public class Spectrasonics_Omnisphere : AbstractVendorPresetParser, IVendorPresetParser
     {
@@ -214,11 +214,20 @@ namespace PresetMagician.VendorPresetParser.Spectrasonics
 
             foreach (var file in files)
             {
-                var library = GetLibraryFilesystem(file);
-
-                if (library != null)
+                Logger.Info($"Parsing {file}");
+                try
                 {
-                    libraries.Add(library);
+                    var library = GetLibraryFilesystem(file);
+
+                    if (library != null)
+                    {
+                        libraries.Add(library);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.Error($"Unable to parse {file}. Error: {e.GetType().FullName} {e.Message}");
+                    Logger.LogException(e);
                 }
             }
 
@@ -300,7 +309,6 @@ namespace PresetMagician.VendorPresetParser.Spectrasonics
                 return _omnisphereLibraryCache[libraryFile];
             }
 
-            Logger.Info($"Parsing {libraryFile}");
 
             var file = File.ReadAllText(libraryFile, Encoding.ASCII);
             var startFileSystemLocation = file.IndexOf(FILESYSTEM_START_TAG, StringComparison.OrdinalIgnoreCase);
@@ -308,7 +316,7 @@ namespace PresetMagician.VendorPresetParser.Spectrasonics
 
             if (startFileSystemLocation == -1)
             {
-                Logger.Error("Unable to find the filesystem start tag");
+                Logger.Error("Unable to find the filesystem start tag.");
                 return null;
             }
 
