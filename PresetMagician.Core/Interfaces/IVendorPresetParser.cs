@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using PresetMagician.Core.Enums;
 using PresetMagician.Core.Models;
 using PresetMagician.Utils.Logger;
 
@@ -8,6 +9,11 @@ namespace PresetMagician.Core.Interfaces
 {
     public interface IVendorPresetParser
     {
+        /// <summary>
+        /// The priority of a given preset parser. This is used to determinate which plugin location
+        /// is effectively used.
+        /// </summary>
+        PresetParserPriorityEnum Priority { get; }
         PresetBank RootBank { get; set; }
         IRemotePluginInstance PluginInstance { get; set; }
         int AudioPreviewPreDelay { get; set; }
@@ -19,7 +25,6 @@ namespace PresetMagician.Core.Interfaces
         bool IsNullParser { get; }
         PresetParserConfiguration PresetParserConfiguration { get; set; }
 
-        bool RequiresRescan();
         int GetNumPresets();
 
         bool CanHandle();

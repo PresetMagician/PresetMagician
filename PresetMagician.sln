@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PresetMagician.Core", "Pres
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PresetMagician.Legacy", "PresetMagician.Legacy\PresetMagician.Legacy.csproj", "{3A586416-148E-47E4-8612-87A7C9561BA7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PresetMagician.TestVstHost", "PresetMagician.TestVstHost\PresetMagician.TestVstHost.csproj", "{7EB5967C-37A5-47FB-8DC5-C91B16C49887}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -302,6 +304,24 @@ Global
 		{3A586416-148E-47E4-8612-87A7C9561BA7}.Release|x64.Build.0 = Release|Any CPU
 		{3A586416-148E-47E4-8612-87A7C9561BA7}.Release|x86.ActiveCfg = Release|Any CPU
 		{3A586416-148E-47E4-8612-87A7C9561BA7}.Release|x86.Build.0 = Release|Any CPU
+		{7EB5967C-37A5-47FB-8DC5-C91B16C49887}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EB5967C-37A5-47FB-8DC5-C91B16C49887}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EB5967C-37A5-47FB-8DC5-C91B16C49887}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7EB5967C-37A5-47FB-8DC5-C91B16C49887}.Debug|x64.Build.0 = Debug|Any CPU
+		{7EB5967C-37A5-47FB-8DC5-C91B16C49887}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7EB5967C-37A5-47FB-8DC5-C91B16C49887}.Debug|x86.Build.0 = Debug|Any CPU
+		{7EB5967C-37A5-47FB-8DC5-C91B16C49887}.Publish|Any CPU.ActiveCfg = Release|Any CPU
+		{7EB5967C-37A5-47FB-8DC5-C91B16C49887}.Publish|Any CPU.Build.0 = Release|Any CPU
+		{7EB5967C-37A5-47FB-8DC5-C91B16C49887}.Publish|x64.ActiveCfg = Release|Any CPU
+		{7EB5967C-37A5-47FB-8DC5-C91B16C49887}.Publish|x64.Build.0 = Release|Any CPU
+		{7EB5967C-37A5-47FB-8DC5-C91B16C49887}.Publish|x86.ActiveCfg = Release|Any CPU
+		{7EB5967C-37A5-47FB-8DC5-C91B16C49887}.Publish|x86.Build.0 = Release|Any CPU
+		{7EB5967C-37A5-47FB-8DC5-C91B16C49887}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EB5967C-37A5-47FB-8DC5-C91B16C49887}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EB5967C-37A5-47FB-8DC5-C91B16C49887}.Release|x64.ActiveCfg = Release|Any CPU
+		{7EB5967C-37A5-47FB-8DC5-C91B16C49887}.Release|x64.Build.0 = Release|Any CPU
+		{7EB5967C-37A5-47FB-8DC5-C91B16C49887}.Release|x86.ActiveCfg = Release|Any CPU
+		{7EB5967C-37A5-47FB-8DC5-C91B16C49887}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

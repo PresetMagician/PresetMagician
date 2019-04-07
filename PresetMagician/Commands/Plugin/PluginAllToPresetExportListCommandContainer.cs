@@ -32,7 +32,7 @@ namespace PresetMagician
             _globalService = ServiceLocator.ResolveType<GlobalService>();
         }
 
-        protected override async Task ExecuteAsync(object parameter)
+        protected override void Execute(object parameter)
         {
             var pluginsToScan = (from plugin in _globalService.Plugins where plugin.IsEnabled select plugin).ToList();
             var addedPresets = 0;

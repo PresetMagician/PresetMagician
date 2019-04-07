@@ -10,7 +10,6 @@ namespace PresetMagician
     // ReSharper disable once UnusedMember.Global
     public class PluginToolsEnablePluginsCommandContainer : ApplicationNotBusyCommandContainer
     {
-        private readonly GlobalFrontendService _globalFrontendService;
         private readonly DataPersisterService _dataPersisterService;
 
         public PluginToolsEnablePluginsCommandContainer(ICommandManager commandManager,
@@ -18,7 +17,6 @@ namespace PresetMagician
         )
             : base(Commands.PluginTools.EnablePlugins, commandManager, serviceLocator)
         {
-            _globalFrontendService = ServiceLocator.ResolveType<GlobalFrontendService>();
             _dataPersisterService = ServiceLocator.ResolveType<DataPersisterService>();
             _globalFrontendService.SelectedPlugins.CollectionChanged += OnSelectedPluginsListChanged;
         }
@@ -33,7 +31,7 @@ namespace PresetMagician
             InvalidateCommand();
         }
 
-        protected override async Task ExecuteAsync(object parameter)
+        protected override void Execute(object parameter)
         {
             foreach (var plugin in _globalFrontendService.SelectedPlugins)
             {

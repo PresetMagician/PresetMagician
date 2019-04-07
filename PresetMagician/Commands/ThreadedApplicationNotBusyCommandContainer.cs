@@ -23,7 +23,7 @@ namespace PresetMagician
         }
 
 
-        protected async virtual Task ExecuteThreaded(object parameter)
+        protected virtual Task ExecuteThreaded(object parameter)
         {
             throw new NotImplementedException();
         }

@@ -7,6 +7,7 @@ using Catel.MVVM;
 using Catel.Services;
 using PresetMagician.Core.Services;
 using PresetMagician.Services.Interfaces;
+using PresetMagician.Utils.Progress;
 
 namespace PresetMagician
 {
@@ -56,16 +57,26 @@ namespace PresetMagician
             if (result == MessageResult.Yes)
             {
                 var pluginsToRemove = _globalFrontendService.SelectedPlugins.ToList();
-                await _dispatcherService.InvokeAsync(async () =>
-                {
+                
+                ApplicationService.StartApplicationOperation(this, "Removing plugins",
+                    pluginsToRemove.Count);
+                var progress = ApplicationService.GetApplicationProgress();
+                var progressStatus = new CountProgress(pluginsToRemove.Count);
+                
+                
                     foreach (var plugin in pluginsToRemove)
                     {
-                        _globalService.Plugins.Remove(plugin);
+                        progressStatus.Current = pluginsToRemove.IndexOf(plugin);
+                        progressStatus.Status = $"Removing {plugin.PluginName}";
+                        progress.Progress.Report(progressStatus);
+                        await _dispatcherService.InvokeAsync(async () => { _globalService.Plugins.Remove(plugin); });
                         _dataPersister.DeletePresetsForPlugin(plugin);
                         await _presetDataPersister.DeletePresetDataForPlugin(plugin);
                     }
-                });
+
                 _dataPersister.Save();
+                
+                ApplicationService.StopApplicationOperation("Finished removing plugins");
             }
         }
     }

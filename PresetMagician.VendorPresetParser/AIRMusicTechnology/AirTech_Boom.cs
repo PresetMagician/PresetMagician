@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Catel.IO;
 using JetBrains.Annotations;
@@ -18,7 +19,14 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology
 
         protected override string GetParseDirectory()
         {
-            return Path.Combine(GetContentRegistryValue(@"Software\\AirMusicTech\Boom", "Content"), "Presets");
+            try
+            {
+                return Path.Combine(GetContentRegistryValue(@"Software\AirMusicTech\Boom", "Content"), "Presets");
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         protected override Tfx.Tfx GetTfxParser()

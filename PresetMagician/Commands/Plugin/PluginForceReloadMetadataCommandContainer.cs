@@ -37,13 +37,13 @@ namespace PresetMagician
                 if (plugin.PluginLocation != null)
                 {
                     plugin.PluginLocation.HasMetadata = false;
-                    plugin.PluginLocation.LastFailedAnalysisVersion = null;
+                    plugin.PluginLocation.LastMetadataAnalysisVersion = null;
                 }
 
                 foreach (var pluginLocation in plugin.PluginLocations)
                 {
                     pluginLocation.HasMetadata = false;
-                    pluginLocation.LastFailedAnalysisVersion = null;
+                    pluginLocation.LastMetadataAnalysisVersion = null;
                 }
             }
             await base.ExecuteThreaded(parameter);

@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Anotar.Catel;
 using Catel.Collections;
 using Catel.Services;
-using Catel.Windows.Threading;
 using PresetMagician.Core.ApplicationTask;
 using PresetMagician.Core.Models;
 using PresetMagician.Utils.Logger;
@@ -21,20 +20,18 @@ namespace PresetMagician.Core.Services
         private readonly GlobalFrontendService _globalFrontendService;
         private readonly GlobalService _globalService;
         private readonly VendorPresetParserService _vendorPresetParserService;
-        private readonly DataPersisterService _dataPersisterService;
 
         private Dictionary<string, string> DllHashes = new Dictionary<string, string>();
 
         public PluginService(RemoteVstService remoteVstService, IDispatcherService dispatcherService,
             GlobalFrontendService globalFrontendService, GlobalService globalService,
-            VendorPresetParserService vendorPresetParserService, DataPersisterService dataPersisterService)
+            VendorPresetParserService vendorPresetParserService)
         {
             _dispatcherService = dispatcherService;
             _remoteVstService = remoteVstService;
             _globalFrontendService = globalFrontendService;
             _globalService = globalService;
             _vendorPresetParserService = vendorPresetParserService;
-            _dataPersisterService = dataPersisterService;
         }
 
         /// <summary>
@@ -119,6 +116,7 @@ namespace PresetMagician.Core.Services
 
                     applicationProgress.Progress.Report(progressStatus);
                     await UpdatePluginLocations(plugin);
+                    plugin.UpdateRequiresMetadataScanFlag(_globalService.PresetMagicianVersion);
 
                     if (plugin.PluginLocation != null && !plugin.PluginLocation.IsPresent)
                     {
@@ -153,6 +151,8 @@ namespace PresetMagician.Core.Services
                         LastModifiedDateTime = remoteFileService.GetLastModifiedDate(dllPath), IsPresent = true
                     }
                 };
+                
+                newPlugin.UpdateRequiresMetadataScanFlag(_globalService.PresetMagicianVersion);
 
                 progressStatus.Status = $"Adding Plugin {newPlugin.PluginLocation.DllPath}";
                 applicationProgress.Progress.Report(progressStatus);
@@ -163,7 +163,7 @@ namespace PresetMagician.Core.Services
         }
 
         /// <summary>
-        /// Updates all plugin locations for a plugin
+        /// Updates all plugin locations for a plugin. Sets the IsPresent flag.
         /// </summary>
         /// <param name="plugin"></param>
         private async Task UpdatePluginLocations(Plugin plugin)
@@ -239,11 +239,13 @@ namespace PresetMagician.Core.Services
                     foreach (var pluginLocation in plugin.PluginLocations)
                     {
                         if (pluginLocation.IsPresent &&
-                            pluginLocation.LastFailedAnalysisVersion != _globalService.PresetMagicianVersion &&
-                            (!pluginLocation.HasMetadata || pluginLocation.PresetParser == null || (pluginLocation.PresetParser != null &&
-                                                             pluginLocation.PresetParser.RequiresRescan())))
+                            plugin.RequiresMetadataScan
+                            /*pluginLocation.LastMetadataAnalysisVersion != _globalService.PresetMagicianVersion &&
+                            (!pluginLocation.HasMetadata || plugin.RequiresMetadataScan || pluginLocation.PresetParser == null || (pluginLocation.PresetParser != null &&
+                                                             pluginLocation.PresetParser.RequiresRescan()))*/)
                         {
                             plugin.PluginLocation = pluginLocation;
+                            pluginLocation.LastMetadataAnalysisVersion = _globalService.PresetMagicianVersion;
 
                             using (var remotePluginInstance =
                                 _remoteVstService.GetRemotePluginInstance(plugin, false))
@@ -261,7 +263,6 @@ namespace PresetMagician.Core.Services
                                     applicationProgress.LogReporter.Report(new LogEntry(LogLevel.Error,
                                         $"Error while loading metadata for {plugin.DllPath}: {e.GetType().FullName} {e.Message}"));
                                     LogTo.Debug(e.StackTrace);
-                                    pluginLocation.LastFailedAnalysisVersion = _globalService.PresetMagicianVersion;
                                 }
                             }
                         }
@@ -269,6 +270,7 @@ namespace PresetMagician.Core.Services
 
                     plugin.PluginLocation = originalPluginLocation;
                     plugin.EnsurePluginLocationIsPresent();
+                    plugin.UpdateRequiresMetadataScanFlag(_globalService.PresetMagicianVersion);
 
                     if (!plugin.HasMetadata && plugin.PluginLocation == null && plugin.Presets.Count == 0)
                     {

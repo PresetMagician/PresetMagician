@@ -32,7 +32,6 @@ namespace PresetMagician
         protected readonly ICommandManager _commandManager;
         protected readonly INativeInstrumentsResourceGeneratorService _resourceGeneratorService;
         protected readonly PluginService _pluginService;
-        protected readonly GlobalFrontendService _globalFrontendService;
         protected readonly GlobalService GlobalService;
         private readonly PresetDataPersisterService _presetDataPersisterService;
         private readonly DataPersisterService _dataPersisterService;
@@ -60,7 +59,6 @@ namespace PresetMagician
                 ServiceLocator.ResolveType<INativeInstrumentsResourceGeneratorService>();
             _pluginService = ServiceLocator.ResolveType<PluginService>();
             GlobalService = ServiceLocator.ResolveType<GlobalService>();
-            _globalFrontendService = ServiceLocator.ResolveType<GlobalFrontendService>();
             _remoteVstService = ServiceLocator.ResolveType<RemoteVstService>();
 
             GlobalService.Plugins.CollectionChanged += OnPluginsListChanged;

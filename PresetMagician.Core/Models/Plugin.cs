@@ -70,14 +70,11 @@ namespace PresetMagician.Core.Models
                 return;
             }
 
-            foreach (var pluginLocation in PluginLocations)
-            {
-                if (pluginLocation.IsPresent && pluginLocation.HasMetadata)
-                {
-                    PluginLocation = pluginLocation;
-                    return;
-                }
-            }
+            PluginLocation =
+                (from p in PluginLocations
+                    where p.IsPresent && p.HasMetadata && p.PresetParser != null
+                    orderby p.PresetParser.Priority descending
+                    select p).FirstOrDefault();
         }
 
         private void PresetsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -114,13 +111,6 @@ namespace PresetMagician.Core.Models
             }
 
             return PresetParserAudioPreviewPreDelay;
-        }
-
-        public bool HasPreset(string sourceFile, string hash)
-        {
-            return (from preset in Presets
-                where preset.OriginalMetadata.SourceFile == sourceFile && preset.PresetHash == hash
-                select preset).Any();
         }
 
         public override string ToString()
@@ -417,7 +407,33 @@ namespace PresetMagician.Core.Models
         public bool HasMetadata => PluginLocation != null && PluginLocation.HasMetadata;
 
 
-        public bool RequiresMetadataScan => IsEnabled && (!HasMetadata || PluginLocation?.PresetParser == null);
+        public bool RequiresMetadataScan { get; private set; }
+
+        public void UpdateRequiresMetadataScanFlag(string currentVersion)
+        {
+            RequiresMetadataScan = false;
+            if (!IsEnabled)
+            {
+                return;
+            }
+
+
+            foreach (var pluginLocation in PluginLocations)
+            {
+                if (!pluginLocation.IsPresent)
+                {
+                    continue;
+                }
+
+                // Unsure if a missing preset parser should trigger a metadata rescan
+                //  || pluginLocation.PresetParser == null
+                if (pluginLocation.LastMetadataAnalysisVersion != currentVersion)
+                {
+                    RequiresMetadataScan = true;
+                    return;
+                }
+            }
+        }
 
         /// <summary>
         /// Defines if the plugin is supported
@@ -437,7 +453,7 @@ namespace PresetMagician.Core.Models
                 preset.OnBeforeCerasSerialize();
             }
         }
-        
+
         public void OnAfterCerasDeserialize()
         {
             foreach (var preset in Presets)
@@ -445,6 +461,7 @@ namespace PresetMagician.Core.Models
                 preset.OnAfterCerasDeserialize();
             }
         }
+
         #endregion
     }
 }

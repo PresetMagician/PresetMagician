@@ -225,37 +225,37 @@ namespace PresetMagician.VstHost.VST
             // plugin product
             pluginInfoItems.Add(new PluginInfoItem("Base", "Plugin Name",
                 pluginContext.PluginCommandStub.GetEffectName()));
-            pluginInfoItems.Add(new PluginInfoItem("Base", "Product ",
+            pluginInfoItems.Add(new PluginInfoItem("Base", "Product",
                 pluginContext.PluginCommandStub.GetProductString()));
-            pluginInfoItems.Add(new PluginInfoItem("Base", "Vendor ",
+            pluginInfoItems.Add(new PluginInfoItem("Base", "Vendor",
                 pluginContext.PluginCommandStub.GetVendorString()));
-            pluginInfoItems.Add(new PluginInfoItem("Base", "Vendor Version ",
+            pluginInfoItems.Add(new PluginInfoItem("Base", "Vendor Version",
                 pluginContext.PluginCommandStub.GetVendorVersion().ToString()));
-            pluginInfoItems.Add(new PluginInfoItem("Base", "Vst Support ",
+            pluginInfoItems.Add(new PluginInfoItem("Base", "Vst Support",
                 pluginContext.PluginCommandStub.GetVstVersion().ToString()));
-            pluginInfoItems.Add(new PluginInfoItem("Base", "Plugin Category ",
+            pluginInfoItems.Add(new PluginInfoItem("Base", "Plugin Category",
                 pluginContext.PluginCommandStub.GetCategory().ToString()));
 
             // plugin info
-            pluginInfoItems.Add(new PluginInfoItem("Base", "Flags ", pluginContext.PluginInfo.Flags.ToString()));
-            pluginInfoItems.Add(new PluginInfoItem("Base", "Plugin ID ",
+            pluginInfoItems.Add(new PluginInfoItem("Base", "Flags", pluginContext.PluginInfo.Flags.ToString()));
+            pluginInfoItems.Add(new PluginInfoItem("Base", "Plugin ID",
                 pluginContext.PluginInfo.PluginID.ToString()));
             pluginInfoItems.Add(new PluginInfoItem("Base", "Plugin ID String",
                 VstUtils.PluginIdNumberToIdString(pluginContext.PluginInfo.PluginID)));
 
-            pluginInfoItems.Add(new PluginInfoItem("Base", "Plugin Version ",
+            pluginInfoItems.Add(new PluginInfoItem("Base", "Plugin Version",
                 pluginContext.PluginInfo.PluginVersion.ToString()));
-            pluginInfoItems.Add(new PluginInfoItem("Base", "Audio Input Count ",
+            pluginInfoItems.Add(new PluginInfoItem("Base", "Audio Input Count",
                 pluginContext.PluginInfo.AudioInputCount.ToString()));
-            pluginInfoItems.Add(new PluginInfoItem("Base", "Audio Output Count ",
+            pluginInfoItems.Add(new PluginInfoItem("Base", "Audio Output Count",
                 pluginContext.PluginInfo.AudioOutputCount.ToString()));
-            pluginInfoItems.Add(new PluginInfoItem("Base", "Initial Delay ",
+            pluginInfoItems.Add(new PluginInfoItem("Base", "Initial Delay",
                 pluginContext.PluginInfo.InitialDelay.ToString()));
-            pluginInfoItems.Add(new PluginInfoItem("Base", "Program Count ",
+            pluginInfoItems.Add(new PluginInfoItem("Base", "Program Count",
                 pluginContext.PluginInfo.ProgramCount.ToString()));
-            pluginInfoItems.Add(new PluginInfoItem("Base", "Parameter Count ",
+            pluginInfoItems.Add(new PluginInfoItem("Base", "Parameter Count",
                 pluginContext.PluginInfo.ParameterCount.ToString()));
-            pluginInfoItems.Add(new PluginInfoItem("Base", "Tail Size ",
+            pluginInfoItems.Add(new PluginInfoItem("Base", "Tail Size",
                 pluginContext.PluginCommandStub.GetTailSize().ToString()));
 
             // can do
