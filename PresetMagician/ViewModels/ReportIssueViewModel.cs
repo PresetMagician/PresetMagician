@@ -19,7 +19,9 @@ namespace PresetMagician.ViewModels
 {
     public sealed class ReportIssueViewModel : ViewModelBase
     {
-        private IAdvancedMessageService _advancedMessageService;
+        private readonly IAdvancedMessageService _advancedMessageService;
+        private readonly DataPersisterService _dataPersisterService;
+        private readonly GlobalService _globalService;
 
         public string BoxTitle { get; set; }
 
@@ -70,8 +72,11 @@ namespace PresetMagician.ViewModels
         public IssueReport Report { get; set; }
 
         public ReportIssueViewModel(IssueReport report, GlobalService globalService,
-            IAdvancedMessageService advancedMessageService)
+            IAdvancedMessageService advancedMessageService, DataPersisterService dataPersisterService)
         {
+            DeferValidationUntilFirstSaveCall = false;
+            _globalService = globalService;
+            _dataPersisterService = dataPersisterService;
             Report = report;
 
             switch (report.TrackerType)
@@ -135,25 +140,8 @@ namespace PresetMagician.ViewModels
         {
             if (e.PropertyName == nameof(SelectedPlugin))
             {
-                if (SelectedPlugin.PluginId != "")
-                {
-                    if (Report.TrackerType == IssueReport.TrackerTypes.BUG)
-                    {
-                        Report.IncludePluginLog = true;
-                        Report.PluginLog = SelectedPlugin.Logs;
-                        Report.IncludeData = true;
-                    }
-
-                    Report.PluginId = SelectedPlugin.PluginId;
-                    Report.PluginName = SelectedPlugin.PluginName;
-                    Report.PluginVendor = SelectedPlugin.PluginVendor;
-                    Report.PluginVstId = SelectedPlugin.VstPluginId.ToString();
-                }
-                else
-                {
-                    Report.IncludePluginLog = false;
-                    Report.PluginId = null;
-                }
+                
+                
             }
         }
 
@@ -187,6 +175,36 @@ namespace PresetMagician.ViewModels
             if (Report.GetValidationContextForObjectGraph().HasErrors)
             {
                 return;
+            }
+
+            if (Report.IncludePluginLog)
+            {
+                if (SelectedPlugin != null && SelectedPlugin.PluginId != "")
+                {
+                   
+                    Report.PluginLogs.Clear();
+                    Report.PluginLogs.Add(_dataPersisterService.GetPluginStorageFilePrefix(SelectedPlugin),
+                        SelectedPlugin.Logs);
+                    Report.IncludeData = true;
+                   
+
+                    Report.PluginId = SelectedPlugin.PluginId;
+                    Report.PluginName = SelectedPlugin.PluginName;
+                    Report.PluginVendor = SelectedPlugin.PluginVendor;
+                    Report.PluginVstId = SelectedPlugin.VstPluginId.ToString();
+                }
+                else
+                {
+                    Report.PluginLogs.Clear();
+                    foreach (var plugin in _globalService.Plugins)
+                    {
+                        
+                        Report.PluginLogs.Add(_dataPersisterService.GetPluginStorageFilePrefix(plugin),
+                            plugin.Logs);
+                    }
+
+                    Report.PluginId = null;
+                }
             }
 
             IsSubmitting = true;

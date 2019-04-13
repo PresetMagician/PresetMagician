@@ -101,7 +101,7 @@ namespace PresetMagicianScratchPad.Stuff
                 Console.WriteLine($"HasMidi: {chunkResult.HasMidi}");
                 Console.WriteLine($"HasPresetNameAtEnd: {chunkResult.HasPresetNameAtEnd}");
                 Console.WriteLine($"PluginName: {chunkResult.PluginName}");
-                Console.WriteLine($"BlockMagic: {StringUtils.ByteArrayToString(chunkResult.BlockMagic)}");
+                Console.WriteLine($"BlockMagic: {StringUtils.ByteArrayToHexString(chunkResult.BlockMagic)}");
                 
 //                @"C:\Users\Drachenkatze\Documents\PresetMagician\ScratchPad\test.bin");
             }
@@ -231,7 +231,7 @@ namespace PresetMagicianScratchPad.Stuff
                         ms2.Read(blockMagic, 0, 4);
 
                         chunkAnalysisResult.BlockMagic = blockMagic;
-                        Console.WriteLine($"Guessed block magic: {StringUtils.ByteArrayToString(blockMagic)}");
+                        Console.WriteLine($"Guessed block magic: {StringUtils.ByteArrayToHexString(blockMagic)}");
                         ms2.Read(intBuffer, 0, 4);
                         var pluginNameLength = BigEndian.ToInt32(intBuffer, 0);
 

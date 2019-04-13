@@ -36,15 +36,15 @@ namespace PresetMagician
             {
                 if (plugin.PluginLocation != null)
                 {
-                    plugin.PluginLocation.HasMetadata = false;
                     plugin.PluginLocation.LastMetadataAnalysisVersion = null;
                 }
 
                 foreach (var pluginLocation in plugin.PluginLocations)
                 {
-                    pluginLocation.HasMetadata = false;
                     pluginLocation.LastMetadataAnalysisVersion = null;
                 }
+                
+                plugin.UpdateRequiresMetadataScanFlag(GlobalService.PresetMagicianVersion);
             }
             await base.ExecuteThreaded(parameter);
         }

@@ -29,8 +29,9 @@ namespace PresetMagician.TestVstHost
         {
             if (_debug)
             {
-                File.AppendAllText(@"C:\Users\Drachenkatze\Desktop\log.txt", message);
+                File.AppendAllText(@"C:\Users\Drachenkatze\Desktop\log.txt", message+Environment.NewLine);
                 Console.WriteLine(message);
+                System.Diagnostics.Debug.WriteLine(message);
             }
         }
 
@@ -307,7 +308,7 @@ namespace PresetMagician.TestVstHost
         public bool NeedIdle()
         {
             
-
+            Debug($"NeedIdle");
             // todo call idle on plugin there plugin?.PluginContext.PluginCommandStub.idle;   
             return true;
         }

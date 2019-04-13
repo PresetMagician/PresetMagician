@@ -77,7 +77,7 @@ namespace PresetMagician.Utils.IssueReport
         private string SystemLogLocation { get; }
         private string DataLocation { get; }
         public string PluginId { get; set; }
-        public string PluginLog { get; set; }
+        public Dictionary<string, string> PluginLogs { get; set; } = new Dictionary<string, string>();
         public string PluginName { get; set; }
         public string PluginVendor { get; set; }
         public string PluginVstId { get; set; }
@@ -114,13 +114,15 @@ namespace PresetMagician.Utils.IssueReport
             Subject = $"Crash caused by: {e.GetType().FullName}: {e.Message}";
         }
 
-        public void CreatePluginLog()
+        public void CreatePluginLogs()
         {
-            var tmpFile = Path.GetTempPath() + Guid.NewGuid() + ".txt";
-
-            SystemFile.WriteAllText(tmpFile, PluginLog);
-            Attachments.Add(new IssueAttachment
-                {FilePath = tmpFile, Description = "Plugin Log", DeleteAfterReport = true});
+            foreach (var log in PluginLogs)
+            {
+                var tmpFile = Path.GetTempPath() + log.Key + ".txt";
+                SystemFile.WriteAllText(tmpFile, log.Value);
+                Attachments.Add(new IssueAttachment
+                    {FilePath = tmpFile, Description = "Plugin Log", DeleteAfterReport = true});
+            }
         }
 
 
@@ -155,7 +157,7 @@ namespace PresetMagician.Utils.IssueReport
 
             if (IncludePluginLog)
             {
-                CreatePluginLog();
+                CreatePluginLogs();
             }
 
             if (IncludeSystemLog)

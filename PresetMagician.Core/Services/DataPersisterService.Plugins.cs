@@ -26,12 +26,12 @@ namespace PresetMagician.Core.Services
         /// <returns></returns>
         public string GetPluginStorageFile(Plugin plugin)
         {
-            return Path.Combine(GetPluginsStoragePath(), GetPluginStorageFilePrefix(plugin) + "."+ plugin.PluginId +  PluginStorageExtension);
+            return Path.Combine(GetPluginsStoragePath(), GetPluginStorageFilePrefix(plugin)  +  PluginStorageExtension);
         }
 
         public string GetPluginStorageFilePrefix(Plugin plugin)
         {
-            return PathUtils.SanitizeFilename(plugin.PluginVendor + " - " + plugin.PluginName);
+            return PathUtils.SanitizeFilename(plugin.PluginVendor + " - " + plugin.PluginName+"."+plugin.PluginId);
         }
 
         public List<string> GetStoredPluginFiles()

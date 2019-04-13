@@ -268,8 +268,8 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
                 if (!beginBuffer.SequenceEqual(beginIndicator))
                 {
                     throw new Exception(
-                        $"Expected the begin indicator to be {StringUtils.ByteArrayToString(beginIndicator)} " +
-                        $"but found {StringUtils.ByteArrayToString(beginBuffer)}");
+                        $"Expected the begin indicator to be {StringUtils.ByteArrayToHexString(beginIndicator)} " +
+                        $"but found {StringUtils.ByteArrayToHexString(beginBuffer)}");
                 }
 
                 while (true)
@@ -284,7 +284,7 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx
                     if (!parameterHeader.SequenceEqual(magicParameter))
                     {
                         throw new Exception(
-                            $"Expected the parameter header to be {StringUtils.ByteArrayToString(magicParameter)} " +
+                            $"Expected the parameter header to be {StringUtils.ByteArrayToHexString(magicParameter)} " +
                             @"but found {StringUtils.ByteArrayToString(parameterHeader)}");
                     }
 

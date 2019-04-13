@@ -66,6 +66,13 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Roland\RolandMemory.cs" />
+    <Compile Include="Roland\RolandMemorySection.cs" />
+    <Compile Include="Roland\RolandScript.cs" />
+    <Compile Include="Roland\RolandStruct.cs" />
+    <Compile Include="Roland\RolandStructArray.cs" />
+    <Compile Include="Roland\RolandValue.cs" />
+    <Compile Include="Roland\RolandValueArray.cs" />
     <Compile Include="Stuff\AirMusicTech.cs" />
     <None Include="Program - Copy.cs" />
     <Compile Include="Program.cs" />
@@ -103,6 +110,10 @@
     <ProjectReference Include="..\PresetMagician.RemoteVstHost\PresetMagician.RemoteVstHost.csproj">
       <Project>{f07c1405-2149-4da5-ace7-54f5278ad2e4}</Project>
       <Name>PresetMagician.RemoteVstHost</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PresetMagician.TestVstHost\PresetMagician.TestVstHost.csproj">
+      <Project>{7eb5967c-37a5-47fb-8dc5-c91b16c49887}</Project>
+      <Name>PresetMagician.TestVstHost</Name>
     </ProjectReference>
     <ProjectReference Include="..\PresetMagician.Utils\PresetMagician.Utils.csproj">
       <Project>{37abda8a-5ffa-41f9-b880-a272d8c21dff}</Project>
@@ -218,6 +229,20 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
+        <Reference Include="Microsoft.CSharp">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="CsvHelper">
+          <HintPath>..\packages\CsvHelper\lib\net45\CsvHelper.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
         <Reference Include="EntityFramework">
           <HintPath>..\packages\EntityFramework\lib\net45\EntityFramework.dll</HintPath>
           <Private>True</Private>
@@ -286,15 +311,6 @@
         <Reference Include="MethodTimer">
           <HintPath>..\packages\MethodTimer.Fody\lib\net452\MethodTimer.dll</HintPath>
           <Private>False</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
-      <ItemGroup>
-        <Reference Include="Microsoft.CSharp">
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>
@@ -613,6 +629,17 @@
       <ItemGroup>
         <Reference Include="System.Security.Principal.Windows">
           <HintPath>..\packages\System.Security.Principal.Windows\lib\net461\System.Security.Principal.Windows.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="System.ValueTuple">
+          <HintPath>..\packages\System.ValueTuple\lib\net47\System.ValueTuple.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
