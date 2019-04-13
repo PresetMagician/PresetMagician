@@ -11,7 +11,7 @@ namespace PresetMagician.Core.Services
     {
         public string GetPresetsStorageFile(Plugin plugin)
         {
-            return Path.Combine(GetPluginsStoragePath(), GetPluginStorageFilePrefix(plugin) + "."+plugin.PluginId + PresetStorageExtension);
+            return Path.Combine(GetPluginsStoragePath(), GetPluginStorageFilePrefix(plugin)  + PresetStorageExtension);
         }
         
         /// <summary>

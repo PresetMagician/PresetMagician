@@ -2,10 +2,14 @@
 using Jacobi.Vst.Core.Host;
 using Jacobi.Vst.Interop.Host;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows.Forms;
+using CsvHelper;
 
 namespace PresetMagician.TestVstHost
 {
@@ -28,6 +32,7 @@ namespace PresetMagician.TestVstHost
 
         private void FillPropertyList()
         {
+            PluginContext.AcceptPluginInfoData(false);
             PluginPropertyListVw.Items.Clear();
 
             // plugin product
@@ -38,6 +43,7 @@ namespace PresetMagician.TestVstHost
             AddProperty("Vst Support", PluginContext.PluginCommandStub.GetVstVersion().ToString());
             AddProperty("Plugin Category", PluginContext.PluginCommandStub.GetCategory().ToString());
 
+            
             // plugin info
             AddProperty("Flags", PluginContext.PluginInfo.Flags.ToString());
             AddProperty("Plugin ID", PluginContext.PluginInfo.PluginID.ToString());
@@ -139,9 +145,13 @@ namespace PresetMagician.TestVstHost
             ProgramListCmb.Text = PluginContext.PluginCommandStub.GetProgramName();
         }
 
-        private void FillParameterList()
+        private void FillParameterList(bool replaceExisting = false)
         {
-            PluginParameterListVw.Items.Clear();
+            if (!replaceExisting)
+            {
+                PluginParameterListVw.Items.Clear();
+            }
+            
 
             for (int i = 0; i < PluginContext.PluginInfo.ParameterCount; i++)
             {
@@ -163,25 +173,35 @@ namespace PresetMagician.TestVstHost
                     maxInteger = x.MaxInteger.ToString();
                 }
 
-                AddParameter(i.ToString(), name, display, label, floatVal, flags ,
-                    displayIndex , minInteger, maxInteger);
+                AddParameter(i, name, display, label, floatVal, flags ,
+                    displayIndex , minInteger, maxInteger, replaceExisting);
             }
         }
 
-        private void AddParameter(string index, string paramName, string paramValue, string label, string floatval,
-            string flags, string displayIndex, string minInt, string maxInt)
+        private void AddParameter(int index, string paramName, string paramValue, string label, string floatval,
+            string flags, string displayIndex, string minInt, string maxInt, bool replaceExisting = false)
         {
-            ListViewItem lvItem = new ListViewItem(index);
-            lvItem.SubItems.Add(paramName);
-            lvItem.SubItems.Add(paramValue);
-            lvItem.SubItems.Add(label);
-            lvItem.SubItems.Add(floatval);
-            lvItem.SubItems.Add(flags);
-            lvItem.SubItems.Add(displayIndex);
-            lvItem.SubItems.Add(minInt);
-            lvItem.SubItems.Add(maxInt);
+            
 
-            PluginParameterListVw.Items.Add(lvItem);
+            if (replaceExisting)
+            {
+                PluginParameterListVw.Items[(int) index].SubItems[2].Text = paramValue;
+                PluginParameterListVw.Items[(int) index].SubItems[3].Text = label;
+                PluginParameterListVw.Items[(int) index].SubItems[4].Text = floatval;
+            }
+            else
+            {
+                ListViewItem lvItem = new ListViewItem(index.ToString());
+                lvItem.SubItems.Add(paramName);
+                lvItem.SubItems.Add(paramValue);
+                lvItem.SubItems.Add(label);
+                lvItem.SubItems.Add(floatval);
+                lvItem.SubItems.Add(flags);
+                lvItem.SubItems.Add(displayIndex);
+                lvItem.SubItems.Add(minInt);
+                lvItem.SubItems.Add(maxInt);
+                PluginParameterListVw.Items.Add(lvItem);
+            }
         }
 
         private void PluginForm_Load(object sender, EventArgs e)
@@ -286,9 +306,9 @@ namespace PresetMagician.TestVstHost
         {
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void Refresh_Click(object sender, EventArgs e)
         {
-            FillParameterList();
+            FillParameterList(true);
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -343,7 +363,7 @@ namespace PresetMagician.TestVstHost
 
             var processStartInfo = new ProcessStartInfo(hexEditor)
             {
-                Arguments = "\"" + Regex.Replace(file, @"(\\+)$", @"$1$1") + "\"",
+                Arguments = "/s "+"\"" + Regex.Replace(file, @"(\\+)$", @"$1$1") + "\"",
                 UseShellExecute = true
             };
 
@@ -356,9 +376,133 @@ namespace PresetMagician.TestVstHost
 
         private void button5_Click(object sender, EventArgs e)
         {
-          
+            var prompt = new PromptForm("Enter patch name");
+            var result = prompt.ShowDialog();
+
+            if (result == DialogResult.OK)
+            {
+                var patchName = prompt.Prompt.Text;
+                var synthName = PluginContext.PluginCommandStub.GetEffectName();
+                var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"PresetMagician\TestVstHost\Patches\",
+                    synthName);
+
+                Directory.CreateDirectory(directory);
+
+                var patchFile = Path.Combine(directory, patchName + ".bin");
+                var ccFile = Path.Combine(directory, patchName + ".csv");
+                File.WriteAllBytes(patchFile, PluginContext.PluginCommandStub.GetChunk(false));
+
+                var parameters = new List<VstParameterCsv>();
+
+                for (int i = 0; i < PluginContext.PluginInfo.ParameterCount; i++)
+                {
+                    parameters.Add(new VstParameterCsv
+                    {
+                        Index = i,
+                        DisplayValue = PluginContext.PluginCommandStub.GetParameterDisplay(i),
+                        FloatValue = PluginContext.PluginCommandStub.GetParameter(i),
+                        Name = PluginContext.PluginCommandStub.GetParameterName(i),
+                        Label = PluginContext.PluginCommandStub.GetParameterLabel(i)
+                    });
+                 
+                   
+                   
+
+                }
+
+                using (var writer = new StreamWriter(ccFile))
+                using (var csv = new CsvWriter(writer))
+                {    
+                    csv.WriteRecords(parameters);
+                }
+
+            }
 
 
+
+        }
+
+        private void ParamsMax_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < PluginContext.PluginInfo.ParameterCount; i++)
+            {
+                PluginContext.PluginCommandStub.SetParameter(i, 1);
+            }
+
+            timer1.Enabled = true;
+        }
+
+        private void ParamsMin_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < PluginContext.PluginInfo.ParameterCount; i++)
+            {
+                PluginContext.PluginCommandStub.SetParameter(i, 0);
+            }
+            timer1.Enabled = true;
+        }
+
+        private void ParamsRamp_Click(object sender, EventArgs e)
+        {
+            var currentRamp = 0;
+            var maxRamp = 5;
+
+            for (int i = 0; i < PluginContext.PluginInfo.ParameterCount; i++)
+            {
+
+                PluginContext.PluginCommandStub.SetParameter(i, (float)1/maxRamp*currentRamp);
+                currentRamp++;
+
+                if (currentRamp > maxRamp)
+                {
+                    currentRamp = 0;
+                }
+            }
+
+            timer1.Enabled = true;
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            timer1.Enabled = false;
+            FillParameterList(true);
+        }
+
+        private void SetParamButton_Click(object sender, EventArgs e)
+        {
+            if (PluginParameterListVw.SelectedItems.Count == 1)
+            {
+                var item = PluginParameterListVw.SelectedItems[0];
+
+                var idx = Int32.Parse(item.Text);
+                var name = PluginContext.PluginCommandStub.GetParameterName(idx);
+                var prompt = new PromptForm($"New value for #{idx} {name}");
+                var result = prompt.ShowDialog();
+
+                if (result == DialogResult.OK)
+                {
+                    var val = float.Parse(prompt.Prompt.Text);
+                    if (val < 0 || val > 1)
+                    {
+                        MessageBox.Show($"Value {val} out of range. allowed 0-1");
+                        return;
+                    }
+                    PluginContext.PluginCommandStub.SetParameter(idx, val);
+                    timer1.Enabled = true;
+                }
+
+            }
+        }
+
+        private void ParamsRndButton_Click(object sender, EventArgs e)
+        {
+            var rnd = new Random(DateTime.Now.Millisecond);
+            for (int i = 0; i < PluginContext.PluginInfo.ParameterCount; i++)
+            {
+                
+                PluginContext.PluginCommandStub.SetParameter(i, (float)rnd.NextDouble());
+               
+            }
+            timer1.Enabled = true;
         }
     }
 }

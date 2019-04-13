@@ -7,7 +7,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:PresetMagician.ViewModels"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-    xmlns:orccontrols="http://schemas.wildgums.com/orc/controls"
     Width="800"
     Height="600"
     d:DataContext="{d:DesignInstance viewModels:ReportIssueViewModel}"

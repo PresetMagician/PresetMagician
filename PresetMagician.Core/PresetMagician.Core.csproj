@@ -66,6 +66,7 @@
     <Compile Include="EventArgs\PresetUpdatedEventArgs.cs" />
     <Compile Include="Exceptions\ConnectivityLostException.cs" />
     <Compile Include="Exceptions\NoMetadataAvailableException.cs" />
+    <Compile Include="Extensions\ByteExtensions.cs" />
     <Compile Include="Extensions\CharacteristicCollectionExtensions.cs" />
     <Compile Include="Extensions\PresetMetadataExtensions.cs" />
     <Compile Include="Extensions\TypeCollectionExtensions.cs" />

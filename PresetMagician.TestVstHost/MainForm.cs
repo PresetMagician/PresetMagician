@@ -53,6 +53,11 @@ namespace PresetMagician.TestVstHost
 
                 // actually open the plugin itself
                 ctx.PluginCommandStub.Open();
+                ctx.PluginCommandStub.SetSampleRate(44100f);
+                ctx.PluginCommandStub.SetBlockSize(512);
+                
+                ctx.PluginCommandStub.MainsChanged(true);
+                ctx.PluginCommandStub.StartProcess();
 
                 return ctx;
             }

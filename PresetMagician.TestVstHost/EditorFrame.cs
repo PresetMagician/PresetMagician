@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -39,7 +40,17 @@ namespace PresetMagician.TestVstHost
             if (PluginCommandStub.EditorGetRect(out wndRect))
             {
                 this.Size = this.SizeFromClientSize(new Size(wndRect.Width, wndRect.Height));
+                Debug.WriteLine(wndRect);
                 PluginCommandStub.EditorOpen(this.Handle);
+            }
+            else
+            {
+                PluginCommandStub.EditorOpen(this.Handle);
+                if (PluginCommandStub.EditorGetRect(out wndRect))
+                {
+                    this.Size = this.SizeFromClientSize(new Size(wndRect.Width, wndRect.Height));
+                }
+               
             }
 
             base.Show(owner);
