@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -14,12 +15,14 @@ using System.Xml.Linq;
 using Catel.IoC;
 using CsvHelper;
 using GSF;
+using Newtonsoft.Json;
 using PresetMagician;
 using PresetMagician.Core.Extensions;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
 using PresetMagician.TestVstHost;
 using PresetMagician.Utils;
+using PresetMagician.Utils.BinaryStructViz;
 using PresetMagician.Utils.Logger;
 using PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx;
 using PresetMagician.VstHost.VST;
@@ -50,18 +53,174 @@ namespace PresetMagicianScratchPad
             CultureInfo.DefaultThreadCurrentUICulture = culture;
             CultureInfo.CurrentUICulture = culture;
             CultureInfo.CurrentCulture = culture;
-            foreach (var chunk in Directory.EnumerateFiles(
-                @"C:\Users\Drachenkatze\Documents\PresetMagician\TestVstHost\Patches", "*.bin",
+
+            Debug.WriteLine(RolandMemorySection.ParseAddress("00 00 00 00", 0x0000008c));
+            /*RolandMemorySection.ParseAddress("00 00", 0xFFFFFFF);
+            RolandMemorySection.ParseAddress("00 00 00", 0xFFFFFFF);
+            RolandMemorySection.ParseAddress("00 00 00 00", 0xFFFFFFF);*/
+            //return;
+            foreach (var configFile in Directory.EnumerateFiles(
+                @"C:\Users\Drachenkatze\Documents\PresetMagician\TestVstHost\Patches", "ExportConfig.json",
                 SearchOption.AllDirectories))
             {
-                Debug.WriteLine($"Processing {chunk}");
-                var result = Test(chunk);
+                var exportConfig = JsonConvert.DeserializeObject<RolandExportConfig>(File.ReadAllText(configFile));
+                
+                var serviceLocator = ServiceLocator.Default;
 
-                if (!result)
+                FrontendInitializer.RegisterTypes(serviceLocator);
+                FrontendInitializer.Initialize(serviceLocator);
+
+                var remoteVstService = serviceLocator.ResolveType<RemoteVstService>();
+
+                var plugin = new Plugin {PluginLocation = new PluginLocation {DllPath = exportConfig.Plugin}};
+
+                var pluginInstance = remoteVstService.GetInteractivePluginInstance(plugin, false);
+
+                pluginInstance.LoadPlugin().Wait();
+
+                var koaParser = new KoaBankFileParser(exportConfig.KoaFileHeader, exportConfig.PresetNameLength, exportConfig.PresetLength);
+
+                var rolandScript = ParseScript(exportConfig.ScriptFile, exportConfig.CallbackHook);
+                var fooViz = new FooViz();
+                rolandScript.ExportNode.Save(exportConfig.ScriptFile+".modified");
+                
+                foreach (var patchDirectory in exportConfig.PresetDirectories)
                 {
-                    Debug.WriteLine($"Error in {chunk}");
-                    break;
+                    if (patchDirectory.Contains("D-50"))
+                    {
+                        //continue;
+                    }
+                    Debug.WriteLine($"Processing patch directory {patchDirectory}");
+                    foreach (var patchFile in Directory.EnumerateFiles(
+                        patchDirectory, "*.bin",
+                        SearchOption.AllDirectories))
+                    {
+                        var presets = koaParser.Parse(patchFile);
+                        Debug.WriteLine($"Processed patch file {patchFile}, found {presets.Count} patches");
+
+                        foreach (var preset in presets)
+                        {
+                            var currentPreset =
+                                $"{Path.GetFileName(preset.BankFile)}.{preset.Index}.{PathUtils.SanitizeFilename(preset.PresetName.Trim())}";
+                            var outputFile = Path.Combine(exportConfig.OutputDirectory,
+                                currentPreset);
+                            
+                            var originalPatchDump = outputFile + ".originalpatchdump";
+                            
+                            var okPluginPatchDumpFile = outputFile + ".okpluginpatchdump";
+                            
+                            var memory = new RolandMemory();
+
+                            
+                            memory.SetFileData(preset.PresetData);
+                            fooViz.SetMemory(preset.PresetData);
+
+                            var structs = rolandScript.GetStructureData();
+
+                            var sortedStructs = (from str in structs orderby str.Length descending , str.Start select str);
+
+                            foreach (var sortedStruct in sortedStructs)
+                            {
+                                fooViz.AddStructure(sortedStruct.Start, sortedStruct.Length, sortedStruct.Content);
+                            }
+                            fooViz.DumpToFile(outputFile+".xlsx");
+
+                            using (var ms = new MemoryStream())
+                            {
+                                
+                                
+                                Debug.WriteLine($"Processed {currentPreset}");
+                                
+                                var sw = new Stopwatch();
+                                sw.Start();
+                                rolandScript.DumpToPatchFile(memory, ms, exportConfig);
+
+                                var suffixData = File.ReadAllBytes(exportConfig.SuffixFile);
+                                ms.Write(suffixData, 0, suffixData.Length);
+                                
+                                
+
+                                
+                                Directory.CreateDirectory(exportConfig.OutputDirectory);
+                                try
+                                {
+                                    var sortedDump = SortDump(ms.ToArray());
+
+                                    byte[] sortedPluginDump;
+                                    /*if (File.Exists(okPluginPatchDumpFile))
+                                    {
+                                        sortedPluginDump = SortDump(File.ReadAllBytes(okPluginPatchDumpFile));
+                                    }
+                                    else
+                                    {*/
+                                        pluginInstance.SetChunk(sortedDump, false);
+
+                                        sortedPluginDump = SortDump(pluginInstance.GetChunk(false));
+                                    //}
+
+                                    var sortedDumpEqual = sortedDump.SequenceEqual(sortedPluginDump);
+                                    var sortedOriginalDumpEqual = true;
+                                    if (File.Exists(originalPatchDump))
+                                    {
+                                        var sortedOriginal = SortDump(File.ReadAllBytes(originalPatchDump));
+                                        sortedOriginalDumpEqual = sortedDump.SequenceEqual(sortedOriginal);
+                                        Debug.WriteLine("OrigPatchDump");
+
+                                    }
+                                    
+                                    var patchDumpFile = outputFile + ".patchdump";
+                                    var structureDumpFile  = outputFile + ".structure";
+                                    var pluginPatchDumpFile = outputFile + ".pluginpatchdump";
+                                    
+                                        
+                                    var presetDataFile = outputFile + ".presetdata";
+                                    File.WriteAllBytes( patchDumpFile, sortedDump);
+                                    
+                                    File.WriteAllBytes( pluginPatchDumpFile, sortedPluginDump);
+                                    File.WriteAllBytes( presetDataFile, preset.PresetData);
+                                        
+                                    if (File.Exists(originalPatchDump))
+                                    {memory.Load(originalPatchDump);
+                                        var sortedOriginal = SortDump(File.ReadAllBytes(originalPatchDump));
+                                        File.WriteAllBytes(originalPatchDump+".sorted", sortedOriginal);
+
+                                    }
+                                        
+                                    File.WriteAllText(structureDumpFile, rolandScript.Dump(memory));
+                                    
+                                    if (!sortedDumpEqual || !sortedOriginalDumpEqual)
+                                    {
+                                        
+                                        
+
+                                    
+                                        
+                                    
+                                        throw new Exception($"Dumps not equal. sortedDumpEqual {sortedDumpEqual} sortedOriginalDumpEqual {sortedOriginalDumpEqual}");
+                                
+                                    }
+
+                                    if (!File.Exists(okPluginPatchDumpFile))
+                                    {
+                                        File.Copy(pluginPatchDumpFile, okPluginPatchDumpFile);
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+                                    var structureDumpFile  = outputFile + ".structure";
+                                    File.WriteAllText(structureDumpFile, rolandScript.Dump(memory));
+                                    throw e;
+                                }
+
+                                Debug.WriteLine($"{sw.Elapsed.TotalMilliseconds} ms");
+
+                                
+                                
+                            }
+                        }
+                    }
                 }
+
             }
 
            // return;
@@ -72,6 +231,18 @@ namespace PresetMagicianScratchPad
 
         }
 
+        static RolandScript ParseScript(string fileName, string callbackHook = "")
+        {
+            var rootDocument = XDocument.Parse(File.ReadAllText(fileName), LoadOptions.SetLineInfo);
+            var rootNode = rootDocument.Element("script");
+            
+            var root = new RolandScript(rootNode);
+            root.PrepareCallbacks(callbackHook);
+            root.Parse();
+
+            return root;
+        }
+
         
         static bool Test(string chunkFile)
         {
@@ -79,12 +250,15 @@ namespace PresetMagicianScratchPad
             var memoryAddressUnreadError = false;
             
             var memory = new RolandMemory();
+            List<string> compareFileAgainstMemoryErrors = new List<string>();
             memory.Load(chunkFile);
             memory.ReadFile(chunkFile+".preset");
             
             
             var scriptFile = Path.Combine(Path.GetDirectoryName(chunkFile), "Script.xml");
+            var exportConfigFile = Path.Combine(Path.GetDirectoryName(chunkFile), "ExportConfig.json");
             var callbacksFile = Path.Combine(Path.GetDirectoryName(chunkFile), "callback.txt");
+            var suffixFile = Path.Combine(Path.GetDirectoryName(chunkFile), "suffix.data");
             var rootDocument = XDocument.Parse(File.ReadAllText(scriptFile), LoadOptions.SetLineInfo);
 
             var rootNode = rootDocument.Element("script");
@@ -98,6 +272,47 @@ namespace PresetMagicianScratchPad
             }
            
             root.Parse();
+
+            if (File.Exists(chunkFile + ".preset"))
+            {
+
+                foreach (var subStruct in root.Structs)
+                {
+                    if (subStruct.Name == "fm")
+                    {
+                        //compareFileAgainstMemoryErrors = subStruct.CompareAgainstFileMemory(memory);
+                    }
+                }
+            }
+
+            var exportConfig = new RolandExportConfig();
+            
+            if (File.Exists(exportConfigFile))
+            {
+                exportConfig = JsonConvert.DeserializeObject<RolandExportConfig>(File.ReadAllText(exportConfigFile));
+            }
+            
+            foreach (var subStruct in root.Structs)
+            {
+                if (subStruct.Name == "fm")
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        subStruct.DumpToPatchFile(memory, ms, exportConfig);
+
+                        if (File.Exists(suffixFile))
+                        {
+                            var suffixData = File.ReadAllBytes(suffixFile);
+                            ms.Write(suffixData,0,suffixData.Length);
+                        }
+                        File.WriteAllBytes(chunkFile + ".patchdump", ms.ToArray());
+                        SortMemoryDumpFile(chunkFile + ".patchdump", chunkFile + ".patchdump.sorted");
+                    }
+                }
+            }
+            
+            SortMemoryDumpFile(chunkFile, chunkFile + ".sorted");
+
             var rootDump = root.Dump(memory);
             
 
@@ -112,7 +327,7 @@ namespace PresetMagicianScratchPad
                 foreach (var record in records)
                 {
                     var expectedVal = int.Parse(record.DisplayValue);
-                    var results = root.GetValueByName(record.Name);
+                    var results = root.GetVstParameterValueByName(record.Name);
 
                     if (results.Count == 0)
                     {
@@ -159,6 +374,8 @@ namespace PresetMagicianScratchPad
                 }
             }
             
+            
+            
             var unreadMemory = memory.GetUnreadMemory();
             unreadMemory.Sort();
             var memoryLog = new StringBuilder();
@@ -176,15 +393,22 @@ namespace PresetMagicianScratchPad
                 memoryAddressUnreadError = true;
             }
 
-            var result2 = CompareJuno106(chunkFile, memory);
-            bool presetTestError = result2.Item1;
+            //var result2 = CompareJuno106(chunkFile, memory);
+            //bool presetTestError = result2.Item1;
 
 
-            memoryAddressUnreadError = true;
-
-
-            if (memoryAddressUnreadError || compareError || presetTestError)
+            if (chunkFile.Contains("PD That Pad.bin"))
             {
+                memoryAddressUnreadError = true;   
+            }
+
+
+            //memoryAddressUnreadError = true;
+            File.WriteAllText(chunkFile+".structure", rootDump);
+
+            if (memoryAddressUnreadError || compareError ||  compareFileAgainstMemoryErrors.Count > 0)
+            {
+                
                 Debug.WriteLine("--- BEGIN DUMP ---");
                 Debug.WriteLine(rootDump);
                 Debug.WriteLine("--- END DUMP ---");
@@ -197,15 +421,23 @@ namespace PresetMagicianScratchPad
                     Debug.WriteLine("--- END COMPARE ERRORS ---");
                 }
 
+                if (compareFileAgainstMemoryErrors.Count > 0)
+                {
+                    Debug.WriteLine("--- BEGIN FILE AGAINST MEMORY COMPARE ERRORS ---");
+                    foreach (var i in compareFileAgainstMemoryErrors)
+                    {
+Debug.WriteLine(i);
+                    }
+                    
+                    Debug.WriteLine("--- END FILE AGAINST MEMORY COMPARE ERRORS ---");
+                }
+
                 if (memoryAddressUnreadError)
                 {
                     Debug.WriteLine(memoryLog.ToString());
                 }
 
-                if (presetTestError)
-                {
-                    Debug.WriteLine(result2.Item2);
-                }
+              
 
                 return false;
             }
@@ -214,6 +446,78 @@ namespace PresetMagicianScratchPad
             return true;
 
 
+        }
+
+        public static void SortMemoryDumpFile(string input, string output)
+        {
+            var memMap = new Dictionary<int, int>();
+            var data = File.ReadAllBytes(input);
+            using (var ms = new MemoryStream(data))
+            {
+                while (ms.Position != ms.Length)
+                {
+                    var buffer = new byte[4];
+
+                    ms.Read(buffer, 0, 4);
+
+
+                    var address = BigEndian.ToInt32(buffer, 0);
+                    ms.Read(buffer, 0, 4);
+
+
+                    var value= BigEndian.ToInt32(buffer, 0);
+                    memMap.Add(address, value);
+                }
+            }
+
+            using (var ms = new MemoryStream())
+            {
+
+                var keys = memMap.Keys.ToList();
+                keys.Sort();
+            foreach (var dings in keys)
+            {
+                    ms.Write(BigEndian.GetBytes(dings),0,4);
+                    ms.Write(BigEndian.GetBytes(memMap[dings]),0,4);
+                }
+            File.WriteAllBytes(output, ms.ToArray());
+            }
+        }
+        
+        public static byte[] SortDump(byte[] data)
+        {
+            var memMap = new Dictionary<int, int>();
+            using (var ms = new MemoryStream(data))
+            {
+                while (ms.Position != ms.Length)
+                {
+                    var buffer = new byte[4];
+
+                    ms.Read(buffer, 0, 4);
+
+
+                    var address = BigEndian.ToInt32(buffer, 0);
+                    ms.Read(buffer, 0, 4);
+
+
+                    var value= BigEndian.ToInt32(buffer, 0);
+                    memMap.Add(address, value);
+                }
+            }
+
+            using (var ms = new MemoryStream())
+            {
+
+                var keys = memMap.Keys.ToList();
+                keys.Sort();
+                foreach (var dings in keys)
+                {
+                    ms.Write(BigEndian.GetBytes(dings),0,4);
+                    ms.Write(BigEndian.GetBytes(memMap[dings]),0,4);
+                }
+
+                return ms.ToArray();
+            }
         }
 
         static (bool, string) CompareJuno106(string presetFile, RolandMemory memory)

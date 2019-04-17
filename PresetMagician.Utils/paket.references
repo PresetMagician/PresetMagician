@@ -7,3 +7,5 @@ MimeTypeMap.List
 sqlite-net-pcl
 Catel.Fody
 squirrel.windows
+SpreadsheetLight
+DocumentFormat.OpenXml

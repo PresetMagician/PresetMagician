@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.ServiceModel.Channels;
 using System.Xml.Linq;
@@ -12,6 +13,7 @@ namespace PresetMagicianScratchPad.Roland
         {
             StartAddress = 0;
             FileAddress = 0;
+            ExportNode = new XElement("root");
 
         }
         
@@ -146,55 +148,55 @@ namespace PresetMagicianScratchPad.Roland
 
                 if (instName != "")
                 {
-                    section.Name = section.Name.Replace("INST", instName);
+                    section.VstParameterName = section.VstParameterName.Replace("INST", instName);
 
                     if ((num == 1)
                         
-                        && section.Name.Contains("TONE") && section.Type == "int4x4")
+                        && section.VstParameterName.Contains("TONE") && section.Type == "int4x4")
                     {
-                        section.Name = section.Name.Replace("TONE", "TONE2");
+                        section.VstParameterName = section.VstParameterName.Replace("TONE", "TONE2");
                     }
                     /*
-                    if ((num == 9 || num == 1) && section.Name.Contains("TUNE"))
+                    if ((num == 9 || num == 1) && section.VstParameterName.Contains("TUNE"))
                     {
-                        section.Name = section.Name.Replace("TUNE", "TONE");
+                        section.VstParameterName = section.VstParameterName.Replace("TUNE", "TONE");
                     }*/
                     
-                    if (section.Name.Contains("GAIN"))
+                    if (section.VstParameterName.Contains("GAIN"))
                     {
                        
-                            section.Name = section.Name.Replace("GAIN", "GAIN2");
+                            section.VstParameterName = section.VstParameterName.Replace("GAIN", "GAIN2");
                         
                     }
 
-                    if (section.Name == "SNARE DRUM DECAY")
+                    if (section.VstParameterName == "SNARE DRUM DECAY")
                     {
-                        section.Name = "SNARE DRUM TONE";
+                        section.VstParameterName = "SNARE DRUM TONE";
                     }
                     /*
-                    if (num >= 2 && num <=4 &&section.Name.Contains("TUNE"))
+                    if (num >= 2 && num <=4 &&section.VstParameterName.Contains("TUNE"))
                     {
-                        section.Name = section.Name.Replace("TUNE", "TUNING");
+                        section.VstParameterName = section.VstParameterName.Replace("TUNE", "TUNING");
                     }*/
                 }
             }
 
             if (section.Parent.Name == "saveKit")
             {
-                if (section.Name == "BD ATTACK")
+                if (section.VstParameterName == "BD ATTACK")
                 {
-                    section.Name = "BASS DRUM ATTACK";
+                    section.VstParameterName = "BASS DRUM ATTACK";
                 }
                 
-                if (section.Name == "SD SNAPPY")
+                if (section.VstParameterName == "SD SNAPPY")
                 {
-                    section.Name = "SNARE DRUM SNAPPY";
+                    section.VstParameterName = "SNARE DRUM SNAPPY";
                 }
                 
-                if (section.Name.StartsWith("INST"))
+                if (section.VstParameterName.StartsWith("INST"))
                 {
                     var instName = "";
-                    var num = section.Name.Substring(4, 2);
+                    var num = section.VstParameterName.Substring(4, 2);
                     if (int.TryParse(num, out int idx))
                     {
                         instName = RolandTR909GetInstName(idx);
@@ -204,11 +206,11 @@ namespace PresetMagicianScratchPad.Roland
 
                     if (instName != "")
                     {
-                        section.Name = section.Name.Replace($"INST" + idx.ToString(), instName);
+                        section.VstParameterName = section.VstParameterName.Replace($"INST" + idx.ToString(), instName);
 
-                        if (section.Name.Contains("BOOST"))
+                        if (section.VstParameterName.Contains("BOOST"))
                         {
-                            section.Name = section.Name.Replace("BOOST", "GAIN");
+                            section.VstParameterName = section.VstParameterName.Replace("BOOST", "GAIN");
                         }
                     }
                 }
@@ -216,14 +218,14 @@ namespace PresetMagicianScratchPad.Roland
 
             if (section.Parent.Name == "ptnCmn")
             {
-                if (section.Name == "INST02 SHUFFLE")
+                if (section.VstParameterName == "INST02 SHUFFLE")
                 {
-                    section.Name = "SNARE SHUFFLE";
+                    section.VstParameterName = "SNARE SHUFFLE";
                 }
-                if (section.Name.StartsWith("INST"))
+                if (section.VstParameterName.StartsWith("INST"))
                 {
                     var instName = "";
-                    var num = section.Name.Substring(4, 2);
+                    var num = section.VstParameterName.Substring(4, 2);
                     if (int.TryParse(num, out int idx))
                     {
                         instName = RolandTR909GetInstName(idx-1);
@@ -233,18 +235,18 @@ namespace PresetMagicianScratchPad.Roland
 
                     if (instName != "")
                     {
-                        section.Name = section.Name.Replace("INST" + num.ToString(), instName);
+                        section.VstParameterName = section.VstParameterName.Replace("INST" + num.ToString(), instName);
                     }
                 }
 
-                if (section.Name == "ACCENT")
+                if (section.VstParameterName == "ACCENT")
                 {
-                    section.Name = "ACCENT LEVEL";
+                    section.VstParameterName = "ACCENT LEVEL";
                 }
                 
-                if (section.Name == "SHUFFLE(COMMON)")
+                if (section.VstParameterName == "SHUFFLE(COMMON)")
                 {
-                    section.Name = "SHUFFLE";
+                    section.VstParameterName = "SHUFFLE";
                 }
             }
              
@@ -264,43 +266,43 @@ namespace PresetMagicianScratchPad.Roland
 
                 if (instName != "")
                 {
-                    section.Name = section.Name.Replace("INST", instName);
+                    section.VstParameterName = section.VstParameterName.Replace("INST", instName);
 
                     if ((num == 9 || num == 0 || num == 1)
                         
-                        && section.Name.Contains("TONE") && section.Type == "int4x4")
+                        && section.VstParameterName.Contains("TONE") && section.Type == "int4x4")
                     {
-                        section.Name = section.Name.Replace("TONE", "TONE2");
+                        section.VstParameterName = section.VstParameterName.Replace("TONE", "TONE2");
                     }
-                    if ((num == 9 || num == 1) && section.Name.Contains("TUNE"))
+                    if ((num == 9 || num == 1) && section.VstParameterName.Contains("TUNE"))
                     {
-                        section.Name = section.Name.Replace("TUNE", "TONE");
+                        section.VstParameterName = section.VstParameterName.Replace("TUNE", "TONE");
                     }
                     
-                    if (section.Name.Contains("GAIN"))
+                    if (section.VstParameterName.Contains("GAIN"))
                     {
                        
-                            section.Name = section.Name.Replace("GAIN", "GAIN2");
+                            section.VstParameterName = section.VstParameterName.Replace("GAIN", "GAIN2");
                         
                     }
-                    if (num >= 2 && num <=4 &&section.Name.Contains("TUNE"))
+                    if (num >= 2 && num <=4 &&section.VstParameterName.Contains("TUNE"))
                     {
-                        section.Name = section.Name.Replace("TUNE", "TUNING");
+                        section.VstParameterName = section.VstParameterName.Replace("TUNE", "TUNING");
                     }
                 }
             }
 
             if (section.Parent.Name == "saveKit")
             {
-                if (section.Name == "BD ATTACK")
+                if (section.VstParameterName == "BD ATTACK")
                 {
-                    section.Name = "BD TONE";
+                    section.VstParameterName = "BD TONE";
                 }
                 
-                if (section.Name.StartsWith("INST"))
+                if (section.VstParameterName.StartsWith("INST"))
                 {
                     var instName = "";
-                    var num = section.Name.Substring(4, 2);
+                    var num = section.VstParameterName.Substring(4, 2);
                     if (int.TryParse(num, out int idx))
                     {
                         instName = RolandTR808GetInstName(idx);
@@ -310,11 +312,11 @@ namespace PresetMagicianScratchPad.Roland
 
                     if (instName != "")
                     {
-                        section.Name = section.Name.Replace($"INST" + idx.ToString(), instName);
+                        section.VstParameterName = section.VstParameterName.Replace($"INST" + idx.ToString(), instName);
 
-                        if (section.Name.Contains("BOOST"))
+                        if (section.VstParameterName.Contains("BOOST"))
                         {
-                            section.Name = section.Name.Replace("BOOST", "GAIN");
+                            section.VstParameterName = section.VstParameterName.Replace("BOOST", "GAIN");
                         }
                     }
                 }
@@ -323,10 +325,10 @@ namespace PresetMagicianScratchPad.Roland
             if (section.Parent.Name == "ptnCmn")
             {
 
-                if (section.Name.StartsWith("INST"))
+                if (section.VstParameterName.StartsWith("INST"))
                 {
                     var instName = "";
-                    var num = section.Name.Substring(4, 2);
+                    var num = section.VstParameterName.Substring(4, 2);
                     if (int.TryParse(num, out int idx))
                     {
                         instName = RolandTR808GetInstName(idx-1);
@@ -336,18 +338,18 @@ namespace PresetMagicianScratchPad.Roland
 
                     if (instName != "")
                     {
-                        section.Name = section.Name.Replace("INST" + num.ToString(), instName);
+                        section.VstParameterName = section.VstParameterName.Replace("INST" + num.ToString(), instName);
                     }
                 }
 
-                if (section.Name == "ACCENT")
+                if (section.VstParameterName == "ACCENT")
                 {
-                    section.Name = "ACCENT LEVEL";
+                    section.VstParameterName = "ACCENT LEVEL";
                 }
                 
-                if (section.Name == "SHUFFLE(COMMON)")
+                if (section.VstParameterName == "SHUFFLE(COMMON)")
                 {
-                    section.Name = "SHUFFLE";
+                    section.VstParameterName = "SHUFFLE";
                 }
             }
              
@@ -356,14 +358,14 @@ namespace PresetMagicianScratchPad.Roland
         
         static void RolandJX3PCallback(RolandMemorySection section)
         {
-            if (section.Name == "VCF CUTOFF FREQ")
+            if (section.VstParameterName == "VCF CUTOFF FREQ")
             {
-                section.Name = "VCF CUTOFF";
+                section.VstParameterName = "VCF CUTOFF";
             }
 
-            if (section.Name == "ASSIGN MODE")
+            if (section.VstParameterName == "ASSIGN MODE")
             {
-                section.Name = "KEY ASSIGN";
+                section.VstParameterName = "KEY ASSIGN";
             }
         }
 
@@ -385,7 +387,7 @@ namespace PresetMagicianScratchPad.Roland
                         break;
                 }
 
-                section.Name = prefix + section.Name;
+                section.VstParameterName = prefix + section.VstParameterName;
             }
 
             if (parentType == "PatchTone")
@@ -408,7 +410,7 @@ namespace PresetMagicianScratchPad.Roland
                     
                 }
 
-                section.Name = prefix + section.Name;
+                section.VstParameterName = prefix + section.VstParameterName;
                 /*var s = section.Parent;
                 
                 Debug.WriteLine($" {s.GetTypeName()} {s.Name} 0x{s.Offset:x8}");*/
@@ -421,7 +423,7 @@ namespace PresetMagicianScratchPad.Roland
 
                 
                
-                section.Name = prefix + section.Name;
+                section.VstParameterName = prefix + section.VstParameterName;
                 /*var s = section.Parent;
                 
                 Debug.WriteLine($" {s.GetTypeName()} {s.Name} 0x{s.Offset:x8}");*/
@@ -431,7 +433,8 @@ namespace PresetMagicianScratchPad.Roland
 
         static void RolandD50Callback(RolandMemorySection section)
         {
-            if (section.Parent.Name == "PARTIAL")
+           
+            if (section.Parent.Name.StartsWith("PARTIAL"))
             {
                 string prefix = "";
                 switch (section.Parent.Offset)
@@ -451,10 +454,10 @@ namespace PresetMagicianScratchPad.Roland
                                 
                 }
 
-                section.Name = prefix + section.Name;
+                section.VstParameterName = prefix + section.VstParameterName;
             }
                     
-            if (section.Parent.Name == "TONE")
+            if (section.Parent.Name.StartsWith("TONE"))
             {
                 string prefix = "";
                 switch (section.Parent.Offset)
@@ -469,26 +472,26 @@ namespace PresetMagicianScratchPad.Roland
                                 
                 }
 
-                section.Name = prefix + section.Name;
+                section.VstParameterName = prefix + section.VstParameterName;
             }
         }
 
         public override void Parse()
         {
-            foreach (var childElement in SourceNode.Elements())
+            
+            foreach (var childElement in SourceNode.Elements().ToList())
             {
                 switch (childElement.Name.ToString())
                 {
                     case "struct":
-                        var subStruct = new RolandStruct(this, childElement);
-                        subStruct.Callbacks = Callbacks;
-                        subStruct.Parse();
-                        Structs.Add(subStruct);
+                        ApplyFoo(childElement, false);
                         break;
                     default:
                         break;
                 }
             }
+            
+           
             
         }
     }
