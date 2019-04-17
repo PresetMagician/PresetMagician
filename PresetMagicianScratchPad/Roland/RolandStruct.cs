@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -13,19 +14,22 @@ namespace PresetMagicianScratchPad.Roland
         {
             Parent = parent;
             SourceNode = node;
+            ExportNode = new XElement("struct");
         }
+
+        private Dictionary<string, int> ArrayStructCounters = new Dictionary<string, int>();
 
         public override void Parse()
         {
             base.Parse();
             ApplyType();
+            Debug.WriteLine($"Parsed {ValuePath}");
         }
 
-       
 
         public override void ApplyProperties()
         {
-            foreach (var childElement in SourceNode.Elements())
+            foreach (var childElement in SourceNode.Elements().ToList())
             {
                 var elementValue = childElement.Value;
 
@@ -33,23 +37,35 @@ namespace PresetMagicianScratchPad.Roland
                 {
                     case "name":
                         Name = elementValue;
+                        ParentValuePath.AddRange(Parent.ParentValuePath);
+
+
+                        ParentValuePath.Add(Name);
+
+
                         break;
                     case "address":
                         if (!HasOffset)
                         {
-                            Offset = ParseAddress(elementValue);
-                            StartAddress = Parent.StartAddress + Offset;
+                            //StartAddress = ParseAddress(elementValue, Parent.ChildOffset);
+                            //StartAddress = Parent.StartAddress + Offset;
                         }
 
                         break;
                     case "type":
                         break;
                     default:
-                        Debug.WriteLine(
-                            $"ApplyProperties: Unknown element {childElement.Name} at {((IXmlLineInfo) childElement).LineNumber}");
+                        if (!childElement.Name.ToString().StartsWith("int_"))
+                        {
+                            Debug.WriteLine(
+                                $"ApplyProperties: Unknown element {childElement.Name} at {((IXmlLineInfo) childElement).LineNumber}");
+                        }
+
                         break;
                 }
             }
+
+            ValuePath = string.Join(".", ParentValuePath);
         }
 
 
@@ -72,7 +88,7 @@ namespace PresetMagicianScratchPad.Roland
             var structTypeNode = GetStructType(SourceNode.Document, typeElement.Value);
 
             var childStartOffset = 0;
-            foreach (var childElement in structTypeNode.Elements())
+            foreach (var childElement in structTypeNode.Elements().ToList())
             {
                 var elementValue = childElement.Value;
                 switch (childElement.Name.ToString())
@@ -85,8 +101,24 @@ namespace PresetMagicianScratchPad.Roland
                                 Debug.WriteLine(
                                     $"ApplyType: Overwriting name '{Name}' with '{elementValue}' from structType {typeElement.Value} at {((IXmlLineInfo) SourceNode).LineNumber}");
                             }
+                            else
+                            {
+                                if (UseArrayIndex)
+                                {
+                                    Name = elementValue + "[" + ArrayIndex + "]";
+                                }
+                                else
+                                {
+                                    Name = elementValue;
+                                }
 
-                            Name = elementValue;
+
+                                ParentValuePath.AddRange(Parent.ParentValuePath);
+
+
+                                ParentValuePath.Add(Name);
+                                ValuePath = string.Join(".", ParentValuePath);
+                            }
                         }
 
 
@@ -102,6 +134,7 @@ namespace PresetMagicianScratchPad.Roland
                     case "size":
                         IsAutoCalculatedSize = false;
                         Size = ParseSize(elementValue);
+                        FileSize = Size;
                         break;
                     case "struct":
                         break;
@@ -117,154 +150,145 @@ namespace PresetMagicianScratchPad.Roland
                 }
             }
 
+
+            ExportNode.Add(new XElement("int_valuePath") {Value = ValuePath});
+            ExportNode.Add(new XElement("int_calculatedName") {Value = Name});
+
             DoCallback("RolandStructBeforeApplyChilds");
             int fileStartAddress = FileAddress;
-            foreach (var childElement in structTypeNode.Elements())
+            foreach (var childElement in structTypeNode.Elements().ToList())
             {
                 switch (childElement.Name.ToString())
                 {
                     case "struct":
-                        var addressElements = childElement.Elements("address").ToList();
 
-                        if (addressElements.Count == 0)
-                        {
-                            var subStruct = new RolandStruct(this, childElement);
-                            subStruct.Callbacks = Callbacks;
-                            subStruct.StartAddress = StartAddress + childStartOffset;
-                            subStruct.FileAddress = fileStartAddress;
-
-                            subStruct.Parse();
-
-                            if (!subStruct.HasOffset)
-                            {
-                                childStartOffset += subStruct.Size;
-                            }
-                            else
-                            {
-                                subStruct.StartAddress = StartAddress + subStruct.Offset;
-                                var newOffset = subStruct.Offset + subStruct.Size;
-                                if (newOffset > childStartOffset)
-                                {
-                                    childStartOffset = newOffset;
-                                }
-                            }
-
-
-                            Structs.Add(subStruct);
-                            fileStartAddress += subStruct.FileSize;
-                        }
-                        else
-                        {
-                            foreach (var addressElement in addressElements)
-                            {
-                                var subStruct = new RolandStruct(this, childElement);
-                                subStruct.Callbacks = Callbacks;
-                                subStruct.FileAddress = fileStartAddress;
-                                subStruct.Offset = ParseAddress(addressElement.Value);
-                                subStruct.StartAddress = StartAddress + subStruct.Offset;
-
-                                subStruct.HasOffset = true;
-                                subStruct.Parse();
-
-                                if (!subStruct.HasOffset)
-                                {
-                                    childStartOffset += subStruct.Size;
-                                }
-                                else
-                                {
-                                    subStruct.StartAddress = StartAddress + subStruct.Offset;
-                                    var newOffset = subStruct.Offset + subStruct.Size;
-                                    if (newOffset > childStartOffset)
-                                    {
-                                        childStartOffset = newOffset;
-                                    }
-                                }
-
-
-                                Structs.Add(subStruct);
-                                fileStartAddress += subStruct.FileSize;
-                            }
-                        }
+                        ApplyFoo(childElement, false);
+                       
 
                         break;
-                    case "foovalue":
-                    case "foovalue-rvs":
-                        RolandValue value;
-
-                        if (childElement.Elements("address").Count() > 1)
-                        {
-                            var useArray = true;
-                            foreach (var addr in childElement.Elements("address"))
-                            {
-                                if (string.IsNullOrEmpty(addr.Value))
-                                {
-                                    useArray = false;
-                                }
-                            }
-
-                            if (useArray)
-                            {
-                                value = new RolandValueArray(this, childElement);
-                            }
-                            else
-                            {
-                                value = new RolandValue(this, childElement);
-                            }
-                        }
-                        else if (childElement.Elements("size").Any())
-                        {
-                            value = new RolandValueArray(this, childElement);
-                        } else
-                        {
-                            value = new RolandValue(this, childElement);
-                        }
-
-                        value.StartAddress = StartAddress + childStartOffset;
-                        value.FileAddress = fileStartAddress;
-                        value.Callbacks = Callbacks;
-                        value.Parse();
-
-                        if (!value.HasOffset)
-                        {
-                            childStartOffset += value.Size;
-                            fileStartAddress += value.FileSize;
-                            
-                        }
-                        else
-                        {
-                            
-                            value.StartAddress = StartAddress + value.Offset;
-                            value.FileAddress = FileAddress + value.Offset;
-                            
-                            var newOffset = value.Offset + value.Size;
-                            var fileOffset = value.Offset + value.FileSize;
-                            if (newOffset > childStartOffset)
-                            {
-                                childStartOffset = newOffset;
-                                
-                            }
-
-                            if (fileOffset > fileStartAddress - FileAddress)
-                            {
-                                fileStartAddress = FileAddress + newOffset;
-                            }
-                            
-                            
-                        }
-
-                        Values.Add(value);
-                        
-
+                    case "value":
+                    case "value-rvs":
+                        ApplyFoo(childElement, true);
                         break;
                 }
             }
 
-            FileSize = fileStartAddress - FileAddress;
-            
+            //
+
             if (IsAutoCalculatedSize)
             {
-                Size = childStartOffset;
+                FileSize = FileOffset;
+                Size = ChildOffset;
             }
+            else
+            {
+                FileSize = FileOffset;
+            }
+
+            CalculatedSize = ChildOffset;
+        }
+
+        public void ApplyFoo(XElement childElement, bool isValue)
+        {
+            if (ExportNode.Element("int_children") == null)
+            {
+                ExportNode.Add(new XElement("int_children"));
+            }
+
+            var addressElements = childElement.Elements("address").ToList();
+
+            if (addressElements.Count == 0)
+            {
+                var child = CreateChild(childElement, isValue);
+                child.StartAddress = StartAddress + ChildOffset;
+                child.FileAddress = FileAddress + FileOffset;
+
+                child.Parse();
+
+                ChildOffset += child.Size;
+                FileOffset += child.FileSize;
+                if (isValue)
+                {
+                    Values.Add((RolandValue) child);
+                }
+                else
+                {
+                    Structs.Add((RolandStruct) child);
+                }
+
+                var cs = new XElement(child.ExportNode);
+                child.ApplyDebugProperties(cs);
+                ExportNode.Element("int_children").Add(cs);
+            }
+            else
+            {
+                var arrayIndex = 0;
+
+                bool useArrayIndex = addressElements.Count > 1;
+
+                foreach (var addressElement in addressElements)
+                {
+                    var childOffset = ParseAddress(addressElement.Value, 0);
+                    var fileOffset = isValue ? ParseAddress(addressElement.Value, 0) : FileOffset;
+
+
+                    var childName = childElement.Element("type").Value;
+                    if (!isValue)
+                    {
+                        Debug.WriteLine(
+                            $"ParseAddress for {childName} {addressElement.Value} with file offset {FileOffset:X} results in filestart {FileAddress:X} wih offset {fileOffset:X}. ChildOffset is {childOffset:X}");
+                    }
+
+                    var child = CreateChild(childElement, isValue);
+                    child.StartAddress = StartAddress + childOffset;
+                    child.FileAddress = FileAddress + fileOffset;
+                    child.UseArrayIndex = useArrayIndex;
+                    child.ArrayIndex = arrayIndex;
+                    child.Parse();
+
+
+                    arrayIndex++;
+
+                    if (childOffset + child.Size > ChildOffset)
+                    {
+                        ChildOffset = childOffset + child.Size;
+                    }
+
+                    if (fileOffset + child.FileSize > FileOffset)
+                    {
+                        FileOffset = fileOffset + child.FileSize;
+                    }
+
+                    if (isValue)
+                    {
+                        Values.Add((RolandValue) child);
+                    }
+                    else
+                    {
+                        Structs.Add((RolandStruct) child);
+                    }
+
+                    var cs = new XElement(child.ExportNode);
+                    child.ApplyDebugProperties(cs);
+                    ExportNode.Element("int_children").Add(cs);
+                }
+            }
+        }
+
+        public RolandMemorySection CreateChild(XElement childElement, bool isValue)
+        {
+            RolandMemorySection child;
+
+            if (isValue)
+            {
+                child = new RolandValue(this, childElement);
+            }
+            else
+            {
+                child = new RolandStruct(this, childElement);
+            }
+
+            return child;
         }
     }
 }

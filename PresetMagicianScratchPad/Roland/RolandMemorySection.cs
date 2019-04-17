@@ -6,7 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using Catel.Collections;
 using PresetMagician.Utils;
+using PresetMagician.Utils.BinaryStructViz;
 
 namespace PresetMagicianScratchPad.Roland
 {
@@ -23,13 +25,27 @@ namespace PresetMagicianScratchPad.Roland
         /// </summary>
         public XElement SourceNode { get; protected set; }
 
+        public XElement ExportNode { get; protected set; }
+        public string VstParameterName { get; set; }
+
         public RolandMemorySection Parent { get; protected set; }
+
+        public string ValuePath { get; set; } = "";
+
+        public List<string> ParentValuePath = new List<string>();
+
+        public int ArrayIndex { get; set; } = 0;
+        public bool UseArrayIndex = false;
 
         /// <summary>
         /// The absolute start address in bytes
         /// </summary>
         public int StartAddress { get; set; }
-        
+
+        public int ChildOffset { get; set; }
+        public int FileOffset { get; set; }
+
+
         public int FileAddress { get; set; }
         public int FileSize { get; set; }
 
@@ -37,6 +53,8 @@ namespace PresetMagicianScratchPad.Roland
         /// The length in bytes
         /// </summary>
         public int Size { get; set; }
+
+        public int CalculatedSize { get; set; }
 
         public bool IsAutoCalculatedSize { get; protected set; } = true;
 
@@ -57,12 +75,48 @@ namespace PresetMagicianScratchPad.Roland
         public List<RolandStruct> Structs { get; } = new List<RolandStruct>();
         public List<RolandValue> Values { get; } = new List<RolandValue>();
 
+        public RolandMemorySection FindByDottedName(string name)
+        {
+            var names = name.Split('.').ToList();
 
-        protected void GetValueByNameInt(string name, List<RolandValue> values)
+            return FindByDottedNameInt(names);
+        }
+
+        protected RolandMemorySection FindByDottedNameInt(List<string> parts)
+        {
+            var firstPartName = parts.FirstOrDefault();
+
+            if (firstPartName == null)
+            {
+                return this;
+            }
+
+            foreach (var subSection in Structs)
+            {
+                if (subSection.Name == firstPartName)
+                {
+                    parts.RemoveFirst();
+                    return subSection.FindByDottedNameInt(parts);
+                }
+            }
+
+            foreach (var value in Values)
+            {
+                if (value.Name == firstPartName)
+                {
+                    parts.RemoveFirst();
+                    return value.FindByDottedNameInt(parts);
+                }
+            }
+
+            return null;
+        }
+
+        protected void GetVstParameterValueByNameInt(string name, List<RolandValue> values)
         {
             foreach (var value in Values)
             {
-                if (value.Name == name)
+                if (value.VstParameterName == name)
                 {
                     values.Add(value);
                 }
@@ -70,18 +124,17 @@ namespace PresetMagicianScratchPad.Roland
 
             foreach (var subStruct in Structs)
             {
-                subStruct.GetValueByNameInt(name, values);
-              
+                subStruct.GetVstParameterValueByNameInt(name, values);
             }
         }
-        public List<RolandValue> GetValueByName(string name)
+
+        public List<RolandValue> GetVstParameterValueByName(string name)
         {
             var list = new List<RolandValue>();
 
-            GetValueByNameInt(name, list);
+            GetVstParameterValueByNameInt(name, list);
 
             return list;
-          
         }
 
 
@@ -96,6 +149,16 @@ namespace PresetMagicianScratchPad.Roland
 
         public delegate void ParseCallback(RolandMemorySection section);
 
+        public void ApplyDebugProperties(XElement element)
+        {
+            element.Name = "int_" + element.Name;
+            element.Add(new XElement("int_startAddress") {Value = $"{StartAddress:x}"});
+            element.Add(new XElement("int_fileAddress") {Value = $"{FileAddress:x}"});
+            element.Add(new XElement("int_fileLength") {Value = $"{FileSize:x}"});
+            element.Add(new XElement("int_size") {Value = $"{Size:x}"});
+            element.Add(new XElement("int_autoCalcLength") {Value = $"{IsAutoCalculatedSize:x}"});
+        }
+
         protected void DoCallback(string type)
         {
             if (!RegisteredCallbacks.Contains(type))
@@ -107,6 +170,63 @@ namespace PresetMagicianScratchPad.Roland
             {
                 Callbacks[type].Invoke(this);
             }
+        }
+
+        public List<FooVizDataWithStart> GetStructureData(List<FooVizDataWithStart> data = null)
+        {
+            if (data == null)
+            {
+                data = new List<FooVizDataWithStart>();
+            }
+
+            foreach (var subStruct in Structs)
+            {
+                var sizeFlag = "[O]";
+                if (subStruct.IsAutoCalculatedSize)
+                {
+                    sizeFlag = "[A]";
+                }
+                else
+                {
+                    if (subStruct.CalculatedSize != subStruct.Size)
+                    {
+                        sizeFlag += "[MS]";
+                    }
+                }
+
+                data.Add(new FooVizDataWithStart
+                {
+                    Start = subStruct.FileAddress, Length = subStruct.FileSize,
+                    Content = subStruct.ValuePath + Environment.NewLine +
+                              $"{sizeFlag} Len: 0x{subStruct.Size:X} FLen: 0x{subStruct.FileSize:X} FAddr: 0x{subStruct.FileAddress:X}"
+                });
+                subStruct.GetStructureData(data);
+            }
+
+            foreach (var value in Values)
+            {
+                var sizeFlag = "[O]";
+                if (value.IsAutoCalculatedSize)
+                {
+                    sizeFlag = "[A]";
+                }
+                else
+                {
+                    if (value.CalculatedSize != value.Size)
+                    {
+                        sizeFlag += "[MV]";
+                    }
+                }
+
+                data.Add(new FooVizDataWithStart
+                {
+                    Start = value.FileAddress, Length = value.FileSize, Content = value.ValuePath +
+                    Environment.NewLine +
+                    $"{sizeFlag} Len: 0x{value.Size:X} FLen: 0x{value.FileSize:X} FAddr: 0x{value.FileAddress:X}"
+                });
+            }
+
+            return data;
         }
 
         public void RegisterCallback(string type, ParseCallback callback)
@@ -131,6 +251,19 @@ namespace PresetMagicianScratchPad.Roland
             return DumpInternal(0, memory);
         }
 
+        public void DumpToPatchFile(RolandMemory memory, MemoryStream ms, RolandExportConfig exportConfig)
+        {
+            foreach (var subStruct in Structs)
+            {
+                subStruct.DumpToPatchFile(memory, ms, exportConfig);
+            }
+
+            foreach (var value in Values)
+            {
+                value.DumpToPatchFile(memory, ms, exportConfig);
+            }
+        }
+
         public (RolandMemorySection closestSection, int distance) FindClosestToAddress(int address)
         {
             var closestSection = this;
@@ -145,7 +278,7 @@ namespace PresetMagicianScratchPad.Roland
                     distance = result.distance;
                 }
             }
-            
+
             foreach (var value in Values)
             {
                 var result = value.FindClosestToAddress(address);
@@ -160,11 +293,33 @@ namespace PresetMagicianScratchPad.Roland
             return (closestSection, distance);
         }
 
+        public List<string> CompareAgainstFileMemory(RolandMemory memory)
+        {
+            var errors = new List<string>();
+
+            foreach (var subStruct in Structs)
+            {
+                errors.AddRange(subStruct.CompareAgainstFileMemory(memory));
+            }
+
+            foreach (var value in Values)
+            {
+                var result = value.CompareAgainstFile(memory);
+
+                if (!result.Item1)
+                {
+                    errors.Add(result.Item2);
+                }
+            }
+
+            return errors;
+        }
+
         public string GetInfo(RolandMemory memory = null)
         {
             return GetInfo(0, memory);
         }
-        
+
         public string GetInfo(int indent, RolandMemory memory = null)
         {
             string pad = "";
@@ -189,17 +344,17 @@ namespace PresetMagicianScratchPad.Roland
             {
                 sizeFlag = "[A]";
             }
-            
-            return $"{pad}{desc}".PadRight(60) +
-                          $"0x{StringUtils.Int32ToHexString(StartAddress)} - 0x{StringUtils.Int32ToHexString(EndAddress)} (Len {sizeFlag} 0x{Size:x8} FileAddr: 0x{FileAddress:x8} FileLen: 0x{FileSize:x4} {dataStr}";
 
+            return $"{pad}{desc}".PadRight(60) + $"{ValuePath.PadRight(40)}" +
+                   $"0x{StringUtils.Int32ToHexString(StartAddress)} - 0x{StringUtils.Int32ToHexString(EndAddress)} (Len {sizeFlag} 0x{Size:x8} FileAddr: 0x{FileAddress:x8} FileLen: 0x{FileSize:x4} {dataStr}";
         }
+
         private string DumpInternal(int indent, RolandMemory memory = null)
         {
             var sb = new StringBuilder();
 
             sb.AppendLine(GetInfo(indent, memory));
-           
+
             var dumpStuff = new Dictionary<int, List<string>>();
             foreach (var subStruct in Structs)
             {
@@ -266,7 +421,7 @@ namespace PresetMagicianScratchPad.Roland
             return foundNode.Parent;
         }
 
-        protected static int ParseAddress(string value)
+        public static int ParseAddress(string value, int parentAddress)
         {
             if (string.IsNullOrEmpty(value))
             {
@@ -274,20 +429,23 @@ namespace PresetMagicianScratchPad.Roland
             }
 
             var hexValuesSplit = value.Trim().Split(' ').ToList();
-
+            int bitMask = 4;
 
             if (hexValuesSplit.Count == 1)
             {
+                bitMask = 1;
                 hexValuesSplit = hexValuesSplit.Prepend("00").Prepend("00").Prepend("00").ToList();
             }
 
             if (hexValuesSplit.Count == 2)
             {
+                bitMask = 2;
                 hexValuesSplit = hexValuesSplit.Prepend("00").Prepend("00").ToList();
             }
 
             if (hexValuesSplit.Count == 3)
             {
+                bitMask = 3;
                 hexValuesSplit = hexValuesSplit.Prepend("00").ToList();
             }
 
@@ -303,12 +461,87 @@ namespace PresetMagicianScratchPad.Roland
                 ints.Add(Convert.ToByte(hexValueString, 16));
             }
 
-            return ints[0] * 128 * 128 * 128 + ints[1] * 128 * 128 + ints[2] * 128 + ints[3];
+
+            var baseParentAddress = parentAddress & ~(((uint) Math.Pow(2, bitMask * 7) - 1));
+
+            var result = (int) baseParentAddress + ints[0] * 128 * 128 * 128 + ints[1] * 128 * 128 + ints[2] * 128 +
+                         ints[3];
+
+            //Debug.WriteLine($"Parent address is {parentAddress:X} address is {value} bitMask is {bitMask} base is {baseParentAddress:X} result is {result:X}");
+            return result;
+        }
+
+        public static bool IsAbsoluteAddress(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return false;
+            }
+
+            var hexValuesSplit = value.Trim().Split(' ').ToList();
+
+
+            if (hexValuesSplit.Count == 4)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public static int CombineAddress(string value, int parentAddress)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return -1;
+            }
+
+            var hexValuesSplit = value.Trim().Split(' ').ToList();
+            int bitMask = 4;
+
+            if (hexValuesSplit.Count == 1)
+            {
+                bitMask = 1;
+                hexValuesSplit = hexValuesSplit.Prepend("00").Prepend("00").Prepend("00").ToList();
+            }
+
+            if (hexValuesSplit.Count == 2)
+            {
+                bitMask = 2;
+                hexValuesSplit = hexValuesSplit.Prepend("00").Prepend("00").ToList();
+            }
+
+            if (hexValuesSplit.Count == 3)
+            {
+                bitMask = 3;
+                hexValuesSplit = hexValuesSplit.Prepend("00").ToList();
+            }
+
+            if (hexValuesSplit.Count != 4)
+            {
+                Debug.WriteLine($"Warning: {value} is not 4 bytes.");
+            }
+
+            var ints = new List<int>();
+
+            foreach (var hexValueString in hexValuesSplit)
+            {
+                ints.Add(Convert.ToByte(hexValueString, 16));
+            }
+
+
+            var baseParentAddress = parentAddress & ~(((uint) Math.Pow(2, bitMask * 7) - 1));
+
+            var result = (int) baseParentAddress + ints[0] * 128 * 128 * 128 + ints[1] * 128 * 128 + ints[2] * 128 +
+                         ints[3];
+
+            //Debug.WriteLine($"Parent address is {parentAddress:X} address is {value} bitMask is {bitMask} base is {baseParentAddress:X} result is {result:X}");
+            return result;
         }
 
         protected static int ParseSize(string value)
         {
-            return ParseAddress(value);
+            return ParseAddress(value, 0);
         }
     }
 }

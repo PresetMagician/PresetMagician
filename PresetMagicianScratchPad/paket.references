@@ -12,3 +12,4 @@ K4os.Compression.LZ4
 Ceras
 GSF.Core
 CsvHelper
+Newtonsoft.Json

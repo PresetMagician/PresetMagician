@@ -22,6 +22,11 @@ namespace PresetMagicianScratchPad
             FileData = File.ReadAllBytes(file);
         }
 
+        public void SetFileData(byte[] data)
+        {
+            FileData = data;
+        }
+
         public byte[] GetFromFile(int address, int length)
         {
             

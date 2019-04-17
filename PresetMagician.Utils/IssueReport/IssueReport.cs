@@ -234,6 +234,11 @@ namespace PresetMagician.Utils.IssueReport
 
         public async Task SubmitIssue()
         {
+            if (_issue.Subject.Length > 250)
+            {
+                _issue.Description = _issue.Subject.Substring(250) + "\n\n" + _issue.Description;
+                _issue.Subject = _issue.Subject.Substring(0, 250);
+            }
             await _manager.CreateObjectAsync(_issue);
 
             foreach (var attachment in Attachments)
