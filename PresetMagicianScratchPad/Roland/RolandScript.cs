@@ -13,7 +13,6 @@ namespace PresetMagicianScratchPad.Roland
         {
             StartAddress = 0;
             FileAddress = 0;
-            ExportNode = new XElement("root");
 
         }
         
@@ -485,8 +484,6 @@ namespace PresetMagicianScratchPad.Roland
                 {
                     case "struct":
                         ApplyFoo(childElement, false);
-                        break;
-                    default:
                         break;
                 }
             }

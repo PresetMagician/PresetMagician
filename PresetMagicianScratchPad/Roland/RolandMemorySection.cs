@@ -13,7 +13,7 @@ using PresetMagician.Utils.BinaryStructViz;
 namespace PresetMagicianScratchPad.Roland
 {
     public abstract class RolandMemorySection
-    {
+    {        
         public static HashSet<string> RegisteredCallbacks = new HashSet<string>
         {
             "AfterApplyProperties", "RolandStructBeforeApplyChilds",
@@ -25,7 +25,6 @@ namespace PresetMagicianScratchPad.Roland
         /// </summary>
         public XElement SourceNode { get; protected set; }
 
-        public XElement ExportNode { get; protected set; }
         public string VstParameterName { get; set; }
 
         public RolandMemorySection Parent { get; protected set; }
@@ -34,7 +33,7 @@ namespace PresetMagicianScratchPad.Roland
 
         public List<string> ParentValuePath = new List<string>();
 
-        public int ArrayIndex { get; set; } = 0;
+        public int ArrayIndex { get; set; }
         public bool UseArrayIndex = false;
 
         /// <summary>
@@ -48,6 +47,8 @@ namespace PresetMagicianScratchPad.Roland
 
         public int FileAddress { get; set; }
         public int FileSize { get; set; }
+        
+        public RolandExportConfig Config { get; set; }
 
         /// <summary>
         /// The length in bytes
@@ -63,10 +64,7 @@ namespace PresetMagicianScratchPad.Roland
 
         public bool HasOffset { get; set; }
 
-        public int EndAddress
-        {
-            get { return StartAddress + Size; }
-        }
+        public int EndAddress => StartAddress + Size;
 
 
         public string Type { get; set; }
@@ -149,16 +147,7 @@ namespace PresetMagicianScratchPad.Roland
 
         public delegate void ParseCallback(RolandMemorySection section);
 
-        public void ApplyDebugProperties(XElement element)
-        {
-            element.Name = "int_" + element.Name;
-            element.Add(new XElement("int_startAddress") {Value = $"{StartAddress:x}"});
-            element.Add(new XElement("int_fileAddress") {Value = $"{FileAddress:x}"});
-            element.Add(new XElement("int_fileLength") {Value = $"{FileSize:x}"});
-            element.Add(new XElement("int_size") {Value = $"{Size:x}"});
-            element.Add(new XElement("int_autoCalcLength") {Value = $"{IsAutoCalculatedSize:x}"});
-        }
-
+      
         protected void DoCallback(string type)
         {
             if (!RegisteredCallbacks.Contains(type))

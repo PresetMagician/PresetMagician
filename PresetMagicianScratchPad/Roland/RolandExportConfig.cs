@@ -19,6 +19,10 @@ namespace PresetMagicianScratchPad.Roland
         [JsonProperty] public List<string> IncludeExportValuePathsRegEx = new List<string>();
         
         [JsonProperty] public List<string> PresetDirectories = new List<string>();
+        
+        [JsonProperty] public List<string> SkipImportValuePaths = new List<string>();
+        
+        [JsonProperty] public List<string> SkipImportValuePathsRegEx = new List<string>();
 
         [JsonProperty] public string Plugin;
 

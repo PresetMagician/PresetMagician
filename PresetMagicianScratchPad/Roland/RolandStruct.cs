@@ -14,7 +14,6 @@ namespace PresetMagicianScratchPad.Roland
         {
             Parent = parent;
             SourceNode = node;
-            ExportNode = new XElement("struct");
         }
 
         private Dictionary<string, int> ArrayStructCounters = new Dictionary<string, int>();
@@ -151,11 +150,8 @@ namespace PresetMagicianScratchPad.Roland
             }
 
 
-            ExportNode.Add(new XElement("int_valuePath") {Value = ValuePath});
-            ExportNode.Add(new XElement("int_calculatedName") {Value = Name});
-
             DoCallback("RolandStructBeforeApplyChilds");
-            int fileStartAddress = FileAddress;
+
             foreach (var childElement in structTypeNode.Elements().ToList())
             {
                 switch (childElement.Name.ToString())
@@ -188,13 +184,28 @@ namespace PresetMagicianScratchPad.Roland
             CalculatedSize = ChildOffset;
         }
 
-        public void ApplyFoo(XElement childElement, bool isValue)
+        public bool IsExcludedFromFileOffset(string valuePath)
         {
-            if (ExportNode.Element("int_children") == null)
+
+            if (Config.SkipImportValuePaths.Contains(valuePath))
             {
-                ExportNode.Add(new XElement("int_children"));
+                return true;
+            }
+            
+            foreach (var reg in Config.SkipImportValuePathsRegEx)
+            {
+                var r = Config.GetRegex(reg);
+                if (r.Match(valuePath).Success)
+                {
+                    return true;
+                }    
             }
 
+            return false;
+        }
+        public void ApplyFoo(XElement childElement, bool isValue)
+        {
+           
             var addressElements = childElement.Elements("address").ToList();
 
             if (addressElements.Count == 0)
@@ -206,7 +217,12 @@ namespace PresetMagicianScratchPad.Roland
                 child.Parse();
 
                 ChildOffset += child.Size;
-                FileOffset += child.FileSize;
+
+                if (!IsExcludedFromFileOffset(child.ValuePath))
+                {
+                    FileOffset += child.FileSize;
+                }
+                
                 if (isValue)
                 {
                     Values.Add((RolandValue) child);
@@ -216,9 +232,6 @@ namespace PresetMagicianScratchPad.Roland
                     Structs.Add((RolandStruct) child);
                 }
 
-                var cs = new XElement(child.ExportNode);
-                child.ApplyDebugProperties(cs);
-                ExportNode.Element("int_children").Add(cs);
             }
             else
             {
@@ -232,7 +245,17 @@ namespace PresetMagicianScratchPad.Roland
                     var fileOffset = isValue ? ParseAddress(addressElement.Value, 0) : FileOffset;
 
 
-                    var childName = childElement.Element("type").Value;
+                    var typeElement = childElement.Element("type");
+                    var childName = "";
+
+                    if (typeElement != null)
+                    {
+                        childName = childElement.Element("type").Value;
+                    }
+                    else
+                    {
+                        childName = "notset";
+                    }
                     if (!isValue)
                     {
                         Debug.WriteLine(
@@ -254,10 +277,25 @@ namespace PresetMagicianScratchPad.Roland
                         ChildOffset = childOffset + child.Size;
                     }
 
-                    if (fileOffset + child.FileSize > FileOffset)
+                    if (!IsExcludedFromFileOffset(child.ValuePath))
                     {
-                        FileOffset = fileOffset + child.FileSize;
+                        if (IsAbsoluteAddress(addressElement.Value))
+                        {
+                            if (fileOffset + child.FileSize > FileOffset)
+                            {
+                                FileOffset = fileOffset + child.FileSize;
+                            }
+                        }
+                        else
+                        {
+
+                            if (fileOffset + child.Size > FileOffset)
+                            {
+                                FileOffset = fileOffset + child.Size;
+                            }
+                        }
                     }
+                   
 
                     if (isValue)
                     {
@@ -268,9 +306,6 @@ namespace PresetMagicianScratchPad.Roland
                         Structs.Add((RolandStruct) child);
                     }
 
-                    var cs = new XElement(child.ExportNode);
-                    child.ApplyDebugProperties(cs);
-                    ExportNode.Element("int_children").Add(cs);
                 }
             }
         }
@@ -287,6 +322,8 @@ namespace PresetMagicianScratchPad.Roland
             {
                 child = new RolandStruct(this, childElement);
             }
+
+            child.Config = Config;
 
             return child;
         }
