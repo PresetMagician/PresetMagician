@@ -16,7 +16,6 @@ namespace PresetMagicianScratchPad.Roland
         {
             Parent = parent;
             SourceNode = node;
-            ExportNode = new XElement("value");
         }
         
         public string DefaultValue { get; set; }
@@ -90,11 +89,7 @@ namespace PresetMagicianScratchPad.Roland
             DoCallback("RolandValue.AfterParse");
         }
 
-        protected virtual int ApplySize(int size)
-        {
-            IsAutoCalculatedSize = false;
-            return GetTypeSize() * size;
-        }
+     
 
         public bool IsValueInsideRange(int value)
         {
@@ -151,6 +146,7 @@ namespace PresetMagicianScratchPad.Roland
             
             var data = memory.GetFromFile(FileAddress, _primitiveTypeLength);
 
+        
                 
             if (data == null)
             {
@@ -211,6 +207,7 @@ namespace PresetMagicianScratchPad.Roland
                 }
             }
 
+            //#error Problem: Implement long handling
 
 
            

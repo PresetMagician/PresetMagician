@@ -36,7 +36,7 @@ namespace PresetMagician.Utils.BinaryStructViz
             DumpRow(sl, colOffset+1, Memory);
             DumpStructures(sl, colOffset+2);
             
-            //sl.AutoFitColumn(1, 100);
+            sl.AutoFitColumn(1, 20);
             sl.AutoFitRow(1, Memory.Keys.Max()+1);
             sl.SaveAs(filename);
          

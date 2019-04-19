@@ -71,8 +71,10 @@
     <Compile Include="Roland\RolandExportConfig.cs" />
     <Compile Include="Roland\RolandMemory.cs" />
     <Compile Include="Roland\RolandMemorySection.cs" />
+    <Compile Include="Roland\RolandPatchDump.cs" />
     <Compile Include="Roland\RolandScript.cs" />
     <Compile Include="Roland\RolandStruct.cs" />
+    <Compile Include="Roland\RolandTestConfig.cs" />
     <Compile Include="Roland\RolandValue.cs" />
     <Compile Include="Stuff\AirMusicTech.cs" />
     <None Include="Program - Copy.cs" />
