@@ -1,0 +1,20 @@
+{
+    "PresetDirectories": [
+        "C:\\ProgramData\\Roland Cloud\\TB-303"
+    ],
+    "Plugin": "C:\\Program Files\\VstPlugins\\Roland\\TB-303\\TB-303(VST2 64bit).dll",
+    "ScriptFile": "C:\\Program Files\\VstPlugins\\Roland\\TB-303\\Script\\Script.xml",
+    "OutputDirectory": "C:\\Users\\Drachenkatze\\Documents\\PresetMagician\\TestVstHost\\Patches\\TB-303\\output",
+
+    "ComparisonIgnoreValuePaths": [
+        "vm.vstCc"
+        
+    ],
+    "ComparisonIgnoreValueRegex": [
+        "^vm.vs(.*)$"
+    ],
+    "ComparisonAllowValueVariance": {
+        "fm.PATCH2.FLT.VCF CUTOFF H": 128
+    }
+   
+}

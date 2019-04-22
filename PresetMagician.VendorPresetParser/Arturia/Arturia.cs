@@ -18,6 +18,7 @@ namespace PresetMagician.VendorPresetParser.Arturia
         public override void Init()
         {
             BankLoadingNotes = $"Presets are loaded from {GetDatabasePath()}";
+            base.Init();
         }
 
         protected abstract List<string> GetInstrumentNames();

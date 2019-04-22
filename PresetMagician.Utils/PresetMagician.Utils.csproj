@@ -49,7 +49,6 @@
   <ItemGroup>
     <Compile Include="AsyncFile.cs" />
     <Compile Include="BinaryFile.cs" />
-    <Compile Include="BinaryStructViz\FooViz.cs" />
     <Compile Include="ConsoleTables.cs" />
     <Compile Include="DebugMonitor.cs" />
     <Compile Include="ExceptionFormatter.cs" />
@@ -185,17 +184,6 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
-        <Reference Include="DocumentFormat.OpenXml">
-          <HintPath>..\packages\DocumentFormat.OpenXml\lib\DocumentFormat.OpenXml.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
-      <ItemGroup>
         <Reference Include="Microsoft.Expression.Interactions">
           <HintPath>..\packages\Expression.Blend.Sdk.WPF\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
           <Private>True</Private>
@@ -294,17 +282,6 @@
         </Reference>
         <Reference Include="Splat">
           <HintPath>..\packages\Splat\lib\net461\Splat.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
-      <ItemGroup>
-        <Reference Include="SpreadsheetLight">
-          <HintPath>..\packages\SpreadsheetLight\lib\SpreadsheetLight.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>

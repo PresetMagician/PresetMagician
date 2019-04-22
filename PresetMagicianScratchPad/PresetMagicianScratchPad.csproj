@@ -66,17 +66,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Roland\KoaBankFileParser.cs" />
-    <Compile Include="Roland\KoaPreset.cs" />
-    <Compile Include="Roland\RolandExportConfig.cs" />
-    <Compile Include="Roland\RolandMemory.cs" />
-    <Compile Include="Roland\RolandMemorySection.cs" />
-    <Compile Include="Roland\RolandPatchDump.cs" />
-    <Compile Include="Roland\RolandScript.cs" />
-    <Compile Include="Roland\RolandStruct.cs" />
-    <Compile Include="Roland\RolandTestConfig.cs" />
-    <Compile Include="Roland\RolandValue.cs" />
-    <Compile Include="Stuff\AirMusicTech.cs" />
     <None Include="Program - Copy.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -101,6 +90,10 @@
     <ProjectReference Include="..\PresetMagician.Core\PresetMagician.Core.csproj">
       <Project>{da1b856f-d92e-49e9-a80a-48e62135f909}</Project>
       <Name>PresetMagician.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PresetMagician.DevTools\PresetMagician.DevTools.csproj">
+      <Project>{2e51593e-c9bf-405f-9ccc-a32dd49bf64e}</Project>
+      <Name>PresetMagician.DevTools</Name>
     </ProjectReference>
     <ProjectReference Include="..\PresetMagician.Legacy\PresetMagician.Legacy.csproj">
       <Project>{3a586416-148e-47e4-8612-87a7c9561ba7}</Project>
@@ -142,6 +135,9 @@
       <Project>{e0cc0ccf-a40d-4a53-8fac-b6af7e76eb08}</Project>
       <Name>Jacobi.Vst.Interop.Clr4</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Stuff" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Choose>

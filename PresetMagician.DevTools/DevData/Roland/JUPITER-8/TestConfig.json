@@ -1,0 +1,8 @@
+{
+    "PresetDirectories": [
+        "C:\\ProgramData\\Roland Cloud\\JUPITER-8"
+    ],
+    "Plugin": "C:\\Program Files\\VstPlugins\\Roland\\JUPITER-8\\JUPITER-8(VST2 64bit).dll",
+    "ScriptFile": "C:\\Program Files\\VstPlugins\\Roland\\JUPITER-8\\Script\\Script.xml",
+    "OutputDirectory": "C:\\Users\\Drachenkatze\\Documents\\PresetMagician\\TestVstHost\\Patches\\JUPITER-8\\output"
+}

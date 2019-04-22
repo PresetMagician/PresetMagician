@@ -176,6 +176,546 @@ namespace PresetMagician.VendorPresetParser.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] Roland_D50_ExportConfig {
+            get {
+                object obj = ResourceManager.GetObject("Roland_D50_ExportConfig", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_D50_Script {
+            get {
+                object obj = ResourceManager.GetObject("Roland_D50_Script", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_D50_Suffix {
+            get {
+                object obj = ResourceManager.GetObject("Roland_D50_Suffix", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_JUNO106_ExportConfig {
+            get {
+                object obj = ResourceManager.GetObject("Roland_JUNO106_ExportConfig", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_JUNO106_Script {
+            get {
+                object obj = ResourceManager.GetObject("Roland_JUNO106_Script", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_JUNO106_Suffix {
+            get {
+                object obj = ResourceManager.GetObject("Roland_JUNO106_Suffix", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_JUPITER_8_ExportConfig {
+            get {
+                object obj = ResourceManager.GetObject("Roland_JUPITER-8_ExportConfig", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_JUPITER_8_Script {
+            get {
+                object obj = ResourceManager.GetObject("Roland_JUPITER-8_Script", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_JUPITER_8_Suffix {
+            get {
+                object obj = ResourceManager.GetObject("Roland_JUPITER-8_Suffix", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_JV_1080_ExportConfig {
+            get {
+                object obj = ResourceManager.GetObject("Roland_JV-1080_ExportConfig", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_JV_1080_Script {
+            get {
+                object obj = ResourceManager.GetObject("Roland_JV-1080_Script", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_JV_1080_Suffix {
+            get {
+                object obj = ResourceManager.GetObject("Roland_JV-1080_Suffix", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_JX_3P_ExportConfig {
+            get {
+                object obj = ResourceManager.GetObject("Roland_JX-3P_ExportConfig", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_JX_3P_Script {
+            get {
+                object obj = ResourceManager.GetObject("Roland_JX-3P_Script", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_JX_3P_Suffix {
+            get {
+                object obj = ResourceManager.GetObject("Roland_JX-3P_Suffix", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_PROMARS_ExportConfig {
+            get {
+                object obj = ResourceManager.GetObject("Roland_PROMARS_ExportConfig", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_PROMARS_Script {
+            get {
+                object obj = ResourceManager.GetObject("Roland_PROMARS_Script", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_PROMARS_Suffix {
+            get {
+                object obj = ResourceManager.GetObject("Roland_PROMARS_Suffix", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_SH_101_ExportConfig {
+            get {
+                object obj = ResourceManager.GetObject("Roland_SH-101_ExportConfig", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_SH_101_Script {
+            get {
+                object obj = ResourceManager.GetObject("Roland_SH-101_Script", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_SH_101_Suffix {
+            get {
+                object obj = ResourceManager.GetObject("Roland_SH-101_Suffix", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_SH_2_ExportConfig {
+            get {
+                object obj = ResourceManager.GetObject("Roland_SH-2_ExportConfig", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_SH_2_Script {
+            get {
+                object obj = ResourceManager.GetObject("Roland_SH-2_Script", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_SH_2_Suffix {
+            get {
+                object obj = ResourceManager.GetObject("Roland_SH-2_Suffix", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_SRX_DANCE_TRAX_ExportConfig {
+            get {
+                object obj = ResourceManager.GetObject("Roland_SRX DANCE TRAX_ExportConfig", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_SRX_DANCE_TRAX_Script {
+            get {
+                object obj = ResourceManager.GetObject("Roland_SRX DANCE TRAX_Script", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_SRX_DANCE_TRAX_Suffix {
+            get {
+                object obj = ResourceManager.GetObject("Roland_SRX DANCE TRAX_Suffix", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_SRX_KEYBOARDS_ExportConfig {
+            get {
+                object obj = ResourceManager.GetObject("Roland_SRX KEYBOARDS_ExportConfig", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_SRX_KEYBOARDS_Script {
+            get {
+                object obj = ResourceManager.GetObject("Roland_SRX KEYBOARDS_Script", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_SRX_KEYBOARDS_Suffix {
+            get {
+                object obj = ResourceManager.GetObject("Roland_SRX KEYBOARDS_Suffix", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_SRX_ORCHESTRA_ExportConfig {
+            get {
+                object obj = ResourceManager.GetObject("Roland_SRX ORCHESTRA_ExportConfig", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_SRX_ORCHESTRA_Script {
+            get {
+                object obj = ResourceManager.GetObject("Roland_SRX ORCHESTRA_Script", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_SRX_ORCHESTRA_Suffix {
+            get {
+                object obj = ResourceManager.GetObject("Roland_SRX ORCHESTRA_Suffix", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_SRX_WORLD_ExportConfig {
+            get {
+                object obj = ResourceManager.GetObject("Roland_SRX WORLD_ExportConfig", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_SRX_WORLD_Script {
+            get {
+                object obj = ResourceManager.GetObject("Roland_SRX WORLD_Script", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_SRX_WORLD_Suffix {
+            get {
+                object obj = ResourceManager.GetObject("Roland_SRX WORLD_Suffix", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_SYSTEM_1_ExportConfig {
+            get {
+                object obj = ResourceManager.GetObject("Roland_SYSTEM-1_ExportConfig", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_SYSTEM_1_Script {
+            get {
+                object obj = ResourceManager.GetObject("Roland_SYSTEM-1_Script", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_SYSTEM_1_Suffix {
+            get {
+                object obj = ResourceManager.GetObject("Roland_SYSTEM-1_Suffix", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_SYSTEM_100_ExportConfig {
+            get {
+                object obj = ResourceManager.GetObject("Roland_SYSTEM-100_ExportConfig", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_SYSTEM_100_Script {
+            get {
+                object obj = ResourceManager.GetObject("Roland_SYSTEM-100_Script", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_SYSTEM_100_Suffix {
+            get {
+                object obj = ResourceManager.GetObject("Roland_SYSTEM-100_Suffix", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_SYSTEM_8_ExportConfig {
+            get {
+                object obj = ResourceManager.GetObject("Roland_SYSTEM-8_ExportConfig", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_SYSTEM_8_Script {
+            get {
+                object obj = ResourceManager.GetObject("Roland_SYSTEM-8_Script", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_SYSTEM_8_Suffix {
+            get {
+                object obj = ResourceManager.GetObject("Roland_SYSTEM-8_Suffix", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_TB_303_ExportConfig {
+            get {
+                object obj = ResourceManager.GetObject("Roland_TB-303_ExportConfig", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_TB_303_Script {
+            get {
+                object obj = ResourceManager.GetObject("Roland_TB-303_Script", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_TB_303_Suffix {
+            get {
+                object obj = ResourceManager.GetObject("Roland_TB-303_Suffix", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_TR_808_ExportConfig {
+            get {
+                object obj = ResourceManager.GetObject("Roland_TR-808_ExportConfig", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_TR_808_Script {
+            get {
+                object obj = ResourceManager.GetObject("Roland_TR-808_Script", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_TR_808_Suffix {
+            get {
+                object obj = ResourceManager.GetObject("Roland_TR-808_Suffix", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_TR_909_ExportConfig {
+            get {
+                object obj = ResourceManager.GetObject("Roland_TR-909_ExportConfig", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_TR_909_Script {
+            get {
+                object obj = ResourceManager.GetObject("Roland_TR-909_Script", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Roland_TR_909_Suffix {
+            get {
+                object obj = ResourceManager.GetObject("Roland_TR-909_Suffix", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] TheRiserEndChunk {
             get {
                 object obj = ResourceManager.GetObject("TheRiserEndChunk", resourceCulture);

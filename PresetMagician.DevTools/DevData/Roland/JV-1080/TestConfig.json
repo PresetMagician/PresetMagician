@@ -1,0 +1,8 @@
+{
+    "PresetDirectories": [
+        "C:\\ProgramData\\Roland Cloud\\JV-1080"
+    ],
+    "Plugin": "C:\\Program Files\\VstPlugins\\Roland\\JV-1080\\JV-1080(VST2 64bit).dll",
+    "ScriptFile": "C:\\Program Files\\VstPlugins\\Roland\\JV-1080\\Script\\Script.xml",
+    "OutputDirectory": "C:\\Users\\Drachenkatze\\Documents\\PresetMagician\\TestVstHost\\Patches\\JV-1080\\output"
+}

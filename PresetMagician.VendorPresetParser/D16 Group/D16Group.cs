@@ -20,10 +20,22 @@ namespace PresetMagician.VendorPresetParser.D16_Group
         {
             var count = 0;
             Logger.Debug($"ProcessD16PKGArchive {archiveName}");
+
+            if (!File.Exists(archiveName))
+            {
+                Logger.Error($"Could not find the file {archiveName}");
+                return 0;
+            }
+            
             using (var archive = ZipFile.OpenRead(archiveName))
             {
                 var entry = archive.GetEntry("content");
 
+                if (entry == null)
+                {
+                    Logger.Error($"Could not find the entry 'content' within archive {archiveName}");
+                    return 0;
+                }
                 var contentStream = entry.Open();
 
                 var contentArchive = new ZipArchive(contentStream);

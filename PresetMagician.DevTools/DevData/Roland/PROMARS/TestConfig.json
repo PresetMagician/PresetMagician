@@ -1,0 +1,8 @@
+{
+    "PresetDirectories": [
+        "C:\\ProgramData\\Roland Cloud\\PROMARS"
+    ],
+    "Plugin": "C:\\Program Files\\VstPlugins\\Roland\\PROMARS\\PROMARS(VST2 64bit).dll",
+    "ScriptFile": "C:\\Program Files\\VstPlugins\\Roland\\PROMARS\\Script\\Script.xml",
+    "OutputDirectory": "C:\\Users\\Drachenkatze\\Documents\\PresetMagician\\TestVstHost\\Patches\\PROMARS\\output"
+}

@@ -200,7 +200,9 @@ namespace PresetMagician.TestVstHost
         public int GetCurrentPluginID()
         {
             Debug($"GetCurrentPluginID");
-            return PluginContext.PluginInfo.PluginID;
+            return 0;
+            //return PluginContext.PluginInfo.PluginID;
+            
         }
 
         public int GetVersion()

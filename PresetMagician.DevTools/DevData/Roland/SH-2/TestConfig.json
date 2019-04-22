@@ -1,0 +1,8 @@
+{
+    "PresetDirectories": [
+        "C:\\ProgramData\\Roland Cloud\\SH-2"
+    ],
+    "Plugin": "C:\\Program Files\\VstPlugins\\Roland\\SH-2\\SH-2(VST2 64bit).dll",
+    "ScriptFile": "C:\\Program Files\\VstPlugins\\Roland\\SH-2\\Script\\Script.xml",
+    "OutputDirectory": "C:\\Users\\Drachenkatze\\Documents\\PresetMagician\\TestVstHost\\Patches\\SH-2\\output"
+}

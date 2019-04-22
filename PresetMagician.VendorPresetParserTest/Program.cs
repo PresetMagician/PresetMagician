@@ -378,7 +378,6 @@ namespace PresetMagician.VendorPresetParserTest
 
                 foreach (var detailedError in testRes.DetailedErrors)
                 {
-                    Console.WriteLine(Environment.NewLine);
                     Console.WriteLine($"Error #{testRes.DetailedErrors.IndexOf(detailedError)}: {detailedError}");
                 }
             }
