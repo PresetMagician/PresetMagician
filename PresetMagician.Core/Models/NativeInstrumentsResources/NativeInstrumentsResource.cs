@@ -238,8 +238,17 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
                 Color = JsonConvert.DeserializeObject<Color>(
                     File.ReadAllText(files["color"]));
 
-                Color.BackgroundColor =
-                    (System.Windows.Media.Color) ColorConverter.ConvertFromString("#" + Color.VB_bgcolor);
+                try
+                {
+                    Color.BackgroundColor =
+                        (System.Windows.Media.Color) ColorConverter.ConvertFromString("#" + Color.VB_bgcolor);
+
+                }
+                catch (Exception e)
+                {
+                    var colorFile = files["color"];
+                    LogTo.Error($"Unable to load color information from {colorFile} because the color {Color.VB_bgcolor} is probably invalid. {e.GetType().FullName}: {e.Message}");
+                }
 
                 ColorState.State = ResourceStates.FromDisk;
             }
@@ -276,7 +285,7 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
                 {
                     var categoryDb = new CategoryDB
                     {
-                        FileType = plugin.PluginType == Plugin.PluginTypes.Instrument ? "INST" : "FX",
+                        FileType = plugin.PluginType == Plugin.PluginTypes.Instrument ? "INST" : "FX"
                     };
 
                     Categories.CategoryDB.Add(categoryDb);

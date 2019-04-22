@@ -43,7 +43,7 @@ namespace PresetMagician
         private int _currentPluginIndex;
         private Plugin _currentPlugin;
         protected bool SkipPresetLoading = false;
-        
+
         protected AbstractScanPluginsCommandContainer(string command, ICommandManager commandManager,
             IServiceLocator serviceLocator)
             : base(command, commandManager, serviceLocator)
@@ -120,7 +120,7 @@ namespace PresetMagician
             catch (Exception e)
             {
                 _applicationService.AddApplicationOperationError(
-                    $"Unable to update metadata because of {e.Message}");
+                    $"Unable to update metadata because of {e.GetType().FullName}: {e.Message}");
                 LogTo.Debug(e.StackTrace);
             }
 
@@ -134,7 +134,6 @@ namespace PresetMagician
                     sb.AppendLine(
                         $"{merge.oldPlugin.LastKnownGoodDllPath} => {merge.mergedIntoPlugin.LastKnownGoodDllPath}");
                 }
-                
 
 
                 var result = await _messageService.ShowAsync(
@@ -151,12 +150,12 @@ namespace PresetMagician
                     _commandManager.ExecuteCommand(Commands.Application.CancelOperation);
                 }
             }
-            
+
             if (!progress.CancellationToken.IsCancellationRequested && !SkipPresetLoading)
             {
                 _applicationService.StartApplicationOperation(this, "Analyzing VST plugins",
                     pluginsToScan.Count);
-progress = _applicationService.GetApplicationProgress();
+                progress = _applicationService.GetApplicationProgress();
 
 
                 await TaskHelper.Run(
@@ -358,7 +357,7 @@ progress = _applicationService.GetApplicationProgress();
                         $"Unable to analyze {plugin.DllFilename} because of {e.GetType().FullName}: {e.Message}";
                     _applicationService.AddApplicationOperationError(errorMessage + " - see plugin log for details");
                 }
-                
+
                 if (plugin.PresetParser != null && plugin.PresetParser.Logger.HasLoggedEntries(LogLevel.Error))
                 {
                     var errors = plugin.PresetParser.Logger.GetFilteredLogEntries(new List<LogLevel> {LogLevel.Error});
