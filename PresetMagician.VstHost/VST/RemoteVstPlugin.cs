@@ -53,108 +53,116 @@ namespace PresetMagician.VstHost.VST
 
         public bool OpenEditorHidden()
         {
-            if (!PluginContext.PluginCommandStub.EditorGetRect(out Rectangle wndRect))
-            {
-                return false;
-            }
-
-            if (wndRect.Width == 0 || wndRect.Height == 0)
-            {
-                return false;
-            }
-
-            _editorWindow = new PluginWindow //make sure the window is invisible
-            {
-                Width = wndRect.Width,
-                Height = wndRect.Height,
-                WindowStyle = WindowStyle.None,
-                ShowInTaskbar = false,
-                ShowActivated = false,
-                Left = 0,
-                Top = 0,
-                ResizeMode = ResizeMode.NoResize,
-                Margin = new Thickness(0),
-                SnapsToDevicePixels = true,
-                UseLayoutRounding = false,
-                SizeToContent = SizeToContent.Manual,
-                AllowsTransparency = true,
-                Opacity = 0,
-                Background = Brushes.Transparent
-            };
-
-            _editorWindowHelper = new WindowInteropHelper(_editorWindow);
-            _editorWindowHelper.EnsureHandle();
-
-            _editorWindow.Show();
-
-
-            int value = 1; // TRUE to disable
-            DwmSetWindowAttribute(_editorWindowHelper.Handle,
-                DWMWA_TRANSITIONS_FORCEDISABLED,
-                ref value,
-                Marshal.SizeOf(value));
-
-            var success = PluginContext.PluginCommandStub.EditorOpen(_editorWindowHelper.Handle);
-            var handle = new HWND(_editorWindowHelper.Handle);
-            NativeMethods.SetWindowPos(
-                handle,
-                HWND.BOTTOM,
-                0,
-                0,
-                0,
-                0,
-                SWP.NOMOVE | SWP.NOSIZE);
-
-            if (!success)
-            {
-                _editorWindow.Close();
-                return false;
-            }
-
-            if (PluginContext.PluginCommandStub.EditorGetRect(out Rectangle wndRect2))
-            {
-                if (wndRect2.Width != 0 && wndRect2.Height != 0)
-                {
-                    _editorWindow.Width = wndRect2.Width;
-                    _editorWindow.Height = wndRect2.Height;
-                }
-            }
-
-            IsEditorOpen = true;
-            return true;
+            return OpenEditorInternal(true, false);
         }
 
         public bool OpenEditor(bool topmost)
         {
-            if (!PluginContext.PluginCommandStub.EditorGetRect(out Rectangle wndRect))
+            return OpenEditorInternal(false, topmost);
+        }
+
+        private bool OpenEditorInternal(bool hidden, bool topmost)
+        {
+            Rectangle wndRect = new Rectangle();
+
+            if (hidden)
             {
-                return false;
+                _editorWindow = new PluginWindow //make sure the window is invisible
+                {
+                    Width = 100,
+                    Height = 100,
+                    WindowStyle = WindowStyle.None,
+                    ShowInTaskbar = false,
+                    ShowActivated = false,
+                    Left = 0,
+                    Top = 0,
+                    ResizeMode = ResizeMode.NoResize,
+                    Margin = new Thickness(0),
+                    SnapsToDevicePixels = true,
+                    UseLayoutRounding = false,
+                    SizeToContent = SizeToContent.Manual,
+                    AllowsTransparency = true,
+                    Opacity = 0,
+                    Background = Brushes.Transparent
+                };
+            }
+            else
+            {
+                _editorWindow = new PluginWindow() //make sure the window is invisible
+                {
+                    Width = 100,
+                    Height = 100,
+                    ShowInTaskbar = true,
+                    ShowActivated = true,
+                    Title = "Plugin Editor: " + PluginContext.PluginCommandStub.GetEffectName(),
+                    ResizeMode = ResizeMode.NoResize,
+                    Margin = new Thickness(0),
+                    SnapsToDevicePixels = true,
+                    UseLayoutRounding = false,
+                    Topmost = topmost,
+                    SizeToContent = SizeToContent.WidthAndHeight,
+                };
+            }
+
+            _editorWindowHelper = new WindowInteropHelper(_editorWindow);
+            _editorWindowHelper.EnsureHandle();
+            
+            if (PluginContext.PluginCommandStub.EditorGetRect(out wndRect))
+            {
+                _editorWindow.Width = wndRect.Width;
+                    _editorWindow.Height = wndRect.Height;
+                    PluginContext.PluginCommandStub.EditorOpen(_editorWindowHelper.Handle);
+            }
+            else
+            {
+                PluginContext.PluginCommandStub.EditorOpen(_editorWindowHelper.Handle);
+
+                if (PluginContext.PluginCommandStub.EditorGetRect(out wndRect))
+                {
+                    _editorWindow.Width = wndRect.Width;
+                    _editorWindow.Height = wndRect.Height;
+                }
+                else
+                {
+                    Logger.Warning($"Unable to open the editor for the plugin {PluginContext.PluginCommandStub.GetEffectName()} because it didn't give us a rectangle to work with.");
+                    return false;
+                }
+
             }
 
             if (wndRect.Width == 0 || wndRect.Height == 0)
             {
+                Logger.Warning($"Unable to open the editor for the plugin {PluginContext.PluginCommandStub.GetEffectName()} because it give us an empty rectangle to work with.");
                 return false;
             }
-
-            _editorWindow = new PluginWindow(wndRect.Width, wndRect.Height) //make sure the window is invisible
-            {
-                ShowInTaskbar = true,
-                ShowActivated = true,
-                Title = "Plugin Editor: " + PluginContext.PluginCommandStub.GetEffectName(),
-                ResizeMode = ResizeMode.NoResize,
-                Margin = new Thickness(0),
-                SnapsToDevicePixels = true,
-                UseLayoutRounding = false,
-                Topmost = topmost,
-                SizeToContent = SizeToContent.WidthAndHeight,
-            };
-
-            _editorWindowHelper = new WindowInteropHelper(_editorWindow);
-            _editorWindowHelper.EnsureHandle();
-
+            
             _editorWindow.Show();
 
+
+            if (hidden)
+            {
+                int value = 1; // TRUE to disable
+                DwmSetWindowAttribute(_editorWindowHelper.Handle,
+                    DWMWA_TRANSITIONS_FORCEDISABLED,
+                    ref value,
+                    Marshal.SizeOf(value));
+            }
+
             var success = PluginContext.PluginCommandStub.EditorOpen(_editorWindowHelper.Handle);
+
+            if (hidden)
+            {
+                var handle = new HWND(_editorWindowHelper.Handle);
+                NativeMethods.SetWindowPos(
+                    handle,
+                    HWND.BOTTOM,
+                    0,
+                    0,
+                    0,
+                    0,
+                    SWP.NOMOVE | SWP.NOSIZE);
+            }
+
 
             if (!success)
             {
