@@ -1,0 +1,25 @@
+{
+    "PresetDirectories": [
+        "C:\\ProgramData\\Roland Cloud\\TR-909"
+    ],
+    "Plugin": "C:\\Program Files\\VstPlugins\\Roland\\TR-909\\TR-909(VST2 64bit).dll",
+    "ScriptFile": "C:\\Program Files\\VstPlugins\\Roland\\TR-909\\Script\\Script.xml",
+    "OutputDirectory": "C:\\Users\\Drachenkatze\\Documents\\PresetMagician\\TestVstHost\\Patches\\TR-909\\output",
+
+
+    "ComparisonIgnoreValuePaths": [
+        "vm.vstCc"
+
+    ],
+    "ComparisonIgnoreValueRegex": [
+        "^vm.vs(.*)$",
+        "^sp.temp.SOLO INST(.*)$",
+        "^sp.temp.MUTE INST(.*)$",
+        "^fm.ptn.ptnCmn(.*)$"
+    ],
+    "ComparisonAllowValueVariance": {
+        "fm.PATCH2.FLT.VCF CUTOFF H": 128
+    }
+
+
+}

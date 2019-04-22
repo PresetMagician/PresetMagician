@@ -1,0 +1,17 @@
+Catel.Core
+Catel.MVVM
+Catel.Fody
+Orc.EntityFramework6
+EntityFramework
+System.Data.SQLite
+SQLitePCLRaw.bundle_e_sqlite3
+SQLite.CodeFirst
+MethodTimer.Fody copy_local: false
+sqlite-net-pcl
+K4os.Compression.LZ4 
+Ceras
+GSF.Core
+CsvHelper
+Newtonsoft.Json
+SpreadsheetLight
+DocumentFormat.OpenXml

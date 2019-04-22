@@ -342,6 +342,31 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>VendorResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Roland\Internal\KoaBankFileParser.cs" />
+    <Compile Include="Roland\Internal\KoaPreset.cs" />
+    <Compile Include="Roland\Internal\RolandConverter.cs" />
+    <Compile Include="Roland\Internal\RolandExportConfig.cs" />
+    <Compile Include="Roland\Internal\RolandFileMemory.cs" />
+    <Compile Include="Roland\Internal\RolandValueStruct.cs" />
+    <Compile Include="Roland\RolandPlugout.cs" />
+    <Compile Include="Roland\Roland_D50.cs" />
+    <Compile Include="Roland\Roland_JUNO106.cs" />
+    <Compile Include="Roland\Roland_JUPITER8.cs" />
+    <Compile Include="Roland\Roland_JV1080.cs" />
+    <Compile Include="Roland\Roland_JX-3P.cs" />
+    <Compile Include="Roland\Roland_PROMARS.cs" />
+    <Compile Include="Roland\Roland_SH101.cs" />
+    <Compile Include="Roland\Roland_SH2.cs" />
+    <Compile Include="Roland\Roland_SRX_Dance_Trax.cs" />
+    <Compile Include="Roland\Roland_SRX_Keyboards.cs" />
+    <Compile Include="Roland\Roland_SRX_Orchestra.cs" />
+    <Compile Include="Roland\Roland_SRX_World.cs" />
+    <Compile Include="Roland\Roland_System1.cs" />
+    <Compile Include="Roland\Roland_System100.cs" />
+    <Compile Include="Roland\Roland_System8.cs" />
+    <Compile Include="Roland\Roland_TB303.cs" />
+    <Compile Include="Roland\Roland_TR808.cs" />
+    <Compile Include="Roland\Roland_TR909.cs" />
     <Compile Include="Spectrasonics\Spectrasonics_Omnisphere.cs" />
     <Compile Include="VendorPresetParserInitializer.cs" />
     <Compile Include="NullPresetParser.cs" />
@@ -406,6 +431,124 @@
     <Compile Include="ValhallaDSP\ValhallaDSP_ValhallaVintageVerb.cs" />
     <Compile Include="VoidPresetParser.cs" />
     <Compile Include="Xfer_Records\Xfer_Records_Serum.cs" />
+    <Content Include="Resources\Roland\D-50\ExportConfig.json" />
+    <Content Include="Resources\Roland\D-50\RolandScript.csv" />
+    <Content Include="Resources\Roland\D-50\suffix.data" />
+    <Content Include="Resources\Roland\JUNO-106\ExportConfig.json" />
+    <Content Include="Resources\Roland\JUNO-106\RolandScript.csv" />
+    <Content Include="Resources\Roland\JUNO-106\suffix.data" />
+    <Content Include="Resources\Roland\JUPITER-8\ExportConfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Roland\JUPITER-8\RolandScript.csv" />
+    <Content Include="Resources\Roland\JUPITER-8\suffix.data">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Roland\JV-1080\ExportConfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Roland\JV-1080\RolandScript.csv" />
+    <Content Include="Resources\Roland\JV-1080\suffix.data">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Roland\JX-3P\ExportConfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Roland\JX-3P\RolandScript.csv" />
+    <Content Include="Resources\Roland\JX-3P\suffix.data">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Roland\PROMARS\ExportConfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Roland\PROMARS\RolandScript.csv" />
+    <Content Include="Resources\Roland\PROMARS\suffix.data">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Roland\SH-101\ExportConfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Roland\SH-101\RolandScript.csv" />
+    <Content Include="Resources\Roland\SH-101\suffix.data">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Roland\SH-2\ExportConfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Roland\SH-2\RolandScript.csv" />
+    <Content Include="Resources\Roland\SH-2\suffix.data">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Roland\SRX DANCE TRAX\ExportConfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Roland\SRX DANCE TRAX\RolandScript.csv" />
+    <Content Include="Resources\Roland\SRX DANCE TRAX\suffix.data">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Roland\SRX KEYBOARDS\ExportConfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Roland\SRX KEYBOARDS\RolandScript.csv" />
+    <Content Include="Resources\Roland\SRX KEYBOARDS\suffix.data">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Roland\SRX ORCHESTRA\ExportConfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Roland\SRX ORCHESTRA\RolandScript.csv" />
+    <Content Include="Resources\Roland\SRX ORCHESTRA\suffix.data">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Roland\SRX WORLD\ExportConfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Roland\SRX WORLD\RolandScript.csv" />
+    <Content Include="Resources\Roland\SRX WORLD\suffix.data">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Roland\SYSTEM-100\ExportConfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Roland\SYSTEM-100\RolandScript.csv" />
+    <Content Include="Resources\Roland\SYSTEM-100\suffix.data">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Roland\SYSTEM-1\ExportConfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Roland\SYSTEM-1\RolandScript.csv" />
+    <Content Include="Resources\Roland\SYSTEM-1\suffix.data">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Roland\SYSTEM-8\ExportConfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Roland\SYSTEM-8\RolandScript.csv" />
+    <Content Include="Resources\Roland\SYSTEM-8\suffix.data">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Roland\TB-303\ExportConfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Roland\TB-303\RolandScript.csv" />
+    <Content Include="Resources\Roland\TB-303\suffix.data">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Roland\TR-808\ExportConfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Roland\TR-808\RolandScript.csv" />
+    <Content Include="Resources\Roland\TR-808\suffix.data">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Roland\TR-909\ExportConfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Roland\TR-909\RolandScript.csv" />
+    <Content Include="Resources\Roland\TR-909\suffix.data">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PresetMagician.Core\PresetMagician.Core.csproj">
@@ -566,6 +709,17 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
+        <Reference Include="CsvHelper">
+          <HintPath>..\packages\CsvHelper\lib\net45\CsvHelper.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
         <Reference Include="DeltaCompressionDotNet">
           <HintPath>..\packages\DeltaCompressionDotNet\lib\net20\DeltaCompressionDotNet.dll</HintPath>
           <Private>True</Private>
@@ -664,6 +818,17 @@
         </Reference>
         <Reference Include="Mono.Cecil.Rocks">
           <HintPath>..\packages\Mono.Cecil\lib\net40\Mono.Cecil.Rocks.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="Newtonsoft.Json">
+          <HintPath>..\packages\NewtonSoft.Json\lib\net45\Newtonsoft.Json.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>

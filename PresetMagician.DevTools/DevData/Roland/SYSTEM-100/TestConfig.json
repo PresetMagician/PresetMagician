@@ -1,0 +1,12 @@
+{
+    "PresetDirectories": [
+        "C:\\ProgramData\\Roland Cloud\\SYSTEM-100"
+    ],
+    "Plugin": "C:\\Program Files\\VstPlugins\\Roland\\SYSTEM-100\\SYSTEM-100(VST2 64bit).dll",
+    "ScriptFile": "C:\\Program Files\\VstPlugins\\Roland\\SYSTEM-100\\Script\\Script.xml",
+    "OutputDirectory": "C:\\Users\\Drachenkatze\\Documents\\PresetMagician\\TestVstHost\\Patches\\SYSTEM-100\\output",
+    "ComparisonIgnoreValuePaths": [
+        "vm.vstCc",
+        "vm.vs.bankId"
+    ]
+}

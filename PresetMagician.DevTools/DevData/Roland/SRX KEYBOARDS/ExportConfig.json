@@ -1,0 +1,49 @@
+{
+  "KoaPresetNameLength": 12,
+  "KoaPresetLength": 23243,
+  "KoaNumPresets": 128,
+  "KoaFileHeader": "KoaBankFile00003PG-NEX02",
+  "SkipExportValuePaths": [
+    "fm.SYSTEM.COM.Local SW",
+    "fm.SYSTEM.COM.Master Tune (SYSTEM-1)",
+    "fm.SETUP.ARP.DUMMY",
+    "fm.PATCH.EXTEND.VCA LEVEL SW",
+    "fm.PATCH.NAME1.SCATTER TYPE",
+    "fm.PATCH.NAME1.SCATTER DEPTH",
+    "fm.PATCH.NAME2.LFO CV GAIN",
+    "fm.PATCH2.CTRL.Patch Tempo",
+    "fm.PATCH2.FL.FLANGER SEPARATIOIN",
+    "fm.sys.com.patRemain",
+    "fm.sys.com.pfmCtrlCh",
+    "fm.sys.com.patRxTxCh",
+    "fm.sys.com.sysCtrl1Source",
+    "fm.sys.com.sysCtrl2Source",
+    "fm.sys.com.sysCtrl3Source",
+    "fm.sys.com.sysCtrl4Source",
+    "fm.sys.com.rxPc",
+    "fm.sys.com.rxBank",
+    "fm.pat.com.partModulation"
+  ],
+  "SkipExportValuePathsRegEx": [
+    "^fm.SETUP(.*)$",
+    "^fm.PATCH2.CHORD.(.*)$",
+    "^fm.PATCH3.(.*)$",
+    "^fm.PATCH2.CHO.CHORUS(.)LFO(.*)$",
+    "^fm.PATCH2.MFX.(.*)$",
+    "^fm.PATCH2.FL.FLANGER LFO(.*)$",
+    "^fm.SYNTH.COM(.*)$",
+    "_reserve_",
+    "^vm.(.*)$",
+    "^dm.(.*)$",
+    "^fm.usrX(.*)$",
+    "^fm.stp(.*)$",
+    "^fm.pat.com.reserve(.*)$",
+    "^fm.rhy.com.reserve(.*)$"
+  ],
+  "IncludeExportValuePaths": [
+    "fm.stp.soundMode",
+    "fm.stp.mfx1Sw",
+    "fm.stp.choSw",
+    "fm.stp.revSw"
+  ]
+}

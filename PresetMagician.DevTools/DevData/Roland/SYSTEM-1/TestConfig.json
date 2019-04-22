@@ -1,0 +1,14 @@
+{
+  "PresetDirectories": [
+    "C:\\ProgramData\\Roland Cloud\\SYSTEM-1"
+  ],
+  "Plugin": "C:\\Program Files\\VstPlugins\\Roland\\SYSTEM-1\\SYSTEM-1(VST2 64bit).dll",
+  "ScriptFile": "C:\\Program Files\\VstPlugins\\Roland\\SYSTEM-1\\Script\\Script.xml",
+  "OutputDirectory": "C:\\Users\\Drachenkatze\\Documents\\PresetMagician\\TestVstHost\\Patches\\SYSTEM-1\\output",
+  "ComparisonIgnoreValuePaths": [
+    "vm.vstCc",
+  ],
+  "ComparisonIgnoreValueRegex": [
+    "^vm.vs(.*)$"
+  ]
+}

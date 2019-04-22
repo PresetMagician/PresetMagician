@@ -11,6 +11,7 @@ using Type = PresetMagician.Core.Models.Type;
 
 namespace PresetMagician.VendorPresetParser.u_he
 {
+    // ReSharper disable once InconsistentNaming
     public abstract class u_he : AbstractVendorPresetParser
     {
         private readonly Regex parsingRegex = new Regex(@"^(?<type>.*):(\r\n|\r|\n)'(?<value>.*)'",

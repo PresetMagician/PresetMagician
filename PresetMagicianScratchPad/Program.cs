@@ -20,14 +20,15 @@ using PresetMagician;
 using PresetMagician.Core.Extensions;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
+using PresetMagician.DevTools.Vendors.Roland;
 using PresetMagician.TestVstHost;
 using PresetMagician.Utils;
 using PresetMagician.Utils.BinaryStructViz;
 using PresetMagician.Utils.Logger;
 using PresetMagician.VendorPresetParser.AIRMusicTechnology.Tfx;
+using PresetMagician.VendorPresetParser.Roland.Internal;
 using PresetMagician.VstHost.VST;
 using PresetMagicianScratchPad.Roland;
-using PresetMagicianScratchPad.Stuff;
 
 namespace PresetMagicianScratchPad
 {
@@ -53,17 +54,17 @@ namespace PresetMagicianScratchPad
             CultureInfo.CurrentCulture = culture;
 
             var doStructureDump = false;
-           
+
             foreach (var configFile in Directory.EnumerateFiles(
-                @"C:\Users\Drachenkatze\Documents\PresetMagician\TestVstHost\Patches", "ExportConfig.json",
+                @"DevData\Roland", "TestConfig.json",
                 SearchOption.AllDirectories))
             {
-                if (!configFile.Contains("SYSTEM-100"))
+                /*if (!configFile.Contains("SYSTEM-1"))
                 {
-                    continue;
-                }
+                   continue;
+                }*/
 
-                var exportConfig = JsonConvert.DeserializeObject<RolandExportConfig>(File.ReadAllText(configFile));
+                var rolandTestConfig = RolandTestConfig.LoadTestConfig(configFile);
 
                 var serviceLocator = ServiceLocator.Default;
 
@@ -72,21 +73,27 @@ namespace PresetMagicianScratchPad
 
                 var remoteVstService = serviceLocator.ResolveType<RemoteVstService>();
 
-                var plugin = new Plugin {PluginLocation = new PluginLocation {DllPath = exportConfig.Plugin}};
+                var plugin = new Plugin {PluginLocation = new PluginLocation {DllPath = rolandTestConfig.Plugin}};
 
                 var pluginInstance = remoteVstService.GetInteractivePluginInstance(plugin, false);
 
                 pluginInstance.LoadPlugin().Wait();
 
-                var koaParser = new KoaBankFileParser(exportConfig.KoaFileHeader, exportConfig.PresetNameLength,
-                    exportConfig.PresetLength);
+                var koaParser = new KoaBankFileParser(rolandTestConfig.ExportConfig.KoaFileHeader,
+                    rolandTestConfig.ExportConfig.KoaPresetNameLength,
+                    rolandTestConfig.ExportConfig.KoaPresetLength, rolandTestConfig.ExportConfig.KoaNumPresets);
 
-                var rolandScript = ParseScript(exportConfig);
-                var fooViz = new FooViz();
-                // rolandScript.ExportNode.Save(exportConfig.ScriptFile+".modified");
+                Directory.CreateDirectory(rolandTestConfig.OutputDirectory);
+
+                var definitionCsv = Path.Combine(rolandTestConfig.OutputDirectory, "RolandScript.csv");
+                var rolandScript = ParseScript(rolandTestConfig, rolandTestConfig.ExportConfig);
+                rolandScript.ConvertToCsv(definitionCsv);
+
+                var converter = new RolandConverter(rolandTestConfig.ExportConfig);
+                converter.LoadDefinitionFromCsvFile(definitionCsv);
 
                 var hadOriginal = false;
-                foreach (var patchDirectory in exportConfig.PresetDirectories)
+                foreach (var patchDirectory in rolandTestConfig.PresetDirectories)
                 {
                     Debug.WriteLine($"Processing patch directory {patchDirectory}");
                     foreach (var patchFile in Directory.EnumerateFiles(
@@ -100,121 +107,117 @@ namespace PresetMagicianScratchPad
                         {
                             var currentPreset =
                                 $"{Path.GetFileName(preset.BankFile)}.{preset.Index}.{PathUtils.SanitizeFilename(preset.PresetName.Trim())}";
-                            var outputFile = Path.Combine(exportConfig.OutputDirectory,
+                            var outputFile = Path.Combine(rolandTestConfig.OutputDirectory,
                                 currentPreset);
 
                             var originalPatchDump = outputFile + ".originalpatchdump";
 
                             var okPluginPatchDumpFile = outputFile + ".okpluginpatchdump";
 
+                            converter.SetFileMemory(preset.PresetData);
+
                             var memory = new RolandMemory();
-
-
                             memory.SetFileData(preset.PresetData);
-                            fooViz.SetMemory(preset.PresetData);
 
-                            var structs = rolandScript.GetStructureData();
 
-                            var sortedStructs =
-                                (from str in structs orderby str.Length descending, str.Start select str);
+                            Debug.WriteLine($"Processed {currentPreset}");
 
-                            foreach (var sortedStruct in sortedStructs)
+                            var sw = new Stopwatch();
+                            sw.Start();
+                           
+                            var exportedData = converter.Export();
+
+                            try
                             {
-                                fooViz.AddStructure(sortedStruct.Start, sortedStruct.Length, sortedStruct.Content);
-                            }
+                                var sortedDump = RolandPatchDump.SortDump(exportedData);
 
-                            using (var ms = new MemoryStream())
-                            {
-                                Debug.WriteLine($"Processed {currentPreset}");
-
-                                var sw = new Stopwatch();
-                                sw.Start();
-                                rolandScript.DumpToPatchFile(memory, ms, exportConfig);
-
-                                var suffixData = File.ReadAllBytes(exportConfig.SuffixFile);
-                                ms.Write(suffixData, 0, suffixData.Length);
-
-
-                                Directory.CreateDirectory(exportConfig.OutputDirectory);
-                                try
+                                byte[] sortedPluginDump;
+                                if (File.Exists(okPluginPatchDumpFile))
                                 {
-                                    var sortedDump = RolandPatchDump.SortDump(ms.ToArray());
+                                    sortedPluginDump =
+                                        RolandPatchDump.SortDump(File.ReadAllBytes(okPluginPatchDumpFile));
+                                }
+                                else
+                                {
+                                    pluginInstance.SetChunk(sortedDump, false);
 
-                                    byte[] sortedPluginDump;
-                                    if (File.Exists(okPluginPatchDumpFile))
-                                    {
-                                        sortedPluginDump = RolandPatchDump.SortDump(File.ReadAllBytes(okPluginPatchDumpFile));
-                                    }
-                                    else
-                                    {
-                                        pluginInstance.SetChunk(sortedDump, false);
+                                    sortedPluginDump = RolandPatchDump.SortDump(pluginInstance.GetChunk(false));
+                                }
 
-                                        sortedPluginDump = RolandPatchDump.SortDump(pluginInstance.GetChunk(false));
-                                    }
+                                var pluginDumpVsGeneratedDumpErrors =
+                                    RolandPatchDump.ComparePatchDumps(sortedPluginDump, sortedDump, rolandTestConfig, rolandScript);
+                                var sortedDumpEqual = pluginDumpVsGeneratedDumpErrors.Count == 0;
 
-                                    var pluginDumpVsGeneratedDumpErrors =
-                                        RolandPatchDump.ComparePatchDumps(sortedPluginDump, sortedDump, rolandScript);
-                                    var sortedDumpEqual = pluginDumpVsGeneratedDumpErrors.Count == 0;
+                                var sortedOriginalDumpEqual = true;
+                                var sortedOriginalDumpEqualToPluginDump = false;
+                                var originalDumpVsGeneratedDumpErrors = new List<string>();
+                                if (File.Exists(originalPatchDump))
+                                {
+                                    var sortedOriginal = RolandPatchDump.SortDump(File.ReadAllBytes(originalPatchDump));
                                     
-                                    var sortedOriginalDumpEqual = true;
-                                    var sortedOriginalDumpEqualToPluginDump = false;
-                                    if (File.Exists(originalPatchDump))
-                                    {
-                                        var sortedOriginal = RolandPatchDump.SortDump(File.ReadAllBytes(originalPatchDump));
-                                        sortedOriginalDumpEqual = sortedDump.SequenceEqual(sortedOriginal);
-                                        sortedOriginalDumpEqualToPluginDump = sortedPluginDump.SequenceEqual(sortedOriginal);
+                                    originalDumpVsGeneratedDumpErrors =
+                                        RolandPatchDump.ComparePatchDumps(sortedOriginal, sortedDump, rolandTestConfig, rolandScript);
 
-                                        hadOriginal = true;
-                                    }
-                                   
-                                    var patchDumpFile = outputFile + ".patchdump";
-                                    var structureDumpFile = outputFile + ".structure";
-                                    var pluginPatchDumpFile = outputFile + ".pluginpatchdump";
+                                    sortedOriginalDumpEqual = originalDumpVsGeneratedDumpErrors.Count == 0;
+                                 
 
-
-                                    var presetDataFile = outputFile + ".presetdata";
-                                    File.WriteAllBytes(patchDumpFile, sortedDump);
-
-                                    File.WriteAllBytes(pluginPatchDumpFile, sortedPluginDump);
-                                    File.WriteAllBytes(presetDataFile, preset.PresetData);
-
-                                    if (File.Exists(originalPatchDump))
-                                    {
-                                        memory.Load(originalPatchDump);
-                                        var sortedOriginal =RolandPatchDump.SortDump(File.ReadAllBytes(originalPatchDump));
-                                        File.WriteAllBytes(originalPatchDump + ".sorted", sortedOriginal);
-                                    }
-
-
-                                    if (doStructureDump || (!sortedDumpEqual || !sortedOriginalDumpEqual))
-                                    {
-                                        File.WriteAllText(structureDumpFile, rolandScript.Dump(memory));
-                                    }
-
-                                    if ((!sortedDumpEqual || !sortedOriginalDumpEqual) && !sortedOriginalDumpEqualToPluginDump)
-                                    {
-                                        // Last resort: Compare the plugin dump against the sorted original dump because of "if float goes in, float comes out slightly different"
-
-                                        Debug.WriteLine(string.Join(Environment.NewLine, pluginDumpVsGeneratedDumpErrors));
-
-                                        throw new Exception(
-                                            $"Dumps not equal. sortedDumpEqual {sortedDumpEqual} sortedOriginalDumpEqual {sortedOriginalDumpEqual}");
-                                    }
-
-                                    if (!File.Exists(okPluginPatchDumpFile))
-                                    {
-                                        File.Copy(pluginPatchDumpFile, okPluginPatchDumpFile);
-                                    }
+                                    hadOriginal = true;
                                 }
-                                catch (Exception e)
+
+                                var patchDumpFile = outputFile + ".patchdump";
+                                var structureDumpFile = outputFile + ".structure";
+                                var pluginPatchDumpFile = outputFile + ".pluginpatchdump";
+
+
+                                var presetDataFile = outputFile + ".presetdata";
+                                File.WriteAllBytes(patchDumpFile, sortedDump);
+
+                                File.WriteAllBytes(pluginPatchDumpFile, sortedPluginDump);
+                                File.WriteAllBytes(presetDataFile, preset.PresetData);
+
+                                if (File.Exists(originalPatchDump))
                                 {
-                                    var structureDumpFile = outputFile + ".structure";
-                                    File.WriteAllText(structureDumpFile, rolandScript.Dump(memory));
-                                    throw e;
+                                    memory.Load(originalPatchDump);
+                                    var sortedOriginal = RolandPatchDump.SortDump(File.ReadAllBytes(originalPatchDump));
+                                    File.WriteAllBytes(originalPatchDump + ".sorted", sortedOriginal);
                                 }
 
-                                Debug.WriteLine($"{sw.Elapsed.TotalMilliseconds} ms");
+
+                                if (doStructureDump || (!sortedDumpEqual || !sortedOriginalDumpEqual))
+                                {
+                                    File.WriteAllText(structureDumpFile, rolandScript.Dump(memory));
+                                }
+
+                                if ((!sortedDumpEqual || !sortedOriginalDumpEqual) &&
+                                    !sortedOriginalDumpEqualToPluginDump)
+                                {
+                                    // Last resort: Compare the plugin dump against the sorted original dump because of "if float goes in, float comes out slightly different"
+
+                                    Debug.WriteLine("Plugin Dump vs Generated Dump Errors");
+                                    Debug.WriteLine("------------------------------------");
+                                    Debug.WriteLine(string.Join(Environment.NewLine, pluginDumpVsGeneratedDumpErrors));
+                                    
+                                    Debug.WriteLine("Original Dump vs Generated Dump Errors");
+                                    Debug.WriteLine("------------------------------------");
+                                    Debug.WriteLine(string.Join(Environment.NewLine, originalDumpVsGeneratedDumpErrors));
+
+                                    throw new Exception(
+                                        $"Dumps not equal. sortedDumpEqual {sortedDumpEqual} sortedOriginalDumpEqual {sortedOriginalDumpEqual}");
+                                }
+
+                                if (!File.Exists(okPluginPatchDumpFile))
+                                {
+                                    File.Copy(pluginPatchDumpFile, okPluginPatchDumpFile);
+                                }
                             }
+                            catch (Exception e)
+                            {
+                                var structureDumpFile = outputFile + ".structure";
+                                File.WriteAllText(structureDumpFile, rolandScript.Dump(memory));
+                                throw e;
+                            }
+
+                            Debug.WriteLine($"{sw.Elapsed.TotalMilliseconds} ms");
                         }
                     }
                 }
@@ -228,13 +231,13 @@ namespace PresetMagicianScratchPad
             // return;
         }
 
-        static RolandScript ParseScript(RolandExportConfig config)
+        static RolandScript ParseScript(RolandTestConfig config, RolandExportConfig exportConfig)
         {
             var rootDocument = XDocument.Parse(File.ReadAllText(config.ScriptFile), LoadOptions.SetLineInfo);
             var rootNode = rootDocument.Element("script");
 
             var root = new RolandScript(rootNode);
-            root.Config = config;
+            root.Config = exportConfig;
             root.Parse();
 
             return root;
@@ -276,7 +279,5 @@ namespace PresetMagicianScratchPad
                 File.WriteAllBytes(output, ms.ToArray());
             }
         }
-
-        
     }
 }

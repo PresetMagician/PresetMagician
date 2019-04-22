@@ -1,0 +1,8 @@
+{
+    "PresetDirectories": [
+        "C:\\ProgramData\\Roland Cloud\\JUNO-106"
+    ],
+    "Plugin": "C:\\Program Files\\VstPlugins\\Roland\\JUNO-106\\JUNO-106(VST2 64bit).dll",
+    "ScriptFile": "C:\\Program Files\\VstPlugins\\Roland\\JUNO-106\\Script\\Script.xml",
+    "OutputDirectory": "C:\\Users\\Drachenkatze\\Documents\\PresetMagician\\TestVstHost\\Patches\\JUNO-106\\output"
+}

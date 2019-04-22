@@ -1,0 +1,11 @@
+{
+    "PresetDirectories": [
+        "C:\\ProgramData\\Roland Cloud\\SRX KEYBOARDS"
+    ],
+    "Plugin": "C:\\Program Files\\VstPlugins\\Roland\\SRX KEYBOARDS\\SRX KEYBOARDS(VST2 64bit).dll",
+    "ScriptFile": "C:\\Users\\Drachenkatze\\Documents\\PresetMagician\\TestVstHost\\Patches\\SRX KEYBOARDS\\Script.xml",
+    "OutputDirectory": "C:\\Users\\Drachenkatze\\Documents\\PresetMagician\\TestVstHost\\Patches\\SRX KEYBOARDS\\output",
+    "ComparisonIgnoreValuePaths": [
+    "vm.vs.writePatch"
+        ]
+}

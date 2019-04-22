@@ -1,0 +1,21 @@
+{
+  "KoaPresetNameLength": 18,
+  "KoaFileHeader": "KoaBankFile00003PG-D50",
+  "KoaPresetLength": 450,
+  "KoaNumPresets": 64,
+  "SkipExportValuePathsRegEx": [
+    "^fm.PATCH.PARTIAL\\[(.*)\\].EXTENSION (.*)$",
+    "^fm.PATCH.TONE\\[(.*)\\].EXTENSION (.*)$",
+    "^fm.PATCH.PATCH.EXTENSION (.*)",
+    "^vm.(.*)$"
+  ],
+  "SkipExportValuePaths": [
+    "fm.PATCH.PATCH.MIDI EDIT TXCH",
+    "fm.PATCH.PATCH.MIDI EDIT SEPCH",
+    "fm.PATCH.PATCH.MIDI EDIT TXPC",
+    "fm.PATCH.PATCH.MIDI TX BANK",
+    "fm.PATCH.PATCH.SEP PORTA SW",
+    "fm.SYSTEM.COM.OCTAVE",
+    "fm.SYSTEM.COM.HOLD"
+  ]
+}

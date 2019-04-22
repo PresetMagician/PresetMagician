@@ -1,0 +1,8 @@
+{
+    "OutputDirectory": "C:\\Users\\Drachenkatze\\Documents\\PresetMagician\\TestVstHost\\Patches\\D-50\\output",
+    "Plugin": "C:\\Program Files\\VstPlugins\\Roland\\D-50\\D-50(VST2 64bit).dll",
+    "ScriptFile": "C:\\Program Files\\VstPlugins\\Roland\\D-50\\Script\\Script.xml",
+    "PresetDirectories": [
+        "C:\\ProgramData\\Roland Cloud\\D-50"
+    ]
+}

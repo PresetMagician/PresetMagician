@@ -1,0 +1,31 @@
+{
+  "KoaPresetNameLength": 16,
+  "KoaPresetLength": 20207,
+  "KoaNumPresets": 64,
+  "KoaFileHeader": "KoaBankFile00003PG-JP8",
+  "SkipExportValuePaths": [
+    "fm.SYSTEM.COM.Local SW",
+    "fm.SYSTEM.COM.Master Tune (SYSTEM-1)",
+    "fm.SETUP.ARP.DUMMY",
+    "fm.PATCH.EXTEND.VCA LEVEL SW",
+    "fm.PATCH.NAME1.SCATTER TYPE",
+    "fm.PATCH.NAME1.SCATTER DEPTH",
+    "fm.PATCH.NAME2.LFO CV GAIN",
+    "fm.PATCH2.CTRL.Patch Tempo",
+    "fm.PATCH2.FL.FLANGER SEPARATIOIN"
+  ],
+  "SkipExportValuePathsRegEx": [
+    "^fm.SETUP(.*)$",
+    "^fm.PATCH2.CHORD.(.*)$",
+    "^fm.PATCH3.(.*)$",
+    "^fm.PATCH2.CHO.CHORUS(.)LFO(.*)$",
+    "^fm.PATCH2.MFX.(.*)$",
+    "^fm.PATCH2.FL.FLANGER LFO(.*)$",
+    "^fm.SYNTH.COM(.*)$",
+    "\\(.*\\)",
+    "_reserve_",
+    "^vm.(.*)$",
+    "^dm.(.*)$",
+    "^fm.usrX(.*)$"
+  ]
+}

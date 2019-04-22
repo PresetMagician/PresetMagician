@@ -1,0 +1,8 @@
+{
+    "PresetDirectories": [
+        "C:\\ProgramData\\Roland Cloud\\JX-3P"
+    ],
+    "Plugin": "C:\\Program Files\\VstPlugins\\Roland\\JX-3P\\JX-3P(VST2 64bit).dll",
+    "ScriptFile": "C:\\Program Files\\VstPlugins\\Roland\\JX-3P\\Script\\Script.xml",
+    "OutputDirectory": "C:\\Users\\Drachenkatze\\Documents\\PresetMagician\\TestVstHost\\Patches\\JX-3P\\output"
+}

@@ -11,3 +11,5 @@ sqlite-net-pcl
 SQLitePCLRaw.bundle_e_sqlite3 
 System.ValueTuple
 SharpZipLib
+CsvHelper
+Newtonsoft.Json

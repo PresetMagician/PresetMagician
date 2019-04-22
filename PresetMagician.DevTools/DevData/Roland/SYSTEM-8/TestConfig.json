@@ -1,0 +1,17 @@
+{
+    "PresetDirectories": [
+        "C:\\ProgramData\\Roland Cloud\\SYSTEM-8"
+    ],
+    "Plugin": "C:\\Program Files\\VstPlugins\\Roland\\SYSTEM-8\\SYSTEM-8(VST2 64bit).dll",
+    "ScriptFile": "C:\\Program Files\\VstPlugins\\Roland\\SYSTEM-8\\Script\\Script.xml",
+    "OutputDirectory": "C:\\Users\\Drachenkatze\\Documents\\PresetMagician\\TestVstHost\\Patches\\SYSTEM-8\\output",
+
+    "ComparisonIgnoreValuePaths": [
+        "vm.vstCc"
+    ],
+    "ComparisonAllowValueVariance": {
+        "fm.PATCH2.FLT.FILTER CUTOFF H":128,
+        "fm.PATCH2.LFO.LFO RATE H": 128
+    }
+    
+}
