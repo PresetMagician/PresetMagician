@@ -209,7 +209,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
         public int GetCurrentPluginID()
         {
             Debug($"GetCurrentPluginID");
-            return PluginContext.PluginInfo.PluginID;
+            return 0; // This is the shell plugin ID, which should be 0
         }
 
         public int GetVersion()
