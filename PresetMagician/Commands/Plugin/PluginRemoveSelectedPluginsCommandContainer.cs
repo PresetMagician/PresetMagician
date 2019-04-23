@@ -67,13 +67,17 @@ namespace PresetMagician
                     foreach (var plugin in pluginsToRemove)
                     {
                         progressStatus.Current = pluginsToRemove.IndexOf(plugin);
-                        progressStatus.Status = $"Removing {plugin.PluginName}";
+                        progressStatus.Status = $"Removing {plugin.PluginName} and associated presets. This may take up to several minutes.";
                         progress.Progress.Report(progressStatus);
                         await _dispatcherService.InvokeAsync(async () => { _globalService.Plugins.Remove(plugin); });
                         _dataPersister.DeletePresetsForPlugin(plugin);
-                        await _presetDataPersister.DeletePresetDataForPlugin(plugin);
+                        await _presetDataPersister.DeletePresetDataForPlugin(plugin, true);
                     }
 
+                    progressStatus.Status = $"Compacting database. This may take up to several minutes.";
+                    progress.Progress.Report(progressStatus);
+                    await _presetDataPersister.VacuumDatabase();
+                    
                 _dataPersister.Save();
                 
                 ApplicationService.StopApplicationOperation("Finished removing plugins");
