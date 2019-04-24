@@ -19,6 +19,7 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
         }
 
         private static BitmapImage EmptyImage;
+
         private static BitmapImage GetEmptyImage()
         {
             if (EmptyImage == null)
@@ -32,6 +33,7 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
 
             return EmptyImage;
         }
+
         public ResourceState State { get; } = new ResourceState();
 
         public ResourceImage(int width, int height, string fileName)
@@ -41,7 +43,7 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
             targetSize.Height = height;
             TargetSize = targetSize;
             Filename = fileName;
-            
+
             Image = GetEmptyImage();
         }
 
@@ -160,9 +162,12 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
             var fullFile = Path.Combine(baseDirectory, Filename);
             if (!State.ShouldSave)
             {
-                LogTo.Debug(
-                    $"Not saving with state {State.State.ToString()} for file {Filename} (full path {fullFile})");
-                return;
+                if (!(!File.Exists(fullFile) && State.State == NativeInstrumentsResource.ResourceStates.FromDisk))
+                {
+                    LogTo.Debug(
+                        $"Not saving with state {State.State.ToString()} for file {Filename} (full path {fullFile})");
+                    return;
+                }
             }
 
             File.WriteAllBytes(fullFile, GetImageData());

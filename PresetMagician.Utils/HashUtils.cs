@@ -25,6 +25,11 @@ namespace Drachenkatze.PresetMagician.Utils
             return FormatHash(GetHash(SHA256.Create(), input));
         }
 
+        public static string getFormattedMD5Hash(string input)
+        {
+            return FormatHash(GetHash(MD5.Create(), input));
+        }
+
         public static byte[] GetHash(HashAlgorithm hashAlgorithm, string input)
         {
             // Convert the input string to a byte array and compute the hash.
