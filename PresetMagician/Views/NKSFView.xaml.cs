@@ -19,8 +19,8 @@ namespace PresetMagician.Views
         public NKSFView(NKSFViewModel viewModel)
             : base(viewModel, DataWindowMode.Close)
         {
-            AddCustomButton(new DataWindowButton("Open NKSF File", "OpenNKSFFile"));
-            AddCustomButton(new DataWindowButton("Open Chunk with HxD", "OpenWithHxD"));
+            AddCustomButton(new DataWindowButton("Open NKS File", "OpenNKSFile"));
+            AddCustomButton(new DataWindowButton("Open Chunk with Hex Editor", "OpenWithHexEditor"));
 
             viewModel.PropertyChanged += ViewModel_PropertyChanged;
             InitializeComponent();

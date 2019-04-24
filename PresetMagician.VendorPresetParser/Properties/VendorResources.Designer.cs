@@ -176,6 +176,16 @@ namespace PresetMagician.VendorPresetParser.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] RevealSound_Spire_Blank {
+            get {
+                object obj = ResourceManager.GetObject("RevealSound_Spire_Blank", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] Roland_D50_ExportConfig {
             get {
                 object obj = ResourceManager.GetObject("Roland_D50_ExportConfig", resourceCulture);

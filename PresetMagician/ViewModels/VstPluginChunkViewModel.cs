@@ -7,6 +7,7 @@ using Catel.MVVM;
 using Catel.Services;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
+using PresetMagician.Core.Services;
 
 namespace PresetMagician.ViewModels
 {
@@ -14,24 +15,32 @@ namespace PresetMagician.ViewModels
     {
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();
         private readonly IOpenFileService _openFileService;
-
-        public VstPluginChunkViewModel(IRemotePluginInstance pluginInstance, IOpenFileService openFileService)
+        private readonly ISaveFileService _saveFileService;
+        private readonly DeveloperService _developerService;
+        public VstPluginChunkViewModel(IRemotePluginInstance pluginInstance, IOpenFileService openFileService, ISaveFileService saveFileService, DeveloperService developerService)
         {
             _openFileService = openFileService;
+            _saveFileService = saveFileService;
+            _developerService = developerService;
             Plugin = pluginInstance.Plugin;
             PluginInstance = pluginInstance;
             Title = "Plugin Info for " + Plugin.PluginName;
 
-            OpenWithHxDBank = new TaskCommand(OnOpenWithHxDBankExecute);
-            OpenWithHxDPreset = new TaskCommand(OnOpenWithHxDPresetExecute);
+            OpenBankWithHexEditor = new TaskCommand(OnOpenBankWithHexEditorExecute);
+            OpenPresetWithHexEditor = new TaskCommand(OnOpenPresetWithHexEditorExecute);
+            SaveBankChunk = new TaskCommand(OnSaveBankChunkExecute);
             LoadBankChunk = new TaskCommand(OnLoadBankChunkExecute);
+            Refresh = new Command(OnRefreshExecute);
         }
 
         public Plugin Plugin { get; protected set; }
+        public event EventHandler BankChunkChanged;
 
-        public IRemotePluginInstance PluginInstance { get; protected set; }
+        public IRemotePluginInstance PluginInstance { get; }
 
-        public TaskCommand LoadBankChunk { get; set; }
+        public TaskCommand LoadBankChunk { get; }
+        public TaskCommand SaveBankChunk { get; }
+        public Command Refresh { get; }
 
         public MemoryStream ChunkPresetMemoryStream { get; } = new MemoryStream();
         public MemoryStream ChunkBankMemoryStream { get; } = new MemoryStream();
@@ -53,45 +62,72 @@ namespace PresetMagician.ViewModels
                 Log.Error(ex, "Failed to open file");
             }
         }
+        
+        private void OnRefreshExecute()
+        {
+            RefreshChunks();
+        }
+
+        public void RefreshChunks()
+        {
+            var bankChunk = PluginInstance.GetChunk(false);
+            if (!(bankChunk is null))
+            {
+                ChunkBankMemoryStream.SetLength(0);
+                ChunkBankMemoryStream.Write(bankChunk, 0, bankChunk.Length);
+                
+                BankChunkChanged?.Invoke(this, EventArgs.Empty);
+            }
+
+            var presetChunk = PluginInstance.GetChunk(true);
+            if (!(presetChunk is null))
+            {
+                ChunkPresetMemoryStream.SetLength(0);
+                ChunkPresetMemoryStream.Write(presetChunk, 0, presetChunk.Length);
+            }
+        }
 
 
-        public TaskCommand OpenWithHxDBank { get; set; }
+        private async Task OnSaveBankChunkExecute()
+        {
+            try
+            {
+                _saveFileService.Filter = "Binary Files (*.*)|*.*";
+
+                
+                if (await _saveFileService.DetermineFileAsync())
+                {
+                    File.WriteAllBytes(_saveFileService.FileName, ChunkBankMemoryStream.ToArray());
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to open file");
+            }
+        }
 
 
-        private async Task OnOpenWithHxDBankExecute()
+        public TaskCommand OpenBankWithHexEditor { get; }
+
+
+        private async Task OnOpenBankWithHexEditorExecute()
         {
             var tempFile = Path.GetTempFileName();
             File.WriteAllBytes(tempFile, ChunkBankMemoryStream.ToArray());
 
-            var process = new Process
-            {
-                StartInfo =
-                {
-                    FileName = @"C:\Program Files\HxD\HxD.exe",
-                    Arguments = tempFile
-                }
-            };
-
-            process.Start();
+            _developerService.StartHexEditor(tempFile);
+         
         }
 
-        public TaskCommand OpenWithHxDPreset { get; set; }
+        public TaskCommand OpenPresetWithHexEditor { get; }
 
-        private async Task OnOpenWithHxDPresetExecute()
+        private async Task OnOpenPresetWithHexEditorExecute()
         {
             var tempFile = Path.GetTempFileName();
             File.WriteAllBytes(tempFile, ChunkPresetMemoryStream.ToArray());
 
-            var process = new Process
-            {
-                StartInfo =
-                {
-                    FileName = @"C:\Program Files\HxD\HxD.exe",
-                    Arguments = tempFile
-                }
-            };
-
-            process.Start();
+            _developerService.StartHexEditor(tempFile);
+          
         }
     }
 }
