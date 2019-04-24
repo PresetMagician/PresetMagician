@@ -126,6 +126,7 @@
     <Compile Include="Services\DataPersisterService.Presets.cs" />
     <Compile Include="Services\DataPersisterService.PreviewNotePlayers.cs" />
     <Compile Include="Services\DataPersisterService.TypesCharacteristics.cs" />
+    <Compile Include="Services\DeveloperService.cs" />
     <Compile Include="Services\GlobalFrontendService.cs" />
     <Compile Include="Services\GlobalService.cs" />
     <Compile Include="Services\PluginService.cs" />

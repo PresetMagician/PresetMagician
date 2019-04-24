@@ -76,7 +76,7 @@ namespace PresetMagician.Core.Services
             preset.PresetCompressedSize = presetData.PresetCompressedSize;
         }
 
-        public async Task DeletePresetDataForPlugin(Plugin plugin)
+        public async Task DeletePresetDataForPlugin(Plugin plugin, bool skipVacuum = false)
         {
             bool closeDb = false;
             if (_db == null)
@@ -87,7 +87,28 @@ namespace PresetMagician.Core.Services
 
             await _db.ExecuteAsync("DELETE FROM PresetData WHERE PluginId = ?", plugin.PluginId);
 
+            if (!skipVacuum)
+            {
+                await _db.ExecuteAsync("VACUUM;");
+            }
+
+            if (closeDb)
+            {
+                await CloseDatabase();
+            }
+        }
+        
+        public async Task VacuumDatabase ()
+        {
+            bool closeDb = false;
+            if (_db == null)
+            {
+                await OpenDatabase();
+                closeDb = true;
+            }
+            
             await _db.ExecuteAsync("VACUUM;");
+            
             if (closeDb)
             {
                 await CloseDatabase();

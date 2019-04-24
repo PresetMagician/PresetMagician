@@ -22,6 +22,8 @@ namespace PresetMagician.Core
             serviceLocator.RegisterType<TypesService, TypesService>();
             serviceLocator.RegisterType<VendorPresetParserService, VendorPresetParserService>();
             serviceLocator.RegisterType<RemoteVstService, RemoteVstService>();
+            serviceLocator.RegisterType<DeveloperService, DeveloperService>();
+            
         }
     }
 

@@ -51,20 +51,7 @@ namespace PresetMagician
                 await pluginInstance.LoadPlugin();
             }
 
-
-            var bankChunk = pluginInstance.GetChunk(false);
-            if (!(bankChunk is null))
-            {
-                chunkViewModel.ChunkBankMemoryStream.SetLength(0);
-                chunkViewModel.ChunkBankMemoryStream.Write(bankChunk, 0, bankChunk.Length);
-            }
-
-            var presetChunk = pluginInstance.GetChunk(false);
-            if (!(presetChunk is null))
-            {
-                chunkViewModel.ChunkBankMemoryStream.SetLength(0);
-                chunkViewModel.ChunkBankMemoryStream.Write(presetChunk, 0, presetChunk.Length);
-            }
+            chunkViewModel.RefreshChunks();
 
             await _uiVisualizerService.ShowDialogAsync(chunkViewModel);
         }
