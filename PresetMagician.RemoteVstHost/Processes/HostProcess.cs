@@ -1,5 +1,7 @@
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Threading;
 using System.Timers;
 using Catel.Data;
 using Catel.Threading;
@@ -257,6 +259,7 @@ namespace PresetMagician.RemoteVstHost.Processes
             try
             {
                 _process.Kill();
+                Thread.Sleep(200);
                 if (!_process.HasExited)
                 {
                     _process.Kill();
@@ -264,6 +267,10 @@ namespace PresetMagician.RemoteVstHost.Processes
             }
             catch (InvalidOperationException)
             {
+            }
+            catch (Win32Exception) // Handle access denied since this happens when the process is being killed
+            {
+                
             }
 
 
