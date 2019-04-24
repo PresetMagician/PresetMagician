@@ -8,6 +8,7 @@ using Catel.MVVM;
 using Catel.Services;
 using PresetMagician.NKS;
 using Newtonsoft.Json;
+using PresetMagician.Core.Services;
 
 namespace PresetMagician.ViewModels
 {
@@ -18,6 +19,7 @@ namespace PresetMagician.ViewModels
         private static readonly ILog Log = LogManager.GetCurrentClassLogger();
 
         private readonly IOpenFileService _openFileService;
+        private readonly DeveloperService _developerService;
 
         #endregion Fields
 
@@ -27,23 +29,24 @@ namespace PresetMagician.ViewModels
         public MemoryStream PluginChunk { get; set; }
         private string filePath { get; set; }
 
-        public NKSFViewModel(IOpenFileService openFileService)
+        public NKSFViewModel(IOpenFileService openFileService, DeveloperService developerService)
         {
             Argument.IsNotNull(() => openFileService);
 
 
             _openFileService = openFileService;
+            _developerService = developerService;
 
 
-            Title = "NKSF Viewer";
+            Title = "NKS Viewer";
 
-            OpenNKSFFile = new TaskCommand(OnOpenNKSFFileExecute);
-            OpenWithHxD = new TaskCommand(OnOpenWithHxDExecute);
+            OpenNKSFile = new TaskCommand(OnOpenNKSFFileExecute);
+            OpenWithHexEditor = new TaskCommand(OnOpenWithHexEditorExecute);
         }
 
         #region Commands
 
-        public TaskCommand OpenNKSFFile { get; set; }
+        public TaskCommand OpenNKSFile { get; set; }
 
         private async Task OnOpenNKSFFileExecute()
         {
@@ -87,23 +90,13 @@ namespace PresetMagician.ViewModels
             Log.Debug("Parse Complete");
         }
 
-        public TaskCommand OpenWithHxD { get; set; }
+        public TaskCommand OpenWithHexEditor { get; set; }
 
-        private async Task OnOpenWithHxDExecute()
+        private async Task OnOpenWithHexEditorExecute()
         {
             var tempFile = Path.GetTempFileName();
             File.WriteAllBytes(tempFile, PluginChunk.ToArray());
-
-            var process = new Process
-            {
-                StartInfo =
-                {
-                    FileName = @"C:\Program Files\HxD\HxD.exe",
-                    Arguments = tempFile
-                }
-            };
-
-            process.Start();
+            _developerService.StartHexEditor(tempFile);
         }
 
         #endregion Commands

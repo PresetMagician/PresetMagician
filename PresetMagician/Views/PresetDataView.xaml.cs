@@ -17,7 +17,7 @@ namespace PresetMagician.Views
         public PresetDataView(PresetDataViewModel viewModel)
             : base(viewModel, DataWindowMode.Close)
         {
-            AddCustomButton(new DataWindowButton("Open with HxD", "OpenWithHxD"));
+            AddCustomButton(new DataWindowButton("Open with Hex Editor", "OpenWithHexEditor"));
 
             InitializeComponent();
 

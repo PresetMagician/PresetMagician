@@ -39,6 +39,7 @@
     <Compile Include="Vendors\Roland\RolandScript.cs" />
     <Compile Include="Vendors\Roland\RolandStruct.cs" />
     <Compile Include="Vendors\Roland\RolandTestConfig.cs" />
+    <Compile Include="Vendors\Roland\RolandTestStuff.cs" />
     <Compile Include="Vendors\Roland\RolandValue.cs" />
   </ItemGroup>
   <ItemGroup>

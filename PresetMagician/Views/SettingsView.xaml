@@ -43,6 +43,7 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
                         <Label
@@ -114,7 +115,7 @@
                                     </iconPacks:PackIconFontAwesome.ToolTip>
                                 </iconPacks:PackIconFontAwesome>
                             </StackPanel>
-                            <StackPanel  Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
                                 <RadioButton GroupName="BankExportMode"
                                              IsChecked="{Binding Path=EditableConfiguration.FolderExportMode, Mode=TwoWay, 
                                  Converter={StaticResource enumConverter},
@@ -138,7 +139,7 @@
                                     </iconPacks:PackIconFontAwesome.ToolTip>
                                 </iconPacks:PackIconFontAwesome>
                             </StackPanel>
-                            <StackPanel  Grid.Row="0" Grid.Column="2" Orientation="Horizontal">
+                            <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal">
                                 <RadioButton GroupName="BankExportMode"
                                              IsChecked="{Binding Path=EditableConfiguration.FolderExportMode, Mode=TwoWay, 
                                  Converter={StaticResource enumConverter},
@@ -163,7 +164,7 @@
                                     </iconPacks:PackIconFontAwesome.ToolTip>
                                 </iconPacks:PackIconFontAwesome>
                             </StackPanel>
-                            <StackPanel  Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                            <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
                                 <RadioButton GroupName="BankExportMode"
                                              IsChecked="{Binding Path=EditableConfiguration.FolderExportMode, Mode=TwoWay, 
                                  Converter={StaticResource enumConverter},
@@ -187,7 +188,7 @@
                                     </iconPacks:PackIconFontAwesome.ToolTip>
                                 </iconPacks:PackIconFontAwesome>
                             </StackPanel>
-                            <StackPanel  Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
                                 <RadioButton GroupName="BankExportMode"
                                              IsChecked="{Binding Path=EditableConfiguration.FolderExportMode, Mode=TwoWay, 
                                  Converter={StaticResource enumConverter},
@@ -213,7 +214,7 @@
                             </StackPanel>
                         </Grid>
 
-                         <Label
+                        <Label
                             Grid.Row="3"
                             Grid.Column="0"
                             Content="File Overwrite Mode" />
@@ -226,8 +227,8 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
-                            
-                            <StackPanel  Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+
+                            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
                                 <RadioButton GroupName="FileOverwriteMode"
                                              IsChecked="{Binding Path=EditableConfiguration.FileOverwriteMode, Mode=TwoWay, 
                                  Converter={StaticResource enumConverter},
@@ -241,15 +242,15 @@
                                         <StackPanel Margin="5" Width="600">
                                             <TextBlock TextWrapping="Wrap">
                                                 Does not overwrite existing files unless the Preset ID matches the one in PresetMagician and thus ensures
-                                                that the existing NKS file is the same preset as being exported. Logs an error if the file will not be overwritten. 
-                                               
+                                                that the existing NKS file is the same preset as being exported. Logs an error if the file will not be overwritten.
+
                                             </TextBlock>
 
                                         </StackPanel>
                                     </iconPacks:PackIconFontAwesome.ToolTip>
                                 </iconPacks:PackIconFontAwesome>
                             </StackPanel>
-                            <StackPanel  Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
                                 <RadioButton GroupName="FileOverwriteMode"
                                              IsChecked="{Binding Path=EditableConfiguration.FileOverwriteMode, Mode=TwoWay, 
                                  Converter={StaticResource enumConverter},
@@ -264,7 +265,7 @@
                                             <TextBlock TextWrapping="Wrap">
                                                 Does not overwrite existing files unless the Preset ID matches the one in PresetMagician and thus ensures
                                                 that the existing NKS file is the same preset as being exported. If the existing file can't be overwritten,
-                                                saves the preset appended with it's Preset ID.  
+                                                saves the preset appended with it's Preset ID.
                                             </TextBlock>
 
                                         </StackPanel>
@@ -291,7 +292,7 @@
                                     </iconPacks:PackIconFontAwesome.ToolTip>
                                 </iconPacks:PackIconFontAwesome>
                             </StackPanel>
-                         
+
                         </Grid>
                         <!-- Auto-create resources -->
                         <StackPanel Grid.Row="4" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Top">
@@ -325,6 +326,30 @@
                                 <TextBlock Text="Automatically creates images, colors and other information" />
                             </CheckBox>
                             <TextBlock FontStyle="Italic">“brought to you by using the latest in Voodoo Ritual Technology™.”</TextBlock>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="5" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Top">
+                            <Label Content="Enable DevTools" VerticalAlignment="Top" />
+                            <iconPacks:PackIconFontAwesome Margin="0,0,10,0" VerticalAlignment="Center"
+                                                           Kind="QuestionCircleSolid"
+                                                           ToolTipService.ShowDuration="12000">
+                                <iconPacks:PackIconFontAwesome.ToolTip>
+                                    <StackPanel Margin="5" Width="600">
+                                        <TextBlock TextWrapping="Wrap">
+                                            This setting enables several developer tools. Enable and use at your own risk ;)
+                                        </TextBlock>
+
+                                    </StackPanel>
+                                </iconPacks:PackIconFontAwesome.ToolTip>
+                            </iconPacks:PackIconFontAwesome>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Vertical" Grid.Row="5"
+                                    Grid.Column="1" VerticalAlignment="Top">
+                            <CheckBox
+                                IsChecked="{Binding EditableConfiguration.ShowDeveloperTools}">
+                                <TextBlock Text="Enable Developer Tools" />
+                            </CheckBox>
                         </StackPanel>
                     </Grid>
                 </ScrollViewer>
@@ -542,6 +567,47 @@
                             Size="Middle"
                             Header="Update License"
                             Icon="{iconPacks:Material Kind=Certificate}" />
+
+                    </Grid>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem VerticalContentAlignment="Top" Header="Developer"
+                     Visibility="{Binding EditableConfiguration.ShowDeveloperTools, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay, FallbackValue=Hidden}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+
+                        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                            <Label Content="Hex Editor Executable" VerticalAlignment="Top" />
+
+                        </StackPanel>
+
+                        <StackPanel Orientation="Vertical" Grid.Row="0"
+                                    Grid.Column="1">
+                            <TextBox Text="{Binding EditableConfiguration.HexEditorExecutable}" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                            <Label Content="Hex Editor Arguments" VerticalAlignment="Top" />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Vertical" Grid.Row="1"
+                                    Grid.Column="1">
+                            <TextBox Text="{Binding EditableConfiguration.HexEditorArguments}" />
+                            <TextBlock>Use %s to indicate the file name</TextBlock>
+                        </StackPanel>
+
 
                     </Grid>
                 </ScrollViewer>
