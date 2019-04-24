@@ -18,7 +18,6 @@ using Catel.Fody;
 using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
-using PresetMagician.NKS;
 using Drachenkatze.PresetMagician.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -27,6 +26,7 @@ using PresetMagician.Core.Models;
 using PresetMagician.Core.Models.NativeInstrumentsResources;
 using PresetMagician.Core.Services;
 using PresetMagician.Models.ControllerAssignments;
+using PresetMagician.NKS;
 using PresetMagician.Services.Interfaces;
 
 namespace PresetMagician.ViewModels
@@ -231,34 +231,44 @@ namespace PresetMagician.ViewModels
             }
             catch (Exception e)
             {
-                LogTo.Error($"Error occured while saving plugin settings: {e.Message}");
+                LogTo.Error($"Error occured while saving plugin settings: {e.GetType().FullName}: {e.Message}");
                 LogTo.Debug(e.StackTrace);
             }
 
             var result = await base.SaveAsync();
 
-            if (NativeInstrumentsResource.ColorState.State == NativeInstrumentsResource.ResourceStates.Empty &&
-                !NativeInstrumentsResource.Color.BackgroundColor.Equals(Colors.White))
+            try
             {
-                NativeInstrumentsResource.ColorState.State = NativeInstrumentsResource.ResourceStates.UserModified;
-            }
+                if (NativeInstrumentsResource.ColorState.State == NativeInstrumentsResource.ResourceStates.Empty &&
+                    !NativeInstrumentsResource.Color.BackgroundColor.Equals(Colors.White))
+                {
+                    NativeInstrumentsResource.ColorState.State = NativeInstrumentsResource.ResourceStates.UserModified;
+                }
 
-            if (NativeInstrumentsResource.Categories.CategoryNames.Count != 0)
+                if (NativeInstrumentsResource.Categories.CategoryNames.Count != 0)
+                {
+                    NativeInstrumentsResource.CategoriesState.State =
+                        NativeInstrumentsResource.ResourceStates.UserModified;
+                }
+
+                if (NativeInstrumentsResource.ShortNamesState.State == NativeInstrumentsResource.ResourceStates.Empty &&
+                    (!string.IsNullOrEmpty(NativeInstrumentsResource.ShortNames.VB_shortname) ||
+                     !string.IsNullOrEmpty(NativeInstrumentsResource.ShortNames.MST_shortname) ||
+                     !string.IsNullOrEmpty(NativeInstrumentsResource.ShortNames.MKII_shortname) ||
+                     !string.IsNullOrEmpty(NativeInstrumentsResource.ShortNames.MIKRO_shortname)
+                    ))
+                {
+                    NativeInstrumentsResource.ShortNamesState.State =
+                        NativeInstrumentsResource.ResourceStates.UserModified;
+                }
+
+                NativeInstrumentsResource.Save(Plugin);
+            }
+            catch (Exception e)
             {
-                NativeInstrumentsResource.CategoriesState.State =
-                    NativeInstrumentsResource.ResourceStates.UserModified;
+                LogTo.Error($"Error occured while saving plugin resources: {e.GetType().FullName}: {e.Message}");
+                LogTo.Debug(e.StackTrace);
             }
-
-            if (NativeInstrumentsResource.ShortNamesState.State == NativeInstrumentsResource.ResourceStates.Empty &&
-                (!string.IsNullOrEmpty(NativeInstrumentsResource.ShortNames.VB_shortname) ||
-                 !string.IsNullOrEmpty(NativeInstrumentsResource.ShortNames.MST_shortname) ||
-            !string.IsNullOrEmpty(NativeInstrumentsResource.ShortNames.MKII_shortname) ||
-           !string.IsNullOrEmpty(NativeInstrumentsResource.ShortNames.MIKRO_shortname)
-                 )) {
-                NativeInstrumentsResource.ShortNamesState.State =
-                    NativeInstrumentsResource.ResourceStates.UserModified;
-            }
-            NativeInstrumentsResource.Save(Plugin);
 
 
             if (ReanalyzePluginOnClose)

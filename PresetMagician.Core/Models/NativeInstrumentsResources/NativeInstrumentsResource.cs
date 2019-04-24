@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Media;
 using System.Xml.Linq;
 using Anotar.Catel;
 using Catel.MVVM;
 using Catel.Runtime.Serialization;
+using Drachenkatze.PresetMagician.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PresetMagician.Core.Data;
@@ -17,12 +19,14 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
     public class NativeInstrumentsResource : ModelBase
     {
         private static HashSet<string> _editableProperties = new HashSet<string>();
+        public const string DIST_DATABASE_DIRECTORY = "dist_database";
+        public const string IMAGES_DIRECTORY = "image";
 
         public override HashSet<string> GetEditableProperties()
         {
             return _editableProperties;
         }
-        
+
         public Color Color { get; set; } = new Color();
 
         [IncludeInSerialization] public Categories Categories { get; set; } = new Categories();
@@ -51,16 +55,44 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
                 "NI Resources");
         }
 
-        public static string GetDistDatabaseDirectory(Plugin plugin)
+
+        private static string GetPluginFilenameOutputDirectory(Plugin plugin)
         {
-            return Path.Combine(GetNativeInstrumentsResourcesDirectory(), "dist_database",
-                plugin.PluginVendor.ToLower(), plugin.PluginName.ToLower());
+            var re = new Regex("([^a-z0-9\\s\\-_])");
+            var fileName = Path.GetFileNameWithoutExtension(plugin.PluginLocation.DllPath).ToLower();
+            var mangledFileName = re.Replace(fileName, "");
+
+            if (mangledFileName != fileName)
+            {
+                return HashUtils.getFormattedMD5Hash(mangledFileName);
+            }
+
+            return fileName;
         }
 
-        public static string GetImageDirectory(Plugin plugin)
+        public static string GetDistDatabaseDirectory(Plugin plugin, bool dllFilename = false)
         {
-            return Path.Combine(GetNativeInstrumentsResourcesDirectory(), "image", plugin.PluginVendor.ToLower(),
-                plugin.PluginName.ToLower());
+            if (!dllFilename)
+            {
+                return Path.Combine(GetNativeInstrumentsResourcesDirectory(), DIST_DATABASE_DIRECTORY,
+                    plugin.PluginVendor.ToLower(), plugin.PluginName.ToLower());
+            }
+
+            return Path.Combine(GetNativeInstrumentsResourcesDirectory(), DIST_DATABASE_DIRECTORY,
+                GetPluginFilenameOutputDirectory(plugin));
+        }
+
+        public static string GetImageDirectory(Plugin plugin, bool dllFilename = false)
+        {
+            if (!dllFilename)
+            {
+                return Path.Combine(GetNativeInstrumentsResourcesDirectory(), IMAGES_DIRECTORY,
+                    plugin.PluginVendor.ToLower(),
+                    plugin.PluginName.ToLower());
+            }
+
+            return Path.Combine(GetNativeInstrumentsResourcesDirectory(), IMAGES_DIRECTORY,
+                GetPluginFilenameOutputDirectory(plugin));
         }
 
         public NativeInstrumentsResource()
@@ -80,6 +112,11 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
 
         public string GetCategoriesJson()
         {
+            if (Categories.CategoryDB.Count == 0)
+            {
+                Categories.CategoryDB.Add(new CategoryDB());
+            }
+
             Categories.CategoryDB.First().Categories.Clear();
 
             foreach (var category in Categories.CategoryNames)
@@ -94,22 +131,35 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
         {
             LogTo.Debug($"Begin saving metadata for {plugin.PluginName}");
             var files = GetFiles(plugin);
-            var ResourcesDirectory = GetDistDatabaseDirectory(plugin);
-            var ImagesDirectory = GetImageDirectory(plugin);
+            var resourcesDirectory = GetDistDatabaseDirectory(plugin);
+            var imagesDirectory = GetImageDirectory(plugin);
+            var dllFilenameResourcesDirectory = GetDistDatabaseDirectory(plugin, true);
+            var dllFilenameImagesDirectory = GetImageDirectory(plugin, true);
 
-            if (!Directory.Exists(ImagesDirectory))
+            if (!Directory.Exists(imagesDirectory))
             {
-                Directory.CreateDirectory(ImagesDirectory);
+                Directory.CreateDirectory(imagesDirectory);
+            }
+
+            if (!Directory.Exists(dllFilenameImagesDirectory))
+            {
+                Directory.CreateDirectory(dllFilenameImagesDirectory);
             }
 
             foreach (var image in ResourceImages)
             {
-                image.Save(ImagesDirectory);
+                image.Save(imagesDirectory);
+                image.Save(dllFilenameImagesDirectory);
             }
 
-            if (!Directory.Exists(ResourcesDirectory))
+            if (!Directory.Exists(resourcesDirectory))
             {
-                Directory.CreateDirectory(ResourcesDirectory);
+                Directory.CreateDirectory(resourcesDirectory);
+            }
+
+            if (!Directory.Exists(dllFilenameResourcesDirectory))
+            {
+                Directory.CreateDirectory(dllFilenameResourcesDirectory);
             }
 
 
@@ -117,18 +167,21 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
             {
                 Color.VB_bgcolor = GetHexColor(Color.BackgroundColor);
                 File.WriteAllText(files["color"], JsonConvert.SerializeObject(Color));
+                File.WriteAllText(files["color2"], JsonConvert.SerializeObject(Color));
                 ColorState.State = ResourceStates.FromDisk;
             }
 
             if (ShortNamesState.ShouldSave)
             {
                 File.WriteAllText(files["shortname"], JsonConvert.SerializeObject(ShortNames));
+                File.WriteAllText(files["shortname2"], JsonConvert.SerializeObject(ShortNames));
                 ShortNamesState.State = ResourceStates.FromDisk;
             }
 
             try
             {
                 File.WriteAllText(files["categories"], GetCategoriesJson());
+                File.WriteAllText(files["categories2"], GetCategoriesJson());
                 CategoriesState.State = ResourceStates.FromDisk;
             }
             catch (Exception e)
@@ -139,16 +192,30 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
 
             try
             {
-                var metaFile = Path.Combine(ResourcesDirectory, plugin.PluginName.ToLower() + ".meta");
+                var metaFile = Path.Combine(resourcesDirectory, plugin.PluginName.ToLower() + ".meta");
+                var dllFilenameMetaFile = Path.Combine(dllFilenameResourcesDirectory,
+                    GetPluginFilenameOutputDirectory(plugin) + ".meta");
                 if (!File.Exists(metaFile))
                 {
                     CreateMetaFile(plugin, "dist_database", metaFile);
                 }
 
-                var imageMetaFile = Path.Combine(ImagesDirectory, plugin.PluginName.ToLower() + ".meta");
+                if (!File.Exists(dllFilenameMetaFile))
+                {
+                    CreateMetaFile(plugin, "dist_database", dllFilenameMetaFile);
+                }
+
+                var dllFilenameImageMetaFile = Path.Combine(dllFilenameImagesDirectory,
+                    GetPluginFilenameOutputDirectory(plugin) + ".meta");
+                var imageMetaFile = Path.Combine(imagesDirectory, plugin.PluginName.ToLower() + ".meta");
                 if (!File.Exists(imageMetaFile))
                 {
                     CreateMetaFile(plugin, "image", imageMetaFile);
+                }
+
+                if (!File.Exists(dllFilenameImageMetaFile))
+                {
+                    CreateMetaFile(plugin, "image", dllFilenameImageMetaFile);
                 }
             }
             catch (Exception e)
@@ -183,10 +250,15 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
         {
             var files = new Dictionary<string, string>();
             var resourcesDirectory = GetDistDatabaseDirectory(plugin);
+            var dllFilenameResourcesDirectory = GetDistDatabaseDirectory(plugin, true);
 
             files.Add("color", Path.Combine(resourcesDirectory, "color.json"));
             files.Add("shortname", Path.Combine(resourcesDirectory, "shortname.json"));
             files.Add("categories", Path.Combine(resourcesDirectory, "categories.json"));
+
+            files.Add("color2", Path.Combine(dllFilenameResourcesDirectory, "color.json"));
+            files.Add("shortname2", Path.Combine(dllFilenameResourcesDirectory, "shortname.json"));
+            files.Add("categories2", Path.Combine(dllFilenameResourcesDirectory, "categories.json"));
 
             return files;
         }
@@ -242,12 +314,12 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
                 {
                     Color.BackgroundColor =
                         (System.Windows.Media.Color) ColorConverter.ConvertFromString("#" + Color.VB_bgcolor);
-
                 }
                 catch (Exception e)
                 {
                     var colorFile = files["color"];
-                    LogTo.Error($"Unable to load color information from {colorFile} because the color {Color.VB_bgcolor} is probably invalid. {e.GetType().FullName}: {e.Message}");
+                    LogTo.Error(
+                        $"Unable to load color information from {colorFile} because the color {Color.VB_bgcolor} is probably invalid. {e.GetType().FullName}: {e.Message}");
                 }
 
                 ColorState.State = ResourceStates.FromDisk;
