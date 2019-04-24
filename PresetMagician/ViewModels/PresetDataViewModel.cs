@@ -11,11 +11,13 @@ namespace PresetMagician.ViewModels
     public class PresetDataViewModel : PresetViewModel
     {
         private PresetDataPersisterService _presetDataPersisterService;
+        private readonly DeveloperService _developerService;
         
-        public PresetDataViewModel(Preset preset, PresetDataPersisterService presetDataPersisterService) : base(preset)
+        public PresetDataViewModel(Preset preset, PresetDataPersisterService presetDataPersisterService, DeveloperService developerService) : base(preset)
         {
+            _developerService = developerService;
             _presetDataPersisterService = presetDataPersisterService;
-            OpenWithHxD = new Command(OnOpenWithHxDExecute);
+            OpenWithHexEditor = new Command(OnOpenWithHexEditor);
         }
 
         protected override async Task InitializeAsync()
@@ -25,24 +27,16 @@ namespace PresetMagician.ViewModels
             await base.InitializeAsync();
         }
         
-        public Command OpenWithHxD { get; set; }
+        public Command OpenWithHexEditor { get; set; }
 
 
-        private void OnOpenWithHxDExecute()
+        private void OnOpenWithHexEditor()
         {
             var tempFile = Path.GetTempFileName();
             File.WriteAllBytes(tempFile, PresetData);
 
-            var process = new Process
-            {
-                StartInfo =
-                {
-                    FileName = @"C:\Program Files\HxD\HxD.exe",
-                    Arguments = tempFile
-                }
-            };
-
-            process.Start();
+            _developerService.StartHexEditor(tempFile);
+           
         }
 
         public byte[] PresetData { get; private set; }

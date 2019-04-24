@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using Catel.IoC;
 using Catel.MVVM;
@@ -36,13 +37,21 @@ namespace PresetMagician.ViewModels
             ShowAboutDialog = new TaskCommand(OnShowAboutDialogExecuteAsync);
             ShowThemeTest = new TaskCommand(OnShowThemeTestExecuteAsync);
             DoSomething = new TaskCommand(OnDoSomethingExecuteAsync);
+            
+            RuntimeConfiguration.PropertyChanged += RuntimeConfigurationOnPropertyChanged;
+        }
+
+        private void RuntimeConfigurationOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(RuntimeConfiguration.ShowDeveloperTools))
+            {
+                RaisePropertyChanged(nameof(ShowDeveloperCommands));
+            }
         }
 
         #endregion
 
         #region Properties
-
-        public bool HasPresetSelection { get; set; }
 
         public HelpLinks HelpLinks { get; } = new HelpLinks();
 
@@ -53,7 +62,7 @@ namespace PresetMagician.ViewModels
 #if DEBUG
                 return true;
 #else
-                return false;
+                return RuntimeConfiguration.ShowDeveloperTools;
 #endif
             }
         }

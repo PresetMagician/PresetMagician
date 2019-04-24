@@ -39,6 +39,10 @@ namespace PresetMagician.Core.Models
         public PresetExportInfo.FileOverwriteMode FileOverwriteMode { get; set; } =
             PresetExportInfo.FileOverwriteMode.REPORT_ERROR;
 
+        [JsonProperty] public bool ShowDeveloperTools { get; set; }
+        [JsonProperty] public string HexEditorExecutable { get; set; }
+        [JsonProperty] public string HexEditorArguments { get; set; }
+        
 
         protected override void ValidateFields(List<IFieldValidationResult> validationResults)
         {

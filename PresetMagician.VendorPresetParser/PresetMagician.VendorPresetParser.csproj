@@ -342,6 +342,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>VendorResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="RevealSound\Internal\SpireBank.cs" />
+    <Compile Include="RevealSound\Internal\SpireException.cs" />
+    <Compile Include="RevealSound\Internal\SpireJsonConfig.cs" />
+    <Compile Include="RevealSound\Internal\SpirePreset.cs" />
+    <Compile Include="RevealSound\RevealSound_Spire.cs" />
     <Compile Include="Roland\Internal\KoaBankFileParser.cs" />
     <Compile Include="Roland\Internal\KoaPreset.cs" />
     <Compile Include="Roland\Internal\RolandConverter.cs" />
@@ -431,6 +436,7 @@
     <Compile Include="ValhallaDSP\ValhallaDSP_ValhallaVintageVerb.cs" />
     <Compile Include="VoidPresetParser.cs" />
     <Compile Include="Xfer_Records\Xfer_Records_Serum.cs" />
+    <Content Include="Resources\RevealSound\SpireBlank.spf" />
     <Content Include="Resources\Roland\D-50\ExportConfig.json" />
     <Content Include="Resources\Roland\D-50\RolandScript.csv" />
     <Content Include="Resources\Roland\D-50\suffix.data" />
