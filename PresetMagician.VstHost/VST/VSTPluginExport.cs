@@ -192,9 +192,16 @@ namespace PresetMagician.VstHost.VST
                         ctx.PluginCommandStub.ProcessReplacing(inputBuffers, outputBuffers);
                         for (var j = 0; j < VstHost.BlockSize; j++)
                         {
+                            var x = 0;
                             foreach (var t in outputBuffers)
                             {
-                                writer.WriteSample(t[j]);
+                                if (x < 2)
+                                {
+                                    writer.WriteSample(t[j]);
+
+                                }
+
+                                x++;
                             }
                         }
                     }
