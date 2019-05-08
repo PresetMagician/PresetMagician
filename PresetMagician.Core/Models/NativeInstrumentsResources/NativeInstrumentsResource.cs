@@ -60,14 +60,16 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
         {
             var re = new Regex("([^a-z0-9\\s\\-_])");
             var fileName = Path.GetFileNameWithoutExtension(plugin.PluginLocation.DllPath);
-            var mangledFileName = re.Replace(fileName.ToLower(), "");
+            var lcFileName = fileName.ToLower();
+            
+            var mangledFileName = re.Replace(lcFileName, "");
 
-            if (mangledFileName != fileName.ToLower())
+            if (mangledFileName != lcFileName)
             {
                 return mangledFileName + "_"+HashUtils.getFormattedMD5Hash(fileName);
             }
 
-            return fileName;
+            return lcFileName;
         }
 
         public static string GetDistDatabaseDirectory(Plugin plugin, bool dllFilename = false)
