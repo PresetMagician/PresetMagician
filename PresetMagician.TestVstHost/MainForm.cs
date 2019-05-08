@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Jacobi.Vst.Interop.Host;
 using System.Windows.Forms;
+using Jacobi.Vst.Core;
+using Jacobi.Vst.Interop.Host;
 
 namespace PresetMagician.TestVstHost
 {
-     partial class MainForm : Form
+    partial class MainForm : Form
     {
         private List<VstPluginContext> _plugins = new List<VstPluginContext>();
 
@@ -55,9 +50,32 @@ namespace PresetMagician.TestVstHost
                 ctx.PluginCommandStub.Open();
                 ctx.PluginCommandStub.SetSampleRate(44100f);
                 ctx.PluginCommandStub.SetBlockSize(512);
-                
+
                 ctx.PluginCommandStub.MainsChanged(true);
                 ctx.PluginCommandStub.StartProcess();
+
+                var sp = new VstSpeakerArrangement();
+
+                sp.Type = VstSpeakerArrangementType.SpeakerArrStereo;
+
+
+                VstSpeakerProperties[] f = new VstSpeakerProperties[2];
+
+                f[0] = new VstSpeakerProperties();
+                f[1] = new VstSpeakerProperties();
+                f[0].SpeakerType = VstSpeakerTypes.SpeakerL;
+                f[1].SpeakerType = VstSpeakerTypes.SpeakerR;
+
+                sp.Speakers = f;
+
+                var spin = new VstSpeakerArrangement();
+                spin.Type = VstSpeakerArrangementType.SpeakerArrEmpty;
+
+                VstSpeakerProperties[] f2 = new VstSpeakerProperties[0];
+
+                spin.Speakers = f2;
+
+                ctx.PluginCommandStub.SetSpeakerArrangement(spin, sp);
 
                 return ctx;
             }
@@ -86,7 +104,7 @@ namespace PresetMagician.TestVstHost
             {
                 if (PluginListVw.SelectedItems.Count > 0)
                 {
-                    return (VstPluginContext)PluginListVw.SelectedItems[0].Tag;
+                    return (VstPluginContext) PluginListVw.SelectedItems[0].Tag;
                 }
 
                 return null;
@@ -95,7 +113,7 @@ namespace PresetMagician.TestVstHost
 
         private void HostCmdStub_PluginCalled(object sender, PluginCalledEventArgs e)
         {
-            HostCommandStub hostCmdStub = (HostCommandStub)sender;
+            HostCommandStub hostCmdStub = (HostCommandStub) sender;
 
             // can be null when called from inside the plugin main entry point.
             if (hostCmdStub.PluginContext.PluginInfo != null)
@@ -147,7 +165,7 @@ namespace PresetMagician.TestVstHost
         {
             VstPluginContext ctx = SelectedPluginContext;
 
-            if(ctx != null)
+            if (ctx != null)
             {
                 ctx.Dispose();
 
