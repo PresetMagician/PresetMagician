@@ -59,12 +59,12 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
         private static string GetPluginFilenameOutputDirectory(Plugin plugin)
         {
             var re = new Regex("([^a-z0-9\\s\\-_])");
-            var fileName = Path.GetFileNameWithoutExtension(plugin.PluginLocation.DllPath).ToLower();
-            var mangledFileName = re.Replace(fileName, "");
+            var fileName = Path.GetFileNameWithoutExtension(plugin.PluginLocation.DllPath);
+            var mangledFileName = re.Replace(fileName.ToLower(), "");
 
-            if (mangledFileName != fileName)
+            if (mangledFileName != fileName.ToLower())
             {
-                return HashUtils.getFormattedMD5Hash(mangledFileName);
+                return mangledFileName + "_"+HashUtils.getFormattedMD5Hash(fileName);
             }
 
             return fileName;
