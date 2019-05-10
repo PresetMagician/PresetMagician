@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Catel;
 using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
-using PresetMagician.NKS;
 using Newtonsoft.Json;
 using PresetMagician.Core.Services;
+using PresetMagician.NKS;
 
 namespace PresetMagician.ViewModels
 {
@@ -71,7 +70,7 @@ namespace PresetMagician.ViewModels
         private void OnParseNKSFFileExecute()
         {
             Log.Debug("Trying to parse NKSF");
-            using (var fileStream = new FileStream(filePath, FileMode.Open))
+            using (var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
                 NKSFRiff n = new NKSFRiff();
                 n.Read(fileStream);
