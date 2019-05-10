@@ -101,6 +101,11 @@ namespace PresetMagician.VendorPresetParser.RevealSound
 
         private List<string> GetBankFiles(string path)
         {
+            if (!Directory.Exists(path))
+            {
+                Logger.Warning($"Unable to open directory {path}, skipping.");
+                return new List<string>();
+            }
             return Directory.EnumerateFiles(path, "*.sbf", SearchOption.AllDirectories).ToList();
         }
 

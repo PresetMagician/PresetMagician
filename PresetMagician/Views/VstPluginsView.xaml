@@ -172,10 +172,31 @@
                                                                     <Condition
                                                                         Binding="{Binding IsSupported, Mode=OneWay}"
                                                                         Value="True" />
+                                                                    <Condition Binding="{Binding PresetParser.IsGenericParser, Mode=OneWay}"
+                                                                               Value="False" />
                                                                 </MultiDataTrigger.Conditions>
                                                                 <Setter Property="Kind" Value="CheckSolid" />
                                                                 <Setter Property="Foreground" Value="Green" />
                                                             </MultiDataTrigger>
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition
+                                                                        Binding="{Binding LoadError, Mode=OneWay}"
+                                                                        Value="False" />
+                                                                    <Condition
+                                                                        Binding="{Binding HasMetadata, Mode=OneWay}"
+                                                                        Value="True" />
+                                                                    <Condition
+                                                                        Binding="{Binding IsSupported, Mode=OneWay}"
+                                                                        Value="True" />
+                                                                    <Condition Binding="{Binding PresetParser.IsGenericParser, Mode=OneWay}"
+                                                                               Value="True" />
+                                                                </MultiDataTrigger.Conditions>
+                                                                <Setter Property="Kind" Value="CheckSolid" />
+                                                                <Setter Property="Foreground" Value="Orange" />
+                                                            </MultiDataTrigger>
+                                                            
+                                                            
                                                             <MultiDataTrigger>
                                                                 <MultiDataTrigger.Conditions>
                                                                     <Condition
@@ -216,9 +237,28 @@
                                                                            Value="True" />
                                                                 <Condition Binding="{Binding IsSupported, Mode=OneWay}"
                                                                            Value="True" />
+                                                                <Condition Binding="{Binding PresetParser.IsGenericParser, Mode=OneWay}"
+                                                                           Value="False" />
+                                                                
                                                             </MultiDataTrigger.Conditions>
                                                             <Setter Property="ToolTip" Value="This plugin is supported" />
                                                         </MultiDataTrigger>
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding LoadError, Mode=OneWay}"
+                                                                           Value="False" />
+                                                                <Condition Binding="{Binding HasMetadata, Mode=OneWay}"
+                                                                           Value="True" />
+                                                                <Condition Binding="{Binding IsSupported, Mode=OneWay}"
+                                                                           Value="True" />
+                                                                <Condition Binding="{Binding PresetParser.IsGenericParser, Mode=OneWay}"
+                                                                           Value="True" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter Property="ToolTip" Value="This plugin is most likely supported by the standard VST programs interface.&#x0a;Refer to the manual for more information." />
+                                                        </MultiDataTrigger>
+                                                        
+                                                        
+
                                                         <MultiDataTrigger>
                                                             <MultiDataTrigger.Conditions>
                                                                 <Condition Binding="{Binding LoadError, Mode=OneWay}"

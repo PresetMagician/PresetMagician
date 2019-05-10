@@ -170,5 +170,15 @@ namespace PresetMagician.Core.Services
                 pluginInstance.Plugin.IsSupported = !pluginInstance.Plugin.PresetParser.IsNullParser;
             }
         }
+
+        public bool IsGenericPresetParser(string presetParserName)
+        {
+            if (presetParserName == "FullBankVstPresetParser" || presetParserName == "FallbackVstPresetParser" ||
+                presetParserName == "BankTrickeryVstPresetParser")
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

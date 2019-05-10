@@ -23,6 +23,7 @@ namespace PresetMagician.Core.Interfaces
 
         string BankLoadingNotes { get; set; }
         bool IsNullParser { get; }
+        bool IsGenericParser { get; }
         PresetParserConfiguration PresetParserConfiguration { get; set; }
 
         int GetNumPresets();
