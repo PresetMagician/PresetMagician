@@ -348,7 +348,7 @@ namespace PresetMagician.Core.Models
 
         public string CanonicalDllFilename =>
             string.IsNullOrEmpty(DllPath)
-                ? "Plugin DLL is missing."
+                ? "Plugin DLL missing or changed"
                 : Path.GetFileName(DllPath);
 
 

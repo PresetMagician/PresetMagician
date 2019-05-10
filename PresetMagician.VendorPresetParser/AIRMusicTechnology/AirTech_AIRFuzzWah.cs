@@ -14,8 +14,7 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology
         public override List<int> SupportedPlugins => new List<int> {1750550081};
         protected override string Extension { get; } = "tfx";
 
-        public override string Remarks { get; set; } =
-            "Audio Previews are non-functional for this plugin";
+      
 
         protected override string GetParseDirectory()
         {

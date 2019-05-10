@@ -7,6 +7,8 @@ namespace PresetMagician.VendorPresetParser.StandardVST
     {
         public override PresetParserPriorityEnum Priority { get; } = PresetParserPriorityEnum.GENERIC_VST_PRIORITY;
         
+        public override bool IsGenericParser => true;
+        
         public override int GetNumPresets()
         {
             PluginInstance.LoadPlugin().Wait();

@@ -141,6 +141,7 @@
     <Compile Include="Arturia\Arturia_AnalogLab3.cs" />
     <Compile Include="Arturia\Arturia_Arp2600.cs" />
     <Compile Include="Arturia\Arturia_B3.cs" />
+    <Compile Include="Arturia\Arturia_B3_V2.cs" />
     <Compile Include="Arturia\Arturia_BuchlaEasel.cs" />
     <Compile Include="Arturia\Arturia_Clavinet.cs" />
     <Compile Include="Arturia\Arturia_CMI.cs" />
@@ -148,11 +149,13 @@
     <Compile Include="Arturia\Arturia_CompTubeSTA.cs" />
     <Compile Include="Arturia\Arturia_CompVCA65.cs" />
     <Compile Include="Arturia\Arturia_CS80.cs" />
+    <Compile Include="Arturia\Arturia_CZ.cs" />
     <Compile Include="Arturia\Arturia_DX7.cs" />
     <Compile Include="Arturia\Arturia_Farfisa.cs" />
     <Compile Include="Arturia\Arturia_Jup8.cs" />
     <Compile Include="Arturia\Arturia_M12Filter.cs" />
     <Compile Include="Arturia\Arturia_Matrix12.cs" />
+    <Compile Include="Arturia\Arturia_Mellotron.cs" />
     <Compile Include="Arturia\Arturia_MiniFilter.cs" />
     <Compile Include="Arturia\Arturia_MiniV3.cs" />
     <Compile Include="Arturia\Arturia_Modular.cs" />
@@ -166,6 +169,7 @@
     <Compile Include="Arturia\Arturia_Solina.cs" />
     <Compile Include="Arturia\Arturia_Stage73.cs" />
     <Compile Include="Arturia\Arturia_Synclavier.cs" />
+    <Compile Include="Arturia\Arturia_Synthi.cs" />
     <Compile Include="Arturia\Arturia_TridAPre.cs" />
     <Compile Include="Arturia\Arturia_V76Pre.cs" />
     <Compile Include="Arturia\Arturia_VoxContinental.cs" />

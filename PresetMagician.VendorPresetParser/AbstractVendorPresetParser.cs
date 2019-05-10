@@ -65,6 +65,7 @@ namespace PresetMagician.VendorPresetParser
         public virtual string Remarks { get; set; }
 
         public virtual bool IsNullParser => false;
+        public virtual bool IsGenericParser => false;
 
         public string PresetParserType => GetType().Name;
 
