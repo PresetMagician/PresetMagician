@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Catel.Data;
 using Drachenkatze.PresetMagician.Utils.Progress;
@@ -132,6 +133,60 @@ namespace PresetMagician.Utils.IssueReport
                 {FilePath = SystemLogLocation, Description = "PresetMagician Log", DeleteAfterReport = false});
         }
 
+        public string CreateOfflineIssueReport(string localReportOutputDirectory, IProgress<StringProgress> progress)
+        {
+            var formattedDateTime = DateTime.Now.ToString("yyyy-MM-dd HH-mm");
+            var finalOutputDirectory = Path.Combine(localReportOutputDirectory, $"IssueReport {formattedDateTime}");
+            Directory.CreateDirectory(finalOutputDirectory);
+            var tempZip = Path.Combine(finalOutputDirectory, "PresetMagician.ReportData.zip");
+            if (SystemFile.Exists(tempZip))
+            {
+                SystemFile.Delete(tempZip);
+            }
+
+            CreateIssueAttachments(progress);
+            progress.Report(new StringProgress("Creating offline report"));
+
+            var sb = new StringBuilder();
+            sb.AppendLine($"Subject: {Subject}");
+            sb.AppendLine($"Description: {Description}");
+            sb.AppendLine($"Version: {Version}");
+            sb.AppendLine($"Type: {TrackerType}");
+
+            var textFilePath = Path.Combine(finalOutputDirectory,
+                $"Mail this file and the zip file to support@presetmagician.com.txt");
+            SystemFile.WriteAllText(textFilePath, sb.ToString());
+            using (var zip = ZipFile.Open(tempZip, ZipArchiveMode.Create))
+            {
+                foreach (var attachment in Attachments)
+                {
+                    zip.CreateEntryFromFile(attachment.FilePath, Path.GetFileName(attachment.FilePath));
+                }
+            }
+
+            return finalOutputDirectory;
+        }
+
+        public void CreateIssueAttachments(IProgress<StringProgress> progress)
+        {
+            Attachments.Clear();
+
+            if (IncludeData)
+            {
+                AttachDataZip(progress);
+            }
+
+            if (IncludePluginLog)
+            {
+                CreatePluginLogs();
+            }
+
+            if (IncludeSystemLog)
+            {
+                AddSystemLog();
+            }
+        }
+
         public async Task PrepareIssue(IProgress<StringProgress> progress)
         {
             progress.Report(new StringProgress("Retrieving/Creating Version Number"));
@@ -150,20 +205,7 @@ namespace PresetMagician.Utils.IssueReport
 
             versionCustomField.Values.Add(new CustomFieldValue {Info = version.Id.ToString()});
 
-            if (IncludeData)
-            {
-                CreateDataZip(progress);
-            }
-
-            if (IncludePluginLog)
-            {
-                CreatePluginLogs();
-            }
-
-            if (IncludeSystemLog)
-            {
-                AddSystemLog();
-            }
+            CreateIssueAttachments(progress);
 
             var attachmentUploads = await UploadAttachments(Attachments, progress);
             _issue = new Issue();
@@ -239,6 +281,7 @@ namespace PresetMagician.Utils.IssueReport
                 _issue.Description = _issue.Subject.Substring(250) + "\n\n" + _issue.Description;
                 _issue.Subject = _issue.Subject.Substring(0, 250);
             }
+
             await _manager.CreateObjectAsync(_issue);
 
             foreach (var attachment in Attachments)
@@ -360,7 +403,15 @@ namespace PresetMagician.Utils.IssueReport
             return impersonateUser;
         }
 
-        public void CreateDataZip(IProgress<StringProgress> progress)
+        public void AttachDataZip(IProgress<StringProgress> progress)
+        {
+            var tempZip = CreateDataZip(progress);
+
+            Attachments.Add(new IssueAttachment
+                {FilePath = tempZip, Description = "Data Directory", DeleteAfterReport = true});
+        }
+
+        private string CreateDataZip(IProgress<StringProgress> progress)
         {
             var tempZip = Path.Combine(Path.GetTempPath(), "PresetMagician.Data.zip");
             if (SystemFile.Exists(tempZip))
@@ -370,8 +421,8 @@ namespace PresetMagician.Utils.IssueReport
 
 
             progress.Report(new StringProgress("Compressing database"));
-            
-            
+
+
             using (var zip = ZipFile.Open(tempZip, ZipArchiveMode.Create))
             {
                 foreach (var file in Directory.EnumerateFiles(DataLocation, "*.*", SearchOption.AllDirectories))
@@ -381,11 +432,9 @@ namespace PresetMagician.Utils.IssueReport
                         zip.CreateEntryFromFile(file, file.Replace(DataLocation, ""));
                     }
                 }
-                
             }
 
-            Attachments.Add(new IssueAttachment
-                {FilePath = tempZip, Description = "Data Directory", DeleteAfterReport = true});
+            return tempZip;
         }
     }
 }

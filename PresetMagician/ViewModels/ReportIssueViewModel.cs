@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,6 +33,7 @@ namespace PresetMagician.ViewModels
         public bool DisplayBugWarning { get; private set; }
         public string SubmitProgress { get; private set; }
         public bool DisplayIncludeSupportFiles { get; private set; } = true;
+        public bool SubmitOffline { get; set; }
 
         public bool MayIncludePlugins
         {
@@ -108,7 +110,7 @@ namespace PresetMagician.ViewModels
                     Title = "General Support";
                     BoxTitle = "General Support Request";
                     Report.SubmitPrivately = true;
-                    DisplayIncludeSupportFiles = false;
+                    DisplayIncludeSupportFiles = true;
 
                     break;
             }
@@ -123,6 +125,8 @@ namespace PresetMagician.ViewModels
             Report.PropertyChanged += ReportOnPropertyChanged;
             PropertyChanged += OnPropertyChanged;
             SubmitIssue = new ProgressiveTaskCommand<StringProgress>(OnSubmitIssueExecute, null, ReportProgress);
+            SubmitOfflineIssue =
+                new ProgressiveTaskCommand<StringProgress>(OnSubmitOfflineIssueExecute, null, ReportProgress);
             CloseDialog = new TaskCommand(OnCloseDialogExecute, CanExecute);
         }
 
@@ -140,8 +144,6 @@ namespace PresetMagician.ViewModels
         {
             if (e.PropertyName == nameof(SelectedPlugin))
             {
-                
-                
             }
         }
 
@@ -166,6 +168,13 @@ namespace PresetMagician.ViewModels
 
 
         public ProgressiveTaskCommand<StringProgress> SubmitIssue { get; set; }
+        public ProgressiveTaskCommand<StringProgress> SubmitOfflineIssue { get; set; }
+
+        private async Task OnSubmitOfflineIssueExecute(CancellationToken token, IProgress<StringProgress> progress)
+        {
+            SubmitOffline = true;
+            await OnSubmitIssueExecute(token, progress);
+        }
 
         private async Task OnSubmitIssueExecute(CancellationToken token, IProgress<StringProgress> progress)
         {
@@ -181,12 +190,11 @@ namespace PresetMagician.ViewModels
             {
                 if (SelectedPlugin != null && SelectedPlugin.PluginId != "")
                 {
-                   
                     Report.PluginLogs.Clear();
                     Report.PluginLogs.Add(_dataPersisterService.GetPluginStorageFilePrefix(SelectedPlugin),
                         SelectedPlugin.Logs);
                     Report.IncludeData = true;
-                   
+
 
                     Report.PluginId = SelectedPlugin.PluginId;
                     Report.PluginName = SelectedPlugin.PluginName;
@@ -198,7 +206,6 @@ namespace PresetMagician.ViewModels
                     Report.PluginLogs.Clear();
                     foreach (var plugin in _globalService.Plugins)
                     {
-                        
                         Report.PluginLogs.Add(_dataPersisterService.GetPluginStorageFilePrefix(plugin),
                             plugin.Logs);
                     }
@@ -215,17 +222,35 @@ namespace PresetMagician.ViewModels
 
             try
             {
-                await Report.PrepareIssue(progress);
-                progress.Report(new StringProgress("Submitting issue"));
-                await Report.SubmitIssue();
+                if (!SubmitOffline)
+                {
+                    resultMessage =
+                        "Issue submitted successfully. You'll receive additional information about the progress of your report via E-Mail";
+                    resultTitle = "Issue submitted successfully";
 
-                resultMessage =
-                    "Issue submitted successfully. You'll receive additional information about the progress of your report via E-Mail";
-                resultTitle = "Issue submitted successfully";
+                    await Report.PrepareIssue(progress);
+                    progress.Report(new StringProgress("Submitting issue"));
+                    await Report.SubmitIssue();
+                }
+                else
+                {
+                    var outputDirectory =
+                        Report.CreateOfflineIssueReport(FileLocations.PresetMagicianLocalAppData, progress);
+                    Process.Start(outputDirectory);
+
+                    resultMessage =
+                        "Offline report created successfully. A windows explorer window should have opened, where " +
+                        "you'll find the files to attach to a support mail. " +
+                        $"Send them to {Settings.Links.SupportEmail}";
+                    resultTitle = "Offline Report created successfully";
+                }
             }
             catch (Exception e)
             {
-                resultMessage = $"The issue could not be submitted. {e.GetType().FullName}: {e.Message}";
+                resultMessage = "The issue could not be submitted. Please create an offline issue report for manual " +
+                                $"email sending (preferred) or write an email to {Settings.Links.SupportEmail} " +
+                                $"describing the problem. {Environment.NewLine}{Environment.NewLine}" +
+                                $"{e.GetType().FullName}: {e.Message}";
                 resultTitle = "Error submitting issue";
                 messageBoxImage = MessageImage.Error;
             }

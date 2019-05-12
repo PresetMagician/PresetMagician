@@ -13,6 +13,7 @@ namespace PresetMagician.Views
         public ReportIssueView(ReportIssueViewModel viewModel)
             : base(viewModel, DataWindowMode.Custom)
         {
+            AddCustomButton(new DataWindowButton("Submit Offline", "SubmitOfflineIssue"));
             AddCustomButton(new DataWindowButton("Close without submitting", "CloseDialog"));
             AddCustomButton(new DataWindowButton("Submit Issue", "SubmitIssue"));
 
