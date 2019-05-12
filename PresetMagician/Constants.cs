@@ -77,7 +77,7 @@ namespace PresetMagician
             public static readonly string Documentation = $"https://presetmagician.gitbook.io/help/";
             public static readonly string HelpLink = $"https://presetmagician.com/help/";
             public static readonly string Support = $"{_masterProtocol}{_supportSite}/support";
-            public static readonly string SupportEmail = "support-confidential@presetmagician.com";
+            public static readonly string SupportEmail = "support@presetmagician.com";
             public static readonly string SupportEmailName = "PresetMagician Support";
             public static readonly string Chat = "https://gitter.im/PresetMagician/general";
 
