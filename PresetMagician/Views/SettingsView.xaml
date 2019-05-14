@@ -598,7 +598,7 @@
                             <TextBox Text="{Binding EditableConfiguration.HexEditorExecutable}" />
                         </StackPanel>
 
-                        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
                             <Label Content="Hex Editor Arguments" VerticalAlignment="Top" />
                         </StackPanel>
 
