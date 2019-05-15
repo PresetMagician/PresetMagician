@@ -172,7 +172,6 @@
   <data name="AirFxSuiteEndChunk" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\AIRMusicTechnology\AirFxSuiteEndChunk.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-
   <data name="Roland_D50_ExportConfig" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\D-50\ExportConfig.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
@@ -182,7 +181,6 @@
   <data name="Roland_D50_Suffix" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\D-50\suffix.data;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-
   <data name="Roland_JUNO106_ExportConfig" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\JUNO-106\ExportConfig.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
@@ -192,7 +190,6 @@
   <data name="Roland_JUNO106_Suffix" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\JUNO-106\suffix.data;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-
   <data name="Roland_JUPITER-8_ExportConfig" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\JUPITER-8\ExportConfig.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
@@ -202,7 +199,6 @@
   <data name="Roland_JUPITER-8_Suffix" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\JUPITER-8\suffix.data;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-
   <data name="Roland_JV-1080_ExportConfig" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\JV-1080\ExportConfig.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
@@ -212,8 +208,6 @@
   <data name="Roland_JV-1080_Suffix" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\JV-1080\suffix.data;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-
- 
   <data name="Roland_JX-3P_ExportConfig" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\JX-3P\ExportConfig.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
@@ -223,7 +217,6 @@
   <data name="Roland_JX-3P_Suffix" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\JX-3P\suffix.data;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  
   <data name="Roland_PROMARS_ExportConfig" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\PROMARS\ExportConfig.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
@@ -233,7 +226,6 @@
   <data name="Roland_PROMARS_Suffix" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\PROMARS\suffix.data;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  
   <data name="Roland_SH-101_ExportConfig" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\SH-101\ExportConfig.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
@@ -243,7 +235,6 @@
   <data name="Roland_SH-101_Suffix" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\SH-101\suffix.data;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-
   <data name="Roland_SH-2_ExportConfig" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\SH-2\ExportConfig.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
@@ -253,7 +244,6 @@
   <data name="Roland_SH-2_Suffix" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\SH-2\suffix.data;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-
   <data name="Roland_SRX DANCE TRAX_ExportConfig" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\SRX DANCE TRAX\ExportConfig.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
@@ -263,7 +253,6 @@
   <data name="Roland_SRX DANCE TRAX_Suffix" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\SRX DANCE TRAX\suffix.data;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-
   <data name="Roland_SRX KEYBOARDS_ExportConfig" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\SRX KEYBOARDS\ExportConfig.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
@@ -273,7 +262,6 @@
   <data name="Roland_SRX KEYBOARDS_Suffix" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\SRX KEYBOARDS\suffix.data;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-
   <data name="Roland_SRX ORCHESTRA_ExportConfig" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\SRX ORCHESTRA\ExportConfig.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
@@ -283,7 +271,6 @@
   <data name="Roland_SRX ORCHESTRA_Suffix" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\SRX ORCHESTRA\suffix.data;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-
   <data name="Roland_SRX WORLD_ExportConfig" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\SRX WORLD\ExportConfig.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
@@ -293,7 +280,6 @@
   <data name="Roland_SRX WORLD_Suffix" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\SRX WORLD\suffix.data;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-
   <data name="Roland_SYSTEM-1_ExportConfig" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\SYSTEM-1\ExportConfig.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
@@ -303,7 +289,6 @@
   <data name="Roland_SYSTEM-1_Suffix" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\SYSTEM-1\suffix.data;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-
   <data name="Roland_SYSTEM-8_ExportConfig" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\SYSTEM-8\ExportConfig.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
@@ -313,7 +298,6 @@
   <data name="Roland_SYSTEM-8_Suffix" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\SYSTEM-8\suffix.data;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-
   <data name="Roland_SYSTEM-100_ExportConfig" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\SYSTEM-100\ExportConfig.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
@@ -323,7 +307,6 @@
   <data name="Roland_SYSTEM-100_Suffix" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\SYSTEM-100\suffix.data;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-
   <data name="Roland_TB-303_ExportConfig" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\TB-303\ExportConfig.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
@@ -333,7 +316,6 @@
   <data name="Roland_TB-303_Suffix" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\TB-303\suffix.data;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-
   <data name="Roland_TR-808_ExportConfig" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\TR-808\ExportConfig.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
@@ -343,7 +325,6 @@
   <data name="Roland_TR-808_Suffix" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\TR-808\suffix.data;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-
   <data name="Roland_TR-909_ExportConfig" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\TR-909\ExportConfig.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
@@ -353,8 +334,17 @@
   <data name="Roland_TR-909_Suffix" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Roland\TR-909\suffix.data;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-
   <data name="RevealSound_Spire_Blank" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\RevealSound\SpireBlank.spf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
+    <data name="Lua_Serpent" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>..\Resources\Lua\serpent.lua;System.String, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089;Windows-1252
+        </value>
+    </data>
+    <data name="AppliedAcousticSystems_LibraryParser" type="System.Resources.ResXFileRef, System.Windows.Forms">
+        <value>..\Resources\AppliedAcousticSystems\LibraryParser.lua;System.String, mscorlib, Version=4.0.0.0,
+            Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252
+        </value>
+    </data>
 </root>

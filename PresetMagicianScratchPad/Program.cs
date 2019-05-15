@@ -1,49 +1,126 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using PresetMagician.VendorPresetParser.RevealSound.Internal;
+using MoonSharp.Interpreter;
+using MoonSharp.Interpreter.Loaders;
+using PresetMagician.Core.Models;
+using PresetMagician.VendorPresetParser.Properties;
+using Type = PresetMagician.Core.Models.Type;
 
 namespace PresetMagicianScratchPad
 {
+    public class MyCustomScriptLoader : ScriptLoaderBase
+    {
+        public override object LoadFile(string file, Table globalContext)
+        {
+            if (file == "serpent_module.lua")
+            {
+                return VendorResources.Lua_Serpent;
+            }
+
+            return "";
+        }
+
+        public override bool ScriptFileExists(string name)
+        {
+            if (name == "serpent_module.lua")
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
     public class Program
     {
         [STAThread]
         static void Main(string[] args)
         {
-            
-            var bankFile = @"C:\Users\Drachenkatze\AppData\Roaming\RevealSound\Banks\EDM_Remastered_Vol1_Free.sbf";
-            var s = new SpireBank();
-            //s.ParseDiskFile(File.ReadAllBytes(@"C:\Users\Drachenkatze\Documents\SPIRE Micro SK.sbf"));
-            s.ParseDiskFile(File.ReadAllBytes(bankFile));
-            //s.ParseDiskFile(File.ReadAllBytes(@"C:\Program Files\VSTPlugins\Spire-1.1_x64\factory.sbf"));
+            var file =
+                //@"C:\Program Files\Applied Acoustics Systems\String Studio VS-3\Factory Library\Factory Library.VS-3 Pack";
+                @"C:\Users\Drachenkatze\AppData\Roaming\Applied Acoustics Systems\Lounge Lizard Session 4\Banks\Lounge Lizard Session.LLS4 Bank";
 
-            Debug.WriteLine(
-                $"Bank Name: {s.BankName} Bank Name 2: {s.BankName2} Company Name: {s.CompanyName} Company URL: {s.CompanyUrl}");
+            var fileData = File.ReadAllText(file);
+            //fileData = fileData.Replace("\n", "");
+            //fileData = fileData.Replace("\r", "");
 
-            foreach (var p in s.Presets)
+
+            Script script = new Script();
+            script.DebuggerEnabled = false;
+            script.Options.ScriptLoader = new MyCustomScriptLoader()
             {
-                Debug.WriteLine($"Program {s.Presets.IndexOf(p)}: {p.ProgramName}");
-            }
+                ModulePaths = new string[] {"?_module.lua"}
+            };
 
-            var cfg = new SpireJsonConfig();
-            cfg.SelectedBank = bankFile;
+            script.DoString(VendorResources.AppliedAcousticSystems_LibraryParser);
 
-            for (var i = 0; i < s.Presets.Count; i++)
+
+            var func = script.Globals.Get("loadLibrary");
+
+            var sw = new Stopwatch();
+            sw.Start();
+            var result = script.Call(func, fileData, "Factory", "Factory Library", file);
+
+            var p = new PresetParserMetadata();
+            foreach (var table in result.Table.Values)
             {
-                File.WriteAllBytes(@"C:\Users\Drachenkatze\Documents\spire-test.bin",
-                    s.GenerateMemoryBank(s.Presets[0], cfg));
+                File.WriteAllText(@"C:\Users\Drachenkatze\Documents\PresetMagician\test.dat",
+                    (string) table.Table["presetData"]);
+                Console.WriteLine(table.Table["presetName"]);
+                Console.WriteLine(table.Table["rawMetaData"]);
+
+                var metadata = (Table) table.Table["metaData"];
+
+                if (metadata != null)
+                {
+                    Console.WriteLine(metadata["modes"].GetType().FullName);
+
+                    if (metadata["creator"] != null)
+                    {
+                        p.Author = (string) metadata["creator"];
+                    }
+
+                    if (metadata["comment"] != null)
+                    {
+                        p.Comment = (string) metadata["comment"];
+                    }
+
+                    var modes = (Table) metadata["modes"];
+
+                    if (modes != null)
+                    {
+                        foreach (var mode in modes.Values)
+                        {
+                            p.Characteristics.Add(new Characteristic() {CharacteristicName = mode.String});
+                            Console.WriteLine(mode.String);
+                        }
+                    }
+
+                    var categories = (Table) metadata["categories"];
+
+                    if (categories != null)
+                    {
+                        foreach (var category in categories.Values)
+                        {
+                            var splittedString = category.String.Split('.');
+
+                            if (splittedString.Length == 2)
+                            {
+                                p.Types.Add(new Type() {TypeName = splittedString[0], SubTypeName = splittedString[1]});
+                            }
+
+                            if (splittedString.Length == 1)
+                            {
+                                p.Types.Add(new Type()
+                                {
+                                    TypeName = splittedString[0]
+                                });
+                            }
+                        }
+                    }
+                }
             }
-
-
         }
     }
-
-    
-
-  
-  
-
-   
-
-   
 }

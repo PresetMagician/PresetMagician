@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition.Primitives;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,11 +10,11 @@ using PresetMagician.VendorPresetParser.Roland.Internal;
 namespace PresetMagician.VendorPresetParser.Roland
 {
     // ReSharper disable once InconsistentNaming
-    public abstract class RolandPlugoutParser: AbstractVendorPresetParser
+    public abstract class RolandPlugoutParser : AbstractVendorPresetParser
     {
         private RolandExportConfig ExportConfig;
         private List<string> PresetFiles = new List<string>();
-        
+
         public override void Init()
         {
             BankLoadingNotes = $"Presets will be loaded from {GetPresetFolder()}";
@@ -39,9 +38,10 @@ namespace PresetMagician.VendorPresetParser.Roland
         public override async Task DoScan()
         {
             InitializeInternal();
-            var parser = new KoaBankFileParser(ExportConfig.KoaFileHeader, ExportConfig.KoaPresetNameLength, ExportConfig.KoaPresetLength,
+            var parser = new KoaBankFileParser(ExportConfig.KoaFileHeader, ExportConfig.KoaPresetNameLength,
+                ExportConfig.KoaPresetLength,
                 ExportConfig.KoaNumPresets);
-            
+
             var converter = new RolandConverter(ExportConfig);
             converter.LoadDefinitionFromCsvString(Encoding.UTF8.GetString(GetDefinitionData()));
 
@@ -53,26 +53,25 @@ namespace PresetMagician.VendorPresetParser.Roland
                 foreach (var parsedPreset in presets)
                 {
                     converter.SetFileMemory(parsedPreset.PresetData);
-                    
+
                     var preset = new PresetParserMetadata
                     {
                         PresetName = parsedPreset.PresetName.Trim(), Plugin = PluginInstance.Plugin,
                         BankPath = presetBankName,
-                        SourceFile = presetFile+":"+ parsedPreset.Index
+                        SourceFile = presetFile + ":" + parsedPreset.Index
                     };
 
                     PostProcessPreset(preset, converter);
 
                     await DataPersistence.PersistPreset(preset, converter.Export());
                 }
-                
             }
+
             await base.DoScan();
         }
 
         protected virtual void PostProcessPreset(PresetParserMetadata metadata, RolandConverter converter)
         {
-            
         }
 
         private void InitializeInternal()
@@ -94,9 +93,9 @@ namespace PresetMagician.VendorPresetParser.Roland
         protected abstract string GetProductName();
 
         protected abstract byte[] GetExportConfig();
-        
+
         public abstract byte[] GetSuffixData();
-        
+
         public abstract byte[] GetDefinitionData();
     }
 }
