@@ -19,7 +19,7 @@ namespace PresetMagician.VendorPresetParser.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class VendorResources {
@@ -71,22 +71,25 @@ namespace PresetMagician.VendorPresetParser.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to local serpent = require(&quot;serpent&quot;)
+        ///   Looks up a localized string similar to function tableHasKey(table, key)
+        ///    return table[key] ~= nil
+        ///end
         ///
         ///function loadLibrary (data, bankSource, bankName, bankPath)
+        ///    local serpent = require(&quot;serpent&quot;)
         ///    ---@param presets table
         ///    local ok, presets = serpent.load(data)
         ///
         ///    local parsedPresets = {};
+        ///    local lastSchema = {};
         ///
-        ///    for key, value in pairs(arr) do
+        ///    for k, value in pairs(presets) do
         ///        local parsedPreset = {};
         ///
-        ///        parsedPreset.insert(&quot;bankSource&quot;, bankSource)
-        ///        parsedPreset.insert(&quot;index&quot;, key)
-        ///        parsedPreset.insert(&quot;bankName&quot;, bankName)
-        ///        parsedPreset.insert(&quot;bankName&quot;, bankPath)
-        ///        parsedPreset.insert(&quot;pro [rest of string was truncated]&quot;;.
+        ///        parsedPreset[&quot;bankSource&quot;] = bankSource
+        ///
+        ///        if (tableHasKey(value, &quot;schema&quot;)) then
+        ///            lastSchema = value [rest of string was truncated]&quot;;.
         /// </summary>
         public static string AppliedAcousticSystems_LibraryParser {
             get {
@@ -167,11 +170,13 @@ namespace PresetMagician.VendorPresetParser.Properties {
         /// <summary>
         ///   Looks up a localized string similar to local n, v = &quot;serpent&quot;, &quot;0.302&quot; -- (C) 2012-18 Paul Kulchenko; MIT License
         ///local c, d = &quot;Paul Kulchenko&quot;, &quot;Lua serializer and pretty printer&quot;
-        ///local snum = {[tostring(1/0)]=&apos;1/0 --[[math.huge]]&apos;,[tostring(-1/0)]=&apos;-1/0 --[[-math.huge]]&apos;,[tostring(0/0)]=&apos;0/0&apos;}
-        ///local badtype = {thread = true, userdata = true, cdata = true}
+        ///local snum = { [tostring(1 / 0)] = &apos;1/0 --[[math.huge]]&apos;, [tostring(-1 / 0)] = &apos;-1/0 --[[-math.huge]]&apos;, [tostring(0 / 0)] = &apos;0/0&apos; }
+        ///local badtype = { thread = true, userdata = true, cdata = true }
         ///local getmetatable = debug and debug.getmetatable or getmetatable
-        ///local pairs = function(t) return next, t end -- avoid using __pairs in Lua 5.2+
-        ///local keyword, globals, G = {}, {}, (_G or _E [rest of string was truncated]&quot;;.
+        ///local pairs = function(t)
+        ///    return next, t
+        ///end -- avoid using __pairs in Lua 5.2+
+        ///local keyword, globals, [rest of string was truncated]&quot;;.
         /// </summary>
         public static string Lua_Serpent {
             get {
