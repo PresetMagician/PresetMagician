@@ -1,39 +1,34 @@
 using System;
-using System.CodeDom;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
-using GSF;
 using PresetMagician.DevTools.Vendors.Roland;
 using PresetMagician.VendorPresetParser.Roland.Internal;
 
 namespace PresetMagicianScratchPad.Roland
 {
-    public class RolandValue: RolandMemorySection
+    public class RolandValue : RolandMemorySection
     {
         public RolandValue(RolandMemorySection parent, XElement node)
         {
             Parent = parent;
             SourceNode = node;
         }
-        
+
         public string DefaultValue { get; set; }
         public string Range { get; set; }
-        
+
 
         public int _primitiveTypeBits;
         public int _primitiveTypeLength;
         public string _primitiveTypeName;
-        
-       
-        
+
+
         public override void ApplyProperties()
         {
             ApplyType();
-            
+
             foreach (var childElement in SourceNode.Elements())
             {
                 var elementValue = childElement.Value;
@@ -75,18 +70,18 @@ namespace PresetMagicianScratchPad.Roland
                         break;
                 }
             }
-            
+
             ValuePath = string.Join(".", ParentValuePath);
 
             if (IsAutoCalculatedSize)
             {
                 CalculateSize();
             }
-            
+
             CalculatedSize = GetTypeSize();
-            
+
             FileSize = Size;
-            
+
             DoCallback("RolandValue.AfterParse");
         }
 
@@ -104,7 +99,7 @@ namespace PresetMagicianScratchPad.Roland
                 PrimitiveTypeName = _primitiveTypeName,
                 PrimitiveTypeBits = _primitiveTypeBits,
                 PrimitiveTypeLength = _primitiveTypeLength,
-                
+
                 Range = Range,
                 DefaultValue = DefaultValue
             };
@@ -112,18 +107,16 @@ namespace PresetMagicianScratchPad.Roland
             return rvs;
         }
 
-        
 
-     
-        public void DumpToPatchFile(RolandMemory memory, MemoryStream ms, RolandExportConfig exportConfig)
+        public override void DumpToPatchFile(RolandMemory memory, MemoryStream ms, RolandExportConfig exportConfig)
         {
             /*if (!exportConfig.ExportZeroForInt1X7 && Type == "int1x7" && memVal == 0)
             {
 
                 return;
             }*/
-            
-            
+
+
             if (!exportConfig.ShouldExport(ValuePath))
             {
                 return;
@@ -134,14 +127,9 @@ namespace PresetMagicianScratchPad.Roland
 
             if (result.address != null && result.data != null)
             {
-                ms.Write(result.address,0,4);
-                ms.Write(result.data,0,4);
+                ms.Write(result.address, 0, 4);
+                ms.Write(result.data, 0, 4);
             }
-            
-
-            
-
-            
         }
 
         protected virtual void CalculateSize()
@@ -149,7 +137,7 @@ namespace PresetMagicianScratchPad.Roland
             Size = GetTypeSize();
         }
 
-      
+
         private void ApplyType()
         {
             var typeElement = SourceNode.Element("type");
@@ -160,14 +148,13 @@ namespace PresetMagicianScratchPad.Roland
             }
             else
             {
-
                 Type = typeElement.Value;
             }
 
             var result = ParseTypeString(Type);
 
             _primitiveTypeBits = result.bits;
-            
+
             _primitiveTypeName = result.primitiveType;
 
             if (result.length == null)
@@ -187,10 +174,8 @@ namespace PresetMagicianScratchPad.Roland
             }
             else
             {
-                _primitiveTypeLength = (int)result.length;
+                _primitiveTypeLength = (int) result.length;
             }
-
-
         }
 
         public static (int? length, int bits, string primitiveType) ParseTypeString(string typeString)
@@ -205,7 +190,7 @@ namespace PresetMagicianScratchPad.Roland
             var bits = int.Parse(typeString.Substring(separatorPos + 1));
             var type = typeString.Substring(0, separatorPos - 1);
             var lengthStr = typeString.Substring(separatorPos - 1, 1);
-            
+
             switch (type)
             {
                 case "int":
@@ -213,18 +198,16 @@ namespace PresetMagicianScratchPad.Roland
                     break;
                 default:
                     throw new Exception($"Unknown type '{type}'");
-                
             }
+
             if (lengthStr == "N")
             {
                 return (null, bits, type);
             }
 
             return (int.Parse(lengthStr), bits, type);
-
         }
 
-       
 
         /// <summary>
         /// Returns the size of this type in bytes
@@ -233,7 +216,6 @@ namespace PresetMagicianScratchPad.Roland
         protected int GetTypeSize()
         {
             return GetPrimitiveTypeLength();
-           
         }
 
         public (bool, string) CompareAgainstFile(RolandMemory memory)
@@ -242,14 +224,14 @@ namespace PresetMagicianScratchPad.Roland
             {
                 return (true, "");
             }
+
             var memVal = 0;
             var retString = $"{Name} ";
             if (memory.Has(StartAddress, GetPrimitiveTypeLength()))
             {
                 var val = memory.Get(StartAddress, GetPrimitiveTypeLength());
-                memVal = GetValue(val, _primitiveTypeBits * (int)_primitiveTypeLength, 0);
+                memVal = GetValue(val, _primitiveTypeBits * (int) _primitiveTypeLength, 0);
                 retString += $"MemVal: 0x{memVal:x2} ";
-
             }
             else
             {
@@ -261,12 +243,10 @@ namespace PresetMagicianScratchPad.Roland
                 else
                 {
                     retString += "NoDefaultVal/NoMemoryVal";
-                    return (false, retString);                    
+                    return (false, retString);
                 }
-
-                
             }
-            
+
             var data = memory.GetFromFile(FileAddress, _primitiveTypeLength);
 
 
@@ -274,7 +254,7 @@ namespace PresetMagicianScratchPad.Roland
             {
                 return (false, "file value does not exist");
             }
-            
+
             var fileVal = RolandValueStruct.DecodeValueAsInt(data, _primitiveTypeLength, _primitiveTypeBits);
             if (fileVal == memVal)
             {
@@ -285,11 +265,9 @@ namespace PresetMagicianScratchPad.Roland
                 retString += $" fileVal 0x{fileVal:x2}";
                 return (false, retString);
             }
-            
         }
-        
-        
-      
+
+
         public override string GetDumpData(RolandMemory memory = null)
         {
             if (memory == null)
@@ -297,11 +275,7 @@ namespace PresetMagicianScratchPad.Roland
                 return null;
             }
 
-            if (_primitiveTypeLength == null)
-            {
-                throw new Exception($"RolandValue.GetDumpData: Don't know how to handle {Type} with a non-set primitive length");
-            }
-            
+
             var fileValueStr = "";
             var valueStr = "";
             var defaultStr = "";
@@ -312,25 +286,23 @@ namespace PresetMagicianScratchPad.Roland
                 int? memVal = null;
                 int? fileVal = null;
                 int? defVal = null;
-                
+
                 if (memory.Has(StartAddress, GetPrimitiveTypeLength()))
                 {
                     var val = memory.Get(StartAddress, GetPrimitiveTypeLength());
-                    memVal = GetValue(val, _primitiveTypeBits * (int)_primitiveTypeLength, 0);
-                    
+                    memVal = GetValue(val, _primitiveTypeBits * (int) _primitiveTypeLength, 0);
+
                     valueStr = $"MemVal: 0x{memVal:X} ({memVal})";
                 }
-               
-                
+
 
                 var data = memory.GetFromFile(FileAddress, _primitiveTypeLength);
 
-                
+
                 if (data != null)
                 {
                     fileVal = RolandValueStruct.DecodeValueAsInt(data, _primitiveTypeLength, _primitiveTypeBits);
                     fileValueStr = $"FileVal: 0x{fileVal:X} ({fileVal})";
-
                 }
 
                 if (int.TryParse(DefaultValue, out int defaultInt))
@@ -354,6 +326,7 @@ namespace PresetMagicianScratchPad.Roland
                         {
                             equalStr = "EQ?";
                         }
+
                         if (defVal != null)
                         {
                             if (fileVal == defVal)
@@ -361,26 +334,24 @@ namespace PresetMagicianScratchPad.Roland
                                 equalStr = "EQ";
                             }
                         }
-                       
-                        
+
+
                         else
                         {
                             equalStr = "NODEFAULT";
                         }
                     }
                 }
-                
-                return $"{valueStr.PadRight(25)} {fileValueStr.PadRight(25)} {defaultStr.PadRight(25)} {equalStr}"; 
+
+                return $"{valueStr.PadRight(25)} {fileValueStr.PadRight(25)} {defaultStr.PadRight(25)} {equalStr}";
             }
 
             return "";
-            
-            throw new Exception($"RolandValue.GetDumpData: Don't know how to handle the primitive {_primitiveTypeName} for {Type}");
-            
-            
+
+            throw new Exception(
+                $"RolandValue.GetDumpData: Don't know how to handle the primitive {_primitiveTypeName} for {Type}");
         }
-        
-        
+
 
         public override string GetTypeName()
         {
@@ -398,30 +369,20 @@ namespace PresetMagicianScratchPad.Roland
 
         public bool HasValue(RolandMemory memory)
         {
-            return  memory.Has(StartAddress, GetPrimitiveTypeLength());
+            return memory.Has(StartAddress, GetPrimitiveTypeLength());
         }
+
         public int GetValue(RolandMemory memory)
         {
             var val = memory.Get(StartAddress, GetPrimitiveTypeLength());
-            var intValue = GetValue(val, _primitiveTypeBits * (int)_primitiveTypeLength, 0);
+            var intValue = GetValue(val, _primitiveTypeBits * (int) _primitiveTypeLength, 0);
 
             return intValue;
         }
 
         public static int GetValue(int memoryData, int numberBase, int position)
         {
-            /*var orig = LittleEndian.GetBytes(memoryData);
-
-            var startBit = position * numberBase;
-            var endBit = (position + 1) * numberBase - 1;
-            var b = new byte[4];*/
-            
-            
             return memoryData;
-            var shiftedMemoryData = memoryData >> (numberBase * position);
-            var mask = (int)Math.Pow(2, numberBase) - 1;
-            return shiftedMemoryData & mask;
-
         }
     }
 }

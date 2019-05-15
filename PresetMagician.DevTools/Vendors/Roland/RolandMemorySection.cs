@@ -9,13 +9,12 @@ using System.Xml.XPath;
 using Catel.Collections;
 using PresetMagician.DevTools.Vendors.Roland;
 using PresetMagician.Utils;
-using PresetMagician.Utils.BinaryStructViz;
 using PresetMagician.VendorPresetParser.Roland.Internal;
 
 namespace PresetMagicianScratchPad.Roland
 {
     public abstract class RolandMemorySection
-    {        
+    {
         public static HashSet<string> RegisteredCallbacks = new HashSet<string>
         {
             "AfterApplyProperties", "RolandStructBeforeApplyChilds",
@@ -49,7 +48,7 @@ namespace PresetMagicianScratchPad.Roland
 
         public int FileAddress { get; set; }
         public int FileSize { get; set; }
-        
+
         public RolandExportConfig Config { get; set; }
 
         /// <summary>
@@ -149,7 +148,7 @@ namespace PresetMagicianScratchPad.Roland
 
         public delegate void ParseCallback(RolandMemorySection section);
 
-      
+
         protected void DoCallback(string type)
         {
             if (!RegisteredCallbacks.Contains(type))
@@ -162,8 +161,7 @@ namespace PresetMagicianScratchPad.Roland
                 Callbacks[type].Invoke(this);
             }
         }
-        
-        
+
 
         public List<RolandValueStruct> GetStructureData(List<RolandValueStruct> data = null)
         {
@@ -174,8 +172,6 @@ namespace PresetMagicianScratchPad.Roland
 
             foreach (var subStruct in Structs)
             {
-              
-               
                 subStruct.GetStructureData(data);
             }
 
@@ -187,7 +183,6 @@ namespace PresetMagicianScratchPad.Roland
             return data;
         }
 
-      
 
         public Dictionary<string, ParseCallback> Callbacks { get; set; } = new Dictionary<string, ParseCallback>();
 
@@ -201,7 +196,7 @@ namespace PresetMagicianScratchPad.Roland
             return DumpInternal(0, memory);
         }
 
-        public void DumpToPatchFile(RolandMemory memory, MemoryStream ms, RolandExportConfig exportConfig)
+        public virtual void DumpToPatchFile(RolandMemory memory, MemoryStream ms, RolandExportConfig exportConfig)
         {
             foreach (var subStruct in Structs)
             {
