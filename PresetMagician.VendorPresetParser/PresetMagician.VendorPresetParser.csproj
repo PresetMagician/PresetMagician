@@ -440,8 +440,8 @@
     <Compile Include="ValhallaDSP\ValhallaDSP_ValhallaVintageVerb.cs" />
     <Compile Include="VoidPresetParser.cs" />
     <Compile Include="Xfer_Records\Xfer_Records_Serum.cs" />
-      <Content Include="Resources\AppliedAcousticSystems\LibraryParser.lua"/>
-      <Content Include="Resources\Lua\serpent.lua"/>
+    <Content Include="Resources\AppliedAcousticSystems\LibraryParser.lua" />
+    <Content Include="Resources\Lua\serpent.lua" />
     <Content Include="Resources\RevealSound\SpireBlank.spf" />
     <Content Include="Resources\Roland\D-50\ExportConfig.json" />
     <Content Include="Resources\Roland\D-50\RolandScript.csv" />
@@ -638,7 +638,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\VendorResources.resx">
-        <Generator>PublicResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>VendorResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -833,7 +833,7 @@
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
         <Reference Include="Newtonsoft.Json">
-            <HintPath>..\packages\Newtonsoft.Json\lib\net45\Newtonsoft.Json.dll</HintPath>
+          <HintPath>..\packages\NewtonSoft.Json\lib\net45\Newtonsoft.Json.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>

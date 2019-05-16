@@ -29,14 +29,12 @@ namespace PresetMagician.NKS
         {
             pluginId = MessagePackSerializer.Deserialize<PluginId>(buffer);
 
-            Debug.WriteLine(pluginId.VSTMagic);
         }
 
         public override byte[] SerializeMessagePack()
         {
             byte[] b = MessagePackSerializer.Serialize(pluginId);
 
-            Debug.WriteLine(MessagePackSerializer.ToJson(b));
             return b;
         }
 

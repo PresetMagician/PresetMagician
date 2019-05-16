@@ -31,20 +31,10 @@ namespace PresetMagician.NKS
 
         public override void DeserializeMessagePack(byte[] buffer)
         {
-            Debug.WriteLine(MessagePackSerializer.ToJson(buffer));
             try
             {
                 summaryInformation = MessagePackSerializer.Deserialize<SummaryInformation>(buffer);
 
-
-                Debug.WriteLine(summaryInformation.author);
-                Debug.WriteLine(summaryInformation.comment);
-                Debug.WriteLine(summaryInformation.deviceType);
-                Debug.WriteLine(summaryInformation.name);
-                Debug.WriteLine(summaryInformation.uuid);
-                Debug.WriteLine(summaryInformation.vendor);
-                Debug.WriteLine(summaryInformation.bankChain.Count);
-                Debug.WriteLine(summaryInformation.bankChain[0]);
             }
             catch (Exception)
             {
@@ -60,7 +50,6 @@ namespace PresetMagician.NKS
         {
             byte[] b = MessagePackSerializer.Serialize(summaryInformation);
 
-            Debug.WriteLine(MessagePackSerializer.ToJson(b));
             return b;
         }
 

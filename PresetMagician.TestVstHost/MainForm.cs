@@ -75,7 +75,7 @@ namespace PresetMagician.TestVstHost
 
                 spin.Speakers = f2;
 
-                ctx.PluginCommandStub.SetSpeakerArrangement(spin, sp);
+                //ctx.PluginCommandStub.SetSpeakerArrangement(spin, sp);
 
                 return ctx;
             }

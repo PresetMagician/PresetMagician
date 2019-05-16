@@ -9,7 +9,13 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using CommonUtils.VSTPlugin;
 using CsvHelper;
+using NAudio.CoreAudioApi;
+using NAudio.Wave;
+using RtMidi.Core;
+using RtMidi.Core.Devices;
+using RtMidi.Core.Messages;
 
 namespace PresetMagician.TestVstHost
 {
@@ -21,6 +27,9 @@ namespace PresetMagician.TestVstHost
         }
 
         public IVstPluginContext PluginContext { get; set; }
+        private WasapiOut outputDevice;
+        private VSTStream vstWaveProvider;
+        private IMidiInputDevice midiInputDevice;
 
         private void DataToForm()
         {
@@ -28,6 +37,30 @@ namespace PresetMagician.TestVstHost
             FillProgramList();
             FillProgram();
             FillParameterList();
+            FillWasapiDevicesList();
+            FillMidiInputDevicesList();
+        }
+
+        private void FillWasapiDevicesList()
+        {
+            wasapiDevicesCombo.Items.Clear();
+            var enumerator = new MMDeviceEnumerator();
+            foreach (var wasapi in enumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active))
+            {
+                    var dev = $"{wasapi.DataFlow} {wasapi.FriendlyName} {wasapi.DeviceFriendlyName} {wasapi.State}";
+                    wasapiDevicesCombo.Items.Add(wasapi);
+
+            }
+        }
+
+        private void FillMidiInputDevicesList()
+        {
+            midiInputDropdown.Items.Clear();
+
+            foreach (var inputDeviceInfo in MidiDeviceManager.Default.InputDevices)
+            {
+                midiInputDropdown.Items.Add(inputDeviceInfo.Name);
+            }
         }
 
         private void FillPropertyList()
@@ -503,6 +536,193 @@ namespace PresetMagician.TestVstHost
                
             }
             timer1.Enabled = true;
+        }
+
+        private void SpeakerConfigBtn_Click(object sender, EventArgs e)
+        {
+            var inputArrangement = new VstSpeakerArrangement();
+            var outputArrangement= new VstSpeakerArrangement();
+            var result = PluginContext.PluginCommandStub.GetSpeakerArrangement(out inputArrangement, out outputArrangement);
+
+            var sb = new StringBuilder();
+
+            sb.AppendLine($"Result from GetSpeakerArrangement(): {result}");
+
+            if (inputArrangement == null)
+            {
+                sb.AppendLine("Input Speaker Arrangement is null");
+            }
+            else
+            {
+                sb.AppendLine("Input Speaker Arrangement:");
+                sb.AppendLine($"Type: {inputArrangement.Type}");
+
+                var cnt = 0;
+                foreach (var x in inputArrangement.Speakers)
+                {
+                    sb.AppendLine($"Speaker #{cnt} Type: {x.SpeakerType} Name: {x.Name} Azimath: {x.Azimath} Elevation: {x.Elevation} Radius: {x.Radius}");
+                    cnt++;
+                }
+            }
+
+            if (outputArrangement == null)
+            {
+                sb.AppendLine("Output Speaker Arrangement is null");
+            }
+            else
+            {
+                sb.AppendLine("Output Speaker Arrangement:");
+                sb.AppendLine($"Type: {outputArrangement.Type}");
+
+                var cnt = 0;
+                foreach (var x in outputArrangement.Speakers)
+                {
+                    sb.AppendLine($"Speaker #{cnt} Type: {x.SpeakerType} Name: {x.Name} Azimath: {x.Azimath} Elevation: {x.Elevation} Radius: {x.Radius}");
+                    cnt++;
+                }
+            }
+
+            MessageBox.Show(this, sb.ToString());
+
+        }
+
+        private void StartStop_CheckedChanged(object sender, EventArgs e)
+        {
+            var outDevice = (MMDevice) wasapiDevicesCombo.SelectedItem;
+
+            if (outDevice == null)
+            {
+                startStop.Checked = false;
+                return;
+            }
+
+            if (startStop.Checked)
+            {
+                StartOutput();
+            }
+            else
+            {
+                StopOutput();
+            }
+        }
+
+        private void StartOutput()
+        {
+            outputDevice = new WasapiOut(AudioClientShareMode.Shared, 60);
+            
+           
+            vstWaveProvider = new VSTStream();
+            vstWaveProvider.pluginContext = (VstPluginContext) PluginContext;
+            vstWaveProvider.SetWaveFormat(outputDevice.OutputWaveFormat.SampleRate, outputDevice.OutputWaveFormat.Channels);
+            outputDevice.Init(vstWaveProvider);
+            outputDevice.Play();
+        }
+
+        private void StopOutput()
+        {
+            if (outputDevice == null)
+            {
+                return;}
+            outputDevice.Stop();
+            vstWaveProvider = null;
+            outputDevice = null;
+            startStop.Checked = false;
+        }
+
+        private void PluginForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            StopOutput();
+            StopMidi();
+        }
+
+        private void MidiInputDropdown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var selectedInput = midiInputDropdown.SelectedItem.ToString();
+
+            StopMidi();
+
+            foreach (var inputDevice in MidiDeviceManager.Default.InputDevices)
+            {
+                if (inputDevice.Name == selectedInput)
+                {
+                    midiInputDevice = inputDevice.CreateDevice();
+                    midiInputDevice.NoteOn += MidiInputDeviceOnNoteOn;
+                    midiInputDevice.NoteOff += MidiInputDeviceOnNoteOff;
+                    midiInputDevice.Open();
+                }
+            }
+            
+        }
+
+        private void StopMidi()
+        {
+            if (midiInputDevice == null)
+            {
+                return;
+            }
+
+            midiInputDevice.Close();
+            midiInputDevice.Dispose();
+        }
+
+        private void MIDI(byte Cmd, byte Val1, byte Val2, int deltaFrames = 0)
+        {
+            /*
+			 * Just a small note on the code for setting up a midi event:
+			 * You can use the VstEventCollection class (Framework) to setup one or more events
+			 * and then call the ToArray() method on the collection when passing it to
+			 * ProcessEvents. This will save you the hassle of dealing with arrays explicitly.
+			 * http://computermusicresource.com/MIDI.Commands.html
+			 *
+			 * Freq to Midi notes etc:
+			 * http://www.sengpielaudio.com/calculator-notenames.htm
+			 *
+			 * Example to use NAudio Midi support
+			 * http://stackoverflow.com/questions/6474388/naudio-and-midi-file-reading
+			 */
+
+            var midiData = new byte[4];
+            midiData[0] = Cmd;
+            midiData[1] = Val1;
+            midiData[2] = Val2;
+            midiData[3] = 0; // Reserved, unused
+
+            var vse = new VstMidiEvent(deltaFrames,
+                /*NoteLength*/ 0,
+                /*NoteOffset*/ 0,
+                midiData,
+                /*Detune*/ 0,
+                /*NoteOffVelocity*/ 127);
+
+            var ve = new VstEvent[1];
+            ve[0] = vse;
+
+            PluginContext.PluginCommandStub.ProcessEvents(ve);
+        }
+
+        public void MIDI_NoteOff(byte Note, byte Velocity, int deltaFrames = 0)
+        {
+            byte Cmd = 0x80;
+            MIDI( Cmd, Note, Velocity, deltaFrames);
+        }
+
+        public void MIDI_NoteOn(byte Note, byte Velocity, int deltaFrames = 0)
+        {
+            byte Cmd = 0x90;
+            MIDI( Cmd, Note, Velocity, deltaFrames);
+        }
+
+
+        private void MidiInputDeviceOnNoteOff(IMidiInputDevice sender, in NoteOffMessage msg)
+        {
+            Debug.WriteLine($"NoteOff {msg.Key} Velocity {msg.Velocity}");
+            MIDI_NoteOff((byte) msg.Key, (byte) msg.Velocity);
+        }
+
+        private void MidiInputDeviceOnNoteOn(IMidiInputDevice sender, in NoteOnMessage msg)
+        {
+            Debug.WriteLine($"NoteOn {msg.Key} Velocity {msg.Velocity}");
+            MIDI_NoteOn((byte) msg.Key, (byte) msg.Velocity);
         }
     }
 }

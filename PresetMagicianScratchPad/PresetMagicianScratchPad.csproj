@@ -310,27 +310,27 @@
         <Reference Include="MethodTimer">
           <HintPath>..\packages\MethodTimer.Fody\lib\net452\MethodTimer.dll</HintPath>
           <Private>False</Private>
-            <Paket>True</Paket>
+          <Paket>True</Paket>
         </Reference>
       </ItemGroup>
     </When>
   </Choose>
-    <Choose>
-        <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
-            <ItemGroup>
-                <Reference Include="MoonSharp.Interpreter">
-                    <HintPath>..\packages\MoonSharp\lib\net40-client\MoonSharp.Interpreter.dll</HintPath>
-                    <Private>True</Private>
-                    <Paket>True</Paket>
-                </Reference>
-            </ItemGroup>
-        </When>
-    </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+      <ItemGroup>
+        <Reference Include="MoonSharp.Interpreter">
+          <HintPath>..\packages\MoonSharp\lib\net40-client\MoonSharp.Interpreter.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
         <Reference Include="Newtonsoft.Json">
-            <HintPath>..\packages\Newtonsoft.Json\lib\net45\Newtonsoft.Json.dll</HintPath>
+          <HintPath>..\packages\NewtonSoft.Json\lib\net45\Newtonsoft.Json.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -519,7 +519,7 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
-          <Reference Include="System.Core">
+        <Reference Include="System.Core">
           <Paket>True</Paket>
         </Reference>
       </ItemGroup>

@@ -36,7 +36,6 @@ namespace PresetMagician.NKS
 
         public override void DeserializeMessagePack(byte[] buffer)
         {
-            Debug.WriteLine(MessagePackSerializer.ToJson(buffer));
             controllerAssignments = MessagePackSerializer.Deserialize<ControllerAssignments>(buffer);
         }
 
@@ -44,7 +43,6 @@ namespace PresetMagician.NKS
         {
             byte[] b = MessagePackSerializer.Serialize(controllerAssignments);
 
-            Debug.WriteLine(MessagePackSerializer.ToJson(b));
             return b;
         }
 

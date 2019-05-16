@@ -16,7 +16,7 @@ namespace PresetMagician.TestVstHost
 
         public HostCommandStub()
         {
-            _debug = true;
+            _debug = false;
 
             _currentProcessLevel = VstProcessLevels.User;
         }

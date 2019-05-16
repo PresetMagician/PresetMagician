@@ -143,6 +143,9 @@ namespace PresetMagician.VstHost.VST
 
             ctx.PluginCommandStub.SetBlockSize(BlockSize);
 
+            remoteVst.Logger.Debug($"{hostCommandStub.PluginDll}: Setting 32 bit precision");
+            
+            ctx.PluginCommandStub.SetProcessPrecision(VstProcessPrecision.Process32);
 
             remoteVst.Logger.Debug($"{hostCommandStub.PluginDll}: Activating output");
             

@@ -106,12 +106,12 @@ namespace PresetMagician.VstHost.VST
 
             _editorWindowHelper = new WindowInteropHelper(_editorWindow);
             _editorWindowHelper.EnsureHandle();
-            
+
             if (PluginContext.PluginCommandStub.EditorGetRect(out wndRect))
             {
                 _editorWindow.Width = wndRect.Width;
-                    _editorWindow.Height = wndRect.Height;
-                    PluginContext.PluginCommandStub.EditorOpen(_editorWindowHelper.Handle);
+                _editorWindow.Height = wndRect.Height;
+                PluginContext.PluginCommandStub.EditorOpen(_editorWindowHelper.Handle);
             }
             else
             {
@@ -124,18 +124,19 @@ namespace PresetMagician.VstHost.VST
                 }
                 else
                 {
-                    Logger.Warning($"Unable to open the editor for the plugin {PluginContext.PluginCommandStub.GetEffectName()} because it didn't give us a rectangle to work with.");
+                    Logger.Warning(
+                        $"Unable to open the editor for the plugin {PluginContext.PluginCommandStub.GetEffectName()} because it didn't give us a rectangle to work with.");
                     return false;
                 }
-
             }
 
             if (wndRect.Width == 0 || wndRect.Height == 0)
             {
-                Logger.Warning($"Unable to open the editor for the plugin {PluginContext.PluginCommandStub.GetEffectName()} because it give us an empty rectangle to work with.");
+                Logger.Warning(
+                    $"Unable to open the editor for the plugin {PluginContext.PluginCommandStub.GetEffectName()} because it give us an empty rectangle to work with.");
                 return false;
             }
-            
+
             _editorWindow.Show();
 
 
