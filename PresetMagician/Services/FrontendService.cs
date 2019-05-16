@@ -74,7 +74,7 @@ namespace PresetMagician.Services
 
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin),
                 nameof(Commands.Plugin.ForceReportPluginsToDev));
-            
+
             _commandManager.CreateCommandWithGesture(typeof(Commands.Plugin),
                 nameof(Commands.Plugin.RemoveSelectedPlugins));
 
@@ -93,6 +93,8 @@ namespace PresetMagician.Services
             _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "ShowPluginChunk");
             _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "LoadPlugin");
             _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools), "UnloadPlugin");
+            _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools),
+                nameof(Commands.PluginTools.PatchPluginToAudioOutput));
             _commandManager.CreateCommandWithGesture(typeof(Commands.PluginTools),
                 nameof(Commands.PluginTools.ReportSinglePluginToLive));
 

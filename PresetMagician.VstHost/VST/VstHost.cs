@@ -4,10 +4,16 @@ using System.Diagnostics;
 using System.IO;
 using System.Timers;
 using System.Windows;
-using Drachenkatze.PresetMagician.VSTHost;
 using Jacobi.Vst.Core;
 using Jacobi.Vst.Core.Host;
 using Jacobi.Vst.Interop.Host;
+using NAudio.CoreAudioApi;
+using NAudio.Wave;
+using PresetMagician.Core.Models.Audio;
+using PresetMagician.Core.Models.MIDI;
+using PresetMagician.Core.Services;
+using RtMidi.Core.Devices;
+using RtMidi.Core.Messages;
 
 namespace PresetMagician.VstHost.VST
 {
@@ -27,9 +33,14 @@ namespace PresetMagician.VstHost.VST
     {
         private Timer _audioTimer;
         private Timer _guiTimer;
-        
+
         private readonly object _guiLock = new object();
         private readonly object _audioLock = new object();
+        private WasapiOut _outputDevice;
+        private VSTStream _vstWaveProvider;
+        private RemoteVstPlugin _midiTarget;
+        private List<IMidiInputDevice> _midiInputDevices = new List<IMidiInputDevice>();
+
 
         public VstHost(bool useTimer = false)
         {
@@ -38,7 +49,7 @@ namespace PresetMagician.VstHost.VST
                 _audioTimer = new Timer();
                 _audioTimer.Elapsed += AudioTimerOnElapsed;
                 _audioTimer.Interval = 50;
-                _audioTimer.Enabled = true;
+                _audioTimer.Enabled = false;
                 _audioTimer.AutoReset = false;
 
                 _guiTimer = new Timer();
@@ -121,7 +132,7 @@ namespace PresetMagician.VstHost.VST
             hostCommandStub.PluginDll = Path.GetFileName(remoteVst.DllPath);
 
             remoteVst.Logger.Debug($"{hostCommandStub.PluginDll}: Loading plugin");
-         
+
 
             var ctx = VstPluginContext.Create(remoteVst.DllPath, hostCommandStub);
             ctx.Set("Plugin", remoteVst);
@@ -135,7 +146,7 @@ namespace PresetMagician.VstHost.VST
             ctx.PluginCommandStub.Open();
 
             remoteVst.Logger.Debug($"{hostCommandStub.PluginDll}: Setting Sample Rate {SampleRate}");
-            
+
 
             ctx.PluginCommandStub.SetSampleRate(SampleRate);
 
@@ -144,11 +155,11 @@ namespace PresetMagician.VstHost.VST
             ctx.PluginCommandStub.SetBlockSize(BlockSize);
 
             remoteVst.Logger.Debug($"{hostCommandStub.PluginDll}: Setting 32 bit precision");
-            
+
             ctx.PluginCommandStub.SetProcessPrecision(VstProcessPrecision.Process32);
 
             remoteVst.Logger.Debug($"{hostCommandStub.PluginDll}: Activating output");
-            
+
 
             remoteVst.PluginContext.PluginCommandStub.MainsChanged(true);
 
@@ -245,6 +256,8 @@ namespace PresetMagician.VstHost.VST
                         _plugins.Remove(remoteVst);
                     }
 
+                    UnpatchPluginFromAudioOutput();
+                    UnpatchPluginFromMidiInput();
 
                     if (remoteVst.IsEditorOpen)
                     {
@@ -263,6 +276,82 @@ namespace PresetMagician.VstHost.VST
                     remoteVst.IsLoaded = false;
                 }
             }
+        }
+
+        public void PatchPluginToAudioOutput(RemoteVstPlugin plugin, AudioOutputDevice device)
+        {
+            var audioService = new AudioService();
+            var ep = audioService.GetAudioEndpoint(device);
+
+            if (ep == null)
+            {
+                throw new Exception(
+                    $"Unable to open audio device {device.Name} because the device (currently) doesn't exist");
+            }
+
+            UnpatchPluginFromAudioOutput();
+
+
+            _outputDevice = new WasapiOut(ep, AudioClientShareMode.Shared, true, 60);
+
+            _vstWaveProvider = new VSTStream();
+            _vstWaveProvider.pluginContext = plugin.PluginContext;
+            _vstWaveProvider.SetWaveFormat(_outputDevice.OutputWaveFormat.SampleRate,
+                _outputDevice.OutputWaveFormat.Channels);
+            _outputDevice.Init(_vstWaveProvider);
+            _outputDevice.Play();
+        }
+
+        public void PatchPluginToMidiInput(RemoteVstPlugin plugin, MidiInputDevice device)
+        {
+            _midiTarget = plugin;
+            var midiService = new MidiService();
+            var midiInput = midiService.GetMidiEndpoint(device);
+
+            if (midiInput == null)
+            {
+                throw new Exception(
+                    $"Unable to open MIDI device {device.Name} because the device  (currently) doesn't exists");
+            }
+
+            midiInput.NoteOn += MidiInputOnNoteOn;
+            midiInput.NoteOff += MidiInputOnNoteOff;
+            midiInput.Open();
+
+            _midiInputDevices.Add(midiInput);
+        }
+
+        public void UnpatchPluginFromMidiInput()
+        {
+            foreach (var inputDevice in _midiInputDevices)
+            {
+                inputDevice.Close();
+                inputDevice.Dispose();
+            }
+
+            _midiTarget = null;
+        }
+
+        private void MidiInputOnNoteOff(IMidiInputDevice sender, in NoteOffMessage msg)
+        {
+            MIDI_NoteOff(_midiTarget, (byte) msg.Key, (byte) msg.Velocity);
+        }
+
+        private void MidiInputOnNoteOn(IMidiInputDevice sender, in NoteOnMessage msg)
+        {
+            MIDI_NoteOn(_midiTarget, (byte) msg.Key, (byte) msg.Velocity);
+        }
+
+        public void UnpatchPluginFromAudioOutput()
+        {
+            if (_outputDevice == null)
+            {
+                return;
+            }
+
+            _outputDevice.Stop();
+            _vstWaveProvider = null;
+            _outputDevice = null;
         }
 
         public void DisposeVST(RemoteVstPlugin plugin)
