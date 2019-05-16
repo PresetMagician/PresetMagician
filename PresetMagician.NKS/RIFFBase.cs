@@ -44,7 +44,6 @@ namespace PresetMagician.NKS
                 source.Read(padding, 0, 1);
             }
 
-            Debug.WriteLine("Read chunk ID " + TypeID);
         }
 
         public virtual void WriteData(Stream target)

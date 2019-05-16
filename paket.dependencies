@@ -74,3 +74,4 @@ nuget System.Collections.Immutable
 nuget SpreadsheetLight
 nuget DocumentFormat.OpenXml 2.5.0
 nuget MoonSharp
+nuget RtMidi.Core

@@ -31,7 +31,6 @@ namespace PresetMagician.NKS
 
             TypeID = Encoding.ASCII.GetString(buffer, 0, 4);
             ChunkSize = LittleEndian.ToInt32(buffer, 4);
-            Debug.WriteLine("Chunk size is " + ChunkSize.ToString());
             Chunk = new byte[4];
             Chunk = buffer.BlockCopy(8, 4);
 
@@ -50,7 +49,6 @@ namespace PresetMagician.NKS
 
         public override void WriteData(Stream target)
         {
-            Debug.WriteLine("Writing NKSFRIFF");
             byte[] buffer = new byte[m_headerLength];
 
             Buffer.BlockCopy(Encoding.ASCII.GetBytes(TypeID), 0, buffer, 0, 4);

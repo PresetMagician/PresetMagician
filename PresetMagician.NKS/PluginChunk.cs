@@ -46,7 +46,6 @@ namespace PresetMagician.NKS
 
         public override void Write(Stream target)
         {
-            Debug.WriteLine("Writing PluginChunk");
             base.WriteData(target);
         }
     }

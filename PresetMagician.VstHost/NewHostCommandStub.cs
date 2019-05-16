@@ -8,7 +8,7 @@ using Jacobi.Vst.Core.Host;
 using PresetMagician.Utils.Logger;
 using PresetMagician.VstHost.VST;
 
-namespace Drachenkatze.PresetMagician.VSTHost
+namespace PresetMagician.VstHost
 {
     public class NewHostCommandStub : IVstHostCommandStub, IVstHostCommandsDeprecated20, IDisposable
     {
@@ -20,7 +20,7 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public NewHostCommandStub(MiniLogger logger)
         {
-            _debug = true;
+            _debug = false;
 
             _logger = logger;
             _currentProcessLevel = VstProcessLevels.User;
@@ -73,8 +73,8 @@ namespace Drachenkatze.PresetMagician.VSTHost
 
         public int GetBlockSize()
         {
-            Debug($"GetBlockSize => {VstHost.BlockSize}");
-            return VstHost.BlockSize;
+            Debug($"GetBlockSize => {VST.VstHost.BlockSize}");
+            return VST.VstHost.BlockSize;
         }
 
         public string GetDirectory()
