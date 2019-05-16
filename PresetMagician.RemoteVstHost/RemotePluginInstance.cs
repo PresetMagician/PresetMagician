@@ -5,6 +5,8 @@ using Catel.Threading;
 using Jacobi.Vst.Core;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
+using PresetMagician.Core.Models.Audio;
+using PresetMagician.Core.Models.MIDI;
 
 namespace PresetMagician.RemoteVstHost
 {
@@ -166,6 +168,26 @@ namespace PresetMagician.RemoteVstHost
         public float GetParameter(int parameterIndex)
         {
             return _remoteVstService.GetParameter(_guid, parameterIndex);
+        }
+
+        public void PatchPluginToAudioOutput(AudioOutputDevice device)
+        {
+            _remoteVstService.PatchPluginToAudioOutput(_guid, device);
+        }
+
+        public void UnpatchPluginFromAudioOutput()
+        {
+            _remoteVstService.UnpatchPluginFromAudioOutput();
+        }
+
+        public void PatchPluginToMidiInput(MidiInputDevice device)
+        {
+            _remoteVstService.PatchPluginToMidiInput(_guid, device);
+        }
+
+        public void UnpatchPluginFromMidiInput()
+        {
+            _remoteVstService.UnpatchPluginFromMidiInput();
         }
 
         public void Dispose()

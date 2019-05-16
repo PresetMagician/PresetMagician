@@ -118,6 +118,7 @@
     <Compile Include="Commands\Developer\PluginForceReportPluginsToLiveCommandContainer.cs" />
     <Compile Include="Commands\Developer\PluginReportSinglePluginToLiveCommandContainer.cs" />
     <Compile Include="Commands\Developer\PluginToolsLoadPluginCommandContainer.cs" />
+      <Compile Include="Commands\Developer\PluginToolsPatchPluginToAudioOutputCommandContainer.cs"/>
     <Compile Include="Commands\Developer\PluginToolsShowPluginChunkCommandContainer.cs" />
     <Compile Include="Commands\Developer\PluginToolsShowPluginEditorCommandContainer.cs" />
     <Compile Include="Commands\Developer\PluginToolsShowPluginInfoCommandContainer.cs" />

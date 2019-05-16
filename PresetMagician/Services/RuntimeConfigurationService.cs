@@ -1,7 +1,7 @@
 using System;
 using System.IO;
-using Catel.IoC;
 using Catel.IO;
+using Catel.IoC;
 using Catel.Logging;
 using Newtonsoft.Json;
 using PresetMagician.Core.Models;
@@ -25,11 +25,14 @@ namespace PresetMagician.Services
         private readonly ILog _logger = LogManager.GetCurrentClassLogger();
         private readonly GlobalService _globalService;
         private readonly GlobalFrontendService _globalFrontendService;
+        private readonly AudioService _audioService;
 
         public RuntimeConfigurationService()
         {
             _globalFrontendService = ServiceLocator.Default.ResolveType<GlobalFrontendService>();
             _globalService = ServiceLocator.Default.ResolveType<GlobalService>();
+            _audioService = ServiceLocator.Default.ResolveType<AudioService>();
+
 
             _jsonSerializer = new JsonSerializer {Formatting = Formatting.Indented};
         }
@@ -55,6 +58,7 @@ namespace PresetMagician.Services
             using (_globalService.RuntimeConfiguration.SuspendValidations())
             {
                 _globalService.RuntimeConfiguration.VstDirectories.Clear();
+                _globalService.RuntimeConfiguration.MidiInputDevices.Clear();
                 JsonConvert.PopulateObject(output, _globalService.RuntimeConfiguration);
             }
 
@@ -78,7 +82,13 @@ namespace PresetMagician.Services
                     using (_globalService.RuntimeConfiguration.SuspendValidations())
                     {
                         _globalService.RuntimeConfiguration.VstDirectories.Clear();
+                        _globalService.RuntimeConfiguration.MidiInputDevices.Clear();
                         _jsonSerializer.Populate(jsonReader, _globalService.RuntimeConfiguration);
+                    }
+
+                    if (_globalService.RuntimeConfiguration.AudioOutputDevice == null)
+                    {
+                        _globalService.RuntimeConfiguration.AudioOutputDevice = _audioService.GetDefaultAudioDevice();
                     }
                 }
 

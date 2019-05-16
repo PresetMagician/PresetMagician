@@ -157,6 +157,7 @@ namespace PresetMagician
             public const string ShowPluginChunk = "PluginTools.ShowPluginChunk";
             public const string LoadPlugin = "PluginTools.LoadPlugin";
             public const string UnloadPlugin = "PluginTools.UnloadPlugin";
+            public const string PatchPluginToAudioOutput = "PluginTools.PatchPluginToAudioOutput";
 
             public const string ReportSinglePluginToLive = "PluginTools.ReportSinglePluginToLive";
         }

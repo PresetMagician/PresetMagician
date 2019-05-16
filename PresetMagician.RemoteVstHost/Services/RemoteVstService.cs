@@ -6,12 +6,12 @@ using System.IO;
 using System.Runtime.ExceptionServices;
 using System.Security;
 using System.ServiceModel;
-using System.Threading.Tasks;
 using Drachenkatze.PresetMagician.Utils;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
+using PresetMagician.Core.Models.Audio;
+using PresetMagician.Core.Models.MIDI;
 using PresetMagician.RemoteVstHost.Faults;
-using PresetMagician.Utils;
 using PresetMagician.Utils.Logger;
 using PresetMagician.VstHost.VST;
 
@@ -71,10 +71,10 @@ namespace PresetMagician.RemoteVstHost.Services
             }
 
             _plugins.Remove(guid);
-            
-            
-            if (plugin.Logger is MiniDiskLogger miniDiskLogger) {
-            
+
+
+            if (plugin.Logger is MiniDiskLogger miniDiskLogger)
+            {
                 if (File.Exists(miniDiskLogger.LogFilePath))
                 {
                     File.Delete(miniDiskLogger.LogFilePath);
@@ -105,6 +105,58 @@ namespace PresetMagician.RemoteVstHost.Services
             catch (Exception gex)
             {
                 throw GetFaultException<GenericFault>(gex);
+            }
+        }
+
+        public void PatchPluginToAudioOutput(Guid guid, AudioOutputDevice device)
+        {
+            var plugin = GetPluginByGuid(guid);
+
+            try
+            {
+                _vstHost.PatchPluginToAudioOutput(plugin, device);
+            }
+            catch (Exception e)
+            {
+                throw GetFaultException<GenericFault>(e);
+            }
+        }
+
+        public void UnpatchPluginFromAudioOutput()
+        {
+            try
+            {
+                _vstHost.UnpatchPluginFromAudioOutput();
+            }
+            catch (Exception e)
+            {
+                throw GetFaultException<GenericFault>(e);
+            }
+        }
+
+        public void PatchPluginToMidiInput(Guid guid, MidiInputDevice device)
+        {
+            var plugin = GetPluginByGuid(guid);
+
+            try
+            {
+                _vstHost.PatchPluginToMidiInput(plugin, device);
+            }
+            catch (Exception e)
+            {
+                throw GetFaultException<GenericFault>(e);
+            }
+        }
+
+        public void UnpatchPluginFromMidiInput()
+        {
+            try
+            {
+                _vstHost.UnpatchPluginFromMidiInput();
+            }
+            catch (Exception e)
+            {
+                throw GetFaultException<GenericFault>(e);
             }
         }
 
@@ -424,11 +476,9 @@ namespace PresetMagician.RemoteVstHost.Services
                 throw GetFaultException<AccessViolationFault>();
             }
         }
-        
+
         public float GetParameter(Guid pluginGuid, int parameterIndex)
         {
-            
-
             App.Ping();
             var plugin = GetPluginByGuid(pluginGuid);
             if (!plugin.IsLoaded)
@@ -436,9 +486,8 @@ namespace PresetMagician.RemoteVstHost.Services
                 throw GetFaultException<PluginNotLoadedFault>();
             }
 
-           
-              return  plugin.PluginContext.PluginCommandStub.GetParameter(parameterIndex);
-          
+
+            return plugin.PluginContext.PluginCommandStub.GetParameter(parameterIndex);
         }
 
         public void ExportNksAudioPreview(Guid pluginGuid, PresetExportInfo preset, byte[] presetData,
