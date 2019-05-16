@@ -1,7 +1,7 @@
 framework: net472
 source https://api.nuget.org/v3/index.json
 
-nuget Fody
+nuget Fody ~> 4.2
 nuget GSF.Media
 nuget GSF.Core
 nuget JetBrains.Annotations
