@@ -8,12 +8,10 @@ using Catel.Services;
 using Orchestra.Collections;
 using Orchestra.Layers;
 using Orchestra.Services;
-using PresetMagician.Core.Collections;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Services;
 using PresetMagician.Legacy;
 using PresetMagician.Services;
-using PresetMagician.Services.Interfaces;
 using MessageService = Orchestra.Services.MessageService;
 using PleaseWaitService = Orchestra.Services.PleaseWaitService;
 using SplashScreenService = Orchestra.Services.SplashScreenService;
@@ -38,7 +36,7 @@ namespace PresetMagician.Tests
         public void Setup(string className)
         {
             Core.Core.UseDispatcher = false;
-            
+
             LogManager.AddDebugListener(false);
             var module2 = new CoreModule();
             module2.Initialize(_serviceLocator);
@@ -50,7 +48,7 @@ namespace PresetMagician.Tests
                 $@"TestData\{className}\LegacyDatabases\LegacyDb.sqlite3");
             DataPersisterService.DefaultDataStoragePath =
                 Path.Combine(Directory.GetCurrentDirectory(), $@"TestData\");
-           
+
             PresetDataPersisterService.DefaultDatabaseFile = Path.Combine(Directory.GetCurrentDirectory(),
                 $@"TestData\{className}\PresetData.sqlite3");
 
@@ -109,7 +107,7 @@ namespace PresetMagician.Tests
             serviceLocator.RegisterTypeIfNotYetRegistered<ICommandInfoService, CommandInfoService>();
             serviceLocator.RegisterTypeIfNotYetRegistered<IAppDataService, AppDataService>();
             serviceLocator.RegisterTypeIfNotYetRegistered<IEnsureStartupService, EnsureStartupService>();
-            serviceLocator.RegisterTypeIfNotYetRegistered<IAccentColorService, AccentColorService>();
+            //serviceLocator.RegisterTypeIfNotYetRegistered<IAccentColorService, AccentColorService>();
             serviceLocator.RegisterTypeIfNotYetRegistered<IAboutInfoService, AboutInfoService>();
             serviceLocator.RegisterTypeIfNotYetRegistered<IAboutService, AboutService>();
             serviceLocator.RegisterTypeIfNotYetRegistered<IClipboardService, ClipboardService>();
@@ -125,7 +123,7 @@ namespace PresetMagician.Tests
             serviceLocator.RegisterType<IHintsProvider, HintsProvider>();
 
             serviceLocator.RegisterType<IAdornerLayer, HintsAdornerLayer>(RegistrationType.Transient);
-            
+
             serviceLocator.RegisterType<IDispatcherService, StubDispatcherService>();
         }
 
