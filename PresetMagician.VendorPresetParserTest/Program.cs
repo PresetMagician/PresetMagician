@@ -479,7 +479,7 @@ namespace PresetMagician.VendorPresetParserTest
         {
         }
 
-        public void PatchPluginToAudioOutput(Guid guid, AudioOutputDevice device)
+        public void PatchPluginToAudioOutput(Guid guid, AudioOutputDevice device, int latency)
         {
         }
 

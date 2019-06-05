@@ -278,7 +278,7 @@ namespace PresetMagician.VstHost.VST
             }
         }
 
-        public void PatchPluginToAudioOutput(RemoteVstPlugin plugin, AudioOutputDevice device)
+        public void PatchPluginToAudioOutput(RemoteVstPlugin plugin, AudioOutputDevice device, int latency)
         {
             var audioService = new AudioService();
             var ep = audioService.GetAudioEndpoint(device);
@@ -292,7 +292,7 @@ namespace PresetMagician.VstHost.VST
             UnpatchPluginFromAudioOutput();
 
 
-            _outputDevice = new WasapiOut(ep, AudioClientShareMode.Shared, true, 60);
+            _outputDevice = new WasapiOut(ep, AudioClientShareMode.Shared, true, latency);
 
             _vstWaveProvider = new VSTStream();
             _vstWaveProvider.pluginContext = plugin.PluginContext;

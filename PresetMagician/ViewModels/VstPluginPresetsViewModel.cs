@@ -159,7 +159,8 @@ namespace PresetMagician.ViewModels
             }
 
 
-            _remotePluginInstance.PatchPluginToAudioOutput(_globalService.RuntimeConfiguration.AudioOutputDevice);
+            _remotePluginInstance.PatchPluginToAudioOutput(_globalService.RuntimeConfiguration.AudioOutputDevice,
+                _globalService.RuntimeConfiguration.AudioLatency);
 
             foreach (var dev in _globalService.RuntimeConfiguration.MidiInputDevices)
             {

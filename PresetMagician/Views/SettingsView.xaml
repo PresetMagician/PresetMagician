@@ -387,10 +387,24 @@
                         </StackPanel>
                     
                     <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                        <Label Content="Latency (ms)" VerticalAlignment="Top" />
+                    </StackPanel>
+
+                  
+                        <xctk:IntegerUpDown Width="200" Height="20" MaxWidth="200" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left"
+                                            Value="{Binding EditableConfiguration.AudioLatency}"
+                                            AllowTextInput="False"
+                                            Minimum="4"
+                                            Maximum="10000" />
+
+
+                    
+                    
+                    <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
                         <Label Content="MIDI Input Devices" VerticalAlignment="Top" />
                     </StackPanel>
 
-                    <StackPanel Orientation="Vertical" Grid.Row="1"
+                    <StackPanel Orientation="Vertical" Grid.Row="2"
                                 Grid.Column="1">
                         <xctk:CheckListBox Height="200" 
                                            DisplayMemberPath="Name"

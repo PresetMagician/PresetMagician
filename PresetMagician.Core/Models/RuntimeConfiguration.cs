@@ -45,6 +45,7 @@ namespace PresetMagician.Core.Models
         [JsonProperty] public string HexEditorExecutable { get; set; }
         [JsonProperty] public string HexEditorArguments { get; set; }
         [JsonProperty] public AudioOutputDevice AudioOutputDevice { get; set; }
+        [JsonProperty] public int AudioLatency { get; set; } = 60;
 
         [JsonProperty]
         public List<MidiInputDevice> MidiInputDevices { get; private set; } = new List<MidiInputDevice>();

@@ -170,9 +170,9 @@ namespace PresetMagician.RemoteVstHost
             return _remoteVstService.GetParameter(_guid, parameterIndex);
         }
 
-        public void PatchPluginToAudioOutput(AudioOutputDevice device)
+        public void PatchPluginToAudioOutput(AudioOutputDevice device, int latency)
         {
-            _remoteVstService.PatchPluginToAudioOutput(_guid, device);
+            _remoteVstService.PatchPluginToAudioOutput(_guid, device, latency);
         }
 
         public void UnpatchPluginFromAudioOutput()

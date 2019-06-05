@@ -108,13 +108,13 @@ namespace PresetMagician.RemoteVstHost.Services
             }
         }
 
-        public void PatchPluginToAudioOutput(Guid guid, AudioOutputDevice device)
+        public void PatchPluginToAudioOutput(Guid guid, AudioOutputDevice device, int latency)
         {
             var plugin = GetPluginByGuid(guid);
 
             try
             {
-                _vstHost.PatchPluginToAudioOutput(plugin, device);
+                _vstHost.PatchPluginToAudioOutput(plugin, device, latency);
             }
             catch (Exception e)
             {

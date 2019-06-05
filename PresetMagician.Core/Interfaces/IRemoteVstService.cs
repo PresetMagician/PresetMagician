@@ -170,7 +170,7 @@ namespace PresetMagician.Core.Interfaces
 
         [OperationContract]
         [FaultContract(typeof(GenericFault))]
-        void PatchPluginToAudioOutput(Guid guid, AudioOutputDevice device);
+        void PatchPluginToAudioOutput(Guid guid, AudioOutputDevice device, int latency);
 
         [OperationContract]
         [FaultContract(typeof(GenericFault))]

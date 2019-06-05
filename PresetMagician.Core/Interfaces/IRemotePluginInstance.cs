@@ -45,7 +45,7 @@ namespace PresetMagician.Core.Interfaces
 
         void ExportNks(PresetExportInfo preset, byte[] presetData);
 
-        void PatchPluginToAudioOutput(AudioOutputDevice device);
+        void PatchPluginToAudioOutput(AudioOutputDevice device, int latency);
         void UnpatchPluginFromAudioOutput();
         void PatchPluginToMidiInput(MidiInputDevice device);
         void UnpatchPluginFromMidiInput();
