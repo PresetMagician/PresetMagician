@@ -181,7 +181,7 @@ namespace PresetMagician.VendorPresetParser.Spectrasonics
                 return rootPath;
             }
 
-            rootPath = rootPath + ".lnk";
+            rootPath += ".lnk";
 
             if (!ShortcutUtils.IsShortcut(rootPath))
             {
@@ -191,30 +191,22 @@ namespace PresetMagician.VendorPresetParser.Spectrasonics
             return ShortcutUtils.ResolveShortcut(rootPath);
         }
 
-        private string GetLibraryFolder()
+        private string GetLibraryFolder(string type = null)
         {
-            return Path.Combine(GetSteamFolder(), "Omnisphere", "Settings Library");
-        }
-
-        private string GetFactoryLibraryFolder(string type)
-        {
-            return Path.Combine(GetLibraryFolder(), type, "Factory");
-        }
-
-        private string GetUserLibraryFolder(string type)
-        {
-            return Path.Combine(GetLibraryFolder(), type, "User");
+            return type == null
+                ? Path.Combine(GetSteamFolder(), "Omnisphere", "Settings Library")
+                : Path.Combine(GetSteamFolder(), "Omnisphere", "Settings Library", type);
         }
 
         public List<OmnisphereLibrary> GetLibraries()
         {
             var libraries = new List<OmnisphereLibrary>();
-            var files = GetLibraryFiles(LIBRARYTYPE_MULTIS);
-            files.AddRange(GetLibraryFiles(LIBRARYTYPE_PATCHES));
+            var files = GetCompressedLibraryFiles(LIBRARYTYPE_MULTIS);
+            files.AddRange(GetCompressedLibraryFiles(LIBRARYTYPE_PATCHES));
 
             foreach (var file in files)
             {
-                Logger.Info($"Parsing {file}");
+                Logger.Info($"Parsing compressed library {file}");
                 try
                 {
                     var library = GetLibraryFilesystem(file);
@@ -226,22 +218,47 @@ namespace PresetMagician.VendorPresetParser.Spectrasonics
                 }
                 catch (Exception e)
                 {
-                    Logger.Error($"Unable to parse {file}. Error: {e.GetType().FullName} {e.Message}");
+                    Logger.Error(
+                        $"Unable to parse compressed library file {file}. Error: {e.GetType().FullName} {e.Message}");
                     Logger.LogException(e);
                 }
             }
 
-            libraries.Add(GetLibraryUser(GetUserLibraryFolder(LIBRARYTYPE_MULTIS)));
-            libraries.Add(GetLibraryUser(GetUserLibraryFolder(LIBRARYTYPE_PATCHES)));
+
+            foreach (var directory in GetPlainLibraryFiles(LIBRARYTYPE_MULTIS))
+            {
+                Logger.Info($"Parsing plain multi library file {directory}");
+                libraries.Add(GetLibraryUser(Path.GetDirectoryName(directory)));
+            }
+
+            foreach (var directory in GetPlainLibraryFiles(LIBRARYTYPE_PATCHES))
+            {
+                Logger.Info($"Parsing plain patch library file {directory}");
+                libraries.Add(GetLibraryUser(Path.GetDirectoryName(directory)));
+            }
 
             return libraries;
         }
 
-        public List<string> GetLibraryFiles(string type)
+        public List<string> GetCompressedLibraryFiles(string type)
         {
-            var libraryFolder = GetFactoryLibraryFolder(type);
+            var libraryFolder = GetLibraryFolder(type);
 
-            return Directory.EnumerateFiles(libraryFolder, "*.db").ToList();
+            return Directory.EnumerateFiles(libraryFolder, "*.db", SearchOption.AllDirectories).ToList();
+        }
+
+        public List<string> GetPlainLibraryFiles(string type)
+        {
+            var libraryFolder = GetLibraryFolder(type);
+
+            if (type == LIBRARYTYPE_MULTIS)
+            {
+                return Directory.EnumerateFiles(libraryFolder, MULTI_INDEXFILE, SearchOption.AllDirectories).ToList();
+            }
+            else
+            {
+                return Directory.EnumerateFiles(libraryFolder, PATCH_INDEXFILE, SearchOption.AllDirectories).ToList();
+            }
         }
 
         public OmnisphereUserLibrary GetLibraryUser(string path)
