@@ -46,7 +46,8 @@ namespace PresetMagician
             }
 
 
-            pluginInstance.PatchPluginToAudioOutput(_globalService.RuntimeConfiguration.AudioOutputDevice);
+            pluginInstance.PatchPluginToAudioOutput(_globalService.RuntimeConfiguration.AudioOutputDevice,
+                _globalService.RuntimeConfiguration.AudioLatency);
 
             foreach (var dev in _globalService.RuntimeConfiguration.MidiInputDevices)
             {
