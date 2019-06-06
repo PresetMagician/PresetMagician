@@ -13,3 +13,5 @@ Ceras
 Orchestra.Core
 FastMember
 Portable.Licensing
+NAudio
+RtMidi.Core

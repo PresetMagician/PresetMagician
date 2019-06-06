@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using PresetMagician.Core.Models;
+using PresetMagician.Core.Models.Audio;
+using PresetMagician.Core.Models.MIDI;
 
 namespace PresetMagician.Core.Interfaces
 {
@@ -42,6 +44,11 @@ namespace PresetMagician.Core.Interfaces
             int initialDelay);
 
         void ExportNks(PresetExportInfo preset, byte[] presetData);
+
+        void PatchPluginToAudioOutput(AudioOutputDevice device, int latency);
+        void UnpatchPluginFromAudioOutput();
+        void PatchPluginToMidiInput(MidiInputDevice device);
+        void UnpatchPluginFromMidiInput();
 
         bool OpenEditor(bool topmost = true);
         bool IsLoaded { get; }

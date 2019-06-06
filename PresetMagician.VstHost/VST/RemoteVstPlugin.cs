@@ -80,10 +80,10 @@ namespace PresetMagician.VstHost.VST
                     Margin = new Thickness(0),
                     SnapsToDevicePixels = true,
                     UseLayoutRounding = false,
-                    SizeToContent = SizeToContent.Manual,
                     AllowsTransparency = true,
                     Opacity = 0,
-                    Background = Brushes.Transparent
+                    Background = Brushes.Transparent,
+                    SizeToContent = SizeToContent.WidthAndHeight
                 };
             }
             else
@@ -104,13 +104,15 @@ namespace PresetMagician.VstHost.VST
                 };
             }
 
+            FrameworkElement pnlClient = _editorWindow.Content as FrameworkElement;
             _editorWindowHelper = new WindowInteropHelper(_editorWindow);
             _editorWindowHelper.EnsureHandle();
 
+
             if (PluginContext.PluginCommandStub.EditorGetRect(out wndRect))
             {
-                _editorWindow.Width = wndRect.Width;
-                _editorWindow.Height = wndRect.Height;
+                pnlClient.Width = wndRect.Width;
+                pnlClient.Height = wndRect.Height;
                 PluginContext.PluginCommandStub.EditorOpen(_editorWindowHelper.Handle);
             }
             else
@@ -119,8 +121,8 @@ namespace PresetMagician.VstHost.VST
 
                 if (PluginContext.PluginCommandStub.EditorGetRect(out wndRect))
                 {
-                    _editorWindow.Width = wndRect.Width;
-                    _editorWindow.Height = wndRect.Height;
+                    pnlClient.Width = wndRect.Width;
+                    pnlClient.Height = wndRect.Height;
                 }
                 else
                 {
@@ -175,8 +177,8 @@ namespace PresetMagician.VstHost.VST
             {
                 if (wndRect2.Width != 0 && wndRect2.Height != 0)
                 {
-                    _editorWindow.Width = wndRect2.Width;
-                    _editorWindow.Height = wndRect2.Height;
+                    pnlClient.Width = wndRect2.Width;
+                    pnlClient.Height = wndRect2.Height;
                 }
             }
 
@@ -190,8 +192,9 @@ namespace PresetMagician.VstHost.VST
             {
                 _editorWindow.Dispatcher.Invoke(DispatcherPriority.Render, new Action(() =>
                 {
-                    _editorWindow.Width = width;
-                    _editorWindow.Height = height;
+                    FrameworkElement pnlClient = _editorWindow.Content as FrameworkElement;
+                    pnlClient.Width = width;
+                    pnlClient.Height = height;
                 }));
             }
         }

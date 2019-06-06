@@ -18,6 +18,7 @@
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
+      <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -75,6 +76,7 @@
     <Compile Include="VST\VSTPluginExport.cs" />
     <Compile Include="VST\VstPathScanner.cs" />
     <Compile Include="VST\VstHost.cs" />
+      <Compile Include="VST\VstWaveProvider.cs"/>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">
@@ -204,15 +206,9 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
-        <Reference Include="Microsoft.CSharp">
+          <Reference Include="System.Windows.Forms">
           <Paket>True</Paket>
         </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
-      <ItemGroup>
         <Reference Include="NAudio">
           <HintPath>..\packages\NAudio\lib\net35\NAudio.dll</HintPath>
           <Private>True</Private>
@@ -232,6 +228,31 @@
       </ItemGroup>
     </When>
   </Choose>
+    <Choose>
+        <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+            <ItemGroup>
+                <Reference Include="RtMidi.Core">
+                    <HintPath>..\packages\RtMidi.Core\lib\netstandard2.0\RtMidi.Core.dll</HintPath>
+                    <Private>True</Private>
+                    <Paket>True</Paket>
+                </Reference>
+            </ItemGroup>
+        </When>
+    </Choose>
+    <Choose>
+        <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
+            <ItemGroup>
+                <Reference Include="Microsoft.CSharp">
+                    <Paket>True</Paket>
+                </Reference>
+                <Reference Include="Serilog">
+                    <HintPath>..\packages\Serilog\lib\net46\Serilog.dll</HintPath>
+                    <Private>True</Private>
+                    <Paket>True</Paket>
+                </Reference>
+            </ItemGroup>
+        </When>
+    </Choose>
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
@@ -268,17 +289,6 @@
         </Reference>
         <Reference Include="System.Configuration.ConfigurationManager">
           <HintPath>..\packages\System.Configuration.ConfigurationManager\lib\net461\System.Configuration.ConfigurationManager.dll</HintPath>
-          <Private>False</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
-      <ItemGroup>
-        <Reference Include="System.Reflection">
-          <HintPath>..\packages\System.Reflection\lib\net462\System.Reflection.dll</HintPath>
           <Private>False</Private>
           <Paket>True</Paket>
         </Reference>
@@ -380,14 +390,6 @@
       </ItemGroup>
     </When>
   </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
-      <ItemGroup>
-        <Reference Include="System.Xml.Linq">
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
   <Import Project="..\packages\Fody\build\Fody.targets" Condition="Exists('..\packages\Fody\build\Fody.targets')" Label="Paket" />
+    <Import Project="..\packages\RtMidi.Core\build\RtMidi.Core.targets" Condition="Exists('..\packages\RtMidi.Core\build\RtMidi.Core.targets')" Label="Paket"/>
 </Project>

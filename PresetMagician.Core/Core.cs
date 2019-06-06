@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 using Catel.IoC;
 using PresetMagician.Core.Services;
@@ -23,7 +20,8 @@ namespace PresetMagician.Core
             serviceLocator.RegisterType<VendorPresetParserService, VendorPresetParserService>();
             serviceLocator.RegisterType<RemoteVstService, RemoteVstService>();
             serviceLocator.RegisterType<DeveloperService, DeveloperService>();
-            
+            serviceLocator.RegisterType<AudioService, AudioService>();
+            serviceLocator.RegisterType<MidiService, MidiService>();
         }
     }
 
@@ -31,16 +29,12 @@ namespace PresetMagician.Core
     {
         public static bool UseDispatcher = true;
     }
-    
+
     public static class MethodTimeLogger
     {
-         
         public static void Log(MethodBase methodBase, TimeSpan elapsed, string message)
         {
             GlobalMethodTimeLogger.Log(methodBase, elapsed);
-           
         }
-
-        
     }
 }

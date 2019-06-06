@@ -354,6 +354,70 @@
                     </Grid>
                 </ScrollViewer>
             </TabItem>
+            <TabItem VerticalContentAlignment="Stretch" Header="Audio / MIDI">
+                <Grid>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+
+                        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                            <Label Content="Audio Output Device (WASAPI)" VerticalAlignment="Top" />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Vertical" Grid.Row="0"
+                                    Grid.Column="1">
+                            <ComboBox ItemsSource="{Binding AudioOutputDevices}" SelectedItem="{Binding EditableConfiguration.AudioOutputDevice}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Name}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+
+                        </StackPanel>
+                    
+                    <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                        <Label Content="Latency (ms)" VerticalAlignment="Top" />
+                    </StackPanel>
+
+                  
+                        <xctk:IntegerUpDown Width="200" Height="20" MaxWidth="200" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left"
+                                            Value="{Binding EditableConfiguration.AudioLatency}"
+                                            AllowTextInput="False"
+                                            Minimum="4"
+                                            Maximum="10000" />
+
+
+                    
+                    
+                    <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
+                        <Label Content="MIDI Input Devices" VerticalAlignment="Top" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical" Grid.Row="2"
+                                Grid.Column="1">
+                        <xctk:CheckListBox Height="200" 
+                                           DisplayMemberPath="Name"
+                                           ItemsSource="{Binding MidiInputDevices}"
+                                           SelectedItemsOverride="{Binding EditableConfiguration.MidiInputDevices}" />
+
+                    </StackPanel>
+                    
+                   
+                        
+
+                    </Grid>
+            </TabItem>
             <TabItem VerticalContentAlignment="Stretch" Header="Preview Note Players">
                 <local:PreviewNotePlayerEditorView />
             </TabItem>

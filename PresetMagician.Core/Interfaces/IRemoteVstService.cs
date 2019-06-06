@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.ServiceModel;
 using PresetMagician.Core.Models;
+using PresetMagician.Core.Models.Audio;
+using PresetMagician.Core.Models.MIDI;
 using PresetMagician.RemoteVstHost.Faults;
 
 namespace PresetMagician.Core.Interfaces
@@ -139,7 +141,7 @@ namespace PresetMagician.Core.Interfaces
         [FaultContract(typeof(PluginNotRegisteredFault))]
         [FaultContract(typeof(PluginNotLoadedFault))]
         float GetParameter(Guid pluginGuid, int parameterIndex);
-        
+
         [OperationContract]
         [FaultContract(typeof(GenericFault))]
         bool Exists(string file);
@@ -166,6 +168,20 @@ namespace PresetMagician.Core.Interfaces
         [OperationContract]
         void UnregisterPlugin(Guid guid);
 
-        
+        [OperationContract]
+        [FaultContract(typeof(GenericFault))]
+        void PatchPluginToAudioOutput(Guid guid, AudioOutputDevice device, int latency);
+
+        [OperationContract]
+        [FaultContract(typeof(GenericFault))]
+        void UnpatchPluginFromAudioOutput();
+
+        [OperationContract]
+        [FaultContract(typeof(GenericFault))]
+        void PatchPluginToMidiInput(Guid guid, MidiInputDevice device);
+
+        [OperationContract]
+        [FaultContract(typeof(GenericFault))]
+        void UnpatchPluginFromMidiInput();
     }
 }

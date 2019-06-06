@@ -130,6 +130,9 @@
                     AutoGenerateColumns="False"
                     d:DataContext="{d:DesignInstance models:Preset, CreateList=True}"
                     ItemsSource="{Binding PresetsView}">
+                    <DataGrid.InputBindings>
+                        <MouseBinding Gesture="LeftDoubleClick" Command="{Binding LoadPresetCommand}" />
+                    </DataGrid.InputBindings>
                     <DataGrid.Columns>
                         <DataGridTextColumn
                             Width="200"
@@ -470,6 +473,20 @@
                                    Icon="{iconPacks:Material Kind=FolderRemove}"
                                    Command="{Binding DeleteBankCommand}"
                                    Size="Middle" />
+
+                </fluent:RibbonGroupBox>
+                <fluent:RibbonGroupBox Header="Preview (Experimental)"
+                                       IsLauncherVisible="False">
+
+                    <fluent:Button Header="Load Plugin"
+                                   LargeIcon="{iconPacks:Material Kind=Loading,Width=32,Height=32}"
+                                   Size="Large"
+                                   Command="{Binding LoadPluginCommand}" />
+
+                    <fluent:Button Header="Load Preset"
+                                   LargeIcon="{iconPacks:Material Kind=LockPattern,Width=32,Height=32}"
+                                   Size="Large"
+                                   Command="{Binding LoadPresetCommand}" />
 
                 </fluent:RibbonGroupBox>
             </fluent:RibbonTabItem>

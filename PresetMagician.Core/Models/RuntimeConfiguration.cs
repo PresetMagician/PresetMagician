@@ -4,6 +4,8 @@ using Catel.Collections;
 using Catel.Data;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using PresetMagician.Core.Models.Audio;
+using PresetMagician.Core.Models.MIDI;
 
 namespace PresetMagician.Core.Models
 {
@@ -42,7 +44,12 @@ namespace PresetMagician.Core.Models
         [JsonProperty] public bool ShowDeveloperTools { get; set; }
         [JsonProperty] public string HexEditorExecutable { get; set; }
         [JsonProperty] public string HexEditorArguments { get; set; }
-        
+        [JsonProperty] public AudioOutputDevice AudioOutputDevice { get; set; }
+        [JsonProperty] public int AudioLatency { get; set; } = 60;
+
+        [JsonProperty]
+        public List<MidiInputDevice> MidiInputDevices { get; private set; } = new List<MidiInputDevice>();
+
 
         protected override void ValidateFields(List<IFieldValidationResult> validationResults)
         {
