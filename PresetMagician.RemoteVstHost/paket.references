@@ -9,3 +9,4 @@ ModuleInit.Fody copy_local: false
 Catel.Fody
 LoadAssembliesOnStartup.Fody copy_local: false
 Castle.Core
+NAudio

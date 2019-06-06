@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Catel.IoC;
@@ -18,6 +16,8 @@ using K4os.Compression.LZ4;
 using PresetMagician.Core.EventArgs;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
+using PresetMagician.Core.Models.Audio;
+using PresetMagician.Core.Models.MIDI;
 using PresetMagician.Core.Services;
 using PresetMagician.RemoteVstHost;
 using PresetMagician.RemoteVstHost.Processes;
@@ -34,7 +34,7 @@ namespace PresetMagician.VendorPresetParserTest
             {1917283917, 30},
             {1836019532, 2},
 
-         
+
             {2019642689, 999},
             {1683444545, 999},
             {1750287937, 999},
@@ -91,7 +91,6 @@ namespace PresetMagician.VendorPresetParserTest
 
             if (args.Length > 0)
             {
-
                 foreach (var key in presetParserDictionary.Keys.ToList())
                 {
                     if (!presetParserDictionary[key].PresetParserType.ToLower().Contains(args[0].ToLower()))
@@ -250,7 +249,7 @@ namespace PresetMagician.VendorPresetParserTest
                                     {
                                         testResult.DetailedErrors.Add(
                                             $"Warning: The preset data file {testFilename} exists in the documents " +
-                                            "folder but not in the source folder. Copy from documents to git folder. "+
+                                            "folder but not in the source folder. Copy from documents to git folder. " +
                                             "If already done, remember to clean the presetparsertest project.");
                                     }
                                 }
@@ -472,6 +471,22 @@ namespace PresetMagician.VendorPresetParserTest
             _pluginId = pluginId;
         }
 
+        public void PatchPluginToMidiInput(Guid guid, MidiInputDevice device)
+        {
+        }
+
+        public void UnpatchPluginFromMidiInput()
+        {
+        }
+
+        public void PatchPluginToAudioOutput(Guid guid, AudioOutputDevice device, int latency)
+        {
+        }
+
+        public void UnpatchPluginFromAudioOutput()
+        {
+        }
+
         public float GetParameter(Guid pluginGuid, int parameterIndex)
         {
             return 0;
@@ -633,7 +648,7 @@ namespace PresetMagician.VendorPresetParserTest
         }
 
         public void ExportNksAudioPreview(Guid pluginGuid, PresetExportInfo preset, byte[] presetData,
-             int initialDelay)
+            int initialDelay)
         {
         }
 

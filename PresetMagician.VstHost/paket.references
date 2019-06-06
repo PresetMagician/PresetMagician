@@ -5,3 +5,4 @@ MethodTimer.Fody copy_local: false
 Catel.Core
 Catel.MVVM
 System.ValueTuple
+RtMidi.Core

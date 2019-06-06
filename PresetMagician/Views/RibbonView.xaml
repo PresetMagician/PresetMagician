@@ -301,7 +301,12 @@
                             Icon="{iconPacks:SimpleIcons Kind=Visa}"
                             Command="{catel:CommandManagerBinding Developer.SetCatelLogging}"
                             CommandParameter="{Binding ElementName=CatelLogging, Path=IsChecked}"
-                            Size="Middle" />
+                            Size="Middle" /> <fluent:Button
+                                                 Header="Patch Plugin Audio"
+                                                 Icon="{iconPacks:MaterialDesign Kind=Audiotrack}"
+                                                 Command="{catel:CommandManagerBinding PluginTools.PatchPluginToAudioOutput}"
+                                                 Size="Middle" />
+                            
                     </fluent:RibbonGroupBox>
                 </fluent:RibbonTabItem>
                 <fluent:RibbonTabItem Header="Preset Export">

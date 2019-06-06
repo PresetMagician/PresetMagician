@@ -8,6 +8,8 @@ using Catel.MVVM;
 using Catel.Services;
 using Drachenkatze.PresetMagician.Utils;
 using PresetMagician.Core.Models;
+using PresetMagician.Core.Models.Audio;
+using PresetMagician.Core.Models.MIDI;
 using PresetMagician.Core.Services;
 using PresetMagician.Services.Interfaces;
 
@@ -23,6 +25,8 @@ namespace PresetMagician.ViewModels
         private readonly ILicenseService _licenseService;
         private readonly IAdvancedMessageService _advancedMessageService;
         public ApplicationState ApplicationState { get; private set; }
+        public List<AudioOutputDevice> AudioOutputDevices { get; }
+        public List<MidiInputDevice> MidiInputDevices { get; }
 
 
         public string SelectedTabTitle { get; set; }
@@ -32,7 +36,8 @@ namespace PresetMagician.ViewModels
             ILicenseService licenseService,
             ICommandManager commandManager, DataPersisterService dataPersisterService,
             GlobalFrontendService globalFrontendService, GlobalService globalService,
-            IAdvancedMessageService advancedMessageService
+            IAdvancedMessageService advancedMessageService,
+            AudioService audioService, MidiService midiService
         )
         {
             Argument.IsNotNull(() => configurationService);
@@ -51,23 +56,25 @@ namespace PresetMagician.ViewModels
             Title = "Settings";
 
             PresetDatabaseStatistics = dataPersisterService.GetStorageStatistics();
-            
+
             TotalPresets = (from p in PresetDatabaseStatistics select p.PresetCount).Sum();
             TotalPresetsUncompressedSize = (from p in PresetDatabaseStatistics select p.PresetUncompressedSize).Sum();
             TotalPresetsCompressedSize = (from p in PresetDatabaseStatistics select p.PresetCompressedSize).Sum();
             SavedSpace = (from p in PresetDatabaseStatistics select p.SavedSpace).Sum();
             SavedSpacePercent = (double) TotalPresetsCompressedSize / TotalPresetsUncompressedSize;
+            AudioOutputDevices = audioService.GetOutputDevices();
+            MidiInputDevices = midiService.GetInputDevices();
         }
 
 
-        public Command OpenVstWorkerLogDirectory { get;  }
+        public Command OpenVstWorkerLogDirectory { get; }
 
         private void OnOpenVstWorkerLogDirectoryExecute()
         {
             Process.Start(Path.GetDirectoryName(VstUtils.GetVstWorkerLogDirectory()));
         }
-        
-        public Command OpenDataDirectory { get;  }
+
+        public Command OpenDataDirectory { get; }
 
         private void OnOpenDataDirectoryExecute()
         {
@@ -91,6 +98,7 @@ namespace PresetMagician.ViewModels
                     "accidentally deleted or duplicated.", "ChangedFolderExportFileOverwriteMode",
                     "Changed Folder Export / File Overwrite Mode", null, MessageImage.Information);
             }
+
             _commandManager.ExecuteCommand("Application.ApplyConfiguration");
 
             return await base.SaveAsync();
@@ -102,7 +110,7 @@ namespace PresetMagician.ViewModels
         public double SavedSpace { get; set; }
         public double SavedSpacePercent { get; set; }
         public List<PresetDatabaseStatistic> PresetDatabaseStatistics { get; }
-        
+
 
         public string DefaultNativeInstrumentsUserContentDirectory
         {
