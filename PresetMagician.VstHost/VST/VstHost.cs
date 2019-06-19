@@ -302,6 +302,11 @@ namespace PresetMagician.VstHost.VST
             _outputDevice.Play();
         }
 
+        public void PerformIdleLoop(RemoteVstPlugin plugin, int loops)
+        {
+            IdleLoop(plugin.PluginContext, loops);
+        }
+
         public void PatchPluginToMidiInput(RemoteVstPlugin plugin, MidiInputDevice device)
         {
             _midiTarget = plugin;

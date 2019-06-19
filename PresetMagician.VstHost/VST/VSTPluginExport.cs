@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using Catel.Collections;
-using PresetMagician.NKS;
-using Drachenkatze.PresetMagician.Utils;
 using Drachenkatze.PresetMagician.VSTHost.Properties;
 using Jacobi.Vst.Core;
 using Jacobi.Vst.Interop.Host;
 using MethodTimer;
 using NAudio.Wave;
 using PresetMagician.Core.Models;
-using PresetMagician.Utils;
+using PresetMagician.NKS;
 
 namespace PresetMagician.VstHost.VST
 {
@@ -29,7 +27,7 @@ namespace PresetMagician.VstHost.VST
         {
             var nksf = new NKSFRiff();
 
-            
+
             nksf.kontaktSound.summaryInformation.summaryInformation.vendor = preset.PluginVendor;
             nksf.kontaktSound.summaryInformation.summaryInformation.uuid = preset.PresetGuid;
             nksf.kontaktSound.summaryInformation.summaryInformation.name = preset.PresetName;
@@ -57,7 +55,7 @@ namespace PresetMagician.VstHost.VST
 
             nksf.kontaktSound.summaryInformation.summaryInformation.comment =
                 preset.Comment + Environment.NewLine + "Generated with PresetMagician";
-            nksf.kontaktSound.pluginId.pluginId.VSTMagic = preset.PluginId;
+            nksf.kontaktSound.pluginId.pluginId.VSTMagic = (uint) preset.PluginId;
             nksf.kontaktSound.pluginChunk.PresetData = data;
 
             if (preset.DefaultControllerAssignments != null)
@@ -73,11 +71,6 @@ namespace PresetMagician.VstHost.VST
             fileStream2.Close();
         }
 
-       
-
-      
-
-       
 
         private void ConvertToOGG(string inputWave, string outputOGG)
         {
@@ -136,18 +129,19 @@ namespace PresetMagician.VstHost.VST
 
             var noteOnEvents = new List<(int loop, int offset, byte note)>();
             var noteOffEvents = new List<(int loop, int offset, byte note)>();
-            
+
             foreach (var note in preset.PreviewNotePlayer.PreviewNotes)
             {
-                var onLoop = (double)VstHost.SampleRate * note.Start / VstHost.BlockSize;
+                var onLoop = (double) VstHost.SampleRate * note.Start / VstHost.BlockSize;
                 var onOffset = (int) ((onLoop - (int) onLoop) * VstHost.BlockSize);
-                
-                noteOnEvents.Add((loop: (int)onLoop, offset:onOffset, note: (byte)(note.NoteNumber+12)));
-                var offLoop = (double)VstHost.SampleRate * (note.Start + note.Duration) / VstHost.BlockSize;
+
+                noteOnEvents.Add((loop: (int) onLoop, offset: onOffset, note: (byte) (note.NoteNumber + 12)));
+                var offLoop = (double) VstHost.SampleRate * (note.Start + note.Duration) / VstHost.BlockSize;
                 var offOffset = (int) ((offLoop - (int) offLoop) * VstHost.BlockSize);
-                
-                noteOffEvents.Add((loop: (int)offLoop, offset:offOffset, note: (byte)(note.NoteNumber+12)));
+
+                noteOffEvents.Add((loop: (int) offLoop, offset: offOffset, note: (byte) (note.NoteNumber + 12)));
             }
+
             using (var inputMgr = new VstAudioBufferManager(inputCount, VstHost.BlockSize))
             {
                 using (var outputMgr = new VstAudioBufferManager(outputCount, VstHost.BlockSize))
@@ -179,7 +173,7 @@ namespace PresetMagician.VstHost.VST
                                 VstHost.MIDI_NoteOn(plugin, (byte) i.note, 127, i.offset);
                             }
                         }
-                        
+
                         foreach (var i in noteOffEvents)
                         {
                             if (i.loop == k)
@@ -187,8 +181,8 @@ namespace PresetMagician.VstHost.VST
                                 VstHost.MIDI_NoteOff(plugin, (byte) i.note, 127, i.offset);
                             }
                         }
-                        
-                     
+
+
                         ctx.PluginCommandStub.ProcessReplacing(inputBuffers, outputBuffers);
                         for (var j = 0; j < VstHost.BlockSize; j++)
                         {
@@ -198,7 +192,6 @@ namespace PresetMagician.VstHost.VST
                                 if (x < 2)
                                 {
                                     writer.WriteSample(t[j]);
-
                                 }
 
                                 x++;
