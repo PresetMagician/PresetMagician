@@ -122,6 +122,13 @@ namespace PresetMagician.RemoteVstHost.Services
             }
         }
 
+        public void PerformIdleLoop(Guid guid, int loops)
+        {
+            var plugin = GetPluginByGuid(guid);
+
+            _vstHost.PerformIdleLoop(plugin, loops);
+        }
+
         public void UnpatchPluginFromAudioOutput()
         {
             try

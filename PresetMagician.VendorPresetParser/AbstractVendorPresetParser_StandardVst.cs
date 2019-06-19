@@ -156,7 +156,7 @@ namespace PresetMagician.VendorPresetParser
             if (start < 0)
             {
                 Logger.Error("GetPresets start index is less than 0, ignoring. This is probably a bug or a " +
-                    "misconfiguration. Please report this including the full log file.");
+                             "misconfiguration. Please report this including the full log file.");
                 return;
             }
 
@@ -165,8 +165,8 @@ namespace PresetMagician.VendorPresetParser
             if (endIndex > PluginInstance.Plugin.PluginInfo.ProgramCount)
             {
                 Logger.Error(
-                    $"Tried to retrieve presets between the index {start} and {endIndex}, but this would exceed maximum "+
-                    $"program count of {PluginInstance.Plugin.PluginInfo.ProgramCount}, ignoring. You might wish to "+
+                    $"Tried to retrieve presets between the index {start} and {endIndex}, but this would exceed maximum " +
+                    $"program count of {PluginInstance.Plugin.PluginInfo.ProgramCount}, ignoring. You might wish to " +
                     "report this as a bug.");
                 return;
             }
@@ -201,8 +201,8 @@ namespace PresetMagician.VendorPresetParser
             if (endIndex > PluginInstance.Plugin.PluginInfo.ProgramCount)
             {
                 Logger.Error(
-                    $"Tried to retrieve presets between the index {start} and {endIndex}, but this would exceed maximum "+
-                    $"program count of {PluginInstance.Plugin.PluginInfo.ProgramCount}, ignoring. You might wish to "+
+                    $"Tried to retrieve presets between the index {start} and {endIndex}, but this would exceed maximum " +
+                    $"program count of {PluginInstance.Plugin.PluginInfo.ProgramCount}, ignoring. You might wish to " +
                     "report this as a bug.");
                 return;
             }
@@ -210,8 +210,12 @@ namespace PresetMagician.VendorPresetParser
             for (var index = start; index < endIndex; index++)
             {
                 PluginInstance.SetProgram(0);
+                PluginInstance.PerformIdleLoop(10);
+
                 var programBackup = PluginInstance.GetChunk(true);
                 PluginInstance.SetProgram(index);
+                PluginInstance.PerformIdleLoop(10);
+
                 var programName = PluginInstance.GetCurrentProgramName();
                 var fullSourceFile = sourceFile + ":" + index;
                 var vstPreset = new PresetParserMetadata
@@ -225,22 +229,28 @@ namespace PresetMagician.VendorPresetParser
 
                 var realProgram = PluginInstance.GetChunk(true);
                 PluginInstance.SetProgram(0);
+                PluginInstance.PerformIdleLoop(10);
 
                 PluginInstance.SetChunk(realProgram, true);
-                var presetData = PluginInstance.GetChunk(false);
-                PluginInstance.SetChunk(programBackup, true);
+                PluginInstance.PerformIdleLoop(10);
 
-                var hash = HashUtils.getIxxHash(realProgram);
+                var presetData = PluginInstance.GetChunk(false);
+
+                // Restore original program 0
+                PluginInstance.SetChunk(programBackup, true);
+                PluginInstance.PerformIdleLoop(10);
+
+                var hash = HashUtils.getIxxHash(presetData);
 
                 if (PresetHashes.ContainsKey(hash))
                 {
                     Logger.Warning(
-                        $"Skipping program {index} with name {programName} because a program with the same data "+
+                        $"Skipping program {index} with name {programName} because a program with the same data " +
                         $"was already added ({PresetHashes[hash]}. Please report this if you think if it's a bug.");
                 }
                 else
                 {
-                    PresetHashes.Add(hash, fullSourceFile + " "+programName);
+                    PresetHashes.Add(hash, fullSourceFile + " " + programName);
                     await DataPersistence.PersistPreset(vstPreset, presetData);
                 }
             }
@@ -273,7 +283,7 @@ namespace PresetMagician.VendorPresetParser
             {
                 PluginInstance.LoadPlugin().Wait();
                 Logger.Debug(PluginInstance.Plugin.PluginName +
-                                                   ": Program count is greater than 1, checking for preset save mode");
+                             ": Program count is greater than 1, checking for preset save mode");
 
                 if (AreChunksNull(false))
                 {
@@ -295,7 +305,7 @@ namespace PresetMagician.VendorPresetParser
                 if (IsCurrentProgramStoredInBankChunk())
                 {
                     Logger.Debug(PluginInstance.Plugin.PluginName +
-                                                       ": current program is stored in the bank chunk");
+                                 ": current program is stored in the bank chunk");
                     PresetSaveMode = PresetSaveModes.FullBank;
                     Logger.Info(
                         "Using preset save mode full bank");
@@ -311,7 +321,7 @@ namespace PresetMagician.VendorPresetParser
                     if (AreChunksConsistent(true))
                     {
                         Logger.Debug(PluginInstance.Plugin.PluginName +
-                                                           ": program chunks are consistent");
+                                     ": program chunks are consistent");
                         PresetSaveMode = PresetSaveModes.BankTrickery;
                         Logger.Info(
                             "Using preset save mode bank trickery");
@@ -377,7 +387,7 @@ namespace PresetMagician.VendorPresetParser
                 HashUtils.getIxxHash(chunk);
 
             Logger.Debug(PluginInstance.Plugin.PluginName + ": hash for program 0 is " +
-                                               firstPresetHash);
+                         firstPresetHash);
 
             for (var i = 0; i < 10; i++)
             {

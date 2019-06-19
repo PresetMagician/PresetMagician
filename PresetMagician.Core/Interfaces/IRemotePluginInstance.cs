@@ -54,5 +54,6 @@ namespace PresetMagician.Core.Interfaces
         bool IsLoaded { get; }
         bool IsEditorOpen { get; }
         float GetParameter(int parameterIndex);
+        void PerformIdleLoop(int loops);
     }
 }

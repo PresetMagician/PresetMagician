@@ -183,5 +183,9 @@ namespace PresetMagician.Core.Interfaces
         [OperationContract]
         [FaultContract(typeof(GenericFault))]
         void UnpatchPluginFromMidiInput();
+
+        [OperationContract]
+        [FaultContract(typeof(GenericFault))]
+        void PerformIdleLoop(Guid guid, int loops);
     }
 }

@@ -99,6 +99,11 @@ namespace PresetMagician.RemoteVstHost
             _remoteVstService.ReloadPlugin(_guid);
         }
 
+        public void PerformIdleLoop(int loops)
+        {
+            _remoteVstService.PerformIdleLoop(_guid, loops);
+        }
+
         public void UnloadPlugin()
         {
             if (IsLoaded)
