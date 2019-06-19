@@ -22,7 +22,8 @@
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <WindowsFormsHost Grid.Row="0">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                    <WindowsFormsHost Grid.Row="0" Grid.ColumnSpan="2">
                         <wf:HexBox
                             x:Name="PluginBankChunkControl"
                             AutoSize="False"
@@ -34,7 +35,13 @@
                             UseFixedBytesPerLine="True"
                             VScrollBarVisible="True" />
                     </WindowsFormsHost>
-                    <TextBlock Grid.Row="1" Text="{Binding Plugin.ChunkBankMemoryStream.Length}" />
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding ChunkBankMemoryStream.Length}" />
+                    <TextBox Background="Transparent"
+                             BorderThickness="0"
+                             Grid.Row="1" Grid.Column="1"
+                             Text="{Binding ChunkBankHash, Mode=OneWay}"
+                             IsReadOnly="True"
+                             TextWrapping="Wrap" />
                 </Grid>
             </TabItem>
             <TabItem Header="Preset">
@@ -43,7 +50,8 @@
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <WindowsFormsHost Grid.Row="0">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                    <WindowsFormsHost Grid.Row="0" Grid.ColumnSpan="2">
                         <wf:HexBox
                             x:Name="PluginPresetChunkControl"
                             AutoSize="False"
@@ -55,7 +63,14 @@
                             UseFixedBytesPerLine="True"
                             VScrollBarVisible="True" />
                     </WindowsFormsHost>
-                    <TextBlock Grid.Row="1" Text="{Binding Plugin.ChunkPresetMemoryStream.Length}" />
+                  
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding ChunkPresetMemoryStream.Length}" />
+                    <TextBox Background="Transparent"
+                             BorderThickness="0"
+                             Grid.Row="1" Grid.Column="1"
+                             Text="{Binding ChunkPresetHash, Mode=OneWay}"
+                             IsReadOnly="True"
+                             TextWrapping="Wrap" />
                 </Grid>
             </TabItem>
         </TabControl>

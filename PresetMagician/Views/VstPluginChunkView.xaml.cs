@@ -27,6 +27,7 @@ namespace PresetMagician.Views
             InitializeComponent();
 
             viewModel.BankChunkChanged += ViewModelOnBankChunkChanged;
+            viewModel.PresetChunkChanged += ViewModelOnPresetChunkChanged;
             var provider = new DynamicByteProvider(viewModel.ChunkBankMemoryStream.ToArray());
             PluginBankChunkControl.ByteProvider = provider;
 
@@ -34,9 +35,17 @@ namespace PresetMagician.Views
             PluginPresetChunkControl.ByteProvider = provider2;
         }
 
+        private void ViewModelOnPresetChunkChanged(object sender, EventArgs e)
+        {
+            var provider2 =
+                new DynamicByteProvider(((VstPluginChunkViewModel) ViewModel).ChunkPresetMemoryStream.ToArray());
+            PluginPresetChunkControl.ByteProvider = provider2;
+        }
+
         private void ViewModelOnBankChunkChanged(object sender, EventArgs e)
         {
-            var provider = new DynamicByteProvider(((VstPluginChunkViewModel)ViewModel).ChunkBankMemoryStream.ToArray());
+            var provider =
+                new DynamicByteProvider(((VstPluginChunkViewModel) ViewModel).ChunkBankMemoryStream.ToArray());
             PluginBankChunkControl.ByteProvider = provider;
         }
     }

@@ -31,6 +31,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
             <RowDefinition Height="2*" />
+            <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
@@ -88,6 +89,12 @@
                 UseFixedBytesPerLine="True"
                 VScrollBarVisible="True" />
         </WindowsFormsHost>
+        <TextBox Background="Transparent"
+                 BorderThickness="0"
+                 Grid.Row="4" Grid.Column="1"
+                 Text="{Binding PluginChunkHash, Mode=OneWay}"
+                 IsReadOnly="True"
+                 TextWrapping="Wrap" />
 
 
     </Grid>
