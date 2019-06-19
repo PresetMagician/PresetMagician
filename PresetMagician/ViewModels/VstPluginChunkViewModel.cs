@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
+using Drachenkatze.PresetMagician.Utils;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.Core.Services;
@@ -17,7 +17,9 @@ namespace PresetMagician.ViewModels
         private readonly IOpenFileService _openFileService;
         private readonly ISaveFileService _saveFileService;
         private readonly DeveloperService _developerService;
-        public VstPluginChunkViewModel(IRemotePluginInstance pluginInstance, IOpenFileService openFileService, ISaveFileService saveFileService, DeveloperService developerService)
+
+        public VstPluginChunkViewModel(IRemotePluginInstance pluginInstance, IOpenFileService openFileService,
+            ISaveFileService saveFileService, DeveloperService developerService)
         {
             _openFileService = openFileService;
             _saveFileService = saveFileService;
@@ -35,6 +37,7 @@ namespace PresetMagician.ViewModels
 
         public Plugin Plugin { get; protected set; }
         public event EventHandler BankChunkChanged;
+        public event EventHandler PresetChunkChanged;
 
         public IRemotePluginInstance PluginInstance { get; }
 
@@ -44,6 +47,8 @@ namespace PresetMagician.ViewModels
 
         public MemoryStream ChunkPresetMemoryStream { get; } = new MemoryStream();
         public MemoryStream ChunkBankMemoryStream { get; } = new MemoryStream();
+        public string ChunkPresetHash { get; private set; }
+        public string ChunkBankHash { get; private set; }
 
         private async Task OnLoadBankChunkExecute()
         {
@@ -62,7 +67,7 @@ namespace PresetMagician.ViewModels
                 Log.Error(ex, "Failed to open file");
             }
         }
-        
+
         private void OnRefreshExecute()
         {
             RefreshChunks();
@@ -75,7 +80,8 @@ namespace PresetMagician.ViewModels
             {
                 ChunkBankMemoryStream.SetLength(0);
                 ChunkBankMemoryStream.Write(bankChunk, 0, bankChunk.Length);
-                
+
+                ChunkBankHash = HashUtils.getIxxHash(bankChunk);
                 BankChunkChanged?.Invoke(this, EventArgs.Empty);
             }
 
@@ -84,6 +90,10 @@ namespace PresetMagician.ViewModels
             {
                 ChunkPresetMemoryStream.SetLength(0);
                 ChunkPresetMemoryStream.Write(presetChunk, 0, presetChunk.Length);
+
+                ChunkPresetHash = HashUtils.getIxxHash(presetChunk);
+
+                PresetChunkChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -94,7 +104,7 @@ namespace PresetMagician.ViewModels
             {
                 _saveFileService.Filter = "Binary Files (*.*)|*.*";
 
-                
+
                 if (await _saveFileService.DetermineFileAsync())
                 {
                     File.WriteAllBytes(_saveFileService.FileName, ChunkBankMemoryStream.ToArray());
@@ -116,7 +126,6 @@ namespace PresetMagician.ViewModels
             File.WriteAllBytes(tempFile, ChunkBankMemoryStream.ToArray());
 
             _developerService.StartHexEditor(tempFile);
-         
         }
 
         public TaskCommand OpenPresetWithHexEditor { get; }
@@ -127,7 +136,6 @@ namespace PresetMagician.ViewModels
             File.WriteAllBytes(tempFile, ChunkPresetMemoryStream.ToArray());
 
             _developerService.StartHexEditor(tempFile);
-          
         }
     }
 }

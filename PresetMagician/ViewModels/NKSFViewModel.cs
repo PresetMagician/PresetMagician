@@ -5,6 +5,7 @@ using Catel;
 using Catel.Logging;
 using Catel.MVVM;
 using Catel.Services;
+using Drachenkatze.PresetMagician.Utils;
 using Newtonsoft.Json;
 using PresetMagician.Core.Services;
 using PresetMagician.NKS;
@@ -26,6 +27,7 @@ namespace PresetMagician.ViewModels
         public string ControllerAssignments { get; private set; }
         public string PluginId { get; private set; }
         public MemoryStream PluginChunk { get; set; }
+        public string PluginChunkHash { get; private set; }
         private string filePath { get; set; }
 
         public NKSFViewModel(IOpenFileService openFileService, DeveloperService developerService)
@@ -84,6 +86,7 @@ namespace PresetMagician.ViewModels
                 ms.Write(n.kontaktSound.pluginChunk.Chunk, 0, n.kontaktSound.pluginChunk.Chunk.Length);
 
                 PluginChunk = ms;
+                PluginChunkHash = HashUtils.getIxxHash(n.kontaktSound.pluginChunk.Chunk);
             }
 
             Log.Debug("Parse Complete");
