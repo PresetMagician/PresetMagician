@@ -471,6 +471,10 @@ namespace PresetMagician.VendorPresetParserTest
             _pluginId = pluginId;
         }
 
+        public void PerformIdleLoop(Guid guid, int loops)
+        {
+        }
+
         public void PatchPluginToMidiInput(Guid guid, MidiInputDevice device)
         {
         }
