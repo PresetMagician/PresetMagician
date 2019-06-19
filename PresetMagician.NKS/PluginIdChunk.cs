@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.IO;
+﻿using System.IO;
 using MessagePack;
 
 namespace PresetMagician.NKS
@@ -28,7 +27,6 @@ namespace PresetMagician.NKS
         public override void DeserializeMessagePack(byte[] buffer)
         {
             pluginId = MessagePackSerializer.Deserialize<PluginId>(buffer);
-
         }
 
         public override byte[] SerializeMessagePack()
