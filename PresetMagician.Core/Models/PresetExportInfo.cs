@@ -36,6 +36,7 @@ namespace PresetMagician.Core.Models
             PluginId = preset.Plugin.VstPluginId;
             PluginType = preset.Plugin.PluginType;
             PresetGuid = Guid.Parse(preset.PresetId);
+
             if (preset.PresetBank == null)
             {
                 throw new ArgumentException(
