@@ -75,6 +75,7 @@ namespace PresetMagician
                                 $"Unable to update export presets for {pluginPreset.Plugin.PluginName} because it has no Preset Parser. Try to force-reload metadata for this plugin.");
                             continue;
                         }
+
                         using (var remotePluginInstance =
                             _remoteVstService.GetRemotePluginInstance(pluginPreset.Plugin, false))
                         {
@@ -91,6 +92,14 @@ namespace PresetMagician
                                 }
 
                                 var presetData = await _presetDataPersisterService.GetPresetData(preset.Preset);
+
+                                if (preset.Preset.PresetBank == null)
+                                {
+                                    preset.Preset.PresetBank = preset.Preset.Plugin.RootBank;
+                                    LogTo.Warning(
+                                        $"Preset {preset.Preset.Metadata.PresetName} has no preset bank, using none.");
+                                }
+
                                 var presetExportInfo = new PresetExportInfo(preset.Preset)
                                 {
                                     FolderMode = _globalService.RuntimeConfiguration.FolderExportMode,
@@ -101,7 +110,7 @@ namespace PresetMagician
                                 if (!presetExportInfo.CanExport())
                                 {
                                     _applicationService.AddApplicationOperationError(
-                                        $"Cannot export {preset.Preset.Plugin} -{preset.Preset.Metadata.PresetName}. "+
+                                        $"Cannot export {preset.Preset.Plugin} -{preset.Preset.Metadata.PresetName}. " +
                                         $"Reason: {presetExportInfo.CannotExportReason}");
                                     continue;
                                 }
