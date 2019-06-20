@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using Catel.Collections;
 using Drachenkatze.PresetMagician.VSTHost.Properties;
 using Jacobi.Vst.Core;
@@ -162,6 +163,7 @@ namespace PresetMagician.VstHost.VST
                     for (k = 0; k < initialDelay; k++)
                     {
                         ctx.PluginCommandStub.ProcessReplacing(inputBuffers, outputBuffers);
+                        Thread.Sleep(10);
                     }
 
                     for (k = 0; k < loops; k++)

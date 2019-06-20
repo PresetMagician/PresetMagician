@@ -13,3 +13,4 @@ System.ValueTuple
 SharpZipLib
 CsvHelper
 Newtonsoft.Json
+Tokenizer
