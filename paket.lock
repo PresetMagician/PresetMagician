@@ -212,6 +212,7 @@ NUGET
       System.Runtime.CompilerServices.Unsafe (>= 4.5.2)
     System.Threading.Timer (4.3)
     System.ValueTuple (4.5)
+    Tokenizer (2.1.2)
     WPFHexaEditor (1.3.6.2)
     xunit (2.4.1)
       xunit.analyzers (>= 0.10)

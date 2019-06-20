@@ -5,7 +5,6 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Catel.Collections;
 using Drachenkatze.PresetMagician.Utils;
-using PresetMagician.Core.Exceptions;
 using PresetMagician.NKS;
 using PresetMagician.Utils;
 
@@ -39,7 +38,9 @@ namespace PresetMagician.Core.Models
             PresetGuid = Guid.Parse(preset.PresetId);
             if (preset.PresetBank == null)
             {
-                throw new ArgumentException("PresetExportInfo: PresetBank is null. Please report this as a bug!");
+                throw new ArgumentException(
+                    $"PresetExportInfo: PresetBank for preset {preset.Metadata.PresetName} (SourceFile " +
+                    $"{preset.OriginalMetadata.SourceFile}) is null. Please report this as a bug!");
             }
 
             BankPath = preset.PresetBank.GetBankPath().ToList();
@@ -93,8 +94,8 @@ namespace PresetMagician.Core.Models
             ComputeOutputFilename();
             return _canExport;
         }
-        
-        public string CannotExportReason { get; private set; }= "";
+
+        public string CannotExportReason { get; private set; } = "";
         private bool _canExport = true;
         private string _outputFilename;
 
@@ -146,6 +147,7 @@ namespace PresetMagician.Core.Models
             {
                 return;
             }
+
             string fileExtension;
 
             if (PluginType == Plugin.PluginTypes.Instrument)
@@ -198,6 +200,7 @@ namespace PresetMagician.Core.Models
 
             _outputFilename = fileName;
         }
+
         public string GetOutputFilename()
         {
             ComputeOutputFilename();
@@ -235,9 +238,8 @@ namespace PresetMagician.Core.Models
                 sanitizedBankDir = sanitizedBankDir.Replace("/", "-");
                 sanitizedBankPath.Add(sanitizedBankDir);
             }
-            
+
             return string.Join(@"\", sanitizedBankPath);
-           
         }
 
         private string GetNKSFPluginName(string pluginName)
