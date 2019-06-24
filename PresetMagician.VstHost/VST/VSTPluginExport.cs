@@ -121,9 +121,6 @@ namespace PresetMagician.VstHost.VST
 
             ctx.PluginCommandStub.SetChunk(data, false);
 
-            var outputCount = ctx.PluginInfo.AudioOutputCount;
-            var inputCount = ctx.PluginInfo.AudioInputCount;
-
 
             var tempFileName = preset.GetPreviewFilename(true);
             Directory.CreateDirectory(Path.GetDirectoryName(tempFileName));
@@ -143,6 +140,49 @@ namespace PresetMagician.VstHost.VST
                 noteOffEvents.Add((loop: (int) offLoop, offset: offOffset, note: (byte) (note.NoteNumber + 12)));
             }
 
+            var hasExportedAudio = false;
+
+            for (var i = 0; i < 10; i++)
+            {
+                if (DoAudioWaveExport(plugin, tempFileName, noteOnEvents, noteOffEvents, initialDelay,
+                    preset.PreviewNotePlayer.MaxDuration))
+                {
+                    hasExportedAudio = true;
+                    break;
+                }
+            }
+
+
+            if (hasExportedAudio)
+            {
+                ConvertToOGG(tempFileName, preset.GetPreviewFilename());
+            }
+            else
+            {
+                plugin.Logger.Error("No audio data was returned by the plugin. Most likely it was still loading " +
+                                    "the preset data; try to increase the audio preview pre-delay in the plugin " +
+                                    "settings and try again");
+            }
+
+            File.Delete(tempFileName);
+        }
+
+        private bool DoAudioWaveExport(RemoteVstPlugin plugin, string tempFileName,
+            List<(int loop, int offset, byte note)> noteOnEvents, List<(int loop, int offset, byte note)> noteOffEvents,
+            int initialDelay, int targetLength)
+        {
+            var dataWritten = false;
+
+            if (targetLength < 1)
+            {
+                targetLength = 1;
+            }
+
+            var ctx = plugin.PluginContext;
+
+            var outputCount = ctx.PluginInfo.AudioOutputCount;
+            var inputCount = ctx.PluginInfo.AudioInputCount;
+
             using (var inputMgr = new VstAudioBufferManager(inputCount, VstHost.BlockSize))
             {
                 using (var outputMgr = new VstAudioBufferManager(outputCount, VstHost.BlockSize))
@@ -151,7 +191,6 @@ namespace PresetMagician.VstHost.VST
                     var inputBuffers = inputMgr.ToArray();
 
                     var p = WaveFormat.CreateIeeeFloatWaveFormat((int) VstHost.SampleRate, 2);
-                    var targetLength = 6;
                     var loops = (int) VstHost.SampleRate * targetLength / VstHost.BlockSize;
 
                     var writer = new WaveFileWriter(tempFileName, p);
@@ -184,29 +223,59 @@ namespace PresetMagician.VstHost.VST
                             }
                         }
 
+                        if (HasBufferData(outputBuffers))
+                        {
+                            WriteBuffers(outputBuffers, writer);
+                            dataWritten = true;
+                        }
 
                         ctx.PluginCommandStub.ProcessReplacing(inputBuffers, outputBuffers);
-                        for (var j = 0; j < VstHost.BlockSize; j++)
-                        {
-                            var x = 0;
-                            foreach (var t in outputBuffers)
-                            {
-                                if (x < 2)
-                                {
-                                    writer.WriteSample(t[j]);
-                                }
-
-                                x++;
-                            }
-                        }
                     }
 
                     writer.Close();
                 }
             }
 
-            ConvertToOGG(tempFileName, preset.GetPreviewFilename());
-            File.Delete(tempFileName);
+            return dataWritten;
+        }
+
+        private bool HasBufferData(VstAudioBuffer[] outputBuffers)
+        {
+            for (var j = 0; j < VstHost.BlockSize; j++)
+            {
+                var x = 0;
+                foreach (var t in outputBuffers)
+                {
+                    if (x < 2)
+                    {
+                        if (t[j] != 0)
+                        {
+                            return true;
+                        }
+                    }
+
+                    x++;
+                }
+            }
+
+            return false;
+        }
+
+        private void WriteBuffers(VstAudioBuffer[] outputBuffers, WaveFileWriter writer)
+        {
+            for (var j = 0; j < VstHost.BlockSize; j++)
+            {
+                var x = 0;
+                foreach (var t in outputBuffers)
+                {
+                    if (x < 2)
+                    {
+                        writer.WriteSample(t[j]);
+                    }
+
+                    x++;
+                }
+            }
         }
     }
 }
