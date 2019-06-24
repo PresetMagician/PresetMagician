@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Catel.Collections;
 using Ceras;
@@ -17,6 +16,7 @@ namespace PresetMagician.Core.Models
                     _defaultPreviewNotePlayer = new PreviewNotePlayer();
                     _defaultPreviewNotePlayer.PreviewNotePlayerId = "default";
                     _defaultPreviewNotePlayer.Name = "Default C3";
+                    _defaultPreviewNotePlayer.MaxDuration = 3;
                     _defaultPreviewNotePlayer.PreviewNotes.Add(new PreviewNote
                         {NoteNumber = 48, Start = 0, Duration = 1});
                 }
@@ -52,7 +52,29 @@ namespace PresetMagician.Core.Models
 
         [Include] public string PreviewNotePlayerId { get; set; } = Guid.NewGuid().ToString();
         [Include] public string Name { get; set; }
-        [Include] public FastObservableCollection<PreviewNote> PreviewNotes { get; set; } = new FastObservableCollection<PreviewNote>();
+
+        private int _maxDuration;
+
+        [Include]
+        public int MaxDuration
+        {
+            get => _maxDuration;
+            set
+            {
+                if (value < 1 || value > 10)
+                {
+                    _maxDuration = 3;
+                }
+                else
+                {
+                    _maxDuration = value;
+                }
+            }
+        }
+
+        [Include]
+        public FastObservableCollection<PreviewNote> PreviewNotes { get; set; } =
+            new FastObservableCollection<PreviewNote>();
 
         public bool IsEqualTo(PreviewNotePlayer target)
         {
