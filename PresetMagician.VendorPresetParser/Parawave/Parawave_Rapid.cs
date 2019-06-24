@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,6 +11,7 @@ using JetBrains.Annotations;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
 using PresetMagician.VendorPresetParser.Common;
+using Type = PresetMagician.Core.Models.Type;
 
 namespace PresetMagician.VendorPresetParser.Parawave
 {
@@ -25,9 +25,6 @@ namespace PresetMagician.VendorPresetParser.Parawave
         public override List<int> SupportedPlugins => new List<int> {1349997153};
 
         protected override string Extension { get; } = "fxp";
-
-        public string Remarks { get; set; } =
-            "Most audio previews are currently empty. Metadata is not being parsed at the moment.";
 
         public override async Task DoScan()
         {
@@ -88,9 +85,9 @@ namespace PresetMagician.VendorPresetParser.Parawave
                     {
                         metadataDictionary.Add(key, token);
                     }
-                    catch (ArgumentException e)
+                    catch (ArgumentException)
                     {
-                        Debug.WriteLine($"{key} already exists");
+                        // Do nothing
                     }
                 }
 
@@ -107,12 +104,109 @@ namespace PresetMagician.VendorPresetParser.Parawave
                 preset.Author = metadataDictionary["Author"];
             }
 
-            foreach (var d in metadataDictionary)
-            {
-                Debug.WriteLine($"{d.Key}: {d.Value}");
-            }
+            ApplyType(int.Parse(metadataDictionary["Type"]), preset);
 
             return chunkData;
+        }
+
+        private void ApplyType(int id, PresetParserMetadata preset)
+        {
+            switch (id)
+            {
+                case 1: break;
+                case 2: // Arpeggiated
+                    preset.Characteristics.Add(new Characteristic {CharacteristicName = "Arpeggiated"});
+                    break;
+                case 3: //Bass
+                    preset.Types.Add(new Type {TypeName = "Bass"});
+                    break;
+                case 4: // Chord
+                    preset.Characteristics.Add(new Characteristic {CharacteristicName = "Chord"});
+                    break;
+                case 5: // Effect
+                    preset.Types.Add(new Type {TypeName = "Sound Effects"});
+                    break;
+
+                case 6: // Drumkit
+                    preset.Types.Add(new Type {TypeName = "Drums", SubTypeName = "Kit"});
+                    break;
+                case 7: // Drumloop
+                    preset.Types.Add(new Type {TypeName = "Drums"});
+                    preset.Characteristics.Add(new Characteristic {CharacteristicName = "Sequence / Loop"});
+                    break;
+                case 8: // Gated
+                    preset.Types.Add(new Type {TypeName = "Arp / Sequence", SubTypeName = "Gated"});
+                    break;
+                case 9: // Lead
+                    preset.Characteristics.Add(new Characteristic {CharacteristicName = "Lead"});
+                    break;
+                case 10: // Melody
+                    preset.Characteristics.Add(new Characteristic {CharacteristicName = "Melodic"});
+                    break;
+                case 11: // Pad
+                    preset.Types.Add(new Type {TypeName = "Synth Pad"});
+                    break;
+                case 12: // Pluck
+                    preset.Types.Add(new Type {TypeName = "Synth Pluck"});
+                    break;
+                case 13: // Sequence
+                    preset.Types.Add(new Type {TypeName = "Arp / Sequence"});
+                    break;
+                case 14: // Splitted
+                    preset.Types.Add(new Type {TypeName = "Combination"});
+                    break;
+                case 15: // Synth
+                    preset.Types.Add(new Type {TypeName = "Synth Misc"});
+                    break;
+                case 16: // Texture
+                    preset.Characteristics.Add(new Characteristic {CharacteristicName = "Textural"});
+                    break;
+                case 17: // Track
+                    preset.Types.Add(new Type {TypeName = "Arp / Sequence"});
+                    break;
+                case 18: // Bell
+                    preset.Types.Add(new Type {TypeName = "Percussion", SubTypeName = "Bell"});
+                    break;
+                case 19: // Brass
+                    preset.Types.Add(new Type {TypeName = "Brass"});
+                    break;
+                case 20: // Drum
+                    preset.Types.Add(new Type {TypeName = "Drums"});
+                    break;
+                case 21: // Guitar
+                    preset.Types.Add(new Type {TypeName = "Guitar"});
+                    break;
+                case 22: // Mallet
+                    preset.Types.Add(new Type {TypeName = "Mallet Instruments"});
+                    break;
+                case 23: // Organ
+                    preset.Types.Add(new Type {TypeName = "Organ"});
+                    break;
+                case 24: // Piano
+                    preset.Types.Add(new Type {TypeName = "Piano / Keys"});
+                    break;
+                case 25: // String
+                    preset.Types.Add(new Type {TypeName = "Bowed Instruments", SubTypeName = "Synth"});
+                    break;
+                case 26: // Vocal
+                    preset.Types.Add(new Type {TypeName = "Vocal"});
+                    break;
+                case 27: // Woodwind
+                    preset.Types.Add(new Type {TypeName = "Mallet Instruments", SubTypeName = "Wood"});
+                    break;
+                case 28: // Keys
+                    preset.Types.Add(new Type {TypeName = "Piano / Keys"});
+                    break;
+                case 29: // Solo
+                    preset.Types.Add(new Type {TypeName = "Solo"});
+                    break;
+                default:
+                    Logger.Error(
+                        $"Unknown type id {id} for preset {preset.PresetName}. Seems like there were additional " +
+                        "types introduced to Rapid since this preset parser was developed. " +
+                        "Please report this as a bug.");
+                    break;
+            }
         }
 
         protected override string GetParseDirectory()

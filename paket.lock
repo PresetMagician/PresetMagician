@@ -22,7 +22,7 @@ NUGET
     Catel.Serialization.Json (5.10)
       Catel.Core (>= 5.10)
       NewtonSoft.Json (>= 12.0.1)
-    Ceras (4.0.38)
+    Ceras (4.0.33)
       System.Buffers (>= 4.5)
     ControlzEx (3.0.2.4)
     CsvHelper (12.1.2)
