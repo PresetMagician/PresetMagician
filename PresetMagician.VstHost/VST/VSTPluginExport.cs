@@ -119,7 +119,7 @@ namespace PresetMagician.VstHost.VST
                 throw new NoRealtimeProcessingException();
             }
 
-            ctx.PluginCommandStub.SetChunk(data, false);
+            //ctx.PluginCommandStub.SetChunk(data, false);
 
 
             var tempFileName = preset.GetPreviewFilename(true);

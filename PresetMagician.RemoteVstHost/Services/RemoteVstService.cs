@@ -186,6 +186,20 @@ namespace PresetMagician.RemoteVstHost.Services
             _vstHost.ReloadPlugin(plugin);
         }
 
+        public void DisableTimeInfo(Guid guid)
+        {
+            App.Ping();
+            var plugin = GetPluginByGuid(guid);
+            _vstHost.DisableTimeInfo(plugin);
+        }
+
+        public void EnableTimeInfo(Guid guid)
+        {
+            App.Ping();
+            var plugin = GetPluginByGuid(guid);
+            _vstHost.DisableTimeInfo(plugin);
+        }
+
         private RemoteVstPlugin GetPluginByGuid(Guid guid)
         {
             App.Ping();

@@ -14,6 +14,7 @@ namespace PresetMagician.VstHost
     {
         public string Directory;
         public string PluginDll;
+        public bool DisableTimeInfo = false;
         private MiniLogger _logger;
         private bool _debug;
         private VstProcessLevels _currentProcessLevel;
@@ -133,6 +134,11 @@ namespace PresetMagician.VstHost
 
         public VstTimeInfo GetTimeInfo(VstTimeInfoFlags filterFlags)
         {
+            if (DisableTimeInfo)
+            {
+                return null;
+            }
+
             Debug($"GetTimeInfo {filterFlags}");
 
             vstTimeInfo.SamplePosition = 0.0;

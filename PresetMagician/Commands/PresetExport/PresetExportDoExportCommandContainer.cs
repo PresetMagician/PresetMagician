@@ -115,21 +115,30 @@ namespace PresetMagician
                                     continue;
                                 }
 
+                                pluginPreset.Plugin.PresetParser.PluginInstance = remotePluginInstance;
 
                                 if (_globalService.RuntimeConfiguration.ExportWithAudioPreviews &&
                                     pluginPreset.Plugin.PluginType == Plugin.PluginTypes.Instrument)
                                 {
                                     await remotePluginInstance.LoadPlugin().ConfigureAwait(false);
+                                    pluginPreset.Plugin.PresetParser.OnPluginLoad();
+                                    remotePluginInstance.SetChunk(presetData, false);
+
                                     remotePluginInstance.ExportNksAudioPreview(presetExportInfo, presetData,
                                         preset.Preset.Plugin.GetAudioPreviewDelay());
                                 }
 
                                 remotePluginInstance.ExportNks(presetExportInfo, presetData);
 
-                                pluginPreset.Plugin.PresetParser.PluginInstance = remotePluginInstance;
+
                                 pluginPreset.Plugin.PresetParser.OnAfterPresetExport();
                                 preset.Preset.LastExported = DateTime.Now;
                                 preset.Preset.UpdateLastExportedMetadata();
+                            }
+
+                            if (remotePluginInstance.IsLoaded)
+                            {
+                                pluginPreset.Plugin.PresetParser.OnPluginUnload();
                             }
 
                             remotePluginInstance.UnloadPlugin();

@@ -487,6 +487,11 @@
                                    LargeIcon="{iconPacks:Material Kind=LockPattern,Width=32,Height=32}"
                                    Size="Large"
                                    Command="{Binding LoadPresetCommand}" />
+                    
+                    <fluent:Button Header="Show Editor"
+                                   LargeIcon="{iconPacks:FontAwesome Kind=PenSquareSolid,Width=32,Height=32}"
+                                   Size="Large"
+                                   Command="{Binding ShowEditorCommand}" />
 
                 </fluent:RibbonGroupBox>
             </fluent:RibbonTabItem>

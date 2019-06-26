@@ -2,11 +2,9 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using Catel.IoC;
 using PresetMagician.Core.Enums;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
-using PresetMagician.Core.Services;
 using PresetMagician.Utils.Logger;
 
 namespace PresetMagician.VendorPresetParser
@@ -59,7 +57,7 @@ namespace PresetMagician.VendorPresetParser
         public virtual List<int> SupportedPlugins => new List<int>();
 
         public virtual int AudioPreviewPreDelay { get; set; } = 40;
-        
+
         public virtual PresetParserPriorityEnum Priority { get; } = PresetParserPriorityEnum.DEFAULT_PRIORITY;
 
         public virtual string Remarks { get; set; }
@@ -111,6 +109,14 @@ namespace PresetMagician.VendorPresetParser
         }
 
         public virtual void OnAfterPresetExport()
+        {
+        }
+
+        public virtual void OnPluginLoad()
+        {
+        }
+
+        public virtual void OnPluginUnload()
         {
         }
     }
