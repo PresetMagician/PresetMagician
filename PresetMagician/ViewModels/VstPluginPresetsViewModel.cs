@@ -73,6 +73,7 @@ namespace PresetMagician.ViewModels
 
             LoadPluginCommand = new TaskCommand(OnLoadPluginCommandExecute, LoadPluginCommandCanExecute);
             LoadPresetCommand = new TaskCommand(OnLoadPresetCommandExecute, LoadPresetCommandCanExecute);
+            ShowEditorCommand = new TaskCommand(OnShowEditorCommandExecute, ShowEditorCommandCanExecute);
 
 
             Revert = new Command<string>(OnRevertExecute);
@@ -144,6 +145,22 @@ namespace PresetMagician.ViewModels
 
         #endregion
 
+        #region Command Show Editor
+
+        public TaskCommand ShowEditorCommand { get; }
+
+        private async Task OnShowEditorCommandExecute()
+        {
+            _remotePluginInstance.OpenEditor();
+        }
+
+        private bool ShowEditorCommandCanExecute()
+        {
+            return _remotePluginInstance != null;
+        }
+
+        #endregion
+
         #region Command Load Plugin 
 
         public TaskCommand LoadPluginCommand { get; }
@@ -173,6 +190,9 @@ namespace PresetMagician.ViewModels
                     LogTo.Error(e.Message);
                 }
             }
+
+            ShowEditorCommand.RaiseCanExecuteChanged();
+            LoadPresetCommand.RaiseCanExecuteChanged();
         }
 
         private bool LoadPluginCommandCanExecute()

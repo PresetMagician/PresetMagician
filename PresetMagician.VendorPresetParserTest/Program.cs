@@ -471,6 +471,14 @@ namespace PresetMagician.VendorPresetParserTest
             _pluginId = pluginId;
         }
 
+        public void DisableTimeInfo(Guid guid)
+        {
+        }
+
+        public void EnableTimeInfo(Guid guid)
+        {
+        }
+
         public void PerformIdleLoop(Guid guid, int loops)
         {
         }

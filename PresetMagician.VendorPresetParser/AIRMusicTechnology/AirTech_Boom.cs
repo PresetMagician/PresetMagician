@@ -14,9 +14,6 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology
         public override List<int> SupportedPlugins => new List<int> {1836019522};
         protected override string Extension { get; } = "tfx";
 
-        public override string Remarks { get; set; } =
-            "Audio Previews are non-functional for this plugin";
-
         protected override string GetParseDirectory()
         {
             try
@@ -32,6 +29,16 @@ namespace PresetMagician.VendorPresetParser.AIRMusicTechnology
         protected override Tfx.Tfx GetTfxParser()
         {
             return new TfxBoom();
+        }
+
+        public override void OnPluginLoad()
+        {
+            PluginInstance.DisableTimeInfo();
+        }
+
+        public override void OnPluginUnload()
+        {
+            PluginInstance.EnableTimeInfo();
         }
     }
 }

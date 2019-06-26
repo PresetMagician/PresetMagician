@@ -187,5 +187,13 @@ namespace PresetMagician.Core.Interfaces
         [OperationContract]
         [FaultContract(typeof(GenericFault))]
         void PerformIdleLoop(Guid guid, int loops);
+
+        [OperationContract]
+        [FaultContract(typeof(GenericFault))]
+        void DisableTimeInfo(Guid guid);
+
+        [OperationContract]
+        [FaultContract(typeof(GenericFault))]
+        void EnableTimeInfo(Guid guid);
     }
 }

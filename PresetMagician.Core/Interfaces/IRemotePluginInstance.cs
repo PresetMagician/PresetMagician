@@ -55,5 +55,7 @@ namespace PresetMagician.Core.Interfaces
         bool IsEditorOpen { get; }
         float GetParameter(int parameterIndex);
         void PerformIdleLoop(int loops);
+        void DisableTimeInfo();
+        void EnableTimeInfo();
     }
 }

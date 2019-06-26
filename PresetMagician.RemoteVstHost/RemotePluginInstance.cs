@@ -195,6 +195,16 @@ namespace PresetMagician.RemoteVstHost
             _remoteVstService.UnpatchPluginFromMidiInput();
         }
 
+        public void DisableTimeInfo()
+        {
+            _remoteVstService.DisableTimeInfo(_guid);
+        }
+
+        public void EnableTimeInfo()
+        {
+            _remoteVstService.EnableTimeInfo(_guid);
+        }
+
         public void Dispose()
         {
             if (_vstHostProcess.IsRemoteVstServiceAvailable())

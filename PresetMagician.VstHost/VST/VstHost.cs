@@ -120,6 +120,16 @@ namespace PresetMagician.VstHost.VST
             }
         }
 
+        public void DisableTimeInfo(RemoteVstPlugin remoteVst)
+        {
+            ((NewHostCommandStub) remoteVst.PluginContext.HostCommandStub).DisableTimeInfo = true;
+        }
+
+        public void EnableTimeInfo(RemoteVstPlugin remoteVst)
+        {
+            ((NewHostCommandStub) remoteVst.PluginContext.HostCommandStub).DisableTimeInfo = false;
+        }
+
         public void ReloadPlugin(RemoteVstPlugin remoteVst)
         {
             UnloadVst(remoteVst);

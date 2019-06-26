@@ -14,6 +14,7 @@ namespace PresetMagician.Core.Interfaces
         /// is effectively used.
         /// </summary>
         PresetParserPriorityEnum Priority { get; }
+
         PresetBank RootBank { get; set; }
         IRemotePluginInstance PluginInstance { get; set; }
         int AudioPreviewPreDelay { get; set; }
@@ -41,5 +42,7 @@ namespace PresetMagician.Core.Interfaces
 
         Task DoScan();
         void OnAfterPresetExport();
+        void OnPluginLoad();
+        void OnPluginUnload();
     }
 }
