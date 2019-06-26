@@ -5,7 +5,6 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -69,8 +68,6 @@ namespace PresetMagician.Services
         #endregion Constructors
 
         #region Methods
-        
-       
 
         [Time]
         public override async Task InitializeBeforeCreatingShellAsync()
@@ -96,8 +93,10 @@ namespace PresetMagician.Services
                     {
                         _splashScreenService.Action = "Migrating database…" + args.Progress;
                     };
+                    Core.Core.UseDispatcher = false;
                     migrationService.LoadData();
                     migrationService.MigratePlugins();
+                    Core.Core.UseDispatcher = true;
                 }).ConfigureAwait(false);
 
                 _serviceLocator.ResolveType<GlobalService>().RuntimeConfiguration.FileOverwriteMode =
@@ -110,20 +109,21 @@ namespace PresetMagician.Services
             _splashScreenService.Action = "Initializing commands…";
 
             _frontendService.InitializeCommands();
-            
+
             var dataPersistenceService = _serviceLocator.ResolveType<DataPersisterService>();
             var globalService = _serviceLocator.ResolveType<GlobalService>();
             var pluginFiles = dataPersistenceService.GetStoredPluginFiles();
 
             dataPersistenceService.LoadTypesCharacteristics();
             dataPersistenceService.LoadPreviewNotePlayers();
-            
+
             foreach (var pluginFile in pluginFiles)
             {
                 var plugin = dataPersistenceService.LoadPlugin(pluginFile);
-                _splashScreenService.Action = $"({pluginFiles.IndexOf(pluginFile)+1}/{pluginFiles.Count}) Loading data for plugin {plugin.PluginName}";
+                _splashScreenService.Action =
+                    $"({pluginFiles.IndexOf(pluginFile) + 1}/{pluginFiles.Count}) Loading data for plugin {plugin.PluginName}";
                 await dataPersistenceService.LoadPresetsForPlugin(plugin);
-                
+
                 globalService.Plugins.Add(plugin);
             }
 
@@ -170,7 +170,7 @@ namespace PresetMagician.Services
             TaskHelper.Run(() => { _serviceLocator.ResolveType<RefreshPluginsCommand>().ExecuteAsync(); });
 
             var globalService = _serviceLocator.ResolveType<GlobalService>();
-            
+
             var location = Assembly.GetExecutingAssembly().Location;
             var releaseNotesFile = Path.Combine(Path.GetDirectoryName(location), @"Resources\ReleaseNotes\",
                 globalService.PresetMagicianVersion + ".txt");
@@ -178,7 +178,8 @@ namespace PresetMagician.Services
             if (File.Exists(releaseNotesFile))
             {
                 var ms = _serviceLocator.ResolveType<IAdvancedMessageService>();
-                await ms.ShowOnceAsync(File.ReadAllText(releaseNotesFile), "RELEASENOTES_"+globalService.PresetMagicianVersion, "Release Notes");
+                await ms.ShowOnceAsync(File.ReadAllText(releaseNotesFile),
+                    "RELEASENOTES_" + globalService.PresetMagicianVersion, "Release Notes");
             }
         }
 

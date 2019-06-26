@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Catel.Reflection;
@@ -52,7 +51,6 @@ namespace PresetMagician.Legacy.Services
             {
                 CurrentPlugin = OldPlugins.IndexOf(plugin) + 1;
                 var newPlugin = MigratePlugin(plugin);
-                
             }
 
 
@@ -76,6 +74,14 @@ namespace PresetMagician.Legacy.Services
 
             foreach (var preset in oldPlugin.Presets)
             {
+                var data = _dbContext.GetPresetData(preset);
+
+                if (data == null)
+                {
+                    // The preset data is null for some reason, skip this one
+                    continue;
+                }
+
                 UpdateCounter++;
                 var currentPreset = oldPlugin.Presets.IndexOf(preset) + 1;
 
@@ -92,7 +98,8 @@ namespace PresetMagician.Legacy.Services
                 newPlugin.Presets.Add(newPreset);
 
                 MigratePreset(preset, newPreset);
-                var data = _dbContext.GetPresetData(preset);
+
+
                 newPreset.Plugin = newPlugin;
                 newPreset.OriginalMetadata.Plugin = newPlugin;
                 _presetDataPersister.PersistPreset(newPreset.OriginalMetadata, data, true).Wait();
@@ -174,7 +181,8 @@ namespace PresetMagician.Legacy.Services
             }
         }
 
-        private void MigratePluginLocation(Plugin oldPlugin, PluginLocation oldLocation, NewModels.PluginLocation newLocation)
+        private void MigratePluginLocation(Plugin oldPlugin, PluginLocation oldLocation,
+            NewModels.PluginLocation newLocation)
         {
             var propertiesToMigrate = new HashSet<string>
             {
