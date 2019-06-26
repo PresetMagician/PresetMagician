@@ -32,6 +32,12 @@ namespace PresetMagician.Core.Models
         public PresetExportInfo(Preset preset)
         {
             PluginName = preset.Plugin.PluginName;
+
+            if (preset.Plugin.OverridePluginName)
+            {
+                PluginName = preset.Plugin.OverriddenPluginName;
+            }
+
             PluginVendor = preset.Plugin.PluginVendor;
             PluginId = preset.Plugin.VstPluginId;
             PluginType = preset.Plugin.PluginType;

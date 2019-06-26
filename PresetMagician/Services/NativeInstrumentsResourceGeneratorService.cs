@@ -134,13 +134,20 @@ namespace PresetMagician.Services
             Image bmp;
             var niResource = pluginInstance.Plugin.NativeInstrumentsResource;
 
+            var pluginName = pluginInstance.Plugin.PluginName;
+
+            if (pluginInstance.Plugin.OverridePluginName)
+            {
+                pluginName = pluginInstance.Plugin.OverriddenPluginName;
+            }
+
             if (niResource.ShortNamesState.State ==
                 NativeInstrumentsResource.ResourceStates.Empty || force)
             {
-                niResource.ShortNames.VB_shortname = pluginInstance.Plugin.PluginName;
-                niResource.ShortNames.MKII_shortname = pluginInstance.Plugin.PluginName;
-                niResource.ShortNames.MIKRO_shortname = pluginInstance.Plugin.PluginName;
-                niResource.ShortNames.MST_shortname = pluginInstance.Plugin.PluginName;
+                niResource.ShortNames.VB_shortname = pluginName;
+                niResource.ShortNames.MKII_shortname = pluginName;
+                niResource.ShortNames.MIKRO_shortname = pluginName;
+                niResource.ShortNames.MST_shortname = pluginName;
                 niResource.ShortNamesState.State = NativeInstrumentsResource.ResourceStates.AutomaticallyGenerated;
             }
 
@@ -154,11 +161,10 @@ namespace PresetMagician.Services
 
                 niResource.Categories.CategoryDB.Add(categoryDb);
                 niResource.Categories.Vendor = pluginInstance.Plugin.PluginVendor;
-                niResource.Categories.Product = pluginInstance.Plugin.PluginName;
+                niResource.Categories.Product = pluginName;
                 niResource.CategoriesState.State = NativeInstrumentsResource.ResourceStates.AutomaticallyGenerated;
             }
 
-            var pluginName = pluginInstance.Plugin.PluginName;
             var pluginVendor = pluginInstance.Plugin.PluginVendor;
 
             niResource.MST_logo.ReplaceFromStream(

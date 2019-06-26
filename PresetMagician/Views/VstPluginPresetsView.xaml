@@ -475,6 +475,13 @@
                                    Size="Middle" />
 
                 </fluent:RibbonGroupBox>
+                <fluent:RibbonGroupBox Header="Export"
+                                       IsLauncherVisible="False">
+                    <fluent:Button Header="Add Selection to Export List"
+                                   LargeIcon="{iconPacks:MaterialDesign Kind=AddCircle,Width=32,Height=32}"
+                                   Size="Large"
+                                   Command="{Binding AddToExportListCommand}" />
+                </fluent:RibbonGroupBox>
                 <fluent:RibbonGroupBox Header="Preview (Experimental)"
                                        IsLauncherVisible="False">
 

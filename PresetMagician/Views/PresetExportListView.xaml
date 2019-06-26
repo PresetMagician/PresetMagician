@@ -84,7 +84,7 @@
                 behaviors:MultiSelectBehavior.SynchronizedSelectedItems="{Binding SelectedPresets}"
                 AutoGenerateColumns="False"
                 CanUserAddRows="False"
-                CanUserSortColumns="False"
+                CanUserSortColumns="True"
                 GridLinesVisibility="All"
                 ItemsSource="{Binding PresetExportList}"
                 RowDetailsVisibilityMode="Collapsed"
@@ -101,13 +101,13 @@
                         Binding="{Binding Metadata.PresetName, Mode=OneWay}"
                         Header="Name"
                         IsReadOnly="True"
-                        SortDirection="Descending" />
+                        SortDirection="Ascending" />
                     <DataGridTextColumn
                         Width="1*"
                         Binding="{Binding PresetBank.BankPath, Mode=OneWay}"
                         Header="Bank"
                         IsReadOnly="True"
-                        SortDirection="Descending" />
+                        SortDirection="Ascending" />
 
                     <DataGridTemplateColumn
                         Width="1*"
@@ -128,7 +128,7 @@
                         Binding="{Binding Plugin.PluginName, Mode=OneWay}"
                         Header="Plugin"
                         IsReadOnly="True"
-                        SortDirection="Descending" />
+                        SortDirection="Ascending" />
                     <DataGridTextColumn
                         Width="80"
                         Binding="{Binding PreviewNotePlayer.Name, Mode=OneWay}"
