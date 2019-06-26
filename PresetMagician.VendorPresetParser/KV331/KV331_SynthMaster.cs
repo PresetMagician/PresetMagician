@@ -16,7 +16,7 @@ namespace PresetMagician.VendorPresetParser.KV331
 
         protected override string Extension { get; } = "smpr";
 
-        public string Remarks { get; set; } = "Metadata is not being parsed at the moment.";
+        public override string Remarks { get; set; } = "Metadata is not being parsed at the moment.";
 
         protected override List<(string directory, PresetBank presetBank)> GetParseDirectories()
         {
