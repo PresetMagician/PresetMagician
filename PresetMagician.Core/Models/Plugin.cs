@@ -6,10 +6,10 @@ using System.Linq;
 using Catel.Data;
 using Catel.IO;
 using Ceras;
-using PresetMagician.NKS;
 using PresetMagician.Core.Collections;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models.NativeInstrumentsResources;
+using PresetMagician.NKS;
 using PresetMagician.Utils.Logger;
 using ModelBase = PresetMagician.Core.Data.ModelBase;
 
@@ -396,6 +396,8 @@ namespace PresetMagician.Core.Models
         public int NumPresets => Presets?.Count ?? 0;
 
         [Include] public string PluginName { get; set; } = "<unknown>";
+        [Include] public string OverriddenPluginName { get; set; } = "";
+        [Include] public bool OverridePluginName { get; set; }
 
 
         public int PresetParserAudioPreviewPreDelay => PresetParser?.AudioPreviewPreDelay ?? 0;

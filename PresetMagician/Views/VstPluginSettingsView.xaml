@@ -35,6 +35,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
@@ -147,20 +148,30 @@
                 </Grid>
 
                 <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
-                    <Label Content="Bank/Preset Loading Notes" />
+                    <Label Content="Override Plugin Name" />
                 </StackPanel>
 
                 <StackPanel Grid.Row="2" Grid.Column="1">
+                    <CheckBox IsChecked="{Binding Plugin.OverridePluginName}">Override Plugin Name:</CheckBox>
+                    <TextBox IsReadOnly="True" Text="{Binding Plugin.OverriddenPluginName}"
+                             TextWrapping="Wrap" IsEnabled="{Binding Plugin.OverridePluginName}" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal">
+                    <Label Content="Bank/Preset Loading Notes" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="3" Grid.Column="1">
                     <TextBlock>These notes are only for the Preset Parser, not for the FXB/FXP files above!</TextBlock>
                     <TextBox IsReadOnly="True" Text="{Binding Plugin.PresetParser.BankLoadingNotes}"
                              TextWrapping="Wrap" />
                 </StackPanel>
 
-                <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal">
+                <StackPanel Grid.Row="4" Grid.Column="0" Orientation="Horizontal">
                     <Label Content="Plugin DLL" />
                 </StackPanel>
 
-                <StackPanel Grid.Row="3" Grid.Column="1">
+                <StackPanel Grid.Row="4" Grid.Column="1">
                     <ComboBox ItemsSource="{Binding PluginLocations}" SelectedItem="{Binding Plugin.PluginLocation}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>

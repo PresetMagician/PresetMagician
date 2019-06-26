@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -11,6 +13,7 @@ using Catel.Data;
 using Catel.MVVM;
 using Catel.Services;
 using GongSolutions.Wpf.DragDrop;
+using PresetMagician.Core.Collections;
 using PresetMagician.Core.Data;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
@@ -28,6 +31,7 @@ namespace PresetMagician.ViewModels
         private readonly IAdvancedMessageService _messageService;
         private readonly RemoteVstService _remoteVstService;
         private readonly GlobalService _globalService;
+        private readonly GlobalFrontendService _globalFrontendService;
         private IRemotePluginInstance _remotePluginInstance;
         private readonly PresetDataPersisterService _presetDataPersister;
 
@@ -35,6 +39,7 @@ namespace PresetMagician.ViewModels
             IUIVisualizerService visualizerService,
             DataPersisterService dataPersisterService, IViewModelFactory viewModelFactory,
             IAdvancedMessageService advancedMessageService, RemoteVstService remoteVstService,
+            GlobalFrontendService globalFrontendService,
             PresetDataPersisterService presetDataPersisterService)
         {
             _messageService = advancedMessageService;
@@ -43,6 +48,7 @@ namespace PresetMagician.ViewModels
             _dataPersisterService = dataPersisterService;
             _remoteVstService = remoteVstService;
             _globalService = globalService;
+            _globalFrontendService = globalFrontendService;
             _presetDataPersister = presetDataPersisterService;
 
             Plugin = plugin;
@@ -66,6 +72,7 @@ namespace PresetMagician.ViewModels
             GlobalTypeCollection.IsLiveSorting = false;
             GlobalTypeCollection.IsLiveFiltering = false;
 
+            SelectedPresets.CollectionChanged += SelectedPresetsOnCollectionChanged;
             PreviewNotePlayers = globalService.PreviewNotePlayers;
             RenameBankCommand = new TaskCommand(OnRenameBankCommandExecute, RenameBankCommandCanExecute);
             AddBankCommand = new TaskCommand(OnAddBankCommandExecute, AddBankCommandCanExecute);
@@ -75,8 +82,15 @@ namespace PresetMagician.ViewModels
             LoadPresetCommand = new TaskCommand(OnLoadPresetCommandExecute, LoadPresetCommandCanExecute);
             ShowEditorCommand = new TaskCommand(OnShowEditorCommandExecute, ShowEditorCommandCanExecute);
 
+            AddToExportListCommand = new TaskCommand(OnAddToExportListCommandExecute, AddToExportListCommandCanExecute);
+
 
             Revert = new Command<string>(OnRevertExecute);
+        }
+
+        private void SelectedPresetsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            AddToExportListCommand.RaiseCanExecuteChanged();
         }
 
         #region Properties
@@ -88,7 +102,7 @@ namespace PresetMagician.ViewModels
         public FastObservableCollection<PreviewNotePlayer> PreviewNotePlayers { get; }
         public ListCollectionView GlobalCharacteristicCollection { get; }
         public Preset SelectedPreset { get; set; }
-        public List<Preset> SelectedPresets { get; set; }
+        public ObservableCollection<Preset> SelectedPresets { get; set; } = new EditableCollection<Preset>();
         public bool HasSelectedPreset { get; set; }
 
         #endregion
@@ -157,6 +171,28 @@ namespace PresetMagician.ViewModels
         private bool ShowEditorCommandCanExecute()
         {
             return _remotePluginInstance != null;
+        }
+
+        #endregion
+
+        #region Command Add To Export List
+
+        public TaskCommand AddToExportListCommand { get; }
+
+        private async Task OnAddToExportListCommandExecute()
+        {
+            foreach (var preset in SelectedPresets)
+            {
+                if (!_globalFrontendService.PresetExportList.Contains(preset))
+                {
+                    _globalFrontendService.PresetExportList.Add(preset);
+                }
+            }
+        }
+
+        private bool AddToExportListCommandCanExecute()
+        {
+            return SelectedPresets.Count > 0;
         }
 
         #endregion
