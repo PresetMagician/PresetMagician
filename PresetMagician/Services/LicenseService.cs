@@ -83,6 +83,33 @@ namespace PresetMagician.Services
 
             stream.Close();
 
+            /*if (ValidatingLicense.AdditionalAttributes.Contains("SystemCode"))
+            {
+                var licenseSystemCode = ValidatingLicense.AdditionalAttributes.Get("SystemCode");
+
+                if (licenseSystemCode != SystemCodeInfo.getSystemInfo())
+                {
+                    var fail = new GeneralValidationFailure
+                    {
+                        Message =
+                            "System Code does not match this system. Please create a new license at presetmagician.com"
+                    };
+                    validationFailures.Add(fail);
+                }
+            }
+            else
+            {
+                if (!ValidatingLicense.AdditionalAttributes.Contains("IgnoreSystemCode"))
+                {
+                    var fail = new GeneralValidationFailure
+                    {
+                        Message =
+                            "This license does not contain a system code. Please create a new license at presetmagician.com"
+                    };
+                    validationFailures.Add(fail);
+                }
+            }*/
+
             foreach (var validationFailure in validationFailures)
             {
                 Log.Warning("License validation failure: " + validationFailure.Message);

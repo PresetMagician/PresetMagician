@@ -65,6 +65,7 @@ namespace PresetMagician
 
                 foreach (var pluginPreset in pluginPresets)
                 {
+                    Preset lastPreset = null;
                     try
                     {
                         await _presetDataPersisterService.OpenDatabase();
@@ -76,11 +77,13 @@ namespace PresetMagician
                             continue;
                         }
 
+
                         using (var remotePluginInstance =
                             _remoteVstService.GetRemotePluginInstance(pluginPreset.Plugin, false))
                         {
                             foreach (var preset in pluginPreset.Presets)
                             {
+                                lastPreset = preset.Preset;
                                 currentPreset++;
                                 _applicationService.UpdateApplicationOperationStatus(
                                     currentPreset,
@@ -146,8 +149,18 @@ namespace PresetMagician
                     }
                     catch (Exception e)
                     {
+                        var errorMessage =
+                            $"Unable to export presets for {pluginPreset.Plugin.PluginName} because of {e.GetType().FullName}: {e.Message}. ";
+
+                        if (lastPreset != null)
+                        {
+                            errorMessage +=
+                                $"The preset causing the error was: {lastPreset.Metadata.PresetName} in bank path {lastPreset.Metadata.BankPath}";
+                        }
+
                         _applicationService.AddApplicationOperationError(
-                            $"Unable to update export presets for {pluginPreset.Plugin.PluginName} because of {e.GetType().FullName}: {e.Message}");
+                            errorMessage
+                        );
                         LogTo.Debug(e.StackTrace);
                     }
 
