@@ -223,13 +223,15 @@ namespace PresetMagician.VstHost.VST
                             }
                         }
 
+                        ctx.PluginCommandStub.ProcessReplacing(inputBuffers, outputBuffers);
+
+
                         if (HasBufferData(outputBuffers))
                         {
                             WriteBuffers(outputBuffers, writer);
+
                             dataWritten = true;
                         }
-
-                        ctx.PluginCommandStub.ProcessReplacing(inputBuffers, outputBuffers);
                     }
 
                     writer.Close();
@@ -248,7 +250,7 @@ namespace PresetMagician.VstHost.VST
                 {
                     if (x < 2)
                     {
-                        if (t[j] != 0)
+                        if (Math.Abs(t[j]) > 0.0005)
                         {
                             return true;
                         }
