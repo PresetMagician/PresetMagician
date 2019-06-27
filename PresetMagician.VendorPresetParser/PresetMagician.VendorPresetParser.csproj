@@ -240,6 +240,9 @@
     <Compile Include="ImageLine\ImageLine_Sakura.cs" />
     <Compile Include="ImageLine\ImageLine_Sawer.cs" />
     <Compile Include="ImageLine\ImageLine_ToxicBiohazard.cs" />
+      <Compile Include="InitialAudio\InitialAudio_808Studio.cs"/>
+      <Compile Include="InitialAudio\InitialAudio_HeatUp3.cs"/>
+      <Compile Include="InitialAudio\InitialAudio_Sektor.cs"/>
       <Compile Include="KV331\KV331_SynthMaster.cs"/>
     <Compile Include="MeldaProduction\MeldaProduction.cs" />
     <Compile Include="MeldaProduction\MeldaProduction_MAGC.cs" />
