@@ -30,6 +30,7 @@ namespace PresetMagician.Core.Models
         [JsonProperty] public int MaxPoolWorkerStartupTime { get; set; } = 20;
 
         [JsonProperty] public DateTime LastBackupNotificationDateTime { get; set; } = DateTime.Now;
+        [JsonProperty] public bool StripBridgedPluginPrefix { get; set; } = true;
 
         [JsonProperty]
         [JsonConverter(typeof(StringEnumConverter))]

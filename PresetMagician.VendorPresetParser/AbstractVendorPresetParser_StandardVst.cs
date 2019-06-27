@@ -289,6 +289,8 @@ namespace PresetMagician.VendorPresetParser
                 {
                     // Bank chunks are null, can't use for NKS
                     PresetSaveMode = PresetSaveModes.None;
+                    Logger.Debug(PluginInstance.Plugin.PluginName +
+                                 ": Bank chunks are null, unable to use this plugin with NKS");
                     return;
                 }
 

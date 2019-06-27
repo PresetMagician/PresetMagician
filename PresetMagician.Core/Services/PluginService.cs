@@ -151,7 +151,7 @@ namespace PresetMagician.Core.Services
                         LastModifiedDateTime = remoteFileService.GetLastModifiedDate(dllPath), IsPresent = true
                     }
                 };
-                
+
                 newPlugin.UpdateRequiresMetadataScanFlag(_globalService.PresetMagicianVersion);
 
                 progressStatus.Status = $"Adding Plugin {newPlugin.PluginLocation.DllPath}";
@@ -214,8 +214,10 @@ namespace PresetMagician.Core.Services
             return DllHashes[dllPath];
         }
 
-        public async Task<(List<Plugin> removedPlugins, List<(Plugin oldPlugin, Plugin mergedIntoPlugin)> mergedPlugins)> UpdateMetadata(IList<Plugin> pluginsToUpdate,
-            ApplicationProgress applicationProgress)
+        public async
+            Task<(List<Plugin> removedPlugins, List<(Plugin oldPlugin, Plugin mergedIntoPlugin)> mergedPlugins)>
+            UpdateMetadata(IList<Plugin> pluginsToUpdate,
+                ApplicationProgress applicationProgress)
         {
             var pluginsToRemove = new List<Plugin>();
             var mergedPlugins = new List<(Plugin oldPlugin, Plugin mergedIntoPlugin)>();
@@ -289,11 +291,20 @@ namespace PresetMagician.Core.Services
                         continue;
                     }
 
+                    if (_globalService.RuntimeConfiguration.StripBridgedPluginPrefix &&
+                        plugin.PluginName.StartsWith("[jBridge]"))
+                    {
+                        plugin.OverridePluginName = true;
+                        plugin.OverriddenPluginName = plugin.PluginName.Replace("[jBridge]", "");
+                    }
+
+
                     // We now got metadata - check if there's an existing plugin with the same plugin ID. If so,
                     // merge this plugin with the existing one if it has no presets.
                     var existingPlugin =
                         (from p in _globalService.Plugins
-                            where p.VstPluginId == plugin.VstPluginId && p.PluginId != plugin.PluginId && plugin.IsPresent &&
+                            where p.VstPluginId == plugin.VstPluginId && p.PluginId != plugin.PluginId &&
+                                  plugin.IsPresent &&
                                   !pluginsToRemove.Contains(p)
                             select p)
                         .FirstOrDefault();
@@ -307,7 +318,7 @@ namespace PresetMagician.Core.Services
                     {
                         // There's an existing plugin which this plugin can be merged into. Schedule it for removal
                         pluginsToRemove.Add(plugin);
-                        mergedPlugins.Add((oldPlugin:plugin, mergedIntoPlugin: existingPlugin));
+                        mergedPlugins.Add((oldPlugin: plugin, mergedIntoPlugin: existingPlugin));
 
                         if (existingPlugin.PluginLocation == null)
                         {
@@ -333,7 +344,7 @@ namespace PresetMagician.Core.Services
                     {
                         // The existing plugin has no presets - remove it!
                         pluginsToRemove.Add(existingPlugin);
-                        mergedPlugins.Add((oldPlugin:existingPlugin, mergedIntoPlugin: plugin));
+                        mergedPlugins.Add((oldPlugin: existingPlugin, mergedIntoPlugin: plugin));
                         if (plugin.PluginLocation == null)
                         {
                             if (Core.UseDispatcher)
@@ -360,6 +371,7 @@ namespace PresetMagician.Core.Services
                     applicationProgress.LogReporter.Report(new LogEntry(LogLevel.Error,
                         $"Unable to load  metadata for {plugin.DllFilename} because of {e.GetType().FullName} {e.Message}"));
                 }
+
 
                 await _dispatcherService.InvokeAsync(() => { plugin.NativeInstrumentsResource.Load(plugin); });
             }

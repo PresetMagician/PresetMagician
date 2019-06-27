@@ -134,12 +134,7 @@ namespace PresetMagician.Services
             Image bmp;
             var niResource = pluginInstance.Plugin.NativeInstrumentsResource;
 
-            var pluginName = pluginInstance.Plugin.PluginName;
-
-            if (pluginInstance.Plugin.OverridePluginName)
-            {
-                pluginName = pluginInstance.Plugin.OverriddenPluginName;
-            }
+            var pluginName = pluginInstance.Plugin.GetEffectivePluginName();
 
             if (niResource.ShortNamesState.State ==
                 NativeInstrumentsResource.ResourceStates.Empty || force)

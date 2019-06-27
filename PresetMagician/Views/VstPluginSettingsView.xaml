@@ -143,17 +143,29 @@
                                 </Style>
                             </Button.Style>
                         </Button>
-                        <CheckBox IsChecked="{Binding ReanalyzePluginOnClose}">Re-analyze Plugin after closing the dialog</CheckBox>
+                        <CheckBox IsChecked="{Binding ReanalyzePluginOnClose}">Re-import Plugin Presets after closing the dialog</CheckBox>
                     </DockPanel>
                 </Grid>
 
                 <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
                     <Label Content="Override Plugin Name" />
+                    <iconPacks:PackIconFontAwesome Margin="0,5,10,0" VerticalAlignment="Top"
+                                                   Kind="QuestionCircleSolid" ToolTipService.ShowDuration="12000">
+                        <iconPacks:PackIconFontAwesome.ToolTip>
+                            <StackPanel Margin="5" Width="600">
+                                <TextBlock TextWrapping="Wrap">
+                                    This setting overrides the plugin name used in exported NKS files and the generated resources.<LineBreak />
+                                    <LineBreak />
+                                </TextBlock>
+
+                            </StackPanel>
+                        </iconPacks:PackIconFontAwesome.ToolTip>
+                    </iconPacks:PackIconFontAwesome>
                 </StackPanel>
 
                 <StackPanel Grid.Row="2" Grid.Column="1">
                     <CheckBox IsChecked="{Binding Plugin.OverridePluginName}">Override Plugin Name:</CheckBox>
-                    <TextBox IsReadOnly="True" Text="{Binding Plugin.OverriddenPluginName}"
+                    <TextBox Text="{Binding Plugin.OverriddenPluginName}"
                              TextWrapping="Wrap" IsEnabled="{Binding Plugin.OverridePluginName}" />
                 </StackPanel>
 
@@ -169,6 +181,18 @@
 
                 <StackPanel Grid.Row="4" Grid.Column="0" Orientation="Horizontal">
                     <Label Content="Plugin DLL" />
+                    <iconPacks:PackIconFontAwesome Margin="0,5,10,0" VerticalAlignment="Top"
+                                                   Kind="QuestionCircleSolid" ToolTipService.ShowDuration="12000">
+                        <iconPacks:PackIconFontAwesome.ToolTip>
+                            <StackPanel Margin="5" Width="600">
+                                <TextBlock TextWrapping="Wrap">
+                                    If you have multiple plugin DLL files for the same plugin, you can select which one to
+                                    use.
+                                </TextBlock>
+
+                            </StackPanel>
+                        </iconPacks:PackIconFontAwesome.ToolTip>
+                    </iconPacks:PackIconFontAwesome>
                 </StackPanel>
 
                 <StackPanel Grid.Row="4" Grid.Column="1">
