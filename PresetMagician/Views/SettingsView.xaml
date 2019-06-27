@@ -14,9 +14,9 @@
     xmlns:fluent="urn:fluent-ribbon"
     xmlns:converters="clr-namespace:PresetMagician.Converters"
     MinWidth="900"
-    MinHeight="600"
+    MinHeight="620"
     Width="900"
-    Height="600"
+    Height="620"
     d:DataContext="{d:DesignInstance viewModels:SettingsViewModel}"
     mc:Ignorable="d">
     <controls:RibbonDataWindow.Resources>
@@ -38,6 +38,7 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
@@ -329,6 +330,30 @@
                         </StackPanel>
 
                         <StackPanel Grid.Row="5" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Top">
+                            <Label Content="Bridged Plugins" VerticalAlignment="Top" />
+                            <iconPacks:PackIconFontAwesome Margin="0,0,10,0" VerticalAlignment="Center"
+                                                           Kind="QuestionCircleSolid"
+                                                           ToolTipService.ShowDuration="12000">
+                                <iconPacks:PackIconFontAwesome.ToolTip>
+                                    <StackPanel Margin="5" Width="600">
+                                        <TextBlock TextWrapping="Wrap">
+                                            Strips the [jBridge] Prefix in front of the plugin name
+                                        </TextBlock>
+
+                                    </StackPanel>
+                                </iconPacks:PackIconFontAwesome.ToolTip>
+                            </iconPacks:PackIconFontAwesome>
+                        </StackPanel>
+                        
+                        <StackPanel Orientation="Vertical" Grid.Row="5"
+                                    Grid.Column="1" VerticalAlignment="Top">
+                            <CheckBox
+                                IsChecked="{Binding EditableConfiguration.StripBridgedPluginPrefix}">
+                                <TextBlock Text="Strip [jBridge] prefix from jBridged plugin names" />
+                            </CheckBox>
+                        </StackPanel>
+                        
+                        <StackPanel Grid.Row="6" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Top">
                             <Label Content="Enable DevTools" VerticalAlignment="Top" />
                             <iconPacks:PackIconFontAwesome Margin="0,0,10,0" VerticalAlignment="Center"
                                                            Kind="QuestionCircleSolid"
@@ -344,7 +369,7 @@
                             </iconPacks:PackIconFontAwesome>
                         </StackPanel>
 
-                        <StackPanel Orientation="Vertical" Grid.Row="5"
+                        <StackPanel Orientation="Vertical" Grid.Row="6"
                                     Grid.Column="1" VerticalAlignment="Top">
                             <CheckBox
                                 IsChecked="{Binding EditableConfiguration.ShowDeveloperTools}">

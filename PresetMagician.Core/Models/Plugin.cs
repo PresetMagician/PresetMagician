@@ -399,6 +399,15 @@ namespace PresetMagician.Core.Models
         [Include] public string OverriddenPluginName { get; set; } = "";
         [Include] public bool OverridePluginName { get; set; }
 
+        public string GetEffectivePluginName()
+        {
+            if (OverridePluginName)
+            {
+                return OverriddenPluginName;
+            }
+
+            return PluginName;
+        }
 
         public int PresetParserAudioPreviewPreDelay => PresetParser?.AudioPreviewPreDelay ?? 0;
 

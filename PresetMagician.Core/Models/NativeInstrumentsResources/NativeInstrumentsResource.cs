@@ -61,12 +61,12 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
             var re = new Regex("([^a-z0-9\\s\\-_])");
             var fileName = Path.GetFileNameWithoutExtension(plugin.PluginLocation.DllPath);
             var lcFileName = fileName.ToLower();
-            
+
             var mangledFileName = re.Replace(lcFileName, "");
 
             if (mangledFileName != lcFileName)
             {
-                return mangledFileName + "_"+HashUtils.getFormattedMD5Hash(fileName);
+                return mangledFileName + "_" + HashUtils.getFormattedMD5Hash(fileName);
             }
 
             return lcFileName;
@@ -77,7 +77,7 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
             if (!dllFilename)
             {
                 return Path.Combine(GetNativeInstrumentsResourcesDirectory(), DIST_DATABASE_DIRECTORY,
-                    plugin.PluginVendor.ToLower(), plugin.PluginName.ToLower());
+                    plugin.PluginVendor.ToLower(), plugin.GetEffectivePluginName().ToLower());
             }
 
             return Path.Combine(GetNativeInstrumentsResourcesDirectory(), DIST_DATABASE_DIRECTORY,
@@ -90,7 +90,7 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
             {
                 return Path.Combine(GetNativeInstrumentsResourcesDirectory(), IMAGES_DIRECTORY,
                     plugin.PluginVendor.ToLower(),
-                    plugin.PluginName.ToLower());
+                    plugin.GetEffectivePluginName().ToLower());
             }
 
             return Path.Combine(GetNativeInstrumentsResourcesDirectory(), IMAGES_DIRECTORY,
@@ -131,7 +131,7 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
 
         public void Save(Plugin plugin)
         {
-            LogTo.Debug($"Begin saving metadata for {plugin.PluginName}");
+            LogTo.Debug($"Begin saving metadata for {plugin.GetEffectivePluginName()}");
             var files = GetFiles(plugin);
             var resourcesDirectory = GetDistDatabaseDirectory(plugin);
             var imagesDirectory = GetImageDirectory(plugin);
@@ -194,7 +194,7 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
 
             try
             {
-                var metaFile = Path.Combine(resourcesDirectory, plugin.PluginName.ToLower() + ".meta");
+                var metaFile = Path.Combine(resourcesDirectory, plugin.GetEffectivePluginName().ToLower() + ".meta");
                 var dllFilenameMetaFile = Path.Combine(dllFilenameResourcesDirectory,
                     GetPluginFilenameOutputDirectory(plugin) + ".meta");
                 if (!File.Exists(metaFile))
@@ -209,7 +209,7 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
 
                 var dllFilenameImageMetaFile = Path.Combine(dllFilenameImagesDirectory,
                     GetPluginFilenameOutputDirectory(plugin) + ".meta");
-                var imageMetaFile = Path.Combine(imagesDirectory, plugin.PluginName.ToLower() + ".meta");
+                var imageMetaFile = Path.Combine(imagesDirectory, plugin.GetEffectivePluginName().ToLower() + ".meta");
                 if (!File.Exists(imageMetaFile))
                 {
                     CreateMetaFile(plugin, "image", imageMetaFile);
@@ -237,7 +237,7 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
             var vendor = new XElement("vendor") {Value = plugin.PluginVendor};
             resource.Add(vendor);
 
-            var name = new XElement("name") {Value = plugin.PluginName};
+            var name = new XElement("name") {Value = plugin.GetEffectivePluginName()};
             resource.Add(name);
 
             var type = new XElement("type") {Value = dbType};
@@ -364,7 +364,7 @@ namespace PresetMagician.Core.Models.NativeInstrumentsResources
 
                     Categories.CategoryDB.Add(categoryDb);
                     Categories.Vendor = plugin.PluginVendor;
-                    Categories.Product = plugin.PluginName;
+                    Categories.Product = plugin.GetEffectivePluginName();
                 }
 
                 CategoriesState.State = ResourceStates.FromDisk;

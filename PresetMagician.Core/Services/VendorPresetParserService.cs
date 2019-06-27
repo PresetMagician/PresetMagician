@@ -117,6 +117,9 @@ namespace PresetMagician.Core.Services
                         continue;
                     }
 
+                    parser.Logger.Clear();
+                    parser.Logger.MirrorTo(pluginInstance.Plugin.Logger);
+
                     if (!parser.CanHandle())
                     {
                         continue;
@@ -178,6 +181,7 @@ namespace PresetMagician.Core.Services
             {
                 return true;
             }
+
             return false;
         }
     }
