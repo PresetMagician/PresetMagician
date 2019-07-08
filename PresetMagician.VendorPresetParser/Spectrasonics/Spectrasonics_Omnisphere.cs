@@ -51,7 +51,15 @@ namespace PresetMagician.VendorPresetParser.Spectrasonics
         {
             foreach (var library in GetLibraries())
             {
-                await DoLibraryScan(library);
+                try
+                {
+                    await DoLibraryScan(library);
+                }
+                catch (Exception e)
+                {
+                    Logger.Error($"Unable to scan library {library.Name} at {library.Path} because of {e.Message}");
+                    Logger.Debug(e.StackTrace);
+                }
             }
 
             await base.DoScan();
@@ -63,8 +71,27 @@ namespace PresetMagician.VendorPresetParser.Spectrasonics
 
             foreach (var library in GetLibraries())
             {
-                count += library.GetMultis().Count;
-                count += library.GetPatches().Count;
+                try
+                {
+                    count += library.GetMultis().Count;
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(
+                        $"Unable to count multis for library {library.Name} at {library.Path} because of {e.Message}");
+                    Logger.Debug(e.StackTrace);
+                }
+
+                try
+                {
+                    count += library.GetPatches().Count;
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(
+                        $"Unable to count patches for library {library.Name} at {library.Path} because of {e.Message}");
+                    Logger.Debug(e.StackTrace);
+                }
             }
 
             return base.GetNumPresets() + count;
@@ -570,7 +597,15 @@ namespace PresetMagician.VendorPresetParser.Spectrasonics
         public string FilenameWithoutExtension => Filename.Replace(Spectrasonics_Omnisphere.MULTI_EXTENSION, "")
             .Replace(Spectrasonics_Omnisphere.PATCH_EXTENSION, "");
 
-        public string Extension => Filename.Substring(Filename.LastIndexOf("."));
+        public string Extension
+        {
+            get
+            {
+                var lastIndexOf = Filename.LastIndexOf(".", StringComparison.Ordinal);
+
+                return lastIndexOf < 0 ? "" : Filename.Substring(lastIndexOf);
+            }
+        }
 
         public override string ToString()
         {
