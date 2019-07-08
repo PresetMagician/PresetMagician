@@ -240,10 +240,10 @@
     <Compile Include="ImageLine\ImageLine_Sakura.cs" />
     <Compile Include="ImageLine\ImageLine_Sawer.cs" />
     <Compile Include="ImageLine\ImageLine_ToxicBiohazard.cs" />
-    <Content Include="InitialAudio\InitialAudio_808Studio.cs.txt"/>
-    <Content Include="InitialAudio\InitialAudio_HeatUp3.cs.txt"/>
-    <Content Include="InitialAudio\InitialAudio_Sektor.cs.txt"/>
-    <Compile Include="KV331\KV331_SynthMaster.cs"/>
+      <Compile Include="InitialAudio\InitialAudio_808Studio.cs"/>
+      <Compile Include="InitialAudio\InitialAudio_HeatUp3.cs"/>
+      <Compile Include="InitialAudio\InitialAudio_Sektor.cs"/>
+      <Compile Include="KV331\KV331_SynthMaster.cs"/>
     <Compile Include="MeldaProduction\MeldaProduction.cs" />
     <Compile Include="MeldaProduction\MeldaProduction_MAGC.cs" />
     <Compile Include="MeldaProduction\MeldaProduction_MAmp.cs" />
@@ -345,7 +345,7 @@
     <Compile Include="MeldaProduction\MeldaProduction_MWobbler.cs" />
     <Compile Include="MeldaProduction\MeldaProduction_MWobblerMB.cs" />
     <Compile Include="MeldaProduction\MeldaProduction_MXXX.cs" />
-    <Compile Include="Parawave\Parawave_Rapid.cs"/>
+      <Compile Include="Parawave\Parawave_Rapid.cs"/>
     <Compile Include="Properties\VendorResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
