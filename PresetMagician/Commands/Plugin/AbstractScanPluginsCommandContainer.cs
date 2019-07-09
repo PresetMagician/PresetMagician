@@ -13,7 +13,6 @@ using Catel.MVVM;
 using Catel.Services;
 using Catel.Threading;
 using Catel.Windows;
-using Orchestra;
 using PresetMagician.Core.EventArgs;
 using PresetMagician.Core.Interfaces;
 using PresetMagician.Core.Models;
@@ -300,6 +299,8 @@ namespace PresetMagician
 
                         await _presetDataPersisterService.CloseDatabase();
                         _dataPersisterService.SavePresetsForPlugin(plugin);
+
+                        await _dispatcherService.InvokeAsync(() => { plugin.NativeInstrumentsResource.Load(plugin); });
 
                         if (GlobalService.RuntimeConfiguration.AutoCreateResources &&
                             _resourceGeneratorService.ShouldCreateScreenshot(remotePluginInstance))
