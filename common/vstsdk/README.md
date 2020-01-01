@@ -1,0 +1,1 @@
+Place the files `aeffect.h` and `aeffectx.h` from your VST SDK in this directory.

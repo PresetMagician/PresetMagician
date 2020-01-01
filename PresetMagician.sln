@@ -24,7 +24,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		common\aeffect.h = common\aeffect.h
 		common\aeffectx.h = common\aeffectx.h
-		Performance1.psess = Performance1.psess
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Jacobi.Vst.Interop.Clr4", "vst.net\Source\Code\Jacobi.Vst.Interop\Jacobi.Vst.Interop.Clr4.vcxproj", "{E0CC0CCF-A40D-4A53-8FAC-B6AF7E76EB08}"
@@ -149,7 +148,6 @@ Global
 		{3A586416-148E-47E4-8612-87A7C9561BA7}.Release|x64.ActiveCfg = Release|x64
 		{3A586416-148E-47E4-8612-87A7C9561BA7}.Release|x64.Build.0 = Release|x64
 		{19A9E75B-36C0-41AD-8A61-3614C0BBC11F}.Debug|x64.ActiveCfg = Debug|x64
-		{19A9E75B-36C0-41AD-8A61-3614C0BBC11F}.Debug|x64.Build.0 = Debug|x64
 		{19A9E75B-36C0-41AD-8A61-3614C0BBC11F}.Publish|x64.ActiveCfg = Release|x64
 		{19A9E75B-36C0-41AD-8A61-3614C0BBC11F}.Release|x64.ActiveCfg = Release|x64
 		{19A9E75B-36C0-41AD-8A61-3614C0BBC11F}.Release|x64.Build.0 = Release|x64
