@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Diagnostics;
+using System.Threading.Tasks;
 using Catel.MVVM;
 using Catel.Services;
 using PresetMagician.Core.Services;
@@ -27,11 +28,7 @@ namespace PresetMagician
 
         protected override async Task ExecuteAsync(object parameter)
         {
-            var report = new IssueReport(IssueReport.TrackerTypes.FEATURE, _globalService.PresetMagicianVersion,
-                _globalFrontendService.ApplicationState.ActiveLicense.Customer.Email, FileLocations.LogFile,
-                DataPersisterService.DefaultDataStoragePath);
-
-            await _uiVisualizerService.ShowDialogAsync<ReportIssueViewModel>(report);
+           Process.Start(Settings.Links.CreateFeatureRequest);
         }
     }
 }

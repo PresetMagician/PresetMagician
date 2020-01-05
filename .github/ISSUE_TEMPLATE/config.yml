@@ -1,1 +1,8 @@
 blank_issues_enabled: false
+contact_links:
+  - name: PresetMagician Documentation
+    url: https://presetmagician.gitbook.io/help/v/master/
+    about: Main PresetMagician documentation site
+  - name: Discord Chat
+    url: http://discord.gg/DraJRzv
+    about: The PresetMagician discord server to chat about PresetMagician

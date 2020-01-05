@@ -78,7 +78,7 @@ namespace PresetMagician
                 DataPersisterService.DefaultDataStoragePath);
             report.SetException(e);
 
-            uiVisualiserService.ShowDialogAsync<ReportIssueViewModel>(report).ConfigureAwait(false);
+            //uiVisualiserService.ShowDialogAsync<ReportIssueViewModel>(report).ConfigureAwait(false);
         }
 
 

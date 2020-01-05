@@ -76,12 +76,10 @@ namespace PresetMagician
 
             public static readonly string Documentation = $"https://presetmagician.gitbook.io/help/";
             public static readonly string HelpLink = $"https://presetmagician.com/help/";
-            public static readonly string Support = $"{_masterProtocol}{_supportSite}/support";
-            public static readonly string SupportEmail = "support@presetmagician.com";
-            public static readonly string SupportEmailName = "PresetMagician Support";
-            public static readonly string Chat = "https://gitter.im/PresetMagician/general";
+            public static readonly string Chat = "http://discord.gg/DraJRzv";
+            public static readonly string CreateFeatureRequest = "https://github.com/PresetMagician/PresetMagician/issues/new/choose";
+            public static readonly string CreateBugReport = "https://github.com/PresetMagician/PresetMagician/issues/new/choose";
 
-            public static readonly string GetTrialLicense = $"{_protocol}{_site}/license/trial";
             public static readonly string SubmitPlugins = $"{_protocol}{_site}/plugins/submit";
             public static readonly string SubmitPluginsLive = $"https://presetmagician.com/plugins/submit";
             public static readonly string SubmitResource = $"{_protocol}{_site}/plugins/submitResource";

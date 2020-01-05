@@ -118,7 +118,7 @@
     <Compile Include="Commands\Developer\PluginForceReportPluginsToLiveCommandContainer.cs" />
     <Compile Include="Commands\Developer\PluginReportSinglePluginToLiveCommandContainer.cs" />
     <Compile Include="Commands\Developer\PluginToolsLoadPluginCommandContainer.cs" />
-      <Compile Include="Commands\Developer\PluginToolsPatchPluginToAudioOutputCommandContainer.cs"/>
+    <Compile Include="Commands\Developer\PluginToolsPatchPluginToAudioOutputCommandContainer.cs" />
     <Compile Include="Commands\Developer\PluginToolsShowPluginChunkCommandContainer.cs" />
     <Compile Include="Commands\Developer\PluginToolsShowPluginEditorCommandContainer.cs" />
     <Compile Include="Commands\Developer\PluginToolsShowPluginInfoCommandContainer.cs" />
@@ -220,7 +220,6 @@
     <Compile Include="ViewModels\ProgressWindowViewModel.cs" />
     <Compile Include="ViewModels\RegistrationViewModel.cs" />
     <Compile Include="ViewModels\PresetBankViewModel.cs" />
-    <Compile Include="ViewModels\ReportIssueViewModel.cs" />
     <Compile Include="ViewModels\RibbonViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
@@ -260,9 +259,6 @@
     </Compile>
     <Compile Include="Views\PresetBankView.xaml.cs">
       <DependentUpon>PresetBankView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ReportIssueView.xaml.cs">
-      <DependentUpon>ReportIssueView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TypesCharacteristicsView.xaml.cs">
       <DependentUpon>TypesCharacteristicsView.xaml</DependentUpon>
@@ -382,7 +378,6 @@
     <Page Include="Views\PreviewNotePlayerEditorView.xaml" />
     <Page Include="Views\ProgressWindow.xaml" />
     <Page Include="Views\PresetBankView.xaml" />
-    <Page Include="Views\ReportIssueView.xaml" />
     <Page Include="Views\TypesCharacteristicsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -812,8 +807,8 @@
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7.2'">
       <ItemGroup>
-          <Reference Include="GongSolutions.WPF.DragDrop">
-              <HintPath>..\packages\gong-wpf-dragdrop\lib\net47\GongSolutions.WPF.DragDrop.dll</HintPath>
+        <Reference Include="GongSolutions.WPF.DragDrop">
+          <HintPath>..\packages\gong-wpf-dragdrop\lib\net47\GongSolutions.WPF.DragDrop.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>

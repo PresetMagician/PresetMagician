@@ -31,7 +31,7 @@ namespace PresetMagician
                 _globalFrontendService.ApplicationState.ActiveLicense.Customer.Email, FileLocations.LogFile,
                 DataPersisterService.DefaultDataStoragePath);
 
-            await _uiVisualizerService.ShowDialogAsync<ReportIssueViewModel>(report);
+            //await _uiVisualizerService.ShowDialogAsync<ReportIssueViewModel>(report);
         }
     }
 }

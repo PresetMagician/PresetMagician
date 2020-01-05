@@ -53,16 +53,6 @@
                                           Text="Creates a new feature request." />
                     </fluent:MenuItem.ToolTip>
                 </fluent:MenuItem>
-                <fluent:MenuItem
-                    Command="{catel:CommandManagerBinding Help.RequestSupport}"
-                    Header="Request Support"
-                    Icon="{iconPacks:Material Kind=Lifebuoy}">
-                    <fluent:MenuItem.ToolTip>
-                        <fluent:ScreenTip Title="Request Support"
-                                          Width="250"
-                                          Text="Creates a new support request. Select this if you have general questions (it's neither a bug nor a feature request)." />
-                    </fluent:MenuItem.ToolTip>
-                </fluent:MenuItem>
             </fluent:DropDownButton>
 
 

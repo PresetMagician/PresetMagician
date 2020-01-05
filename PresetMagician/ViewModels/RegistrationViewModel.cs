@@ -65,7 +65,7 @@ namespace PresetMagician.ViewModels
 
         private async Task OnGetLicenseExecuteAsync()
         {
-            Process.Start(Settings.Links.GetTrialLicense);
+            
         }
 
         public TaskCommand SelectLicenseFile { get; }
